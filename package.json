@@ -1,7 +1,6 @@
 {
   "name": "xumm",
   "version": "2.5.0",
-  "private": false,
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -33,18 +32,18 @@
     "react-native-navigation": "7.32.1",
     "realm": "11.4.0",
     "ripple-address-codec": "4.2.4",
-    "ripple-binary-codec": "1.4.2",
+    "ripple-binary-codec": "1.4.3",
     "tangem-sdk-react-native": "2.1.0",
     "uuid": "9.0.0",
-    "xrpl-accountlib": "1.6.1",
+    "xrpl-accountlib": "2.0.3",
     "xrpl-client": "2.0.1",
     "xrpl-orderbook-reader": "0.3.3",
     "xumm-string-decode": "0.6.2"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
-    "@babel/preset-env": "7.20.2",
     "@babel/plugin-transform-runtime": "7.19.6",
+    "@babel/preset-env": "7.20.2",
     "@babel/runtime": "7.20.13",
     "@storybook/addon-actions": "6.5.16",
     "@storybook/addon-links": "6.5.16",

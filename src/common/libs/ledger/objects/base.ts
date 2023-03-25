@@ -11,8 +11,6 @@ import { LedgerEntriesTypes } from '../types';
 
 /* Class ==================================================================== */
 class BaseLedgerObject {
-    public readonly ClassName = 'LedgerObject';
-
     protected object: LedgerEntriesTypes;
 
     constructor(object?: LedgerEntriesTypes) {

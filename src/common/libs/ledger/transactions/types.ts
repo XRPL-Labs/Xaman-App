@@ -25,8 +25,10 @@ import {
     NFTokenMint,
 } from '.';
 
+import { SignIn, PaymentChannelAuthorize } from './pseudo';
+
 /**
- * Parsed Transactions type
+ * All Transactions types
  */
 export type Transactions =
     | Payment
@@ -53,3 +55,8 @@ export type Transactions =
     | NFTokenCreateOffer
     | NFTokenAcceptOffer
     | NFTokenCancelOffer;
+
+/**
+ * Pseudo Transactions types
+ */
+export type PseudoTransactions = SignIn | PaymentChannelAuthorize;

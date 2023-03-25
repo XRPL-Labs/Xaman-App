@@ -7,12 +7,14 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, V
 
 import { AppScreens } from '@common/constants';
 
-import { LedgerService, SocketService, PushNotificationsService, StyleService } from '@services';
+import { LedgerService, PushNotificationsService, SocketService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+
 import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
@@ -124,97 +126,66 @@ class ReviewTransactionModal extends Component<Props, State> {
     getTransactionLabel = () => {
         const { transaction } = this.state;
 
-        // pseudo transaction
-        if (transaction.isPseudoTransaction()) {
-            return Localize.t('global.signIn');
-        }
-
-        let type = '';
-
         switch (transaction.Type) {
             case TransactionTypes.AccountSet:
                 if (transaction.isNoOperation() && transaction.isCancelTicket()) {
-                    type = Localize.t('events.cancelTicket');
-                } else {
-                    type = Localize.t('events.updateAccountSettings');
+                    return Localize.t('events.cancelTicket');
                 }
-                break;
+                return Localize.t('events.updateAccountSettings');
             case TransactionTypes.AccountDelete:
-                type = Localize.t('events.deleteAccount');
-                break;
+                return Localize.t('events.deleteAccount');
             case TransactionTypes.EscrowFinish:
-                type = Localize.t('events.finishEscrow');
-                break;
+                return Localize.t('events.finishEscrow');
             case TransactionTypes.EscrowCancel:
-                type = Localize.t('events.cancelEscrow');
-                break;
+                return Localize.t('events.cancelEscrow');
             case TransactionTypes.EscrowCreate:
-                type = Localize.t('events.createEscrow');
-                break;
+                return Localize.t('events.createEscrow');
             case TransactionTypes.SetRegularKey:
-                type = Localize.t('events.setARegularKey');
-                break;
+                return Localize.t('events.setARegularKey');
             case TransactionTypes.SignerListSet:
-                type = Localize.t('events.setSignerList');
-                break;
+                return Localize.t('events.setSignerList');
             case TransactionTypes.TrustSet:
-                type = Localize.t('events.updateAccountAssets');
-                break;
+                return Localize.t('events.updateAccountAssets');
             case TransactionTypes.OfferCreate:
-                type = Localize.t('events.createOffer');
-                break;
+                return Localize.t('events.createOffer');
             case TransactionTypes.OfferCancel:
-                type = Localize.t('events.cancelOffer');
-                break;
+                return Localize.t('events.cancelOffer');
             case TransactionTypes.DepositPreauth:
                 if (transaction.Authorize) {
-                    type = Localize.t('events.authorizeDeposit');
-                } else {
-                    type = Localize.t('events.unauthorizeDeposit');
+                    return Localize.t('events.authorizeDeposit');
                 }
-                break;
+                return Localize.t('events.unauthorizeDeposit');
             case TransactionTypes.CheckCreate:
-                type = Localize.t('events.createCheck');
-                break;
+                return Localize.t('events.createCheck');
             case TransactionTypes.CheckCash:
-                type = Localize.t('events.cashCheck');
-                break;
+                return Localize.t('events.cashCheck');
             case TransactionTypes.CheckCancel:
-                type = Localize.t('events.cancelCheck');
-                break;
+                return Localize.t('events.cancelCheck');
             case TransactionTypes.TicketCreate:
-                type = Localize.t('events.createTicket');
-                break;
+                return Localize.t('events.createTicket');
             case TransactionTypes.PaymentChannelCreate:
-                type = Localize.t('events.createPaymentChannel');
-                break;
+                return Localize.t('events.createPaymentChannel');
             case TransactionTypes.PaymentChannelFund:
-                type = Localize.t('events.fundPaymentChannel');
-                break;
+                return Localize.t('events.fundPaymentChannel');
             case TransactionTypes.PaymentChannelClaim:
-                type = Localize.t('events.claimPaymentChannel');
-                break;
+                return Localize.t('events.claimPaymentChannel');
             case TransactionTypes.NFTokenMint:
-                type = Localize.t('events.mintNFT');
-                break;
+                return Localize.t('events.mintNFT');
             case TransactionTypes.NFTokenBurn:
-                type = Localize.t('events.burnNFT');
-                break;
+                return Localize.t('events.burnNFT');
             case TransactionTypes.NFTokenCreateOffer:
-                type = Localize.t('events.createNFTOffer');
-                break;
+                return Localize.t('events.createNFTOffer');
             case TransactionTypes.NFTokenCancelOffer:
-                type = Localize.t('events.cancelNFTOffer');
-                break;
+                return Localize.t('events.cancelNFTOffer');
             case TransactionTypes.NFTokenAcceptOffer:
-                type = Localize.t('events.acceptNFTOffer');
-                break;
+                return Localize.t('events.acceptNFTOffer');
+            case PseudoTransactionTypes.SignIn:
+                return Localize.t('global.signIn');
+            case PseudoTransactionTypes.PaymentChannelAuthorize:
+                return Localize.t('global.paymentChannelAuthorize');
             default:
-                type = transaction.Type;
-                break;
+                return transaction.Type;
         }
-
-        return type;
     };
 
     prepareAndSignTransaction = async () => {
@@ -296,8 +267,8 @@ class ReviewTransactionModal extends Component<Props, State> {
         // if payload generated by xumm or payload is not valid close it immediately
         if (payload.isGenerated() || !isValidPayload) {
             this.closeReviewModal();
-            // if the payload origin is xApp or payload is a SignIn then directly decline the request
-        } else if (payload.getOrigin() === PayloadOrigin.XAPP || payload.isSignIn()) {
+            // if the payload origin is xApp or payload is a Pseudo transaction then directly decline the request
+        } else if (payload.getOrigin() === PayloadOrigin.XAPP || payload.isPseudoTransaction()) {
             this.onDecline();
         } else {
             // otherwise show dialog for reject
@@ -345,7 +316,11 @@ class ReviewTransactionModal extends Component<Props, State> {
             try {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
-                if (typeof transaction.validate === 'function' && !payload.isMultiSign()) {
+                if (
+                    transaction instanceof BaseTransaction &&
+                    typeof transaction.validate === 'function' &&
+                    !payload.isMultiSign()
+                ) {
                     await transaction.validate();
                 }
             } catch (e: any) {
@@ -371,7 +346,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // account is not activated and want to sign a tx
-            if (!payload.isSignIn() && !payload.isMultiSign() && source.balance === 0) {
+            if (!payload.isPseudoTransaction() && !payload.isMultiSign() && source.balance === 0) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -611,7 +586,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { payload } = this.props;
         const { transaction, coreSettings } = this.state;
 
-        // if not mounted return
+        // if not mounted
         if (!this.mounted) {
             return;
         }

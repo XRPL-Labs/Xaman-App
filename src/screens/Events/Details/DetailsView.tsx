@@ -26,7 +26,10 @@ import AccountRepository from '@store/repositories/account';
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
 import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { Transactions } from '@common/libs/ledger/transactions/types';
+
+import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
 import { OfferStatus } from '@common/libs/ledger/parser/types';
@@ -210,7 +213,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { account } = this.props;
 
         if (
-            tx.ClassName === 'Transaction' &&
+            tx instanceof BaseTransaction &&
             [
                 TransactionTypes.Payment,
                 TransactionTypes.PaymentChannelClaim,
@@ -393,7 +396,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     getTransactionLink = () => {
         const { tx } = this.state;
-        const hash = tx.ClassName === 'Transaction' ? tx.Hash : tx.PreviousTxnID;
+        const hash = tx instanceof BaseTransaction ? tx.Hash : tx.PreviousTxnID;
         return GetTransactionLink(hash);
     };
 
@@ -576,7 +579,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         // open the XApp
-        if (type === 'OpenXapp' && tx.ClassName === 'Transaction') {
+        if (type === 'OpenXapp' && tx instanceof BaseTransaction) {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
@@ -760,7 +763,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
 
         // ignore if it's ledger object
-        if (tx.ClassName !== 'Transaction') {
+        if (!(tx instanceof BaseTransaction)) {
             return null;
         }
 
@@ -1409,7 +1412,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, showMemo, scamAlert } = this.state;
 
         // if ledger object or no Memo return null
-        if (tx.ClassName !== 'Transaction' || !tx.Memos) return null;
+        if (!(tx instanceof BaseTransaction) || !tx.Memos) return null;
 
         // check for xapp memo
         if (!scamAlert) {
@@ -1468,7 +1471,7 @@ class TransactionDetailsView extends Component<Props, State> {
         let changes;
 
         // ledger objects always have reserve change increase
-        if (tx.ClassName === 'LedgerObject') {
+        if (tx instanceof BaseLedgerObject) {
             // ignore for incoming NFTokenOffers
             if (tx.Type === LedgerObjectTypes.NFTokenOffer && tx.Owner !== account.address) {
                 return null;
@@ -1478,7 +1481,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 value: 1,
                 action: 'INC',
             };
-        } else if (tx.ClassName === 'Transaction' && typeof tx.OwnerCountChange === 'function') {
+        } else if (tx instanceof BaseTransaction && typeof tx.OwnerCountChange === 'function') {
             changes = tx.OwnerCountChange(account.address);
         }
 
@@ -1518,7 +1521,7 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx } = this.state;
 
         // ignore if it's ledger object
-        if (tx.ClassName !== 'Transaction') {
+        if (!(tx instanceof BaseTransaction)) {
             return null;
         }
 
@@ -1590,7 +1593,7 @@ class TransactionDetailsView extends Component<Props, State> {
     renderTransactionId = () => {
         const { tx } = this.state;
 
-        if (tx.ClassName === 'LedgerObject') {
+        if (tx instanceof BaseLedgerObject) {
             return (
                 <View style={styles.detailContainer}>
                     <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
@@ -1616,7 +1619,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let badgeType: any;
 
-        if (tx.ClassName === 'LedgerObject') {
+        if (tx instanceof BaseLedgerObject) {
             if (
                 [
                     LedgerObjectTypes.Offer,

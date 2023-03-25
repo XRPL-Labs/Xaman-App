@@ -130,6 +130,7 @@
     "url": "URL",
     "chain": "Chain",
     "signing": "Signing",
+    "paymentChannelAuthorize": "Payment Channel Authorize",
     "issuer": "Issuer",
     "accept": "Accept",
     "slideToAccept": "Slide to accept",

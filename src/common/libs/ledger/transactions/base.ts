@@ -32,7 +32,8 @@ import { Account, AmountType, MemoType, TransactionResult } from '../parser/type
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    public readonly ClassName = 'Transaction';
+    public static Pseudo = false as const;
+    public readonly Pseudo = BaseTransaction.Pseudo;
 
     protected tx: TransactionJSONType;
     protected meta: any;

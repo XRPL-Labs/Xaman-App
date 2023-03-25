@@ -9,6 +9,8 @@ import { Alert, Linking, BackHandler, InteractionManager, NativeEventSubscriptio
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+
 import LoggerService from '@services/LoggerService';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -245,8 +247,8 @@ class VaultModal extends Component<Props, State> {
             }
 
             // populate transaction LastLedgerSequence before signing
-            // INGORE if multi signing
-            if (!multiSign) {
+            // INGORE if multi signing or pseudo transaction
+            if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence();
             }
 
@@ -274,8 +276,8 @@ class VaultModal extends Component<Props, State> {
 
             // populate transaction LastLedgerSequence before signing
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
-            // INGORE if multi signing
-            if (!multiSign) {
+            // INGORE if multi signing or pseudo transaction
+            if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence(150);
             }
 

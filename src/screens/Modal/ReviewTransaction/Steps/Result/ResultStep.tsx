@@ -5,6 +5,8 @@
 import React, { Component, Fragment } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
+import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
+
 import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
@@ -18,7 +20,6 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-
 /* types ==================================================================== */
 export interface Props {}
 
@@ -91,6 +92,7 @@ class ResultStep extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
+                        {/* @ts-ignore */}
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult?.code}</Text>
 
                         <Spacer />
@@ -98,7 +100,8 @@ class ResultStep extends Component<Props, State> {
                         <Spacer />
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.subtext]}>
+                        <Text style={AppStyles.subtext}>
+                            {/* @ts-ignore */}
                             {transaction.TransactionResult?.message || 'No Description'}
                         </Text>
 
@@ -111,6 +114,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
+                                    // @ts-ignore
                                     transaction.TransactionResult?.message || transaction.TransactionResult?.code,
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
@@ -119,7 +123,7 @@ class ResultStep extends Component<Props, State> {
                     </View>
                 </View>
 
-                <Footer style={[]}>
+                <Footer>
                     <Button
                         testID="close-button"
                         style={{ backgroundColor: AppColors.red }}
@@ -152,7 +156,7 @@ class ResultStep extends Component<Props, State> {
 
                 <View style={AppStyles.flex3}>
                     <View style={styles.detailsCard}>
-                        {payload.isSignIn() ? (
+                        {transaction instanceof BasePseudoTransaction ? (
                             <View key="applicationDetails" style={[AppStyles.centerAligned, AppStyles.paddingVertical]}>
                                 <Avatar size={70} border source={{ uri: payload.getApplicationIcon() }} />
                                 {/* eslint-disable-next-line react-native/no-inline-styles */}
@@ -231,7 +235,7 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { submitResult, transaction } = this.context;
 
-        if (!submitResult) {
+        if (!submitResult || transaction instanceof BasePseudoTransaction) {
             return this.renderSigned();
         }
 

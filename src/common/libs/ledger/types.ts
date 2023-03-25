@@ -1,5 +1,8 @@
 import { AmountType, LedgerAmount } from './parser/types';
 
+export enum TransactionBaseTypes {
+    Transaction = 'Transaction',
+}
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -29,6 +32,7 @@ export enum TransactionTypes {
 
 export enum PseudoTransactionTypes {
     SignIn = 'SignIn',
+    PaymentChannelAuthorize = 'PaymentChannelAuthorize',
 }
 
 export enum LedgerObjectTypes {

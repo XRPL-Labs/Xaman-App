@@ -7,7 +7,7 @@ import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineSchema } from '@store/schemas/latest';
 
 import Flag from '@common/libs/ledger/parser/common/flag';
 import { TrustSet } from '@common/libs/ledger/transactions';
@@ -27,7 +27,6 @@ import { TemplateProps } from './types';
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: TrustSet;
-    source: AccountSchema;
 }
 
 export interface State {

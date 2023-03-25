@@ -3,6 +3,10 @@ import moment from 'moment-timezone';
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList, RefreshControl } from 'react-native';
 
+import { Payload } from '@common/libs/payload';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+import { BaseLedgerObject } from '@common/libs/ledger/objects';
+
 import StyleService from '@services/StyleService';
 
 import { AccountSchema } from '@store/schemas/latest';
@@ -14,9 +18,7 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
-// EventListItems
 import * as EventListItems from './EventListItems';
-
 /* Types ==================================================================== */
 interface Props {
     account: AccountSchema;
@@ -73,12 +75,12 @@ class EventsList extends PureComponent<Props> {
 
         const passProps = { item, account, timestamp };
 
-        switch (item.ClassName) {
-            case 'Payload':
+        switch (true) {
+            case item instanceof Payload:
                 return React.createElement(EventListItems.Request, passProps);
-            case 'Transaction':
+            case item instanceof BaseTransaction:
                 return React.createElement(EventListItems.Transaction, passProps);
-            case 'LedgerObject':
+            case item instanceof BaseLedgerObject:
                 return React.createElement(EventListItems.LedgerObject, passProps);
             default:
                 return null;
