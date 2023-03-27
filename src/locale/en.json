@@ -463,6 +463,7 @@
     "cashCheck": "Cash check",
     "cancelCheck": "Cancel check",
     "accountSettings": "Account Settings",
+    "depositPreauth": "Deposit preauth",
     "authorizeDeposit": "Authorize deposit ",
     "unauthorizeDeposit": "Unauthorize deposit ",
     "deleteAccount": "Delete Account",

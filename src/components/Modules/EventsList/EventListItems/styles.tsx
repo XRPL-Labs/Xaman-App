@@ -50,6 +50,9 @@ const styles = StyleService.create({
         fontSize: AppFonts.subtext.size * 0.9,
         color: '$grey',
     },
+    transactionLabel: {
+        color: '$blue',
+    },
     amount: {
         flexWrap: 'wrap',
         flexShrink: 1,

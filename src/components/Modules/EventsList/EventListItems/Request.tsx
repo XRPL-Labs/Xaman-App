@@ -6,6 +6,8 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { AccountSchema } from '@store/schemas/latest';
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -16,7 +18,6 @@ import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
-
 /* types ==================================================================== */
 export interface Props {
     account: AccountSchema;
@@ -86,6 +87,65 @@ class RequestTemplate extends Component<Props, State> {
         }
     };
 
+    getTransactionLabel = () => {
+        const { item } = this.props;
+
+        switch (item.getTransactionType()) {
+            case TransactionTypes.AccountSet:
+                return Localize.t('events.updateAccountSettings');
+            case TransactionTypes.AccountDelete:
+                return Localize.t('events.deleteAccount');
+            case TransactionTypes.EscrowFinish:
+                return Localize.t('events.finishEscrow');
+            case TransactionTypes.EscrowCancel:
+                return Localize.t('events.cancelEscrow');
+            case TransactionTypes.EscrowCreate:
+                return Localize.t('events.createEscrow');
+            case TransactionTypes.SetRegularKey:
+                return Localize.t('events.setARegularKey');
+            case TransactionTypes.SignerListSet:
+                return Localize.t('events.setSignerList');
+            case TransactionTypes.TrustSet:
+                return Localize.t('events.updateAccountAssets');
+            case TransactionTypes.OfferCreate:
+                return Localize.t('events.createOffer');
+            case TransactionTypes.OfferCancel:
+                return Localize.t('events.cancelOffer');
+            case TransactionTypes.DepositPreauth:
+                return Localize.t('events.depositPreauth');
+            case TransactionTypes.CheckCreate:
+                return Localize.t('events.createCheck');
+            case TransactionTypes.CheckCash:
+                return Localize.t('events.cashCheck');
+            case TransactionTypes.CheckCancel:
+                return Localize.t('events.cancelCheck');
+            case TransactionTypes.TicketCreate:
+                return Localize.t('events.createTicket');
+            case TransactionTypes.PaymentChannelCreate:
+                return Localize.t('events.createPaymentChannel');
+            case TransactionTypes.PaymentChannelFund:
+                return Localize.t('events.fundPaymentChannel');
+            case TransactionTypes.PaymentChannelClaim:
+                return Localize.t('events.claimPaymentChannel');
+            case TransactionTypes.NFTokenMint:
+                return Localize.t('events.mintNFT');
+            case TransactionTypes.NFTokenBurn:
+                return Localize.t('events.burnNFT');
+            case TransactionTypes.NFTokenCreateOffer:
+                return Localize.t('events.createNFTOffer');
+            case TransactionTypes.NFTokenCancelOffer:
+                return Localize.t('events.cancelNFTOffer');
+            case TransactionTypes.NFTokenAcceptOffer:
+                return Localize.t('events.acceptNFTOffer');
+            case PseudoTransactionTypes.SignIn:
+                return Localize.t('global.signIn');
+            case PseudoTransactionTypes.PaymentChannelAuthorize:
+                return Localize.t('global.paymentChannelAuthorize');
+            default:
+                return item.getTransactionType();
+        }
+    };
+
     getType = (): RequestType => {
         const { item } = this.props;
 
@@ -118,8 +178,11 @@ class RequestTemplate extends Component<Props, State> {
                     <Avatar border source={{ uri: item.getApplicationIcon() }} />
                 </View>
                 <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                    <Text style={[styles.label]}>{item.getApplicationName()}</Text>
-                    <Text style={[styles.description]}>{this.getDescription()}</Text>
+                    <Text style={styles.label}>{item.getApplicationName()}</Text>
+                    <Text style={styles.description}>
+                        <Text style={styles.transactionLabel}>{this.getTransactionLabel()}</Text>&nbsp; - &nbsp;
+                        {this.getDescription()}
+                    </Text>
                 </View>
             </TouchableDebounce>
         );
