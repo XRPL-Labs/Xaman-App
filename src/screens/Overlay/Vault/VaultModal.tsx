@@ -253,7 +253,7 @@ class VaultModal extends Component<Props, State> {
             }
 
             let signedObject = AccountLib.sign(transaction.Json, signerInstance) as SignedObjectType;
-            signedObject = { ...signedObject, signMethod: method };
+            signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };
 
             this.onSign(signedObject);
         } catch (e: any) {
@@ -315,7 +315,7 @@ class VaultModal extends Component<Props, State> {
                     }
 
                     // include sign method
-                    signedObject = { ...signedObject, signMethod: AuthMethods.TANGEM };
+                    signedObject = { ...signedObject, signerPubKey: publicKey, signMethod: AuthMethods.TANGEM };
 
                     setTimeout(() => {
                         this.onSign(signedObject);

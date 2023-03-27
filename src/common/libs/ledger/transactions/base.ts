@@ -32,9 +32,6 @@ import { Account, AmountType, MemoType, TransactionResult } from '../parser/type
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    public static Pseudo = false as const;
-    public readonly Pseudo = BaseTransaction.Pseudo;
-
     protected tx: TransactionJSONType;
     protected meta: any;
     protected fields: string[];
@@ -47,6 +44,7 @@ class BaseTransaction {
     private ownerCountChanges: Map<string, any>;
 
     public SignedBlob: string;
+    public SignerPubKey: string;
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
@@ -195,6 +193,7 @@ class BaseTransaction {
                         this.Hash = signedObject.id;
                         this.SignedBlob = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
+                        this.SignerPubKey = signedObject.signerPubKey;
 
                         if (Array.isArray(signers) && signers.length > 0) {
                             [this.SignerAccount] = signers;

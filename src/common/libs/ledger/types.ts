@@ -80,6 +80,7 @@ export type SignedObjectType = {
     signedTransaction: string;
     txJson?: Object;
     signers?: string[];
+    signerPubKey?: string;
     signMethod?: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
 };
 

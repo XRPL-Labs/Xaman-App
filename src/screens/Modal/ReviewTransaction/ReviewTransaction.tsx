@@ -599,6 +599,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 signed_blob: transaction.SignedBlob,
                 tx_id: transaction.Hash,
                 signmethod: transaction.SignMethod,
+                signpubkey: transaction.SignerPubKey,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
                 environment: {
                     nodeuri: SocketService.node,

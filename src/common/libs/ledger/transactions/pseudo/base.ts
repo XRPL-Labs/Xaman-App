@@ -23,6 +23,7 @@ class BasePseudoTransaction {
     private isAborted: boolean;
 
     public SignedBlob: string;
+    public SignerPubKey: string;
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
@@ -93,6 +94,7 @@ class BasePseudoTransaction {
                         this.Hash = signedObject.id;
                         this.SignedBlob = signedObject.signedTransaction;
                         this.SignMethod = signedObject.signMethod || 'OTHER';
+                        this.SignerPubKey = signedObject.signerPubKey;
 
                         if (Array.isArray(signers) && signers.length > 0) {
                             [this.SignerAccount] = signers;
