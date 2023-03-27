@@ -339,8 +339,12 @@ class PaymentTemplate extends Component<Props, State> {
         const { transaction, setReady } = this.props;
 
         if (path) {
-            // set the amount on SendMax
             transaction.SendMax = path.source_amount;
+
+            // SendMax is not allowed for XRP to XRP
+            if (transaction.SendMax.currency === 'XRP' && transaction.Amount.currency === 'XRP') {
+                transaction.SendMax = undefined;
+            }
 
             // set the transaction path
             if (path.paths_computed.length === 0) {
@@ -430,7 +434,6 @@ class PaymentTemplate extends Component<Props, State> {
                 />
 
                 {/* Amount */}
-
                 <>
                     <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                     <View style={styles.contentBox}>
