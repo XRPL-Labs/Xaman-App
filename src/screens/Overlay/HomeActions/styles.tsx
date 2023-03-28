@@ -7,6 +7,7 @@ const styles = StyleService.create({
     rowTitle: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
+        color: '$textPrimary',
         paddingVertical: AppSizes.paddingSml,
         paddingHorizontal: AppSizes.paddingExtraSml,
     },
