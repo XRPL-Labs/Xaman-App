@@ -23889,13 +23889,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tangem-sdk-react-native@npm:2.1.0":
-  version: 2.1.0
-  resolution: "tangem-sdk-react-native@npm:2.1.0"
+"tangem-sdk-react-native@npm:2.3.0":
+  version: 2.3.0
+  resolution: "tangem-sdk-react-native@npm:2.3.0"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: d1a43fb669e5b43f078ea58e38f82c64dbcd425e4e7cbb5a37e327472ea89c6f573a87ce13880e102168dafcbb8ab5a08725431d7f8b7749e50a7cbc51d7923c
+  checksum: d19e8ee51dd841dd8dca2490d4aa48c75caa88ab33af64ecec2cd86326b11680ac599c2a9bab1cd3a5d52f7b2fd7df4207eb23fa0d99f4091df2bbe959f190fe
   languageName: node
   linkType: hard
 
@@ -26176,7 +26176,7 @@ __metadata:
     realm: 11.4.0
     ripple-address-codec: 4.2.4
     ripple-binary-codec: 1.4.3
-    tangem-sdk-react-native: 2.1.0
+    tangem-sdk-react-native: 2.3.0
     ts-jest: 29.0.5
     typescript: 4.9.4
     uuid: 9.0.0
