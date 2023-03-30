@@ -291,8 +291,8 @@ class VaultModal extends Component<Props, State> {
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
 
             // start tangem session
-            await RNTangemSdk.startSession({}).catch(() => {
-                // ignore
+            await RNTangemSdk.startSession({ attestationMode: 'offline' }).catch((e) => {
+                LoggerService.recordError('Unexpected error in startSession TangemSDK', e);
             });
 
             await RNTangemSdk.sign(tangemSignOptions)
@@ -317,11 +317,14 @@ class VaultModal extends Component<Props, State> {
                     // include sign method
                     signedObject = { ...signedObject, signerPubKey: publicKey, signMethod: AuthMethods.TANGEM };
 
+                    // resolve signed object
                     setTimeout(() => {
                         this.onSign(signedObject);
                     }, 2000);
                 })
-                .catch(this.dismiss)
+                .catch((error) => {
+                    this.onSignError(AuthMethods.TANGEM, error);
+                })
                 .finally(() => {
                     setTimeout(() => {
                         RNTangemSdk.stopSession().catch(() => {
@@ -329,8 +332,8 @@ class VaultModal extends Component<Props, State> {
                         });
                     }, 10000);
                 });
-        } catch (e: any) {
-            this.onSignError(AuthMethods.TANGEM, e);
+        } catch (error: any) {
+            this.onSignError(AuthMethods.TANGEM, error);
         }
     };
 

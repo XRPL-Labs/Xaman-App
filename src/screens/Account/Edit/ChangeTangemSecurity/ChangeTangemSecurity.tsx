@@ -17,6 +17,8 @@ import { GetCardEnforcedSecurity, GetCardSecurityOptions, TangemSecurity } from 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
 
+import LoggerService from '@services/LoggerService';
+
 import { Header, Footer, Button, RadioButton } from '@components/General';
 
 import Localize from '@locale';
@@ -24,7 +26,6 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
-
 /* types ==================================================================== */
 export interface Props {
     account: AccountSchema;
@@ -64,8 +65,8 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     componentDidMount() {
         RNTangemSdk.startSession({
             attestationMode: 'offline',
-        }).catch(() => {
-            // ignore
+        }).catch((e) => {
+            LoggerService.recordError('Unexpected error TangemSDK startSession', e);
         });
     }
 
