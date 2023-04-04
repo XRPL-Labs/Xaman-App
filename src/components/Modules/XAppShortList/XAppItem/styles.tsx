@@ -25,6 +25,7 @@ const styles = StyleService.create({
         aspectRatio: 1,
         borderRadius: 10,
         marginBottom: AppSizes.paddingExtraSml,
+        alignSelf: 'center',
     },
     appIconPlaceholder: {
         backgroundColor: '$silver',
