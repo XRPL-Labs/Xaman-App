@@ -556,10 +556,15 @@ class XAppBrowserModal extends Component<Props, State> {
             });
     };
 
-    getUrl = () => {
+    getSource = () => {
         const { identifier, ott, coreSettings } = this.state;
 
-        return `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(coreSettings.theme)}`;
+        return {
+            uri: `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(coreSettings.theme)}`,
+            headers: {
+                'X-OTT': ott,
+            },
+        };
     };
 
     getUserAgent = () => {
@@ -601,7 +606,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 style={styles.webView}
                 startInLoadingState
                 renderLoading={this.renderLoading}
-                source={{ uri: this.getUrl() }}
+                source={this.getSource()}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
             />

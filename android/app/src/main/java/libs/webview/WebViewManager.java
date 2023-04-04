@@ -1,5 +1,6 @@
 package libs.webview;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -150,10 +151,11 @@ public class WebViewManager extends SimpleViewManager<WebView> {
     protected static final int SHOULD_OVERRIDE_URL_LOADING_TIMEOUT = 250;
     protected WebViewConfig mWebViewConfig;
     protected RNCWebChromeClient mWebChromeClient = null;
-    protected @Nullable
-    String mUserAgent = null;
-    protected @Nullable
-    String mUserAgentWithApplicationName = null;
+    protected @Nullable String mUserAgent = null;
+    protected @Nullable String mUserAgentWithApplicationName = null;
+
+    protected static final String ottHeaderField = "X-OTT";
+    protected static @Nullable String ottHeaderValue = null;
 
 
     public WebViewManager() {
@@ -244,7 +246,6 @@ public class WebViewManager extends SimpleViewManager<WebView> {
     }
 
 
-
     @ReactProp(name = "messagingModuleName")
     public void setMessagingModuleName(WebView view, String moduleName) {
         ((RNCWebView) view).setMessagingModuleName(moduleName);
@@ -318,13 +319,20 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                             }
                         } else {
                             headerMap.put(key, headers.getString(key));
+
+                            // set OTT value if present in the header
+                            if (ottHeaderField.equals(key)) {
+                                ottHeaderValue = headers.getString(key);
+                            }
                         }
                     }
                 }
+
                 view.loadUrl(url, headerMap);
                 return;
             }
         }
+
         view.loadUrl(BLANK_URL);
     }
 
@@ -507,33 +515,13 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                             createWebViewEvent(webView, url)));
         }
 
-
-//        @Override
-//        public WebResourceResponse shouldInterceptRequest(WebView view,
-//                                                          WebResourceRequest request) {
-//            if (!request.getUrl().getScheme().contains("http"))
-//                return null;
-//
-//            String host = request.getUrl().getHost();
-//            if (host.contains("googletagmanager") || host.contains("google-analytics") || host.contains("sentry")) {
-//                InputStream stream = new InputStream() {
-//                    @Override
-//                    public int read() throws IOException {
-//                        return -1;
-//                    }
-//                };
-//                WebResourceResponse resp = new WebResourceResponse("text/html", "utf-8", stream);
-//                resp.setStatusCodeAndReasonPhrase(400, "Bad request");
-//                return resp;
-//            }
-//
-//            return null;
-//        }
-
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             final RNCWebView rncWebView = (RNCWebView) view;
             final boolean isJsDebugging = ((ReactContext) view.getContext()).getJavaScriptContextHolder().get() == 0;
+            final String url = request.getUrl().toString();
+
+            boolean shouldOverride;
 
             if (!isJsDebugging && rncWebView.mCatalystInstance != null) {
                 final Pair<Integer, AtomicReference<ShouldOverrideCallbackState>> lock = WebViewModule.shouldOverrideUrlLoadingLock.getNewLock();
@@ -563,11 +551,8 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                     return false;
                 }
 
-                final boolean shouldOverride = lockObject.get() == ShouldOverrideCallbackState.SHOULD_OVERRIDE;
+                shouldOverride = lockObject.get() == ShouldOverrideCallbackState.SHOULD_OVERRIDE;
                 WebViewModule.shouldOverrideUrlLoadingLock.removeLock(lockIdentifier);
-
-                return shouldOverride;
-
             } else {
                 FLog.w(TAG, "Couldn't use blocking synchronous call for onShouldStartLoadWithRequest due to debugging or missing Catalyst instance, falling back to old event-and-load.");
                 progressChangedFilter.setWaitingForCommandLoadUrl(true);
@@ -576,14 +561,25 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                         new TopShouldStartLoadWithRequestEvent(
                                 view.getId(),
                                 createWebViewEvent(view, url)));
-                return true;
+                shouldOverride = true;
             }
-        }
 
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            final String url = request.getUrl().toString();
-            return this.shouldOverrideUrlLoading(view, url);
+            // if we can load the request, we check if the OTT header is already present in the request
+            // add it if it's not necessary
+            if (
+                    !shouldOverride && ottHeaderValue != null &&
+                            (
+                                    request.getRequestHeaders() == null || !request.getRequestHeaders().containsKey(ottHeaderField)
+                            )
+            ) {
+                Map<String, String> headers = new HashMap<>();
+                headers.put(ottHeaderField, ottHeaderValue);
+                view.loadUrl(url, headers);
+                shouldOverride = true;
+            }
+
+
+            return shouldOverride;
         }
 
         @Override
@@ -870,9 +866,9 @@ public class WebViewManager extends SimpleViewManager<WebView> {
                 ArrayList<String> processedPermissions = new ArrayList<>();
                 for (String permission : grantedPermissions) {
                     String permissionName = permission;
-                    if(permission.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)){
+                    if (permission.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
                         permissionName = "Microphone";
-                    }else if(permission.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)){
+                    } else if (permission.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
                         permissionName = "Camera";
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(mReactContext);

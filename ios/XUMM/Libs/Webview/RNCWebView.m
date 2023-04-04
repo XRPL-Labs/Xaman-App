@@ -22,6 +22,9 @@ static NSDictionary* customCertificatesForHost;
 
 NSString *const CUSTOM_SELECTOR = @"_CUSTOM_SELECTOR_";
 
+static NSString *const ottHeaderField = @"X-OTT";
+static NSString* ottHeaderValue;
+
 
 // runtime trick to remove WKWebView keyboard default toolbar
 // see: http://stackoverflow.com/questions/19033292/ios-7-uiwebview-keyboard-issue/19042279#19042279
@@ -498,6 +501,9 @@ RCTAutoInsetsProtocol>
   if (![_source isEqualToDictionary:source]) {
     _source = [source copy];
     
+    // set OTT value if any set, we then attach this value to other requests
+    ottHeaderValue = [_source valueForKeyPath:[NSString stringWithFormat:@"headers.%@", ottHeaderField]];
+    
     if (_webView != nil) {
       [self visitSource];
     }
@@ -826,8 +832,20 @@ RCTAutoInsetsProtocol>
     }
   }
   
-  // Allow all navigation by default
-  decisionHandler(WKNavigationActionPolicyAllow);
+  if(!ottHeaderValue || (ottHeaderValue && [[navigationAction.request valueForHTTPHeaderField:ottHeaderField] isEqualToString:ottHeaderValue])){
+    decisionHandler(WKNavigationActionPolicyAllow);
+    return;
+  }
+  
+  // we need to include OTT header value and make new request
+  NSMutableURLRequest *newRequest = [[NSMutableURLRequest alloc] initWithURL:navigationAction.request.URL];
+  [newRequest setValue:ottHeaderValue forHTTPHeaderField:ottHeaderField];
+  
+  // cancel current request
+  decisionHandler(WKNavigationActionPolicyCancel);
+
+  // create new request
+  [self.webView loadRequest:newRequest];
 }
 
 /**
