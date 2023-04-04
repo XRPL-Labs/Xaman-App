@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, Image } from 'react-native';
+import { View, Text, Animated } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import StyleService from '@services/StyleService';
+
+import { TouchableDebounce, Avatar } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -11,6 +13,10 @@ export type AppType = {
     icon: string;
     identifier: string;
     title: string;
+
+    category: string;
+
+    development: boolean;
 };
 
 export interface Props {
@@ -117,13 +123,21 @@ class AppItem extends Component<Props> {
         return (
             <TouchableDebounce onPress={this.onPress} activeOpacity={0.6}>
                 <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
-                    <View style={AppStyles.flex1}>
-                        <Image source={{ uri: item.icon }} style={styles.appIcon} />
-                    </View>
-                    <View style={[AppStyles.flex5, AppStyles.centerContent]}>
+                    <Avatar
+                        size={42}
+                        source={{ uri: item.icon }}
+                        badge={item.development ? 'IconSmartPhone' : undefined}
+                        badgeColor={StyleService.value('$orange')}
+                    />
+                    <View style={styles.rightPanelContainer}>
                         <Text numberOfLines={1} style={styles.appTitle}>
                             {item.title}
                         </Text>
+                        <View style={styles.categoryContainer}>
+                            <Text numberOfLines={1} style={styles.categoryLabel}>
+                                {item.category}
+                            </Text>
+                        </View>
                     </View>
                 </Animated.View>
             </TouchableDebounce>

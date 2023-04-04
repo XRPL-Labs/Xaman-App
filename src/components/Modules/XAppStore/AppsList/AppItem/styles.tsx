@@ -27,6 +27,23 @@ const styles = StyleService.create({
     appIconPlaceholder: {
         backgroundColor: '$silver',
     },
+    rightPanelContainer: {
+        marginTop: 5,
+        marginLeft: AppSizes.paddingExtraSml,
+    },
+    categoryContainer: {
+        marginTop: 3,
+        backgroundColor: '$tint',
+        paddingHorizontal: 3,
+        paddingVertical: 1,
+        borderRadius: 5,
+        alignSelf: 'flex-start',
+    },
+    categoryLabel: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size * 0.7,
+        color: '$textPrimary',
+    },
 });
 
 export default styles;
