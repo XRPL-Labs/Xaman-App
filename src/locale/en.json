@@ -673,6 +673,8 @@
   },
   "account": {
     "addAccount": "Add an account",
+    "hideSecret": "Hide secret",
+    "showSecret": "Show secret",
     "addAccountDescription": "Import your existing account, or create a new account.",
     "importExisting": "Import an existing account",
     "generateNewAccount": "Create a new account",
