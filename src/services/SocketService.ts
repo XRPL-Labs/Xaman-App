@@ -361,7 +361,7 @@ class SocketService extends EventEmitter {
             nodes = AppConfig.nodes.main.map((node) => {
                 // for cluster we add the custom path
                 if (node === AppConfig.nodes.cluster) {
-                    return `${node}/xumm/${GetAppVersionCode()}/${Platform.OS}}`;
+                    return `${node}/xumm/${GetAppVersionCode()}/${Platform.OS}`;
                 }
                 return node;
             });
