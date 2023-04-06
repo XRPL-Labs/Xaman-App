@@ -57,7 +57,6 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>http</string>
 		<string>https</string>
 		<string>whatsapp</string>
 		<string>mailto</string>
