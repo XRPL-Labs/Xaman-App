@@ -1,7 +1,5 @@
 package libs.security.vault.storage;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.StringDef;
 
@@ -130,7 +128,6 @@ public class Keychain {
         final Set<String> entries = prefsStorage.getAllEntries();
 
         for (String entry : entries) {
-            Log.d("Keychain", entry);
             deleteItem(entry);
         }
     }
