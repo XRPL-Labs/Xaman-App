@@ -531,7 +531,7 @@ PODS:
     - FirebaseCoreExtension (= 10.5.0)
     - React-Core
     - RNFBApp
-  - RNTangemSdk (2.3.0):
+  - RNTangemSdk (2.3.1):
     - React
     - TangemSdk (= 3.4.0)
   - TangemSdk (3.4.0)
@@ -763,7 +763,7 @@ SPEC CHECKSUMS:
   RNFBApp: 3672911764485c44b6ff947273a0d470477774df
   RNFBCrashlytics: 3a52f3c3e4f7ed29545255a41edc4e7433b0f442
   RNFBMessaging: a0f8a5a5b6646e382bc322225eebcdfb7be2da4f
-  RNTangemSdk: a3a670ffa3b0cf5b5c4f5d875f6140086caae4c6
+  RNTangemSdk: b4a4c91c617daca427a69cc7f784425c6789acd7
   TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
   VeriffSDK: c256788f8e32a5a9c8ad3b04fc0320a0e9753029
   Yoga: 5ed1699acbba8863755998a4245daa200ff3817b
