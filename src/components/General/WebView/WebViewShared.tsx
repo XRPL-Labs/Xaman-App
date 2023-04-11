@@ -15,7 +15,7 @@ import {
 } from './WebViewTypes';
 import styles from './styles';
 
-const defaultOriginWhitelist = ['http://*', 'https://*'] as const;
+const defaultOriginWhitelist = ['https://*'] as const;
 
 const extractOrigin = (url: string): string => {
     const result = /^[A-Za-z][A-Za-z0-9+\-.]+:(\/\/)?[^/]*/.exec(url);
