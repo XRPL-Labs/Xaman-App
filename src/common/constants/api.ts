@@ -17,6 +17,7 @@ export default {
         ['activateDevice', '/v1/app/activate-device'],
         ['addDevice', '/v1/app/add-device'],
         ['updateDevice', '/v1/app/update-device'],
+        ['refreshToken', '/v1/app/refresh-token'],
         ['payload', '/v1/app/payload/{uuid}'],
         ['pendingPayloads', '/v1/app/pending-payloads'],
         ['curatedIOUs', '/v1/app/curated-ious'],

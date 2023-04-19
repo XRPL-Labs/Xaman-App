@@ -28,7 +28,6 @@ import { NFTokenOffer } from '@common/libs/ledger/objects';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
-import NavigationService, { RootType } from '@services/NavigationService';
 import ApiService from '@services/ApiService';
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
@@ -36,7 +35,6 @@ import LedgerService from '@services/LedgerService';
 
 // Locale
 import Localize from '@locale';
-
 /* Service  ==================================================================== */
 class BackendService {
     private logger: any;
@@ -44,16 +42,12 @@ class BackendService {
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
-
         this.latestCurrencyRate = undefined;
     }
 
-    initialize = () => {
+    public initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
-                // sync the details after moving to default stack
-                NavigationService.on('setRoot', this.onRootChange);
-
                 // listen for ledger transaction submit
                 LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
 
@@ -63,15 +57,6 @@ class BackendService {
                 reject(e);
             }
         });
-    };
-
-    /*
-    On navigation root changed
-    */
-    onRootChange = (root: RootType) => {
-        if (root === RootType.DefaultRoot) {
-            this.sync();
-        }
     };
 
     /*
@@ -91,9 +76,9 @@ class BackendService {
     Start syncing with backend
     NOTE: This includes Curated IOUs
     */
-    sync = () => {
+    public sync = () => {
         this.logger.debug('Start Syncing with backend');
-        this.syncCuratedIOUs();
+        Promise.all([this.ping(), this.syncCuratedIOUs()]);
     };
 
     /*
@@ -174,7 +159,7 @@ class BackendService {
 
                 return [];
             })
-            .catch((error: string): any => {
+            .catch((error: any): any => {
                 this.logger.error('Fetch Pending Payloads Error: ', error);
                 return [];
             });

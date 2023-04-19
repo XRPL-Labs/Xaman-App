@@ -1,5 +1,6 @@
 /* eslint-disable keyword-spacing  */
 /* eslint-disable implicit-arrow-linebreak  */
+/* eslint-disable max-classes-per-file  */
 
 /**
  * API Functions
@@ -20,6 +21,19 @@ import LoggerService from '@services/LoggerService';
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 
+/* Errors  ==================================================================== */
+export class ApiError extends Error {
+    public code: number;
+    public reference: string;
+
+    constructor(message: string, code?: number, reference?: 'string') {
+        super(message);
+        this.name = 'ApiError';
+        this.code = code || -1;
+        this.reference = reference;
+    }
+}
+
 /* Service  ==================================================================== */
 class ApiService {
     private readonly apiUrl: string;
@@ -27,9 +41,10 @@ class ApiService {
     private readonly timeoutSec: number;
     private endpoints: Map<string, string>;
     private idempotencyInt: number;
-    private requestCounter: number;
     private accessToken: string;
+    private bearerHash: string;
     private uniqueDeviceIdentifier: string;
+    private isRefreshingToken: boolean;
     private logger: any;
     [index: string]: any;
 
@@ -41,12 +56,12 @@ class ApiService {
 
         // After 100 seconds, let's call it a day!
         this.timeoutSec = 100 * 1000;
-        // Number each API request (used for debugging)
-        this.requestCounter = 0;
 
         // Api accessToken
         this.accessToken = undefined;
+        this.bearerHash = undefined;
         this.idempotencyInt = 0;
+        this.isRefreshingToken = false;
 
         // Logger
         this.logger = LoggerService.createLogger('Api');
@@ -71,14 +86,23 @@ class ApiService {
         });
     }
 
-    initialize(coreSettings: CoreSchema) {
+    public initialize(coreSettings: CoreSchema) {
         return new Promise<void>((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set
                 if (coreSettings && coreSettings.initialized) {
+                    // get current profile
                     const profile = ProfileRepository.getProfile();
-                    if (profile && profile.accessToken) {
+
+                    // app is setup and there auth token
+                    if (profile) {
+                        // if no refresh/bearer token then fetch it as this is a feature that recently added
+                        if (!profile.refreshToken) {
+                            this.updateRefreshToken();
+                        }
+
                         this.accessToken = profile.accessToken;
+                        this.bearerHash = profile.bearerHash;
                         this.idempotencyInt = profile.idempotency;
                     }
                 }
@@ -92,35 +116,109 @@ class ApiService {
         });
     }
 
-    increaseIdempotencyInt = () => {
-        this.idempotencyInt += 1;
-
-        // update idempotency in the database
-        ProfileRepository.updateIdempotency(this.idempotencyInt);
-    };
-
     /**
      * set accessToken
      */
-    setToken(token: string) {
+    public setToken(token: string) {
         if (token) {
             this.accessToken = token;
         }
     }
 
     /**
+     * set bearer hash
+     */
+    public setBearerHash(bearerHash: string) {
+        if (bearerHash) {
+            this.bearerHash = bearerHash;
+        }
+    }
+
+    /**
      * Generate bearer token
      */
-    async generateAuthToken() {
+    private async generateAuthToken() {
         // first increase Idempotency
-        this.increaseIdempotencyInt();
+        this.idempotencyInt += 1;
 
-        const { accessToken, idempotencyInt, uniqueDeviceIdentifier } = this;
+        // update idempotency in the data store
+        ProfileRepository.updateIdempotency(this.idempotencyInt);
+
+        const { accessToken, bearerHash, idempotencyInt, uniqueDeviceIdentifier } = this;
+
         // generate secret
         const secret = await SHA256(`${accessToken}${uniqueDeviceIdentifier}${idempotencyInt}`);
 
-        return `Bearer ${accessToken}.${idempotencyInt}.${secret}`;
+        // generate legacy authentication header
+        let authentication = `${accessToken}.${idempotencyInt}.${secret}`;
+
+        // if bearer hash is exist, add it to the header
+        if (bearerHash) {
+            authentication = `${authentication}.${bearerHash}`;
+        }
+
+        return `Bearer ${authentication}`;
     }
+
+    /*
+    Re-fetch the refresh token as it's been expired
+    */
+    private updateRefreshToken = () => {
+        // set the flag
+        this.isRefreshingToken = true;
+
+        // get current profile
+        const profile = ProfileRepository.getProfile();
+
+        const postData = {};
+
+        // include the prev bear hash to the request
+        if (profile.bearerHash) {
+            Object.assign(postData, { refresh_token: profile.refreshToken });
+        }
+
+        // fetch the new refresh token from backend
+        return this.refreshToken
+            .post(null, postData)
+            .then((res: any) => {
+                const { refresh_token, bearer_hash } = res;
+
+                // check if current refresh token is different then save
+                if (refresh_token && refresh_token !== profile.refreshToken) {
+                    // store the new refresh token
+                    ProfileRepository.saveProfile({
+                        refreshToken: refresh_token,
+                        bearerHash: bearer_hash,
+                    });
+                    // set the new token on the service
+                    this.setBearerHash(bearer_hash);
+                }
+            })
+            .catch((error: any) => {
+                this.logger.error('Refresh access token error: ', error);
+            })
+            .finally(() => {
+                this.isRefreshingToken = false;
+            });
+    };
+
+    /**
+     * Wait for refresh token if we already fetching it
+     */
+    private waitForRefreshToken = (ignore: boolean): Promise<void> => {
+        return new Promise((resolve) => {
+            if (ignore) {
+                resolve();
+                return;
+            }
+            const interval = setInterval(() => {
+                if (!this.isRefreshingToken) {
+                    clearInterval(interval);
+                    resolve();
+                }
+            }, 100);
+        });
+    };
 
     /* Helper Functions ==================================================================== */
 
@@ -130,7 +228,7 @@ class ApiService {
      *   {foo: 'hi there', bar: { blah: 123, blah: [1, 2, 3] }}
      *   foo=hi there&bar[blah]=123&bar[blah][0]=1&bar[blah][1]=2&bar[blah][2]=3
      */
-    serialize = (obj: Object, prefix: string): string => {
+    private serialize = (obj: Object, prefix: string): string => {
         const str: Array<string> = [];
 
         Object.keys(obj).forEach((p) => {
@@ -151,7 +249,7 @@ class ApiService {
     /*
     Safely parse response to json
     */
-    safeParse = (text: string): object => {
+    private safeParse = (text: string): object => {
         const obj = JSON.parse(text);
 
         if (!obj || typeof obj !== 'object') {
@@ -193,16 +291,30 @@ class ApiService {
     /**
      * Sends requests to the API
      */
-    fetcher(method: Methods, endpoint: any, params: any, body: object, header: object) {
+    fetcher(method: Methods, endpoint: any, params: any, body: object, header: object, retried = 0) {
         /* eslint-disable-next-line  */
         return new Promise(async (resolve, reject) => {
-            this.requestCounter += 1;
+            // check if this is a refresh token request
+            const isRefreshTokenRequest = endpoint === this.endpoints.get('refreshToken');
+            // increase retrying request
+            retried += 1;
+
+            // we don't want to loop this if something goes wrong, so we may only try it 3 times
+            // this should never happen
+            if (retried >= 3) {
+                reject(new ApiError('Tried the request multiple time, giving up...'));
+                return;
+            }
+
+            // wait for refresh token to be ready if we are already fetching new one
+            // we only do this for not refresh token endpoint
+            await this.waitForRefreshToken(isRefreshTokenRequest);
 
             // After x seconds, let's call it a day!
             const apiTimedOut = setTimeout(() => reject(ErrorMessages.timeout), this.timeoutSec);
 
             if (!method || !endpoint) {
-                reject(new Error('Missing params (ApiService.fetcher).'));
+                reject(new ApiError('Missing params (ApiService.fetcher).'));
                 return;
             }
 
@@ -227,13 +339,14 @@ class ApiService {
 
             // Add Endpoint Params
             let urlParams = '';
+            let urlEndpoint = endpoint;
             if (params) {
                 // Object - eg. /token?username=this&password=0
                 if (typeof params === 'object') {
                     // Replace matching params in API routes eg. /recipes/{param}/foo
                     for (const param in params) {
                         if (endpoint.includes(`{${param}}`)) {
-                            endpoint = endpoint.split(`{${param}}`).join(params[param]);
+                            urlEndpoint = endpoint.split(`{${param}}`).join(params[param]);
                             delete params[param];
                         }
                     }
@@ -254,7 +367,7 @@ class ApiService {
                 } else if (typeof params === 'string' || typeof params === 'number') {
                     urlParams = `/${params}`;
                 } else {
-                    this.logger.warn('params are not an object!', this.apiUrl + endpoint + urlParams);
+                    this.logger.warn('params are not an object!', this.apiUrl + urlEndpoint + urlParams);
                 }
             }
 
@@ -267,7 +380,7 @@ class ApiService {
                 }
             }
 
-            const thisUrl = this.apiUrl + endpoint + urlParams;
+            const thisUrl = this.apiUrl + urlEndpoint + urlParams;
 
             // Make the request
             fetch(thisUrl, req)
@@ -275,32 +388,60 @@ class ApiService {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
-                    let jsonRes = {};
+                    let jsonRes = {} as any;
 
                     try {
                         const textRes = await rawRes.text();
                         jsonRes = this.safeParse(textRes);
                     } catch (error) {
-                        throw ErrorMessages.invalidJson;
+                        throw new ApiError(ErrorMessages.invalidJson);
                     }
-
-                    // TODO: handle normal error with this.handleError()
 
                     // Only continue if the header is successful
                     if (rawRes && rawRes.status === 200) {
                         return jsonRes || rawRes;
                     }
-                    throw jsonRes || rawRes;
+
+                    // handle error
+
+                    if (typeof jsonRes === 'object' && Object.prototype.hasOwnProperty.call(jsonRes, 'error')) {
+                        throw new ApiError(
+                            `Api error ${rawRes.status}`,
+                            jsonRes?.error?.code,
+                            jsonRes?.error?.reference,
+                        );
+                    }
+
+                    // anything else just throw
+                    throw new ApiError(`Api error ${jsonRes || rawRes}`);
                 })
                 .then((res) => {
-                    // TODO: inspect X-Call-Ref id
                     resolve(res);
                 })
-                .catch((err) => {
+                .catch(async (error: ApiError) => {
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
-                    // reject
-                    reject(err);
+
+                    // if rejection was caused by token expiration then try to refresh the token and try again
+                    // if not refreshing the token, start refreshing
+                    // ignore the refresh token request as it will end in loop
+                    if (error.code === 890 && !isRefreshTokenRequest) {
+                        if (!this.isRefreshingToken) {
+                            // wait for refresh token to be updated
+                            await this.updateRefreshToken();
+                        }
+
+                        // call the request again
+                        setTimeout(() => {
+                            this.fetcher(method, endpoint, params, body, header, retried).then(resolve).catch(reject);
+                        }, 100);
+
+                        // return
+                        return;
+                    }
+
+                    // hard reject
+                    reject(error);
                 });
         });
     }

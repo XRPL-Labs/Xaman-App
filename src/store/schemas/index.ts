@@ -10,6 +10,7 @@ import * as v9 from './v9';
 import * as v10 from './v10';
 import * as v11 from './v11';
 import * as v12 from './v12';
+import * as v13 from './v13';
 
 const schemas = [
     { schema: v1, schemaVersion: 1, migration: v1.migration },
@@ -24,6 +25,7 @@ const schemas = [
     { schema: v10, schemaVersion: 10, migration: v10.migration },
     { schema: v11, schemaVersion: 11, migration: v11.migration },
     { schema: v12, schemaVersion: 12, migration: v12.migration },
+    { schema: v13, schemaVersion: 13, migration: v13.migration },
 ];
 
 export default schemas;
