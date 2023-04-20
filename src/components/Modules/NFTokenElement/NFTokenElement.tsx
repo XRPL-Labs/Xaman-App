@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, Animated, InteractionManager } from 'react-native';
+import { View, Text, Animated, InteractionManager, ViewStyle } from 'react-native';
 
 import BackendService from '@services/BackendService';
 import StyleService from '@services/StyleService';
@@ -19,6 +19,8 @@ import styles from './styles';
 interface Props {
     account: string;
     nfTokenId: string;
+    truncate: boolean;
+    containerStyle?: ViewStyle | ViewStyle[];
 }
 
 interface State {
@@ -30,6 +32,10 @@ interface State {
 /* Component ==================================================================== */
 class NFTokenElement extends PureComponent<Props, State> {
     private readonly animatedPlaceholder: Animated.Value;
+
+    static defaultProps = {
+        truncate: true,
+    };
 
     constructor(props: Props) {
         super(props);
@@ -97,14 +103,18 @@ class NFTokenElement extends PureComponent<Props, State> {
         ]).start(this.startPlaceholderAnimation);
     };
 
-    getShortTokenId = () => {
-        const { nfTokenId } = this.props;
+    getTokenId = () => {
+        const { nfTokenId, truncate } = this.props;
 
         if (!nfTokenId) {
-            return '';
+            return 'No NFTokenID';
         }
 
-        return Truncate(nfTokenId, 32);
+        if (truncate) {
+            return Truncate(nfTokenId, 32);
+        }
+
+        return nfTokenId;
     };
 
     getTokenName = () => {
@@ -157,6 +167,7 @@ class NFTokenElement extends PureComponent<Props, State> {
     };
 
     render() {
+        const { containerStyle, truncate } = this.props;
         const { isLoading } = this.state;
 
         if (isLoading) {
@@ -164,7 +175,7 @@ class NFTokenElement extends PureComponent<Props, State> {
         }
 
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, containerStyle]}>
                 <View style={styles.tokenImageContainer}>
                     <Avatar source={this.getImageSource()} border size={35} />
                 </View>
@@ -172,8 +183,8 @@ class NFTokenElement extends PureComponent<Props, State> {
                     <Text style={styles.label} numberOfLines={1}>
                         {this.getTokenName()}
                     </Text>
-                    <Text style={styles.description} numberOfLines={1}>
-                        {this.getShortTokenId()}
+                    <Text style={styles.description} numberOfLines={truncate ? 1 : 3}>
+                        {this.getTokenId()}
                     </Text>
                 </View>
             </View>

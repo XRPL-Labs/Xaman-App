@@ -11,7 +11,7 @@ import { NFTokenBurn } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
 
-import { RecipientElement } from '@components/Modules';
+import { RecipientElement, NFTokenElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -64,16 +64,20 @@ class NFTokenBurnTemplate extends Component<Props, State> {
     }
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
         const { isLoading, ownerDetails } = this.state;
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.tokenID')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.NFTokenID}</Text>
+                <Text style={styles.label}>{Localize.t('global.nft')}</Text>
+                <View style={styles.contentBox}>
+                    <NFTokenElement
+                        account={source.address}
+                        nfTokenId={transaction.NFTokenID}
+                        truncate={false}
+                        containerStyle={styles.nfTokenContainer}
+                    />
                 </View>
-
                 {transaction.Owner && (
                     <>
                         <View style={styles.label}>

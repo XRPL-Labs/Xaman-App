@@ -7,6 +7,9 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
     },
+    nfTokenContainer: {
+        paddingHorizontal: 0,
+    },
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
