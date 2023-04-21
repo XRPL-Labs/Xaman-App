@@ -1,11 +1,9 @@
 import React, { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { Image, View, NativeModules, ImageSourcePropType } from 'react-native';
+import { Image, NativeModules, ImageSourcePropType } from 'react-native';
 
 import codegenNativeCommandsUntyped from 'react-native/Libraries/Utilities/codegenNativeCommands';
-
-import invariant from './invariant';
 import RNCWebView from './WebViewNativeComponent.ios';
-import { defaultOriginWhitelist, defaultRenderError, defaultRenderLoading, useWebWiewLogic } from './WebViewShared';
+import { defaultOriginWhitelist, useWebWiewLogic } from './WebViewShared';
 import { IOSWebViewProps, NativeWebViewIOS, ViewManager } from './WebViewTypes';
 
 import styles from './styles';
@@ -54,10 +52,7 @@ const WebViewComponent = forwardRef<{}, IOSWebViewProps>(
             onContentProcessDidTerminate: onContentProcessDidTerminateProp,
             onHttpError: onHttpErrorProp,
             onMessage: onMessageProp,
-            renderLoading,
-            renderError,
             style,
-            containerStyle,
             source,
             nativeConfig,
             incognito,
@@ -80,9 +75,7 @@ const WebViewComponent = forwardRef<{}, IOSWebViewProps>(
             onLoadingStart,
             onShouldStartLoadWithRequest,
             onMessage,
-            viewState,
             setViewState,
-            lastErrorEvent,
             onHttpError,
             onLoadingError,
             onLoadingFinish,
@@ -122,26 +115,10 @@ const WebViewComponent = forwardRef<{}, IOSWebViewProps>(
 
         useWarnIfChanges(incognito, 'incognito');
 
-        let otherView = null;
-        if (viewState === 'LOADING') {
-            otherView = (renderLoading || defaultRenderLoading)();
-        } else if (viewState === 'ERROR') {
-            invariant(lastErrorEvent != null, 'lastErrorEvent expected to be non-null');
-            otherView = (renderError || defaultRenderError)(
-                lastErrorEvent.domain,
-                lastErrorEvent.code,
-                lastErrorEvent.description,
-            );
-        } else if (viewState !== 'IDLE') {
-            console.error(`RNCWebView invalid state encountered: ${viewState}`);
-        }
-
         const webViewStyles = [styles.container, styles.webView, style];
-        const webViewContainerStyle = [styles.container, containerStyle];
-
         const NativeWebView = (nativeConfig?.component as typeof NativeWebViewIOS | undefined) || RNCWebView;
 
-        const webView = (
+        return (
             <NativeWebView
                 key="webViewKey"
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
@@ -162,13 +139,6 @@ const WebViewComponent = forwardRef<{}, IOSWebViewProps>(
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
                 {...nativeConfig?.props}
             />
-        );
-
-        return (
-            <View style={webViewContainerStyle}>
-                {webView}
-                {otherView}
-            </View>
         );
     },
 );

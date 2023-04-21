@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Linking, View, ActivityIndicator, Text, Platform } from 'react-native';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { Linking, Platform } from 'react-native';
 import {
     OnShouldStartLoadWithRequest,
     ShouldStartLoadRequestEvent,
@@ -13,7 +13,6 @@ import {
     WebViewRenderProcessGoneEvent,
     WebViewTerminatedEvent,
 } from './WebViewTypes';
-import styles from './styles';
 
 const defaultOriginWhitelist = ['https://*'] as const;
 
@@ -54,21 +53,7 @@ const createOnShouldStartLoadWithRequest = (
     };
 };
 
-const defaultRenderLoading = () => (
-    <View style={styles.loadingOrErrorView}>
-        <ActivityIndicator />
-    </View>
-);
-const defaultRenderError = (errorDomain: string | undefined, errorCode: number, errorDesc: string) => (
-    <View style={styles.loadingOrErrorView}>
-        <Text style={styles.errorTextTitle}>Error loading page</Text>
-        <Text style={styles.errorText}>{`Domain: ${errorDomain}`}</Text>
-        <Text style={styles.errorText}>{`Error Code: ${errorCode}`}</Text>
-        <Text style={styles.errorText}>{`Description: ${errorDesc}`}</Text>
-    </View>
-);
-
-export { defaultOriginWhitelist, createOnShouldStartLoadWithRequest, defaultRenderLoading, defaultRenderError };
+export { defaultOriginWhitelist, createOnShouldStartLoadWithRequest };
 
 export const useWebWiewLogic = ({
     startInLoadingState,

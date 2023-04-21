@@ -34,9 +34,9 @@ import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, NodeChain } from '@store/types';
 
-import { SocketService, BackendService, PushNotificationsService, NavigationService } from '@services';
+import { SocketService, BackendService, PushNotificationsService, NavigationService, StyleService } from '@services';
 
-import { WebView, Button, Spacer, LoadingIndicator } from '@components/General';
+import { WebView, Button, Spacer, LoadingIndicator, Avatar, PulseAnimation } from '@components/General';
 
 import Localize from '@locale';
 
@@ -49,6 +49,7 @@ export interface Props {
     identifier: string;
     params?: any;
     title?: string;
+    icon?: string;
     account?: AccountSchema;
     origin?: PayloadOrigin;
     originData?: any;
@@ -56,12 +57,16 @@ export interface Props {
 
 export interface State {
     title: string;
+    icon: string;
     identifier: string;
     account: AccountSchema;
     ott: string;
     error: string;
     permissions: any;
-    isLoading: boolean;
+    isFetchingOTT: boolean;
+    isLoadingApp: boolean;
+
+    isAppReady: boolean;
     coreSettings: CoreSchema;
     appVersionCode: string;
 }
@@ -78,6 +83,7 @@ export enum XAppMethods {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     Share = 'share',
     Close = 'close',
+    Ready = 'ready',
 }
 
 export enum XAppSpecialPermissions {
@@ -103,12 +109,15 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.state = {
             title: props.title,
+            icon: props.icon,
             identifier: props.identifier,
             account: props.account || AccountRepository.getDefaultAccount(),
             ott: undefined,
             error: undefined,
             permissions: undefined,
-            isLoading: true,
+            isFetchingOTT: true,
+            isLoadingApp: false,
+            isAppReady: false,
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
@@ -401,6 +410,9 @@ class XAppBrowserModal extends Component<Props, State> {
             case XAppMethods.Share:
                 this.shareContent(parsedData);
                 break;
+            case XAppMethods.Ready:
+                this.setAppReady();
+                break;
             default:
                 break;
         }
@@ -445,24 +457,24 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    fetchOTT = (xAppNavigateData?: any) => {
+    fetchOTT = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
-        const { identifier, appVersionCode, account, title, coreSettings, isLoading } = this.state;
+        const { identifier, appVersionCode, account, title, coreSettings, isFetchingOTT } = this.state;
 
         // check if identifier have a valid value
         if (!StringTypeCheck.isValidXAppIdentifier(identifier)) {
             this.setState({
                 ott: undefined,
                 permissions: undefined,
-                isLoading: false,
+                isFetchingOTT: false,
                 error: 'Provided xApp identifier is not valid!',
             });
             return;
         }
 
-        if (!isLoading) {
+        if (!isFetchingOTT) {
             this.setState({
-                isLoading: true,
+                isFetchingOTT: true,
             });
         }
 
@@ -512,7 +524,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott, xappTitle, permissions } = res;
+                const { error, ott, xappTitle, icon, permissions } = res;
 
                 // check if the ott is a valid uuid v4
                 if (!StringTypeCheck.isValidUUID(ott)) {
@@ -538,7 +550,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.setState({
                     ott,
                     title: xappTitle || title,
+                    icon,
                     permissions,
+                    isLoadingApp: true,
                     error: undefined,
                 });
             })
@@ -551,7 +565,7 @@ class XAppBrowserModal extends Component<Props, State> {
             })
             .finally(() => {
                 this.setState({
-                    isLoading: false,
+                    isFetchingOTT: false,
                 });
             });
     };
@@ -573,18 +587,43 @@ class XAppBrowserModal extends Component<Props, State> {
         return `xumm/xapp:${appVersionCode}`;
     };
 
-    renderLoading = () => {
-        return <LoadingIndicator style={styles.loadingStyle} size="large" />;
+    setAppReady = () => {
+        this.setState({
+            isAppReady: true,
+        });
+    };
+
+    onLoadEnd = () => {
+        const { permissions } = this.state;
+
+        let shouldSetAppReady = true;
+
+        // when xApp have permission to set the app ready then just wait for the app to set the ready state
+        if (get(permissions, `commands.${toUpper(XAppMethods.Ready)}`)) {
+            shouldSetAppReady = false;
+        }
+
+        // set the app is ready
+        this.setState({
+            isLoadingApp: false,
+            isAppReady: shouldSetAppReady,
+        });
+    };
+
+    onLoadingError = (e: any) => {
+        this.setState({
+            error: e.nativeEvent.description || 'An error occurred while loading xApp.',
+        });
     };
 
     renderError = () => {
         const { error } = this.state;
 
         return (
-            <View style={styles.errorContainer}>
+            <View style={styles.stateContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
                 <Spacer size={20} />
-                <Text style={[AppStyles.monoSubText]}>{error}</Text>
+                <Text style={[AppStyles.monoSubText, AppStyles.textCenterAligned]}>{error}</Text>
                 <Spacer size={40} />
                 <Button
                     secondary
@@ -598,14 +637,29 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    renderXApp = () => {
+    renderLoading = () => {
+        const { icon } = this.state;
+
+        if (icon) {
+            return (
+                <PulseAnimation containerStyle={styles.stateContainer}>
+                    <Avatar size={80} source={{ uri: icon }} badgeColor={StyleService.value('$orange')} />
+                </PulseAnimation>
+            );
+        }
+
+        return <LoadingIndicator style={styles.stateContainer} size="large" />;
+    };
+
+    renderApp = () => {
         return (
             <WebView
                 ref={this.webView}
                 containerStyle={styles.webViewContainer}
                 style={styles.webView}
                 startInLoadingState
-                renderLoading={this.renderLoading}
+                onLoadEnd={this.onLoadEnd}
+                onError={this.onLoadingError}
                 source={this.getSource()}
                 onMessage={this.onMessage}
                 userAgent={this.getUserAgent()}
@@ -614,17 +668,28 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { isLoading, error } = this.state;
+        const { isFetchingOTT, isLoadingApp, isAppReady, error } = this.state;
 
-        if (isLoading) {
-            return this.renderLoading();
+        let appView = null;
+        let stateView = null;
+
+        // if still fetching OTT only show the loading spinner
+        if (!isFetchingOTT) {
+            appView = this.renderApp();
         }
 
-        if (error) {
-            return this.renderError();
+        if (isFetchingOTT || isLoadingApp || !isAppReady) {
+            stateView = this.renderLoading();
+        } else if (error) {
+            stateView = this.renderError();
         }
 
-        return this.renderXApp();
+        return (
+            <View style={styles.contentContainer}>
+                {appView}
+                {stateView}
+            </View>
+        );
     };
 
     renderHeader = () => {
@@ -634,7 +699,7 @@ class XAppBrowserModal extends Component<Props, State> {
             <View style={styles.headerContainer}>
                 <View style={styles.headerTitle}>
                     <Text numberOfLines={1} style={AppStyles.h5}>
-                        {title || 'XAPP'}
+                        {title || 'Loading...'}
                     </Text>
                 </View>
                 <View style={styles.headerButton}>

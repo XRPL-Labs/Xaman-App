@@ -1,6 +1,6 @@
 /* eslint-disable react/no-multi-comp, max-classes-per-file */
 
-import { ReactElement, Component } from 'react';
+import { Component } from 'react';
 import {
     NativeSyntheticEvent,
     ViewProps,
@@ -288,17 +288,6 @@ export interface WebViewSharedProps extends ViewProps {
      * Stylesheet object to set the style of the container view.
      */
     containerStyle?: StyleProp<ViewStyle>;
-
-    /**
-     * Function that returns a view to show if there's an error.
-     */
-    // eslint-disable-next-line max-len
-    renderError?: (errorDomain: string | undefined, errorCode: number, errorDesc: string) => ReactElement; // view to show if there's an error
-
-    /**
-     * Function that returns a loading indicator.
-     */
-    renderLoading?: () => ReactElement;
 
     /**
      * Function that is invoked when the `WebView` scrolls.

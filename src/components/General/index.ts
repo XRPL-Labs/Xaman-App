@@ -40,3 +40,4 @@ export * from './TokenAvatar';
 export * from './ExpandableView';
 export * from './BlurView';
 export * from './WebView';
+export * from './PulseAnimation';

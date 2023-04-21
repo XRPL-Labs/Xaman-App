@@ -112,20 +112,9 @@ class HomeActionsOverlay extends Component<Props, State> {
         }, 800);
     };
 
-    onViewMoreAppsPress = () => {
-        const moreIdentifier = 'xumm.more';
-
-        this.openXApp(moreIdentifier, 'XApps');
-    };
-
     onAppPress = (app: any) => {
-        const { identifier, title } = app;
-
-        this.openXApp(identifier, title);
-    };
-
-    openXApp = (identifier: string, title: string) => {
         const { account } = this.state;
+        const { identifier, title, icon } = app;
 
         if (this.actionPanel.current) {
             this.actionPanel.current.slideDown();
@@ -137,6 +126,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                 {
                     identifier,
                     title,
+                    icon,
                     account,
                     origin: XAppOrigin.XAPP_SHORT_LIST,
                 },

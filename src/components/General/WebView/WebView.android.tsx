@@ -1,14 +1,12 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 
-import { Image, View, NativeModules, ImageSourcePropType } from 'react-native';
+import { Image, NativeModules, ImageSourcePropType } from 'react-native';
 
 import BatchedBridge from 'react-native/Libraries/BatchedBridge/BatchedBridge';
 import codegenNativeCommandsUntyped from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
-import invariant from './invariant';
-
 import RNCWebView from './WebViewNativeComponent.android';
-import { defaultOriginWhitelist, defaultRenderError, defaultRenderLoading, useWebWiewLogic } from './WebViewShared';
+import { defaultOriginWhitelist, useWebWiewLogic } from './WebViewShared';
 import { AndroidWebViewProps, NativeWebViewAndroid } from './WebViewTypes';
 
 import styles from './styles';
@@ -55,10 +53,7 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
             onHttpError: onHttpErrorProp,
             onRenderProcessGone: onRenderProcessGoneProp,
             onMessage: onMessageProp,
-            renderLoading,
-            renderError,
             style,
-            containerStyle,
             source,
             nativeConfig,
             onShouldStartLoadWithRequest: onShouldStartLoadWithRequestProp,
@@ -84,9 +79,7 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
             onLoadingStart,
             onShouldStartLoadWithRequest,
             onMessage,
-            viewState,
             setViewState,
-            lastErrorEvent,
             onHttpError,
             onLoadingError,
             onLoadingFinish,
@@ -140,22 +133,7 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
             BatchedBridge.registerCallableModule(messagingModuleName, directEventCallbacks);
         }, [messagingModuleName, directEventCallbacks]);
 
-        let otherView = null;
-        if (viewState === 'LOADING') {
-            otherView = (renderLoading || defaultRenderLoading)();
-        } else if (viewState === 'ERROR') {
-            invariant(lastErrorEvent != null, 'lastErrorEvent expected to be non-null');
-            otherView = (renderError || defaultRenderError)(
-                lastErrorEvent.domain,
-                lastErrorEvent.code,
-                lastErrorEvent.description,
-            );
-        } else if (viewState !== 'IDLE') {
-            console.error(`RNCWebView invalid state encountered: ${viewState}`);
-        }
-
         const webViewStyles = [styles.container, styles.webView, style];
-        const webViewContainerStyle = [styles.container, containerStyle];
 
         if (typeof source !== 'number' && source && 'method' in source) {
             if (source.method === 'POST' && source.headers) {
@@ -167,7 +145,7 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
 
         const NativeWebView = (nativeConfig?.component as typeof NativeWebViewAndroid | undefined) || RNCWebView;
 
-        const webView = (
+        return (
             <NativeWebView
                 key="webViewKey"
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
@@ -188,13 +166,6 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
                 {...nativeConfig?.props}
             />
-        );
-
-        return (
-            <View style={webViewContainerStyle}>
-                {webView}
-                {otherView}
-            </View>
         );
     },
 );

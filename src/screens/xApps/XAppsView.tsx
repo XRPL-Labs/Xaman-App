@@ -119,7 +119,7 @@ class XAppsView extends Component<Props, State> {
     };
 
     openXApp = (app: any) => {
-        const { identifier } = app;
+        const { identifier, title, icon } = app;
 
         // set last opened xApp
         this.setState({
@@ -132,6 +132,8 @@ class XAppsView extends Component<Props, State> {
             AppScreens.Modal.XAppBrowser,
             {
                 identifier,
+                title,
+                icon,
                 origin: XAppOrigin.XAPP_STORE,
             },
             {
