@@ -64,7 +64,7 @@ class AccountListView extends Component<Props, State> {
 
         this.state = {
             accounts,
-            dataSource: [...accounts],
+            dataSource: accounts,
             signableAccount: AccountRepository.getSignableAccounts(),
             reorderEnabled: false,
             isMigrationRequired: false,
@@ -95,7 +95,7 @@ class AccountListView extends Component<Props, State> {
 
         this.setState({
             accounts,
-            dataSource: [...accounts],
+            dataSource: accounts,
             signableAccount: AccountRepository.getSignableAccounts(),
         });
     };

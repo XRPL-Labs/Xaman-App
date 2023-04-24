@@ -47,7 +47,7 @@ class TokensList extends Component<Props, State> {
         super(props);
 
         const { account } = props;
-        const tokens = [...account.lines.sorted([['order', false]])];
+        const tokens = account.lines.sorted([['order', false]]);
         const accountStateHash = TokensList.getAccountStateHash(account);
 
         this.state = {
@@ -124,7 +124,7 @@ class TokensList extends Component<Props, State> {
             const { filters, reorderEnabled } = filtersState;
 
             // update tokens and dataSource
-            const tokens = [...nextProps.account.lines.sorted([['order', false]])];
+            const tokens = nextProps.account.lines.sorted([['order', false]]);
             let dataSource = filters ? TokensList.getFilteredList(tokens, filters) : tokens;
 
             // if reorder already enabled, keep the sorting in the dataSource and update the list
