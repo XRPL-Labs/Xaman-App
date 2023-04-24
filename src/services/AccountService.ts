@@ -110,6 +110,15 @@ class AccountService extends EventEmitter {
      */
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
+
+        // log the existent accounts in the session log
+        this.logger.debug(
+            `Supported accounts: ${accounts.reduce(
+                (acc, obj) => `${acc}\n${obj.address}-${obj.accessLevel}/${obj.type} `,
+                '',
+            )}`,
+        );
+
         this.accounts = flatMap(accounts, (a) => a.address);
     };
 
