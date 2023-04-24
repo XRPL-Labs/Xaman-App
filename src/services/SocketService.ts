@@ -33,7 +33,6 @@ class SocketService extends EventEmitter {
     public node: string;
     public chain: NodeChain;
     public connection: XrplClient;
-    private origin: string;
     private status: SocketStateStatus;
     private shownErrorDialog: boolean;
     private logger: any;
