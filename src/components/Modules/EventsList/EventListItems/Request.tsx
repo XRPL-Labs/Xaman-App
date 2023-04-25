@@ -16,7 +16,7 @@ import { TouchableDebounce, Avatar } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
@@ -32,7 +32,9 @@ export enum RequestType {
 }
 
 /* Component ==================================================================== */
-class RequestTemplate extends Component<Props, State> {
+class RequestItem extends Component<Props, State> {
+    static Height = AppSizes.heightPercentageToDP(7.5);
+
     openXApp = () => {
         const { item } = this.props;
 
@@ -173,7 +175,11 @@ class RequestTemplate extends Component<Props, State> {
         const { item } = this.props;
 
         return (
-            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6} style={styles.container}>
+            <TouchableDebounce
+                onPress={this.onPress}
+                activeOpacity={0.6}
+                style={[styles.container, { height: RequestItem.Height }]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Avatar border source={{ uri: item.getApplicationIcon() }} />
                 </View>
@@ -189,4 +195,4 @@ class RequestTemplate extends Component<Props, State> {
     }
 }
 
-export default RequestTemplate;
+export default RequestItem;

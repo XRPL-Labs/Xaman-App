@@ -52,7 +52,7 @@ class EventsList extends PureComponent<Props> {
         return momentDate.format('DD MMM, Y');
     };
 
-    listEmpty = () => {
+    renderListEmpty = () => {
         const { isLoading } = this.props;
 
         if (isLoading) {
@@ -112,19 +112,19 @@ class EventsList extends PureComponent<Props> {
         return (
             <SectionList
                 style={styles.sectionList}
-                contentContainerStyle={[styles.sectionListContainer]}
+                contentContainerStyle={styles.sectionListContainer}
                 sections={dataSource}
                 renderItem={this.renderItem}
                 renderSectionHeader={this.renderSectionHeader}
                 keyExtractor={(item) => item.Hash || item.meta?.uuid || item.Index}
-                ListEmptyComponent={this.listEmpty}
+                ListEmptyComponent={this.renderListEmpty}
+                ListHeaderComponent={headerComponent}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.2}
                 ListFooterComponent={this.renderFooter}
                 windowSize={10}
                 maxToRenderPerBatch={10}
                 initialNumToRender={20}
-                ListHeaderComponent={headerComponent}
                 refreshControl={
                     <RefreshControl
                         refreshing={isLoading}

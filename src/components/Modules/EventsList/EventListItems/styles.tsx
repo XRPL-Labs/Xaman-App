@@ -7,7 +7,6 @@ const styles = StyleService.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: AppSizes.heightPercentageToDP(7.5),
         borderRadius: 10,
         paddingLeft: 5,
         paddingRight: 5,
