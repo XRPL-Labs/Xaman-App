@@ -111,9 +111,15 @@ class AccountService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
+        // no account is present in XUMM
+        if (accounts.length === 0) {
+            this.accounts = [];
+            return;
+        }
+
         // log the existent accounts in the session log
         this.logger.debug(
-            `Supported accounts: ${accounts.reduce(
+            `Presented accounts: ${accounts.reduce(
                 (acc, obj) => `${acc}\n${obj.address}-${obj.accessLevel}/${obj.type} `,
                 '',
             )}`,
