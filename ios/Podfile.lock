@@ -414,9 +414,9 @@ PODS:
     - React-Core
   - react-native-netinfo (9.3.6):
     - React-Core
-  - react-native-sdk (3.0.0):
+  - react-native-sdk (4.0.0):
     - React
-    - VeriffSDK (= 6.1.0)
+    - VeriffSDK (= 6.5.0)
   - React-perflogger (0.71.7)
   - React-RCTActionSheet (0.71.7):
     - React-Core/RCTActionSheetHeaders (= 0.71.7)
@@ -535,7 +535,7 @@ PODS:
     - React
     - TangemSdk (= 3.4.0)
   - TangemSdk (3.4.0)
-  - VeriffSDK (6.1.0)
+  - VeriffSDK (6.5.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -743,7 +743,7 @@ SPEC CHECKSUMS:
   React-logger: 3f8ebad1be1bf3299d1ab6d7f971802d7395c7ef
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-netinfo: f80db8cac2151405633324cb645c60af098ee461
-  react-native-sdk: 1efb8bcb08773ebd73680857d9bc3cbc41c7b996
+  react-native-sdk: 109dff063c231e52b26aba3a1f69ff74a177d27e
   React-perflogger: 2d505bbe298e3b7bacdd9e542b15535be07220f6
   React-RCTActionSheet: 0e96e4560bd733c9b37efbf68f5b1a47615892fb
   React-RCTAnimation: fd138e26f120371c87e406745a27535e2c8a04ef
@@ -765,7 +765,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: a0f8a5a5b6646e382bc322225eebcdfb7be2da4f
   RNTangemSdk: b4a4c91c617daca427a69cc7f784425c6789acd7
   TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
-  VeriffSDK: c256788f8e32a5a9c8ad3b04fc0320a0e9753029
+  VeriffSDK: 4f83c5c8bea408d4efaa48630cbd1cf3212d9b38
   Yoga: d56980c8914db0b51692f55533409e844b66133c
 
 PODFILE CHECKSUM: 452ef3846ceb4a1bc9bb6d1674cda171d6737af5

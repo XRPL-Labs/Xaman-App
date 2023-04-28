@@ -7512,13 +7512,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@veriff/react-native-sdk@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@veriff/react-native-sdk@npm:3.0.0"
+"@veriff/react-native-sdk@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@veriff/react-native-sdk@npm:4.0.0"
+  dependencies:
+    eslint-plugin-ft-flow: ^2.0.3
   peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 8e35076840ebb65aa87617ad4bef160643e28fc36efe5204db364c72318951da28a2a4ceb362586054ca178584227fe6c4df4893e9294d918dd1dcd5b231faf8
+    react: 18.2.0
+    react-native: ^0.71.0
+  checksum: d0b04d92ef679b5b57a507e4442039fe22fe151b447e2c739741f4d7727ed303914c8a2c03dd1d242f504d434513289977440ed8000504b5e95027ea8117b364
   languageName: node
   linkType: hard
 
@@ -12691,6 +12693,19 @@ __metadata:
     eslint:
       optional: true
   checksum: 5da13645daff145a5c922896b258f8bba560722c3767254e458d894ff5fbb505d6dfd945bffa932a5b0ae06714da2379bd41011c4c20d2d59cc83e23895360f7
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-ft-flow@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "eslint-plugin-ft-flow@npm:2.0.3"
+  dependencies:
+    lodash: ^4.17.21
+    string-natural-compare: ^3.0.1
+  peerDependencies:
+    "@babel/eslint-parser": ^7.12.0
+    eslint: ^8.1.0
+  checksum: 6272f7c352154875dc85c7dcd7cf66f6ed926a9a6aba81c675583bcc6695147597d6b9a6db0f643a387d14eccd61dc36daf20eec1c49e91ce1c63c01ffe295f7
   languageName: node
   linkType: hard
 
@@ -23499,6 +23514,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"string-natural-compare@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "string-natural-compare@npm:3.0.1"
+  checksum: 65910d9995074086e769a68728395effbba9b7186be5b4c16a7fad4f4ef50cae95ca16e3e9086e019cbb636ae8daac9c7b8fe91b5f21865c5c0f26e3c0725406
+  languageName: node
+  linkType: hard
+
 "string-width@npm:^1.0.1":
   version: 1.0.2
   resolution: "string-width@npm:1.0.2"
@@ -26159,7 +26181,7 @@ __metadata:
     "@types/uuid": 9.0.0
     "@typescript-eslint/eslint-plugin": 5.49.0
     "@typescript-eslint/parser": 5.49.0
-    "@veriff/react-native-sdk": 3.0.0
+    "@veriff/react-native-sdk": 4.0.0
     babel-jest: 29.4.1
     babel-loader: 9.1.2
     babel-plugin-rewrite-require: 1.14.5
