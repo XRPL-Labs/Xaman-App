@@ -234,12 +234,13 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    showDestinationPicker = () => {
+    showDestinationPicker = (data?: { ignoreDestinationTag?: boolean }) => {
         Navigator.showModal(
             AppScreens.Modal.DestinationPicker,
             {
                 onSelect: this.onDestinationSelect,
                 onClose: this.onDestinationClose,
+                ignoreDestinationTag: get(data, 'ignoreDestinationTag', false),
             },
             {
                 modal: {
@@ -393,7 +394,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.showScanner();
                 break;
             case XAppMethods.SelectDestination:
-                this.showDestinationPicker();
+                this.showDestinationPicker(parsedData);
                 break;
             case XAppMethods.Close:
                 this.onClose(parsedData);
