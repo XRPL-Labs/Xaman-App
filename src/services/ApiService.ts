@@ -415,7 +415,7 @@ class ApiService {
                     }
 
                     // anything else just throw
-                    throw new ApiError(`Api error ${jsonRes || rawRes}`);
+                    throw new ApiError(`Api error ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`);
                 })
                 .then((res) => {
                     resolve(res);
