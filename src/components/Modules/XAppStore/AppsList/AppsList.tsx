@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View, ViewStyle } from 'react-native';
+import { FlatList, RefreshControl, Text, View, ViewStyle } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
@@ -75,13 +75,18 @@ class AppsList extends Component<Props, State> {
         return (
             <FlatList
                 contentContainerStyle={containerStyle}
-                onRefresh={this.onRefresh}
-                refreshing={refreshing || false}
                 data={dataSource}
                 renderItem={this.renderItem}
                 ItemSeparatorComponent={this.renderSeparator}
                 ListEmptyComponent={this.renderEmpty}
                 style={styles.sectionList}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={this.onRefresh}
+                        tintColor={StyleService.value('$contrast')}
+                    />
+                }
                 indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );
