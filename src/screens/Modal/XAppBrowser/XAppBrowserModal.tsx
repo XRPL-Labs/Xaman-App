@@ -583,9 +583,9 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     getUserAgent = () => {
-        const { appVersionCode } = this.state;
+        const { appVersionCode, ott } = this.state;
 
-        return `xumm/xapp:${appVersionCode}`;
+        return `xumm/xapp:${appVersionCode} (ott:${ott})`;
     };
 
     setAppReady = () => {
@@ -594,8 +594,14 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    onLoadEnd = () => {
+    onLoadEnd = (e: any) => {
         const { permissions } = this.state;
+
+        const { loading } = e.nativeEvent;
+
+        if (loading) {
+            return;
+        }
 
         let shouldSetAppReady = true;
 
@@ -644,7 +650,13 @@ class XAppBrowserModal extends Component<Props, State> {
         if (icon) {
             return (
                 <PulseAnimation containerStyle={styles.stateContainer}>
-                    <Avatar size={80} source={{ uri: icon }} badgeColor={StyleService.value('$orange')} />
+                    <Avatar
+                        size={80}
+                        source={{ uri: icon }}
+                        badgeColor={StyleService.value('$orange')}
+                        // eslint-disable-next-line react-native/no-color-literals,react-native/no-inline-styles
+                        containerStyle={{ backgroundColor: 'transparent' }}
+                    />
                 </PulseAnimation>
             );
         }

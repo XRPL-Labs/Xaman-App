@@ -5,7 +5,10 @@ import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1 },
+    container: {
+        backgroundColor: '$background',
+        flex: 1,
+    },
     contentContainer: {
         backgroundColor: '$background',
         flex: 1,
@@ -14,9 +17,8 @@ const styles = StyleService.create({
     webView: {
         backgroundColor: '$background',
     },
-
     stateContainer: {
-        backgroundColor: '$background',
+        backgroundColor: 'transparent',
         position: 'absolute',
         left: 0,
         right: 0,
