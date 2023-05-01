@@ -340,32 +340,34 @@ class ApiService {
             // Add Endpoint Params
             let urlParams = '';
             let urlEndpoint = endpoint;
-            if (params) {
+            const paramsClone = typeof params === 'object' ? { ...params } : params;
+
+            if (paramsClone) {
                 // Object - eg. /token?username=this&password=0
-                if (typeof params === 'object') {
+                if (typeof paramsClone === 'object') {
                     // Replace matching params in API routes eg. /recipes/{param}/foo
-                    for (const param in params) {
+                    for (const param in paramsClone) {
                         if (endpoint.includes(`{${param}}`)) {
-                            urlEndpoint = endpoint.split(`{${param}}`).join(params[param]);
-                            delete params[param];
+                            urlEndpoint = endpoint.split(`{${param}}`).join(paramsClone[param]);
+                            delete paramsClone[param];
                         }
                     }
 
                     // Check if there's still an 'id' prop, /{id}?
-                    if (params.id !== undefined) {
-                        if (typeof params.id === 'string' || typeof params.id === 'number') {
-                            urlParams = `/${params.id}`;
-                            delete params.id;
+                    if (paramsClone.id !== undefined) {
+                        if (typeof paramsClone.id === 'string' || typeof paramsClone.id === 'number') {
+                            urlParams = `/${paramsClone.id}`;
+                            delete paramsClone.id;
                         }
                     }
 
                     // Add the rest of the params as a query string if any left
                     // eslint-disable-next-line
-                    Object.keys(params).length > 0 ? (urlParams += `?${this.serialize(params, '')}`) : null;
+                    Object.keys(paramsClone).length > 0 ? (urlParams += `?${this.serialize(paramsClone, '')}`) : null;
 
                     // String or Number - eg. /recipes/23
-                } else if (typeof params === 'string' || typeof params === 'number') {
-                    urlParams = `/${params}`;
+                } else if (typeof paramsClone === 'string' || typeof paramsClone === 'number') {
+                    urlParams = `/${paramsClone}`;
                 } else {
                     this.logger.warn('params are not an object!', this.apiUrl + urlEndpoint + urlParams);
                 }
