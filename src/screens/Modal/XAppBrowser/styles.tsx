@@ -7,6 +7,7 @@ import StyleService from '@services/StyleService';
 const styles = StyleService.create({
     container: { flex: 1 },
     contentContainer: {
+        backgroundColor: '$background',
         flex: 1,
         overflow: 'hidden',
     },
