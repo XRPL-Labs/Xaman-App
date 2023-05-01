@@ -263,6 +263,7 @@ class XAppsView extends Component<Props, State> {
                             value: 'all',
                         },
                     ]}
+                    containerStyle={styles.categorySelectContainer}
                     selected={selectedCategory}
                     onSelect={this.onCategoryChange}
                 />

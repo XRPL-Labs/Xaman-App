@@ -7,16 +7,20 @@ const styles = StyleService.create({
     contentContainer: {
         flex: 1,
         alignSelf: 'stretch',
-        paddingHorizontal: AppSizes.paddingSml,
     },
     featuredContainer: {
         borderRadius: 15,
+        marginHorizontal: AppSizes.paddingSml,
         paddingHorizontal: AppSizes.paddingExtraSml,
         paddingVertical: AppSizes.paddingSml,
-
         backgroundColor: '$lightBlue',
     },
-    appListContainer: {},
+    categorySelectContainer: {
+        paddingHorizontal: AppSizes.paddingSml,
+    },
+    appListContainer: {
+        paddingHorizontal: AppSizes.paddingSml,
+    },
     searchBarContainer: {
         marginVertical: AppSizes.paddingExtraSml,
     },

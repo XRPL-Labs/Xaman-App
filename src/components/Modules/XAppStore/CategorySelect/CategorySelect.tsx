@@ -62,9 +62,9 @@ class CategorySelect extends PureComponent<Props, State> {
     };
 
     render() {
-        const { categories } = this.props;
+        const { categories, containerStyle } = this.props;
 
-        return <View style={styles.container}>{categories.map(this.renderItem)}</View>;
+        return <View style={[styles.container, containerStyle]}>{categories.map(this.renderItem)}</View>;
     }
 }
 
