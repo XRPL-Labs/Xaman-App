@@ -8,6 +8,9 @@ const styles = StyleService.create({
         flex: 1,
         alignSelf: 'stretch',
     },
+    headerMessageContainer: {
+        marginHorizontal: AppSizes.paddingSml,
+    },
     featuredContainer: {
         borderRadius: 15,
         marginHorizontal: AppSizes.paddingSml,
@@ -22,6 +25,7 @@ const styles = StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
     },
     searchBarContainer: {
+        marginHorizontal: AppSizes.paddingSml,
         marginVertical: AppSizes.paddingExtraSml,
     },
     searchIcon: {

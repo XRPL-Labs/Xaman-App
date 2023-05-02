@@ -18,7 +18,7 @@ const styles = StyleService.create({
         backgroundColor: '$background',
     },
     stateContainer: {
-        backgroundColor: 'transparent',
+        backgroundColor: '$background',
         position: 'absolute',
         left: 0,
         right: 0,

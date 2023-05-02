@@ -242,7 +242,7 @@ class XAppsView extends Component<Props, State> {
 
         return (
             <>
-                <HeaderMessage message={message} />
+                <HeaderMessage message={message} containerStyle={styles.headerMessageContainer} />
                 <XAppShortList
                     apps={categories?.featured}
                     onAppPress={this.openXApp}

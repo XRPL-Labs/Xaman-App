@@ -99,6 +99,7 @@ class HeaderMessage extends Component<Props, State> {
     };
 
     render() {
+        const { containerStyle } = this.props;
         const { showMessage, message } = this.state;
 
         if (!showMessage) {
@@ -108,7 +109,7 @@ class HeaderMessage extends Component<Props, State> {
         const { title, content } = message;
 
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, containerStyle]}>
                 <View style={AppStyles.row}>
                     <View style={AppStyles.flex1}>
                         <Text style={styles.titleText}>{title}</Text>

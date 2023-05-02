@@ -5,7 +5,7 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { Animated, ViewStyle } from 'react-native';
+import { View, Animated, ViewStyle } from 'react-native';
 
 /* Types ==================================================================== */
 interface Props {
@@ -48,10 +48,9 @@ class PulseAnimation extends PureComponent<Props> {
         const { children, containerStyle } = this.props;
 
         return (
-            <Animated.View
-                style={[
-                    containerStyle,
-                    {
+            <View style={[containerStyle]}>
+                <Animated.View
+                    style={{
                         transform: [
                             {
                                 scale: this.scaleAnimation.interpolate({
@@ -60,11 +59,11 @@ class PulseAnimation extends PureComponent<Props> {
                                 }),
                             },
                         ],
-                    },
-                ]}
-            >
-                {children}
-            </Animated.View>
+                    }}
+                >
+                    {children}
+                </Animated.View>
+            </View>
         );
     }
 }
