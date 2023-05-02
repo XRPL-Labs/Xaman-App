@@ -38,8 +38,6 @@ export interface State {
     isLoading: boolean;
     // isError: boolean;
     searchEnabled: boolean;
-
-    lastOpenedApp: string;
 }
 
 /* Component ==================================================================== */
@@ -65,7 +63,6 @@ class XAppsView extends Component<Props, State> {
             selectedCategory: 'popular',
             categories: undefined,
             dataSource: Array(8).fill(undefined),
-            lastOpenedApp: undefined,
             searchEnabled: false,
             isLoading: false,
             // isError: false,
@@ -87,13 +84,11 @@ class XAppsView extends Component<Props, State> {
     }
 
     componentDidAppear() {
-        const { lastOpenedApp, categories } = this.state;
+        const { categories } = this.state;
 
         // update the list if used and xApp and not in recently used apps list
-        if (categories && lastOpenedApp) {
-            if (categories?.recent?.filter((c: any) => c.identifier === lastOpenedApp).length === 0) {
-                this.fetchStoreListings();
-            }
+        if (categories) {
+            this.fetchStoreListings();
         }
     }
 
@@ -120,11 +115,6 @@ class XAppsView extends Component<Props, State> {
 
     openXApp = (app: any) => {
         const { identifier, title, icon } = app;
-
-        // set last opened xApp
-        this.setState({
-            lastOpenedApp: identifier,
-        });
 
         // open xApp browser
 
