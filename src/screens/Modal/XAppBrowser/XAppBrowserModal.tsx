@@ -364,7 +364,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     handleCommand = (command: XAppMethods, parsedData: any) => {
-        const { permissions } = this.state;
+        const { permissions, isAppReady } = this.state;
 
         // when there is no permission available just do not run any command
         if (!permissions || isEmpty(get(permissions, 'commands'))) {
@@ -376,6 +376,12 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // xApp doesn't have the permission to run this command
         if (!AllowedCommands.includes(command.toUpperCase())) {
+            return;
+        }
+
+        // for any command to be run, the app should be in ready state
+        // only allow READY command
+        if (!isAppReady && command !== XAppMethods.Ready) {
             return;
         }
 
@@ -606,7 +612,7 @@ class XAppBrowserModal extends Component<Props, State> {
         let shouldSetAppReady = true;
 
         // when xApp have permission to set the app ready then just wait for the app to set the ready state
-        if (get(permissions, `commands.${toUpper(XAppMethods.Ready)}`)) {
+        if (Array.isArray(permissions?.commands) && permissions?.commands.includes(toUpper(XAppMethods.Ready))) {
             shouldSetAppReady = false;
         }
 
