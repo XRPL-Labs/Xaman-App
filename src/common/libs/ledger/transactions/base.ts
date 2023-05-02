@@ -2,7 +2,7 @@
  * Base Ledger transaction parser
  */
 import BigNumber from 'bignumber.js';
-import { find, filter, flatMap, get, has, isUndefined, set, size, remove } from 'lodash';
+import { filter, find, flatMap, get, has, isUndefined, remove, set, size } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
 
@@ -84,7 +84,7 @@ class BaseTransaction {
      Prepare the transaction for signing, including setting the account sequence
     * @returns {Promise<void>}
     */
-    prepare = async () => {
+    prepare = async (account: AccountSchema) => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
             return;
@@ -103,6 +103,13 @@ class BaseTransaction {
             } catch {
                 throw new Error(Localize.t('global.unableToSetAccountSequence'));
             }
+        }
+
+        // if PaymentChannelCrate and PublicKey is not set, set the signing account public key
+        // @ts-ignore
+        if (this.TransactionType === TransactionTypes.PaymentChannelCreate && isUndefined(this.PublicKey)) {
+            // @ts-ignore
+            this.PublicKey = account.publicKey;
         }
     };
 
@@ -169,7 +176,7 @@ class BaseTransaction {
                 // prepare transaction for signing
                 // skip if multiSing transaction
                 if (!multiSign) {
-                    await this.prepare();
+                    await this.prepare(account);
                 }
 
                 // if transaction aborted then don't continue
