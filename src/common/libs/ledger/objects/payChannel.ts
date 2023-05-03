@@ -12,32 +12,53 @@ import { AmountType, Destination } from '../parser/types';
 import { LedgerObjectTypes } from '../types';
 
 /* Class ==================================================================== */
-class Check extends BaseLedgerObject {
-    public static Type = LedgerObjectTypes.Check as const;
-    public readonly Type = Check.Type;
+class PayChannel extends BaseLedgerObject {
+    public static Type = LedgerObjectTypes.PayChannel as const;
+    public readonly Type = PayChannel.Type;
 
     constructor(object?: any) {
         super(object);
     }
 
-    get SendMax(): AmountType {
-        const sendMax = get(this, ['object', 'SendMax'], undefined);
+    get Amount(): AmountType {
+        const amount = get(this, ['object', 'Amount'], undefined);
 
-        if (!sendMax) {
+        if (!amount) {
             return undefined;
         }
 
-        if (typeof sendMax === 'string') {
+        if (typeof amount === 'string') {
             return {
                 currency: 'XRP',
-                value: new Amount(sendMax).dropsToXrp(),
+                value: new Amount(amount).dropsToXrp(),
             };
         }
 
         return {
-            currency: sendMax.currency,
-            value: sendMax.value,
-            issuer: sendMax.issuer,
+            currency: amount.currency,
+            value: amount.value,
+            issuer: amount.issuer,
+        };
+    }
+
+    get Balance(): AmountType {
+        const balance = get(this, ['object', 'Balance'], undefined);
+
+        if (!balance) {
+            return undefined;
+        }
+
+        if (typeof balance === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(balance).dropsToXrp(),
+            };
+        }
+
+        return {
+            currency: balance.currency,
+            value: balance.value,
+            issuer: balance.issuer,
         };
     }
 
@@ -53,6 +74,14 @@ class Check extends BaseLedgerObject {
         };
     }
 
+    get DestinationNode(): string {
+        return get(this, ['object', 'DestinationNode'], undefined);
+    }
+
+    get PublicKey(): string {
+        return get(this, ['object', 'PublicKey'], undefined);
+    }
+
     get Date(): any {
         return this.Expiration;
     }
@@ -64,12 +93,19 @@ class Check extends BaseLedgerObject {
         return ledgerDate.toISO8601();
     }
 
-    get InvoiceID(): string {
-        return get(this, ['object', 'InvoiceID'], undefined);
+    get CancelAfter(): string {
+        const date = get(this, ['object', 'CancelAfter'], undefined);
+        if (isUndefined(date)) return undefined;
+        const ledgerDate = new LedgerDate(date);
+        return ledgerDate.toISO8601();
+    }
+
+    get SettleDelay(): number {
+        return get(this, ['object', 'SettleDelay'], undefined);
     }
 
     get isExpired(): boolean {
-        const date = get(this, ['Check', 'Expiration'], undefined);
+        const date = get(this, ['object', 'Expiration'], undefined);
         if (isUndefined(date)) return false;
 
         const exp = moment.utc(date);
@@ -80,4 +116,4 @@ class Check extends BaseLedgerObject {
 }
 
 /* Export ==================================================================== */
-export default Check;
+export default PayChannel;

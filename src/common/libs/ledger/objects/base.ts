@@ -20,12 +20,10 @@ class BaseLedgerObject {
     get Account(): Account {
         const source = get(this, ['object', 'Account'], undefined);
         const sourceTag = get(this, ['object', 'SourceTag'], undefined);
-        const sourceName = get(this, ['object', 'AccountName'], undefined);
 
         if (isUndefined(source)) return undefined;
 
         return {
-            name: sourceName,
             address: source,
             tag: sourceTag,
         };
@@ -34,9 +32,6 @@ class BaseLedgerObject {
     set Account(account: Account) {
         if (has(account, 'address')) {
             set(this, 'object.Account', account.address);
-        }
-        if (has(account, 'name')) {
-            set(this, 'object.AccountName', account.name);
         }
         if (has(account, 'tag')) {
             set(this, 'object.SourceTag', account.tag);

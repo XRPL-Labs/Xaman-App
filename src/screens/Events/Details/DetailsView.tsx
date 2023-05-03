@@ -332,6 +332,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case TransactionTypes.PaymentChannelCreate:
+            case LedgerObjectTypes.PayChannel:
                 if (incomingTx) {
                     address = tx.Account.address;
                 } else {
@@ -552,6 +553,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return Localize.t('global.ticket');
+            case LedgerObjectTypes.PayChannel:
+                return Localize.t('events.paymentChannel');
             case LedgerObjectTypes.NFTokenOffer:
                 if (tx.Owner !== account.address) {
                     if (tx.Flags.SellToken) {
@@ -1095,28 +1098,45 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderPaymentChannelCreate = (
-        tx: Extract<Transactions, { Type: TransactionTypes.PaymentChannelCreate }>,
+        tx:
+            | Extract<Transactions, { Type: TransactionTypes.PaymentChannelCreate }>
+            | Extract<LedgerObjects, { Type: LedgerObjectTypes.PayChannel }>,
     ): string => {
         let content = '';
 
-        content += Localize.t('events.accountWillCreateAPaymentChannelTo', {
-            account: tx.Account.address,
-            destination: tx.Destination.address,
+        content += Localize.t(
+            tx.Type === LedgerObjectTypes.PayChannel
+                ? 'events.accountCreatedAPaymentChannelTo'
+                : 'events.accountWillCreateAPaymentChannelTo',
+            {
+                account: tx.Account.address,
+                destination: tx.Destination.address,
+            },
+        );
+        content += '\n';
+
+        content += Localize.t('events.theChannelIdIs', {
+            channel: tx.Type === LedgerObjectTypes.PayChannel ? tx.Index : tx.ChannelID,
         });
-
-        content += '\n';
-        content += Localize.t('events.theChannelIdIs', { channel: tx.ChannelID });
-
-        content += '\n';
-        content += Localize.t('events.theChannelAmountIs', { amount: tx.Amount.value });
         content += '\n';
 
-        if (tx.Account.tag) {
+        if (tx.Type === TransactionTypes.PaymentChannelCreate) {
+            content += Localize.t('events.theChannelAmountIs', { amount: tx.Amount.value });
+            content += '\n';
+        }
+
+        if (tx.Account.tag !== undefined) {
             content += Localize.t('events.theASourceTagIs', { tag: tx.Account.tag });
             content += ' \n';
         }
-        if (tx.Destination.tag) {
+
+        if (tx.Destination.tag !== undefined) {
             content += Localize.t('events.theDestinationTagIs', { tag: tx.Destination.tag });
+            content += ' \n';
+        }
+
+        if (tx.Type === LedgerObjectTypes.PayChannel && tx.Expiration) {
+            content += Localize.t('events.theChannelExpiresAt', { cancelAfter: tx.Expiration });
             content += ' \n';
         }
 
@@ -1364,6 +1384,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 content += this.renderTicketCreate(tx);
                 break;
             case TransactionTypes.PaymentChannelCreate:
+            case LedgerObjectTypes.PayChannel:
                 content += this.renderPaymentChannelCreate(tx);
                 break;
             case TransactionTypes.PaymentChannelFund:
@@ -1626,6 +1647,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     LedgerObjectTypes.NFTokenOffer,
                     LedgerObjectTypes.Check,
                     LedgerObjectTypes.Ticket,
+                    LedgerObjectTypes.PayChannel,
                 ].includes(tx.Type)
             ) {
                 badgeType = 'open';
@@ -1863,7 +1885,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-
+            case LedgerObjectTypes.PayChannel:
+                break;
             default:
                 shouldShowAmount = false;
                 break;
@@ -2011,6 +2034,35 @@ class TransactionDetailsView extends Component<Props, State> {
                             currency={props.currency}
                             prefix={props.prefix}
                             style={[styles.amountText, props.color]}
+                        />
+                    </View>
+                </View>
+            );
+        }
+
+        if (tx.Type === LedgerObjectTypes.PayChannel) {
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    <Text style={styles.labelText}> {Localize.t('events.payChannelAmount')}</Text>
+                    <Spacer />
+                    <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                        <AmountText
+                            value={tx.Amount.value}
+                            currency={tx.Amount.currency}
+                            style={[styles.amountText, props.color]}
+                        />
+                    </View>
+
+                    <Spacer size={30} />
+
+                    <Text style={styles.labelText}> {Localize.t('events.payChannelBalance')}</Text>
+                    <Spacer />
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        <AmountText
+                            value={tx.Balance.value}
+                            currency={tx.Balance.currency}
+                            prefix={props.prefix}
+                            style={styles.amountTextSmall}
                         />
                     </View>
                 </View>

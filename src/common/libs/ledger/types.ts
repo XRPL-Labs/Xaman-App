@@ -41,6 +41,8 @@ export enum LedgerObjectTypes {
     NFTokenOffer = 'NFTokenOffer',
     Offer = 'Offer',
     Ticket = 'Ticket',
+
+    PayChannel = 'PayChannel',
 }
 
 /**

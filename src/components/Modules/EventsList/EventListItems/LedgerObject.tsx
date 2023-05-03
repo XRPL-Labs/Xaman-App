@@ -87,6 +87,20 @@ class LedgerObjectItem extends Component<Props, State> {
                     address: item.Destination.address,
                     tag: item.Destination.tag,
                 };
+
+            case LedgerObjectTypes.PayChannel:
+                if (item.Account.address !== account.address) {
+                    return {
+                        address: item.Account.address,
+                        tag: item.Account.tag,
+                    };
+                }
+
+                return {
+                    address: item.Destination.address,
+                    tag: item.Destination.tag,
+                };
+
             case LedgerObjectTypes.NFTokenOffer:
                 return {
                     address: item.Owner,
@@ -168,6 +182,12 @@ class LedgerObjectItem extends Component<Props, State> {
             return item.NFTokenID;
         }
 
+        // if (item.Type === LedgerObjectTypes.PayChannel) {
+        //     return `${Localize.formatNumber(NormalizeAmount(item.Amount.value))} ${NormalizeCurrencyCode(
+        //         item.Amount.currency,
+        //     )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
+        // }
+
         if (name) return name;
         if (address) return address;
 
@@ -199,6 +219,8 @@ class LedgerObjectItem extends Component<Props, State> {
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return `${Localize.t('global.ticket')} #${item.TicketSequence}`;
+            case LedgerObjectTypes.PayChannel:
+                return Localize.t('events.paymentChannel');
             default:
                 // @ts-ignore
                 return item.Type;
