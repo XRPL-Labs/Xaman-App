@@ -59,6 +59,7 @@ export interface State {
     title: string;
     icon: string;
     identifier: string;
+    supportUrl: string;
     account: AccountSchema;
     ott: string;
     error: string;
@@ -67,6 +68,7 @@ export interface State {
     isLoadingApp: boolean;
 
     isAppReady: boolean;
+    isAppReadyTimeout: boolean;
     coreSettings: CoreSchema;
     appVersionCode: string;
 }
@@ -97,6 +99,7 @@ class XAppBrowserModal extends Component<Props, State> {
     private backHandler: NativeEventSubscription;
     private lastMessageReceived: number;
     private readonly webView: React.RefObject<WebView>;
+    private softLoadingTimeout: any;
 
     static options() {
         return {
@@ -111,6 +114,7 @@ class XAppBrowserModal extends Component<Props, State> {
             title: props.title,
             icon: props.icon,
             identifier: props.identifier,
+            supportUrl: undefined,
             account: props.account || AccountRepository.getDefaultAccount(),
             ott: undefined,
             error: undefined,
@@ -118,6 +122,7 @@ class XAppBrowserModal extends Component<Props, State> {
             isFetchingOTT: true,
             isLoadingApp: false,
             isAppReady: false,
+            isAppReadyTimeout: false,
             coreSettings: CoreRepository.getSettings(),
             appVersionCode: GetAppVersionCode(),
         };
@@ -531,7 +536,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         BackendService.getXAppLaunchToken(identifier, data)
             .then((res: any) => {
-                const { error, ott, xappTitle, icon, permissions } = res;
+                const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = res;
 
                 // check if the ott is a valid uuid v4
                 if (!StringTypeCheck.isValidUUID(ott)) {
@@ -557,6 +562,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.setState({
                     ott,
                     title: xappTitle || title,
+                    supportUrl: xappSupportUrl,
                     icon,
                     permissions,
                     isLoadingApp: true,
@@ -595,8 +601,26 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     setAppReady = () => {
+        if (this.softLoadingTimeout) {
+            clearTimeout(this.softLoadingTimeout);
+        }
+
         this.setState({
             isAppReady: true,
+        });
+    };
+
+    onSoftLoadingExpire = () => {
+        this.setState({
+            isAppReadyTimeout: true,
+        });
+    };
+
+    openDeveloperSupport = () => {
+        const { supportUrl } = this.state;
+
+        Linking.openURL(supportUrl).catch(() => {
+            Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };
 
@@ -613,6 +637,11 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // when xApp have permission to set the app ready then just wait for the app to set the ready state
         if (Array.isArray(permissions?.commands) && permissions?.commands.includes(toUpper(XAppMethods.Ready))) {
+            // set timeout for loading
+            if (this.softLoadingTimeout) {
+                clearTimeout(this.softLoadingTimeout);
+            }
+            this.softLoadingTimeout = setTimeout(this.onSoftLoadingExpire, 10000);
             shouldSetAppReady = false;
         }
 
@@ -651,11 +680,14 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderLoading = () => {
-        const { icon } = this.state;
+        const { icon, supportUrl, isAppReadyTimeout, coreSettings } = this.state;
+
+        let LoaderComponent;
+        let LoadingStateComponent;
 
         if (icon) {
-            return (
-                <PulseAnimation containerStyle={styles.stateContainer}>
+            LoaderComponent = (
+                <PulseAnimation>
                     <Avatar
                         size={80}
                         source={{ uri: icon }}
@@ -665,9 +697,52 @@ class XAppBrowserModal extends Component<Props, State> {
                     />
                 </PulseAnimation>
             );
+        } else {
+            LoaderComponent = <LoadingIndicator size="large" />;
         }
 
-        return <LoadingIndicator style={styles.stateContainer} size="large" />;
+        if (isAppReadyTimeout) {
+            if (coreSettings.developerMode) {
+                LoadingStateComponent = (
+                    <View style={AppStyles.padding}>
+                        <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
+                            {Localize.t('xapp.theXAppLoaderHasNotBeenResolved')}
+                        </Text>
+                        <Spacer />
+                        <Button
+                            roundedMini
+                            secondary
+                            onPress={this.setAppReady}
+                            label={Localize.t('xapp.forceShowXApp')}
+                        />
+                    </View>
+                );
+            } else {
+                LoadingStateComponent = (
+                    <View style={AppStyles.padding}>
+                        <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
+                            {Localize.t('xapp.theXAppHasNotBeenFullyLoaded')}
+                        </Text>
+                        <Spacer />
+                        {supportUrl && (
+                            <Button
+                                roundedMini
+                                secondary
+                                onPress={this.openDeveloperSupport}
+                                label={Localize.t('xapp.contactDeveloper')}
+                            />
+                        )}
+                    </View>
+                );
+            }
+        }
+
+        return (
+            <View style={styles.stateContainer}>
+                {LoaderComponent}
+                {LoadingStateComponent}
+            </View>
+        );
     };
 
     renderApp = () => {

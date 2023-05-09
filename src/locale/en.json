@@ -595,7 +595,11 @@
     "popular": "Popular",
     "recentlyUsed": "Recently used",
     "ourSuggestions": "Our suggestions",
-    "all": "All"
+    "all": "All",
+    "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
+    "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
+    "forceShowXApp": "Force show xApp",
+    "contactDeveloper": "Contact Developer"
   },
   "settings": {
     "generalSettings": "General",
