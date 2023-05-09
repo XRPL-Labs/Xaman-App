@@ -92,6 +92,10 @@ class RequestItem extends Component<Props, State> {
     getTransactionLabel = () => {
         const { item } = this.props;
 
+        if (this.getType() === RequestType.OpenXApp) {
+            return Localize.t('global.xapp');
+        }
+
         switch (item.getTransactionType()) {
             case TransactionTypes.AccountSet:
                 return Localize.t('events.updateAccountSettings');
