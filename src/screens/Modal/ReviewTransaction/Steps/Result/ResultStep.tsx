@@ -3,7 +3,7 @@
  */
 
 import React, { Component, Fragment } from 'react';
-import { SafeAreaView, View, Text, Image } from 'react-native';
+import { SafeAreaView, View, Text, Image, ScrollView } from 'react-native';
 
 import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
 
@@ -39,6 +39,22 @@ class ResultStep extends Component<Props, State> {
             closeButtonLabel: context.payload.getReturnURL() ? Localize.t('global.next') : Localize.t('global.close'),
         };
     }
+
+    getNormalizedErrorMessage = () => {
+        const { transaction } = this.context;
+
+        // @ts-ignore
+        if (transaction.TransactionResult?.code === 'tecPATH_PARTIAL') {
+            return Localize.t('payload.tecPartialError');
+        }
+        // @ts-ignore
+        if (transaction.TransactionResult?.code === 'tecPATH_DRY') {
+            return Localize.t('payload.pathDryError');
+        }
+
+        // @ts-ignore
+        return transaction.TransactionResult?.message || 'No Description';
+    };
 
     renderSuccess = () => {
         const { onFinish, getTransactionLabel } = this.context;
@@ -88,39 +104,40 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={[AppStyles.flex2]}>
-                    <View style={styles.detailsCard}>
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
-                        <Spacer />
-                        {/* @ts-ignore */}
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult?.code}</Text>
+                <View style={[AppStyles.flex2, styles.detailsCard, AppStyles.marginBottom]}>
+                    <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
+                    <Spacer />
+                    {/* @ts-ignore */}
+                    <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult?.code}</Text>
 
-                        <Spacer />
-                        <View style={AppStyles.hr} />
-                        <Spacer />
-                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
-                        <Spacer />
+                    <Spacer />
+                    <View style={AppStyles.hr} />
+                    <Spacer />
+                    <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                    <Spacer />
+
+                    <ScrollView>
                         <Text style={AppStyles.subtext}>
                             {/* @ts-ignore */}
-                            {transaction.TransactionResult?.message || 'No Description'}
+                            {this.getNormalizedErrorMessage()}
                         </Text>
+                    </ScrollView>
 
-                        <Spacer size={50} />
+                    <Spacer size={50} />
 
-                        <Button
-                            light
-                            roundedSmall
-                            label={Localize.t('global.copy')}
-                            style={AppStyles.stretchSelf}
-                            onPress={() => {
-                                Clipboard.setString(
-                                    // @ts-ignore
-                                    transaction.TransactionResult?.message || transaction.TransactionResult?.code,
-                                );
-                                Toast(Localize.t('send.resultCopiedToClipboard'));
-                            }}
-                        />
-                    </View>
+                    <Button
+                        light
+                        roundedSmall
+                        label={Localize.t('global.copy')}
+                        style={AppStyles.stretchSelf}
+                        onPress={() => {
+                            Clipboard.setString(
+                                // @ts-ignore
+                                transaction.TransactionResult?.message || transaction.TransactionResult?.code,
+                            );
+                            Toast(Localize.t('send.resultCopiedToClipboard'));
+                        }}
+                    />
                 </View>
 
                 <Footer>
