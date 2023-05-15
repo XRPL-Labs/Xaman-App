@@ -15,7 +15,7 @@ import Localize from '@locale';
 
 import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
-import { AppStyles } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -32,7 +32,9 @@ export interface State {
 }
 
 /* Component ==================================================================== */
-class LedgerObjectTemplate extends Component<Props, State> {
+class LedgerObjectItem extends Component<Props, State> {
+    static Height = AppSizes.heightPercentageToDP(7.5);
+
     private mounted: boolean;
 
     constructor(props: Props) {
@@ -85,6 +87,20 @@ class LedgerObjectTemplate extends Component<Props, State> {
                     address: item.Destination.address,
                     tag: item.Destination.tag,
                 };
+
+            case LedgerObjectTypes.PayChannel:
+                if (item.Account.address !== account.address) {
+                    return {
+                        address: item.Account.address,
+                        tag: item.Account.tag,
+                    };
+                }
+
+                return {
+                    address: item.Destination.address,
+                    tag: item.Destination.tag,
+                };
+
             case LedgerObjectTypes.NFTokenOffer:
                 return {
                     address: item.Owner,
@@ -166,6 +182,12 @@ class LedgerObjectTemplate extends Component<Props, State> {
             return item.NFTokenID;
         }
 
+        // if (item.Type === LedgerObjectTypes.PayChannel) {
+        //     return `${Localize.formatNumber(NormalizeAmount(item.Amount.value))} ${NormalizeCurrencyCode(
+        //         item.Amount.currency,
+        //     )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
+        // }
+
         if (name) return name;
         if (address) return address;
 
@@ -197,6 +219,8 @@ class LedgerObjectTemplate extends Component<Props, State> {
                 return Localize.t('global.check');
             case LedgerObjectTypes.Ticket:
                 return `${Localize.t('global.ticket')} #${item.TicketSequence}`;
+            case LedgerObjectTypes.PayChannel:
+                return Localize.t('events.paymentChannel');
             default:
                 // @ts-ignore
                 return item.Type;
@@ -265,7 +289,11 @@ class LedgerObjectTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableDebounce onPress={this.onPress} activeOpacity={0.8} style={styles.container}>
+            <TouchableDebounce
+                onPress={this.onPress}
+                activeOpacity={0.8}
+                style={[styles.container, { height: LedgerObjectItem.Height }]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={[styles.label]} numberOfLines={1}>
@@ -285,4 +313,4 @@ class LedgerObjectTemplate extends Component<Props, State> {
     }
 }
 
-export default LedgerObjectTemplate;
+export default LedgerObjectItem;

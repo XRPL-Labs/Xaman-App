@@ -127,7 +127,7 @@ class RecipientElement extends Component<Props> {
 
         return (
             <View style={styles.destinationTagContainer}>
-                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                <Text style={styles.destinationTagText}>
                     {Localize.t('global.destinationTag')}: <Text style={AppStyles.colorBlue}>{recipient.tag}</Text>
                 </Text>
             </View>

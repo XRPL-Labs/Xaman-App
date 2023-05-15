@@ -162,30 +162,32 @@ class CriticalProcessing extends Component<Props, State> {
         ];
 
         return (
-            <BlurView style={styles.blurView} blurAmount={Platform.OS === 'ios' ? 5 : 10} blurType="dark">
-                <Animated.View
-                    testID={testID}
-                    style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}
-                >
-                    <View style={[AppStyles.centerAligned]}>
-                        <Icon style={styles.icon} name="IconAlertTriangle" size={60} />
-                    </View>
-                    <View style={AppStyles.centerAligned}>
-                        <Text style={styles.title}>Encrypting...</Text>
-                    </View>
+            <BlurView blurAmount={Platform.OS === 'ios' ? 5 : 10} blurType="dark">
+                <View style={styles.blurView}>
+                    <Animated.View
+                        testID={testID}
+                        style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}
+                    >
+                        <View style={[AppStyles.centerAligned]}>
+                            <Icon style={styles.icon} name="IconAlertTriangle" size={60} />
+                        </View>
+                        <View style={AppStyles.centerAligned}>
+                            <Text style={styles.title}>Encrypting...</Text>
+                        </View>
 
-                    <Animated.View style={[AppStyles.centerAligned, { opacity: this.animateFade }]}>
-                        <Text style={styles.title2}>Still working on it</Text>
+                        <Animated.View style={[AppStyles.centerAligned, { opacity: this.animateFade }]}>
+                            <Text style={styles.title2}>Still working on it</Text>
+                        </Animated.View>
+
+                        <Spacer size={30} />
+                        <LoadingIndicator size="large" color={StyleService.isDarkMode() ? 'dark' : 'light'} />
+                        <Spacer size={30} />
+                        <View style={AppStyles.centerAligned}>
+                            <Text style={styles.subTitle}>Do NOT close Xumm{'\n'}Do NOT lock your device</Text>
+                        </View>
+                        <Spacer size={20} />
                     </Animated.View>
-
-                    <Spacer size={30} />
-                    <LoadingIndicator size="large" color={StyleService.isDarkMode() ? 'dark' : 'light'} />
-                    <Spacer size={30} />
-                    <View style={AppStyles.centerAligned}>
-                        <Text style={styles.subTitle}>Do NOT close Xumm{'\n'}Do NOT lock your device</Text>
-                    </View>
-                    <Spacer size={30} />
-                </Animated.View>
+                </View>
             </BlurView>
         );
     }

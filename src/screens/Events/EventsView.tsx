@@ -221,7 +221,7 @@ class EventsView extends Component<Props, State> {
             }
 
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket'];
+            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket', 'payment_channel'];
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
@@ -347,6 +347,7 @@ class EventsView extends Component<Props, State> {
                         LedgerObjectTypes.NFTokenOffer,
                         LedgerObjectTypes.Check,
                         LedgerObjectTypes.Ticket,
+                        LedgerObjectTypes.PayChannel,
                     ].includes(p.Type),
                 ),
                 ['Date'],

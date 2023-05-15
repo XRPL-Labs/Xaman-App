@@ -9,6 +9,8 @@ import { Alert, Linking, BackHandler, InteractionManager, NativeEventSubscriptio
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+
 import LoggerService from '@services/LoggerService';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -245,13 +247,13 @@ class VaultModal extends Component<Props, State> {
             }
 
             // populate transaction LastLedgerSequence before signing
-            // INGORE if multi signing
-            if (!multiSign) {
+            // INGORE if multi signing or pseudo transaction
+            if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence();
             }
 
             let signedObject = AccountLib.sign(transaction.Json, signerInstance) as SignedObjectType;
-            signedObject = { ...signedObject, signMethod: method };
+            signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };
 
             this.onSign(signedObject);
         } catch (e: any) {
@@ -274,8 +276,8 @@ class VaultModal extends Component<Props, State> {
 
             // populate transaction LastLedgerSequence before signing
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
-            // INGORE if multi signing
-            if (!multiSign) {
+            // INGORE if multi signing or pseudo transaction
+            if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence(150);
             }
 
@@ -289,8 +291,8 @@ class VaultModal extends Component<Props, State> {
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
 
             // start tangem session
-            await RNTangemSdk.startSession({}).catch(() => {
-                // ignore
+            await RNTangemSdk.startSession({ attestationMode: 'offline' }).catch((e) => {
+                LoggerService.recordError('Unexpected error in startSession TangemSDK', e);
             });
 
             await RNTangemSdk.sign(tangemSignOptions)
@@ -313,13 +315,16 @@ class VaultModal extends Component<Props, State> {
                     }
 
                     // include sign method
-                    signedObject = { ...signedObject, signMethod: AuthMethods.TANGEM };
+                    signedObject = { ...signedObject, signerPubKey: publicKey, signMethod: AuthMethods.TANGEM };
 
+                    // resolve signed object
                     setTimeout(() => {
                         this.onSign(signedObject);
                     }, 2000);
                 })
-                .catch(this.dismiss)
+                .catch((error) => {
+                    this.onSignError(AuthMethods.TANGEM, error);
+                })
                 .finally(() => {
                     setTimeout(() => {
                         RNTangemSdk.stopSession().catch(() => {
@@ -327,8 +332,8 @@ class VaultModal extends Component<Props, State> {
                         });
                     }, 10000);
                 });
-        } catch (e: any) {
-            this.onSignError(AuthMethods.TANGEM, e);
+        } catch (error: any) {
+            this.onSignError(AuthMethods.TANGEM, error);
         }
     };
 

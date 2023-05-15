@@ -21,7 +21,7 @@ import Localize from '@locale';
 
 import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
-import { AppStyles } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -39,7 +39,9 @@ export interface State {
 }
 
 /* Component ==================================================================== */
-class TransactionTemplate extends Component<Props, State> {
+class TransactionItem extends Component<Props, State> {
+    static Height = AppSizes.heightPercentageToDP(7.5);
+
     private mounted: boolean;
 
     constructor(props: Props) {
@@ -600,7 +602,11 @@ class TransactionTemplate extends Component<Props, State> {
 
     render() {
         return (
-            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6} style={[styles.container]}>
+            <TouchableDebounce
+                onPress={this.onPress}
+                activeOpacity={0.6}
+                style={[styles.container, { height: TransactionItem.Height }]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={[styles.label]} numberOfLines={1}>
@@ -623,4 +629,4 @@ class TransactionTemplate extends Component<Props, State> {
     }
 }
 
-export default TransactionTemplate;
+export default TransactionItem;

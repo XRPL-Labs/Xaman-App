@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import ApiService from '@services/ApiService';
 
+import { PseudoTransactionTypes } from '../../ledger/types';
+
 import { Payload } from '../object';
 import { PayloadOrigin } from '../types';
 
@@ -130,11 +132,11 @@ describe('Payload', () => {
         const fetchedPayload = await Payload.from(SignInPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
-        expect(fetchedPayload.isSignIn()).toBe(true);
+        expect(fetchedPayload.isPseudoTransaction()).toBe(true);
         expect(fetchedPayload.shouldSubmit()).toBe(false);
         expect(fetchedPayload.getTransactionType()).toBe('SignIn');
         expect(fetchedPayload.getTransaction().Json).toEqual({});
-        expect(fetchedPayload.getTransaction().Type).toEqual(undefined);
+        expect(fetchedPayload.getTransaction().Type).toEqual(PseudoTransactionTypes.SignIn);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.DEEP_LINK);
     });
 
@@ -227,7 +229,7 @@ describe('Payload', () => {
         }
     });
 
-    it('Should throw error if Pseudo transaction and crafted tx have type', async () => {
+    it('Should throw error if transaction and crafted tx have different type', async () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
         // set unsupported type
@@ -239,7 +241,7 @@ describe('Payload', () => {
         try {
             payload.getTransaction();
         } catch (e) {
-            expect(e.toString()).toEqual('Error: SignIn pseudo transaction should not contain transaction type!');
+            expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
         }
     });
 });

@@ -1,34 +1,22 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes, AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    rowListContainer: {
-        paddingTop: AppSizes.padding,
+    rowTitle: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
+        paddingVertical: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+    },
+    rowTitleFirst: {
+        paddingTop: 0,
     },
     actionButtonContainer: {
         flexDirection: 'row',
         paddingTop: AppSizes.padding,
-    },
-    appIcon: {
-        width: AppSizes.scale(60),
-        height: AppSizes.scale(60),
-        borderRadius: AppSizes.scale(10),
-    },
-    appTitle: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
-        textAlign: 'center',
-        color: '$textPrimary',
-    },
-    activityIndicator: {
-        height: AppSizes.scale(240),
-    },
-    xAppsIcon: {
-        resizeMode: 'contain',
-        height: AppSizes.scale(20),
-        width: AppSizes.scale(80),
     },
 });
 

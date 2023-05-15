@@ -20,11 +20,13 @@ import StyleService from '@services/StyleService';
 
 import { LoadingIndicator, SearchBar } from '@components/General';
 
-import Localize from '@locale';
+import { XAppOrigin } from '@common/libs/payload';
 
 import { ListHeader } from '@components/Modules/AssetsList/NFTokens/ListHeader';
 import { NFTokenData, NFTokenItem } from '@components/Modules/AssetsList/NFTokens/NFTokenItem';
 import { ListEmpty } from '@components/Modules/AssetsList/NFTokens/ListEmpty';
+
+import Localize from '@locale';
 
 import { AppSizes } from '@theme';
 import styles from './styles';
@@ -216,6 +218,7 @@ class NFTokensList extends Component<Props, State> {
                 params: {
                     token,
                 },
+                origin: XAppOrigin.XUMM,
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,

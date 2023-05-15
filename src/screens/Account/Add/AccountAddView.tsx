@@ -224,7 +224,7 @@ class AccountAddView extends Component<Props, State> {
             attestationMode: 'offline',
             defaultDerivationPaths: DefaultDerivationPaths,
         }).catch((e) => {
-            LoggerService.recordError('Unexpected error in startSession TangemSDK', e);
+            LoggerService.recordError('Unexpected error TangemSDK startSession', e);
         });
 
         if (NFCEnabled) {

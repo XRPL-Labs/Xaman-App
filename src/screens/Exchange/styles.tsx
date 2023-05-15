@@ -37,6 +37,16 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
     },
+    detailsLabel: {
+        fontSize: AppFonts.subtext.size * 0.9,
+        fontFamily: AppFonts.base.family,
+        color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+    },
+    detailsValue: {
+        fontSize: AppFonts.subtext.size * 0.9,
+        fontFamily: AppFonts.base.familyMono,
+        color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+    },
     inputContainer: {
         left: 0,
         right: 0,

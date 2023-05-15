@@ -101,7 +101,9 @@ class CipherMigrationView extends Component<Props, State> {
         LoggerService.recordError('Encryption migration error', exception);
 
         // log the event
-        LoggerService.logEvent(LogEvents.EncryptionMigrationException);
+        LoggerService.logEvent(LogEvents.EncryptionMigrationException, {
+            message: exception?.message,
+        });
 
         // show alert
         Alert.alert(

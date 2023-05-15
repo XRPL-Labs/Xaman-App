@@ -4,10 +4,9 @@
 
 import { filter, find, first, get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, ImageBackground, Text } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
-
 import { Navigator } from '@common/helpers/navigator';
 
 import { SocketService, StyleService } from '@services';
@@ -24,13 +23,18 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import { ChainColors } from '@theme/colors';
 
-import styles from './styles';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
+
+import { PseudoTransactionTypes } from '@common/libs/ledger/types';
 
 // transaction templates
 import * as Templates from './Templates';
+import * as PseudoTemplates from './Templates/pseudo';
 
 import { StepsContext } from '../../Context';
 
+import styles from './styles';
 /* types ==================================================================== */
 export interface Props {}
 
@@ -67,7 +71,7 @@ class ReviewStep extends Component<Props, State> {
         if (payload.isMultiSign()) {
             // only accounts with full access
             availableAccounts = AccountRepository.getFullAccessAccounts();
-        } else if (payload.isSignIn()) {
+        } else if (payload.isPseudoTransaction()) {
             // account's that can sign the transaction
             availableAccounts = AccountRepository.getSignableAccounts();
         } else {
@@ -172,37 +176,40 @@ class ReviewStep extends Component<Props, State> {
     renderDetails = () => {
         const { payload, transaction, source, setLoading, setReady } = this.context;
 
-        // if it's a  SignIn payload ignore to show details as it's a pseudo transaction
-        if (payload.isSignIn()) {
-            return null;
+        const Components = [];
+        const Props = {
+            source,
+            transaction,
+            payload,
+            forceRender: this.forceRender,
+            setLoading,
+            setReady,
+        };
+
+        switch (true) {
+            case transaction instanceof BasePseudoTransaction:
+                Components.push(
+                    React.createElement(get(PseudoTemplates, String(transaction.Type)), {
+                        ...Props,
+                        key: `${transaction.Type}Template`,
+                    }),
+                );
+                break;
+            case transaction instanceof BaseTransaction:
+                Components.push(
+                    React.createElement(get(Templates, String(transaction.Type)), {
+                        ...Props,
+                        key: `${transaction.Type}Template`,
+                    }),
+                );
+                // @ts-ignore
+                Components.push(React.createElement(get(Templates, 'Global'), { ...Props, key: 'GlobalTemplate' }));
+                break;
+            default:
+                break;
         }
 
-        // TODO: better typescript handling
-        const Template = get(Templates, payload.getTransactionType());
-        const Global = get(Templates, 'Global');
-
-        // render transaction details and global variables
-        return (
-            <>
-                {/* @ts-ignore */}
-                <Template
-                    source={source}
-                    transaction={transaction}
-                    payload={payload}
-                    forceRender={this.forceRender}
-                    setLoading={setLoading}
-                    setReady={setReady}
-                />
-                <Global
-                    source={source}
-                    transaction={transaction}
-                    payload={payload}
-                    forceRender={this.forceRender}
-                    setLoading={setLoading}
-                    setReady={setReady}
-                />
-            </>
-        );
+        return Components;
     };
 
     renderEmptyOverlay = () => {
@@ -271,7 +278,8 @@ class ReviewStep extends Component<Props, State> {
     render() {
         const { accounts, canScroll } = this.state;
 
-        const { payload, source, isReady, isLoading, setSource, onAccept, onClose, getTransactionLabel } = this.context;
+        const { payload, transaction, source, isReady, isLoading, setSource, onAccept, onClose, getTransactionLabel } =
+            this.context;
 
         // no account is available for signing
         if (Array.isArray(accounts) && accounts.length === 0) {
@@ -295,7 +303,7 @@ class ReviewStep extends Component<Props, State> {
                     <View style={AppStyles.row}>
                         <View style={[AppStyles.flex1, AppStyles.leftAligned, AppStyles.paddingRightSml]}>
                             <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                {payload.isSignIn()
+                                {transaction.Type === PseudoTransactionTypes.SignIn
                                     ? Localize.t('global.signIn')
                                     : Localize.t('global.reviewTransaction')}
                             </Text>
@@ -332,7 +340,7 @@ class ReviewStep extends Component<Props, State> {
                                     </>
                                 )}
 
-                                {!payload.isSignIn() && (
+                                {transaction.Type !== PseudoTransactionTypes.SignIn && (
                                     <>
                                         <Text style={styles.descriptionLabel}>{Localize.t('global.type')}</Text>
                                         <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
@@ -348,7 +356,7 @@ class ReviewStep extends Component<Props, State> {
                         <View style={AppStyles.paddingHorizontalSml}>
                             <View style={styles.rowLabel}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {payload.isSignIn() || payload.isMultiSign()
+                                    {payload.isPseudoTransaction() || payload.isMultiSign()
                                         ? Localize.t('global.signAs')
                                         : Localize.t('global.signWith')}
                                 </Text>

@@ -45,7 +45,7 @@ class AuthenticationService {
         this.postSuccess = [
             AppService.checkShowChangeLog,
             AppService.checkAppUpdate,
-            BackendService.ping,
+            BackendService.sync,
             LinkingService.checkInitialDeepLink,
             PushNotificationsService.checkInitialNotification,
         ];

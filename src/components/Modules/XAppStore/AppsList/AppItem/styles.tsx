@@ -5,15 +5,14 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
-        flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: AppSizes.paddingExtraSml,
+        height: AppSizes.heightPercentageToDP(7.5),
     },
     appTitle: {
         lineHeight: AppFonts.subtext.size * 0.9,
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
-        textAlign: 'center',
         color: '$textPrimary',
     },
     appTitlePlaceholder: {
@@ -24,10 +23,26 @@ const styles = StyleService.create({
         width: '80%',
         aspectRatio: 1,
         borderRadius: 10,
-        marginBottom: AppSizes.paddingExtraSml,
     },
     appIconPlaceholder: {
         backgroundColor: '$silver',
+    },
+    rightPanelContainer: {
+        marginTop: 5,
+        marginLeft: AppSizes.paddingExtraSml,
+    },
+    categoryContainer: {
+        marginTop: 3,
+        backgroundColor: '$tint',
+        paddingHorizontal: 3,
+        paddingVertical: 1,
+        borderRadius: 5,
+        alignSelf: 'flex-start',
+    },
+    categoryLabel: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size * 0.7,
+        color: '$textPrimary',
     },
 });
 

@@ -3,6 +3,10 @@ import moment from 'moment-timezone';
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList, RefreshControl } from 'react-native';
 
+import { Payload } from '@common/libs/payload';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+import { BaseLedgerObject } from '@common/libs/ledger/objects';
+
 import StyleService from '@services/StyleService';
 
 import { AccountSchema } from '@store/schemas/latest';
@@ -14,9 +18,7 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
-// EventListItems
 import * as EventListItems from './EventListItems';
-
 /* Types ==================================================================== */
 interface Props {
     account: AccountSchema;
@@ -50,7 +52,7 @@ class EventsList extends PureComponent<Props> {
         return momentDate.format('DD MMM, Y');
     };
 
-    listEmpty = () => {
+    renderListEmpty = () => {
         const { isLoading } = this.props;
 
         if (isLoading) {
@@ -73,12 +75,12 @@ class EventsList extends PureComponent<Props> {
 
         const passProps = { item, account, timestamp };
 
-        switch (item.ClassName) {
-            case 'Payload':
+        switch (true) {
+            case item instanceof Payload:
                 return React.createElement(EventListItems.Request, passProps);
-            case 'Transaction':
+            case item instanceof BaseTransaction:
                 return React.createElement(EventListItems.Transaction, passProps);
-            case 'LedgerObject':
+            case item instanceof BaseLedgerObject:
                 return React.createElement(EventListItems.LedgerObject, passProps);
             default:
                 return null;
@@ -110,19 +112,19 @@ class EventsList extends PureComponent<Props> {
         return (
             <SectionList
                 style={styles.sectionList}
-                contentContainerStyle={[styles.sectionListContainer]}
+                contentContainerStyle={styles.sectionListContainer}
                 sections={dataSource}
                 renderItem={this.renderItem}
                 renderSectionHeader={this.renderSectionHeader}
                 keyExtractor={(item) => item.Hash || item.meta?.uuid || item.Index}
-                ListEmptyComponent={this.listEmpty}
+                ListEmptyComponent={this.renderListEmpty}
+                ListHeaderComponent={headerComponent}
                 onEndReached={onEndReached}
                 onEndReachedThreshold={0.2}
                 ListFooterComponent={this.renderFooter}
                 windowSize={10}
                 maxToRenderPerBatch={10}
                 initialNumToRender={20}
-                ListHeaderComponent={headerComponent}
                 refreshControl={
                     <RefreshControl
                         refreshing={isLoading}

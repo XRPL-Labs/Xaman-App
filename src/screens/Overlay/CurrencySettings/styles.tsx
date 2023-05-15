@@ -142,6 +142,11 @@ const styles = StyleService.create({
     favoriteIconActive: {
         tintColor: '$orange',
     },
+    copyIcon: {
+        tintColor: '$grey',
+        marginLeft: 5,
+        alignSelf: 'center',
+    },
 });
 
 export default styles;

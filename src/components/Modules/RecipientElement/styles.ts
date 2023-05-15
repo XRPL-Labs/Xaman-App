@@ -35,11 +35,19 @@ export default StyleService.create({
         fontSize: AppFonts.small.size,
     },
     destinationTagContainer: {
+        flexDirection: 'row',
         marginTop: 8,
         paddingTop: 8,
         paddingBottom: 2,
-        width: '100%',
+        paddingRight: 2,
         borderTopWidth: 1,
         borderTopColor: '$lightGrey',
+    },
+    destinationTagText: {
+        flex: 1,
+        flexWrap: 'wrap',
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.subtext.size - 1,
+        color: '$grey',
     },
 });

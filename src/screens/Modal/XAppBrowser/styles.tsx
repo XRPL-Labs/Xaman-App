@@ -5,21 +5,19 @@ import StyleService from '@services/StyleService';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1 },
-    webViewContainer: {
-        flex: 1,
+    container: {
         backgroundColor: '$background',
+        flex: 1,
+    },
+    contentContainer: {
+        backgroundColor: '$background',
+        flex: 1,
+        overflow: 'hidden',
     },
     webView: {
         backgroundColor: '$background',
     },
-    errorContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: AppSizes.paddingSml,
-    },
-    loadingStyle: {
+    stateContainer: {
         backgroundColor: '$background',
         position: 'absolute',
         left: 0,

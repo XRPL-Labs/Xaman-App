@@ -1,5 +1,5 @@
-import { get, has, isObject, isString } from 'lodash';
-import codec from 'ripple-binary-codec';
+import { get, has, mapKeys, isObject, isString, isUndefined } from 'lodash';
+import * as codec from 'ripple-binary-codec';
 
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
@@ -13,7 +13,7 @@ import { TransactionFactory } from '@common/libs/ledger/factory';
 import Localize from '@locale';
 
 import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
-import { Transactions } from '@common/libs/ledger/transactions/types';
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import {
     ApplicationType,
     MetaType,
@@ -32,8 +32,6 @@ const logger = LoggerService.createLogger('Payload');
 
 /* Payload  ==================================================================== */
 export class Payload {
-    public readonly ClassName = 'Payload';
-
     meta: MetaType;
     application: ApplicationType;
     payload: PayloadReferenceType;
@@ -115,17 +113,38 @@ export class Payload {
         try {
             const { hash, request_json, tx_type } = payload;
 
-            // check if tx_type is same as request_json
-            if (
-                (tx_type === PseudoTransactionTypes.SignIn && request_json.TransactionType) ||
-                (tx_type !== PseudoTransactionTypes.SignIn && request_json.TransactionType !== tx_type)
-            ) {
+            const isPseudoTransaction = [
+                PseudoTransactionTypes.SignIn,
+                PseudoTransactionTypes.PaymentChannelAuthorize,
+                // @ts-ignore
+            ].includes(tx_type);
+
+            // Pseudo transactions should not have transaction type
+            if (isPseudoTransaction && request_json.TransactionType) {
                 return false;
             }
 
+            // for normal transactions tx_type should be the same as request_json TransactionType
+            if (!isPseudoTransaction && request_json.TransactionType !== tx_type) {
+                return false;
+            }
+
+            let hashEncodingMethod = 'encode';
+            let normalizedRequestJson = request_json;
+
+            // if it's the pseudo PaymentChannelAuthorize we need
+            // 1) use encodeForSigningClaim method for encoding
+            // 2) lower case the keys
+            if (tx_type === PseudoTransactionTypes.PaymentChannelAuthorize) {
+                hashEncodingMethod = 'encodeForSigningClaim';
+                normalizedRequestJson = mapKeys(request_json, (v, k) => k.toLowerCase());
+            }
+
             // encode + hash and check for the checksum
+            // @ts-ignore
+            const encodedTX = codec[hashEncodingMethod](normalizedRequestJson);
+
             const deviceId = GetDeviceUniqueId();
-            const encodedTX = codec.encode(request_json);
             const checksum = await SHA1(`${encodedTX}+${deviceId}`);
 
             return checksum === hash;
@@ -266,10 +285,11 @@ export class Payload {
     };
 
     /**
-     * check if we need to submit the tx to the ledger
+     * Check if we need to submit the tx to the ledger
+     * only submit when dev indicated and not Pseudo transaction and not multi sign transaction
      */
     shouldSubmit = (): boolean => {
-        return this.meta.submit && !this.isSignIn() && !this.isMultiSign();
+        return this.meta.submit && !this.isPseudoTransaction() && !this.isMultiSign();
     };
 
     /**
@@ -287,10 +307,11 @@ export class Payload {
     };
 
     /**
-     * Return true if payload is SignIn transaction
+     * Return true if payload is Pseudo transaction
      */
-    isSignIn = (): boolean => {
-        return this.getTransactionType() === PseudoTransactionTypes.SignIn;
+    isPseudoTransaction = (): boolean => {
+        const { request_json } = this.payload;
+        return isUndefined(get(request_json, 'TransactionType', undefined));
     };
 
     isPathFinding = (): boolean => {
@@ -300,10 +321,10 @@ export class Payload {
     /**
      * Get transaction
      */
-    getTransaction(): Transactions {
-        const { request_json } = this.payload;
+    getTransaction(): Transactions | PseudoTransactions {
+        const { request_json, tx_type } = this.payload;
 
-        // check if transaction type is supported
+        // check if normal transaction and supported by Xumm
         if (
             request_json.TransactionType &&
             !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
@@ -311,18 +332,28 @@ export class Payload {
             throw new Error('Requested transaction type is not supported in XUMM!');
         }
 
-        // craft transaction base on requested json
-        const craftedTransaction = TransactionFactory.fromJson(request_json);
-
-        // check assigned transaction have the same type as reported from backend
-        // NOTE: this should never happen
-        if (!this.isSignIn() && craftedTransaction.TransactionType !== this.getTransactionType()) {
-            throw new Error('Parsed transaction have invalid transaction type!');
+        // check if pseudo transaction and supported by Xumm
+        if (
+            !request_json.TransactionType &&
+            !Object.values(PseudoTransactionTypes).includes(tx_type as PseudoTransactionTypes)
+        ) {
+            throw new Error('Requested pseudo transaction type is not supported in XUMM!');
         }
 
-        // the SignIn transactions should not have type as it's a pseudo transaction
-        if (this.isSignIn() && craftedTransaction.TransactionType) {
-            throw new Error('SignIn pseudo transaction should not contain transaction type!');
+        let craftedTransaction;
+        if (this.isPseudoTransaction()) {
+            craftedTransaction = TransactionFactory.getPseudoTransaction(
+                { ...request_json },
+                tx_type as PseudoTransactionTypes,
+            );
+        } else {
+            craftedTransaction = TransactionFactory.getTransaction({ ...request_json });
+        }
+
+        // check assigned transaction have the same type as reported from backend
+        // NOTE: THIS SHOULD NEVER HAPPEN
+        if (craftedTransaction.TransactionType !== this.getTransactionType()) {
+            throw new Error('Parsed transaction have invalid transaction type!');
         }
 
         return craftedTransaction;
@@ -387,5 +418,14 @@ export class Payload {
         }
 
         return undefined;
+    };
+
+    /**
+     * Return forced network if any
+     */
+    getForcedNetwork = (): string => {
+        const { force_network } = this.meta;
+
+        return force_network;
     };
 }

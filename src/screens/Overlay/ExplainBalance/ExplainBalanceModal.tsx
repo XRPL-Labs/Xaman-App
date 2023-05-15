@@ -81,6 +81,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
     ): Promise<LedgerEntriesTypes[]> => {
         return LedgerService.getAccountObjects(account, { marker }).then((resp) => {
             const { account_objects, marker: _marker } = resp;
+
             // ignore TrustLines as we handle them in better way
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
@@ -89,7 +90,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     // @ts-ignore
                     o.LedgerEntryType !== 'NFTokenPage' &&
                     // @ts-ignore
-                    (o.Account === account || o.Owner === account)
+                    (o.Account === account || o.Owner === account || o.LedgerEntryType === 'PayChannel')
                 );
             });
 
@@ -168,7 +169,17 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         return Object.keys(accountObjectsCount).map((entryType) => {
             const count = accountObjectsCount[entryType];
-            const label = count > 1 ? `${entryType}s (${count})` : entryType;
+
+            let normalizedEntryType;
+            switch (entryType) {
+                case 'PayChannel':
+                    normalizedEntryType = Localize.t('events.paymentChannel');
+                    break;
+                default:
+                    normalizedEntryType = entryType;
+            }
+
+            const label = count > 1 ? `${normalizedEntryType}s (${count})` : normalizedEntryType;
             const totalReserve = count * networkReserve.OwnerReserve;
             return (
                 <View key={`objects-${entryType}`} style={[styles.objectItemCard]}>

@@ -9,7 +9,7 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
@@ -199,7 +199,7 @@ class LinkingService {
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier: xapp,
-                    origin: PayloadOrigin.DEEP_LINK,
+                    origin: XAppOrigin.DEEP_LINK,
                     originData: { url },
                     params,
                 },

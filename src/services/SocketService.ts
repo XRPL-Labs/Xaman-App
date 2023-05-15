@@ -9,7 +9,7 @@ import CoreRepository from '@store/repositories/core';
 import { NodeChain } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
-import { GetAppReadableVersion } from '@common/helpers/app';
+import { GetAppVersionCode } from '@common/helpers/app';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
@@ -33,7 +33,6 @@ class SocketService extends EventEmitter {
     public node: string;
     public chain: NodeChain;
     public connection: XrplClient;
-    private origin: string;
     private status: SocketStateStatus;
     private shownErrorDialog: boolean;
     private logger: any;
@@ -47,7 +46,6 @@ class SocketService extends EventEmitter {
         this.chain = undefined;
         this.connection = undefined;
         this.shownErrorDialog = false;
-        this.origin = `https://xumm.app/#${Platform.OS}/${GetAppReadableVersion()}`;
         this.status = SocketStateStatus.Disconnected;
         this.logger = LoggerService.createLogger('Socket');
 
@@ -311,6 +309,11 @@ class SocketService extends EventEmitter {
             connectedNode = connectedNode.replace(`${AppConfig.nodes.proxy}/`, '');
         }
 
+        // remove path from cluster node
+        if (connectedNode.startsWith(AppConfig.nodes.cluster)) {
+            connectedNode = AppConfig.nodes.cluster;
+        }
+
         // set node and connection
         this.node = connectedNode;
 
@@ -354,14 +357,19 @@ class SocketService extends EventEmitter {
 
         // load node's list base on selected node chain
         if (this.chain === NodeChain.Main) {
-            nodes = [...AppConfig.nodes.main];
+            nodes = AppConfig.nodes.main.map((node) => {
+                // for cluster we add the custom path
+                if (node === AppConfig.nodes.cluster) {
+                    return `${node}/xumm/${GetAppVersionCode()}/${Platform.OS}`;
+                }
+                return node;
+            });
         } else if (this.chain === NodeChain.Test) {
             nodes = [...AppConfig.nodes.test];
         } else if (this.chain === NodeChain.Dev) {
             nodes = [...AppConfig.nodes.dev];
         } else {
-            // if not belong to any chain then it's custom node
-            // wrap it in proxy
+            // if not belong to any chain then it's custom node wrap it in proxy
             nodes = [`${AppConfig.nodes.proxy}/${this.node}`];
         }
 

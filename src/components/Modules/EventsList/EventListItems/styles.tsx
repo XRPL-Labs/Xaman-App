@@ -7,7 +7,6 @@ const styles = StyleService.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: AppSizes.heightPercentageToDP(7.5),
         borderRadius: 10,
         paddingLeft: 5,
         paddingRight: 5,
@@ -49,6 +48,9 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size * 0.9,
         color: '$grey',
+    },
+    transactionLabel: {
+        color: '$blue',
     },
     amount: {
         flexWrap: 'wrap',

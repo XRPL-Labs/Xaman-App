@@ -11,6 +11,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Capitalize } from '@common/utils/string';
 
+import { Transactions } from '@common/libs/ledger/transactions/types';
+
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
@@ -28,8 +30,9 @@ import styles from './styles';
 
 import { TemplateProps } from './types';
 /* types ==================================================================== */
-export interface Props extends TemplateProps {}
-
+export interface Props extends Omit<TemplateProps, 'transaction'> {
+    transaction: Transactions;
+}
 export interface State {
     availableFees: FeeItem[];
     selectedFee: FeeItem;

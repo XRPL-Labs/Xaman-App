@@ -1,5 +1,8 @@
 import { AmountType, LedgerAmount } from './parser/types';
 
+export enum TransactionBaseTypes {
+    Transaction = 'Transaction',
+}
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -29,6 +32,7 @@ export enum TransactionTypes {
 
 export enum PseudoTransactionTypes {
     SignIn = 'SignIn',
+    PaymentChannelAuthorize = 'PaymentChannelAuthorize',
 }
 
 export enum LedgerObjectTypes {
@@ -37,6 +41,8 @@ export enum LedgerObjectTypes {
     NFTokenOffer = 'NFTokenOffer',
     Offer = 'Offer',
     Ticket = 'Ticket',
+
+    PayChannel = 'PayChannel',
 }
 
 /**
@@ -76,6 +82,7 @@ export type SignedObjectType = {
     signedTransaction: string;
     txJson?: Object;
     signers?: string[];
+    signerPubKey?: string;
     signMethod?: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
 };
 

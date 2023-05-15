@@ -25,6 +25,7 @@ export default {
         test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
         dev: ['wss://s.devnet.rippletest.net:51233'],
         deprecated: ['wss://xrpl.ws'],
+        cluster: 'wss://xrplcluster.com',
     },
 
     // xrpl explorers

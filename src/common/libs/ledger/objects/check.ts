@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import { get, set, has, isUndefined } from 'lodash';
+import { get, isUndefined } from 'lodash';
 
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -44,21 +44,13 @@ class Check extends BaseLedgerObject {
     get Destination(): Destination {
         const destination = get(this, ['object', 'Destination'], undefined);
         const destinationTag = get(this, ['object', 'DestinationTag'], undefined);
-        const destinationName = get(this, ['object', 'DestinationName'], undefined);
 
         if (isUndefined(destination)) return undefined;
 
         return {
-            name: destinationName,
             address: destination,
             tag: destinationTag,
         };
-    }
-
-    set Destination(destination: Destination) {
-        if (has(destination, 'name')) {
-            set(this, ['object', 'DestinationName'], destination.name);
-        }
     }
 
     get Date(): any {

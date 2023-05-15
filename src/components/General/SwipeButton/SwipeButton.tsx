@@ -134,11 +134,17 @@ class SwipeButton extends Component<Props, State> {
         if (typeof onSwipeSuccess === 'function') {
             onSwipeSuccess();
         }
+
         this.reset();
     };
 
     onPanResponderGrant = () => {
-        const { onPanResponderGrant } = this.props;
+        const { onPanResponderGrant, isDisabled } = this.props;
+
+        // ignore if button disabled
+        if (isDisabled) {
+            return;
+        }
 
         if (typeof onPanResponderGrant === 'function') {
             onPanResponderGrant();
@@ -172,6 +178,7 @@ class SwipeButton extends Component<Props, State> {
     onPanResponderRelease = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         const { isDisabled, onPanResponderRelease } = this.props;
 
+        // ignore if button is disabled
         if (isDisabled) {
             return;
         }

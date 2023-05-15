@@ -219,20 +219,11 @@ class AccountSettingsView extends Component<Props, State> {
             return;
         }
 
-        // auth with passcode for Physical and accounts with Passcode as encryption level
-        if ([EncryptionLevels.Passcode, EncryptionLevels.Physical].includes(account.encryptionLevel)) {
-            Navigator.showOverlay(AppScreens.Overlay.Auth, {
-                canAuthorizeBiometrics: false,
-                onSuccess: this.removeAccount,
-            });
-
-            // for accounts with passphrase auth with passphrase
-        } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
-                account,
-                onSuccess: this.removeAccount,
-            });
-        }
+        // auth with passcode for full access accounts
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            canAuthorizeBiometrics: false,
+            onSuccess: this.removeAccount,
+        });
     };
 
     onRemovePress = () => {

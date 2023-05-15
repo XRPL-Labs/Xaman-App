@@ -40,6 +40,8 @@ export interface MetaType {
     custom_instruction?: string;
     signers?: string[];
     pathfinding?: boolean;
+    pathfinding_fallback?: boolean;
+    force_network?: string;
 }
 
 export interface PayloadReferenceType {
@@ -100,8 +102,20 @@ export enum PayloadOrigin {
     DEEP_LINK = 'DEEP_LINK',
     PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
     EVENT_LIST = 'EVENT_LIST',
-    TRANSACTION_MEMO = 'TRANSACTION_MEMO',
     XAPP = 'XAPP',
+    UNKNOWN = 'UNKNOWN',
+}
+
+export enum XAppOrigin {
+    XAPP_STORE = 'XAPP_STORE',
+    XAPP_SHORT_LIST = 'XAPP_SHORT_LIST',
+
+    QR = 'QR',
+    DEEP_LINK = 'DEEP_LINK',
+    PUSH_NOTIFICATION = 'PUSH_NOTIFICATION',
+    EVENT_LIST = 'EVENT_LIST',
+    TRANSACTION_MEMO = 'TRANSACTION_MEMO',
+
     IMPORT_ACCOUNT = 'IMPORT_ACCOUNT',
     XUMM = 'XUMM',
     UNKNOWN = 'UNKNOWN',

@@ -24,6 +24,8 @@
     "events": "Events",
     "profile": "Profile",
     "pro": "Pro Beta",
+    "xapps": "xApps",
+    "xapp": "xApp",
     "settings": "Settings",
     "search": "Search",
     "send": "Send",
@@ -63,6 +65,7 @@
     "escrow": "Escrow",
     "offer": "Offer",
     "check": "Check",
+    "nft": "NFT",
     "other": "Other",
     "filter": "Filter",
     "favorite": "Favorite",
@@ -128,6 +131,7 @@
     "url": "URL",
     "chain": "Chain",
     "signing": "Signing",
+    "paymentChannelAuthorize": "Payment Channel Authorize",
     "issuer": "Issuer",
     "accept": "Accept",
     "slideToAccept": "Slide to accept",
@@ -460,6 +464,7 @@
     "cashCheck": "Cash check",
     "cancelCheck": "Cancel check",
     "accountSettings": "Account Settings",
+    "depositPreauth": "Deposit preauth",
     "authorizeDeposit": "Authorize deposit ",
     "unauthorizeDeposit": "Unauthorize deposit ",
     "deleteAccount": "Delete Account",
@@ -473,6 +478,9 @@
     "createPaymentChannel": "Create payment channel",
     "claimPaymentChannel": "Claim payment channel",
     "fundPaymentChannel": "Fund payment channel",
+    "paymentChannel": "Payment channel",
+    "payChannelAmount": "Payment channel amount",
+    "payChannelBalance": "Payment channel claimed so far",
     "mintNFT": "Mint NFT",
     "burnNFT": "Burn NFT",
     "createNFTOffer": "Create NFT offer",
@@ -538,6 +546,8 @@
     "createdTicketsSequence": "Created tickets sequence %{ticketsSequence}",
     "pleaseReleaseThisEscrowUsingTheToolUsedToCreateTheEscrow": "Please release this escrow using the tool / platform used to create it. XUMM cannot release the escrow as there is an Escrow Condition present on it.",
     "accountWillCreateAPaymentChannelTo": "The account %{account} will create a payment channel to %{destination}",
+    "accountCreatedAPaymentChannelTo": "The account %{account} created a payment channel to %{destination}",
+    "theChannelExpiresAt": "The channel expires at %{expiration}.",
     "theChannelIdIs": "The channel ID is %{channel}",
     "theChannelAmountIs": "The channel amount is %{amount} XRP",
     "theASourceTagIs": "Source Tag: %{tag}",
@@ -581,6 +591,16 @@
     "openProBeta": "Open Pro Beta",
     "xummProBeta": "Xumm Pro Beta",
     "xummProBetaDescription": "Support Xumm & unlock more features like transaction push notifications. More features will be added over time, with early access for Pro Beta subscribers."
+  },
+  "xapp": {
+    "popular": "Popular",
+    "recentlyUsed": "Recently used",
+    "ourSuggestions": "Our suggestions",
+    "all": "All",
+    "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
+    "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
+    "forceShowXApp": "Force show xApp",
+    "contactDeveloper": "Contact Developer"
   },
   "settings": {
     "generalSettings": "General",
@@ -663,6 +683,8 @@
   },
   "account": {
     "addAccount": "Add an account",
+    "hideSecret": "Hide secret",
+    "showSecret": "Show secret",
     "addAccountDescription": "Import your existing account, or create a new account.",
     "importExisting": "Import an existing account",
     "generateNewAccount": "Create a new account",
@@ -926,11 +948,11 @@
     "restrictingConfigurationDetected": "Restricting configuration detected",
     "moreInfoAndFix": "More info & fix",
     "addingTrustLineWarning": "XRPL Labs / XUMM does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk.",
-    "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again."
+    "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
   },
   "exchange": {
     "exchanging": "Exchanging",
-    "exchangeRate": "Exchange rate (%{exchangeRate} XRP)",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "doYouWantToExchange": "Are you sure you want to exchange %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?",
     "successfullyExchanged": "Hooray, successfully exchanged %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}.",
@@ -946,7 +968,10 @@
     "maxSlippageExceeded": "The exchange rate will be bad as there are not enough (good) offers on the Decentralized Exchange.",
     "maxReverseSlippageExceeded": "The exchange rate will be bad if you would try to exchange back, as there are not enough (good) offers on the Decentralized Exchange.",
     "slippageSpreadWarning": "The exchange rate displayed is an estimate based on the current offers available on the XRP Ledger Decentralized Exchange.\nWhen you execute this trade and the liquidity changed while executing your transaction, you may get an up to %{slippage}% worse exchange rate. Please only continue if you accept this",
-    "iAcceptExchange": "I accept, exchange"
+    "iAcceptExchange": "I accept, exchange",
+    "exchangeRate": "Exchange rate",
+    "minimumReceived": "Minimum received",
+    "slippageTolerance": "Slippage tolerance"
   },
   "scan": {
     "aimAtTheCode": "Aim at the QR code",
@@ -1000,6 +1025,9 @@
     "findNewPaymentOptions": "Find new payment options",
     "noPaymentOptionsFound": "No payment options found",
     "unableToFindTheOfferObject": "Unable to find the offer object!",
-    "theIssuerCanBurnThisToken": "Note: The issuer can burn this token."
+    "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
+    "payloadForceNetworkError": "This payload is not valid on the network you are connected with.\n\nPlease switch to %{network} and try again.",
+    "pathDryError": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
+    "tecPartialError": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts."
   }
 }

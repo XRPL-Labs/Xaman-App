@@ -11,7 +11,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { TrustLineRepository } from '@store/repositories';
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
-import { Payload } from '@common/libs/payload';
+import { Payload, XAppOrigin } from '@common/libs/payload';
 
 import { TrustSet, Payment } from '@common/libs/ledger/transactions';
 
@@ -20,8 +20,9 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import { Prompt } from '@common/helpers/interface';
+import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import { AppScreens } from '@common/constants';
 
@@ -457,6 +458,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         asset: trustLine.currency.currency,
                         action: 'DEPOSIT',
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -479,6 +481,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         asset: trustLine.currency.currency,
                         action: 'WITHDRAW',
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -589,6 +592,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                         issuer: trustLine.currency.issuer,
                         token: trustLine.currency.currency,
                     },
+                    origin: XAppOrigin.XUMM,
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -631,6 +635,13 @@ class CurrencySettingsModal extends Component<Props, State> {
                 },
             ],
         });
+    };
+
+    copyIssuerAddress = () => {
+        const { trustLine } = this.props;
+
+        Clipboard.setString(trustLine.currency.issuer);
+        Toast(Localize.t('asset.issuerAddressCopiedToClipboard'));
     };
 
     canSend = () => {
@@ -688,12 +699,19 @@ class CurrencySettingsModal extends Component<Props, State> {
                                     <Text style={styles.currencyItemLabelSmall}>
                                         {trustLine.currency.name || NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
-                                    <Text style={styles.issuerLabel}>
-                                        {trustLine.counterParty.name}{' '}
-                                        {trustLine.currency.name
-                                            ? NormalizeCurrencyCode(trustLine.currency.currency)
-                                            : ''}
-                                    </Text>
+                                    <TouchableDebounce
+                                        onPress={this.copyIssuerAddress}
+                                        style={AppStyles.row}
+                                        activeOpacity={1}
+                                    >
+                                        <Text style={styles.issuerLabel}>
+                                            {trustLine.counterParty.name}{' '}
+                                            {trustLine.currency.name
+                                                ? NormalizeCurrencyCode(trustLine.currency.currency)
+                                                : ''}
+                                        </Text>
+                                        <Icon style={styles.copyIcon} name="IconCopy" size={15} />
+                                    </TouchableDebounce>
                                 </View>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>

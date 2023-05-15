@@ -1,4 +1,4 @@
-import { get, isUndefined } from 'lodash';
+import { get, isUndefined, set } from 'lodash';
 
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
@@ -56,6 +56,10 @@ class PaymentChannelCreate extends BaseTransaction {
 
     get SettleDelay(): string {
         return get(this, ['tx', 'SettleDelay']);
+    }
+
+    set PublicKey(publicKey: string) {
+        set(this, 'tx.PublicKey', publicKey);
     }
 
     get PublicKey(): string {

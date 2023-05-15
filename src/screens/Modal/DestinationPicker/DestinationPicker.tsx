@@ -35,6 +35,8 @@ import styles from './styles';
 export interface Props {
     onClose: () => void;
     onSelect: (destination: Destination, info: AccountInfoType) => void;
+
+    ignoreDestinationTag: boolean;
 }
 
 export interface State {
@@ -382,6 +384,7 @@ class DestinationPicker extends Component<Props, State> {
     };
 
     checkAndNext = async () => {
+        const { ignoreDestinationTag } = this.props;
         const { destination } = this.state;
 
         this.setState({
@@ -434,7 +437,11 @@ class DestinationPicker extends Component<Props, State> {
             }
 
             // check for destination tag require
-            if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+            if (
+                destinationInfo.requireDestinationTag &&
+                (!destination.tag || Number(destination.tag) === 0) &&
+                !ignoreDestinationTag
+            ) {
                 this.showEnterDestinationTag();
 
                 // don't move to next step
