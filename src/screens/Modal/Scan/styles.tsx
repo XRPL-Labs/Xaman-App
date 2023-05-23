@@ -84,8 +84,8 @@ const styles = StyleService.create({
         backgroundColor: '$transparent',
     },
     scanIconTransparent: {
-        tintColor: '$grey',
-        opacity: 0.1,
+        tintColor: '$silver',
+        opacity: 0.5,
     },
 });
 

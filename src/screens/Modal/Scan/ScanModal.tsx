@@ -21,7 +21,6 @@ import { AppScreens } from '@common/constants';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import { NormalizeDestination } from '@common/utils/codec';
@@ -669,7 +668,10 @@ class ScanView extends Component<Props, State> {
 
     renderNotAuthorizedView = () => {
         return (
-            <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
+            <ImageBackground
+                source={StyleService.getImage('BackgroundShapes')}
+                style={[AppStyles.container, AppStyles.paddingSml]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Icon name="IconCamera" size={150} style={styles.scanIconTransparent} />
                 </View>
