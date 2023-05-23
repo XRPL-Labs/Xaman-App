@@ -1,6 +1,6 @@
 {
   "name": "xumm",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -35,7 +35,7 @@
     "ripple-binary-codec": "1.4.3",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.0",
-    "xrpl-accountlib": "2.0.3",
+    "xrpl-accountlib": "2.0.6",
     "xrpl-client": "2.0.11",
     "xrpl-orderbook-reader": "0.3.3",
     "xumm-string-decode": "0.6.2"
@@ -92,5 +92,6 @@
     "react-test-renderer": "18.2.0",
     "ts-jest": "29.0.5",
     "typescript": "4.9.4"
-  }
+  },
+  "packageManager": "yarn@3.5.1"
 }
