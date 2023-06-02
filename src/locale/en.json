@@ -797,7 +797,7 @@
     "youDoNotHaveAnyTrustLine": "You don't have any TrustLines",
     "yourAccountIsNotActivated": "Your account is not activated!",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Selected account is not activated. To sign this transaction you need to select an activated account!",
-    "accountAlreadyExist": "Account already exists!",
+    "accountAlreadyExist": "Account already exists!\n\n%{address}",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xumm as a full access account.\n\n%{address}",
     "upgradeAccountSecretIsNotMatch": "The entered secret belongs to another r-address. If you want to import a regular key, please [Import new account]. If not, please [cancel] and check your entry.",
     "toTheseExistingAccounts": "To this/these existing account(s)",

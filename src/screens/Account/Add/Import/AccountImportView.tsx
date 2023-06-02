@@ -275,7 +275,10 @@ class AccountImportView extends Component<Props, State> {
                         return;
                     }
 
-                    Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('account.accountAlreadyExist', { address: importedAccount.address }),
+                    );
                     return;
                 }
 
