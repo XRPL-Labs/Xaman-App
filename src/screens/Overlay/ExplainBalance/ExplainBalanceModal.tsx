@@ -90,7 +90,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     // @ts-ignore
                     o.LedgerEntryType !== 'NFTokenPage' &&
                     // @ts-ignore
-                    (o.Account === account || o.Owner === account || o.LedgerEntryType === 'PayChannel')
+                    (o.Account === account ||
+                        // @ts-ignore
+                        o.Owner === account ||
+                        ['SignerList', 'PayChannel'].includes(o.LedgerEntryType))
                 );
             });
 
