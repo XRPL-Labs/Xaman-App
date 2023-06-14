@@ -13,6 +13,7 @@ export interface PayIDInfo {
     account: string;
     tag: string;
 }
+
 export interface AccountNameType {
     address: string;
     name: string;

@@ -1,149 +1,148 @@
 {
-
-	"AccountSet": {
-		"meta": {
-			"exists": true,
-			"uuid": "f829c410-4aa3-4297-8de7-0b0534d1101d",
-			"multisign": false,
-			"submit": true,
-			"destination": "",
-			"resolved_destination": "",
-			"resolved": false,
-			"signed": false,
-			"cancelled": false,
-			"expired": false,
-			"pushed": true,
-			"app_opened": false,
-			"opened_by_deeplink": null,
-			"return_url_app": null,
-			"return_url_web": "https://xrpl.services/?payloadId=f829c410-4aa3-4297-8de7-0b0534d1101d",
-			"custom_instruction": "- Set Domain to 'test.com'",
-			"is_xapp": false,
-			"push_message_id": "1644506689964712"
-		},
-		"application": {
-			"name": "Xrpl Services",
-			"description": "Website to provide easy access to XRPL transactions via Xumm",
-			"disabled": 0,
-			"uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
-			"icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
-			"issued_user_token": null
-		},
-		"payload": {
-			"tx_type": "AccountSet",
-			"tx_destination": "",
-			"tx_destination_tag": null,
-			"request_json": {
-				"TransactionType": "AccountSet",
-				"Domain": "746573742E636F6D",
-				"Account": "raKNPicxh5259rUYdrJMgpJp9RhyKYXQmg"
-			},
-			"origintype": null,
-			"signmethod": null,
-			"created_at": "2022-02-10T15:24:50Z",
-			"expires_at": "2022-02-10T15:29:50Z",
-			"expires_in_seconds": 284,
-			"hash": "f378ba834ca39d9f48c3918b7580f1fd452a1fae"
-		}
-	},
-	"SignIn": {
-		"meta": {
-			"exists": true,
-			"uuid": "aadcda7c-f2b4-4649-a9f4-da638fadfec4",
-			"multisign": false,
-			"submit": false,
-			"destination": "",
-			"resolved_destination": "",
-			"resolved": false,
-			"signed": false,
-			"cancelled": false,
-			"expired": false,
-			"pushed": false,
-			"app_opened": false,
-			"opened_by_deeplink": null,
-			"return_url_app": null,
-			"return_url_web": "https://xrpl.services/?payloadId=aadcda7c-f2b4-4649-a9f4-da638fadfec4&signinToValidate=true",
-			"custom_instruction": null,
-			"is_xapp": false,
-			"push_message_id": null
-		},
-		"application": {
-			"name": "Xrpl Services",
-			"description": "Website to provide easy access to XRPL transactions via Xumm",
-			"disabled": 0,
-			"uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
-			"icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
-			"issued_user_token": null
-		},
-		"payload": {
-			"tx_type": "SignIn",
-			"tx_destination": "",
-			"tx_destination_tag": null,
-			"request_json": {
-				"SignIn": true
-			},
-			"origintype": null,
-			"signmethod": null,
-			"created_at": "2022-02-11T10:58:31Z",
-			"expires_at": "2022-02-11T11:03:31Z",
-			"expires_in_seconds": 284,
-			"hash": "7ff739c2179645e24de42ef41f5396d8f2368e57"
-		},
-		"response": {
-			"hex": null,
-			"txid": null,
-			"resolved_at": null,
-			"dispatched_to": null,
-			"dispatched_result": null,
-			"dispatched_nodetype": null,
-			"multisign_account": null,
-			"account": null
-		}
-	},
-	"InvalidPayload": {
-		"meta": {
-			"exists": true,
-			"uuid": "f829c410-4aa3-4297-8de7-0b0534d1101d",
-			"multisign": false,
-			"submit": true,
-			"destination": "",
-			"resolved_destination": "",
-			"resolved": false,
-			"signed": false,
-			"cancelled": false,
-			"expired": false,
-			"pushed": true,
-			"app_opened": false,
-			"opened_by_deeplink": null,
-			"return_url_app": null,
-			"return_url_web": "https://xrpl.services/?payloadId=f829c410-4aa3-4297-8de7-0b0534d1101d",
-			"custom_instruction": "- Set Domain to 'test.com'",
-			"is_xapp": false,
-			"push_message_id": "1644506689964712"
-		},
-		"application": {
-			"name": "Xrpl Services",
-			"description": "Website to provide easy access to XRPL transactions via Xumm",
-			"disabled": 0,
-			"uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
-			"icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
-			"issued_user_token": null
-		},
-		"payload": {
-			"tx_type": "AccountSet",
-			"tx_destination": "",
-			"tx_destination_tag": null,
-			"request_json": {
-				"TransactionType": "AccountSet",
-				"Domain": "746573742E636F6D",
-				"Account": "raKNPicxh5259rUYdrJMgpJp9RhyKYXQmc"
-			},
-			"origintype": null,
-			"signmethod": null,
-			"created_at": "2022-02-10T15:24:50Z",
-			"expires_at": "2022-02-10T15:29:50Z",
-			"expires_in_seconds": 284,
-			"hash": "f378ba834ca39d9f48c3918b7580f1fd452a1fae"
-		}
-	}
+  "AccountSet": {
+    "meta": {
+      "exists": true,
+      "uuid": "f829c410-4aa3-4297-8de7-0b0534d1101d",
+      "multisign": false,
+      "submit": true,
+      "destination": "",
+      "resolved_destination": "",
+      "resolved": false,
+      "signed": false,
+      "cancelled": false,
+      "expired": false,
+      "pushed": true,
+      "app_opened": false,
+      "opened_by_deeplink": null,
+      "return_url_app": null,
+      "return_url_web": "https://xrpl.services/?payloadId=f829c410-4aa3-4297-8de7-0b0534d1101d",
+      "custom_instruction": "- Set Domain to 'test.com'",
+      "is_xapp": false,
+      "push_message_id": "1644506689964712"
+    },
+    "application": {
+      "name": "Xrpl Services",
+      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "disabled": 0,
+      "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
+      "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
+      "issued_user_token": null
+    },
+    "payload": {
+      "tx_type": "AccountSet",
+      "tx_destination": "",
+      "tx_destination_tag": null,
+      "request_json": {
+        "TransactionType": "AccountSet",
+        "Domain": "746573742E636F6D",
+        "Account": "raKNPicxh5259rUYdrJMgpJp9RhyKYXQmg"
+      },
+      "origintype": null,
+      "signmethod": null,
+      "created_at": "2022-02-10T15:24:50Z",
+      "expires_at": "2022-02-10T15:29:50Z",
+      "expires_in_seconds": 284,
+      "hash": "f378ba834ca39d9f48c3918b7580f1fd452a1fae"
+    }
+  },
+  "SignIn": {
+    "meta": {
+      "exists": true,
+      "uuid": "aadcda7c-f2b4-4649-a9f4-da638fadfec4",
+      "multisign": false,
+      "submit": false,
+      "destination": "",
+      "resolved_destination": "",
+      "resolved": false,
+      "signed": false,
+      "cancelled": false,
+      "expired": false,
+      "pushed": false,
+      "app_opened": false,
+      "opened_by_deeplink": null,
+      "return_url_app": null,
+      "return_url_web": "https://xrpl.services/?payloadId=aadcda7c-f2b4-4649-a9f4-da638fadfec4&signinToValidate=true",
+      "custom_instruction": null,
+      "is_xapp": false,
+      "push_message_id": null
+    },
+    "application": {
+      "name": "Xrpl Services",
+      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "disabled": 0,
+      "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
+      "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
+      "issued_user_token": null
+    },
+    "payload": {
+      "tx_type": "SignIn",
+      "tx_destination": "",
+      "tx_destination_tag": null,
+      "request_json": {
+        "SignIn": true
+      },
+      "origintype": null,
+      "signmethod": null,
+      "created_at": "2022-02-11T10:58:31Z",
+      "expires_at": "2022-02-11T11:03:31Z",
+      "expires_in_seconds": 284,
+      "hash": "7ff739c2179645e24de42ef41f5396d8f2368e57"
+    },
+    "response": {
+      "hex": null,
+      "txid": null,
+      "resolved_at": null,
+      "dispatched_to": null,
+      "dispatched_result": null,
+      "dispatched_nodetype": null,
+      "multisign_account": null,
+      "account": null
+    }
+  },
+  "InvalidPayload": {
+    "meta": {
+      "exists": true,
+      "uuid": "f829c410-4aa3-4297-8de7-0b0534d1101d",
+      "multisign": false,
+      "submit": true,
+      "destination": "",
+      "resolved_destination": "",
+      "resolved": false,
+      "signed": false,
+      "cancelled": false,
+      "expired": false,
+      "pushed": true,
+      "app_opened": false,
+      "opened_by_deeplink": null,
+      "return_url_app": null,
+      "return_url_web": "https://xrpl.services/?payloadId=f829c410-4aa3-4297-8de7-0b0534d1101d",
+      "custom_instruction": "- Set Domain to 'test.com'",
+      "is_xapp": false,
+      "push_message_id": "1644506689964712"
+    },
+    "application": {
+      "name": "Xrpl Services",
+      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "disabled": 0,
+      "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
+      "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
+      "issued_user_token": null
+    },
+    "payload": {
+      "tx_type": "AccountSet",
+      "tx_destination": "",
+      "tx_destination_tag": null,
+      "request_json": {
+        "TransactionType": "AccountSet",
+        "Domain": "746573742E636F6D",
+        "Account": "raKNPicxh5259rUYdrJMgpJp9RhyKYXQmc"
+      },
+      "origintype": null,
+      "signmethod": null,
+      "created_at": "2022-02-10T15:24:50Z",
+      "expires_at": "2022-02-10T15:29:50Z",
+      "expires_in_seconds": 284,
+      "hash": "f378ba834ca39d9f48c3918b7580f1fd452a1fae"
+    }
+  }
 }

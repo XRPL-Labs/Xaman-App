@@ -19,12 +19,12 @@ index 24c1752..29afd81 100644
    __block RCTNetworkTask *task;
    RCTURLRequestProgressBlock uploadProgressBlock = ^(int64_t progress, int64_t total) {
 diff --git a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
-index 925596f..ddcad72 100644
+index 925596f..7ab0f60 100644
 --- a/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 +++ b/node_modules/react-native/Libraries/WebSocket/RCTSRWebSocket.m
 @@ -236,7 +236,21 @@ - (instancetype)initWithURLRequest:(NSURLRequest *)request protocols:(NSArray<NS
    RCTAssertParam(request);
- 
+
    if ((self = [super init])) {
 -    _url = request.URL;
 +     #if DEBUG
@@ -32,9 +32,9 @@ index 925596f..ddcad72 100644
 +     #else
 +          // this will force the app to just connect to trusted nodes
 +       NSArray *allowedEndpoints;
-+       allowedEndpoints = [NSArray arrayWithObjects: @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
++       allowedEndpoints = [NSArray arrayWithObjects: @"xrplcluster.com", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"wss://xahau.network", @"wss://dev.xahau.network", @"custom-node.xrpl-labs.com", nil];
 +       NSString* domain = [request.URL host];
-+          
++
 +       if([allowedEndpoints containsObject: domain]){
 +         _url = request.URL;
 +       }else{
@@ -43,5 +43,5 @@ index 925596f..ddcad72 100644
 +     #endif
 +
      _urlRequest = request;
- 
+
      _requestedProtocols = [protocols copy];

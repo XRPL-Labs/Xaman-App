@@ -7,7 +7,7 @@ import moment from 'moment-timezone';
 import { has, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { CoreSchema } from '@store/schemas/latest';
-import CoreRepository from '@store/repositories/core';
+import NetworkRepository from '@store/repositories/network';
 
 import {
     LedgerMarker,
@@ -66,17 +66,19 @@ class LedgerService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set default network reserve base on prev values
-                const { baseReserve, ownerReserve } = coreSettings;
+                const { network } = coreSettings;
 
                 this.networkReserve = {
-                    base: baseReserve,
-                    owner: ownerReserve,
+                    base: network?.baseReserve,
+                    owner: network?.ownerReserve,
                 };
 
-                this.logger.debug(`Current Network Base/Owner reserve: ${baseReserve}/${ownerReserve}`);
+                this.logger.debug(
+                    `Current Network Base/Owner reserve: ${this.networkReserve.base}/${this.networkReserve.owner}`,
+                );
 
                 // on socket service connect set ledger listener if not set
-                SocketService.on('connect', this.setLedgerListener);
+                SocketService.on('connect', this.onSocketConnect);
 
                 resolve();
             } catch (e) {
@@ -86,7 +88,120 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Get network base and owner reserve
+     * Listener for when socket is connected
+     */
+    onSocketConnect = (networkId: number) => {
+        // Set Ledger listener for tracking the base/owner reserve
+
+        // clear if exist
+        if (this.ledgerListener) {
+            SocketService.offEvent('ledger', this.updateNetworkReserve);
+        }
+        // subscribe
+        this.ledgerListener = SocketService.onEvent('ledger', this.updateNetworkReserve);
+
+        // update the network definitions
+        this.updateNetworkDefinitions(networkId);
+    };
+
+    /**
+     * Update network reserve
+     */
+    updateNetworkDefinitions = (networkId: number) => {
+        // get the network object
+        const network = NetworkRepository.findOne({ networkId });
+        // include definitions hash if exist in the request
+        const request = {
+            command: 'server_definitions',
+        };
+
+        let definitionsHash = '';
+
+        if (network.definitions) {
+            definitionsHash = network.definitions.hash as any;
+            Object.assign(request, { hash: definitionsHash });
+        }
+
+        SocketService.send(request)
+            .then(async (resp: any) => {
+                // an error happened
+                if ('error' in resp) {
+                    // ignore
+                    return;
+                }
+
+                // nothing has been changed
+                if (resp?.hash === definitionsHash) {
+                    return;
+                }
+
+                // remove unnecessary fields
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__command;
+                // eslint-disable-next-line no-underscore-dangle
+                delete resp.__replyMs;
+
+                NetworkRepository.update({
+                    networkId: network.networkId,
+                    definitionsString: JSON.stringify(resp),
+                });
+            })
+            .catch((error: any) => {
+                this.logger.error(error);
+            });
+    };
+
+    /**
+     * Update network reserve
+     */
+    updateNetworkReserve = (ledger: { reserve_base: number; reserve_inc: number }) => {
+        const { reserve_base, reserve_inc } = ledger;
+
+        const reserveBase = new BigNumber(reserve_base).dividedBy(1000000.0).toNumber();
+        const reserveOwner = new BigNumber(reserve_inc).dividedBy(1000000.0).toNumber();
+
+        if (reserveBase && reserveOwner) {
+            const { base, owner } = this.networkReserve;
+
+            if (reserveBase !== base || reserveOwner !== owner) {
+                this.logger.debug(`Network Base/Owner reserve changed to ${reserveBase}/${reserveOwner}`);
+
+                // store the changes locally
+                this.networkReserve = {
+                    base: reserveBase,
+                    owner: reserveOwner,
+                };
+
+                // persist new network base/owner reserve
+                const { networkId } = SocketService.getConnectionDetails();
+
+                NetworkRepository.update({
+                    networkId,
+                    baseReserve: reserveBase,
+                    ownerReserve: reserveOwner,
+                });
+            }
+        }
+    };
+
+    /**
+     * Get current network definitions
+     */
+    getNetworkDefinitions = (): any => {
+        // get connected networkId from socket service
+        const { networkId } = SocketService.getConnectionDetails();
+
+        const network = NetworkRepository.findOne({ networkId });
+
+        if (network && network.definitions) {
+            return network.definitions;
+        }
+
+        return undefined;
+    };
+
+    /**
+     * Get current network base and owner reserve
      */
     getNetworkReserve = (): { BaseReserve: number; OwnerReserve: number } => {
         const { base, owner } = this.networkReserve;
@@ -559,12 +674,16 @@ class LedgerService extends EventEmitter {
      */
     submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
         try {
+            // get connected node and node type from socket service
+            const { node, type: nodeType, networkId } = SocketService.getConnectionDetails();
+
             // send event about we are about to submit the transaction
             this.emit('submitTransaction', {
                 blob: txBlob,
                 hash: txHash,
-                node: SocketService.node,
-                nodeType: SocketService.chain,
+                node,
+                nodeType,
+                nodeId: networkId,
             });
 
             // submit the tx blob to the ledger
@@ -584,8 +703,9 @@ class LedgerService extends EventEmitter {
             // create default result
             const result = {
                 hash: tx_json?.hash,
-                node: SocketService.node,
-                nodeType: SocketService.chain,
+                node,
+                nodeType,
+                nodeId: networkId,
             };
 
             // error happened in validation of transaction
@@ -620,8 +740,9 @@ class LedgerService extends EventEmitter {
                 engineResult: 'telFAILED',
                 // @ts-ignore
                 message: e.message,
-                node: SocketService.node,
-                nodeType: SocketService.chain,
+                node: undefined,
+                nodeType: undefined,
+                nodeId: undefined,
             };
         }
     };
@@ -667,44 +788,6 @@ class LedgerService extends EventEmitter {
                 });
             }, 30000);
         });
-    };
-
-    /**
-     * Set transaction listener if not set
-     */
-    setLedgerListener = () => {
-        if (this.ledgerListener) {
-            SocketService.offEvent('ledger', this.updateNetworkReserve);
-        }
-        this.ledgerListener = SocketService.onEvent('ledger', this.updateNetworkReserve);
-    };
-
-    /**
-     * Update network reserve
-     */
-    updateNetworkReserve = (ledger: { reserve_base: number; reserve_inc: number }) => {
-        const { reserve_base, reserve_inc } = ledger;
-
-        const reserveBase = new BigNumber(reserve_base).dividedBy(1000000.0).toNumber();
-        const reserveOwner = new BigNumber(reserve_inc).dividedBy(1000000.0).toNumber();
-
-        if (reserveBase && reserveOwner) {
-            const { base, owner } = this.networkReserve;
-
-            if (reserveBase !== base || reserveOwner !== owner) {
-                this.logger.debug(`Network Base/Owner reserve changed to ${reserveBase}/${reserveOwner}`);
-                this.networkReserve = {
-                    base: reserveBase,
-                    owner: reserveOwner,
-                };
-
-                // persist settings
-                CoreRepository.saveSettings({
-                    baseReserve: reserveBase,
-                    ownerReserve: reserveOwner,
-                });
-            }
-        }
     };
 }
 

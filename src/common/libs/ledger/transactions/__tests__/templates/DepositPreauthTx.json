@@ -1,12 +1,12 @@
 {
-    "tx": {
-        "TransactionType" : "DepositPreauth",
-        "Account" : "rsUiUMpnrgxQp24dJYZDhmV4bE3aBtQyt8",
-        "Authorize" : "rEhxGqkqPPSxQ3P25J66ft5TwpzV14k2de",
-        "Unauthorize" : "rEhxGqkqPPSxQ3P25J66ft5TwpzV14k2de",
-        "Fee" : "10",
-        "Flags" : 2147483648,
-        "Sequence" : 2
-    },
-    "meta": {}
+  "tx": {
+    "TransactionType": "DepositPreauth",
+    "Account": "rsUiUMpnrgxQp24dJYZDhmV4bE3aBtQyt8",
+    "Authorize": "rEhxGqkqPPSxQ3P25J66ft5TwpzV14k2de",
+    "Unauthorize": "rEhxGqkqPPSxQ3P25J66ft5TwpzV14k2de",
+    "Fee": "10",
+    "Flags": 2147483648,
+    "Sequence": 2
+  },
+  "meta": {}
 }

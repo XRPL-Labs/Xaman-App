@@ -5,18 +5,18 @@ import Interactable from 'react-native-interactable';
 
 import { TouchableDebounce, Icon } from '@components/General';
 
+import { NodeSchema } from '@store/schemas/latest';
+
 import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
-/* Component ==================================================================== */
-
 /* types ==================================================================== */
 export interface Props {
-    item: any;
-    selected?: boolean;
+    item: NodeSchema;
+    isDefault?: boolean;
     canRemove?: boolean;
-    onPress?: (item: any) => void;
-    onRemovePress?: (item: any) => void;
+    onPress?: (item: NodeSchema) => void;
+    onRemovePress?: (item: NodeSchema) => void;
 }
 
 export interface State {}
@@ -50,7 +50,7 @@ class NodeListItem extends Component<Props, State> {
     };
 
     render() {
-        const { selected, item, canRemove } = this.props;
+        const { isDefault, item, canRemove } = this.props;
 
         return (
             <View>
@@ -88,17 +88,20 @@ class NodeListItem extends Component<Props, State> {
                     animatedValueX={this.deltaX}
                     animatedValueY={this.deltaY}
                 >
-                    <TouchableDebounce activeOpacity={0.8} testID={`node-${item.url}`} onPress={this.onPress}>
-                        <View style={[styles.row]}>
-                            <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
-                                <Text style={styles.url}>{item.url}</Text>
-                            </View>
-                            {selected && (
-                                <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                    <Icon size={20} style={styles.checkIcon} name="IconCheck" />
-                                </View>
-                            )}
+                    <TouchableDebounce
+                        style={styles.row}
+                        activeOpacity={0.8}
+                        testID={`node-${item.endpoint}`}
+                        onPress={this.onPress}
+                    >
+                        <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
+                            <Text style={styles.url}>{item.endpoint}</Text>
                         </View>
+                        {isDefault && (
+                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                                <Icon size={20} style={styles.checkIcon} name="IconCheck" />
+                            </View>
+                        )}
                     </TouchableDebounce>
                 </Interactable.View>
             </View>

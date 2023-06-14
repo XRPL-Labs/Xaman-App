@@ -41,7 +41,7 @@ export interface MetaType {
     signers?: string[];
     pathfinding?: boolean;
     pathfinding_fallback?: boolean;
-    force_network?: string;
+    force_network?: number;
 }
 
 export interface PayloadReferenceType {
@@ -83,6 +83,7 @@ export interface PatchRejectType {
 export interface Dispatched {
     to: string;
     nodetype: string;
+    nodeid: number;
     result: string;
 }
 

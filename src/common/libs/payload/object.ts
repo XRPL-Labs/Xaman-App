@@ -423,7 +423,7 @@ export class Payload {
     /**
      * Return forced network if any
      */
-    getForcedNetwork = (): string => {
+    getForcedNetwork = (): number => {
         const { force_network } = this.meta;
 
         return force_network;

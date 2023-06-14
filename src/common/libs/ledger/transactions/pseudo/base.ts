@@ -47,11 +47,11 @@ class BasePseudoTransaction {
     }
 
     /**
-    Sign the transaction with provided account
-    * @param {AccountSchema} account object sign with
-    * @param {bool} multiSign indicates if transaction should sign for multi signing
-    * @returns {Promise<string>} signed tx blob
-    */
+     Sign the transaction with provided account
+     * @param {AccountSchema} account object sign with
+     * @param {bool} multiSign indicates if transaction should sign for multi signing
+     * @returns {Promise<string>} signed tx blob
+     */
     sign = (account: AccountSchema, multiSign = false): Promise<string> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {

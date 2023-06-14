@@ -5,7 +5,8 @@ import TrustLineRepository from './trustLine';
 import CounterPartyRepository from './counterParty';
 import CurrencyRepository from './currency';
 import ContactRepository from './contact';
-import CustomNodeRepository from './customNode';
+import NetworkRepository from './network';
+import NodeRepository from './node';
 
 export {
     AccountRepository,
@@ -15,5 +16,6 @@ export {
     CounterPartyRepository,
     CurrencyRepository,
     ContactRepository,
-    CustomNodeRepository,
+    NetworkRepository,
+    NodeRepository,
 };

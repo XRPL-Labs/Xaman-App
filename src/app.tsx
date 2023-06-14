@@ -229,20 +229,23 @@ class Application {
             try {
                 const Localize = require('@locale').default;
 
+                // get settings
                 const core = CoreRepository.getSettings();
 
+                // get device local settings
                 const localeSettings = await GetDeviceLocaleSettings();
 
-                // app is not initialized yet, set to default device locale
-                if (!core) {
+                // if there is a language set in the settings load the setting base on the settings
+                if (core?.language) {
+                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
+                    Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
+                } else {
+                    // app is not initialized yet, set to default device locale
                     this.logger.debug('Locale is not initialized, setting base on device languageCode');
                     const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
                     CoreRepository.saveSettings({ language: locale });
-                } else {
-                    // use locale set in settings
-                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                    Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 }
+
                 resolve();
             } catch (e) {
                 reject(e);

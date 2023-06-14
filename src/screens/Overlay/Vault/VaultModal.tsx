@@ -11,6 +11,7 @@ import RNTangemSdk from 'tangem-sdk-react-native';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 
+import LedgerService from '@services/LedgerService';
 import LoggerService from '@services/LoggerService';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -250,9 +251,18 @@ class VaultModal extends Component<Props, State> {
             // INGORE if multi signing or pseudo transaction
             if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence();
+                transaction.populateNetworkId();
             }
 
-            let signedObject = AccountLib.sign(transaction.Json, signerInstance) as SignedObjectType;
+            // get current network definitions
+            let definitions = LedgerService.getNetworkDefinitions();
+
+            // if any definitions then wrap them in the object
+            if (definitions) {
+                definitions = new AccountLib.XrplDefinitions(definitions);
+            }
+
+            let signedObject = AccountLib.sign(transaction.Json, signerInstance, definitions) as SignedObjectType;
             signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };
 
             this.onSign(signedObject);
@@ -279,6 +289,7 @@ class VaultModal extends Component<Props, State> {
             // INGORE if multi signing or pseudo transaction
             if (!multiSign && transaction instanceof BaseTransaction) {
                 transaction.populateLastLedgerSequence(150);
+                transaction.populateNetworkId();
             }
 
             // get derived pub key from tangem card

@@ -1,6 +1,8 @@
 /**
  * Global App Config
  */
+import { NetworkType } from '@store/types';
+import { ColorsGeneral } from '@theme/colors';
 
 export default {
     // App Details
@@ -16,64 +18,51 @@ export default {
         path: 'xumm.realm',
     },
 
+    // supported networks
     // NOTE: any changes here should be applied in patches/react-native+VERSION.patch as well
-    // xrpl nodes
-    nodes: {
-        default: 'wss://xrplcluster.com',
-        proxy: 'wss://custom-node.xrpl-labs.com',
-        main: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
-        test: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
-        dev: ['wss://s.devnet.rippletest.net:51233'],
-        deprecated: ['wss://xrpl.ws'],
-        cluster: 'wss://xrplcluster.com',
-    },
-
-    // xrpl explorers
-    explorer: [
+    networks: [
         {
-            value: 'xpring',
-            title: 'XRPL.org',
-            tx: {
-                main: 'https://livenet.xrpl.org/transactions/',
-                test: 'https://testnet.xrpl.org/transactions/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://livenet.xrpl.org/accounts/',
-                test: 'https://testnet.xrpl.org/accounts/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
+            name: 'XRPL',
+            networkId: 0,
+            color: ColorsGeneral.blue,
+            type: NetworkType.Main,
+            nodes: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
         },
         {
-            value: 'bithomp',
-            title: 'Bithomp',
-            tx: {
-                main: 'https://bithomp.com/explorer/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://bithomp.com/explorer/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
+            name: 'XRPL Testnet',
+            networkId: 1,
+            color: ColorsGeneral.green,
+            type: NetworkType.Test,
+            nodes: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
         },
         {
-            value: 'xrpscan',
-            title: 'XRPScan',
-            tx: {
-                main: 'https://xrpscan.com/tx/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/transactions/',
-            },
-            account: {
-                main: 'https://xrpscan.com/account/',
-                test: 'https://test.bithomp.com/explorer/',
-                dev: 'https://devnet.xrpl.org/accounts/',
-            },
+            name: 'XRPL Devnet',
+            networkId: 2,
+            color: ColorsGeneral.purple,
+            type: NetworkType.Dev,
+            nodes: ['wss://s.devnet.rippletest.net:51233'],
+        },
+        {
+            name: 'XAHAU',
+            networkId: 21337,
+            color: ColorsGeneral.orange,
+            type: NetworkType.Main,
+            nodes: ['wss://xahau.network'],
+        },
+        {
+            name: 'XAHAU Testnet',
+            networkId: 21338,
+            color: ColorsGeneral.red,
+            type: NetworkType.Test,
+            nodes: ['wss://dev.xahau.network'],
         },
     ],
-    fallbackExplorer: 'bithomp',
+
+    // custom node url endpoint
+    customNodeProxy: 'wss://custom-node.xrpl-labs.com',
+
+    // cluster endpoints
+    clusterEndpoints: ['wss://xrplcluster.com', 'wss://xahau.network'],
 
     // default network base and owner reserve
     network: {
@@ -90,4 +79,10 @@ export default {
 
     // app theme config
     defaultTheme: 'light',
+
+    // legacy config
+    legacy: {
+        defaultExplorer: 'xpring',
+        defaultNode: 'wss://xrplcluster.com',
+    },
 };

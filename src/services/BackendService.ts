@@ -309,14 +309,16 @@ class BackendService {
     Get details for an XRP address
     */
     getAddressInfo = (address: string) => {
-        return ApiService.addressInfo.get(address, null, { 'X-XummNet': SocketService.chain });
+        return ApiService.addressInfo.get(address, null, {
+            'X-XummNet': SocketService.getConnectionDetails().networkId,
+        });
     };
 
     /*
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.chain });
+        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.getConnectionDetails().networkId });
     };
 
     /*
@@ -355,12 +357,16 @@ class BackendService {
     };
 
     getXLS20Details = (account: string, tokens: string[]) => {
-        return ApiService.xls20Details.post(null, { account, tokens }, { 'X-XummNet': SocketService.chain });
+        return ApiService.xls20Details.post(
+            null,
+            { account, tokens },
+            { 'X-XummNet': SocketService.getConnectionDetails().networkId },
+        );
     };
 
     getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
-            .get({ account }, null, { 'X-XummNet': SocketService.chain })
+            .get({ account }, null, { 'X-XummNet': SocketService.getConnectionDetails().networkId })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];

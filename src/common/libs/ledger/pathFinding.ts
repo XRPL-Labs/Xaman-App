@@ -14,6 +14,7 @@ import { LedgerAmount } from '@common/libs/ledger/parser/types';
 /* Types ==================================================================== */
 declare interface LedgerPathFinding {
     on(event: 'expire', listener: () => void): this;
+
     on(event: string, listener: Function): this;
 }
 

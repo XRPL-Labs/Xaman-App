@@ -57,6 +57,7 @@ import SelectFee from './Overlay/SelectFee';
 import HomeActions from './Overlay/HomeActions';
 import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
 import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
+import SwitchNetwork from './Overlay/SwitchNetwork';
 
 // Transaction
 import Send from './Send';
@@ -69,8 +70,8 @@ import AddressBook from './Settings/AddressBook';
 import AddContact from './Settings/AddressBook/Add';
 import EditContact from './Settings/AddressBook/Edit';
 
-// node
-import NodeList from './Settings/Advanced/Node';
+// network
+import NetworkList from './Settings/Advanced/Network';
 
 // third party apps
 import ThirdPartyAppsList from './Settings/ThirdPartyApps';
@@ -150,6 +151,7 @@ export {
     HomeActions,
     PassphraseAuthentication,
     SwitchAssetCategory,
+    SwitchNetwork,
     // transaction
     Send,
     Request,
@@ -170,8 +172,8 @@ export {
     // third party apps
     ThirdPartyAppsList,
     EditThirdPartyApp,
-    // nodes
-    NodeList,
+    // networks
+    NetworkList,
     // session logs
     SessionLog,
     // global

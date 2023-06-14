@@ -15,6 +15,7 @@ import Localize from '@locale';
 import { ApiService, SocketService } from '@services';
 
 import { ValueToIOU } from '@common/utils/amount';
+
 /* types ==================================================================== */
 export enum MarketDirection {
     SELL = 'SELL',

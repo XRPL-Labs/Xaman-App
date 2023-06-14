@@ -4,13 +4,12 @@ import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'red' },
     sectionHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: AppSizes.paddingExtraSml,
         paddingHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.padding,
         borderTopColor: '$tint',
         borderTopWidth: 1,
         backgroundColor: '$tint',

@@ -4,7 +4,7 @@
 import { toString } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Share, Linking, Alert } from 'react-native';
+import { View, Share, Linking, Alert, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -16,7 +16,7 @@ import { ContactRepository } from '@store/repositories';
 import { Button, Spacer, ActionPanel } from '@components/General';
 import { RecipientElement } from '@components/Modules';
 
-import { GetAccountLink, GetExplorer, ExplorerDetails } from '@common/utils/explorer';
+import { GetAccountLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
@@ -38,7 +38,6 @@ export interface Props {
 }
 
 export interface State {
-    explorer: ExplorerDetails;
     contactExist: boolean;
 }
 
@@ -64,10 +63,21 @@ class RecipientMenuOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            contactExist: ContactRepository.exist(props.recipient.address, toString(props.recipient.tag)),
-            explorer: GetExplorer(),
+            contactExist: false,
         };
     }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.checkContactExist);
+    }
+
+    checkContactExist = () => {
+        const { recipient } = this.props;
+
+        this.setState({
+            contactExist: ContactRepository.exist(recipient.address, toString(recipient.tag)),
+        });
+    };
 
     onClose = () => {
         const { onClose } = this.props;
@@ -80,10 +90,9 @@ class RecipientMenuOverlay extends Component<Props, State> {
     };
 
     getAccountLink = () => {
-        const { explorer } = this.state;
         const { recipient } = this.props;
 
-        return GetAccountLink(recipient.address, explorer);
+        return GetAccountLink(recipient.address);
     };
 
     addContact = () => {
@@ -128,7 +137,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
 
     render() {
         const { recipient } = this.props;
-        const { contactExist, explorer } = this.state;
+        const { contactExist } = this.state;
 
         return (
             <ActionPanel
@@ -173,7 +182,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
                         numberOfLines={1}
                         onPress={this.openAccountLink}
                         icon="IconLink"
-                        label={Localize.t('events.openWithExplorer', { explorer: explorer.title })}
+                        label={Localize.t('events.openInExplorer')}
                         iconStyle={AppStyles.imgColorWhite}
                     />
                 </View>

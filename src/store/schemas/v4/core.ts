@@ -19,8 +19,8 @@ class Core extends Realm.Object {
             biometricMethod: 'string?', // biometric auth method
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
-            defaultNode: { type: 'string', default: AppConfig.nodes.main[0] },
-            defaultExplorer: { type: 'string', default: AppConfig.explorer[0].value }, // default explorer
+            defaultNode: { type: 'string', default: AppConfig.legacy.defaultNode },
+            defaultExplorer: { type: 'string', default: AppConfig.legacy.defaultExplorer }, // default explorer
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
             theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme

@@ -81,7 +81,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // check if any forced network applied
         const forcedNetwork = payload.getForcedNetwork();
-        if (forcedNetwork && SocketService.chain?.toUpperCase() !== forcedNetwork) {
+        if (forcedNetwork && SocketService.network.networkId !== forcedNetwork) {
             this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
             return;
         }
@@ -594,6 +594,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
+            const { node, networkId, type } = SocketService.getConnectionDetails();
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,
@@ -602,8 +603,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                 signpubkey: transaction.SignerPubKey,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
                 environment: {
-                    nodeuri: SocketService.node,
-                    nodetype: SocketService.chain,
+                    nodeuri: node,
+                    nodetype: type,
+                    nodeid: networkId,
                 },
             } as PatchSuccessType;
 
@@ -651,6 +653,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     dispatched: {
                         to: submitResult.node,
                         nodetype: submitResult.nodeType,
+                        nodeid: submitResult.nodeId,
                         result: submitResult.engineResult,
                     },
                 });

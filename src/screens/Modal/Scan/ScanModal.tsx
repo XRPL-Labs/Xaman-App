@@ -13,9 +13,9 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import { StyleService, BackendService, SocketService } from '@services';
 
-import { AccountRepository, CoreRepository, CustomNodeRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository, NodeRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
+import { NetworkType } from '@store/types';
 
 import { AppScreens } from '@common/constants';
 
@@ -85,6 +85,10 @@ class ScanView extends Component<Props, State> {
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+
+        setTimeout(() => {
+            this.addCustomNode('778bb1eb03ae49cf1e5b');
+        }, 2000);
     }
 
     componentWillUnmount() {
@@ -162,57 +166,84 @@ class ScanView extends Component<Props, State> {
             });
     };
 
-    addCustomNode = (hash: string) => {
+    addCustomNode = async (hash: string) => {
         this.setState({
             isLoading: true,
         });
 
-        BackendService.getEndpointDetails(hash)
-            .then((res: any) => {
-                const { endpoint } = res;
-                const { explorer, name, node } = endpoint;
+        try {
+            const resp = await BackendService.getEndpointDetails(hash);
 
-                // create endpoint base on backend response
-                const customNode = {
+            const { endpoint } = resp;
+            const { name, node: nodeEndpoint, networkId, color } = endpoint;
+
+            // check if any network exist with the networkId provided
+            let network = NetworkRepository.findOne({ networkId });
+            let node = NodeRepository.findOne({ endpoint: nodeEndpoint });
+
+            // network should not exist and if exist the network type should be NetworkType.Custom
+            // anything else reject the request
+            if (network && network.type !== NetworkType.Custom) {
+                throw new Error('Node can only be added to custom nodes from scanning hash');
+            }
+
+            // node is already exist
+            if (node) {
+                throw new Error('Node is already exist!');
+            }
+
+            // if network does not exist create one
+            if (!network) {
+                network = await NetworkRepository.create({
+                    networkId,
                     name,
-                    endpoint: node,
-                    explorerTx: explorer.tx,
-                    explorerAccount: explorer.account,
-                };
-
-                // add to the store
-                CustomNodeRepository.add(customNode);
-
-                // close scan modal
-                Navigator.dismissModal();
-
-                Prompt(
-                    Localize.t('global.success'),
-                    Localize.t('global.customNodeSuccessfullyAddedToXUMM'),
-                    [
-                        {
-                            text: Localize.t('global.cancel'),
-                        },
-                        {
-                            text: upperFirst(Localize.t('global.switch')),
-                            style: 'destructive',
-                            onPress: () => SocketService.switchNode(node, NodeChain.Custom),
-                        },
-                    ],
-                    { cancelable: false, type: 'default' },
-                );
-            })
-            .catch(() => {
-                Prompt(
-                    Localize.t('global.error'),
-                    Localize.t('global.unableToLoadCustomEndpointDetails'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    { cancelable: true, type: 'default' },
-                );
-                this.setState({
-                    isLoading: false,
+                    color,
+                    type: NetworkType.Custom,
                 });
+            }
+
+            // add the Node to the store
+            node = await NodeRepository.create({
+                endpoint: nodeEndpoint,
+                network,
             });
+
+            // include the created node to the list of nodes supported by network
+            const nodes = [...network.nodes, node];
+
+            // update the network defaultNode and nodes
+            await NetworkRepository.update({
+                networkId,
+                nodes,
+                defaultNode: node,
+            });
+
+            // close scan modal
+            await Navigator.dismissModal();
+
+            Prompt(
+                Localize.t('global.success'),
+                Localize.t('global.customNodeSuccessfullyAddedToXUMM'),
+                [
+                    {
+                        text: Localize.t('global.cancel'),
+                    },
+                    {
+                        text: upperFirst(Localize.t('global.switch')),
+                        style: 'destructive',
+                        onPress: () => SocketService.switchNetwork(network),
+                    },
+                ],
+                { cancelable: false, type: 'default' },
+            );
+        } catch (e) {
+            Prompt(
+                Localize.t('global.error'),
+                Localize.t('global.unableToLoadCustomEndpointDetails'),
+                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+                { cancelable: true, type: 'default' },
+            );
+        }
     };
 
     handleTranslationBundle = async (uuid: string) => {

@@ -15,17 +15,18 @@ import { AppConfig } from '@common/constants';
 import LoggerService from '@services/LoggerService';
 
 import * as repositories from './repositories';
+import { NetworkSchema, NodeSchema, CoreSchema } from './schemas/latest';
 import schemas from './schemas';
 
 /* Module ==================================================================== */
 export default class Storage {
-    compactionThreshold: number;
-    db: Realm;
-    logger: any;
+    private readonly compactionThreshold: number;
+    private dataStore: Realm;
+    private logger: any;
 
     constructor() {
         this.compactionThreshold = 30;
-        this.db = undefined;
+        this.dataStore = undefined;
         this.logger = LoggerService.createLogger('Storage');
     }
 
@@ -33,32 +34,25 @@ export default class Storage {
      * Initialize the storage
      */
     initialize = () => {
-        return new Promise<void>((resolve, reject) => {
-            this.configure()
-                .then((config) => {
-                    this.open(config)
-                        .then((instance) => {
-                            // set the db instance
-                            this.db = instance;
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise<void>(async (resolve, reject) => {
+            try {
+                // fetch the configuration
+                const configuration = await this.configure();
+                // open the datastore and get instance
+                this.dataStore = await this.open(configuration);
 
-                            // initialize repositories
-                            this.initRepositories(instance)
-                                .then(() => {
-                                    resolve();
-                                })
-                                .catch((e) => {
-                                    reject(e);
-                                });
-                        })
-                        .catch((e) => {
-                            this.logger.error('Storage open error', e);
-                            reject(e);
-                        });
-                })
-                .catch((e) => {
-                    this.logger.error('Storage configure error', e);
-                    reject(e);
-                });
+                // initiate the repository
+                await this.initRepositories(this.dataStore);
+
+                // populate the data store if needed
+                // NOTE: this method should be represented in onFirstOpen but as this method is causing in the current
+                // version of realm we do it manually
+                await this.populateDataStoreIfNeeded();
+                resolve();
+            } catch (e) {
+                reject(e);
+            }
         });
     };
 
@@ -121,7 +115,7 @@ export default class Storage {
      * Close db instance
      */
     close = (): void => {
-        this.db.close();
+        this.dataStore.close();
     };
 
     /**
@@ -160,6 +154,36 @@ export default class Storage {
         });
     };
 
+    /**
+     * Populate the dataStore if needed
+     */
+    populateDataStoreIfNeeded = () => {
+        return new Promise<void>((resolve, reject) => {
+            try {
+                // data store is not empty
+                if (!this.dataStore.isEmpty) {
+                    resolve();
+                    return;
+                }
+
+                // NOTE: the order is important
+                [NetworkSchema, NodeSchema, CoreSchema].forEach((schema) => {
+                    this.dataStore.write(() => {
+                        schema.populate(this.dataStore);
+                    });
+                });
+
+                resolve();
+            } catch (e) {
+                this.logger.error('populateDataStoreIfNeeded Error:', e);
+                reject();
+            }
+        });
+    };
+
+    /**
+     * Check if we need to clean up the data store
+     */
     shouldCompactOnLaunch = (totalSize: number, usedSize: number) => {
         const usedSizeMB = usedSize / 1024 ** 2;
         const totalSizeMB = totalSize / 1024 ** 2;

@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, SocketService, StyleService } from '@services';
+import { BackendService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -39,7 +39,6 @@ import Localize from '@locale';
 
 // style
 import { AppStyles, AppColors } from '@theme';
-import { ChainColors } from '@theme/colors';
 
 import styles from './styles';
 
@@ -226,8 +225,8 @@ class SummaryStep extends Component<Props, State> {
     getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        if (coreSettings.developerMode) {
-            return ChainColors[SocketService.chain];
+        if (coreSettings.network) {
+            return coreSettings.network.color;
         }
 
         return undefined;

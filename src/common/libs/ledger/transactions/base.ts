@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { filter, find, flatMap, get, has, isUndefined, remove, set, size } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
+import SocketService from '@services/SocketService';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -73,6 +74,7 @@ class BaseTransaction {
             'SourceTag',
             'SigningPubKey',
             'TxnSignature',
+            'NetworkID',
         ];
 
         // memorize balance and owner count changes
@@ -82,8 +84,8 @@ class BaseTransaction {
 
     /**
      Prepare the transaction for signing, including setting the account sequence
-    * @returns {Promise<void>}
-    */
+     * @returns {Promise<void>}
+     */
     prepare = async (account: AccountSchema) => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
@@ -114,10 +116,10 @@ class BaseTransaction {
     };
 
     /**
-    Populate transaction LastLedgerSequence
-    * @param {number} ledgerOffset max ledger gap
-    * @returns {void}
-    */
+     Populate transaction LastLedgerSequence
+     * @param {number} ledgerOffset max ledger gap
+     * @returns {void}
+     */
     populateLastLedgerSequence = (ledgerOffset = 10) => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
@@ -147,11 +149,27 @@ class BaseTransaction {
     };
 
     /**
-    Sign the transaction with provided account
-    * @param {AccountSchema} account object sign with
-    * @param {bool} multiSign indicates if transaction should sign for multi signing
-    * @returns {Promise<string>} signed tx blob
-    */
+     Populate transaction NetworkID
+     * @returns {void}
+     */
+    populateNetworkId = () => {
+        // ignore for pseudo transactions
+        if (this.isPseudoTransaction()) {
+            return;
+        }
+
+        if (this.NetworkID === undefined) {
+            const { networkId } = SocketService.getConnectionDetails();
+            this.NetworkID = networkId;
+        }
+    };
+
+    /**
+     Sign the transaction with provided account
+     * @param {AccountSchema} account object sign with
+     * @param {bool} multiSign indicates if transaction should sign for multi signing
+     * @returns {Promise<string>} signed tx blob
+     */
     sign = (account: AccountSchema, multiSign = false): Promise<string> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
@@ -669,6 +687,14 @@ class BaseTransaction {
 
     get TxnSignature(): string {
         return get(this, ['tx', 'TxnSignature'], undefined);
+    }
+
+    set NetworkID(networkId: number) {
+        set(this, ['tx', 'NetworkID'], networkId);
+    }
+
+    get NetworkID(): number {
+        return get(this, ['tx', 'NetworkID'], undefined);
     }
 }
 

@@ -29,6 +29,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     discreetMode: boolean;
+    onClose?: () => void;
 }
 
 export interface State {
@@ -95,6 +96,18 @@ class SwitchAccountOverlay extends Component<Props, State> {
             paddingBottom,
         });
     }
+
+    onPanelSlideDown = () => {
+        const { onClose } = this.props;
+
+        // call the onClose callback
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+
+        // dismiss the modal
+        Navigator.dismissOverlay();
+    };
 
     onAddPressed = () => {
         if (this.actionPanel) {
@@ -241,7 +254,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         return (
             <ActionPanel
                 height={contentHeight}
-                onSlideDown={Navigator.dismissOverlay}
+                onSlideDown={this.onPanelSlideDown}
                 ref={(r) => {
                     this.actionPanel = r;
                 }}

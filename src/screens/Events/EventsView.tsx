@@ -77,7 +77,6 @@ enum DataSourceType {
 /* Component ==================================================================== */
 class EventsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Events;
-    static whyDidYouRender = true;
 
     static options() {
         return {

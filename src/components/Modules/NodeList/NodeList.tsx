@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList } from 'react-native';
 
-import { NodeChain } from '@store/types';
+import { NodeSchema } from '@store/schemas/latest';
+
+import { NetworkType } from '@store/types';
 
 import styles from './styles';
 
@@ -11,26 +13,26 @@ import { NodeListItem } from './NodeListItem';
 /* Types ==================================================================== */
 interface Props {
     dataSource: any;
-    selectedNode: string;
-    onItemPress: (item: any) => void;
-    onItemRemovePress: (item: any) => void;
+    onItemPress: (item: NodeSchema) => void;
+    onItemRemovePress: (item: NodeSchema) => void;
 }
 
 /* Component ==================================================================== */
 class NodeList extends PureComponent<Props> {
-    renderItem = ({ item }: { item: any }): React.ReactElement => {
-        const { selectedNode, onItemPress, onItemRemovePress } = this.props;
+    renderItem = ({ item, section }: { item: any; section: any }): React.ReactElement => {
+        const { onItemPress, onItemRemovePress } = this.props;
 
-        const selected = item.url === selectedNode;
+        const { defaultNode, type } = section;
+        const isDefault = item.endpoint === defaultNode.endpoint;
 
         // only custom nodes can be remove
-        const canRemove = !selected && item.chain === NodeChain.Custom;
+        const canRemove = type === NetworkType.Custom;
 
         return (
             <NodeListItem
                 onPress={onItemPress}
                 item={item}
-                selected={selected}
+                isDefault={isDefault}
                 onRemovePress={onItemRemovePress}
                 canRemove={canRemove}
             />
@@ -58,7 +60,7 @@ class NodeList extends PureComponent<Props> {
                 renderSectionHeader={this.renderSectionHeader}
                 initialNumToRender={50}
                 maxToRenderPerBatch={50}
-                keyExtractor={(item, index) => item.url + index}
+                keyExtractor={(item, index) => item.endpoint + index}
             />
         );
     }

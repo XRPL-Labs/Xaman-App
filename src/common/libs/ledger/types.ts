@@ -3,6 +3,7 @@ import { AmountType, LedgerAmount } from './parser/types';
 export enum TransactionBaseTypes {
     Transaction = 'Transaction',
 }
+
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -70,6 +71,7 @@ export interface LedgerTransactionType {
     status?: string;
     tx?: TransactionJSONType;
     meta?: any;
+
     [key: string]: any;
 }
 
@@ -96,6 +98,7 @@ export type SubmitResultType = {
     hash?: string;
     node: string;
     nodeType: string;
+    nodeId: number;
 };
 
 /**
@@ -247,6 +250,7 @@ interface FeeResponseDrops {
     median_fee: string;
     open_ledger_fee: string;
 }
+
 export interface FeeResponse {
     current_queue_size: string;
     max_queue_size: string;

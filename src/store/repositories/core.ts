@@ -7,11 +7,9 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 import { UUIDEncoding } from '@common/utils/string';
 
-import { CoreSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
+import { CoreSchema, NetworkSchema } from '@store/schemas/latest';
 
 import BaseRepository from './base';
-
 /* types  ==================================================================== */
 
 // events
@@ -44,23 +42,6 @@ class CoreRepository extends BaseRepository {
         }
     };
 
-    getChainFromNode = (node: string) => {
-        let chain = NodeChain.Main;
-
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(node) > -1) {
-            chain = NodeChain.Main;
-        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
-            chain = NodeChain.Test;
-        } else if (AppConfig.nodes.dev.indexOf(node) > -1) {
-            chain = NodeChain.Dev;
-        } else {
-            chain = NodeChain.Custom;
-        }
-
-        return chain;
-    };
-
     getAppCurrency = (): string => {
         const settings = this.getSettings();
 
@@ -71,36 +52,20 @@ class CoreRepository extends BaseRepository {
         return AppConfig.defaultCurrency;
     };
 
-    getDefaultNode = () => {
-        let defaultNode = AppConfig.nodes.main[0];
-
+    getSelectedNetwork = (): NetworkSchema => {
         const settings = this.getSettings();
 
-        if (settings && settings.defaultNode) {
-            defaultNode = settings.defaultNode;
+        if (settings && settings.network) {
+            return settings.network;
         }
 
-        const chain = this.getChainFromNode(defaultNode);
-
-        return {
-            node: defaultNode,
-            chain,
-        };
+        return undefined;
     };
 
-    setDefaultNode = (node: string, chain?: NodeChain) => {
-        if (!chain) {
-            chain = this.getChainFromNode(node);
-        }
-
+    setDefaultNetwork = (network: NetworkSchema) => {
         this.saveSettings({
-            defaultNode: node,
+            network,
         });
-
-        return {
-            node,
-            chain,
-        };
     };
 
     getSettings = (plain?: boolean): CoreSchema => {

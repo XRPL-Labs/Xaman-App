@@ -12,7 +12,7 @@ import { Navigation } from 'react-native-navigation';
 import { AccountService, SocketService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountSchema, CoreSchema, NetworkSchema } from '@store/schemas/latest';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -23,12 +23,11 @@ import { Prompt } from '@common/helpers/interface';
 import Localize from '@locale';
 
 // components
-import { TouchableDebounce, Button, RaisedButton, Icon, Badge } from '@components/General';
-import { ProBadge, InactiveAccount, AssetsList } from '@components/Modules';
+import { Button, RaisedButton } from '@components/General';
+import { ProBadge, NetworkSwitchButton, AccountSwitchElement, InactiveAccount, AssetsList } from '@components/Modules';
 
 // style
-import { AppStyles, AppFonts } from '@theme';
-import { ChainColors } from '@theme/colors';
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -37,11 +36,10 @@ export interface Props {
 }
 
 export interface State {
-    accountsCount: number;
     account: AccountSchema;
     isSpendable: boolean;
     isSignable: boolean;
-    defaultNode: string;
+    selectedNetwork: NetworkSchema;
     developerMode: boolean;
     discreetMode: boolean;
 }
@@ -49,8 +47,15 @@ export interface State {
 /* Component ==================================================================== */
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
-
     private navigationListener: any;
+
+    static options() {
+        return {
+            topBar: {
+                visible: false,
+            },
+        };
+    }
 
     constructor(props: Props) {
         super(props);
@@ -58,11 +63,10 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            accountsCount: undefined,
             account: undefined,
             isSpendable: false,
             isSignable: false,
-            defaultNode: coreSettings.defaultNode,
+            selectedNetwork: coreSettings.network,
             developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
         };
@@ -80,13 +84,7 @@ class HomeView extends Component<Props, State> {
         // listen for screen appear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        InteractionManager.runAfterInteractions(() => {
-            // set default account
-            this.getDefaultAccount();
-
-            // set dev mode header
-            this.setNodeChainHeader();
-        });
+        InteractionManager.runAfterInteractions(this.getDefaultAccount);
     }
 
     componentWillUnmount() {
@@ -128,25 +126,15 @@ class HomeView extends Component<Props, State> {
         }
 
         // developer mode or default node has been changed
-        if (has(changes, 'developerMode') || has(changes, 'defaultNode')) {
-            this.setState(
-                {
-                    developerMode: coreSettings.developerMode,
-                    defaultNode: coreSettings.defaultNode,
-                },
-                this.setNodeChainHeader,
-            );
+        if (has(changes, 'developerMode') || has(changes, 'network')) {
+            this.setState({
+                developerMode: coreSettings.developerMode,
+                selectedNetwork: coreSettings.network,
+            });
         }
     };
 
-    updateDefaultAccount = (updatedAccount: AccountSchema, changes: Partial<AccountSchema>) => {
-        // update account visible count
-        if (updatedAccount?.isValid() && has(changes, 'hidden')) {
-            this.setState({
-                accountsCount: AccountRepository.getVisibleAccountCount(),
-            });
-        }
-
+    updateDefaultAccount = (updatedAccount: AccountSchema) => {
         if (updatedAccount?.isValid() && updatedAccount.default) {
             // update the UI
             this.setState(
@@ -163,44 +151,10 @@ class HomeView extends Component<Props, State> {
         this.setState(
             {
                 account: AccountRepository.getDefaultAccount(),
-                accountsCount: AccountRepository.getVisibleAccountCount(),
             },
             // when account balance changed update spendable accounts
             this.updateAccountStatus,
         );
-    };
-
-    setNodeChainHeader = () => {
-        const { developerMode, defaultNode } = this.state;
-
-        // update settings if changed
-        if (developerMode) {
-            // get chain from current default node
-            const chain = CoreRepository.getChainFromNode(defaultNode);
-
-            // show the header
-            Navigator.mergeOptions(HomeView.screenName, {
-                topBar: {
-                    visible: true,
-                    drawBehind: false,
-                    background: {
-                        color: ChainColors[chain],
-                    },
-                    title: {
-                        text: chain.toUpperCase(),
-                        color: 'white',
-                        fontFamily: AppFonts.base.familyExtraBold,
-                        fontSize: AppFonts.h5.size,
-                    },
-                },
-            });
-        } else {
-            Navigator.mergeOptions(HomeView.screenName, {
-                topBar: {
-                    visible: false,
-                },
-            });
-        }
     };
 
     updateAccountStatus = () => {
@@ -267,50 +221,20 @@ class HomeView extends Component<Props, State> {
         Navigator.push(AppScreens.Transaction.Payment);
     };
 
-    onSwitchButtonPress = () => {
-        const { accountsCount, discreetMode } = this.state;
-
-        // if account count is zero or 1 then show add account
-        if (accountsCount === 1) {
-            Navigator.push(AppScreens.Account.Add);
-            return;
-        }
-
-        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, { discreetMode });
-    };
-
     renderHeader = () => {
-        const { account, accountsCount } = this.state;
+        const { account, selectedNetwork } = this.state;
 
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
-                    <Image style={[styles.logo]} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
                     <ProBadge />
                 </View>
-                {account?.isValid() && (
-                    <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                        <Button
-                            light
-                            roundedMini
-                            onPress={this.onSwitchButtonPress}
-                            style={styles.switchAccountButton}
-                            iconSize={12}
-                            icon={accountsCount > 1 ? 'IconSwitchAccount' : 'IconPlus'}
-                            label={accountsCount > 1 ? Localize.t('global.accounts') : Localize.t('home.addAccount')}
-                            extraComponent={
-                                accountsCount > 1 && (
-                                    <Badge
-                                        containerStyle={styles.accountCountBadgeContainer}
-                                        labelStyle={styles.accountCountBadgeLabel}
-                                        label={`${accountsCount}`}
-                                        type="count"
-                                    />
-                                )
-                            }
-                        />
-                    </View>
-                )}
+                <NetworkSwitchButton
+                    network={selectedNetwork}
+                    hidden={!account?.isValid()}
+                    containerStyle={[AppStyles.flex1, AppStyles.centerAligned]}
+                />
             </Fragment>
         );
     };
@@ -340,14 +264,14 @@ class HomeView extends Component<Props, State> {
 
         if (isSpendable) {
             return (
-                <View style={[styles.buttonRow]}>
+                <View style={styles.buttonRow}>
                     <RaisedButton
                         small
                         testID="send-button"
                         containerStyle={styles.sendButtonContainer}
                         icon="IconCornerLeftUp"
                         iconSize={18}
-                        iconStyle={[styles.sendButtonIcon]}
+                        iconStyle={styles.sendButtonIcon}
                         label={Localize.t('global.send')}
                         textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
@@ -368,14 +292,14 @@ class HomeView extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.buttonRow]}>
+            <View style={styles.buttonRow}>
                 <RaisedButton
                     small
                     testID="show-account-qr-button"
                     icon="IconQR"
                     iconSize={20}
                     label={Localize.t('account.showAccountQR')}
-                    textStyle={[styles.QRButtonText]}
+                    textStyle={styles.QRButtonText}
                     onPress={this.onShowAccountQRPress}
                 />
             </View>
@@ -385,20 +309,20 @@ class HomeView extends Component<Props, State> {
     renderEmpty = () => {
         return (
             <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
-                <View style={[styles.headerContainer]}>{this.renderHeader()}</View>
+                <View style={styles.headerContainer}>{this.renderHeader()}</View>
 
                 <ImageBackground
                     source={StyleService.getImage('BackgroundShapes')}
                     imageStyle={AppStyles.BackgroundShapes}
                     style={[AppStyles.contentContainer, AppStyles.padding]}
                 >
-                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageFirstAccount')} />
-                    <Text style={[AppStyles.emptyText]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageFirstAccount')} />
+                    <Text style={AppStyles.emptyText}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                     <Button
                         testID="add-account-button"
                         label={Localize.t('home.addAccount')}
                         icon="IconPlus"
-                        iconStyle={[AppStyles.imgColorWhite]}
+                        iconStyle={AppStyles.imgColorWhite}
                         rounded
                         onPress={() => {
                             Navigator.push(AppScreens.Account.Add);
@@ -409,55 +333,44 @@ class HomeView extends Component<Props, State> {
         );
     };
 
-    renderAccountDetails = () => {
-        const { account, discreetMode } = this.state;
+    renderNetworkDetails = () => {
+        const { developerMode, selectedNetwork } = this.state;
+
+        if (!developerMode || !selectedNetwork) {
+            return null;
+        }
 
         return (
-            <View style={[AppStyles.row, AppStyles.paddingHorizontalSml]}>
-                <View style={[AppStyles.flex1]}>
-                    <Text style={[styles.accountLabelText]} numberOfLines={1}>
-                        {account.label}
-                    </Text>
-                    <TouchableDebounce onPress={this.onShowAccountQRPress} activeOpacity={0.8}>
-                        <Text
-                            testID="account-address-text"
-                            adjustsFontSizeToFit
-                            numberOfLines={1}
-                            style={[styles.accountAddressText, discreetMode && AppStyles.colorGrey]}
-                        >
-                            {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
-                        </Text>
-                    </TouchableDebounce>
-                </View>
-                <TouchableDebounce hitSlop={{ left: 25, right: 25 }} onPress={this.toggleDiscreetMode}>
-                    <Icon style={[styles.iconEye]} size={18} name={discreetMode ? 'IconEyeOff' : 'IconEye'} />
-                </TouchableDebounce>
+            <View style={styles.networkDetailsContainer}>
+                <Text style={styles.networkTextLabel}>{Localize.t('global.connectedTo')} </Text>
+                <Text adjustsFontSizeToFit numberOfLines={1} style={styles.networkTextContent}>
+                    {selectedNetwork.defaultNode.endpoint}
+                </Text>
             </View>
         );
     };
 
+    renderAccountAddress = () => {
+        const { account, discreetMode } = this.state;
+
+        return <AccountSwitchElement account={account} discreet={discreetMode} />;
+    };
+
     render() {
-        const { account, developerMode } = this.state;
+        const { account } = this.state;
 
         if (!account?.isValid()) {
             return this.renderEmpty();
         }
 
         return (
-            <View
-                testID="home-tab-view"
-                style={[
-                    AppStyles.tabContainer,
-                    {
-                        ...(developerMode && { paddingTop: 0 }),
-                    },
-                ]}
-            >
+            <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
                 <View style={styles.headerContainer}>{this.renderHeader()}</View>
                 {/* Content */}
                 <View style={AppStyles.contentContainer}>
-                    {this.renderAccountDetails()}
+                    {this.renderNetworkDetails()}
+                    {this.renderAccountAddress()}
                     {this.renderButtons()}
                     {this.renderAssets()}
                 </View>

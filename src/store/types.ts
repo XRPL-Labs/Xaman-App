@@ -23,7 +23,7 @@ export enum BiometryType {
     None = 'None',
 }
 
-export enum NodeChain {
+export enum NetworkType {
     Main = 'Mainnet',
     Test = 'Testnet',
     Dev = 'Devnet',

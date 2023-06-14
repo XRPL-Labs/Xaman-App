@@ -67,6 +67,7 @@ const screens = {
         CriticalProcessing: 'overlay.CriticalProcessing',
         PassphraseAuthentication: 'overlay.PassphraseAuthentication',
         SwitchAssetCategory: 'overlay.SwitchAssetCategory',
+        SwitchNetwork: 'overlay.SwitchNetwork',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
@@ -80,8 +81,8 @@ const screens = {
             Add: 'app.Settings.AddressBook.Add',
             Edit: 'app.Settings.AddressBook.Edit',
         },
-        Node: {
-            List: 'app.Settings.Node.List',
+        Network: {
+            List: 'app.Settings.Network.List',
         },
         ThirdPartyApps: {
             List: 'app.Settings.ThirdPartyApps.List',

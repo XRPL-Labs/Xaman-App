@@ -6,7 +6,8 @@ import { Platform } from 'react-native';
 import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
-import { NodeChain } from '@store/types';
+import { CoreSchema, NetworkSchema, NodeSchema } from '@store/schemas/latest';
+import { NetworkType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
@@ -24,16 +25,16 @@ enum SocketStateStatus {
 }
 
 declare interface SocketService {
-    on(event: 'connect', listener: () => void): this;
+    on(event: 'connect', listener: (networkId: number) => void): this;
     on(event: string, listener: Function): this;
 }
 
 /* Service  ==================================================================== */
 class SocketService extends EventEmitter {
-    public node: string;
-    public chain: NodeChain;
+    public network: NetworkSchema;
     public connection: XrplClient;
     private status: SocketStateStatus;
+    private origin: string;
     private shownErrorDialog: boolean;
     private logger: any;
     onEvent: (event: string, fn: any) => any;
@@ -42,9 +43,9 @@ class SocketService extends EventEmitter {
     constructor() {
         super();
 
-        this.node = undefined;
-        this.chain = undefined;
+        this.network = undefined;
         this.connection = undefined;
+        this.origin = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
         this.shownErrorDialog = false;
         this.status = SocketStateStatus.Disconnected;
         this.logger = LoggerService.createLogger('Socket');
@@ -66,32 +67,11 @@ class SocketService extends EventEmitter {
         };
     }
 
-    initialize = () => {
+    initialize = (coreSettings: CoreSchema) => {
         return new Promise<void>((resolve, reject) => {
             try {
-                const { node, chain } = CoreRepository.getDefaultNode();
-
-                // set the chain
-                this.chain = chain;
-
-                // if we are on MainNet and the selected node is not default node revert
-                // OR revert to default node if connected to a deprecated node
-                if (
-                    (chain === NodeChain.Main && node !== AppConfig.nodes.default) ||
-                    AppConfig.nodes.deprecated.indexOf(node) > -1
-                ) {
-                    this.logger.debug('Revert selected node to default node');
-
-                    this.node = AppConfig.nodes.default;
-                    this.chain = NodeChain.Main;
-
-                    // update the store
-                    CoreRepository.saveSettings({
-                        defaultNode: this.node,
-                    });
-                } else {
-                    this.node = node;
-                }
+                // set the network
+                this.network = coreSettings.network;
 
                 // listen on navigation root change
                 NavigationService.on('setRoot', this.onRootChange);
@@ -190,31 +170,46 @@ class SocketService extends EventEmitter {
     };
 
     /**
-     * Switch/Store new node
-     * @param node new node endpoint
-     * @param chain new node chain
+     * Get connection details
+     * @returns {object}
      */
-    switchNode = (node: string, chain?: NodeChain) => {
-        this.logger.debug(`Switch node to ${node} [${chain}]`);
+    getConnectionDetails = (): { node: string; type: string; networkId: number } => {
+        return {
+            networkId: this.network.networkId,
+            node: this.network.defaultNode.node,
+            type: this.network.type,
+        };
+    };
 
-        // store the new node
-        const { chain: newChain } = CoreRepository.setDefaultNode(node, chain);
-
-        // if the default node changed
-        if (node !== this.node) {
-            // change default node
-            this.node = node;
-            this.chain = newChain;
-
-            // destroy prev connection
-            this.destroyConnection();
-
-            // change the connection status
-            this.setConnectionStatus(SocketStateStatus.Disconnected);
-
-            // reconnect
-            this.connect();
+    /**
+     * Switch network
+     * @param network
+     */
+    switchNetwork = (network: NetworkSchema) => {
+        // nothing has been changed
+        if (network.networkId === this.network.networkId && network.defaultNode === this.network.defaultNode) {
+            return;
         }
+
+        // log
+        this.logger.debug(
+            `Switch network ${network.name} [id-${network.networkId}][node-${network.defaultNode.endpoint}]`,
+        );
+
+        // set the default network on the store
+        CoreRepository.setDefaultNetwork(network);
+
+        // change network
+        this.network = network;
+
+        // destroy prev connection
+        this.destroyConnection();
+
+        // change the connection status
+        this.setConnectionStatus(SocketStateStatus.Disconnected);
+
+        // reconnect
+        this.connect();
     };
 
     /**
@@ -305,26 +300,23 @@ class SocketService extends EventEmitter {
         let connectedNode = uri;
 
         // remove proxy from url if present
-        if (connectedNode.startsWith(AppConfig.nodes.proxy)) {
-            connectedNode = connectedNode.replace(`${AppConfig.nodes.proxy}/`, '');
+        if (connectedNode.startsWith(AppConfig.customNodeProxy)) {
+            connectedNode = connectedNode.replace(`${AppConfig.customNodeProxy}/`, '');
         }
 
         // remove path from cluster node
-        if (connectedNode.startsWith(AppConfig.nodes.cluster)) {
-            connectedNode = AppConfig.nodes.cluster;
+        if (connectedNode.endsWith(this.origin)) {
+            connectedNode = connectedNode.replace(this.origin, '');
         }
-
-        // set node and connection
-        this.node = connectedNode;
 
         // change socket status
         this.setConnectionStatus(SocketStateStatus.Connected);
 
         // log the connection
-        this.logger.debug(`Connected to node ${connectedNode} [${this.chain}][${publicKey}]`);
+        this.logger.debug(`Connected to node ${connectedNode} [${publicKey}]`);
 
         // emit on connect event
-        this.emit('connect', this.connection);
+        this.emit('connect', this.network.networkId);
     };
 
     /**
@@ -355,28 +347,29 @@ class SocketService extends EventEmitter {
     connect = () => {
         let nodes: string[];
 
-        // load node's list base on selected node chain
-        if (this.chain === NodeChain.Main) {
-            nodes = AppConfig.nodes.main.map((node) => {
-                // for cluster we add the custom path
-                if (node === AppConfig.nodes.cluster) {
-                    return `${node}/xumm/${GetAppVersionCode()}/${Platform.OS}`;
-                }
-                return node;
-            });
-        } else if (this.chain === NodeChain.Test) {
-            nodes = [...AppConfig.nodes.test];
-        } else if (this.chain === NodeChain.Dev) {
-            nodes = [...AppConfig.nodes.dev];
-        } else {
-            // if not belong to any chain then it's custom node wrap it in proxy
-            nodes = [`${AppConfig.nodes.proxy}/${this.node}`];
-        }
+        // get default node for selected network
+        const { defaultNode } = this.network;
 
-        // move preferred node to the first
-        nodes.sort((x, y) => {
-            return x === this.node ? -1 : y === this.node ? 1 : 0;
-        });
+        // for MainNet we add the list of all nodes for fail over
+        if (this.network.type === NetworkType.Main) {
+            nodes = this.network.nodes.map((node: NodeSchema) => {
+                // for cluster we add origin
+                if (AppConfig.clusterEndpoints.includes(node.endpoint)) {
+                    return `${node.endpoint}${this.origin}`;
+                }
+                return node.endpoint;
+            });
+
+            // move preferred node to the first
+            nodes.sort((x, y) => {
+                return x === defaultNode.endpoint ? -1 : y === defaultNode.endpoint ? 1 : 0;
+            });
+        } else if (this.network.type === NetworkType.Custom) {
+            // wrap in proxy if the network type is custom
+            nodes = [`${AppConfig.customNodeProxy}/${defaultNode.endpoint}`];
+        } else {
+            nodes = [`${AppConfig.customNodeProxy}/${defaultNode.endpoint}`];
+        }
 
         this.connection = new XrplClient(nodes, {
             maxConnectionAttempts: 3,

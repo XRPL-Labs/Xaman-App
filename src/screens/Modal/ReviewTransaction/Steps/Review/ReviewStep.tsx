@@ -9,7 +9,7 @@ import { ImageBackground, Text, View } from 'react-native';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { SocketService, StyleService } from '@services';
+import { StyleService } from '@services';
 
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -21,7 +21,6 @@ import { AccountPicker } from '@components/Modules';
 import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
-import { ChainColors } from '@theme/colors';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
@@ -160,7 +159,7 @@ class ReviewStep extends Component<Props, State> {
         const { coreSettings } = this.context;
 
         if (coreSettings.developerMode) {
-            return ChainColors[SocketService.chain];
+            return coreSettings.network.color;
         }
 
         return undefined;
