@@ -985,6 +985,11 @@ didFinishNavigation:(WKNavigation *)navigation
   [_webView becomeFirstResponder];
 }
 
+- (void)endEditing
+{
+  [_webView endEditing:YES];
+}
+
 
 - (void)enableMessaging {
   self.postMessageScript =

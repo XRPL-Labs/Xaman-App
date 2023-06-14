@@ -2,22 +2,24 @@
  * XApp Browser modal
  */
 
-import { has, get, assign, toUpper, isEmpty } from 'lodash';
+import { assign, get, has, isEmpty, toUpper } from 'lodash';
 import moment from 'moment-timezone';
 import React, { Component } from 'react';
 import {
-    View,
-    Text,
-    BackHandler,
     Alert,
+    BackHandler,
     InteractionManager,
     Linking,
-    Share,
     NativeEventSubscription,
+    Share,
+    Text,
+    View,
 } from 'react-native';
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
+
+import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
@@ -28,20 +30,20 @@ import { AccountInfoType } from '@common/helpers/resolver';
 
 import { StringTypeCheck } from '@common/utils/string';
 
-import { AppScreens } from '@common/constants';
+import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
 
 import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccessLevels, NodeChain } from '@store/types';
+import { AccessLevels, NetworkType } from '@store/types';
 
-import { SocketService, BackendService, PushNotificationsService, NavigationService, StyleService } from '@services';
+import { BackendService, NavigationService, PushNotificationsService, SocketService, StyleService } from '@services';
 
-import { WebView, Button, Spacer, LoadingIndicator, Avatar, PulseAnimation } from '@components/General';
+import { Avatar, Button, LoadingIndicator, PulseAnimation, Spacer, WebView } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -97,8 +99,11 @@ class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
     private backHandler: NativeEventSubscription;
-    private lastMessageReceived: number;
+    private authenticationListener: any;
+
     private readonly webView: React.RefObject<WebView>;
+
+    private lastMessageReceived: number;
     private softLoadingTimeout: any;
 
     static options() {
@@ -140,13 +145,26 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // fetch OTT on browser start
         InteractionManager.runAfterInteractions(this.fetchOTT);
+
+        // listen for authentication lock state changes
+        AuthenticationService.on('lockStateChange', this.onLockStateChange);
     }
 
     componentWillUnmount() {
+        // clear listeners
         if (this.backHandler) {
             this.backHandler.remove();
         }
+
+        AuthenticationService.off('lockStateChange', this.onLockStateChange);
     }
+
+    onLockStateChange = (lockState: LockStatus) => {
+        if (lockState === LockStatus.LOCKED) {
+            // dismiss the WebView keyboard if any
+            this.webView?.current?.endEditing();
+        }
+    };
 
     onClose = (data?: { refreshEvents?: boolean }) => {
         // if refresh events flag set, publish a sign request update event
@@ -490,19 +508,22 @@ class XAppBrowserModal extends Component<Props, State> {
             });
         }
 
+        const { networkId, node, type } = SocketService.getConnectionDetails();
+
         // default headers
         const data = {
             version: appVersionCode,
             locale: Localize.getCurrentLocale(),
             currency: coreSettings.currency,
             style: coreSettings.theme,
-            nodetype: SocketService.chain,
+            nodetype: type,
+            nodeid: networkId,
         };
 
-        // include node endpoint if using custom node
-        if (SocketService.chain === NodeChain.Custom) {
+        // include node endpoint if using custom network
+        if (type === NetworkType.Custom) {
             assign(data, {
-                nodewss: SocketService.node,
+                nodewss: node,
             });
         }
 

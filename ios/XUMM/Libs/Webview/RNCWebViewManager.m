@@ -132,6 +132,18 @@ RCT_EXPORT_METHOD(requestFocus:(nonnull NSNumber *)reactTag)
   }];
 }
 
+RCT_EXPORT_METHOD(endEditing:(nonnull NSNumber *)reactTag)
+{
+  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, RNCWebView *> *viewRegistry) {
+    RNCWebView *view = viewRegistry[reactTag];
+    if (![view isKindOfClass:[RNCWebView class]]) {
+      RCTLogError(@"Invalid view returned from registry, expecting RNCWebView, got: %@", view);
+    } else {
+      [view endEditing];
+    }
+  }];
+}
+
 #pragma mark - Exported synchronous methods
 
 - (BOOL)          webView:(RNCWebView *)webView

@@ -23,6 +23,7 @@ const Commands = codegenNativeCommands({
         'requestFocus',
         'postMessage',
         'loadUrl',
+        'endEditing',
     ],
 });
 
@@ -109,6 +110,9 @@ const WebViewComponent = forwardRef<{}, IOSWebViewProps>(
                 stopLoading: () => Commands.stopLoading(webViewRef.current),
                 postMessage: (data: string) => Commands.postMessage(webViewRef.current, data),
                 requestFocus: () => Commands.requestFocus(webViewRef.current),
+                endEditing: () => {
+                    Commands.endEditing(webViewRef.current);
+                },
             }),
             [setViewState, webViewRef],
         );

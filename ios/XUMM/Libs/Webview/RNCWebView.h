@@ -43,5 +43,6 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *_Nonnull)request
 - (void)reload;
 - (void)stopLoading;
 - (void)requestFocus;
+- (void)endEditing;
 
 @end

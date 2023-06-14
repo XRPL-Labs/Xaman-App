@@ -117,6 +117,7 @@ const WebViewComponent = forwardRef<{}, AndroidWebViewProps>(
                 clearFormData: () => Commands.clearFormData(webViewRef.current),
                 clearCache: (includeDiskFiles: boolean) => Commands.clearCache(webViewRef.current, includeDiskFiles),
                 clearHistory: () => Commands.clearHistory(webViewRef.current),
+                endEditing: () => {},
             }),
             [setViewState, webViewRef],
         );
