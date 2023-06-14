@@ -18154,9 +18154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"realm@npm:11.8.0":
-  version: 11.8.0
-  resolution: "realm@npm:11.8.0"
+"realm@npm:11.9.0":
+  version: 11.9.0
+  resolution: "realm@npm:11.9.0"
   dependencies:
     "@realm/common": ^0.1.4
     "@realm/network-transport": ^0.7.2
@@ -18183,7 +18183,7 @@ __metadata:
   peerDependenciesMeta:
     react-native:
       optional: true
-  checksum: 222901fb26a83599509ea614372ce313433d8be6ca5db4c12f6fbb494ef97f1eeb1ad1fd3055d233781120c0e4c01cb4fa9cca99ac91ee68f73b8e42c8512fb0
+  checksum: cde7e785feb9219ceb111f9ee33e3463f9738f6ce553f6c7109204cdc304a9ef9def925f569551787a8f17113a7afb6a6270f9d34815f70ae18722965ca0df7e
   languageName: node
   linkType: hard
 
@@ -22346,7 +22346,7 @@ __metadata:
     react-native-interactable: 2.0.1
     react-native-navigation: 7.32.1
     react-test-renderer: 18.2.0
-    realm: 11.8.0
+    realm: 11.9.0
     ripple-address-codec: 4.2.4
     ripple-binary-codec: 1.4.3
     tangem-sdk-react-native: 2.3.1
