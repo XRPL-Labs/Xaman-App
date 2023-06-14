@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: 16.x
 
+      - name: Install Yarn 3
+        run: npm install -g yarn@berry
+
       - run: node --version
 
       - name: Cache node modules
