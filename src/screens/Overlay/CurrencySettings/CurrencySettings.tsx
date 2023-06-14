@@ -790,7 +790,7 @@ class CurrencySettingsModal extends Component<Props, State> {
                                         icon="IconCoins"
                                         iconSize={22}
                                         iconStyle={styles.depositButtonIcon}
-                                        label={`${Localize.t('global.deposit')} ${
+                                        label={`${Localize.t('global.add')} ${
                                             trustLine.currency.name ||
                                             NormalizeCurrencyCode(trustLine.currency.currency)
                                         }`}
