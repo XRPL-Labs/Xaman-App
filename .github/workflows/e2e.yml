@@ -23,9 +23,6 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Install Yarn 3
-        run: npm install -g yarn@3.5.1
-
       - run: node --version
 
       - name: Cache node modules
@@ -41,7 +38,7 @@ jobs:
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --immutable
+        run: yarn install --frozen-lockfile
 
       - name: Cache Pods
         uses: actions/cache@v1
