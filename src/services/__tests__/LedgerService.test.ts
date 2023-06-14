@@ -4,7 +4,7 @@ describe('LedgerService', () => {
     const ledgerService = LedgerService;
 
     it('should properly initialize', async () => {
-        const coreSettings = { baseReserve: 10, ownerReserve: 2 };
+        const coreSettings = { network: { baseReserve: 10, ownerReserve: 2 } } as any;
 
         await ledgerService.initialize(coreSettings);
 

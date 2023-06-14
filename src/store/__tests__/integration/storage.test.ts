@@ -12,7 +12,7 @@ describe('Storage', () => {
 
         it('should initialize properly', async () => {
             await storage.initialize();
-            expect(storage.db).toBeDefined();
+            expect(storage.dataStore).toBeDefined();
         });
 
         afterAll(() => {
