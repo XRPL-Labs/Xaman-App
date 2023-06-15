@@ -339,14 +339,14 @@ class SummaryStep extends Component<Props, State> {
         const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
-            <View testID="send-summary-view" style={[styles.container]}>
+            <View testID="send-summary-view" style={styles.container}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     enabled={!destinationTagInputVisible}
                     scrollEnabled={canScroll}
                 >
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text
                                 style={[
                                     AppStyles.subtext,
@@ -363,16 +363,16 @@ class SummaryStep extends Component<Props, State> {
 
                         <Spacer size={20} />
 
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.to')}
                             </Text>
                         </View>
                         <Spacer size={15} />
 
-                        <View style={[styles.rowTitle]}>
-                            <View style={[styles.pickerItem]}>
-                                <Text style={[styles.pickerItemTitle]}>
+                        <View style={styles.rowTitle}>
+                            <View style={styles.pickerItem}>
+                                <Text numberOfLines={1} style={styles.pickerItemTitle}>
                                     {destination?.name || Localize.t('global.noNameFound')}
                                 </Text>
                                 <Text
@@ -389,7 +389,7 @@ class SummaryStep extends Component<Props, State> {
 
                         <View style={AppStyles.row}>
                             <View style={AppStyles.flex1}>
-                                <View style={[styles.rowTitle]}>
+                                <View style={styles.rowTitle}>
                                     <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                         {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                         <Text style={AppStyles.colorBlue}>
@@ -410,19 +410,19 @@ class SummaryStep extends Component<Props, State> {
                     </View>
 
                     {/* Currency */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.asset')}
                             </Text>
                         </View>
                         <Spacer size={15} />
-                        <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
+                        <View style={styles.rowTitle}>{this.renderCurrencyItem(currency)}</View>
                     </View>
 
                     {/* Amount */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.amount')}
                             </Text>
@@ -435,20 +435,20 @@ class SummaryStep extends Component<Props, State> {
                     </View>
 
                     {issuerFee && (
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
+                        <View style={styles.rowItem}>
+                            <View style={styles.rowTitle}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.issuerFee')}
                                 </Text>
                             </View>
                             <View style={styles.feeContainer}>
-                                <Text style={[styles.feeText]}>{issuerFee} %</Text>
+                                <Text style={styles.feeText}>{issuerFee} %</Text>
                             </View>
                         </View>
                     )}
 
                     <View style={[styles.rowItem, AppStyles.centerContent]}>
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.fee')}
                             </Text>
@@ -459,7 +459,7 @@ class SummaryStep extends Component<Props, State> {
                             onPress={this.showFeeSelectOverlay}
                         >
                             <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                                <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
+                                <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
                                 <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                             </View>
                             <Button
@@ -474,8 +474,8 @@ class SummaryStep extends Component<Props, State> {
                     </View>
 
                     {/* Memo */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.memo')}
                             </Text>

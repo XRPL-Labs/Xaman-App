@@ -105,16 +105,18 @@ class AccountPicker extends Component<Props, State> {
         }
 
         return (
-            <TouchableDebounce activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
-                <View style={[AppStyles.row]}>
-                    <View style={[AppStyles.flex1]}>
-                        <Text style={[styles.accountItemTitle]}>{selectedItem.label}</Text>
-                        <Text style={[styles.accountItemSub]} adjustsFontSizeToFit numberOfLines={1}>
+            <TouchableDebounce activeOpacity={0.9} onPress={this.showPicker} style={styles.pickerContainer}>
+                <View style={AppStyles.row}>
+                    <View style={AppStyles.flex1}>
+                        <Text numberOfLines={1} style={styles.accountItemTitle}>
+                            {selectedItem.label}
+                        </Text>
+                        <Text style={styles.accountItemSub} adjustsFontSizeToFit numberOfLines={1}>
                             {selectedItem.address}
                         </Text>
                     </View>
                     {accounts.length > 1 && (
-                        <TouchableDebounce style={[styles.collapseButton]} onPress={this.showPicker}>
+                        <TouchableDebounce style={styles.collapseButton} onPress={this.showPicker}>
                             <Icon
                                 name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
                                 size={20}

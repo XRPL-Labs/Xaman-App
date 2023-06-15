@@ -12,6 +12,7 @@ describe('Storage', () => {
 
         it('should initialize properly', async () => {
             await storage.initialize();
+            // @ts-ignore
             expect(storage.dataStore).toBeDefined();
         });
 

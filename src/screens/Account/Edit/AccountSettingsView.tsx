@@ -88,8 +88,8 @@ class AccountSettingsView extends Component<Props, State> {
 
         if (!newLabel || newLabel === account.label) return;
 
-        if (newLabel.length > 16) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.accountMaxLabelLengthError'));
+        if (newLabel.length > 64) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.accountLabelCannotBeMoreThan'));
             return;
         }
 
@@ -274,32 +274,24 @@ class AccountSettingsView extends Component<Props, State> {
                         <Text style={styles.descriptionText}>{Localize.t('account.accountSettingsDescription')}</Text>
 
                         <View style={styles.row}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text numberOfLines={1} style={styles.label} testID="address-label">
-                                    {Localize.t('global.address')}
-                                </Text>
-                            </View>
+                            <Text numberOfLines={1} style={styles.label} testID="address-label">
+                                {Localize.t('global.address')}
+                            </Text>
 
-                            <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                <Text selectable style={[styles.address]}>
-                                    {account.address}
-                                </Text>
-                            </View>
+                            <Text numberOfLines={1} selectable style={styles.address}>
+                                {account.address}
+                            </Text>
                         </View>
 
                         {account.type === AccountTypes.Tangem && (
                             <View style={styles.row}>
-                                <View style={[AppStyles.flex3]}>
-                                    <Text numberOfLines={1} style={styles.label} testID="tangem-card-id">
-                                        {Localize.t('account.cardId')}
-                                    </Text>
-                                </View>
+                                <Text numberOfLines={1} style={styles.label} testID="tangem-card-id">
+                                    {Localize.t('account.cardId')}
+                                </Text>
 
-                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text selectable style={[styles.address]}>
-                                        {GetCardId(account.additionalInfo)}
-                                    </Text>
-                                </View>
+                                <Text selectable style={styles.address}>
+                                    {GetCardId(account.additionalInfo)}
+                                </Text>
                             </View>
                         )}
 
@@ -309,59 +301,46 @@ class AccountSettingsView extends Component<Props, State> {
                             style={styles.row}
                             onPress={this.accountLabelPressed}
                         >
-                            <View style={[AppStyles.flex3]}>
-                                <Text numberOfLines={1} style={styles.label}>
-                                    {Localize.t('account.accountLabel')}
-                                </Text>
-                            </View>
-
-                            <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                <Text style={[styles.value]}>{account.label}</Text>
-                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
-                            </View>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('account.accountLabel')}
+                            </Text>
+                            <Text numberOfLines={1} style={styles.value}>
+                                {account.label}
+                            </Text>
+                            <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </TouchableDebounce>
 
                         {/* Account Access Level */}
                         {account.type === AccountTypes.Regular && (
                             <TouchableDebounce
                                 testID="account-access-level-button"
-                                style={[styles.row]}
+                                style={styles.row}
                                 onPress={this.showAccessLevelPicker}
                             >
-                                <View style={[AppStyles.flex3]}>
-                                    <Text numberOfLines={1} style={styles.label}>
-                                        {Localize.t('account.accessLevel')}
-                                    </Text>
-                                </View>
-
-                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text testID="account-access-level-value" style={[styles.value]}>
-                                        {account.accessLevel === AccessLevels.Full
-                                            ? Localize.t('account.fullAccess')
-                                            : Localize.t('account.readOnly')}
-                                    </Text>
-                                    <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
-                                </View>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('account.accessLevel')}
+                                </Text>
+                                <Text testID="account-access-level-value" style={styles.value}>
+                                    {account.accessLevel === AccessLevels.Full
+                                        ? Localize.t('account.fullAccess')
+                                        : Localize.t('account.readOnly')}
+                                </Text>
+                                <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                             </TouchableDebounce>
                         )}
                         {/* <Text style={styles.descriptionText}>{Localize.t('account.passwordOptionDesc')}</Text> */}
                         {account.accessLevel === AccessLevels.Full && (
                             <Fragment key="security">
                                 {/* Encryption Label */}
-                                <View style={[styles.row]}>
-                                    <View style={[AppStyles.flex3]}>
-                                        <Text numberOfLines={1} style={styles.label}>
-                                            {Localize.t('account.securityLevel')}
-                                        </Text>
-                                    </View>
-
-                                    <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                        <Text style={[styles.value]}>
-                                            {account.encryptionLevel === EncryptionLevels.Passphrase
-                                                ? 'Password'
-                                                : account.encryptionLevel}
-                                        </Text>
-                                    </View>
+                                <View style={styles.row}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('account.securityLevel')}
+                                    </Text>
+                                    <Text style={styles.value}>
+                                        {account.encryptionLevel === EncryptionLevels.Passphrase
+                                            ? 'Password'
+                                            : account.encryptionLevel}
+                                    </Text>
                                 </View>
 
                                 {/* Change passphrase */}
@@ -371,49 +350,40 @@ class AccountSettingsView extends Component<Props, State> {
                                         style={styles.row}
                                         onPress={this.showChangePassphrase}
                                     >
-                                        <View style={[AppStyles.flex3]}>
-                                            <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
-                                        </View>
+                                        <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
                                     </TouchableDebounce>
                                 )}
                             </Fragment>
                         )}
 
                         {account.type === AccountTypes.Tangem && (
-                            <TouchableDebounce style={[styles.row]} onPress={this.showChangeTangemSecurity}>
-                                <View style={[AppStyles.flex3]}>
-                                    <Text numberOfLines={1} style={styles.label}>
-                                        {Localize.t('account.cardEnforcedSecurity')}
-                                    </Text>
-                                </View>
-
-                                <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                                    <Text style={styles.value}>
-                                        {(() => {
-                                            switch (GetCardEnforcedSecurity(account.additionalInfo)) {
-                                                case TangemSecurity.Passcode:
-                                                    return Localize.t('global.passcode');
-                                                case TangemSecurity.AccessCode:
-                                                    return Localize.t('global.accessCode');
-                                                case TangemSecurity.LongTap:
-                                                    return Localize.t('global.longTap');
-                                                default:
-                                                    return null;
-                                            }
-                                        })()}
-                                    </Text>
-                                </View>
-                                <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                            <TouchableDebounce style={styles.row} onPress={this.showChangeTangemSecurity}>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('account.cardEnforcedSecurity')}
+                                </Text>
+                                <Text style={styles.value}>
+                                    {(() => {
+                                        switch (GetCardEnforcedSecurity(account.additionalInfo)) {
+                                            case TangemSecurity.Passcode:
+                                                return Localize.t('global.passcode');
+                                            case TangemSecurity.AccessCode:
+                                                return Localize.t('global.accessCode');
+                                            case TangemSecurity.LongTap:
+                                                return Localize.t('global.longTap');
+                                            default:
+                                                return null;
+                                        }
+                                    })()}
+                                </Text>
+                                <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                             </TouchableDebounce>
                         )}
 
                         <View style={styles.row}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text numberOfLines={1} style={styles.label}>
-                                    {Localize.t('global.hidden')}
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('global.hidden')}
+                            </Text>
+                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                                 <Switch checked={account.hidden} onChange={this.onHiddenChange} />
                             </View>
                         </View>

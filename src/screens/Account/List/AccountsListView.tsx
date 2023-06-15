@@ -196,9 +196,11 @@ class AccountListView extends Component<Props, State> {
         return (
             <View style={styles.rowContainer}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
-                    <View style={[AppStyles.flex6]}>
-                        <Text style={[styles.accountLabel]}>{item.label}</Text>
-                        <View style={[styles.accessLevelContainer]}>
+                    <View style={AppStyles.flex6}>
+                        <Text numberOfLines={1} style={styles.accountLabel}>
+                            {item.label}
+                        </Text>
+                        <View style={styles.accessLevelContainer}>
                             <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
                             <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
                             {item.hidden && (
@@ -232,7 +234,7 @@ class AccountListView extends Component<Props, State> {
                     </View>
                 </View>
                 <View style={[AppStyles.row, styles.subRow]}>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Text style={[AppStyles.monoBold, AppStyles.colorGrey, styles.subLabel]}>
                             {Localize.t('global.address')}:
                         </Text>

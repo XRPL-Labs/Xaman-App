@@ -69,17 +69,6 @@ class RecipientElement extends Component<Props> {
         }
     };
 
-    renderSource = () => {
-        const { recipient, showSource } = this.props;
-
-        if (recipient.source && showSource) {
-            // @ts-ignore
-            return <Badge type={recipient.source} />;
-        }
-
-        return null;
-    };
-
     renderAvatar = () => {
         const { recipient, showAvatar } = this.props;
 
@@ -95,6 +84,17 @@ class RecipientElement extends Component<Props> {
         return <Avatar source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} badge={badge} border />;
     };
 
+    renderSource = () => {
+        const { recipient, showSource } = this.props;
+
+        if (recipient.source && showSource) {
+            // @ts-ignore
+            return <Badge type={recipient.source} />;
+        }
+
+        return null;
+    };
+
     renderName = () => {
         const { recipient, selected, isLoading } = this.props;
 
@@ -108,9 +108,12 @@ class RecipientElement extends Component<Props> {
         }
 
         return (
-            <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.nameText, selected && styles.selectedText]}>
-                {recipient.name || Localize.t('global.noNameFound')}
-            </Text>
+            <View style={[AppStyles.flex1, AppStyles.row]}>
+                <Text numberOfLines={1} style={[styles.nameText, selected && styles.selectedText]}>
+                    {recipient.name || Localize.t('global.noNameFound')}
+                </Text>
+                {this.renderSource()}
+            </View>
         );
     };
 
@@ -179,10 +182,7 @@ class RecipientElement extends Component<Props> {
             >
                 {this.renderAvatar()}
                 <View style={styles.centerContent}>
-                    <View style={AppStyles.row}>
-                        {this.renderName()}
-                        {this.renderSource()}
-                    </View>
+                    <View style={AppStyles.row}>{this.renderName()}</View>
                     {this.renderAddress()}
                     {this.renderDestinationTag()}
                     {this.renderExtraInfo()}

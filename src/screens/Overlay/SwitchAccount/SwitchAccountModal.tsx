@@ -179,20 +179,22 @@ class SwitchAccountOverlay extends Component<Props, State> {
                     ]}
                 >
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex3]}>
-                            <Text style={[styles.accountLabel, styles.accountLabelSelected]}>{account.label}</Text>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={[styles.accountLabel, styles.accountLabelSelected]}>
+                                {account.label}
+                            </Text>
                             <Text style={[styles.accountAddress, styles.accountAddressSelected]}>
                                 {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                             </Text>
                             <View style={[styles.accessLevelBadge, styles.accessLevelBadgeSelected]}>
-                                <Icon size={11} name={accessLevelIcon} style={[AppStyles.imgColorPrimary]} />
+                                <Icon size={11} name={accessLevelIcon} style={AppStyles.imgColorPrimary} />
                                 <Text style={[styles.accessLevelLabel, styles.accessLevelLabelSelected]}>
                                     {accessLevelLabel}
                                 </Text>
                             </View>
                         </View>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
                     </View>
                 </View>
@@ -208,21 +210,23 @@ class SwitchAccountOverlay extends Component<Props, State> {
                 activeOpacity={0.9}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow, { height: ROW_ITEM_HEIGHT }]}>
-                    <View style={[AppStyles.flex3]}>
-                        <Text style={[styles.accountLabel]}>{account.label}</Text>
-                        <Text style={[styles.accountAddress]}>
+                    <View style={AppStyles.flex3}>
+                        <Text numberOfLines={1} style={styles.accountLabel}>
+                            {account.label}
+                        </Text>
+                        <Text style={styles.accountAddress}>
                             {discreetMode ? '••••••••••••••••••••••••••••••••' : account.address}
                         </Text>
-                        <View style={[styles.accessLevelBadge]}>
+                        <View style={styles.accessLevelBadge}>
                             <Icon
                                 size={11}
                                 name={accessLevelIcon}
                                 style={[AppStyles.imgColorPrimary, styles.accessLevelIcon]}
                             />
-                            <Text style={[styles.accessLevelLabel]}>{accessLevelLabel}</Text>
+                            <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
                         </View>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <View style={[styles.radioCircle, AppStyles.rightSelf]} />
                     </View>
                 </View>

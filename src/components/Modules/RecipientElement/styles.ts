@@ -4,6 +4,7 @@ import { AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     container: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         padding: 5,

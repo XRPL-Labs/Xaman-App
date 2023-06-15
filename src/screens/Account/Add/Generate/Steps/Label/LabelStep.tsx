@@ -40,8 +40,8 @@ class LabelStep extends Component<Props, State> {
         const { goNext, setLabel } = this.context;
         const { label } = this.state;
 
-        if (label.length > 16) {
-            Alert.alert(Localize.t('global.error'), Localize.t('account.accountMaxLabelLengthError'));
+        if (label.length > 64) {
+            Alert.alert(Localize.t('global.error'), Localize.t('account.accountLabelCannotBeMoreThan'));
             return;
         }
 

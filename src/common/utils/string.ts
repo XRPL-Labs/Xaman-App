@@ -60,22 +60,22 @@ const HexEncoding = {
 /**
  * Truncate string
  * @param fullString string
- * @param string_length number expected output length
+ * @param stringLength number expected output length
  * @returns stringTruncate text ABC...EFG
  */
-const Truncate = (fullString: string, string_length: number): string => {
-    if (fullString.length <= string_length) {
+const Truncate = (fullString: string, stringLength: number): string => {
+    if (fullString.length <= stringLength) {
         return fullString;
     }
 
     const separator = '...';
 
-    const separator_length = separator.length;
-    const charsToShow = string_length - separator_length;
+    const separatorLength = separator.length;
+    const charsToShow = stringLength - separatorLength;
     const frontChars = Math.ceil(charsToShow / 2);
     const backChars = Math.floor(charsToShow / 2);
 
-    return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
+    return fullString.substring(0, frontChars) + separator + fullString.substring(fullString.length - backChars);
 };
 
 /**
