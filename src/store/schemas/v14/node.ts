@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { AppConfig } from '@common/constants';
+import { NetworkConfig } from '@common/constants';
 
 /**
  * Node Model
@@ -25,7 +25,7 @@ class Node extends Realm.Object {
 
         for (let i = 0; i < networks.length; i++) {
             const network = networks[i];
-            const networkConfig = AppConfig.networks.find((net) => net.networkId === network.networkId);
+            const networkConfig = NetworkConfig.networks.find((net) => net.networkId === network.networkId);
             const createdNodes = [] as any[];
             networkConfig.nodes.forEach((n) => {
                 createdNodes.push(

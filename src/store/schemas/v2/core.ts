@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { AppConfig } from '@common/constants';
+import { AppConfig, NetworkConfig } from '@common/constants';
 import { BiometryType } from '@store/types';
 
 /**
@@ -19,7 +19,7 @@ class Core extends Realm.Object {
             biometricMethod: 'string?', // biometric auth method
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
-            defaultNode: { type: 'string', default: AppConfig.legacy.defaultNode },
+            defaultNode: { type: 'string', default: NetworkConfig.legacy.defaultNode },
             theme: { type: 'string', default: AppConfig.defaultTheme }, // app theme
             showMemoAlert: { type: 'bool', default: true }, // show memo alert
         },

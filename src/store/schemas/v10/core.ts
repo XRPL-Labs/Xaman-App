@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { AppConfig } from '@common/constants';
+import { AppConfig, NetworkConfig } from '@common/constants';
 import { BiometryType, Themes } from '@store/types';
 
 /**
@@ -20,10 +20,10 @@ class Core extends Realm.Object {
             passcodeFallback: { type: 'bool', default: false }, // fallback to passcode in case of biometric fail
             language: { type: 'string', default: AppConfig.defaultLanguage }, // default app language
             currency: { type: 'string', default: AppConfig.defaultCurrency }, // currency
-            defaultNode: { type: 'string', default: AppConfig.legacy.defaultNode },
-            defaultExplorer: { type: 'string', default: AppConfig.legacy.defaultExplorer }, // default explorer
-            baseReserve: { type: 'double', default: AppConfig.network.baseReserve }, // network base reserve
-            ownerReserve: { type: 'double', default: AppConfig.network.ownerReserve }, // network owner reserve
+            defaultNode: { type: 'string', default: NetworkConfig.legacy.defaultNode },
+            defaultExplorer: { type: 'string', default: NetworkConfig.legacy.defaultExplorer }, // default explorer
+            baseReserve: { type: 'double', default: NetworkConfig.baseReserve }, // network base reserve
+            ownerReserve: { type: 'double', default: NetworkConfig.ownerReserve }, // network owner reserve
             hapticFeedback: { type: 'bool', default: true }, // enable haptic feedback
             discreetMode: { type: 'bool', default: false }, // Discreet Mode
             useSystemSeparators: { type: 'bool', default: true }, // Use system separators
@@ -60,8 +60,8 @@ class Core extends Realm.Object {
         const newObjects = newRealm.objects('Core') as Core[];
 
         for (let i = 0; i < newObjects.length; i++) {
-            newObjects[i].baseReserve = AppConfig.network.baseReserve;
-            newObjects[i].ownerReserve = AppConfig.network.ownerReserve;
+            newObjects[i].baseReserve = NetworkConfig.baseReserve;
+            newObjects[i].ownerReserve = NetworkConfig.ownerReserve;
         }
     }
 }

@@ -58,6 +58,7 @@ class NetworkSettingView extends Component<Props, State> {
 
         networks.forEach((network: NetworkSchema) => {
             dataSource.push({
+                key: network.key,
                 title: network.name,
                 color: network.color,
                 defaultNode: network.defaultNode,

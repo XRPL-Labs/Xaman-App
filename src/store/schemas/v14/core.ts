@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { AppConfig } from '@common/constants';
+import { AppConfig, NetworkConfig } from '@common/constants';
 import { BiometryType, Themes } from '@store/types';
 
 /**
@@ -65,9 +65,9 @@ class Core extends Realm.Object {
         // no coreSetting found
         if (typeof oldCoreSettings !== 'undefined' && oldCoreSettings.length > 0) {
             const { defaultNode } = oldCoreSettings[0];
-            for (let i = 0; i < AppConfig.networks.length; i++) {
-                if (AppConfig.networks[i].nodes.includes(defaultNode)) {
-                    selectedNetworkId = AppConfig.networks[i].networkId;
+            for (let i = 0; i < NetworkConfig.networks.length; i++) {
+                if (NetworkConfig.networks[i].nodes.includes(defaultNode)) {
+                    selectedNetworkId = NetworkConfig.networks[i].networkId;
                 }
             }
         }
@@ -86,7 +86,7 @@ class Core extends Realm.Object {
         // get all networks
         const networks = realm.objects('Network') as any[];
 
-        const defaultNetworkId = AppConfig.networks[0].networkId;
+        const defaultNetworkId = NetworkConfig.networks[0].networkId;
         const selectedNetwork = networks.find((n) => n.networkId === defaultNetworkId);
 
         realm.create(Core.schema.name, {

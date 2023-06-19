@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
-
 import Interactable from 'react-native-interactable';
 
-import { TouchableDebounce, Icon } from '@components/General';
+import StyleService from '@services/StyleService';
+
+import { TouchableDebounce, Icon, Badge } from '@components/General';
 
 import { NodeSchema } from '@store/schemas/latest';
+
+import Localize from '@locale';
 
 import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {
     item: NodeSchema;
@@ -99,7 +103,7 @@ class NodeListItem extends Component<Props, State> {
                         </View>
                         {isDefault && (
                             <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                <Icon size={20} style={styles.checkIcon} name="IconCheck" />
+                                <Badge label={Localize.t('global.default')} color={StyleService.value('$grey')} />
                             </View>
                         )}
                     </TouchableDebounce>

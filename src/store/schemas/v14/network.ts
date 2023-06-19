@@ -1,7 +1,7 @@
 import Realm from 'realm';
 
 import { NetworkType } from '@store/types';
-import { AppConfig } from '@common/constants';
+import { NetworkConfig } from '@common/constants';
 
 /**
  * Network Model
@@ -9,14 +9,16 @@ import { AppConfig } from '@common/constants';
 class Network extends Realm.Object {
     public static schema: Realm.ObjectSchema = {
         name: 'Network',
-        primaryKey: 'networkId',
+        primaryKey: 'key',
         properties: {
+            key: { type: 'string' },
             networkId: { type: 'int' },
             name: { type: 'string' },
             color: { type: 'string' },
             type: { type: 'string' },
-            baseReserve: { type: 'double', default: AppConfig.network.baseReserve },
-            ownerReserve: { type: 'double', default: AppConfig.network.ownerReserve },
+            nativeAsset: { type: 'string' },
+            baseReserve: { type: 'double', default: NetworkConfig.baseReserve },
+            ownerReserve: { type: 'double', default: NetworkConfig.ownerReserve },
             defaultNode: { type: 'Node' },
             nodes: { type: 'list', objectType: 'Node' },
             definitionsString: { type: 'string?' },
@@ -25,8 +27,9 @@ class Network extends Realm.Object {
         },
     };
 
-    public name: string;
+    public key: string;
     public networkId: number;
+    public name: string;
     public color: string;
     public type: NetworkType;
     public baseReserve: number;
@@ -55,16 +58,18 @@ class Network extends Realm.Object {
     */
     public static populate(realm: Realm) {
         // default supported networks list
-        const { networks } = AppConfig;
+        const { networks } = NetworkConfig;
         // create networks
         for (let i = 0; i < networks.length; i++) {
             realm.create(Network.schema.name, {
                 name: networks[i].name,
+                key: networks[i].key,
+                nativeAsset: networks[i].nativeAsset,
                 networkId: networks[i].networkId,
                 color: networks[i].color,
                 type: networks[i].type,
-                baseReserve: AppConfig.network.baseReserve,
-                ownerReserve: AppConfig.network.ownerReserve,
+                baseReserve: NetworkConfig.baseReserve,
+                ownerReserve: NetworkConfig.ownerReserve,
                 definitionsString: '',
                 registerAt: new Date(),
                 updatedAt: new Date(),

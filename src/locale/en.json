@@ -346,7 +346,8 @@
     "unableToOpenUrl": "Unable to open URL: %{url}",
     "networks": "Networks",
     "network": "Network",
-    "connectedTo": "Connected to:"
+    "connectedTo": "Connected to:",
+    "connected": "Connected"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -512,9 +513,11 @@
     "theEscrowIsFromTo": "The escrow is from %{account} to %{destination}",
     "theEscrowHasADestinationTag": "The escrow has a destination tag: %{tag}",
     "itEscrowed": "It escrowed %{amount} XRP",
+    "itEscrowedWithCurrency": "It escrowed %{amount} %{currency}",
     "itCanBeCanceledAfter": "It can be cancelled after %{date}",
     "itCanBeFinishedAfter": "It can be finished after %{date}",
     "escrowFinishTransactionExplain": "Completion was triggered by %{address}\r\nThe escrowed amount of %{amount} XRP was delivered to %{destination}",
+    "escrowFinishExplain": "Completion was triggered by %{address}\r\nThe escrowed amount of %{amount} %{currency} was delivered to %{destination}",
     "theEscrowWasCreatedBy": "The escrow was created by %{owner}",
     "thePaymentHasASourceTag": "The payment source tag is: %{tag}",
     "thePaymentHasADestinationTag": "The payment destination tag is: %{tag}",

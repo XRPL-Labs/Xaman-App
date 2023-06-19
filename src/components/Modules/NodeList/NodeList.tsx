@@ -1,9 +1,14 @@
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList } from 'react-native';
 
-import { NodeSchema } from '@store/schemas/latest';
+import { SocketService, StyleService } from '@services';
 
+import { NodeSchema } from '@store/schemas/latest';
 import { NetworkType } from '@store/types';
+
+import { Badge } from '@components/General';
+
+import Localize from '@locale';
 
 import styles from './styles';
 
@@ -17,8 +22,28 @@ interface Props {
     onItemRemovePress: (item: NodeSchema) => void;
 }
 
+interface State {
+    connectedNetworkKey: any;
+}
+
 /* Component ==================================================================== */
-class NodeList extends PureComponent<Props> {
+class NodeList extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            connectedNetworkKey: undefined,
+        };
+    }
+
+    componentDidMount() {
+        const { key } = SocketService.getConnectionDetails();
+
+        this.setState({
+            connectedNetworkKey: key,
+        });
+    }
+
     renderItem = ({ item, section }: { item: any; section: any }): React.ReactElement => {
         const { onItemPress, onItemRemovePress } = this.props;
 
@@ -39,13 +64,18 @@ class NodeList extends PureComponent<Props> {
         );
     };
 
-    renderSectionHeader = ({ section: { title, color } }: any) => {
+    renderSectionHeader = ({ section: { title, color, key } }: any) => {
+        const { connectedNetworkKey } = this.state;
+
         return (
             <View style={styles.sectionHeader}>
                 <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 <Text numberOfLines={1} style={styles.sectionHeaderText}>
                     {title}
                 </Text>
+                {connectedNetworkKey === key && (
+                    <Badge label={Localize.t('global.connected')} color={StyleService.value('$green')} />
+                )}
             </View>
         );
     };
