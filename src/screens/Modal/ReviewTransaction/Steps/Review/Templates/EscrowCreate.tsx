@@ -82,8 +82,8 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     }}
                 />
 
-                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.amount')}</Text>
+                <View style={styles.contentBox}>
                     <AmountText
                         value={transaction.Amount.value}
                         currency={transaction.Amount.currency}
@@ -94,18 +94,18 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
                 {transaction.FinishAfter && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.finishAfter')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{FormatDate(transaction.FinishAfter)}</Text>
+                        <Text style={styles.label}>{Localize.t('global.finishAfter')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{FormatDate(transaction.FinishAfter)}</Text>
                         </View>
                     </>
                 )}
 
                 {transaction.CancelAfter && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.cancelAfter')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{FormatDate(transaction.CancelAfter)}</Text>
+                        <Text style={styles.label}>{Localize.t('global.cancelAfter')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{FormatDate(transaction.CancelAfter)}</Text>
                         </View>
                     </>
                 )}

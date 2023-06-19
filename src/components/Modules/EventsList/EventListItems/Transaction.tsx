@@ -110,8 +110,8 @@ class TransactionItem extends Component<Props, State> {
                 address = item.Issuer;
                 break;
             case TransactionTypes.EscrowCreate:
-                address = item.Destination.address;
-                tag = item.Destination.tag;
+                address = item.Account.address;
+                tag = item.Account.tag;
                 break;
             case TransactionTypes.EscrowCancel:
                 address = item.Owner;
@@ -479,8 +479,11 @@ class TransactionItem extends Component<Props, State> {
                 <AmountText
                     value={item.Amount.value}
                     currency={item.Amount.currency}
-                    prefix={!incoming && '-'}
-                    style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
+                    prefix={item.Account.address === account.address && '-'}
+                    style={[
+                        styles.amount,
+                        item.Account.address === account.address ? styles.orangeColor : styles.naturalColor,
+                    ]}
                     currencyStyle={styles.currency}
                     valueContainerStyle={styles.amountValueContainer}
                     truncateCurrency
@@ -489,12 +492,19 @@ class TransactionItem extends Component<Props, State> {
         }
 
         if (item.Type === TransactionTypes.EscrowFinish) {
+            incoming = item.Destination.address === account.address;
             return (
                 <AmountText
                     value={item.Amount.value}
                     currency={item.Amount.currency}
-                    prefix={!incoming && '-'}
-                    style={[styles.amount, !incoming && styles.naturalColor]}
+                    prefix={item.Owner === account.address && '-'}
+                    style={[
+                        styles.amount,
+                        item.Destination.address !== account.address &&
+                            item.Owner !== account.address &&
+                            styles.naturalColor,
+                        item.Owner === account.address && styles.outgoingColor,
+                    ]}
                     currencyStyle={styles.currency}
                     valueContainerStyle={styles.amountValueContainer}
                     truncateCurrency

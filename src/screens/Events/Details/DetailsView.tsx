@@ -287,11 +287,11 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case TransactionTypes.EscrowFinish:
-                if (incomingTx) {
-                    address = tx.Account.address;
-                } else {
+                if (tx.Owner === account.address) {
                     address = tx.Destination.address;
                     tag = tx.Destination.tag;
+                } else {
+                    address = tx.Owner;
                 }
                 break;
             case TransactionTypes.DepositPreauth:
@@ -857,7 +857,10 @@ class TransactionDetailsView extends Component<Props, State> {
             content += ' ';
         }
         content += '\n';
-        content += Localize.t('events.itEscrowed', { amount: tx.Amount.value });
+        content += Localize.t('events.itEscrowedWithCurrency', {
+            amount: tx.Amount.value,
+            currency: tx.Amount.currency,
+        });
 
         if (tx.CancelAfter) {
             content += '\n';
@@ -872,9 +875,10 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderEscrowFinish = (tx: Extract<Transactions, { Type: TransactionTypes.EscrowFinish }>): string => {
-        let content = Localize.t('events.escrowFinishTransactionExplain', {
+        let content = Localize.t('events.escrowFinishExplain', {
             address: tx.Account.address,
             amount: tx.Amount.value,
+            currency: tx.Amount.currency,
             destination: tx.Destination.address,
         });
         if (tx.Destination.tag) {
@@ -1747,16 +1751,21 @@ class TransactionDetailsView extends Component<Props, State> {
             case TransactionTypes.EscrowCreate:
             case LedgerObjectTypes.Escrow:
                 Object.assign(props, {
-                    color: incomingTx ? styles.orangeColor : styles.outgoingColor,
-                    prefix: '-',
+                    color: tx.Account.address === account.address ? styles.orangeColor : styles.naturalColor,
+                    prefix: tx.Account.address === account.address ? '-' : '',
                     value: tx.Amount.value,
                     currency: tx.Amount.currency,
                 });
                 break;
             case TransactionTypes.EscrowFinish:
                 Object.assign(props, {
-                    color: tx.Destination.address === account.address ? styles.incomingColor : styles.naturalColor,
-                    icon: 'IconCornerRightDown',
+                    color: [
+                        styles.naturalColor,
+                        tx.Owner === account.address && styles.outgoingColor,
+                        tx.Destination.address === account.address && styles.incomingColor,
+                    ],
+                    icon: tx.Owner === account.address ? 'IconCornerLeftUp' : 'IconCornerRightDown',
+                    prefix: tx.Owner === account.address ? '-' : '',
                     value: tx.Amount.value,
                     currency: tx.Amount.currency,
                 });
@@ -2365,6 +2374,29 @@ class TransactionDetailsView extends Component<Props, State> {
                     through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
+        }
+
+        if (tx.Type === TransactionTypes.EscrowFinish) {
+            from = {
+                address: tx.Owner,
+                ...(tx.Owner !== account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
+            to = {
+                address: tx.Destination.address,
+                ...(tx.Owner === account.address
+                    ? { ...partiesDetails }
+                    : {
+                          address: account.address,
+                          name: account.label,
+                          source: 'accounts',
+                      }),
+            };
         }
 
         // no information to show

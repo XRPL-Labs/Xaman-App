@@ -34,9 +34,17 @@ class EscrowFinish extends BaseTransaction {
 
         if (isUndefined(finalFields)) return undefined;
 
+        if (typeof finalFields.Amount === 'string') {
+            return {
+                currency: 'XRP',
+                value: new Amount(finalFields.Amount).dropsToXrp(),
+            };
+        }
+
         return {
-            currency: 'XRP',
-            value: new Amount(finalFields.Amount).dropsToXrp(),
+            currency: finalFields.Amount.currency,
+            value: finalFields.Amount.value,
+            issuer: finalFields.Amount.issuer,
         };
     }
 
