@@ -2,9 +2,12 @@
  * LedgerService service
  * fetching details from XRPL ledger - submit/verify transaction
  */
+import EventEmitter from 'events';
 import BigNumber from 'bignumber.js';
 import moment from 'moment-timezone';
 import { has, map, isEmpty, assign, startsWith } from 'lodash';
+
+import { NetworkConfig } from '@common/constants';
 
 import { CoreSchema } from '@store/schemas/latest';
 import NetworkRepository from '@store/repositories/network';
@@ -34,8 +37,6 @@ import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objec
 
 import SocketService from '@services/SocketService';
 import LoggerService from '@services/LoggerService';
-import { AppConfig } from '@common/constants';
-import EventEmitter from 'events';
 
 /* Types  ==================================================================== */
 declare interface LedgerService {
@@ -225,7 +226,7 @@ class LedgerService extends EventEmitter {
         }
 
         return {
-            Fee: AppConfig.network.netFee,
+            Fee: NetworkConfig.netFee,
             LastLedger: 0,
         };
     };

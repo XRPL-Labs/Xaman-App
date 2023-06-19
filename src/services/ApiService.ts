@@ -12,7 +12,7 @@ import { ProfileRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
 
 import { SHA256 } from '@common/libs/crypto';
-import { AppConfig, ErrorMessages, APIConfig } from '@common/constants';
+import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
@@ -50,9 +50,9 @@ class ApiService {
 
     constructor() {
         // Config
-        this.apiUrl = APIConfig.apiUrl;
+        this.apiUrl = ApiConfig.apiUrl;
         this.userAgent = `${AppConfig.appName}`;
-        this.endpoints = APIConfig.endpoints;
+        this.endpoints = ApiConfig.endpoints;
 
         // After 100 seconds, let's call it a day!
         this.timeoutSec = 100 * 1000;

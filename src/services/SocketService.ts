@@ -12,7 +12,7 @@ import { NetworkType } from '@store/types';
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
-import { AppConfig, AppScreens } from '@common/constants';
+import { AppScreens, NetworkConfig } from '@common/constants';
 
 import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
 import LoggerService from '@services/LoggerService';
@@ -173,8 +173,9 @@ class SocketService extends EventEmitter {
      * Get connection details
      * @returns {object}
      */
-    getConnectionDetails = (): { node: string; type: string; networkId: number } => {
+    getConnectionDetails = (): { node: string; type: string; networkId: number; key: string } => {
         return {
+            key: this.network.key,
             networkId: this.network.networkId,
             node: this.network.defaultNode.node,
             type: this.network.type,
@@ -300,8 +301,8 @@ class SocketService extends EventEmitter {
         let connectedNode = uri;
 
         // remove proxy from url if present
-        if (connectedNode.startsWith(AppConfig.customNodeProxy)) {
-            connectedNode = connectedNode.replace(`${AppConfig.customNodeProxy}/`, '');
+        if (connectedNode.startsWith(NetworkConfig.customNodeProxy)) {
+            connectedNode = connectedNode.replace(`${NetworkConfig.customNodeProxy}/`, '');
         }
 
         // remove path from cluster node
@@ -354,7 +355,7 @@ class SocketService extends EventEmitter {
         if (this.network.type === NetworkType.Main) {
             nodes = this.network.nodes.map((node: NodeSchema) => {
                 // for cluster we add origin
-                if (AppConfig.clusterEndpoints.includes(node.endpoint)) {
+                if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
                     return `${node.endpoint}${this.origin}`;
                 }
                 return node.endpoint;
@@ -366,9 +367,9 @@ class SocketService extends EventEmitter {
             });
         } else if (this.network.type === NetworkType.Custom) {
             // wrap in proxy if the network type is custom
-            nodes = [`${AppConfig.customNodeProxy}/${defaultNode.endpoint}`];
+            nodes = [`${NetworkConfig.customNodeProxy}/${defaultNode.endpoint}`];
         } else {
-            nodes = [`${AppConfig.customNodeProxy}/${defaultNode.endpoint}`];
+            nodes = [`${NetworkConfig.customNodeProxy}/${defaultNode.endpoint}`];
         }
 
         this.connection = new XrplClient(nodes, {
