@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList } from 'react-native';
 
-import { SocketService, StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 
 import { NodeSchema } from '@store/schemas/latest';
 import { NetworkType } from '@store/types';
@@ -37,7 +37,7 @@ class NodeList extends PureComponent<Props, State> {
     }
 
     componentDidMount() {
-        const { key } = SocketService.getConnectionDetails();
+        const { key } = NetworkService.getConnectionDetails();
 
         this.setState({
             connectedNetworkKey: key,

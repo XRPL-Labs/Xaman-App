@@ -9,7 +9,7 @@ import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'r
 
 import { Navigation } from 'react-native-navigation';
 
-import { AccountService, SocketService, StyleService } from '@services';
+import { AccountService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, CoreSchema, NetworkSchema } from '@store/schemas/latest';
@@ -104,7 +104,7 @@ class HomeView extends Component<Props, State> {
 
         InteractionManager.runAfterInteractions(() => {
             // Update account details when component didAppear and Socket is connected
-            if (account?.isValid() && SocketService.isConnected()) {
+            if (account?.isValid() && NetworkService.isConnected()) {
                 // only update current account details
                 AccountService.updateAccountsDetails([account.address]);
             }

@@ -9,7 +9,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 
 import { NetworkRepository, NodeRepository, CoreRepository } from '@store/repositories';
 import { NetworkSchema, NodeSchema } from '@store/schemas/latest';
@@ -85,9 +85,8 @@ class NetworkSettingView extends Component<Props, State> {
         });
 
         // switch to the new default node if we already connected to the same network
-        const { networkId } = SocketService.getConnectionDetails();
-        if (node.network.networkId === networkId) {
-            SocketService.switchNetwork(node.network);
+        if (node.network.networkId === NetworkService.getConnectedNetworkId()) {
+            NetworkService.switchNetwork(node.network);
         }
 
         // update dataSource

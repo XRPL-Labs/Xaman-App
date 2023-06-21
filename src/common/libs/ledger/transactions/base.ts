@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { filter, find, flatMap, get, has, isUndefined, remove, set, size } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 
 import { AccountSchema } from '@store/schemas/latest';
 
@@ -159,8 +159,7 @@ class BaseTransaction {
         }
 
         if (this.NetworkID === undefined) {
-            const { networkId } = SocketService.getConnectionDetails();
-            this.NetworkID = networkId;
+            this.NetworkID = NetworkService.getConnectedNetworkId();
         }
     };
 

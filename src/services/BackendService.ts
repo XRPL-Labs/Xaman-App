@@ -29,7 +29,7 @@ import { NFTokenOffer } from '@common/libs/ledger/objects';
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
@@ -310,7 +310,7 @@ class BackendService {
     */
     getAddressInfo = (address: string) => {
         return ApiService.addressInfo.get(address, null, {
-            'X-XummNet': SocketService.getConnectedNetwork(),
+            'X-XummNet': NetworkService.getConnectedNetworkId(),
         });
     };
 
@@ -318,7 +318,7 @@ class BackendService {
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.getConnectedNetwork() });
+        return ApiService.lookup.get(content, null, { 'X-XummNet': NetworkService.getConnectedNetworkId() });
     };
 
     /*
@@ -329,12 +329,12 @@ class BackendService {
     };
 
     getXAppStoreListings = (category: string) => {
-        return ApiService.xAppsStore.get({ category, network: SocketService.getConnectedNetwork() });
+        return ApiService.xAppsStore.get({ category, network: NetworkService.getConnectedNetworkId() });
     };
     getXAppShortList = () => {
         return ApiService.xAppsShortList.get({
             featured: true,
-            network: SocketService.getConnectedNetwork(),
+            network: NetworkService.getConnectedNetworkId(),
         });
     };
 
@@ -363,13 +363,13 @@ class BackendService {
         return ApiService.xls20Details.post(
             null,
             { account, tokens },
-            { 'X-XummNet': SocketService.getConnectedNetwork() },
+            { 'X-XummNet': NetworkService.getConnectedNetworkId() },
         );
     };
 
     getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
-            .get({ account }, null, { 'X-XummNet': SocketService.getConnectedNetwork() })
+            .get({ account }, null, { 'X-XummNet': NetworkService.getConnectedNetworkId() })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];

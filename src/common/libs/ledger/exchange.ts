@@ -12,7 +12,7 @@ import {
 
 import Localize from '@locale';
 
-import { ApiService, SocketService } from '@services';
+import { ApiService, NetworkService } from '@services';
 
 import { ValueToIOU } from '@common/utils/amount';
 
@@ -138,7 +138,7 @@ class LedgerExchange {
                 amount,
             },
             options: this.boundaryOptions,
-            method: SocketService.send,
+            method: NetworkService.send,
         };
     };
 

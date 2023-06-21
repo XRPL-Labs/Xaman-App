@@ -7,7 +7,7 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, V
 
 import { AppScreens } from '@common/constants';
 
-import { LedgerService, PushNotificationsService, SocketService, StyleService } from '@services';
+import { LedgerService, PushNotificationsService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountSchema } from '@store/schemas/latest';
@@ -81,7 +81,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // check if any forced network applied
         const forcedNetwork = payload.getForcedNetwork();
-        if (forcedNetwork && SocketService.network.networkId !== forcedNetwork) {
+        if (forcedNetwork && NetworkService.getConnectedNetworkId() !== forcedNetwork) {
             this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
             return;
         }
@@ -594,7 +594,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
-            const { node, networkId, type } = SocketService.getConnectionDetails();
+            const { node, networkId, type } = NetworkService.getConnectionDetails();
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,

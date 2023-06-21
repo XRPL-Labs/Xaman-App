@@ -15,7 +15,7 @@ import { Amount } from '@common/libs/ledger/parser/common';
 
 import { LedgerTransactionType } from '@common/libs/ledger/types';
 
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
@@ -51,8 +51,8 @@ class AccountService extends EventEmitter {
                 AccountRepository.on('accountCreate', this.onAccountsChange);
                 AccountRepository.on('accountRemove', this.onAccountsChange);
 
-                // on socket service connect
-                SocketService.on('connect', this.onSocketConnect);
+                // on network service connect
+                NetworkService.on('connect', this.onNetworkConnect);
 
                 resolve();
             } catch (e) {
@@ -62,9 +62,9 @@ class AccountService extends EventEmitter {
     };
 
     /**
-     * Update the details when connect to the socket
+     * Update the details when connect to the network
      */
-    onSocketConnect = () => {
+    onNetworkConnect = () => {
         // update account details
         this.updateAccountsDetails();
         // subscribe accounts for transactions stream
@@ -79,10 +79,10 @@ class AccountService extends EventEmitter {
     setTransactionListener = () => {
         // if already any listener remove it
         if (this.transactionListener) {
-            SocketService.offEvent('transaction', this.transactionHandler);
+            NetworkService.offEvent('transaction', this.transactionHandler);
         }
         // create the new listener
-        this.transactionListener = SocketService.onEvent('transaction', this.transactionHandler);
+        this.transactionListener = NetworkService.onEvent('transaction', this.transactionHandler);
     };
 
     /**
@@ -273,7 +273,7 @@ class AccountService extends EventEmitter {
     unsubscribe() {
         this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
 
-        SocketService.send({
+        NetworkService.send({
             command: 'unsubscribe',
             accounts: this.accounts,
         }).catch((e: any) => {
@@ -287,7 +287,7 @@ class AccountService extends EventEmitter {
     subscribe() {
         this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
-        SocketService.send({
+        NetworkService.send({
             command: 'subscribe',
             accounts: this.accounts,
         }).catch((e: any) => {

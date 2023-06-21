@@ -11,7 +11,7 @@ import { CoreRepository, NetworkRepository } from '@store/repositories';
 import { NetworkSchema, CoreSchema } from '@store/schemas/latest';
 import { NetworkType } from '@store/types';
 
-import { SocketService } from '@services';
+import { NetworkService } from '@services';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -105,7 +105,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
 
     changeNetwork = (network: NetworkSchema) => {
         // switch network
-        SocketService.switchNetwork(network);
+        NetworkService.switchNetwork(network);
         // slide down the panel
         this.actionPanel.slideDown();
     };

@@ -36,7 +36,7 @@ import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, NetworkType } from '@store/types';
 
-import { BackendService, NavigationService, PushNotificationsService, SocketService, StyleService } from '@services';
+import { BackendService, NavigationService, PushNotificationsService, NetworkService, StyleService } from '@services';
 
 import { Avatar, Button, LoadingIndicator, PulseAnimation, Spacer, WebView } from '@components/General';
 
@@ -508,7 +508,7 @@ class XAppBrowserModal extends Component<Props, State> {
             });
         }
 
-        const { networkId, node, type } = SocketService.getConnectionDetails();
+        const { networkId, node, type } = NetworkService.getConnectionDetails();
 
         // default headers
         const data = {

@@ -5,7 +5,7 @@ import ApiService from './ApiService';
 import AppService from './AppService';
 import AuthenticationService from './AuthenticationService';
 import LinkingService from './LinkingService';
-import SocketService from './SocketService';
+import NetworkService from './NetworkService';
 import LedgerService from './LedgerService';
 import AccountService from './AccountService';
 import BackendService from './BackendService';
@@ -19,7 +19,7 @@ export {
     AppService,
     AuthenticationService,
     LinkingService,
-    SocketService,
+    NetworkService,
     LedgerService,
     AccountService,
     BackendService,

@@ -35,7 +35,7 @@ import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
@@ -78,8 +78,8 @@ class LedgerService extends EventEmitter {
                     `Current Network Base/Owner reserve: ${this.networkReserve.base}/${this.networkReserve.owner}`,
                 );
 
-                // on socket service connect set ledger listener if not set
-                SocketService.on('connect', this.onSocketConnect);
+                // on network service connect set ledger listener if not set
+                NetworkService.on('connect', this.onNetworkConnect);
 
                 resolve();
             } catch (e) {
@@ -89,17 +89,17 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Listener for when socket is connected
+     * Listener for when network is connected
      */
-    onSocketConnect = (networkId: number) => {
+    onNetworkConnect = (networkId: number) => {
         // Set Ledger listener for tracking the base/owner reserve
 
         // clear if exist
         if (this.ledgerListener) {
-            SocketService.offEvent('ledger', this.updateNetworkReserve);
+            NetworkService.offEvent('ledger', this.updateNetworkReserve);
         }
         // subscribe
-        this.ledgerListener = SocketService.onEvent('ledger', this.updateNetworkReserve);
+        this.ledgerListener = NetworkService.onEvent('ledger', this.updateNetworkReserve);
 
         // update the network definitions
         this.updateNetworkDefinitions(networkId);
@@ -123,7 +123,7 @@ class LedgerService extends EventEmitter {
             Object.assign(request, { hash: definitionsHash });
         }
 
-        SocketService.send(request)
+        NetworkService.send(request)
             .then(async (resp: any) => {
                 // an error happened
                 if ('error' in resp) {
@@ -174,10 +174,8 @@ class LedgerService extends EventEmitter {
                 };
 
                 // persist new network base/owner reserve
-                const { networkId } = SocketService.getConnectionDetails();
-
                 NetworkRepository.update({
-                    networkId,
+                    networkId: NetworkService.getConnectedNetworkId(),
                     baseReserve: reserveBase,
                     ownerReserve: reserveOwner,
                 });
@@ -189,10 +187,8 @@ class LedgerService extends EventEmitter {
      * Get current network definitions
      */
     getNetworkDefinitions = (): any => {
-        // get connected networkId from socket service
-        const { networkId } = SocketService.getConnectionDetails();
-
-        const network = NetworkRepository.findOne({ networkId });
+        // get connected networkId from network service
+        const network = NetworkRepository.findOne({ networkId: NetworkService.getConnectedNetworkId() });
 
         if (network && network.definitions) {
             return network.definitions;
@@ -217,8 +213,8 @@ class LedgerService extends EventEmitter {
      * Get Current ledger status
      */
     getLedgerStatus = (): { Fee: number; LastLedger: number } => {
-        if (SocketService.connection) {
-            const { fee, ledger } = SocketService.connection.getState();
+        if (NetworkService.connection) {
+            const { fee, ledger } = NetworkService.connection.getState();
             return {
                 Fee: fee.avg,
                 LastLedger: ledger.last,
@@ -242,21 +238,21 @@ class LedgerService extends EventEmitter {
         if (typeof options === 'object') {
             Object.assign(request, options);
         }
-        return SocketService.send(request);
+        return NetworkService.send(request);
     };
 
     /**
      * get ledger fee info
      */
     getLedgerFee = (): Promise<FeeResponse> => {
-        return SocketService.send({ command: 'fee' });
+        return NetworkService.send({ command: 'fee' });
     };
 
     /**
      * Get account info
      */
     getGatewayBalances = (account: string): Promise<GatewayBalancesResponse> => {
-        return SocketService.send({
+        return NetworkService.send({
             command: 'gateway_balances',
             account,
             strict: true,
@@ -269,7 +265,7 @@ class LedgerService extends EventEmitter {
      * Get account info
      */
     getAccountInfo = (account: string): Promise<AccountInfoResponse> => {
-        return SocketService.send({
+        return NetworkService.send({
             command: 'account_info',
             account,
             ledger_index: 'validated',
@@ -289,14 +285,14 @@ class LedgerService extends EventEmitter {
         if (typeof options === 'object') {
             Object.assign(request, options);
         }
-        return SocketService.send(request);
+        return NetworkService.send(request);
     };
 
     /**
      * Get single transaction by providing transaction id
      */
     getTransaction = (txId: string) => {
-        return SocketService.send({
+        return NetworkService.send({
             command: 'tx',
             transaction: txId,
             binary: false,
@@ -316,7 +312,7 @@ class LedgerService extends EventEmitter {
         if (marker) {
             Object.assign(request, { marker });
         }
-        return SocketService.send(request);
+        return NetworkService.send(request);
     };
 
     /**
@@ -330,7 +326,7 @@ class LedgerService extends EventEmitter {
         if (marker) {
             Object.assign(request, { marker });
         }
-        return SocketService.send(request).then((resp: AccountNFTsResponse) => {
+        return NetworkService.send(request).then((resp: AccountNFTsResponse) => {
             const { account_nfts, marker: _marker } = resp;
             if (_marker && _marker !== marker) {
                 return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
@@ -350,14 +346,14 @@ class LedgerService extends EventEmitter {
         if (marker) {
             Object.assign(request, { marker });
         }
-        return SocketService.send(request);
+        return NetworkService.send(request);
     };
 
     /**
      * get server info
      */
     getServerInfo = () => {
-        return SocketService.send({
+        return NetworkService.send({
             command: 'server_info',
         });
     };
@@ -675,8 +671,8 @@ class LedgerService extends EventEmitter {
      */
     submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
         try {
-            // get connected node and node type from socket service
-            const { node, type: nodeType, networkId } = SocketService.getConnectionDetails();
+            // get connection details from network service
+            const { node, type: nodeType, networkId } = NetworkService.getConnectionDetails();
 
             // send event about we are about to submit the transaction
             this.emit('submitTransaction', {
@@ -688,7 +684,7 @@ class LedgerService extends EventEmitter {
             });
 
             // submit the tx blob to the ledger
-            const submitResult = await SocketService.send({
+            const submitResult = await NetworkService.send({
                 command: 'submit',
                 tx_blob: txBlob,
                 fail_hard: failHard,
@@ -760,7 +756,7 @@ class LedgerService extends EventEmitter {
                     .then((tx: any) => {
                         if (tx.validated) {
                             // of event for ledger
-                            SocketService.offEvent('ledger', ledgerListener);
+                            NetworkService.offEvent('ledger', ledgerListener);
 
                             // clear timeout
                             if (timeout) {
@@ -779,11 +775,11 @@ class LedgerService extends EventEmitter {
             };
 
             // listen for ledger close events
-            SocketService.onEvent('ledger', ledgerListener);
+            NetworkService.onEvent('ledger', ledgerListener);
 
             // timeout after 30 sec
             timeout = setTimeout(() => {
-                SocketService.offEvent('ledger', ledgerListener);
+                NetworkService.offEvent('ledger', ledgerListener);
                 resolve({
                     success: false,
                 });

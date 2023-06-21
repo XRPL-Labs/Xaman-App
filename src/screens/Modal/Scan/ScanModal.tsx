@@ -11,7 +11,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, SocketService } from '@services';
+import { StyleService, BackendService, NetworkService } from '@services';
 
 import { AccountRepository, CoreRepository, NetworkRepository, NodeRepository } from '@store/repositories';
 import { CoreSchema } from '@store/schemas/latest';
@@ -231,7 +231,7 @@ class ScanView extends Component<Props, State> {
                     {
                         text: upperFirst(Localize.t('global.switch')),
                         style: 'destructive',
-                        onPress: () => SocketService.switchNetwork(network),
+                        onPress: () => NetworkService.switchNetwork(network),
                     },
                 ],
                 { cancelable: false, type: 'default' },

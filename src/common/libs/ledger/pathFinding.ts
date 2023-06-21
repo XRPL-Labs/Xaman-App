@@ -6,7 +6,7 @@ import { flatMap } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 
-import { SocketService } from '@services';
+import { NetworkService } from '@services';
 
 import { PathOption, RipplePathFindResponse } from '@common/libs/ledger/types';
 import { LedgerAmount } from '@common/libs/ledger/parser/types';
@@ -69,12 +69,12 @@ class LedgerPathFinding extends EventEmitter {
 
     // listen for ledger close events
     private subscribePathFind = () => {
-        SocketService.onEvent('path', this.handlePathFindEvent);
+        NetworkService.onEvent('path', this.handlePathFindEvent);
     };
 
     // listen for ledger close events
     private unsubscribePathFind = () => {
-        SocketService.offEvent('path', this.handlePathFindEvent);
+        NetworkService.offEvent('path', this.handlePathFindEvent);
     };
 
     private handlePathOptions = (options: PathOption[], shouldResolve?: boolean) => {
@@ -141,7 +141,7 @@ class LedgerPathFinding extends EventEmitter {
             this.requestId = uuidv4();
 
             // send socket request
-            SocketService.send({
+            NetworkService.send({
                 id: this.requestId,
                 command: 'path_find',
                 subcommand: 'create',
@@ -208,7 +208,7 @@ class LedgerPathFinding extends EventEmitter {
         this.unsubscribePathFind();
 
         // close the request
-        SocketService.send({
+        NetworkService.send({
             id: this.requestId,
             command: 'path_find',
             subcommand: 'close',

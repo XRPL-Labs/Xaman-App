@@ -32,6 +32,7 @@ class Network extends Realm.Object {
     public name: string;
     public color: string;
     public type: NetworkType;
+    public nativeAsset: string;
     public baseReserve: number;
     public ownerReserve: number;
     public defaultNode: any;

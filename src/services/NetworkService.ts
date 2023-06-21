@@ -1,5 +1,5 @@
 /**
- * Socket service
+ * Network service
  */
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
@@ -19,21 +19,21 @@ import LoggerService from '@services/LoggerService';
 import NavigationService, { RootType } from '@services/NavigationService';
 
 /* Types  ==================================================================== */
-enum SocketStateStatus {
+enum NetworkStateStatus {
     Connected = 'Connected',
     Disconnected = 'Disconnected',
 }
 
-declare interface SocketService {
+declare interface NetworkService {
     on(event: 'connect', listener: (networkId: number) => void): this;
     on(event: string, listener: Function): this;
 }
 
 /* Service  ==================================================================== */
-class SocketService extends EventEmitter {
+class NetworkService extends EventEmitter {
     public network: NetworkSchema;
     public connection: XrplClient;
-    private status: SocketStateStatus;
+    private status: NetworkStateStatus;
     private origin: string;
     private shownErrorDialog: boolean;
     private logger: any;
@@ -47,8 +47,8 @@ class SocketService extends EventEmitter {
         this.connection = undefined;
         this.origin = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
         this.shownErrorDialog = false;
-        this.status = SocketStateStatus.Disconnected;
-        this.logger = LoggerService.createLogger('Socket');
+        this.status = NetworkStateStatus.Disconnected;
+        this.logger = LoggerService.createLogger('Network');
 
         // proxy events
         this.onEvent = (event: string, fn: any) => {
@@ -108,7 +108,7 @@ class SocketService extends EventEmitter {
         // destroy the connection
         this.destroyConnection();
         // set the new connection status
-        this.setConnectionStatus(SocketStateStatus.Disconnected);
+        this.setConnectionStatus(NetworkStateStatus.Disconnected);
         // remove listeners
         this.removeAppStateListeners();
     };
@@ -157,7 +157,7 @@ class SocketService extends EventEmitter {
     /**
      * Set current connection state
      */
-    setConnectionStatus = (status: SocketStateStatus) => {
+    setConnectionStatus = (status: NetworkStateStatus) => {
         this.status = status;
     };
 
@@ -166,14 +166,14 @@ class SocketService extends EventEmitter {
      * @returns {boolean}
      */
     isConnected = (): boolean => {
-        return this.status === SocketStateStatus.Connected;
+        return this.status === NetworkStateStatus.Connected;
     };
 
     /**
      * Get connected network id
-     * @returns {object}
+     * @returns {number}
      */
-    getConnectedNetwork = () => {
+    getConnectedNetworkId = () => {
         return this.network.networkId;
     };
 
@@ -215,7 +215,7 @@ class SocketService extends EventEmitter {
         this.destroyConnection();
 
         // change the connection status
-        this.setConnectionStatus(SocketStateStatus.Disconnected);
+        this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
         // reconnect
         this.connect();
@@ -272,7 +272,7 @@ class SocketService extends EventEmitter {
      */
     reconnect = () => {
         try {
-            this.logger.debug('Reconnecting socket service...');
+            this.logger.debug('Reconnecting network service...');
             // close current connection
             this.closeConnection();
             // reinstate
@@ -318,8 +318,8 @@ class SocketService extends EventEmitter {
             connectedNode = connectedNode.replace(this.origin, '');
         }
 
-        // change socket status
-        this.setConnectionStatus(SocketStateStatus.Connected);
+        // change network status
+        this.setConnectionStatus(NetworkStateStatus.Connected);
 
         // log the connection
         this.logger.debug(`Connected to node ${connectedNode} [${publicKey}]`);
@@ -333,7 +333,7 @@ class SocketService extends EventEmitter {
      */
     onClose = () => {
         // change socket status
-        this.setConnectionStatus(SocketStateStatus.Disconnected);
+        this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
         // log that socked is closed
         this.logger.warn('Socket closed');
@@ -351,7 +351,7 @@ class SocketService extends EventEmitter {
     };
 
     /**
-     * Establish connection to the socket
+     * Establish connection to the network
      */
     connect = () => {
         let nodes: string[];
@@ -393,4 +393,4 @@ class SocketService extends EventEmitter {
     };
 }
 
-export default new SocketService();
+export default new NetworkService();
