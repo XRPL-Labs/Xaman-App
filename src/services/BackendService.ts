@@ -310,7 +310,7 @@ class BackendService {
     */
     getAddressInfo = (address: string) => {
         return ApiService.addressInfo.get(address, null, {
-            'X-XummNet': SocketService.getConnectionDetails().networkId,
+            'X-XummNet': SocketService.getConnectedNetwork(),
         });
     };
 
@@ -318,7 +318,7 @@ class BackendService {
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.getConnectionDetails().networkId });
+        return ApiService.lookup.get(content, null, { 'X-XummNet': SocketService.getConnectedNetwork() });
     };
 
     /*
@@ -329,10 +329,13 @@ class BackendService {
     };
 
     getXAppStoreListings = (category: string) => {
-        return ApiService.xAppsStore.get({ category });
+        return ApiService.xAppsStore.get({ category, network: SocketService.getConnectedNetwork() });
     };
     getXAppShortList = () => {
-        return ApiService.xAppsShortList.get({ featured: true });
+        return ApiService.xAppsShortList.get({
+            featured: true,
+            network: SocketService.getConnectedNetwork(),
+        });
     };
 
     getXAppLaunchToken = (xAppId: string, data: any) => {
@@ -360,13 +363,13 @@ class BackendService {
         return ApiService.xls20Details.post(
             null,
             { account, tokens },
-            { 'X-XummNet': SocketService.getConnectionDetails().networkId },
+            { 'X-XummNet': SocketService.getConnectedNetwork() },
         );
     };
 
     getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
-            .get({ account }, null, { 'X-XummNet': SocketService.getConnectionDetails().networkId })
+            .get({ account }, null, { 'X-XummNet': SocketService.getConnectedNetwork() })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];

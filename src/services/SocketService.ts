@@ -170,6 +170,14 @@ class SocketService extends EventEmitter {
     };
 
     /**
+     * Get connected network id
+     * @returns {object}
+     */
+    getConnectedNetwork = () => {
+        return this.network.networkId;
+    };
+
+    /**
      * Get connection details
      * @returns {object}
      */
