@@ -1,6 +1,8 @@
 /* eslint-disable no-lonely-if */
 import { get, isUndefined, set } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import { EncodeLedgerIndex } from '@common/utils/codec';
 
 import BaseTransaction from './base';
@@ -41,8 +43,8 @@ class OfferCreate extends BaseTransaction {
 
         if (typeof gets === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(gets).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(gets).dropsToNative(),
             };
         }
 
@@ -54,8 +56,8 @@ class OfferCreate extends BaseTransaction {
     }
 
     set TakerGets(gets: AmountType) {
-        if (gets.currency === 'XRP') {
-            set(this, 'tx.TakerGets', new Amount(gets.value, false).xrpToDrops());
+        if (gets.currency === NetworkService.getNativeAsset()) {
+            set(this, 'tx.TakerGets', new Amount(gets.value, false).nativeToDrops());
             return;
         }
 
@@ -73,8 +75,8 @@ class OfferCreate extends BaseTransaction {
 
         if (typeof pays === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(pays).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(pays).dropsToNative(),
             };
         }
 
@@ -86,8 +88,8 @@ class OfferCreate extends BaseTransaction {
     }
 
     set TakerPays(pays: AmountType) {
-        if (pays.currency === 'XRP') {
-            set(this, 'tx.TakerPays', new Amount(pays.value, false).xrpToDrops());
+        if (pays.currency === NetworkService.getNativeAsset()) {
+            set(this, 'tx.TakerPays', new Amount(pays.value, false).nativeToDrops());
             return;
         }
 
@@ -103,7 +105,7 @@ class OfferCreate extends BaseTransaction {
         const pays = Number(this.TakerPays.value);
 
         let rate = gets / pays;
-        rate = this.TakerGets.currency !== 'XRP' ? rate : 1 / rate;
+        rate = this.TakerGets.currency !== NetworkService.getNativeAsset() ? rate : 1 / rate;
 
         return new Amount(rate, false).toNumber();
     }

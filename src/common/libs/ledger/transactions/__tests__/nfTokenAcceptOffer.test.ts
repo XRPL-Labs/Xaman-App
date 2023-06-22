@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import NFTokenAcceptOffer from '../nfTokenAcceptOffer';
 
+jest.mock('@services/NetworkService');
+
 describe('NFTokenAcceptOffer tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new NFTokenAcceptOffer();

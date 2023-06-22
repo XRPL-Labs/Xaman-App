@@ -1,6 +1,6 @@
 /**
  * LedgerService service
- * fetching details from XRPL ledger - submit/verify transaction
+ * fetching details from ledger - submit/verify transaction
  */
 import EventEmitter from 'events';
 import BigNumber from 'bignumber.js';
@@ -175,7 +175,7 @@ class LedgerService extends EventEmitter {
 
                 // persist new network base/owner reserve
                 NetworkRepository.update({
-                    networkId: NetworkService.getConnectedNetworkId(),
+                    networkId: NetworkService.getNetworkId(),
                     baseReserve: reserveBase,
                     ownerReserve: reserveOwner,
                 });
@@ -188,7 +188,7 @@ class LedgerService extends EventEmitter {
      */
     getNetworkDefinitions = (): any => {
         // get connected networkId from network service
-        const network = NetworkRepository.findOne({ networkId: NetworkService.getConnectedNetworkId() });
+        const network = NetworkRepository.findOne({ networkId: NetworkService.getNetworkId() });
 
         if (network && network.definitions) {
             return network.definitions;
@@ -520,7 +520,7 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Get account available XRP balance
+     * Get account available native balance
      */
     getAccountAvailableBalance = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
@@ -667,7 +667,7 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Submit signed transaction to the XRP Ledger
+     * Submit signed transaction to the Ledger
      */
     submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
         try {
@@ -745,7 +745,7 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Verify transaction on XRPL
+     * Verify transaction on Ledger
      */
     verifyTransaction = (transactionId: string): Promise<VerifyResultType> => {
         return new Promise((resolve) => {

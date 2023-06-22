@@ -5,6 +5,8 @@ import EscrowCreate from '../escrowCreate';
 
 import escrowCreateTemplate from './templates/EscrowCreateTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('EscrowCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowCreate();

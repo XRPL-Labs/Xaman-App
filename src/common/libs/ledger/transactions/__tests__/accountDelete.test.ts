@@ -6,6 +6,7 @@ import AccountDelete from '../accountDelete';
 import txTemplates from './templates/AccountDeleteTx.json';
 
 jest.mock('@services/LedgerService');
+jest.mock('@services/NetworkService');
 
 describe('AccountDelete tx', () => {
     it('Should set tx type if not set', () => {

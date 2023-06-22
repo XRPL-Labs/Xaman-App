@@ -9,14 +9,15 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager, Platform } from 'react-native';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-
 import LedgerService from '@services/LedgerService';
 import BackendService from '@services/BackendService';
+import NetworkService from '@services/NetworkService';
+
+import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
@@ -87,16 +88,12 @@ class DetailsStep extends Component<Props, State> {
     };
 
     getAvailableBalance = (): Promise<number | string> => {
-        const { source, currency, sendingNFT } = this.context;
+        const { source, currency } = this.context;
 
         return new Promise((resolve) => {
             if (typeof currency === 'string') {
-                // XRP
+                // native currency
                 resolve(CalculateAvailableBalance(source));
-            } else if (sendingNFT) {
-                // XLS14d
-                // @ts-ignore
-                resolve(XRPLValueToNFT(currency.balance));
             } else {
                 // IOU
                 // we fetch the IOU directly from Ledger
@@ -179,9 +176,9 @@ class DetailsStep extends Component<Props, State> {
     getCurrencyName = (): string => {
         const { currency } = this.context;
 
-        // XRP
+        // native currency
         if (typeof currency === 'string') {
-            return 'XRP';
+            return NetworkService.getNativeAsset();
         }
 
         return NormalizeCurrencyCode(currency.currency.currency);
@@ -253,16 +250,16 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
-            setAmount(String(inXRP));
+            const inNativeCurrency = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
+            setAmount(String(inNativeCurrency));
         }
     };
 
     onAccountChange = (item: AccountSchema) => {
         const { setSource, setCurrency } = this.context;
 
-        // restore currency to default XRP
-        setCurrency('XRP');
+        // restore currency to default native currency
+        setCurrency(NetworkService.getNativeAsset());
 
         // set new source
         setSource(item);
@@ -271,9 +268,9 @@ class DetailsStep extends Component<Props, State> {
     onCurrencyChange = (item: string | TrustLineSchema) => {
         const { setCurrency, setAmount } = this.context;
 
-        // xrp
+        // native currency
         if (typeof item === 'string') {
-            setCurrency('XRP');
+            setCurrency(NetworkService.getNativeAsset());
         } else {
             setCurrency(item);
         }
@@ -297,7 +294,7 @@ class DetailsStep extends Component<Props, State> {
 
     render() {
         const { amountRate, currencyRate, isLoadingAvailableBalance, isCheckingBalance } = this.state;
-        const { goBack, accounts, source, currency, amount, sendingNFT, coreSettings } = this.context;
+        const { goBack, accounts, source, currency, amount, coreSettings } = this.context;
 
         return (
             <View testID="send-details-view" style={styles.container}>
@@ -327,7 +324,7 @@ class DetailsStep extends Component<Props, State> {
                             currencies={
                                 source
                                     ? [
-                                          'XRP',
+                                          NetworkService.getNativeAsset(),
                                           ...filter(
                                               source.lines.sorted([['order', false]]),
                                               (l) => l.balance > 0 || l.obligation === true,
@@ -366,8 +363,10 @@ class DetailsStep extends Component<Props, State> {
                                     ref={this.amountInput}
                                     testID="amount-input"
                                     value={amount}
-                                    valueType={typeof currency === 'string' ? AmountValueType.XRP : AmountValueType.IOU}
-                                    fractional={!sendingNFT}
+                                    valueType={
+                                        typeof currency === 'string' ? AmountValueType.Native : AmountValueType.IOU
+                                    }
+                                    fractional
                                     onChange={this.onAmountChange}
                                     style={styles.amountInput}
                                     placeholderTextColor={AppColors.grey}
@@ -386,7 +385,7 @@ class DetailsStep extends Component<Props, State> {
                                 icon="IconEdit"
                             />
                         </View>
-                        {/* only show rate for XRP payments */}
+                        {/* only show rate for native currency payments */}
                         {typeof currency === 'string' && (
                             <View style={styles.amountRateContainer}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>

@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimation } from 'react-native';
 
+import NetworkService from '@services/NetworkService';
+
 import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -13,11 +15,9 @@ import { Clipboard } from '@common/helpers/clipboard';
 import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
-
-// components
 import { Button, Footer, AmountText, Spacer } from '@components/General';
 import Localize from '@locale';
-// style
+
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
@@ -106,7 +106,9 @@ class ResultStep extends Component<Props, State> {
                 <AmountText
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
-                    currency={typeof currency === 'string' ? 'XRP' : currency.currency.currency}
+                    currency={
+                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currency
+                    }
                     immutable
                 />
 

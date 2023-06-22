@@ -2,6 +2,8 @@ import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 
 import * as AccountLib from 'xrpl-accountlib';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -40,8 +42,8 @@ class EscrowCreate extends BaseTransaction {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 
@@ -67,7 +69,7 @@ class EscrowCreate extends BaseTransaction {
     set Destination(destination: Destination) {
         if (has(destination, 'address')) {
             if (!AccountLib.utils.isValidAddress(destination.address)) {
-                throw new Error(`${destination.address} is not a valid XRP Address`);
+                throw new Error(`${destination.address} is not a valid Address`);
             }
             set(this, 'tx.Destination', destination.address);
         }

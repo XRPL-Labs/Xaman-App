@@ -5,6 +5,8 @@ import DepositPreauth from '../depositPreauth';
 
 import depositPreauthTemplate from './templates/DepositPreauthTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('DepositPreauth tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new DepositPreauth();

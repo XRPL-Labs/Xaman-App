@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 import { TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
@@ -69,7 +69,7 @@ class FeeItemList extends PureComponent<Props, State> {
 
         const color = this.getColor();
         const label = this.getLabel();
-        const normalizedValue = new Amount(value).dropsToXrp();
+        const normalizedValue = new Amount(value).dropsToNative();
 
         return (
             <TouchableDebounce
@@ -90,7 +90,9 @@ class FeeItemList extends PureComponent<Props, State> {
                     )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
-                    <Text style={[styles.value, selected && { color }]}>{normalizedValue} XRP</Text>
+                    <Text style={[styles.value, selected && { color }]}>
+                        {normalizedValue} {NetworkService.getNativeAsset()}
+                    </Text>
                 </View>
             </TouchableDebounce>
         );

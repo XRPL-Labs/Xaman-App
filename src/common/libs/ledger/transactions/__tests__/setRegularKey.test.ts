@@ -5,6 +5,8 @@ import SetRegularKey from '../setRegularKey';
 
 import setRegularKeyTemplates from './templates/SetRegularKeyTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('SetRegularKey tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new SetRegularKey();

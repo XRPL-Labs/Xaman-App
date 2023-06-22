@@ -182,12 +182,6 @@ class LedgerObjectItem extends Component<Props, State> {
             return item.NFTokenID;
         }
 
-        // if (item.Type === LedgerObjectTypes.PayChannel) {
-        //     return `${Localize.formatNumber(NormalizeAmount(item.Amount.value))} ${NormalizeCurrencyCode(
-        //         item.Amount.currency,
-        //     )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
-        // }
-
         if (name) return name;
         if (address) return address;
 

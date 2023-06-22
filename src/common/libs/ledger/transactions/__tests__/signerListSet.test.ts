@@ -5,6 +5,8 @@ import SignerListSet from '../signerListSet';
 
 import signerListSetTemplates from './templates/SignerListSetTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('SignerListSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new SignerListSet();

@@ -141,8 +141,8 @@ class CurrencySettingsModal extends Component<Props, State> {
     getLatestLineBalance = (): Promise<void> => {
         const { account, trustLine } = this.props;
 
-        // ignore obligation lines or NFT
-        if (trustLine.obligation || trustLine.isNFT) return Promise.resolve();
+        // ignore obligation lines
+        if (trustLine.obligation) return Promise.resolve();
 
         return new Promise((resolve) => {
             LedgerService.getFilteredAccountLine(account.address, trustLine.currency)
@@ -579,29 +579,6 @@ class CurrencySettingsModal extends Component<Props, State> {
         );
     };
 
-    showNFTInfo = () => {
-        const { trustLine, account } = this.props;
-
-        this.dismiss().then(() => {
-            Navigator.showModal(
-                AppScreens.Modal.XAppBrowser,
-                {
-                    identifier: 'xumm.nft-info',
-                    account,
-                    params: {
-                        issuer: trustLine.currency.issuer,
-                        token: trustLine.currency.currency,
-                    },
-                    origin: XAppOrigin.XUMM,
-                },
-                {
-                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-                },
-            );
-        });
-    };
-
     showConfigurationAlert = () => {
         const { trustLine } = this.props;
 
@@ -646,7 +623,7 @@ class CurrencySettingsModal extends Component<Props, State> {
 
     canSend = () => {
         const { trustLine } = this.props;
-        return trustLine.isNFT || trustLine.balance >= 0.00000001 || trustLine.obligation;
+        return trustLine.balance >= 0.00000001 || trustLine.obligation;
     };
 
     canExchange = () => {
@@ -753,32 +730,18 @@ class CurrencySettingsModal extends Component<Props, State> {
                                 textStyle={styles.sendButtonText}
                                 onPress={this.onSendPress}
                             />
-                            {trustLine.isNFT ? (
-                                <RaisedButton
-                                    small
-                                    containerStyle={styles.infoButton}
-                                    icon="IconInfo"
-                                    iconSize={20}
-                                    iconPosition="left"
-                                    iconStyle={styles.infoButtonIcon}
-                                    label={Localize.t('global.about')}
-                                    textStyle={styles.infoButtonText}
-                                    onPress={this.showNFTInfo}
-                                />
-                            ) : (
-                                <RaisedButton
-                                    small
-                                    isDisabled={!this.canExchange()}
-                                    containerStyle={styles.exchangeButton}
-                                    icon="IconSwitchAccount"
-                                    iconSize={17}
-                                    iconPosition="left"
-                                    iconStyle={styles.exchangeButtonIcon}
-                                    label={Localize.t('global.exchange')}
-                                    textStyle={styles.exchangeButtonText}
-                                    onPress={this.onExchangePress}
-                                />
-                            )}
+                            <RaisedButton
+                                small
+                                isDisabled={!this.canExchange()}
+                                containerStyle={styles.exchangeButton}
+                                icon="IconSwitchAccount"
+                                iconSize={17}
+                                iconPosition="left"
+                                iconStyle={styles.exchangeButtonIcon}
+                                label={Localize.t('global.exchange')}
+                                textStyle={styles.exchangeButtonText}
+                                onPress={this.onExchangePress}
+                            />
                         </View>
 
                         {hasXAppIdentifier && (

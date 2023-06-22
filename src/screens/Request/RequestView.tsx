@@ -221,7 +221,7 @@ class RequestView extends Component<Props, State> {
                             ref={this.amountInput}
                             testID="amount-input"
                             value={amount}
-                            valueType={AmountValueType.XRP}
+                            valueType={AmountValueType.Native}
                             onChange={this.onAmountChange}
                             style={[styles.amountInput]}
                             placeholderTextColor={AppColors.grey}

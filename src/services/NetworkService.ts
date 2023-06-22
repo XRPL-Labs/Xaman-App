@@ -170,10 +170,18 @@ class NetworkService extends EventEmitter {
     };
 
     /**
+     * Get connected network nativeAsset
+     * @returns {string}
+     */
+    getNativeAsset = () => {
+        return this.network.nativeAsset;
+    };
+
+    /**
      * Get connected network id
      * @returns {number}
      */
-    getConnectedNetworkId = () => {
+    getNetworkId = () => {
         return this.network.networkId;
     };
 

@@ -6,6 +6,8 @@ import Payment from '../payment';
 
 import txTemplates from './templates/PaymentTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('Payment tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new Payment();

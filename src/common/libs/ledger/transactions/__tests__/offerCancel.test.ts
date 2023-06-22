@@ -5,6 +5,8 @@ import OfferCancel from '../offerCancel';
 
 import offerCancelTemplates from './templates/OfferCancelTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('OfferCancel tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new OfferCancel();

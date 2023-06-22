@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import NFTokenMint from '../nfTokenMint';
 
+jest.mock('@services/NetworkService');
+
 describe('NFTokenMint tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new NFTokenMint();

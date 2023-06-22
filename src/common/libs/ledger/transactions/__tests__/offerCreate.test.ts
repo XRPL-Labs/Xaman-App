@@ -5,6 +5,8 @@ import OfferCreate from '../offerCreate';
 
 import offerCreateTemplates from './templates/OfferCreateTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('OfferCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new OfferCreate();

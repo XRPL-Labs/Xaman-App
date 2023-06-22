@@ -5,6 +5,8 @@ import EscrowFinish from '../escrowFinish';
 
 import escrowFinishTemplate from './templates/EscrowFinishTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('EscrowFinish tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowFinish();

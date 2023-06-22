@@ -7,6 +7,8 @@ import CheckCreate from '../checkCreate';
 import checkCashTemplates from './templates/CheckCashTx.json';
 import checkCreateTemplate from './templates/CheckCreateTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('CheckCash tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new CheckCash();

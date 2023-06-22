@@ -7,6 +7,8 @@ import CheckCreate from '../checkCreate';
 import checkCancelTemplates from './templates/CheckCancelTx.json';
 import checkCreateTemplate from './templates/CheckCreateTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('CheckCancel tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new CheckCancel();

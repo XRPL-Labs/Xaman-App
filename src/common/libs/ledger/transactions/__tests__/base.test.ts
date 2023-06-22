@@ -9,6 +9,8 @@ import Memo from '../../parser/common/memo';
 import txTemplates from './templates/BaseTx.json';
 import paymentTemplates from './templates/PaymentTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('BaseTransaction tx', () => {
     it('Should return right parsed values', () => {
         const { tx, meta } = txTemplates;
@@ -98,6 +100,7 @@ describe('BaseTransaction tx', () => {
             message: 'No such line. Too little reserve to create it.',
             node: 'wss://xrplcluster.com',
             nodeType: 'Mainnet',
+            nodeId: 0,
         };
 
         instance.VerifyResult = {
@@ -120,6 +123,7 @@ describe('BaseTransaction tx', () => {
             message: 'temBAD_FEE description',
             node: 'wss://xrplcluster.com',
             nodeType: 'Mainnet',
+            nodeId: 0,
         };
 
         instance.VerifyResult = {
@@ -156,7 +160,7 @@ describe('BaseTransaction tx', () => {
         const instance = new BaseTransaction(tx, meta);
 
         // prepare the transaction by applying the private key
-        await instance.prepare();
+        await instance.prepare(undefined);
 
         // run test to check if it properly prepared transaction
         expect(instance.Account).toStrictEqual({

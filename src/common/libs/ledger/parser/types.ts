@@ -25,7 +25,7 @@ export type LedgerAmount = string | AmountType;
 
 /**
  * Specification of which currency the account taking the offer would pay/
- * receive, as an object with currency and issuer fields (omit issuer for XRP).
+ * receive, as an object with currency and issuer fields (omit issuer for native asset).
  * Similar to currency amounts.
  */
 export interface TakerRequestAmount {
@@ -34,7 +34,7 @@ export interface TakerRequestAmount {
 }
 
 /**
- * A currency-counterparty pair, or just currency if it's XRP.
+ * A currency-counterparty pair, or just currency if it's native currency.
  */
 export interface Issuer {
     currency: string;

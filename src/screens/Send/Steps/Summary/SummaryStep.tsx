@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, StyleService } from '@services';
+import { BackendService, NetworkService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -263,23 +263,23 @@ class SummaryStep extends Component<Props, State> {
 
     getNormalizedFee = () => {
         const { selectedFee } = this.context;
-        return new Amount(selectedFee.value).dropsToXrp();
+        return new Amount(selectedFee.value).dropsToNative();
     };
 
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
-        // XRP
+        // Native asset
         if (typeof item === 'string') {
             return (
-                <View style={[styles.pickerItem]}>
+                <View style={styles.pickerItem}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.currencyImageContainer]}>
-                            <TokenAvatar token="XRP" border size={35} />
+                        <View style={styles.currencyImageContainer}>
+                            <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
-                            <Text style={[styles.currencyItemLabel]}>XRP</Text>
-                            <Text style={[styles.currencyBalance]}>
+                            <Text style={styles.currencyItemLabel}>{NetworkService.getNativeAsset()}</Text>
+                            <Text style={styles.currencyBalance}>
                                 {Localize.t('global.available')}:{' '}
                                 {Localize.formatNumber(CalculateAvailableBalance(source))}
                             </Text>
@@ -290,20 +290,20 @@ class SummaryStep extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.pickerItem]}>
+            <View style={styles.pickerItem}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.currencyImageContainer]}>
+                    <View style={styles.currencyImageContainer}>
                         <TokenAvatar token={item} border size={35} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={[styles.currencyItemLabel]}>
+                        <Text style={styles.currencyItemLabel}>
                             {NormalizeCurrencyCode(item.currency.currency)}
 
-                            {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
+                            {item.currency.name && <Text style={AppStyles.subtext}> - {item.currency.name}</Text>}
                         </Text>
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
-                            style={[styles.currencyBalance]}
+                            style={styles.currencyBalance}
                             value={item.balance}
                         />
                     </View>
@@ -317,12 +317,12 @@ class SummaryStep extends Component<Props, State> {
 
         const { currency, amount } = this.context;
 
-        // only show rate for XRP
+        // only show rate for native currency
         if (typeof currency === 'string' && currencyRate && amount) {
             const rate = Number(amount) * currencyRate.lastRate;
             if (rate > 0) {
                 return (
-                    <View style={[styles.rateContainer]}>
+                    <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
                             ~{currencyRate.code} {Localize.formatNumber(rate)}
                         </Text>
@@ -429,7 +429,7 @@ class SummaryStep extends Component<Props, State> {
                         </View>
                         <Spacer size={15} />
 
-                        <AmountText value={amount} style={[styles.amountInput]} immutable />
+                        <AmountText value={amount} style={styles.amountInput} immutable />
 
                         {this.renderAmountRate()}
                     </View>
@@ -459,7 +459,9 @@ class SummaryStep extends Component<Props, State> {
                             onPress={this.showFeeSelectOverlay}
                         >
                             <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                                <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
+                                <Text style={styles.feeText}>
+                                    {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
+                                </Text>
                                 <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                             </View>
                             <Button

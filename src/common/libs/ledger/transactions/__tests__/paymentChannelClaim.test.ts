@@ -5,6 +5,8 @@ import PaymentChannelClaim from '../paymentChannelClaim';
 
 import paymentChannelClaimTemplates from './templates/PaymentChannelClaimTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('PaymentChannelClaim tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelClaim();

@@ -32,7 +32,6 @@ export interface State {
     destination: Destination;
     destinationInfo: AccountInfoType;
     currency: TrustLineSchema | string;
-    sendingNFT: boolean;
     amount: string;
     memo: string;
     availableFees: FeeItem[];

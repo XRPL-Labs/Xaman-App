@@ -81,7 +81,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // check if any forced network applied
         const forcedNetwork = payload.getForcedNetwork();
-        if (forcedNetwork && NetworkService.getConnectedNetworkId() !== forcedNetwork) {
+        if (forcedNetwork && NetworkService.getNetworkId() !== forcedNetwork) {
             this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
             return;
         }
@@ -428,7 +428,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 const takerPays = transaction.TakerPays;
 
-                if (takerPays.currency !== 'XRP') {
+                if (takerPays.currency !== NetworkService.getNativeAsset()) {
                     if (
                         !CurrencyRepository.isVettedCurrency({
                             issuer: takerPays.issuer,
@@ -507,9 +507,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                         return;
                     }
 
-                    // if sending XRP and destination
+                    // if sending native currency and destination
                     if (
-                        (transaction.DeliverMin?.currency === 'XRP' || transaction.Amount.currency === 'XRP') &&
+                        (transaction.DeliverMin?.currency === NetworkService.getNativeAsset() ||
+                            transaction.Amount.currency === NetworkService.getNativeAsset()) &&
                         destinationInfo.disallowIncomingXRP
                     ) {
                         Navigator.showAlertModal({
@@ -612,13 +613,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             // patch the payload, before submitting (if necessary)
             payload.patch(payloadPatch);
 
-            // check if we need to submit the payload to the XRP Ledger
+            // check if we need to submit the payload to the Ledger
             if (payload.shouldSubmit()) {
                 this.setState({
                     currentStep: Steps.Submitting,
                 });
 
-                // submit the transaction to the xrp ledger
+                // submit the transaction to the Ledger
                 const submitResult = await transaction.submit();
 
                 // if submitted then verify

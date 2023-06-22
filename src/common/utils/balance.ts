@@ -28,7 +28,7 @@ const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false
 };
 
 /**
- * get account total reserve in XRP
+ * get account total reserve in native currency
  */
 const CalculateTotalReserve = (account: AccountSchema): number => {
     // account is not activated

@@ -11,7 +11,7 @@ import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
 import BigNumber from 'bignumber.js';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -126,19 +126,6 @@ class AmountText extends Component<Props, State> {
             return {
                 originalValue: String(value),
                 value: String(value),
-                currency: normalizedCurrency,
-                localSettings: newLocalSettings,
-            };
-        }
-
-        // check if value is NFT
-        const NFT = XRPLValueToNFT(value);
-
-        // just show value as NFT
-        if (NFT) {
-            return {
-                originalValue: String(value),
-                value: NFT,
                 currency: normalizedCurrency,
                 localSettings: newLocalSettings,
             };

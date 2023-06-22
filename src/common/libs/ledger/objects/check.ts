@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
-
 import { get, isUndefined } from 'lodash';
+
+import NetworkService from '@services/NetworkService';
 
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -29,8 +30,8 @@ class Check extends BaseLedgerObject {
 
         if (typeof sendMax === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(sendMax).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(sendMax).dropsToNative(),
             };
         }
 

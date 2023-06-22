@@ -14,6 +14,7 @@ import { LedgerEntriesTypes } from '@common/libs/ledger/types';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
+import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -185,15 +186,17 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             const label = count > 1 ? `${normalizedEntryType}s (${count})` : normalizedEntryType;
             const totalReserve = count * networkReserve.OwnerReserve;
             return (
-                <View key={`objects-${entryType}`} style={[styles.objectItemCard]}>
+                <View key={`objects-${entryType}`} style={styles.objectItemCard}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.iconContainer]}>
-                            <Icon name="IconInfo" size={16} style={[AppStyles.imgColorGrey]} />
+                        <View style={styles.iconContainer}>
+                            <Icon name="IconInfo" size={16} style={AppStyles.imgColorGrey} />
                         </View>
-                        <Text style={[styles.rowLabel]}>{label}</Text>
+                        <Text style={styles.rowLabel}>{label}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{totalReserve} XRP</Text>
+                        <Text style={styles.reserveAmount}>
+                            {totalReserve} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </View>
             );
@@ -213,12 +216,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     if (line.obligation) return null;
 
                     return (
-                        <View key={`line-${index}`} style={[styles.objectItemCard]}>
+                        <View key={`line-${index}`} style={styles.objectItemCard}>
                             <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.brandAvatarContainer]}>
+                                <View style={styles.brandAvatarContainer}>
                                     <TokenAvatar token={line} border size={32} />
                                 </View>
-                                <Text style={[styles.rowLabel]}>
+                                <Text style={styles.rowLabel}>
                                     {Localize.t('global.asset')}
                                     <Text style={styles.rowLabelSmall}>
                                         {` (${line.counterParty.name} ${NormalizeCurrencyCode(
@@ -228,7 +231,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                                 </Text>
                             </View>
                             <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <Text style={[styles.reserveAmount]}>{networkReserve.OwnerReserve} XRP</Text>
+                                <Text style={styles.reserveAmount}>
+                                    {networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                                </Text>
                             </View>
                         </View>
                     );
@@ -244,15 +249,17 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             const label = nfTokenPageCount > 1 ? `NFTokenPages (${nfTokenPageCount})` : 'NFTokenPages';
 
             return (
-                <View style={[styles.objectItemCard]}>
+                <View style={styles.objectItemCard}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.iconContainer]}>
-                            <Icon name="IconInfo" size={15} style={[AppStyles.imgColorGrey]} />
+                        <View style={styles.iconContainer}>
+                            <Icon name="IconInfo" size={15} style={AppStyles.imgColorGrey} />
                         </View>
-                        <Text style={[styles.rowLabel]}>{label}</Text>
+                        <Text style={styles.rowLabel}>{label}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{nfTokenPageCount * networkReserve.OwnerReserve} XRP</Text>
+                        <Text style={styles.reserveAmount}>
+                            {nfTokenPageCount * networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </View>
             );
@@ -268,15 +275,17 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         if (remainingOwner > 0) {
             return (
-                <View style={[styles.objectItemCard]}>
+                <View style={styles.objectItemCard}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.iconContainer]}>
-                            <Icon name="IconInfo" size={15} style={[AppStyles.imgColorGrey]} />
+                        <View style={styles.iconContainer}>
+                            <Icon name="IconInfo" size={15} style={AppStyles.imgColorGrey} />
                         </View>
-                        <Text style={[styles.rowLabel]}>{Localize.t('global.otherReserveSeeExplorer')}</Text>
+                        <Text style={styles.rowLabel}>{Localize.t('global.otherReserveSeeExplorer')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{remainingOwner * networkReserve.OwnerReserve} XRP</Text>
+                        <Text style={styles.reserveAmount}>
+                            {remainingOwner * networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </View>
             );
@@ -289,19 +298,19 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { networkReserve } = this.state;
         return (
             <View>
-                <View style={[styles.scrollStickyHeader]}>
+                <View style={styles.scrollStickyHeader}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.iconContainer]}>
+                        <View style={styles.iconContainer}>
                             <Icon name="IconLock" size={20} />
                         </View>
-                        <Text style={[styles.rowLabelBig]}>{Localize.t('global.totalReserved')}</Text>
+                        <Text style={styles.rowLabelBig}>{Localize.t('global.totalReserved')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={[AppStyles.h5, AppStyles.monoBold]}>
                             {Localize.formatNumber(
                                 account.ownerCount * networkReserve.OwnerReserve + networkReserve.BaseReserve,
                             )}{' '}
-                            XRP
+                            {NetworkService.getNativeAsset()}
                         </Text>
                     </View>
                 </View>
@@ -313,16 +322,18 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { networkReserve } = this.state;
 
         return (
-            <View style={[AppStyles.paddingHorizontalSml]}>
-                <View style={[styles.objectItemCard]}>
+            <View style={AppStyles.paddingHorizontalSml}>
+                <View style={styles.objectItemCard}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.iconContainer]}>
-                            <Icon name="IconAccount" size={15} style={[AppStyles.imgColorGrey]} />
+                        <View style={styles.iconContainer}>
+                            <Icon name="IconAccount" size={15} style={AppStyles.imgColorGrey} />
                         </View>
-                        <Text style={[styles.rowLabel]}>{Localize.t('account.walletReserve')}</Text>
+                        <Text style={styles.rowLabel}>{Localize.t('account.walletReserve')}</Text>
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[styles.reserveAmount]}>{networkReserve.BaseReserve} XRP</Text>
+                        <Text style={styles.reserveAmount}>
+                            {networkReserve.BaseReserve} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </View>
 
@@ -386,18 +397,20 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     bounces={false}
-                    contentContainerStyle={[AppStyles.stretchSelf]}
+                    contentContainerStyle={AppStyles.stretchSelf}
                     stickyHeaderIndices={[1]}
                     scrollEventThrottle={1}
                 >
-                    <View style={[AppStyles.paddingHorizontalSml]}>
-                        <Text style={[styles.rowTitle]}>{Localize.t('account.accountBalance')}</Text>
-                        <View style={[styles.objectItemCard]}>
+                    <View style={AppStyles.paddingHorizontalSml}>
+                        <Text style={styles.rowTitle}>{Localize.t('account.accountBalance')}</Text>
+                        <View style={styles.objectItemCard}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.iconContainer]}>
+                                <View style={styles.iconContainer}>
                                     <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
                                 </View>
-                                <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>XRP</Text>
+                                <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>
+                                    {NetworkService.getNativeAsset()}
+                                </Text>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 <Text style={[AppStyles.h5, AppStyles.monoBold, AppStyles.colorGrey]}>
@@ -408,13 +421,13 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
                         <Spacer size={30} />
 
-                        <Text style={[styles.rowTitle]}>{Localize.t('account.availableForSpending')}</Text>
-                        <View style={[styles.objectItemCard]}>
+                        <Text style={styles.rowTitle}>{Localize.t('account.availableForSpending')}</Text>
+                        <View style={styles.objectItemCard}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.iconContainer]}>
+                                <View style={styles.iconContainer}>
                                     <Icon name="IconXrp" size={20} />
                                 </View>
-                                <Text style={[styles.currencyLabel]}>XRP</Text>
+                                <Text style={styles.currencyLabel}>{NetworkService.getNativeAsset()}</Text>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                                 <Text style={[AppStyles.h5, AppStyles.monoBold]}>
@@ -423,7 +436,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             </View>
                         </View>
                         <Spacer size={30} />
-                        <Text style={[styles.rowTitle]}>{Localize.t('global.reservedOnLedger')}</Text>
+                        <Text style={styles.rowTitle}>{Localize.t('global.reservedOnLedger')}</Text>
                         <Spacer size={10} />
                     </View>
 

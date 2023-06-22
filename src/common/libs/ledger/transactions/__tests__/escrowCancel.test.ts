@@ -5,6 +5,8 @@ import EscrowCancel from '../escrowCancel';
 
 import escrowCancelTemplate from './templates/EscrowCancelTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('EscrowCancel tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new EscrowCancel();

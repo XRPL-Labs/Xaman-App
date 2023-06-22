@@ -1,5 +1,7 @@
 import { get, set, isUndefined, findKey } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
 
@@ -36,8 +38,8 @@ class EscrowFinish extends BaseTransaction {
 
         if (typeof finalFields.Amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(finalFields.Amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(finalFields.Amount).dropsToNative(),
             };
         }
 

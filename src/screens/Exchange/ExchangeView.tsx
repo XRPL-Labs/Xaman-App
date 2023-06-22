@@ -7,8 +7,12 @@ import { Animated, View, ScrollView, Text, Keyboard, InteractionManager } from '
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
+import { AppScreens } from '@common/constants';
+
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+
+import NetworkService from '@services/NetworkService';
 
 import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
 
@@ -21,8 +25,6 @@ import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
-// constants
-import { AppScreens } from '@common/constants';
 
 // components
 import {
@@ -250,7 +252,9 @@ class ExchangeView extends Component<Props, State> {
                 Localize.t('exchange.theMaxAmountYouCanExchangeIs', {
                     spendable: Localize.formatNumber(availableBalance, 16),
                     currency:
-                        direction === MarketDirection.SELL ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
+                        direction === MarketDirection.SELL
+                            ? NetworkService.getNativeAsset()
+                            : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
@@ -271,10 +275,14 @@ class ExchangeView extends Component<Props, State> {
             Localize.t('exchange.doYouWantToExchange', {
                 payAmount: Localize.formatNumber(Number(amount)),
                 payCurrency:
-                    direction === MarketDirection.SELL ? 'XRP' : NormalizeCurrencyCode(trustLine.currency.currency),
+                    direction === MarketDirection.SELL
+                        ? NetworkService.getNativeAsset()
+                        : NormalizeCurrencyCode(trustLine.currency.currency),
                 getAmount: Localize.formatNumber(Number(expectedOutcome)),
                 getCurrency:
-                    direction === MarketDirection.SELL ? NormalizeCurrencyCode(trustLine.currency.currency) : 'XRP',
+                    direction === MarketDirection.SELL
+                        ? NormalizeCurrencyCode(trustLine.currency.currency)
+                        : NetworkService.getNativeAsset(),
             }),
             [
                 { text: Localize.t('global.cancel') },
@@ -323,11 +331,11 @@ class ExchangeView extends Component<Props, State> {
 
         // set offer values
         if (direction === MarketDirection.SELL) {
-            offer.TakerGets = { currency: 'XRP', value: amount };
+            offer.TakerGets = { currency: NetworkService.getNativeAsset(), value: amount };
             offer.TakerPays = { value: minimumOutcome, ...pair };
         } else {
             offer.TakerGets = { value: amount, ...pair };
-            offer.TakerPays = { currency: 'XRP', value: minimumOutcome };
+            offer.TakerPays = { currency: NetworkService.getNativeAsset(), value: minimumOutcome };
         }
 
         // ImmediateOrCancel & Sell flag
@@ -478,7 +486,9 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <AmountText
                                 value={exchangeRate}
-                                currency={`${NormalizeCurrencyCode(trustLine.currency.currency)}/XRP`}
+                                currency={`${NormalizeCurrencyCode(
+                                    trustLine.currency.currency,
+                                )}/${NetworkService.getNativeAsset()}`}
                                 style={[styles.detailsValue, AppStyles.textRightAligned]}
                                 immutable
                             />
@@ -489,7 +499,11 @@ class ExchangeView extends Component<Props, State> {
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <AmountText
                                 value={minimumOutcome}
-                                currency={direction === MarketDirection.SELL ? trustLine.currency.currency : 'XRP'}
+                                currency={
+                                    direction === MarketDirection.SELL
+                                        ? trustLine.currency.currency
+                                        : NetworkService.getNativeAsset()
+                                }
                                 style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
                                 immutable
                             />
@@ -543,7 +557,11 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={direction === MarketDirection.SELL ? 'XRP' : trustLine}
+                                        token={
+                                            direction === MarketDirection.SELL
+                                                ? NetworkService.getNativeAsset()
+                                                : trustLine
+                                        }
                                         border
                                         size={37}
                                     />
@@ -552,7 +570,7 @@ class ExchangeView extends Component<Props, State> {
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={styles.currencyLabel}>
                                         {direction === MarketDirection.SELL
-                                            ? 'XRP'
+                                            ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
@@ -582,7 +600,9 @@ class ExchangeView extends Component<Props, State> {
                                     ref={this.amountInput}
                                     value={amount}
                                     valueType={
-                                        direction === MarketDirection.SELL ? AmountValueType.XRP : AmountValueType.IOU
+                                        direction === MarketDirection.SELL
+                                            ? AmountValueType.Native
+                                            : AmountValueType.IOU
                                     }
                                     onChange={this.onAmountChange}
                                     placeholderTextColor={AppColors.red}
@@ -612,7 +632,11 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={direction === MarketDirection.BUY ? 'XRP' : trustLine}
+                                        token={
+                                            direction === MarketDirection.BUY
+                                                ? NetworkService.getNativeAsset()
+                                                : trustLine
+                                        }
                                         border
                                         size={37}
                                     />
@@ -620,7 +644,7 @@ class ExchangeView extends Component<Props, State> {
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={styles.currencyLabel}>
                                         {direction === MarketDirection.BUY
-                                            ? 'XRP'
+                                            ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
                                               NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>

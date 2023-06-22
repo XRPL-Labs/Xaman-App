@@ -1,7 +1,6 @@
 import Realm from 'realm';
 
 import { Truncate } from '@common/utils/string';
-import { XRPLValueToNFT } from '@common/utils/amount';
 
 /**
  * Account Trust Lines Model
@@ -92,10 +91,6 @@ class TrustLine extends Realm.Object {
             avatar: '',
             domain: '',
         };
-    }
-
-    get isNFT(): boolean {
-        return !!XRPLValueToNFT(this.balance);
     }
 }
 

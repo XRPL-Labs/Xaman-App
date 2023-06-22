@@ -4,8 +4,8 @@ import { NetworkType } from '@store/types';
 // NOTE: any changes here should be applied in patches/react-native+VERSION.patch as well
 
 export default {
-    baseReserve: 10, // default network base reserve in XRP
-    ownerReserve: 2, // default network owner reserve in XRP
+    baseReserve: 10, // default network base reserve in native currency
+    ownerReserve: 2, // default network owner reserve in native currency
     netFee: 12, // default network net fee in drops
 
     networks: [

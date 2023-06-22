@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import NFTokenBurn from '../nfTokenBurn';
 
+jest.mock('@services/NetworkService');
+
 describe('NFTokenBurn tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new NFTokenBurn();

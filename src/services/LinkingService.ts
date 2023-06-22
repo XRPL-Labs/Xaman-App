@@ -162,7 +162,7 @@ class LinkingService {
 
         const { to, tag } = NormalizeDestination(destination);
 
-        // if amount present as XRP and valid amount
+        // if amount present as native currency and valid amount
         if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
             amount = destination.amount;
         }

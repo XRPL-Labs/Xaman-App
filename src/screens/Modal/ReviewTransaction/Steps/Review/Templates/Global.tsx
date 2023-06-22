@@ -2,7 +2,7 @@ import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-import { LedgerService, StyleService } from '@services';
+import { LedgerService, NetworkService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
@@ -173,8 +173,8 @@ class GlobalTemplate extends Component<Props, State> {
     setTransactionFee = (fee: FeeItem) => {
         const { transaction } = this.props;
 
-        // NOTE: setting the transaction fee require XRP and not drops
-        transaction.Fee = new Amount(fee.value).dropsToXrp();
+        // NOTE: setting the transaction fee require Native and not drops
+        transaction.Fee = new Amount(fee.value).dropsToNative();
     };
 
     onTransactionFeeSelect = (fee: FeeItem) => {
@@ -201,7 +201,7 @@ class GlobalTemplate extends Component<Props, State> {
     getNormalizedFee = () => {
         const { selectedFee } = this.state;
 
-        return new Amount(selectedFee.value).dropsToXrp();
+        return new Amount(selectedFee.value).dropsToNative();
     };
 
     getFeeColor = () => {
@@ -235,14 +235,16 @@ class GlobalTemplate extends Component<Props, State> {
             );
         }
 
-        // fee is set by payload as it's already transformed to XRP from drops
+        // fee is set by payload as it's already transformed to Native from drops
         // we show it as it is
         if (selectedFee.type === 'unknown') {
             return (
                 <>
                     <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={styles.feeText}>{selectedFee.value} XRP</Text>
+                        <Text style={styles.feeText}>
+                            {selectedFee.value} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </>
             );
@@ -255,7 +257,9 @@ class GlobalTemplate extends Component<Props, State> {
                 <>
                     <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                     <View style={styles.contentBox}>
-                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>
+                            {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
+                        </Text>
                     </View>
                 </>
             );
@@ -270,7 +274,9 @@ class GlobalTemplate extends Component<Props, State> {
                     onPress={this.showFeeSelectOverlay}
                 >
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                        <Text style={styles.feeText}>{this.getNormalizedFee()} XRP</Text>
+                        <Text style={styles.feeText}>
+                            {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
+                        </Text>
                         <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
                     </View>
                     <Button

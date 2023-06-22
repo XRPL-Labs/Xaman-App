@@ -5,6 +5,8 @@ import AccountSet from '../accountSet';
 
 import txTemplates from './templates/AccountSetTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('AccountSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new AccountSet();

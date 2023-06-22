@@ -5,6 +5,8 @@ import PaymentChannelCreate from '../paymentChannelCreate';
 
 import paymentChannelCreateTemplate from './templates/PaymentChannelCreateTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('PaymentChannelCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelCreate();
@@ -29,5 +31,19 @@ describe('PaymentChannelCreate tx', () => {
         expect(instance.PublicKey).toBe('32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A');
         expect(instance.Amount).toEqual({ currency: 'XRP', value: '0.01' });
         expect(instance.CancelAfter).toBe('2016-11-22T23:12:38.000Z');
+    });
+
+    it('Should populate public key if not set', async () => {
+        const { tx, meta } = paymentChannelCreateTemplate;
+        delete tx.PublicKey;
+        const instance = new PaymentChannelCreate(tx, meta);
+
+        expect(instance.PublicKey).toBe(undefined);
+
+        await instance.prepare({
+            publicKey: '32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A',
+        } as any);
+
+        expect(instance.PublicKey).toBe('32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A');
     });
 });

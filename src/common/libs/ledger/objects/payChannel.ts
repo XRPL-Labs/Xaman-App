@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
-
 import { get, isUndefined } from 'lodash';
+
+import NetworkService from '@services/NetworkService';
 
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -29,8 +30,8 @@ class PayChannel extends BaseLedgerObject {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 
@@ -50,8 +51,8 @@ class PayChannel extends BaseLedgerObject {
 
         if (typeof balance === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(balance).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(balance).dropsToNative(),
             };
         }
 

@@ -2,7 +2,7 @@ import { has } from 'lodash';
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { BackendService } from '@services';
+import { BackendService, NetworkService } from '@services';
 
 import { CalculateAvailableBalance, CalculateTotalReserve } from '@common/utils/balance';
 import { Toast } from '@common/helpers/interface';
@@ -128,7 +128,9 @@ class NativeItem extends PureComponent<Props, State> {
     };
 
     getAvatar = () => {
-        return <TokenAvatar token="XRP" border size={35} containerStyle={styles.brandAvatar} />;
+        return (
+            <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} containerStyle={styles.brandAvatar} />
+        );
     };
 
     getCurrencyAvatar = () => {
@@ -176,7 +178,7 @@ class NativeItem extends PureComponent<Props, State> {
                     <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyItemLabel}>
-                            XRP
+                            {NetworkService.getNativeAsset()}
                         </Text>
                     </View>
                 </View>
@@ -247,7 +249,7 @@ class NativeItem extends PureComponent<Props, State> {
     render() {
         return (
             <TouchableDebounce
-                testID="xrp-currency"
+                testID="native-currency"
                 style={styles.currencyItem}
                 onPress={this.onPress}
                 activeOpacity={0.7}

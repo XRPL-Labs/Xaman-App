@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import NetworkService from '@services/NetworkService';
+
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
 import Localize from '@locale';
@@ -22,17 +24,19 @@ interface Props {
 
 /* Component ==================================================================== */
 class CurrencyItem extends Component<Props> {
-    renderXRP = () => {
+    renderNative = () => {
         const { account, selected } = this.props;
 
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                <View style={[styles.currencyImageContainer]}>
-                    <TokenAvatar token="XRP" border size={35} />
+                <View style={styles.currencyImageContainer}>
+                    <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                    <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>XRP</Text>
-                    <Text style={[styles.currencyBalance]}>
+                    <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>
+                        {NetworkService.getNativeAsset()}
+                    </Text>
+                    <Text style={styles.currencyBalance}>
                         {Localize.t('global.available')}: {Localize.formatNumber(CalculateAvailableBalance(account))}
                     </Text>
                 </View>
@@ -45,7 +49,7 @@ class CurrencyItem extends Component<Props> {
 
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                <View style={[styles.currencyImageContainer]}>
+                <View style={styles.currencyImageContainer}>
                     <TokenAvatar token={item} border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
@@ -71,9 +75,9 @@ class CurrencyItem extends Component<Props> {
 
     render() {
         const { item } = this.props;
-        // XRP
+        // native
         if (typeof item === 'string') {
-            return this.renderXRP();
+            return this.renderNative();
         }
         // IOU
         // @ts-ignore

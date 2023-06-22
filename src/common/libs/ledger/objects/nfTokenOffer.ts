@@ -1,5 +1,7 @@
 import { get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
 
@@ -45,8 +47,8 @@ class NFTokenOffer extends BaseLedgerObject {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 

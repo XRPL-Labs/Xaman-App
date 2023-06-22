@@ -82,7 +82,7 @@ class LedgerPathFinding extends EventEmitter {
             const { source_amount } = option;
 
             if (typeof source_amount === 'string') {
-                this.paymentOptions.XRP = option;
+                this.paymentOptions[NetworkService.getNativeAsset()] = option;
             } else if (typeof source_amount === 'object') {
                 this.paymentOptions[`${source_amount.issuer}:${source_amount.currency}`] = option;
             }

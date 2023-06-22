@@ -18,7 +18,7 @@ import {
     View,
 } from 'react-native';
 
-import { BackendService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
 import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
@@ -36,7 +36,7 @@ import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { TransactionFactory } from '@common/libs/ledger/factory';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { AppScreens } from '@common/constants';
 
 import { ActionSheet, Toast } from '@common/helpers/interface';
@@ -616,8 +616,8 @@ class TransactionDetailsView extends Component<Props, State> {
             // prefill the currency
             let currency;
 
-            if (tx.DeliveredAmount.currency === 'XRP') {
-                currency = 'XRP';
+            if (tx.DeliveredAmount.currency === NetworkService.getNativeAsset()) {
+                currency = NetworkService.getNativeAsset();
             } else {
                 currency = account.lines.find(
                     (l: any) =>
@@ -790,32 +790,26 @@ class TransactionDetailsView extends Component<Props, State> {
     ): string => {
         let content = '';
 
-        const takerGetsNFT = XRPLValueToNFT(tx.TakerGets.value);
-        const takerPaysNFT = XRPLValueToNFT(tx.TakerPays.value);
-
         content = Localize.t('events.offerTransactionExplain', {
             address: tx.Account.address,
-            takerGetsValue: takerGetsNFT || tx.TakerGets.value,
+            takerGetsValue: tx.TakerGets.value,
             takerGetsCurrency: NormalizeCurrencyCode(tx.TakerGets.currency),
-            takerPaysValue: takerPaysNFT || tx.TakerPays.value,
+            takerPaysValue: tx.TakerPays.value,
             takerPaysCurrency: NormalizeCurrencyCode(tx.TakerPays.currency),
         });
 
-        // hide showing exchange rate if NFT
-        if (!takerPaysNFT && !takerGetsNFT) {
-            content += '\n';
-            content += Localize.t('events.theExchangeRateForThisOfferIs', {
-                rate: tx.Rate,
-                takerPaysCurrency:
-                    tx.TakerGets.currency === 'XRP'
-                        ? NormalizeCurrencyCode(tx.TakerPays.currency)
-                        : NormalizeCurrencyCode(tx.TakerGets.currency),
-                takerGetsCurrency:
-                    tx.TakerGets.currency !== 'XRP'
-                        ? NormalizeCurrencyCode(tx.TakerPays.currency)
-                        : NormalizeCurrencyCode(tx.TakerGets.currency),
-            });
-        }
+        content += '\n';
+        content += Localize.t('events.theExchangeRateForThisOfferIs', {
+            rate: tx.Rate,
+            takerPaysCurrency:
+                tx.TakerGets.currency === NetworkService.getNativeAsset()
+                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                    : NormalizeCurrencyCode(tx.TakerGets.currency),
+            takerGetsCurrency:
+                tx.TakerGets.currency !== NetworkService.getNativeAsset()
+                    ? NormalizeCurrencyCode(tx.TakerPays.currency)
+                    : NormalizeCurrencyCode(tx.TakerGets.currency),
+        });
 
         if (tx.OfferSequence) {
             content += '\n';
@@ -2112,7 +2106,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 // only new payment
                 if (tx.Account.address === account.address && tx.DeliveredAmount) {
                     // check if we can make new payment base on sent currency
-                    if (tx.DeliveredAmount.currency !== 'XRP') {
+                    if (tx.DeliveredAmount.currency !== NetworkService.getNativeAsset()) {
                         const trustLine = account.lines.find(
                             (l: any) =>
                                 l.currency.currency === tx.DeliveredAmount.currency &&

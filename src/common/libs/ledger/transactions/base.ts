@@ -159,7 +159,7 @@ class BaseTransaction {
         }
 
         if (this.NetworkID === undefined) {
-            this.NetworkID = NetworkService.getConnectedNetworkId();
+            this.NetworkID = NetworkService.getNetworkId();
         }
     };
 
@@ -283,7 +283,7 @@ class BaseTransaction {
             // this will prevent fee burn if something wrong on AccountDelete transactions
             const shouldFailHard = this.TransactionType === TransactionTypes.AccountDelete;
 
-            // Submit signed transaction to the XRPL
+            // Submit signed transaction to the Ledger
             const submitResult = await LedgerService.submitTransaction(this.SignedBlob, this.Hash, shouldFailHard);
 
             // set submit result
@@ -386,9 +386,9 @@ class BaseTransaction {
 
         // if cross currency remove fee from changes
         if (size(filter(balanceChanges, { action: 'DEC' })) > 1) {
-            const decreaseXRP = find(balanceChanges, { action: 'DEC', currency: 'XRP' });
-            if (decreaseXRP.value === this.Fee) {
-                remove(balanceChanges, { action: 'DEC', currency: 'XRP' });
+            const decreaseNative = find(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
+            if (decreaseNative.value === this.Fee) {
+                remove(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
             }
         }
 
@@ -401,11 +401,11 @@ class BaseTransaction {
         // this should apply for NFTokenAcceptOffer and OfferCreate transactions as well
         let feeFieldKey = undefined as 'sent' | 'received';
         if (owner === this.Account.address) {
-            if (changes.sent?.currency === 'XRP') {
+            if (changes.sent?.currency === NetworkService.getNativeAsset()) {
                 feeFieldKey = 'sent';
             } else if (
                 [TransactionTypes.NFTokenAcceptOffer, TransactionTypes.OfferCreate].includes(this.TransactionType) &&
-                changes.received?.currency === 'XRP'
+                changes.received?.currency === NetworkService.getNativeAsset()
             ) {
                 feeFieldKey = 'received';
             }
@@ -422,7 +422,7 @@ class BaseTransaction {
             ) {
                 set(changes, 'sent', undefined);
                 set(changes, 'received', {
-                    currency: 'XRP',
+                    currency: NetworkService.getNativeAsset(),
                     value: afterFee.absoluteValue().decimalPlaces(8).toString(10),
                 });
             } else {
@@ -534,13 +534,13 @@ class BaseTransaction {
     }
 
     set Fee(fee: string) {
-        set(this, ['tx', 'Fee'], new Amount(fee, false).xrpToDrops());
+        set(this, ['tx', 'Fee'], new Amount(fee, false).nativeToDrops());
     }
 
     get Fee(): string {
         const fee = get(this, ['tx', 'Fee'], undefined);
         if (isUndefined(fee)) return undefined;
-        return new Amount(fee).dropsToXrp();
+        return new Amount(fee).dropsToNative();
     }
 
     get Date(): any {

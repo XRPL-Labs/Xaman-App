@@ -1,5 +1,7 @@
 import { get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseLedgerObject from './base';
 import Amount from '../parser/common/amount';
 import LedgerDate from '../parser/common/date';
@@ -32,8 +34,8 @@ class Offer extends BaseLedgerObject {
 
         if (typeof pays === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(pays).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(pays).dropsToNative(),
             };
         }
 
@@ -51,8 +53,8 @@ class Offer extends BaseLedgerObject {
 
         if (typeof gets === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(gets).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(gets).dropsToNative(),
             };
         }
 
@@ -72,7 +74,7 @@ class Offer extends BaseLedgerObject {
         const pays = Number(this.TakerPays.value);
 
         let rate = gets / pays;
-        rate = this.TakerGets.currency !== 'XRP' ? rate : 1 / rate;
+        rate = this.TakerGets.currency !== NetworkService.getNativeAsset() ? rate : 1 / rate;
 
         return new Amount(rate, false).toNumber();
     }

@@ -3,7 +3,7 @@ import { isEmpty, isEqual, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
-import { BackendService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
 import { CoreRepository } from '@store/repositories';
 
@@ -43,7 +43,7 @@ export interface State {
     isPartialPayment: boolean;
     shouldCheckForConversation: boolean;
     exchangeRate: number;
-    xrpRoundedUp: string;
+    nativeRoundedUp: string;
     currencyRate: any;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
@@ -66,13 +66,15 @@ class PaymentTemplate extends Component<Props, State> {
             isLoading: false,
             editableAmount: !transaction.Amount?.value,
             amount: transaction.Amount?.value,
-            currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
+            currencyName: transaction.Amount?.currency
+                ? NormalizeCurrencyCode(transaction.Amount.currency)
+                : NetworkService.getNativeAsset(),
             destinationDetails: undefined,
             isPartialPayment: false,
             shouldCheckForConversation:
                 !transaction.SendMax && !props.payload.isMultiSign() && !props.payload.isPathFinding(),
             exchangeRate: undefined,
-            xrpRoundedUp: undefined,
+            nativeRoundedUp: undefined,
             currencyRate: undefined,
             isLoadingRate: false,
             shouldShowIssuerFee: false,
@@ -91,7 +93,7 @@ class PaymentTemplate extends Component<Props, State> {
         // Payload payment request in IOU amount: handle conversion if required:
         this.checkForPartialPaymentRequired();
 
-        // if XRP then show equal amount in selected currency
+        // if native currency then show equal amount in selected currency
         this.fetchCurrencyRate();
 
         // check issuer fee if IOU payment
@@ -162,8 +164,8 @@ class PaymentTemplate extends Component<Props, State> {
     fetchCurrencyRate = () => {
         const { transaction } = this.props;
 
-        // only for XRP payments
-        if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
+        // only for native payments
+        if (transaction.Amount && transaction.Amount.currency !== NetworkService.getNativeAsset()) {
             return;
         }
 
@@ -193,7 +195,12 @@ class PaymentTemplate extends Component<Props, State> {
         const { account, shouldCheckForConversation } = this.state;
 
         // only check if IOU
-        if (!account || !transaction.Amount || transaction.Amount?.currency === 'XRP' || !shouldCheckForConversation) {
+        if (
+            !account ||
+            !transaction.Amount ||
+            transaction.Amount?.currency === NetworkService.getNativeAsset() ||
+            !shouldCheckForConversation
+        ) {
             return;
         }
 
@@ -204,19 +211,19 @@ class PaymentTemplate extends Component<Props, State> {
                 transaction.Amount,
             );
 
-            // if this condition applies we try to pay the requested amount with XRP
+            // if this condition applies we try to pay the requested amount with native currency
             // 1) the source account doesn't have the trustline or proper trustline
             // 2) the source account balance doesn't cover the entire requested amount
             // 3) the sender is not issuer
-            const shouldPayWithXRP =
+            const shouldPayWithNative =
                 (!sourceLine ||
                     (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
                     Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
                 account !== transaction.Amount.issuer;
 
             // if not have the same trust line or the balance is not covering requested value
-            // Pay with XRP instead
-            if (shouldPayWithXRP) {
+            // Pay with native currency instead
+            if (shouldPayWithNative) {
                 const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
 
                 const ledgerExchange = new LedgerExchange(PAIR);
@@ -238,14 +245,14 @@ class PaymentTemplate extends Component<Props, State> {
                     return;
                 }
 
-                const sendMaxXRP = new BigNumber(transaction.Amount.value)
+                const sendMaxNative = new BigNumber(transaction.Amount.value)
                     .multipliedBy(liquidity.rate)
                     .multipliedBy(1.04)
                     .decimalPlaces(8)
                     .toString(10);
 
                 // @ts-ignore
-                transaction.SendMax = sendMaxXRP;
+                transaction.SendMax = sendMaxNative;
 
                 if (get(transaction.Flags, 'PartialPayment', false) === false) {
                     transaction.Flags = [txFlags.Payment.PartialPayment];
@@ -256,7 +263,7 @@ class PaymentTemplate extends Component<Props, State> {
                 this.setState({
                     isPartialPayment: true,
                     exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
-                    xrpRoundedUp: sendMaxXRP,
+                    nativeRoundedUp: sendMaxNative,
                 });
             } else {
                 // check for transfer fee
@@ -324,7 +331,7 @@ class PaymentTemplate extends Component<Props, State> {
         });
 
         if (amount) {
-            if (!transaction.Amount || transaction.Amount.currency === 'XRP') {
+            if (!transaction.Amount || transaction.Amount.currency === NetworkService.getNativeAsset()) {
                 // @ts-ignore
                 transaction.Amount = amount;
             } else {
@@ -341,8 +348,11 @@ class PaymentTemplate extends Component<Props, State> {
         if (path) {
             transaction.SendMax = path.source_amount;
 
-            // SendMax is not allowed for XRP to XRP
-            if (transaction.SendMax.currency === 'XRP' && transaction.Amount.currency === 'XRP') {
+            // SendMax is not allowed for native to native
+            if (
+                transaction.SendMax.currency === NetworkService.getNativeAsset() &&
+                transaction.Amount.currency === NetworkService.getNativeAsset()
+            ) {
                 transaction.SendMax = undefined;
             }
 
@@ -380,7 +390,7 @@ class PaymentTemplate extends Component<Props, State> {
             );
         }
 
-        // only show rate for XRP
+        // only show rate for native asset
         if (currencyRate && amount) {
             const rate = Number(amount) * currencyRate.lastRate;
             if (rate > 0) {
@@ -404,7 +414,7 @@ class PaymentTemplate extends Component<Props, State> {
             isLoading,
             isPartialPayment,
             exchangeRate,
-            xrpRoundedUp,
+            nativeRoundedUp,
             editableAmount,
             amount,
             currencyName,
@@ -452,7 +462,9 @@ class PaymentTemplate extends Component<Props, State> {
                                         <AmountInput
                                             ref={this.amountInput}
                                             valueType={
-                                                currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU
+                                                currencyName === NetworkService.getNativeAsset()
+                                                    ? AmountValueType.Native
+                                                    : AmountValueType.IOU
                                             }
                                             onChange={this.onAmountChange}
                                             style={styles.amountInput}
@@ -488,7 +500,7 @@ class PaymentTemplate extends Component<Props, State> {
                                     <Spacer size={15} />
                                     <InfoMessage
                                         label={Localize.t('payload.payingWithXRPExchangeRate', {
-                                            xrpRoundedUp,
+                                            nativeRoundedUp,
                                             exchangeRate,
                                         })}
                                         type="info"

@@ -1,6 +1,7 @@
 import { get, set, has, isUndefined, isNumber, toInteger } from 'lodash';
 import * as AccountLib from 'xrpl-accountlib';
 
+import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
 import { ErrorMessages } from '@common/constants';
@@ -55,7 +56,7 @@ class Payment extends BaseTransaction {
     set Destination(destination: Destination) {
         if (has(destination, 'address')) {
             if (!AccountLib.utils.isValidAddress(destination.address)) {
-                throw new Error(`${destination.address} is not a valid XRP Address`);
+                throw new Error(`${destination.address} is not a valid Address`);
             }
             set(this, 'tx.Destination', destination.address);
         }
@@ -94,8 +95,8 @@ class Payment extends BaseTransaction {
 
         if (typeof deliveredAmount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(deliveredAmount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(deliveredAmount).dropsToNative(),
             };
         }
 
@@ -116,8 +117,8 @@ class Payment extends BaseTransaction {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 
@@ -130,9 +131,9 @@ class Payment extends BaseTransaction {
 
     // @ts-ignore
     set Amount(input: LedgerAmount) {
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, 'tx.Amount', new Amount(input, false).xrpToDrops());
+            set(this, 'tx.Amount', new Amount(input, false).nativeToDrops());
         }
 
         if (typeof input === 'object') {
@@ -154,8 +155,8 @@ class Payment extends BaseTransaction {
 
         if (typeof sendMax === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(sendMax).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(sendMax).dropsToNative(),
             };
         }
 
@@ -171,9 +172,9 @@ class Payment extends BaseTransaction {
             set(this, 'tx.SendMax', undefined);
             return;
         }
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, 'tx.SendMax', new Amount(input, false).xrpToDrops());
+            set(this, 'tx.SendMax', new Amount(input, false).nativeToDrops());
         }
 
         if (typeof input === 'object') {
@@ -191,9 +192,9 @@ class Payment extends BaseTransaction {
             return;
         }
 
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, 'tx.DeliverMin', new Amount(input, false).xrpToDrops());
+            set(this, 'tx.DeliverMin', new Amount(input, false).nativeToDrops());
             return;
         }
 
@@ -213,8 +214,8 @@ class Payment extends BaseTransaction {
 
         if (typeof deliverMin === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(deliverMin).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(deliverMin).dropsToNative(),
             };
         }
 
@@ -259,7 +260,10 @@ class Payment extends BaseTransaction {
 
                 // ===== check if recipient have proper TrustLine when delivering IOU =====
                 // Note: ignore if sending to the issuer
-                if (this.Amount.currency !== 'XRP' && this.Amount.issuer !== this.Destination.address) {
+                if (
+                    this.Amount.currency !== NetworkService.getNativeAsset() &&
+                    this.Amount.issuer !== this.Destination.address
+                ) {
                     const destinationLine = await LedgerService.getFilteredAccountLine(
                         this.Destination.address,
                         this.Amount,
@@ -274,27 +278,27 @@ class Payment extends BaseTransaction {
                     }
                 }
 
-                let XRPAmount = undefined as AmountType;
+                let NativeAmount = undefined as AmountType;
 
                 // SendMax have higher priority
-                if (this.SendMax && this.SendMax.currency === 'XRP') {
-                    XRPAmount = this.SendMax;
-                } else if (this.Amount.currency === 'XRP' && !this.SendMax) {
-                    XRPAmount = this.Amount;
+                if (this.SendMax && this.SendMax.currency === NetworkService.getNativeAsset()) {
+                    NativeAmount = this.SendMax;
+                } else if (this.Amount.currency === NetworkService.getNativeAsset() && !this.SendMax) {
+                    NativeAmount = this.Amount;
                 }
 
-                if (XRPAmount) {
+                if (NativeAmount) {
                     // ===== check balance =====
                     try {
                         // fetch fresh account balance from ledger
                         const availableBalance = await LedgerService.getAccountAvailableBalance(this.Account.address);
 
-                        if (Number(XRPAmount.value) > Number(availableBalance)) {
+                        if (Number(NativeAmount.value) > Number(availableBalance)) {
                             reject(
                                 new Error(
                                     Localize.t('send.insufficientBalanceSpendableBalance', {
                                         spendable: Localize.formatNumber(availableBalance),
-                                        currency: 'XRP',
+                                        currency: NetworkService.getNativeAsset(),
                                     }),
                                 ),
                             );
@@ -309,9 +313,9 @@ class Payment extends BaseTransaction {
                 let IOUAmount = undefined as AmountType;
 
                 // SendMax have higher priority
-                if (this.SendMax && this.SendMax.currency !== 'XRP') {
+                if (this.SendMax && this.SendMax.currency !== NetworkService.getNativeAsset()) {
                     IOUAmount = this.SendMax;
-                } else if (this.Amount.currency !== 'XRP' && !this.SendMax) {
+                } else if (this.Amount.currency !== NetworkService.getNativeAsset() && !this.SendMax) {
                     IOUAmount = this.Amount;
                 }
 

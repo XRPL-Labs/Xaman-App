@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import TicketCreate from '../ticketCreate';
 
+jest.mock('@services/NetworkService');
+
 describe('TicketCreate tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new TicketCreate();

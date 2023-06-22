@@ -2,7 +2,7 @@ import { get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 
-import { LedgerService, StyleService } from '@services';
+import { LedgerService, NetworkService, StyleService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
@@ -43,7 +43,7 @@ class CheckCashTemplate extends Component<Props, State> {
         const amountField = props.transaction.Amount ? 'Amount' : 'DeliverMin';
         const currencyName = props.transaction[amountField]?.currency
             ? NormalizeCurrencyCode(props.transaction[amountField].currency)
-            : 'XRP';
+            : NetworkService.getNativeAsset();
 
         this.state = {
             isLoading: false,
@@ -111,7 +111,7 @@ class CheckCashTemplate extends Component<Props, State> {
         });
 
         if (amount) {
-            if (!transaction[amountField] || transaction[amountField].currency === 'XRP') {
+            if (!transaction[amountField] || transaction[amountField].currency === NetworkService.getNativeAsset()) {
                 // @ts-ignore
                 transaction[amountField] = amount;
             } else {
@@ -173,7 +173,11 @@ class CheckCashTemplate extends Component<Props, State> {
                                 <View style={[AppStyles.row, AppStyles.flex1]}>
                                     <AmountInput
                                         ref={this.amountInput}
-                                        valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
+                                        valueType={
+                                            currencyName === NetworkService.getNativeAsset()
+                                                ? AmountValueType.Native
+                                                : AmountValueType.IOU
+                                        }
                                         onChange={this.onAmountChange}
                                         style={[styles.amountInput]}
                                         value={cashAmount}
@@ -198,7 +202,7 @@ class CheckCashTemplate extends Component<Props, State> {
                         ) : (
                             <AmountText
                                 value={cashAmount}
-                                currency={transaction[amountField]?.currency || 'XRP'}
+                                currency={transaction[amountField]?.currency || NetworkService.getNativeAsset()}
                                 style={styles.amountInput}
                                 immutable
                             />

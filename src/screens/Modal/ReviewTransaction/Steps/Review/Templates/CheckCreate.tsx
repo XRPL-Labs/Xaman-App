@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
-import { StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 
 import { CheckCreate } from '@common/libs/ledger/transactions';
 
@@ -46,7 +46,7 @@ class CheckCreateTemplate extends Component<Props, State> {
             amount: props.transaction.SendMax?.value,
             currencyName: props.transaction.SendMax?.currency
                 ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
-                : 'XRP',
+                : NetworkService.getNativeAsset(),
             destinationDetails: undefined,
         };
 
@@ -92,7 +92,7 @@ class CheckCreateTemplate extends Component<Props, State> {
         });
 
         if (amount) {
-            if (!transaction.SendMax || transaction.SendMax.currency === 'XRP') {
+            if (!transaction.SendMax || transaction.SendMax.currency === NetworkService.getNativeAsset()) {
                 // @ts-ignore
                 transaction.SendMax = amount;
             } else {
@@ -126,12 +126,12 @@ class CheckCreateTemplate extends Component<Props, State> {
                 />
 
                 {/* Amount */}
-                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
+                <Text style={styles.label}>{Localize.t('global.amount')}</Text>
 
-                <View style={[styles.contentBox]}>
+                <View style={styles.contentBox}>
                     <TouchableOpacity
                         activeOpacity={1}
-                        style={[AppStyles.row]}
+                        style={AppStyles.row}
                         onPress={() => {
                             if (editableAmount && this.amountInput) {
                                 this.amountInput.current?.focus();
@@ -141,14 +141,18 @@ class CheckCreateTemplate extends Component<Props, State> {
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <AmountInput
                                 ref={this.amountInput}
-                                valueType={currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU}
+                                valueType={
+                                    currencyName === NetworkService.getNativeAsset()
+                                        ? AmountValueType.Native
+                                        : AmountValueType.IOU
+                                }
                                 onChange={this.onSendMaxChange}
-                                style={[styles.amountInput]}
+                                style={styles.amountInput}
                                 value={amount}
                                 editable={editableAmount}
                                 placeholderTextColor={StyleService.value('$textSecondary')}
                             />
-                            <Text style={[styles.amountInput]}> {currencyName}</Text>
+                            <Text style={styles.amountInput}> {currencyName}</Text>
                         </View>
                         {editableAmount && (
                             <Button
@@ -167,9 +171,9 @@ class CheckCreateTemplate extends Component<Props, State> {
                     </TouchableOpacity>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.expire')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>
+                <Text style={styles.label}>{Localize.t('global.expire')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>
                         {transaction.Expiration
                             ? FormatDate(transaction.Expiration)
                             : Localize.t('global.neverExpires')}
@@ -178,8 +182,8 @@ class CheckCreateTemplate extends Component<Props, State> {
 
                 {transaction.InvoiceID && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.invoiceID')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
+                        <View style={styles.contentBox}>
                             <Text style={styles.valueSubtext}>{transaction.InvoiceID}</Text>
                         </View>
                     </>

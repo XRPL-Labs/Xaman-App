@@ -2,6 +2,8 @@
 import BigNumber from 'bignumber.js';
 import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 /* Types ==================================================================== */
 import { BalanceChangeType, OfferStatus } from './types';
 
@@ -106,7 +108,7 @@ class Meta {
         };
     };
 
-    private parseXRPQuantity = (node: any, valueParser: any) => {
+    private parseNativeQuantity = (node: any, valueParser: any) => {
         const value = valueParser(node);
 
         if (value === null) {
@@ -118,7 +120,7 @@ class Meta {
         return {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
-                currency: 'XRP',
+                currency: NetworkService.getNativeAsset(),
                 value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
                 action: valueNumber.isNegative() ? 'DEC' : 'INC',
             },
@@ -224,7 +226,7 @@ class Meta {
     parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {
         const values = this.nodes.map((node) => {
             if (node.entryType === 'AccountRoot') {
-                return [this.parseXRPQuantity(node, this.computeBalanceChange)];
+                return [this.parseNativeQuantity(node, this.computeBalanceChange)];
             }
             if (node.entryType === 'RippleState') {
                 return this.parseTrustlineQuantity(node, this.computeBalanceChange);

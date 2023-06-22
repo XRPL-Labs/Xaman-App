@@ -1,5 +1,7 @@
 import { get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from './base';
 import Amount from '../parser/common/amount';
 
@@ -32,9 +34,17 @@ class PaymentChannelClaim extends BaseTransaction {
 
         if (isUndefined(balance)) return undefined;
 
+        if (typeof balance === 'string') {
+            return {
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(balance).dropsToNative(),
+            };
+        }
+
         return {
-            currency: 'XRP',
-            value: new Amount(balance).dropsToXrp(),
+            currency: balance.currency,
+            value: balance.value,
+            issuer: balance.issuer,
         };
     }
 
@@ -43,9 +53,17 @@ class PaymentChannelClaim extends BaseTransaction {
 
         if (isUndefined(amount)) return undefined;
 
+        if (typeof amount === 'string') {
+            return {
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
+            };
+        }
+
         return {
-            currency: 'XRP',
-            value: new Amount(amount).dropsToXrp(),
+            currency: amount.currency,
+            value: amount.value,
+            issuer: amount.issuer,
         };
     }
 

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { View, ViewStyle, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services//NetworkService';
 
 import { AmountType } from '@common/libs/ledger/parser/types';
 
@@ -142,8 +143,8 @@ class PaymentOptionsPicker extends Component<Props, State> {
             let localOption = undefined as PathOption;
 
             try {
-                // paying XRP
-                if (amount.currency === 'XRP') {
+                // paying native currency
+                if (amount.currency === NetworkService.getNativeAsset()) {
                     // fetch fresh account balance from ledger
                     const availableBalance = await LedgerService.getAccountAvailableBalance(source);
 
@@ -210,7 +211,9 @@ class PaymentOptionsPicker extends Component<Props, State> {
         return new Promise((resolve) => {
             this.pathFinding
                 .request(
-                    amount.currency === 'XRP' ? new Amount(amount.value, false).xrpToDrops() : amount,
+                    amount.currency === NetworkService.getNativeAsset()
+                        ? new Amount(amount.value, false).nativeToDrops()
+                        : amount,
                     source,
                     destination,
                 )
@@ -221,11 +224,11 @@ class PaymentOptionsPicker extends Component<Props, State> {
                         return Array.isArray(paths_computed) && paths_computed.length > 0;
                     });
 
-                    // if paying with XRP is available in options, turn drops to XRP
+                    // if paying with native currency is available in options, turn drops to native currency
                     const paymentOptions = map(filteredOptions, (item) => {
                         const { source_amount } = item;
                         if (typeof source_amount === 'string') {
-                            return Object.assign(item, { source_amount: new Amount(source_amount).dropsToXrp() });
+                            return Object.assign(item, { source_amount: new Amount(source_amount).dropsToNative() });
                         }
                         return item;
                     });

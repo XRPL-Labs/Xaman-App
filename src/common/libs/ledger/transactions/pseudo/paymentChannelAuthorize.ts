@@ -1,5 +1,7 @@
 import { get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import Amount from '../../parser/common/amount';
 
 import BasePseudoTransaction from './base';
@@ -37,9 +39,17 @@ class PaymentChannelAuthorize extends BasePseudoTransaction {
 
         if (isUndefined(amount)) return undefined;
 
+        if (typeof amount === 'string') {
+            return {
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
+            };
+        }
+
         return {
-            currency: 'XRP',
-            value: new Amount(amount).dropsToXrp(),
+            currency: amount.currency,
+            value: amount.value,
+            issuer: amount.issuer,
         };
     }
 }

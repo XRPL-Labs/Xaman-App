@@ -5,6 +5,8 @@ import PaymentChannelFund from '../paymentChannelFund';
 
 import paymentChannelFundTemplates from './templates/PaymentChannelFundTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('PaymentChannelFund tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new PaymentChannelFund();

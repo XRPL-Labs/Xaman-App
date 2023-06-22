@@ -6,6 +6,8 @@ import { uniqBy, flatMap, map } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ScrollView, BackHandler, NativeEventSubscription } from 'react-native';
 
+import { NetworkService } from '@services';
+
 import { AccountRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -248,7 +250,7 @@ class EventsFilterView extends Component<Props, State> {
                             {Localize.t('global.asset')}
                         </Text>
                         <View style={[styles.row]}>
-                            {this.renderButton('Currency', 'XRP')}
+                            {this.renderButton('Currency', NetworkService.getNativeAsset())}
                             {account.lines && this.renderAccountCurrencies()}
                         </View>
 

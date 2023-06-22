@@ -45,7 +45,7 @@ class TokenAvatar extends PureComponent<Props, State> {
             return '';
         }
 
-        // XRP
+        // native
         if (typeof token === 'string') {
             return StyleService.getImage('IconXrpSquare').uri;
         }
@@ -56,9 +56,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         if (counterParty.avatar) {
             return counterParty.avatar;
         }
-        if (token.isNFT) {
-            return StyleService.getImage('ImageUnknownNFT').uri;
-        }
+
         return StyleService.getImage('ImageUnknownTrustLine').uri;
     };
 

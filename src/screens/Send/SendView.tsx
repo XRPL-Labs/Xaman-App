@@ -7,10 +7,12 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
+import { AppScreens } from '@common/constants';
+
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
-import { AppScreens } from '@common/constants';
+import NetworkService from '@services/NetworkService';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -20,8 +22,6 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Memo from '@common/libs/ledger/parser/common/memo';
-
-import { NFTValueToXRPL, XRPLValueToNFT } from '@common/utils/amount';
 
 // components
 import { Header } from '@components/General';
@@ -59,16 +59,14 @@ class SendView extends Component<Props, State> {
         // default values
         const accounts = AccountRepository.getSpendableAccounts();
         const source = find(accounts, { default: true }) || accounts[0];
-        const currency = props.currency || 'XRP';
-        const sendingNFT = typeof currency !== 'string' && currency.isNFT;
-        const amount = props.amount ? (sendingNFT ? String(XRPLValueToNFT(Number(props.amount))) : props.amount) : '';
+        const currency = props.currency || NetworkService.getNativeAsset();
+        const amount = props.amount || '';
 
         this.state = {
             currentStep: Steps.Details,
             accounts,
             source,
             currency,
-            sendingNFT,
             amount,
             memo: undefined,
             availableFees: undefined,
@@ -113,7 +111,6 @@ class SendView extends Component<Props, State> {
     setCurrency = (currency: TrustLineSchema | string) => {
         this.setState({
             currency,
-            sendingNFT: typeof currency !== 'string' && currency.isNFT,
         });
     };
 
@@ -206,7 +203,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT, memo } = this.state;
+        const { currency, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
 
         this.setState({
             isLoading: true,
@@ -228,7 +225,7 @@ class SendView extends Component<Props, State> {
 
             // set the amount
             if (typeof currency === 'string') {
-                // XRP
+                // native currency
                 payment.Amount = amount;
             } else {
                 // IOU
@@ -245,12 +242,12 @@ class SendView extends Component<Props, State> {
                 payment.Amount = {
                     currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
-                    value: sendingNFT ? NFTValueToXRPL(amount) : amount,
+                    value: amount,
                 };
             }
 
             // set the calculated and selected fee
-            payment.Fee = new Amount(selectedFee.value).dropsToXrp();
+            payment.Fee = new Amount(selectedFee.value).dropsToNative();
 
             // set memo if any
             if (memo) {

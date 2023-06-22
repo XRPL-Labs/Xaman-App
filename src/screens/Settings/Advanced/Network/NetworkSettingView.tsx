@@ -85,7 +85,7 @@ class NetworkSettingView extends Component<Props, State> {
         });
 
         // switch to the new default node if we already connected to the same network
-        if (node.network.networkId === NetworkService.getConnectedNetworkId()) {
+        if (node.network.networkId === NetworkService.getNetworkId()) {
             NetworkService.switchNetwork(node.network);
         }
 

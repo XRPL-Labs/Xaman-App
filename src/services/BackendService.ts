@@ -306,11 +306,11 @@ class BackendService {
     };
 
     /*
-    Get details for an XRP address
+    Get details for an account address
     */
     getAddressInfo = (address: string) => {
         return ApiService.addressInfo.get(address, null, {
-            'X-XummNet': NetworkService.getConnectedNetworkId(),
+            'X-XummNet': NetworkService.getNetworkId(),
         });
     };
 
@@ -318,7 +318,7 @@ class BackendService {
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content, null, { 'X-XummNet': NetworkService.getConnectedNetworkId() });
+        return ApiService.lookup.get(content, null, { 'X-XummNet': NetworkService.getNetworkId() });
     };
 
     /*
@@ -329,12 +329,12 @@ class BackendService {
     };
 
     getXAppStoreListings = (category: string) => {
-        return ApiService.xAppsStore.get({ category, network: NetworkService.getConnectedNetworkId() });
+        return ApiService.xAppsStore.get({ category, network: NetworkService.getNetworkId() });
     };
     getXAppShortList = () => {
         return ApiService.xAppsShortList.get({
             featured: true,
-            network: NetworkService.getConnectedNetworkId(),
+            network: NetworkService.getNetworkId(),
         });
     };
 
@@ -360,16 +360,12 @@ class BackendService {
     };
 
     getXLS20Details = (account: string, tokens: string[]) => {
-        return ApiService.xls20Details.post(
-            null,
-            { account, tokens },
-            { 'X-XummNet': NetworkService.getConnectedNetworkId() },
-        );
+        return ApiService.xls20Details.post(null, { account, tokens }, { 'X-XummNet': NetworkService.getNetworkId() });
     };
 
     getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
-            .get({ account }, null, { 'X-XummNet': NetworkService.getConnectedNetworkId() })
+            .get({ account }, null, { 'X-XummNet': NetworkService.getNetworkId() })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];
@@ -421,7 +417,7 @@ class BackendService {
             ApiService.rates
                 .get({ currency })
                 .then((response: any) => {
-                    const rate = get(response, 'XRP');
+                    const rate = get(response, NetworkService.getNativeAsset());
                     const symbol = get(response, '__meta.currency.symbol');
 
                     this.latestCurrencyRate = {

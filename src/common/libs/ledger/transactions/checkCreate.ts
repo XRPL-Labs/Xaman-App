@@ -1,5 +1,6 @@
 import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
 import * as AccountLib from 'xrpl-accountlib';
 
 import { ErrorMessages } from '@common/constants';
@@ -42,8 +43,8 @@ class CheckCreate extends BaseTransaction {
 
         if (typeof sendMax === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(sendMax).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(sendMax).dropsToNative(),
             };
         }
 
@@ -59,9 +60,9 @@ class CheckCreate extends BaseTransaction {
             set(this, ['tx', 'SendMax'], undefined);
             return;
         }
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, ['tx', 'SendMax'], new Amount(input, false).xrpToDrops());
+            set(this, ['tx', 'SendMax'], new Amount(input, false).nativeToDrops());
         }
 
         if (typeof input === 'object') {
@@ -88,7 +89,7 @@ class CheckCreate extends BaseTransaction {
     set Destination(destination: Destination) {
         if (has(destination, 'address')) {
             if (!AccountLib.utils.isValidAddress(destination.address)) {
-                throw new Error(`${destination.address} is not a valid XRP Address`);
+                throw new Error(`${destination.address} is not a valid Address`);
             }
             set(this, ['tx', 'Destination'], destination.address);
         }
@@ -127,7 +128,7 @@ class CheckCreate extends BaseTransaction {
                 }
 
                 // check if the Check Amount is exceeding the balance
-                if (this.SendMax.currency === 'XRP') {
+                if (this.SendMax.currency === NetworkService.getNativeAsset()) {
                     try {
                         // fetch fresh account balance from ledger
                         const availableBalance = await LedgerService.getAccountAvailableBalance(this.Account.address);
@@ -137,7 +138,7 @@ class CheckCreate extends BaseTransaction {
                                 new Error(
                                     Localize.t('send.insufficientBalanceSpendableBalance', {
                                         spendable: Localize.formatNumber(availableBalance),
-                                        currency: 'XRP',
+                                        currency: NetworkService.getNativeAsset(),
                                     }),
                                 ),
                             );

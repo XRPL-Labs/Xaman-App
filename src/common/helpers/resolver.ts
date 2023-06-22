@@ -148,7 +148,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
             // if balance is more than 1m possibly exchange account
             if (has(account_data, ['Balance'])) {
-                if (new Amount(account_data.Balance, true).dropsToXrp(true) > 1000000) {
+                if (new Amount(account_data.Balance, true).dropsToNative(true) > 1000000) {
                     assign(info, { possibleExchange: true });
                 }
             }

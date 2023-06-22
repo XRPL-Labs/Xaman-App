@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
-
 import { get, isUndefined } from 'lodash';
+
+import NetworkService from '@services/NetworkService';
 
 import BaseLedgerObject from './base';
 import Amount from '../parser/common/amount';
@@ -26,8 +27,8 @@ class Escrow extends BaseLedgerObject {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 

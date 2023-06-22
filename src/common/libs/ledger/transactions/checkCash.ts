@@ -1,7 +1,10 @@
 import moment from 'moment-timezone';
 import { set, get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import { NormalizeCurrencyCode } from '@common/utils/amount';
+
 import Localize from '@locale';
 
 import BaseTransaction from './base';
@@ -38,8 +41,8 @@ class CheckCash extends BaseTransaction {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 
@@ -55,9 +58,9 @@ class CheckCash extends BaseTransaction {
             set(this, 'tx.Amount', undefined);
             return;
         }
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, 'tx.Amount', new Amount(input, false).xrpToDrops());
+            set(this, 'tx.Amount', new Amount(input, false).nativeToDrops());
         }
 
         if (typeof input === 'object') {
@@ -78,8 +81,8 @@ class CheckCash extends BaseTransaction {
 
         if (typeof deliverMin === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(deliverMin).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(deliverMin).dropsToNative(),
             };
         }
 
@@ -95,9 +98,9 @@ class CheckCash extends BaseTransaction {
             set(this, 'tx.DeliverMin', undefined);
             return;
         }
-        // XRP
+        // native currency
         if (typeof input === 'string') {
-            set(this, 'tx.DeliverMin', new Amount(input, false).xrpToDrops());
+            set(this, 'tx.DeliverMin', new Amount(input, false).nativeToDrops());
         }
 
         if (typeof input === 'object') {

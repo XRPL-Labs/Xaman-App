@@ -5,6 +5,7 @@
 import { get, isUndefined, has } from 'lodash';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 import Localize from '@locale';
 
@@ -49,11 +50,11 @@ class AccountDelete extends BaseTransaction {
 
         if (isUndefined(amount)) return undefined;
 
-        // as this only will be XRP we only check for string & number
+        // as this only will be native currency we only check for string & number
         if (typeof amount === 'string' || typeof amount === 'number') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 

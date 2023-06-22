@@ -168,7 +168,7 @@ class AccountService extends EventEmitter {
                 address: account,
                 ownerCount: account_data.OwnerCount,
                 sequence: account_data.Sequence,
-                balance: new Amount(account_data.Balance).dropsToXrp(true),
+                balance: new Amount(account_data.Balance).dropsToNative(true),
                 flags: account_data.Flags,
                 regularKey: account_data.RegularKey || '',
                 lines: normalizedAccountLines,

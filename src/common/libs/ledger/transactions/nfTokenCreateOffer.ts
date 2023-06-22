@@ -1,5 +1,7 @@
 import { get, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from './base';
 
 import Amount from '../parser/common/amount';
@@ -35,8 +37,8 @@ class NFTokenCreateOffer extends BaseTransaction {
 
         if (typeof amount === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(amount).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(amount).dropsToNative(),
             };
         }
 

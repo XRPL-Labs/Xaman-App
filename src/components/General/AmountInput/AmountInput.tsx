@@ -12,7 +12,7 @@ import Localize from '@locale';
 
 /* Types ==================================================================== */
 export enum AmountValueType {
-    XRP = 'XRP',
+    Native = 'Native',
     IOU = 'IOU',
 }
 
@@ -34,7 +34,7 @@ interface State {
     value: string;
 }
 /* Constants ==================================================================== */
-const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_NATIVE_DECIMAL_PLACES = 6;
 const MAX_IOU_DECIMAL_PLACES = 8;
 const MAX_IOU_PRECISION = 16;
 
@@ -42,7 +42,7 @@ const MAX_IOU_PRECISION = 16;
 class AmountInput extends PureComponent<Props, State> {
     static defaultProps = {
         fractional: true,
-        valueType: AmountValueType.XRP,
+        valueType: AmountValueType.Native,
     };
 
     constructor(props: Props) {
@@ -90,8 +90,8 @@ class AmountInput extends PureComponent<Props, State> {
             return '';
         }
 
-        // 6 decimal places for XRP input
-        let decimalPlaces = MAX_XRP_DECIMAL_PLACES;
+        // 6 decimal places for native input
+        let decimalPlaces = MAX_NATIVE_DECIMAL_PLACES;
         if (valueType === AmountValueType.IOU) {
             decimalPlaces = MAX_IOU_DECIMAL_PLACES;
         }

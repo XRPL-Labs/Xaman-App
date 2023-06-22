@@ -1,5 +1,7 @@
 import { set, get, find, isUndefined } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from './base';
 
 import Amount from '../parser/common/amount';
@@ -68,8 +70,8 @@ class NFTokenAcceptOffer extends BaseTransaction {
 
         if (typeof brokerFee === 'string') {
             return {
-                currency: 'XRP',
-                value: new Amount(brokerFee).dropsToXrp(),
+                currency: NetworkService.getNativeAsset(),
+                value: new Amount(brokerFee).dropsToNative(),
             };
         }
 

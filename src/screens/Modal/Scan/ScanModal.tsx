@@ -370,11 +370,11 @@ class ScanView extends Component<Props, State> {
 
             let amount;
 
-            // normal XRP address scanned
+            // normal address scanned
             // try to decode X Address
             const { to, tag } = NormalizeDestination(destination);
 
-            // unable to parse the address, probably not xrp address
+            // unable to parse the address, probably not a valid address
             if (!to) {
                 Prompt(
                     Localize.t('global.warning'),
@@ -388,7 +388,7 @@ class ScanView extends Component<Props, State> {
                 return;
             }
 
-            // if amount present as XRP pass the amount
+            // if amount present as native pass the amount
             if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }

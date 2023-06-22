@@ -5,6 +5,8 @@ import TrustSet from '../trustSet';
 
 import trustSetTemplate from './templates/TrustSetTx.json';
 
+jest.mock('@services/NetworkService');
+
 describe('TrustSet tx', () => {
     it('Should set tx type if not set', () => {
         const instance = new TrustSet();

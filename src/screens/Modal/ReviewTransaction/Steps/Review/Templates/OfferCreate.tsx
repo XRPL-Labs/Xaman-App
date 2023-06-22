@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
 
@@ -112,8 +113,8 @@ class OfferCreateTemplate extends Component<Props, State> {
         // Warn users if they are about to trade their entire token worth
         const { issuer, currency, value } = transaction.TakerGets;
 
-        if (currency === 'XRP') {
-            // selling XRP
+        if (currency === NetworkService.getNativeAsset()) {
+            // selling native currency
             showFullBalanceLiquidWarning = Number(value) >= CalculateAvailableBalance(source);
         } else {
             // sell IOU
@@ -121,8 +122,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 (l: TrustLineSchema) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
 
-            // only if not XLS14
-            if (line && !line.isNFT) {
+            if (line) {
                 showFullBalanceLiquidWarning = Number(value) >= Number(line.balance);
             }
         }
@@ -142,7 +142,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
+                <Text style={styles.label}>{Localize.t('global.issuer')}</Text>
                 <RecipientElement
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                     isLoading={isLoadingIssuerDetails}
@@ -158,8 +158,8 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </View>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.selling')}</Text>
+                <View style={styles.contentBox}>
                     <AmountText
                         value={transaction.TakerGets.value}
                         currency={transaction.TakerGets.currency}
@@ -168,12 +168,12 @@ class OfferCreateTemplate extends Component<Props, State> {
                     />
                 </View>
 
-                <Text style={[styles.label]}>
+                <Text style={styles.label}>
                     {transaction.Flags.Sell
                         ? Localize.t('global.inExchangeForAtLeastReceive')
                         : Localize.t('global.inExchangeForReceive')}
                 </Text>
-                <View style={[styles.contentBox]}>
+                <View style={styles.contentBox}>
                     <AmountText
                         value={transaction.TakerPays.value}
                         currency={transaction.TakerPays.currency}
@@ -182,24 +182,24 @@ class OfferCreateTemplate extends Component<Props, State> {
                     />
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                <Text style={styles.label}>{Localize.t('global.issuerFee')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                 </View>
 
                 {!isUndefined(transaction.Expiration) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{FormatDate(transaction.Expiration)}</Text>
+                        <Text style={styles.label}>{Localize.t('global.expireAfter')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{FormatDate(transaction.Expiration)}</Text>
                         </View>
                     </>
                 )}
 
                 {!isUndefined(transaction.OfferSequence) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.offerSequence')}</Text>
+                        <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.OfferSequence}</Text>
                         </View>
                     </>

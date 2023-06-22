@@ -28,7 +28,7 @@ export type ExchangePair = {
 };
 
 /* Constants ==================================================================== */
-const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_NATIVE_DECIMAL_PLACES = 6;
 const MAX_IOU_DECIMAL_PLACES = 8;
 
 /* Class ==================================================================== */
@@ -89,7 +89,7 @@ class LedgerExchange {
             };
         }
 
-        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_XRP_DECIMAL_PLACES;
+        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_NATIVE_DECIMAL_PLACES;
 
         const { maxSlippagePercentage } = this.boundaryOptions;
         const amount = new BigNumber(value);
@@ -128,8 +128,8 @@ class LedgerExchange {
             issuer: this.pair.issuer,
         };
 
-        const from = direction === MarketDirection.SELL ? { currency: 'XRP' } : pair;
-        const to = direction === MarketDirection.SELL ? pair : { currency: 'XRP' };
+        const from = direction === MarketDirection.SELL ? { currency: NetworkService.getNativeAsset() } : pair;
+        const to = direction === MarketDirection.SELL ? pair : { currency: NetworkService.getNativeAsset() };
 
         return {
             trade: {

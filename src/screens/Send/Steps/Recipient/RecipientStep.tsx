@@ -16,10 +16,10 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { NormalizeCurrencyCode, NFTValueToXRPL } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
@@ -255,7 +255,7 @@ class RecipientStep extends Component<Props, State> {
         });
 
         if (searchText && searchText.length > 0) {
-            // check if it's a xrp address
+            // check if it's a valid address
             // eslint-disable-next-line prefer-regex-literals
             const possibleAccountAddress = new RegExp(
                 /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,
@@ -374,7 +374,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
-        const { setDestinationInfo, amount, currency, destination, source, sendingNFT } = this.context;
+        const { setDestinationInfo, amount, currency, destination, source } = this.context;
         let { destinationInfo } = this.context;
 
         try {
@@ -553,10 +553,9 @@ class RecipientStep extends Component<Props, State> {
                 }
 
                 // check if sending this payment will exceed the limit
-                const normalizeAmount = sendingNFT ? NFTValueToXRPL(amount) : amount;
                 if (
                     destinationLine &&
-                    Number(normalizeAmount) + Number(destinationLine.balance) > Number(destinationLine.limit)
+                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit)
                 ) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
@@ -584,7 +583,7 @@ class RecipientStep extends Component<Props, State> {
                         text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
                             currency:
                                 typeof currency === 'string'
-                                    ? 'XRP'
+                                    ? NetworkService.getNativeAsset()
                                     : NormalizeCurrencyCode(currency.currency.currency),
                         }),
                         buttons: [
@@ -715,7 +714,7 @@ class RecipientStep extends Component<Props, State> {
                             {title} {dataSource[0].data?.length > 0 && `(${dataSource[0].data?.length})`}
                         </Text>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Button
                             onPress={this.resetResult}
                             style={styles.clearSearchButton}
@@ -776,7 +775,7 @@ class RecipientStep extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Button
                             onPress={() => {
                                 // clear search text
@@ -809,9 +808,9 @@ class RecipientStep extends Component<Props, State> {
         if (!dataSource) return null;
 
         return (
-            <View testID="send-recipient-view" style={[AppStyles.container]}>
+            <View testID="send-recipient-view" style={AppStyles.container}>
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
-                    <View style={[AppStyles.row]}>
+                    <View style={AppStyles.row}>
                         <TextInput
                             placeholder={Localize.t('send.enterANameOrAddress')}
                             // containerStyle={styles.searchContainer}
@@ -843,11 +842,11 @@ class RecipientStep extends Component<Props, State> {
                 </View>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]} safeArea>
+                <Footer style={AppStyles.row} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button light label={Localize.t('global.back')} onPress={this.goBack} />
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         <Button
                             isLoading={isLoading}
                             textStyle={AppStyles.strong}
