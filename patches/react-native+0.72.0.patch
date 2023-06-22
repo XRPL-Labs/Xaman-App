@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
+index 9b9c127..c57c1ae 100644
+--- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
++++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
+@@ -553,6 +553,15 @@ - (void)sendRequest:(NSURLRequest *)request
+         responseSender:(RCTResponseSenderBlock)responseSender
+ {
+   RCTAssertThread(_methodQueue, @"sendRequest: must be called on method queue");
++
++  #if DEBUG
++  #else
++    // Force the app to only connect to trusted domains
++    NSArray *allowedEndpoints = [NSArray arrayWithObjects: @"clients3.google.com", @"xumm.app", nil];
++    NSString* domain = [request.URL host];
++    NSAssert([allowedEndpoints containsObject: domain], [@"Fetch endpoint have unsecure domain: " stringByAppendingString:domain]);
++  #endif
++
+   __weak __typeof(self) weakSelf = self;
+   __block RCTNetworkTask *task;
+   RCTURLRequestProgressBlock uploadProgressBlock = ^(int64_t progress, int64_t total) {
+diff --git a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
+index 4451b94..ccc43b0 100644
+--- a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
++++ b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
+@@ -68,6 +68,16 @@ - (void)invalidate
+                   : (JS::NativeWebSocketModule::SpecConnectOptions &)options socketID
+                   : (double)socketID)
+ {
++
++  // Check if we are connecting to the secure socket sources
++  #if DEBUG
++  #else
++    NSArray *allowedEndpoints = [NSArray arrayWithObjects: @"xrplcluster.com", @"xahau.network", @"dev.xahau.network", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
++    if(![allowedEndpoints containsObject: [URL host]]){
++        @throw NSInternalInconsistencyException;
++    }
++  #endif
++
+   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+
+   // We load cookies from sharedHTTPCookieStorage (shared with XHR and

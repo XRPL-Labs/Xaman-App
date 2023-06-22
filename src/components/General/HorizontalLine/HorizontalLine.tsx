@@ -6,12 +6,12 @@
  */
 import React from 'react';
 
-import { View, ViewStyle } from 'react-native';
+import { View, ViewStyle, DimensionValue } from 'react-native';
 
 import StyleService from '@services/StyleService';
 /* Types ==================================================================== */
 interface Props {
-    width?: number;
+    width?: DimensionValue;
     height?: number;
     color?: string;
     style?: ViewStyle | ViewStyle[];
