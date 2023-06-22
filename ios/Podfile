@@ -1,3 +1,5 @@
+use_frameworks! :linkage => :static
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -21,11 +23,6 @@ end
 
 target 'XUMM' do
   config = use_native_modules!
-
-  # fix for FirebaseCoreInternal pod install
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
 
   # Flags change depending on the env values.
   flags = get_default_flags()
