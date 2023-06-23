@@ -31,15 +31,7 @@ interface State {
 
 /* Component ==================================================================== */
 class PinInput extends Component<Props, State> {
-    private textInput: TextInput = undefined;
-
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            code: '',
-        };
-    }
+    private readonly textInputRef: React.RefObject<TextInput>;
 
     public static defaultProps = {
         codeLength: 4,
@@ -47,10 +39,20 @@ class PinInput extends Component<Props, State> {
         checkStrength: false,
     };
 
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            code: '',
+        };
+
+        this.textInputRef = React.createRef();
+    }
+
     public blur = () => {
         setTimeout(() => {
-            if (this.textInput) {
-                this.textInput.blur();
+            if (this.textInputRef?.current) {
+                this.textInputRef?.current.blur();
             }
         }, 100);
     };
@@ -59,10 +61,13 @@ class PinInput extends Component<Props, State> {
         // this is a quick fix for android bug
         // Android: Calling TextInput instance's focus() after keyboard
         // is closed via back button/submit doesn't bring up keyboard
-        this.textInput.blur();
+        if (this.textInputRef?.current) {
+            this.textInputRef?.current.blur();
+        }
+
         setTimeout(() => {
-            if (this.textInput) {
-                this.textInput.focus();
+            if (this.textInputRef?.current) {
+                this.textInputRef?.current.focus();
             }
         }, 100);
     };
@@ -193,27 +198,37 @@ class PinInput extends Component<Props, State> {
         }
     };
 
-    handleEdit = (code: string) => {
+    handleEdit = (str: string) => {
+        const { code } = this.state;
         const { codeLength, checkStrength, onFinish } = this.props;
 
+        // nothing changed
+        if (str === code) {
+            return;
+        }
+
         // remove any non digits
-        const cleanCode = code.replace(/[^0-9]/g, '');
+        const cleanCode = str.replace(/[^0-9]/g, '');
 
-        if (cleanCode) {
-            // limit the input for not more than the requested code length
-            if (cleanCode.length <= codeLength) {
-                this.setPinCode(cleanCode);
-            }
-            // User filling the last pin ?
-            if (cleanCode.length === codeLength) {
-                this.textInput.blur();
-
-                if (onFinish) {
-                    onFinish(cleanCode, checkStrength ? this.isStrong(cleanCode) : undefined);
-                }
-            }
-        } else {
+        if (!cleanCode) {
             this.setPinCode('');
+            return;
+        }
+
+        // limit the input for not more than the requested code length
+        if (cleanCode.length <= codeLength) {
+            this.setPinCode(cleanCode);
+        }
+
+        // User filling the last pin ?
+        if (cleanCode.length === codeLength) {
+            if (this.textInputRef?.current) {
+                this.textInputRef?.current.blur();
+            }
+
+            if (onFinish) {
+                onFinish(cleanCode, checkStrength ? this.isStrong(cleanCode) : undefined);
+            }
         }
     };
 
@@ -249,11 +264,9 @@ class PinInput extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.container]}>
+            <View style={styles.container}>
                 <TextInput
-                    ref={(r) => {
-                        this.textInput = r;
-                    }}
+                    ref={this.textInputRef}
                     testID="pin-input"
                     keyboardType="number-pad"
                     returnKeyType="done"
@@ -270,7 +283,7 @@ class PinInput extends Component<Props, State> {
                     // eslint-disable-next-line
                     {...props}
                 />
-                <View style={[styles.containerPin]}>{pins}</View>
+                <View style={styles.containerPin}>{pins}</View>
             </View>
         );
     }

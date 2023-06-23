@@ -385,7 +385,7 @@ class NetworkService extends EventEmitter {
             // wrap in proxy if the network type is custom
             nodes = [`${NetworkConfig.customNodeProxy}/${defaultNode.endpoint}`];
         } else {
-            nodes = [`${NetworkConfig.customNodeProxy}/${defaultNode.endpoint}`];
+            nodes = [`${defaultNode.endpoint}`];
         }
 
         this.connection = new XrplClient(nodes, {
