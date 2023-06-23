@@ -30,7 +30,7 @@ const styles = StyleService.create({
     networkTypeLabel: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.h5.size * 0.85,
-        color: '$textColor',
+        color: '$textPrimary',
         paddingTop: AppSizes.paddingExtraSml,
         paddingBottom: AppSizes.paddingSml,
     },
