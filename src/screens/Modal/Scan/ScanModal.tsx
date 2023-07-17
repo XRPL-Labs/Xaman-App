@@ -2,7 +2,7 @@
  * Scan Modal
  */
 
-import { first, upperFirst } from 'lodash';
+import { first } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
@@ -11,11 +11,10 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, NetworkService } from '@services';
+import { StyleService, BackendService } from '@services';
 
-import { AccountRepository, CoreRepository, NetworkRepository, NodeRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
-import { NetworkType } from '@store/types';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { CoreModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
@@ -48,7 +47,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */
@@ -85,10 +84,6 @@ class ScanView extends Component<Props, State> {
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
-
-        setTimeout(() => {
-            this.addCustomNode('778bb1eb03ae49cf1e5b');
-        }, 2000);
     }
 
     componentWillUnmount() {
@@ -164,86 +159,6 @@ class ScanView extends Component<Props, State> {
                     isLoading: false,
                 });
             });
-    };
-
-    addCustomNode = async (hash: string) => {
-        this.setState({
-            isLoading: true,
-        });
-
-        try {
-            const resp = await BackendService.getEndpointDetails(hash);
-
-            const { endpoint } = resp;
-            const { name, node: nodeEndpoint, networkId, color } = endpoint;
-
-            // check if any network exist with the networkId provided
-            let network = NetworkRepository.findOne({ networkId });
-            let node = NodeRepository.findOne({ endpoint: nodeEndpoint });
-
-            // network should not exist and if exist the network type should be NetworkType.Custom
-            // anything else reject the request
-            if (network && network.type !== NetworkType.Custom) {
-                throw new Error('Node can only be added to custom nodes from scanning hash');
-            }
-
-            // node is already exist
-            if (node) {
-                throw new Error('Node is already exist!');
-            }
-
-            // if network does not exist create one
-            if (!network) {
-                network = await NetworkRepository.create({
-                    networkId,
-                    name,
-                    color,
-                    type: NetworkType.Custom,
-                });
-            }
-
-            // add the Node to the store
-            node = await NodeRepository.create({
-                endpoint: nodeEndpoint,
-                network,
-            });
-
-            // include the created node to the list of nodes supported by network
-            const nodes = [...network.nodes, node];
-
-            // update the network defaultNode and nodes
-            await NetworkRepository.update({
-                networkId,
-                nodes,
-                defaultNode: node,
-            });
-
-            // close scan modal
-            await Navigator.dismissModal();
-
-            Prompt(
-                Localize.t('global.success'),
-                Localize.t('global.customNodeSuccessfullyAddedToXUMM'),
-                [
-                    {
-                        text: Localize.t('global.cancel'),
-                    },
-                    {
-                        text: upperFirst(Localize.t('global.switch')),
-                        style: 'destructive',
-                        onPress: () => NetworkService.switchNetwork(network),
-                    },
-                ],
-                { cancelable: false, type: 'default' },
-            );
-        } catch (e) {
-            Prompt(
-                Localize.t('global.error'),
-                Localize.t('global.unableToLoadCustomEndpointDetails'),
-                [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                { cancelable: true, type: 'default' },
-            );
-        }
     };
 
     handleTranslationBundle = async (uuid: string) => {
@@ -451,7 +366,7 @@ class ScanView extends Component<Props, State> {
     };
 
     handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, string> }) => {
-        const { feature, type, params } = parsed;
+        const { feature, type } = parsed;
 
         // Feature: allow import of Secret Numbers without Checksum
         if (feature === 'secret' && type === 'offline-secret-numbers') {
@@ -474,28 +389,6 @@ class ScanView extends Component<Props, State> {
                                 },
                                 {},
                             );
-                        },
-                    },
-                ],
-                { type: 'default' },
-            );
-        }
-
-        // Allow add custom node to XUMM
-        if (feature === 'network-endpoint' && type === 'custom-endpoint' && params?.hash) {
-            Prompt(
-                Localize.t('global.warning'),
-                Localize.t('global.addingCustomNodeWarning'),
-                [
-                    {
-                        text: Localize.t('global.cancel'),
-                        onPress: () => this.setShouldRead(true),
-                    },
-                    {
-                        text: Localize.t('global.continue'),
-                        style: 'destructive',
-                        onPress: () => {
-                            this.addCustomNode(params.hash);
                         },
                     },
                 ],
