@@ -40,7 +40,7 @@ import AddCurrency from './Overlay/AddCurrency';
 import Vault from './Overlay/Vault';
 import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
-import CurrencySettings from './Overlay/CurrencySettings';
+import TokenSettings from './Overlay/TokenSettings';
 import Alert from './Overlay/Alert';
 import CriticalProcessing from './Overlay/CriticalProcessing';
 import FlaggedDestination from './Overlay/FlaggedDestination';
@@ -131,10 +131,10 @@ export {
     SwitchAccount,
     ShareAccount,
     AddCurrency,
+    TokenSettings,
     Vault,
     Auth,
     Lock,
-    CurrencySettings,
     Alert,
     CriticalProcessing,
     FlaggedDestination,

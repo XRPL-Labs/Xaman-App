@@ -6,7 +6,7 @@ import { Button, AmountText, Icon, TokenAvatar } from '@components/General';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import { TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineModel } from '@store/models';
 
 import Localize from '@locale';
 
@@ -15,20 +15,20 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    token: TrustLineSchema;
+    token: TrustLineModel;
     index: number;
     selfIssued: boolean;
     reorderEnabled: boolean;
     discreetMode: boolean;
-    onPress: (token: TrustLineSchema, index: number) => void;
-    onMoveTopPress: (token: TrustLineSchema, index: number) => void;
+    onPress: (token: TrustLineModel, index: number) => void;
+    onMoveTopPress: (token: TrustLineModel, index: number) => void;
 }
 
 interface State {
-    balance: number;
+    balance: string;
     favorite: boolean;
     no_ripple: boolean;
-    limit: number;
+    limit: string;
 }
 
 /* Component ==================================================================== */
@@ -116,7 +116,7 @@ class TokenItem extends PureComponent<Props, State> {
         }
 
         // show alert on top of avatar if rippling set
-        if ((no_ripple === false || limit === 0) && !token.obligation) {
+        if ((no_ripple === false || Number(limit) === 0) && !token.obligation) {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { ViewStyle } from 'react-native';
-import { AccountSchema } from '@store/schemas/latest';
+
+import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { TokensList } from './Tokens';
 import { NFTokensList } from './NFTokens';
+
 /* Types ==================================================================== */
 export enum ASSETS_CATEGORY {
     Tokens = 'Tokens',
@@ -16,7 +18,7 @@ export enum ASSETS_CATEGORY {
 interface Props {
     timestamp?: number;
     style: ViewStyle | ViewStyle[];
-    account: AccountSchema;
+    account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
 }

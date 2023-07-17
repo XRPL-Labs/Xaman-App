@@ -1,4 +1,4 @@
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
@@ -20,10 +20,10 @@ export interface Props {
 
 export interface State {
     payload: Payload;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     currentStep: Steps;
     transaction: Transactions | PseudoTransactions;
-    source: AccountSchema;
+    source: AccountModel;
     submitResult: SubmitResultType;
     hasError: boolean;
     softErrorMessage: string;
@@ -34,7 +34,7 @@ export interface State {
 }
 
 export interface ContextProps extends State {
-    setSource: (source: AccountSchema) => void;
+    setSource: (source: AccountModel) => void;
     setError: (message: string) => void;
     setLoading: (loading: boolean) => void;
     setReady: (ready: boolean) => void;

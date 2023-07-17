@@ -8,8 +8,8 @@ import { SafeAreaView, View, Text, ScrollView, BackHandler, NativeEventSubscript
 
 import { NetworkService } from '@services';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -50,7 +50,7 @@ export interface Props {
 }
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
     filters: FilterProps;
 }
 
@@ -83,7 +83,7 @@ class EventsFilterView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             filters: props.currentFilters,
         };
     }
@@ -151,7 +151,7 @@ class EventsFilterView extends Component<Props, State> {
 
         const currencies = flatMap(
             uniqBy(account.lines, 'currency.currency'),
-            (l: TrustLineSchema) => l.currency.currency,
+            (l: TrustLineModel) => l.currency.currency,
         );
 
         return map(currencies, (value: string) => {

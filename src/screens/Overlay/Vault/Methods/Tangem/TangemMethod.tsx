@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, Animated, InteractionManager } from 'react-native';
 import { Card } from 'tangem-sdk-react-native';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { AccountTypes, EncryptionLevels } from '@store/types';
 
 import { Button, RadioButton, Spacer } from '@components/General';
@@ -24,8 +24,8 @@ import { AuthMethods } from '../../types';
 export interface Props {}
 
 export interface State {
-    alternativeAccount: AccountSchema;
-    preferredAccount: AccountSchema;
+    alternativeAccount: AccountModel;
+    preferredAccount: AccountModel;
 }
 
 /* Component ==================================================================== */
@@ -108,7 +108,7 @@ class TangemMethod extends Component<Props, State> {
         sign(AuthMethods.TANGEM, { tangemCard });
     };
 
-    onPreferredAccountSelect = (account: AccountSchema) => {
+    onPreferredAccountSelect = (account: AccountModel) => {
         this.setState({
             preferredAccount: account,
         });

@@ -10,7 +10,7 @@ import { AppScreens } from '@common/constants';
 import { LedgerService, PushNotificationsService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
 import { BaseTransaction } from '@common/libs/ledger/transactions';
@@ -555,7 +555,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    setSource = (account: AccountSchema) => {
+    setSource = (account: AccountModel) => {
         const { payload } = this.props;
         const { transaction } = this.state;
 

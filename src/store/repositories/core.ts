@@ -1,35 +1,33 @@
 import { assign } from 'lodash';
+import Realm, { Results } from 'realm';
+
 import { Platform } from 'react-native';
-import Realm, { ObjectSchema, Results } from 'realm';
 
 import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 import { UUIDEncoding } from '@common/utils/string';
 
-import { CoreSchema, NetworkSchema } from '@store/schemas/latest';
+import CoreModel from '@store/models/objects/core';
+import NetworkModel from '@store/models/objects/network';
 
 import BaseRepository from './base';
-/* types  ==================================================================== */
 
-// events
+/* Events  ==================================================================== */
 declare interface CoreRepository {
-    on(event: 'updateSettings', listener: (settings: CoreSchema, changes: Partial<CoreSchema>) => void): this;
+    on(event: 'updateSettings', listener: (settings: CoreModel, changes: Partial<CoreModel>) => void): this;
     on(event: string, listener: Function): this;
 }
 
-/* repository  ==================================================================== */
+/* Repository  ==================================================================== */
 class CoreRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CoreSchema.schema;
+        this.schema = CoreModel.schema;
     }
 
-    saveSettings = (settings: Partial<CoreSchema>) => {
-        const current = this.getSettings(true);
+    saveSettings = (settings: Partial<CoreModel>) => {
+        const current = this.getSettings();
 
         if (current) {
             this.safeWrite(() => {
@@ -52,7 +50,7 @@ class CoreRepository extends BaseRepository {
         return AppConfig.defaultCurrency;
     };
 
-    getSelectedNetwork = (): NetworkSchema => {
+    getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
         if (settings && settings.network) {
@@ -62,22 +60,34 @@ class CoreRepository extends BaseRepository {
         return undefined;
     };
 
-    setDefaultNetwork = (network: NetworkSchema) => {
+    getDefaultAccount = (): any => {
+        const settings = this.getSettings();
+
+        if (settings && settings.account) {
+            return settings.account;
+        }
+
+        return undefined;
+    };
+
+    setDefaultAccount = (account: any) => {
+        this.saveSettings({
+            account,
+        });
+    };
+
+    setDefaultNetwork = (network: NetworkModel) => {
         this.saveSettings({
             network,
         });
     };
 
-    getSettings = (plain?: boolean): CoreSchema => {
-        const result = this.findAll() as Results<CoreSchema>;
+    getSettings = (): CoreModel => {
+        const result = this.findAll() as Results<CoreModel>;
 
         // settings exist
         if (!result.isEmpty()) {
-            if (plain) {
-                return result[0];
-            }
-            // @ts-ignore
-            return result[0].toJSON();
+            return result[0];
         }
 
         return undefined;

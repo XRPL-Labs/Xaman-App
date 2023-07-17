@@ -9,8 +9,8 @@ import { has, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { NetworkConfig } from '@common/constants';
 
-import { CoreSchema } from '@store/schemas/latest';
 import NetworkRepository from '@store/repositories/network';
+import { CoreModel, NetworkModel } from '@store/models';
 
 import {
     LedgerMarker,
@@ -63,7 +63,7 @@ class LedgerService extends EventEmitter {
         this.logger = LoggerService.createLogger('Ledger');
     }
 
-    initialize = (coreSettings: CoreSchema) => {
+    initialize = (coreSettings: CoreModel) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set default network reserve base on prev values
@@ -110,7 +110,7 @@ class LedgerService extends EventEmitter {
      */
     updateNetworkDefinitions = (networkId: number) => {
         // get the network object
-        const network = NetworkRepository.findOne({ networkId });
+        const network = NetworkRepository.findOne({ id: networkId }) as NetworkModel;
         // include definitions hash if exist in the request
         const request = {
             command: 'server_definitions',
@@ -119,7 +119,7 @@ class LedgerService extends EventEmitter {
         let definitionsHash = '';
 
         if (network.definitions) {
-            definitionsHash = network.definitions.hash as any;
+            definitionsHash = network.definitions.hash as string;
             Object.assign(request, { hash: definitionsHash });
         }
 
@@ -143,7 +143,7 @@ class LedgerService extends EventEmitter {
                 delete resp.__replyMs;
 
                 NetworkRepository.update({
-                    networkId: network.networkId,
+                    id: network.id,
                     definitionsString: JSON.stringify(resp),
                 });
             })
@@ -175,7 +175,7 @@ class LedgerService extends EventEmitter {
 
                 // persist new network base/owner reserve
                 NetworkRepository.update({
-                    networkId: NetworkService.getNetworkId(),
+                    id: NetworkService.getNetworkId(),
                     baseReserve: reserveBase,
                     ownerReserve: reserveOwner,
                 });
@@ -188,7 +188,7 @@ class LedgerService extends EventEmitter {
      */
     getNetworkDefinitions = (): any => {
         // get connected networkId from network service
-        const network = NetworkRepository.findOne({ networkId: NetworkService.getNetworkId() });
+        const network = NetworkRepository.findOne({ id: NetworkService.getNetworkId() });
 
         if (network && network.definitions) {
             return network.definitions;

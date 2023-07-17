@@ -20,8 +20,8 @@ import {
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
-import { AccountSchema } from '@store/schemas/latest';
 import AccountRepository from '@store/repositories/account';
+import { AccountModel } from '@store/models';
 
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
@@ -69,14 +69,14 @@ import styles from './styles';
 export interface Props {
     tx?: Transactions | LedgerObjects;
     hash?: string;
-    account: AccountSchema;
+    account: AccountModel;
     asModal?: boolean;
 }
 
 export interface State {
     tx: Transactions | LedgerObjects;
     partiesDetails: AccountNameType;
-    spendableAccounts: AccountSchema[];
+    spendableAccounts: AccountModel[];
     balanceChanges: any;
     incomingTx: boolean;
     scamAlert: boolean;

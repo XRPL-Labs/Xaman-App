@@ -4,7 +4,8 @@ import { isEmpty, isEqual } from 'lodash';
 
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { LedgerObjectTypes } from '@common/libs/ledger/types';
-import { AccountSchema } from '@store/schemas/latest';
+
+import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
@@ -20,7 +21,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     item: LedgerObjects;
     timestamp?: number;
 }

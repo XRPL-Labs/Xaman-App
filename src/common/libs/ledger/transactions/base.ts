@@ -7,7 +7,7 @@ import { filter, find, flatMap, get, has, isUndefined, remove, set, size } from 
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -86,7 +86,7 @@ class BaseTransaction {
      Prepare the transaction for signing, including setting the account sequence
      * @returns {Promise<void>}
      */
-    prepare = async (account: AccountSchema) => {
+    prepare = async (account: AccountModel) => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
             return;
@@ -165,11 +165,11 @@ class BaseTransaction {
 
     /**
      Sign the transaction with provided account
-     * @param {AccountSchema} account object sign with
+     * @param {AccountModel} account object sign with
      * @param {bool} multiSign indicates if transaction should sign for multi signing
      * @returns {Promise<string>} signed tx blob
      */
-    sign = (account: AccountSchema, multiSign = false): Promise<string> => {
+    sign = (account: AccountModel, multiSign = false): Promise<string> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {

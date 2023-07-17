@@ -9,7 +9,7 @@
 import merge from 'lodash/merge';
 
 import { ProfileRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
 import { SHA256 } from '@common/libs/crypto';
 import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
@@ -86,7 +86,7 @@ class ApiService {
         });
     }
 
-    public initialize(coreSettings: CoreSchema) {
+    public initialize(coreSettings: CoreModel) {
         return new Promise<void>((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set

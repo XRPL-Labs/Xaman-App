@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 
 import { LedgerEntriesTypes } from '@common/libs/ledger/types';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
@@ -32,7 +32,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 export interface State {
@@ -211,7 +211,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
         return (
             <>
-                {account.lines.map((line: TrustLineSchema, index: number) => {
+                {account.lines.map((line: TrustLineModel, index: number) => {
                     // don't render obligation TrustLines
                     if (line.obligation) return null;
 

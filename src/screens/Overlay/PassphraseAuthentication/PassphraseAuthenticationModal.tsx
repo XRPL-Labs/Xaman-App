@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 import Keyboard from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
@@ -40,13 +40,13 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     onDismissed: () => void;
     onSuccess: (passphrase: string) => void;
 }
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     passphrase: string;
     offsetBottom: number;
 }

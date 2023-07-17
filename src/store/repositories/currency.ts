@@ -1,18 +1,16 @@
-import Realm, { ObjectSchema } from 'realm';
+import Realm from 'realm';
 import { has } from 'lodash';
 
-import { CurrencySchema, CounterPartySchema } from '@store/schemas/latest';
+import { CurrencyModel, CounterPartyModel } from '@store/models';
 import { Issuer } from '@common/libs/ledger/parser/types';
 
 import BaseRepository from './base';
 
+/* Repository  ==================================================================== */
 class CurrencyRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CurrencySchema.schema;
+        this.schema = CurrencyModel.schema;
     }
 
     include = (data: any): Promise<any> => {
@@ -23,7 +21,7 @@ class CurrencyRepository extends BaseRepository {
         return this.upsert(data);
     };
 
-    update = (object: CurrencySchema): void => {
+    update = (object: CurrencyModel): void => {
         // the primary key should be in the object
         if (!has(object, 'id')) {
             throw new Error('Update require primary key (id) to be set');
@@ -39,10 +37,10 @@ class CurrencyRepository extends BaseRepository {
         return !!currency.name;
     };
 
-    getCounterParty = (currency: CurrencySchema): CounterPartySchema => {
+    getCounterParty = (currency: CurrencyModel): CounterPartyModel => {
         const counterParty = currency.linkingObjects('CounterParty', 'currencies');
         if (!counterParty.isEmpty()) {
-            return counterParty[0] as CounterPartySchema;
+            return counterParty[0] as CounterPartyModel;
         }
         return undefined;
     };

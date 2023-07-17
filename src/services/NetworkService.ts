@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
-import { CoreSchema, NetworkSchema, NodeSchema } from '@store/schemas/latest';
+import { CoreModel, NetworkModel, NodeModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -31,10 +31,12 @@ declare interface NetworkService {
 
 /* Service  ==================================================================== */
 class NetworkService extends EventEmitter {
-    public network: NetworkSchema;
+    public network: NetworkModel;
     public connection: XrplClient;
-    private status: NetworkStateStatus;
+
+    private timeoutSeconds: number;
     private origin: string;
+    private status: NetworkStateStatus;
     private shownErrorDialog: boolean;
     private logger: any;
     onEvent: (event: string, fn: any) => any;
@@ -45,9 +47,11 @@ class NetworkService extends EventEmitter {
 
         this.network = undefined;
         this.connection = undefined;
+        this.timeoutSeconds = 40;
         this.origin = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
-        this.shownErrorDialog = false;
         this.status = NetworkStateStatus.Disconnected;
+        this.shownErrorDialog = false;
+
         this.logger = LoggerService.createLogger('Network');
 
         // proxy events
@@ -67,7 +71,7 @@ class NetworkService extends EventEmitter {
         };
     }
 
-    initialize = (coreSettings: CoreSchema) => {
+    initialize = (coreSettings: CoreModel) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set the network
@@ -182,18 +186,26 @@ class NetworkService extends EventEmitter {
      * @returns {number}
      */
     getNetworkId = () => {
-        return this.network.networkId;
+        return this.network.id;
+    };
+
+    /**
+     * Get connected network instance
+     * @returns {number}
+     */
+    getNetwork = (): NetworkModel => {
+        return this.network;
     };
 
     /**
      * Get connection details
      * @returns {object}
      */
-    getConnectionDetails = (): { node: string; type: string; networkId: number; key: string } => {
+    getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: string } => {
         return {
-            key: this.network.key,
-            networkId: this.network.networkId,
-            node: this.network.defaultNode.node,
+            networkKey: this.network.key,
+            networkId: this.network.id,
+            node: this.network.defaultNode.endpoint,
             type: this.network.type,
         };
     };
@@ -202,16 +214,14 @@ class NetworkService extends EventEmitter {
      * Switch network
      * @param network
      */
-    switchNetwork = (network: NetworkSchema) => {
+    switchNetwork = (network: NetworkModel) => {
         // nothing has been changed
-        if (network.networkId === this.network.networkId && network.defaultNode === this.network.defaultNode) {
+        if (network.id === this.network.id && network.defaultNode === this.network.defaultNode) {
             return;
         }
 
         // log
-        this.logger.debug(
-            `Switch network ${network.name} [id-${network.networkId}][node-${network.defaultNode.endpoint}]`,
-        );
+        this.logger.debug(`Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`);
 
         // set the default network on the store
         CoreRepository.setDefaultNetwork(network);
@@ -295,8 +305,23 @@ class NetworkService extends EventEmitter {
      * @param payload
      * @returns {Promise<any>}
      */
-    send = (payload: any): any => {
-        return this.connection.send(payload, { timeoutSeconds: 40 });
+    send = (payload: any): Promise<any> => {
+        return new Promise((resolve, reject) => {
+            this.connection
+                .send(payload, { timeoutSeconds: this.timeoutSeconds })
+                .then((res) => {
+                    if (typeof res === 'object') {
+                        resolve({
+                            ...res,
+                            networkId: this.network.id,
+                        });
+                        return;
+                    }
+
+                    resolve(res);
+                })
+                .catch(reject);
+        });
     };
 
     /**
@@ -333,7 +358,7 @@ class NetworkService extends EventEmitter {
         this.logger.debug(`Connected to node ${connectedNode} [${publicKey}]`);
 
         // emit on connect event
-        this.emit('connect', this.network.networkId);
+        this.emit('connect', this.network.id);
     };
 
     /**
@@ -369,7 +394,7 @@ class NetworkService extends EventEmitter {
 
         // for MainNet we add the list of all nodes for fail over
         if (this.network.type === NetworkType.Main) {
-            nodes = this.network.nodes.map((node: NodeSchema) => {
+            nodes = this.network.nodes.map((node: NodeModel) => {
                 // for cluster we add origin
                 if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
                     return `${node.endpoint}${this.origin}`;

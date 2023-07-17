@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
@@ -20,7 +20,7 @@ import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     item: Payload;
 }
 

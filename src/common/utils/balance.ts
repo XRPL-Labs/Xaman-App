@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js';
 
 import LedgerService from '@services/LedgerService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 /**
  * calculate account available balance base on base/owner reserve
  */
-const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false): number => {
+const CalculateAvailableBalance = (account: AccountModel, allowNegative = false): number => {
     // account is not activated
     if (account.balance === 0) {
         return 0;
@@ -30,7 +30,7 @@ const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false
 /**
  * get account total reserve in native currency
  */
-const CalculateTotalReserve = (account: AccountSchema): number => {
+const CalculateTotalReserve = (account: AccountModel): number => {
     // account is not activated
     if (account.balance === 0) {
         return 0;

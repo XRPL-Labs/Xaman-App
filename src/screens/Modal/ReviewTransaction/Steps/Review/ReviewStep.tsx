@@ -4,28 +4,29 @@
 
 import { filter, find, first, get, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, Text, View } from 'react-native';
+import { ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { StyleService } from '@services';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 
 // components
 import { Avatar, Button, KeyboardAwareScrollView, Spacer, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
-// style
-import { AppStyles } from '@theme';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
 
 import { PseudoTransactionTypes } from '@common/libs/ledger/types';
+
+// style
+import { AppStyles } from '@theme';
 
 // transaction templates
 import * as Templates from './Templates';
@@ -38,7 +39,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    accounts: Array<AccountSchema>;
+    accounts: Array<AccountModel>;
     canScroll: boolean;
     timestamp?: number;
 }
@@ -58,14 +59,14 @@ class ReviewStep extends Component<Props, State> {
     }
 
     componentDidMount() {
-        this.setAccounts();
+        InteractionManager.runAfterInteractions(this.setAccounts);
     }
 
     setAccounts = () => {
         const { transaction, payload, setSource, setError } = this.context;
 
         // get available accounts for signing
-        let availableAccounts = [] as AccountSchema[];
+        let availableAccounts = [] as AccountModel[];
 
         if (payload.isMultiSign()) {
             // only accounts with full access
@@ -87,8 +88,8 @@ class ReviewStep extends Component<Props, State> {
         }
 
         // choose preferred account for sign
-        let preferredAccount = undefined as AccountSchema;
-        let source = undefined as AccountSchema;
+        let preferredAccount = undefined as AccountModel;
+        let source = undefined as AccountModel;
 
         // check for enforced signer accounts
         const forcedSigners = payload.getSigners();
@@ -135,7 +136,8 @@ class ReviewStep extends Component<Props, State> {
         if (preferredAccount) {
             source = preferredAccount;
         } else {
-            source = find(availableAccounts, { default: true }) || first(availableAccounts);
+            const defaultAccount = CoreRepository.getDefaultAccount();
+            source = find(availableAccounts, { address: defaultAccount.address }) || first(availableAccounts);
         }
 
         // set the source

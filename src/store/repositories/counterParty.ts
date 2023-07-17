@@ -1,22 +1,20 @@
-import Realm, { ObjectSchema } from 'realm';
+import Realm from 'realm';
 import has from 'lodash/has';
 
-import { CounterPartySchema } from '@store/schemas/latest';
+import { CounterPartyModel } from '@store/models';
 
 import BaseRepository from './base';
 
+/* Repository  ==================================================================== */
 class CounterPartyRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CounterPartySchema.schema;
+        this.schema = CounterPartyModel.schema;
     }
 
-    update = (object: CounterPartySchema) => {
+    update = (object: CounterPartyModel) => {
         // the primary key should be in the object
-        if (!has(object, 'id')) {
+        if (!has(object, this.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
         this.create(object, true);

@@ -7,13 +7,14 @@
 import React, { PureComponent } from 'react';
 
 import { StyleService } from '@services';
-import { TrustLineSchema } from '@store/schemas/latest';
+
+import { TrustLineModel } from '@store/models';
 
 import { Avatar, AvatarProps } from '@components/General/Avatar';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
-    token: TrustLineSchema | string;
+    token: TrustLineModel | string;
 }
 
 interface State {
@@ -40,7 +41,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         return null;
     }
 
-    static getAvatar = (token: TrustLineSchema | string): string => {
+    static getAvatar = (token: TrustLineModel | string): string => {
         if (!token) {
             return '';
         }

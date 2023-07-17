@@ -1,5 +1,5 @@
 import { has } from 'lodash';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { BackendService, NetworkService } from '@services';
@@ -8,7 +8,7 @@ import { CalculateAvailableBalance, CalculateTotalReserve } from '@common/utils/
 import { Toast } from '@common/helpers/interface';
 
 import { CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 import { AmountText, Icon, TokenAvatar, TouchableDebounce } from '@components/General';
 
@@ -19,7 +19,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     discreetMode: boolean;
     reorderEnabled: boolean;
     onPress?: () => void;
@@ -34,7 +34,7 @@ interface State {
 }
 
 /* Component ==================================================================== */
-class NativeItem extends PureComponent<Props, State> {
+class NativeItem extends Component<Props, State> {
     static Height = AppSizes.scale(45);
 
     constructor(props: Props) {
@@ -43,7 +43,7 @@ class NativeItem extends PureComponent<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            showReservePanel: coreSettings.showFiatPanel,
+            showReservePanel: coreSettings.showReservePanel,
             currency: coreSettings.currency,
             showRate: false,
             isLoadingRate: false,
@@ -60,7 +60,7 @@ class NativeItem extends PureComponent<Props, State> {
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
     }
 
-    onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
         const { currency, showReservePanel } = this.state;
 
         // currency changed
@@ -73,11 +73,11 @@ class NativeItem extends PureComponent<Props, State> {
         }
 
         // show reserve panel changed
-        if (has(changes, 'showFiatPanel') && showReservePanel !== changes.showFiatPanel) {
+        if (has(changes, 'showReservePanel') && showReservePanel !== changes.showReservePanel) {
             this.setState({
                 showRate: false,
                 currencyRate: undefined,
-                showReservePanel: coreSettings.showFiatPanel,
+                showReservePanel: coreSettings.showReservePanel,
             });
         }
     };

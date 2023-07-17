@@ -14,7 +14,7 @@ import { Navigator } from '@common/helpers/navigator';
 
 import NetworkService from '@services/NetworkService';
 
-import { TrustLineSchema, AccountSchema } from '@store/schemas/latest';
+import { TrustLineModel, AccountModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 
@@ -49,8 +49,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
-    trustLine: TrustLineSchema;
+    account: AccountModel;
+    trustLine: TrustLineModel;
 }
 
 export interface State {
@@ -417,7 +417,7 @@ class ExchangeView extends Component<Props, State> {
         if (direction === MarketDirection.SELL) {
             availableBalance = CalculateAvailableBalance(account);
         } else {
-            availableBalance = trustLine.balance;
+            availableBalance = Number(trustLine.balance);
         }
 
         return availableBalance;

@@ -15,7 +15,7 @@ import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { Themes } from '@store/types';
 
 import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
@@ -30,7 +30,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     locales: any;
 }
 
@@ -61,7 +61,7 @@ class GeneralSettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-    updateUI = (coreSettings: CoreSchema) => {
+    updateUI = (coreSettings: CoreModel) => {
         this.setState({ coreSettings });
     };
 
@@ -135,9 +135,9 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
-    onShowFiatPanelChange = (value: boolean) => {
+    onShowReservePanelChange = (value: boolean) => {
         CoreRepository.saveSettings({
-            showFiatPanel: value,
+            showReservePanel: value,
         });
     };
 
@@ -329,7 +329,7 @@ class GeneralSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.showFiatPanel} onChange={this.onShowFiatPanelChange} />
+                            <Switch checked={coreSettings.showReservePanel} onChange={this.onShowReservePanelChange} />
                         </View>
                     </View>
                 </ScrollView>

@@ -10,7 +10,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import Vault from '@common/libs/vault';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { PasswordInput, Header, Footer, Button, Spacer, KeyboardAwareScrollView } from '@components/General';
 
@@ -22,7 +22,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 export interface State {

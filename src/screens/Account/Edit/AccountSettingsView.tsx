@@ -2,6 +2,7 @@
  * Accounts Edit Screen
  */
 
+import { first, filter } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
@@ -12,8 +13,8 @@ import { getAccountName } from '@common/helpers/resolver';
 import { GetCardEnforcedSecurity, GetCardId, TangemSecurity } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
 import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@components/General';
@@ -26,11 +27,11 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account?: AccountSchema;
+    account: AccountModel;
 }
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 /* Component ==================================================================== */
@@ -47,7 +48,7 @@ class AccountSettingsView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            account: props.account || AccountRepository.getDefaultAccount(),
+            account: props.account,
         };
     }
 
@@ -59,8 +60,9 @@ class AccountSettingsView extends Component<Props, State> {
         AccountRepository.off('accountUpdate', this.onAccountUpdate);
     }
 
-    onAccountUpdate = (updateAccount: AccountSchema) => {
+    onAccountUpdate = (updateAccount: AccountModel) => {
         const { account } = this.state;
+
         if (account?.isValid() && updateAccount.address === account.address) {
             this.setState({ account: updateAccount });
         }
@@ -206,7 +208,21 @@ class AccountSettingsView extends Component<Props, State> {
     removeAccount = () => {
         const { account } = this.state;
 
+        // get current core settings
+        const coreSettings = CoreRepository.getSettings();
+
+        // check if we are removing default account, then we need to select another account as default
+        if (account.address === coreSettings.account?.address) {
+            const accounts = AccountRepository.getAccounts();
+            CoreRepository.saveSettings({
+                account: first(filter(accounts, (a: any) => a.address !== account.address)),
+            });
+        }
+
+        // remove account
         AccountRepository.purge(account);
+
+        // pop the screen
         Navigator.pop();
     };
 
@@ -245,8 +261,29 @@ class AccountSettingsView extends Component<Props, State> {
     onHiddenChange = (value: boolean) => {
         const { account } = this.props;
 
-        AccountRepository.changeAccountVisibility(account, value).catch((e) => {
-            Alert.alert(Localize.t('global.error'), e.message);
+        const coreSettings = CoreRepository.getSettings();
+
+        if (value) {
+            const allAccounts = AccountRepository.getAccounts();
+            const hiddenAccounts = AccountRepository.getAccounts({ hidden: true });
+
+            // check if we are hiding all accounts
+            if (allAccounts.length - hiddenAccounts.length === 1) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideAllAccountsError'));
+                return;
+            }
+
+            // check if we are hiding the default account
+            if (coreSettings.account?.address === account.address) {
+                Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideDefaultAccountError'));
+                return;
+            }
+        }
+
+        // update account hidden value
+        AccountRepository.update({
+            address: account.address,
+            hidden: value,
         });
     };
 
@@ -254,21 +291,19 @@ class AccountSettingsView extends Component<Props, State> {
         const { account } = this.state;
 
         return (
-            <View testID="account-settings-screen" style={[styles.container]}>
+            <View testID="account-settings-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         testID: 'back-button',
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{
                         text: Localize.t('account.accountSettings'),
                     }}
                 />
 
-                <View style={[AppStyles.contentContainer]}>
+                <View style={AppStyles.contentContainer}>
                     <ScrollView>
                         {/* Account Label */}
                         <Text style={styles.descriptionText}>{Localize.t('account.accountSettingsDescription')}</Text>

@@ -8,9 +8,9 @@ import { find } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 import { AccessLevels } from '@store/types';
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
 
 import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
@@ -33,8 +33,9 @@ export interface Props {
 }
 
 export interface State {
-    accounts: Results<AccountSchema>;
-    signableAccount: Array<AccountSchema>;
+    defaultAccount: AccountModel;
+    accounts: Results<AccountModel>;
+    signableAccount: Array<AccountModel>;
     contentHeight: number;
     paddingBottom: number;
 }
@@ -62,6 +63,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
+            defaultAccount: undefined,
             accounts: undefined,
             signableAccount: undefined,
             contentHeight: 0,
@@ -71,7 +73,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
     componentDidMount() {
         const accounts = AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]);
-
+        const defaultAccount = CoreRepository.getDefaultAccount();
         const signableAccount = AccountRepository.getSignableAccounts();
 
         // accounts count or as 3 item height
@@ -90,6 +92,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }
 
         this.setState({
+            defaultAccount,
             accounts,
             signableAccount,
             contentHeight,
@@ -119,18 +122,19 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }, 300);
     };
 
-    changeDefaultAccount = (address: string) => {
-        AccountRepository.setDefaultAccount(address);
+    changeDefaultAccount = (account: AccountModel) => {
+        // change default account
+        CoreRepository.setDefaultAccount(account);
 
         if (this.actionPanel) {
             this.actionPanel.slideDown();
         }
     };
 
-    isRegularKey = (account: AccountSchema) => {
+    isRegularKey = (account: AccountModel) => {
         const { accounts } = this.state;
 
-        const found = find(accounts, { regularKey: account.address });
+        const found = accounts.find((a) => a.regularKey === account.address);
 
         if (found) {
             return found.label;
@@ -139,9 +143,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
         return false;
     };
 
-    renderRow = (account: AccountSchema) => {
+    renderRow = (account: AccountModel) => {
         const { discreetMode } = this.props;
-        const { signableAccount } = this.state;
+        const { signableAccount, defaultAccount } = this.state;
 
         // default full access
         let accessLevelLabel = Localize.t('account.fullAccess');
@@ -166,7 +170,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
-        if (account.default) {
+        if (account.address === defaultAccount.address) {
             return (
                 <View
                     key={account.address}
@@ -205,7 +209,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
             <TouchableDebounce
                 key={account.address}
                 onPress={() => {
-                    this.changeDefaultAccount(account.address);
+                    this.changeDefaultAccount(account);
                 }}
                 activeOpacity={0.9}
             >
@@ -265,7 +269,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text numberOfLines={1} style={[AppStyles.h5]}>
+                        <Text numberOfLines={1} style={AppStyles.h5}>
                             {Localize.t('account.myAccounts')}
                         </Text>
                     </View>

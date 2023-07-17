@@ -11,7 +11,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository, CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
 import { WebView, Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
 
@@ -30,7 +30,7 @@ export interface State {
     TOSVersion: number;
     isTOSLoaded: boolean;
     shouldShowAgreement: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */

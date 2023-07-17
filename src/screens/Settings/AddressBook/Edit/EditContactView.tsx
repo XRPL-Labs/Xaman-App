@@ -19,7 +19,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
-import { ContactSchema } from '@store/schemas/latest';
+import { ContactModel } from '@store/models';
 
 import { Header, Spacer, Button, TextInput, InfoMessage, KeyboardAwareScrollView, Footer } from '@components/General';
 
@@ -31,7 +31,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    contact: ContactSchema;
+    contact: ContactModel;
 }
 
 export interface State {

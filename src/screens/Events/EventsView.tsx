@@ -7,8 +7,8 @@ import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orde
 import React, { Component } from 'react';
 import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 
 // Constants/Helpers
 import { AppScreens } from '@common/constants';
@@ -61,7 +61,7 @@ export interface State {
     searchText: string;
     sectionIndex: number;
     lastMarker: LedgerMarker;
-    account: AccountSchema;
+    account: AccountModel;
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
@@ -97,7 +97,7 @@ class EventsView extends Component<Props, State> {
             filters: undefined,
             sectionIndex: 0,
             lastMarker: undefined,
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
@@ -147,7 +147,7 @@ class EventsView extends Component<Props, State> {
         AppService.off('appStateChange', this.onAppStateChange);
     }
 
-    onDefaultAccountChange = (account: AccountSchema) => {
+    onDefaultAccountChange = (account: AccountModel) => {
         // reset everything and load transaction
         this.setState(
             {

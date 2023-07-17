@@ -7,7 +7,7 @@ import { Appearance } from 'react-native';
 import { Images } from '@common/helpers/images';
 
 import CoreRepository from '@store/repositories/core';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { Themes } from '@store/types';
 
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';
@@ -25,7 +25,7 @@ class StyleService {
         this.currentStyle = { ...ColorsTheme.light, ...ColorsGeneral };
     }
 
-    initialize = (coreSettings: CoreSchema) => {
+    initialize = (coreSettings: CoreModel) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // default theme

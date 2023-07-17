@@ -3,18 +3,18 @@ import { Text, View } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
+import { AccountModel } from '@store/models';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { Icon, TouchableDebounce } from '@components/General';
-
-import { AccountSchema } from '@store/schemas/latest';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     discreet: boolean;
 }
 

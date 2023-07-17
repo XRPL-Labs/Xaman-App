@@ -1,7 +1,9 @@
-import Realm, { Results, ObjectSchema } from 'realm';
-import { forEach, isObject, isString, has } from 'lodash';
 import EventEmitter from 'events';
+import { forEach, isObject, isString, has } from 'lodash';
 
+import Realm, { Results, ObjectSchema } from 'realm';
+
+/* Repository  ==================================================================== */
 export default class BaseRepository extends EventEmitter {
     realm: Realm;
     schema: ObjectSchema;

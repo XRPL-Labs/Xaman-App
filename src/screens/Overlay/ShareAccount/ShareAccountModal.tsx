@@ -10,7 +10,7 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 // components
 import { ActionPanel, Button, QRCode, Footer } from '@components/General';
@@ -23,7 +23,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 interface State {}

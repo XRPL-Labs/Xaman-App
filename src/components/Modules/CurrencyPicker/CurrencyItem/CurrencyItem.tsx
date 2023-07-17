@@ -3,22 +3,22 @@ import { View, Text } from 'react-native';
 
 import NetworkService from '@services/NetworkService';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-
-import Localize from '@locale';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import { AmountText, TokenAvatar } from '@components/General';
 
+import Localize from '@locale';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
-    item: TrustLineSchema | string;
+    account: AccountModel;
+    item: TrustLineModel | string;
     selected?: boolean;
 }
 
@@ -44,7 +44,7 @@ class CurrencyItem extends Component<Props> {
         );
     };
 
-    renderIOU = (item: TrustLineSchema) => {
+    renderIOU = (item: TrustLineModel) => {
         const { selected } = this.props;
 
         return (

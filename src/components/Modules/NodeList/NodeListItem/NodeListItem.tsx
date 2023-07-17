@@ -6,7 +6,7 @@ import StyleService from '@services/StyleService';
 
 import { TouchableDebounce, Icon, Badge } from '@components/General';
 
-import { NodeSchema } from '@store/schemas/latest';
+import { NodeModel } from '@store/models';
 
 import Localize from '@locale';
 
@@ -16,11 +16,11 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    item: NodeSchema;
+    item: NodeModel;
     isDefault?: boolean;
     canRemove?: boolean;
-    onPress?: (item: NodeSchema) => void;
-    onRemovePress?: (item: NodeSchema) => void;
+    onPress?: (item: NodeModel) => void;
+    onRemovePress?: (item: NodeModel) => void;
 }
 
 export interface State {}

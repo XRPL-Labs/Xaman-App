@@ -8,8 +8,8 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 
 import { BackendService } from '@services';
 
@@ -31,7 +31,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
     apps: any;
     featured: any;
 }
@@ -59,7 +59,7 @@ class HomeActionsOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             apps: undefined,
             featured: undefined,
         };

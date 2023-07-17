@@ -5,12 +5,11 @@ import { View, ViewStyle } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-import { StringIdentifier } from '@common/utils/string';
 
 import { Navigator } from '@common/helpers/navigator';
 
 import { TrustLineRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
 
@@ -23,7 +22,7 @@ import { ListFilter, FiltersType } from '@components/Modules/AssetsList/Tokens/L
 /* Types ==================================================================== */
 interface Props {
     style?: ViewStyle | ViewStyle[];
-    account: AccountSchema;
+    account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
 
@@ -31,10 +30,10 @@ interface Props {
 }
 
 interface State {
-    accountStateHash: number;
-    account: AccountSchema;
-    tokens: TrustLineSchema[];
-    dataSource: TrustLineSchema[];
+    accountStateVersion: number;
+    account: AccountModel;
+    tokens: TrustLineModel[];
+    dataSource: TrustLineModel[];
     filters: FiltersType;
     reorderEnabled: boolean;
 }
@@ -48,10 +47,9 @@ class TokensList extends Component<Props, State> {
 
         const { account } = props;
         const tokens = account.lines.sorted([['order', false]]);
-        const accountStateHash = TokensList.getAccountStateHash(account);
 
         this.state = {
-            accountStateHash,
+            accountStateVersion: account.getStateVersion(),
             account,
             tokens,
             dataSource: tokens,
@@ -75,36 +73,25 @@ class TokensList extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
         const { discreetMode, spendable } = this.props;
-        const { dataSource, accountStateHash, reorderEnabled, filters } = this.state;
+        const { dataSource, accountStateVersion, reorderEnabled, filters } = this.state;
 
         return (
             !isEqual(nextProps.spendable, spendable) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
-            !isEqual(nextState.accountStateHash, accountStateHash) ||
+            !isEqual(nextState.accountStateVersion, accountStateVersion) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
             !isEqual(nextState.filters, filters) ||
             !isEqual(map(nextState.dataSource, 'id').join(), map(dataSource, 'id').join())
         );
     }
 
-    static getAccountStateHash = (account: AccountSchema): number => {
-        const state = JSON.stringify(account.toJSON(), (key, val) => {
-            if (val != null && typeof val === 'object' && ['owners', 'currency'].includes(key)) {
-                return;
-            }
-            // eslint-disable-next-line consistent-return
-            return val;
-        });
-        return StringIdentifier(state);
-    };
-
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
-        // calculate account state hash
-        const accountStateHash = TokensList.getAccountStateHash(nextProps.account);
+        // calculate account state version
+        const accountStateVersion = nextProps.account.getStateVersion();
 
         // on switch account or data update replace the dataSource and account
         // check if prev account is not valid anymore
-        if (!prevState.account.isValid() || !isEqual(accountStateHash, prevState.accountStateHash)) {
+        if (!prevState.account.isValid() || !isEqual(accountStateVersion, prevState.accountStateVersion)) {
             // check if account switched then clear filter and reordering state
             let filtersState = {
                 filters: prevState.filters,
@@ -133,7 +120,7 @@ class TokensList extends Component<Props, State> {
             }
 
             return {
-                accountStateHash,
+                accountStateVersion,
                 account: nextProps.account,
                 tokens,
                 dataSource,
@@ -144,7 +131,7 @@ class TokensList extends Component<Props, State> {
         return null;
     }
 
-    static getFilteredList = (tokens: TrustLineSchema[], filters: FiltersType): TrustLineSchema[] => {
+    static getFilteredList = (tokens: TrustLineModel[], filters: FiltersType): TrustLineModel[] => {
         if (!filters) {
             return tokens;
         }
@@ -159,7 +146,7 @@ class TokensList extends Component<Props, State> {
         if (text) {
             const normalizedSearch = toLower(text);
 
-            filtered = filter(filtered, (item: TrustLineSchema) => {
+            filtered = filter(filtered, (item: TrustLineModel) => {
                 return (
                     toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
                     toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
@@ -170,8 +157,8 @@ class TokensList extends Component<Props, State> {
 
         // hide lines with zero balance
         if (hideZero) {
-            filtered = filter(filtered, (item: TrustLineSchema) => {
-                return item.balance !== 0;
+            filtered = filter(filtered, (item: TrustLineModel) => {
+                return Number(item.balance) !== 0;
             });
         }
 
@@ -183,7 +170,7 @@ class TokensList extends Component<Props, State> {
         return filtered;
     };
 
-    onTrustLineUpdate = (updatedToken: TrustLineSchema, changes: Partial<TrustLineSchema>) => {
+    onTrustLineUpdate = (updatedToken: TrustLineModel, changes: Partial<TrustLineModel>) => {
         // update the token in the list if token favorite changed
         if (has(changes, 'favorite')) {
             this.forceUpdate();
@@ -195,7 +182,7 @@ class TokensList extends Component<Props, State> {
         Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
     };
 
-    onTokenItemPress = (token: TrustLineSchema) => {
+    onTokenItemPress = (token: TrustLineModel) => {
         const { spendable } = this.props;
         const { account, reorderEnabled } = this.state;
 
@@ -206,7 +193,7 @@ class TokensList extends Component<Props, State> {
 
         if (spendable) {
             Navigator.showOverlay(
-                AppScreens.Overlay.CurrencySettings,
+                AppScreens.Overlay.TokenSettings,
                 { trustLine: token, account },
                 {
                     overlay: {
@@ -248,13 +235,13 @@ class TokensList extends Component<Props, State> {
         });
     };
 
-    onTokenReorder = (data: Array<TrustLineSchema>) => {
+    onTokenReorder = (data: Array<TrustLineModel>) => {
         this.setState({
             dataSource: data,
         });
     };
 
-    onItemMoveTopPress = (token: TrustLineSchema) => {
+    onItemMoveTopPress = (token: TrustLineModel) => {
         const { dataSource } = this.state;
 
         // move the token to the top
@@ -306,7 +293,7 @@ class TokensList extends Component<Props, State> {
         });
     };
 
-    renderItem = ({ item, index }: { item: TrustLineSchema; index: number }) => {
+    renderItem = ({ item, index }: { item: TrustLineModel; index: number }) => {
         const { discreetMode } = this.props;
         const { account, reorderEnabled } = this.state;
 
@@ -334,7 +321,7 @@ class TokensList extends Component<Props, State> {
         return <ListEmpty />;
     };
 
-    keyExtractor = (item: TrustLineSchema) => {
+    keyExtractor = (item: TrustLineModel) => {
         return `token-${item.id}`;
     };
 

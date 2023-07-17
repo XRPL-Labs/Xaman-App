@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, Platform, Keyboard, InteractionManager } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
 import { AuthenticationService, StyleService } from '@services';
 
@@ -33,7 +33,7 @@ export interface Props {
 export interface State {
     error: string;
     isBiometricAvailable: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 /* Component ==================================================================== */
 class LockModal extends Component<Props, State> {

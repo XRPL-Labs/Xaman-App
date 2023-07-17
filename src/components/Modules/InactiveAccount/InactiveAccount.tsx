@@ -10,8 +10,8 @@ import { XAppOrigin } from '@common/libs/payload';
 import { GetCardId } from '@common/utils/tangem';
 import { Navigator } from '@common/helpers/navigator';
 
-import { AccountSchema } from '@store/schemas/latest';
-import { AccountRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
 import { Button, Icon, InfoMessage, Spacer, TouchableDebounce } from '@components/General';
@@ -22,7 +22,7 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 interface State {}
@@ -53,6 +53,10 @@ class InactiveAccount extends PureComponent<Props, State> {
         );
     };
 
+    switchToRegularKey = (account: AccountModel) => {
+        CoreRepository.setDefaultAccount(account);
+    };
+
     renderRegularKey = () => {
         const { account } = this.props;
 
@@ -67,9 +71,8 @@ class InactiveAccount extends PureComponent<Props, State> {
                         <TouchableDebounce
                             key={index}
                             style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
-                            onPress={() => {
-                                AccountRepository.setDefaultAccount(acc.address);
-                            }}
+                            /* eslint-disable-next-line react/jsx-no-bind */
+                            onPress={this.switchToRegularKey.bind(null, acc)}
                             activeOpacity={0.9}
                         >
                             <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>

@@ -8,7 +8,7 @@ import { View, Text, ScrollView, Alert } from 'react-native';
 import { PushNotificationsService, ApiService } from '@services';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
-import { CoreSchema, ProfileSchema } from '@store/schemas/latest';
+import { CoreModel, ProfileModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -27,8 +27,8 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    coreSettings: CoreSchema;
-    profile: ProfileSchema;
+    coreSettings: CoreModel;
+    profile: ProfileModel;
 }
 
 /* Component ==================================================================== */
@@ -58,7 +58,7 @@ class AdvancedSettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-    updateUI = (coreSettings: CoreSchema) => {
+    updateUI = (coreSettings: CoreModel) => {
         this.setState({
             coreSettings,
         });

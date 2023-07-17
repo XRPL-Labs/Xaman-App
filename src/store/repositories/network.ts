@@ -1,23 +1,20 @@
-import Realm, { ObjectSchema, Results } from 'realm';
+import Realm, { Results } from 'realm';
 import { has } from 'lodash';
 
-import { NetworkSchema } from '@store/schemas/latest';
+import { NetworkModel } from '@store/models';
 
 import BaseRepository from './base';
 
-/* repository  ==================================================================== */
+/* Repository  ==================================================================== */
 class NetworkRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = NetworkSchema.schema;
+        this.schema = NetworkModel.schema;
     }
 
-    add = (network: Partial<NetworkSchema>) => {
+    add = (network: Partial<NetworkModel>) => {
         // check if network is already exist
-        const exist = !this.query({ endpoint: network.networkId }).isEmpty();
+        const exist = !this.query({ id: network.id }).isEmpty();
 
         // if not exist add it to the store
         if (!exist) {
@@ -25,23 +22,23 @@ class NetworkRepository extends BaseRepository {
         }
     };
 
-    getNetworks = (filters?: Partial<NetworkSchema>): Results<NetworkSchema> => {
+    getNetworks = (filters?: Partial<NetworkModel>): Results<NetworkModel> => {
         if (filters) {
             return this.query(filters);
         }
         return this.findAll();
     };
 
-    update = (object: Partial<NetworkSchema>) => {
+    update = (object: Partial<NetworkModel>) => {
         // the primary key should be in the object
-        if (!has(object, 'networkId')) {
+        if (!has(object, this.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
         return this.create(object, true);
     };
 
     exist = (networkId: number): boolean => {
-        return !this.query({ networkId }).isEmpty();
+        return !this.query({ id: networkId }).isEmpty();
     };
 }
 

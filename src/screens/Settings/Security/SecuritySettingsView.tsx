@@ -8,7 +8,7 @@ import { Text, ScrollView, View, Alert, Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { BiometryType } from '@store/types';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
@@ -30,7 +30,7 @@ export interface State {
     biometricEnabled: boolean;
     biometricAvailable: boolean;
     isFlagSecure: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     timeItems: Array<any>;
 }
 
@@ -94,7 +94,7 @@ class SecuritySettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-    updateUI = (coreSettings: CoreSchema) => {
+    updateUI = (coreSettings: CoreModel) => {
         this.setState({ coreSettings });
     };
 

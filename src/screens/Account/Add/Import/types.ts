@@ -1,7 +1,7 @@
 import { XRPL_Account } from 'xrpl-accountlib';
 
 import { Card } from 'tangem-sdk-react-native';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 export enum SecretTypes {
     SecretNumbers = 'secretNumbers',
@@ -33,7 +33,7 @@ export type ImportSteps =
     | 'FinishStep';
 
 export interface Props {
-    upgradeAccount?: AccountSchema;
+    upgradeAccount?: AccountModel;
     tangemCard?: Card;
     alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
     importOfflineSecretNumber?: boolean;
@@ -42,12 +42,12 @@ export interface Props {
 export interface State {
     currentStep: ImportSteps;
     prevSteps: Array<ImportSteps>;
-    account: Partial<AccountSchema>;
+    account: Partial<AccountModel>;
     importedAccount: XRPL_Account;
     passphrase: string;
     secretType: SecretTypes;
     tangemSignature: string;
-    upgradeAccount?: AccountSchema;
+    upgradeAccount?: AccountModel;
     alternativeSeedAlphabet?: XrplAltFamilySeedAlphabet;
     importOfflineSecretNumber?: boolean;
     isLoading: boolean;

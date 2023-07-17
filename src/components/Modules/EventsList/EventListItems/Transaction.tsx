@@ -6,7 +6,7 @@ import { TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
@@ -26,7 +26,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     item: Transactions;
     timestamp?: number;
 }

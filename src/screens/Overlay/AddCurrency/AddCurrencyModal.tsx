@@ -16,7 +16,7 @@ import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { Payload } from '@common/libs/payload';
 import { AccountRepository, CounterPartyRepository } from '@store/repositories';
-import { CounterPartySchema, CurrencySchema, AccountSchema } from '@store/schemas/latest';
+import { CounterPartyModel, CurrencyModel, AccountModel } from '@store/models';
 
 // components
 import { TouchableDebounce, Button, Footer, ActionPanel } from '@components/General';
@@ -29,18 +29,18 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 export interface CurrenciesList {
-    [key: string]: CurrencySchema[];
+    [key: string]: CurrencyModel[];
 }
 
 export interface State {
-    counterParties: CounterPartySchema[];
+    counterParties: CounterPartyModel[];
     currencies: CurrenciesList;
-    selectedCurrency: CurrencySchema;
-    selectedParty: CounterPartySchema;
+    selectedCurrency: CurrencyModel;
+    selectedParty: CounterPartyModel;
     isLoading: boolean;
 }
 
@@ -82,7 +82,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
 
         if (counterParties.isEmpty()) return;
 
-        const availableParties = [] as CounterPartySchema[];
+        const availableParties = [] as CounterPartyModel[];
         const availableCurrencies = [] as any;
 
         forEach(counterParties, (counterParty) => {

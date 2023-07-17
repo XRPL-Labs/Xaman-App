@@ -2,7 +2,7 @@
  * Request Screen
  */
 
-import { find } from 'lodash';
+import { find, first } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
@@ -15,7 +15,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 // components
 import {
@@ -27,6 +27,7 @@ import {
     HorizontalLine,
     KeyboardAwareScrollView,
 } from '@components/General';
+
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
@@ -41,9 +42,9 @@ import styles from './styles';
 interface Props {}
 
 interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     accounts: any;
-    source: AccountSchema;
+    source: AccountModel;
     amount: string;
     amountRate: string;
     currencyRate: any;
@@ -66,12 +67,13 @@ class RequestView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const defaultAccount = CoreRepository.getDefaultAccount();
         const accounts = AccountRepository.getAccounts();
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             accounts,
-            source: find(accounts, { default: true }) || accounts[0],
+            source: find(accounts, { address: defaultAccount.address }) || first(accounts),
             amount: '',
             currencyRate: undefined,
             amountRate: '',
@@ -116,7 +118,7 @@ class RequestView extends Component<Props, State> {
         }
     };
 
-    onAccountChange = (item: AccountSchema) => {
+    onAccountChange = (item: AccountModel) => {
         this.setState({
             source: item,
         });
@@ -215,7 +217,7 @@ class RequestView extends Component<Props, State> {
 
         return (
             <>
-                <View style={[styles.amountContainer]}>
+                <View style={styles.amountContainer}>
                     <View style={AppStyles.flex1}>
                         <AmountInput
                             ref={this.amountInput}
@@ -223,16 +225,16 @@ class RequestView extends Component<Props, State> {
                             value={amount}
                             valueType={AmountValueType.Native}
                             onChange={this.onAmountChange}
-                            style={[styles.amountInput]}
+                            style={styles.amountInput}
                             placeholderTextColor={AppColors.grey}
                             returnKeyType="done"
                         />
                     </View>
                 </View>
 
-                <View style={[styles.amountRateContainer]}>
+                <View style={styles.amountRateContainer}>
                     <View style={AppStyles.centerContent}>
-                        <Text style={[styles.amountRateInput]}>~ </Text>
+                        <Text style={styles.amountRateInput}>~ </Text>
                     </View>
                     <View style={AppStyles.flex1}>
                         <AmountInput
@@ -248,7 +250,7 @@ class RequestView extends Component<Props, State> {
                         />
                     </View>
                     <View style={styles.currencySymbolTextContainer}>
-                        <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                        <Text style={styles.currencySymbolText}>{coreSettings.currency}</Text>
                     </View>
                 </View>
             </>
@@ -259,7 +261,7 @@ class RequestView extends Component<Props, State> {
         const { accounts, source, withAmount } = this.state;
 
         return (
-            <View testID="request-screen" style={[styles.container]}>
+            <View testID="request-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
@@ -285,8 +287,8 @@ class RequestView extends Component<Props, State> {
 
                     <HorizontalLine />
 
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                 {Localize.t('global.to')}
                             </Text>
@@ -297,7 +299,7 @@ class RequestView extends Component<Props, State> {
                     </View>
 
                     {/* Amount */}
-                    <View style={[styles.rowItem]}>
+                    <View style={styles.rowItem}>
                         <TouchableDebounce
                             activeOpacity={0.8}
                             style={[AppStyles.row, styles.rowTitle]}

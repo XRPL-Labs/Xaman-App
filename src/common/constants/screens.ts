@@ -46,10 +46,10 @@ const screens = {
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
         AddCurrency: 'overlay.AddCurrency',
+        TokenSettings: 'overlay.TokenSettings',
         Vault: 'overlay.Vault',
         Auth: 'overlay.Auth',
         Lock: 'overlay.lock',
-        CurrencySettings: 'overlay.CurrencySettings',
         Alert: 'overlay.Alert',
         FlaggedDestination: 'overlay.FlaggedDestination',
         ShareAccount: 'overlay.ShareAccount',

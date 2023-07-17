@@ -14,7 +14,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
-import { CurrencySchema } from '@store/schemas/latest';
+import { CurrencyModel } from '@store/models';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
@@ -93,7 +93,7 @@ class BackendService {
                 const updatedParties = await reduce(
                     details,
                     async (result, value) => {
-                        const currenciesList = [] as CurrencySchema[];
+                        const currenciesList = [] as CurrencyModel[];
 
                         await Promise.all(
                             map(value.currencies, async (c) => {

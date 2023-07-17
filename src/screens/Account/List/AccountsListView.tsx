@@ -19,9 +19,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 // store
-import { AccessLevels, EncryptionLevels } from '@store/types';
+
 import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
+import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import StyleService from '@services/StyleService';
 
@@ -37,9 +38,9 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    accounts: Results<AccountSchema>;
+    accounts: Results<AccountModel>;
     dataSource: any;
-    signableAccount: Array<AccountSchema>;
+    signableAccount: Array<AccountModel>;
     reorderEnabled: boolean;
     isMigrationRequired: boolean;
 }
@@ -123,7 +124,7 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    onItemPress = (account: AccountSchema) => {
+    onItemPress = (account: AccountModel) => {
         const { reorderEnabled } = this.state;
 
         if (!reorderEnabled) {
@@ -131,7 +132,7 @@ class AccountListView extends Component<Props, State> {
         }
     };
 
-    isRegularKey = (account: AccountSchema) => {
+    isRegularKey = (account: AccountModel) => {
         const { accounts } = this.state;
 
         const found = find(accounts, { regularKey: account.address });
@@ -143,7 +144,7 @@ class AccountListView extends Component<Props, State> {
         return false;
     };
 
-    onAccountReorder = (data: Array<AccountSchema>) => {
+    onAccountReorder = (data: Array<AccountModel>) => {
         this.setState({
             dataSource: data,
         });
@@ -165,7 +166,7 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    renderItem = ({ item }: { item: AccountSchema }) => {
+    renderItem = ({ item }: { item: AccountModel }) => {
         const { signableAccount, reorderEnabled } = this.state;
 
         if (!item?.isValid()) return null;

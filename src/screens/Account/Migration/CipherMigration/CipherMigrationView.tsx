@@ -18,7 +18,7 @@ import Vault from '@common/libs/vault';
 
 // store
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 import { EncryptionLevels } from '@store/types';
 
 // components
@@ -33,7 +33,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     dataSource: any;
 }
 
@@ -112,7 +112,7 @@ class CipherMigrationView extends Component<Props, State> {
         );
     };
 
-    processMigrateAccount = async (account: AccountSchema, key: string) => {
+    processMigrateAccount = async (account: AccountModel, key: string) => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
@@ -132,7 +132,7 @@ class CipherMigrationView extends Component<Props, State> {
         });
     };
 
-    onSuccessAuth = (account: AccountSchema, key: string) => {
+    onSuccessAuth = (account: AccountModel, key: string) => {
         // start the migration
         Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
             task: this.processMigrateAccount.bind(null, account, key),
@@ -141,7 +141,7 @@ class CipherMigrationView extends Component<Props, State> {
         });
     };
 
-    onMigrationPress = (account: AccountSchema) => {
+    onMigrationPress = (account: AccountModel) => {
         const { coreSettings } = this.state;
 
         // start the authentication base on encryption level
@@ -167,7 +167,7 @@ class CipherMigrationView extends Component<Props, State> {
         Navigator.showModal(Screens.Modal.MigrationExplain);
     };
 
-    renderMigrationRequiredItem = (item: AccountSchema) => {
+    renderMigrationRequiredItem = (item: AccountModel) => {
         return (
             <View style={[styles.rowContainer, styles.rowContent]}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
@@ -196,7 +196,7 @@ class CipherMigrationView extends Component<Props, State> {
         );
     };
 
-    renderDoneItem = (item: AccountSchema) => {
+    renderDoneItem = (item: AccountModel) => {
         return (
             <View style={styles.rowContainer}>
                 <View style={styles.rowFade} />
@@ -227,7 +227,7 @@ class CipherMigrationView extends Component<Props, State> {
         );
     };
 
-    renderItem = ({ item, section }: { item: AccountSchema; section: any }) => {
+    renderItem = ({ item, section }: { item: AccountModel; section: any }) => {
         if (!item?.isValid()) return null;
 
         switch (section.type) {

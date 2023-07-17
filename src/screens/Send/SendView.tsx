@@ -2,7 +2,7 @@
  * Send Screen
  */
 
-import { find } from 'lodash';
+import { find, first } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
@@ -10,7 +10,7 @@ import { View, Keyboard } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import NetworkService from '@services/NetworkService';
 
@@ -57,14 +57,15 @@ class SendView extends Component<Props, State> {
         super(props);
 
         // default values
-        const accounts = AccountRepository.getSpendableAccounts();
-        const source = find(accounts, { default: true }) || accounts[0];
+        const coreSettings = CoreRepository.getSettings();
+        const spendableAccounts = AccountRepository.getSpendableAccounts();
+        const source = find(spendableAccounts, { address: coreSettings.account.address }) || first(spendableAccounts);
         const currency = props.currency || NetworkService.getNativeAsset();
         const amount = props.amount || '';
 
         this.state = {
             currentStep: Steps.Details,
-            accounts,
+            accounts: spendableAccounts,
             source,
             currency,
             amount,
@@ -76,7 +77,7 @@ class SendView extends Component<Props, State> {
             destinationInfo: undefined,
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
-            coreSettings: CoreRepository.getSettings(),
+            coreSettings,
             isLoading: false,
         };
     }
@@ -104,11 +105,11 @@ class SendView extends Component<Props, State> {
         }
     }
 
-    setSource = (source: AccountSchema) => {
+    setSource = (source: AccountModel) => {
         this.setState({ source });
     };
 
-    setCurrency = (currency: TrustLineSchema | string) => {
+    setCurrency = (currency: TrustLineModel | string) => {
         this.setState({
             currency,
         });

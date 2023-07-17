@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
 
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { CoreRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -24,7 +24,7 @@ export interface Props {
 }
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */

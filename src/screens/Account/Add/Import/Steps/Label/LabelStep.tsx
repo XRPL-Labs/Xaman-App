@@ -45,7 +45,7 @@ class LabelStep extends Component<Props, State> {
     componentDidMount() {
         const { account } = this.context;
 
-        if (account.accountType === AccountTypes.Tangem) {
+        if (account.type === AccountTypes.Tangem) {
             this.setState({
                 label: '💳 ',
             });

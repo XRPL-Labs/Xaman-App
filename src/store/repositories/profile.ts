@@ -1,23 +1,21 @@
-import Realm, { ObjectSchema } from 'realm';
+import Realm from 'realm';
 import assign from 'lodash/assign';
 
-import { ProfileSchema } from '@store/schemas/latest';
+import { ProfileModel } from '@store/models';
 
 import BaseRepository from './base';
 
-// events
+/* Events  ==================================================================== */
 declare interface ProfileRepository {
-    on(event: 'profileUpdate', listener: (changes: Partial<ProfileSchema>) => void): this;
+    on(event: 'profileUpdate', listener: (changes: Partial<ProfileModel>) => void): this;
     on(event: string, listener: Function): this;
 }
 
+/* Repository  ==================================================================== */
 class ProfileRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = ProfileSchema.schema;
+        this.schema = ProfileModel.schema;
     }
 
     updateIdempotency = (idempotency: number) => {
@@ -27,7 +25,7 @@ class ProfileRepository extends BaseRepository {
         });
     };
 
-    saveProfile = (object: Partial<ProfileSchema>) => {
+    saveProfile = (object: Partial<ProfileModel>) => {
         const current = this.getProfile();
         if (current) {
             this.safeWrite(() => {
@@ -41,8 +39,8 @@ class ProfileRepository extends BaseRepository {
         this.emit('profileUpdate', object);
     };
 
-    getProfile = (): ProfileSchema => {
-        const profile = Array.from(this.findAll()) as ProfileSchema[];
+    getProfile = (): ProfileModel => {
+        const profile = Array.from(this.findAll()) as ProfileModel[];
 
         // get profile
         if (profile.length > 0) {

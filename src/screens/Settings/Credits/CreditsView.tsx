@@ -9,8 +9,8 @@ import { HasBottomNotch } from '@common/helpers/device';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { CoreSchema } from '@store/schemas/latest';
 import { CoreRepository } from '@store/repositories';
+import { CoreModel } from '@store/models';
 
 import { WebView, Header, LoadingIndicator } from '@components/General';
 
@@ -25,7 +25,7 @@ export interface Props {}
 
 export interface State {
     paddingBottom: number;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */

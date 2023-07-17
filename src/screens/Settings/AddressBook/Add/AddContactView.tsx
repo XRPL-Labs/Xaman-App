@@ -18,7 +18,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
-// import { ContactSchema } from '@store/schemas/latest';
 
 import { Header, Spacer, Button, TextInput, InfoMessage, KeyboardAwareScrollView, Footer } from '@components/General';
 

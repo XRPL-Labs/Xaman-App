@@ -1,21 +1,18 @@
-import Realm, { ObjectSchema, Results } from 'realm';
+import Realm, { Results } from 'realm';
 import { has } from 'lodash';
 
-import { NodeSchema } from '@store/schemas/latest';
+import { NodeModel } from '@store/models';
 
 import BaseRepository from './base';
 
-/* repository  ==================================================================== */
+/* Repository  ==================================================================== */
 class NodeRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = NodeSchema.schema;
+        this.schema = NodeModel.schema;
     }
 
-    add = (node: Partial<NodeSchema>) => {
+    add = (node: Partial<NodeModel>) => {
         // check if node is already exist
         const exist = !this.query({ endpoint: node.endpoint }).isEmpty();
 
@@ -25,13 +22,13 @@ class NodeRepository extends BaseRepository {
         }
     };
 
-    getNodes = (): Results<NodeSchema> => {
+    getNodes = (): Results<NodeModel> => {
         return this.findAll();
     };
 
-    update = (object: Partial<NodeSchema>) => {
+    update = (object: Partial<NodeModel>) => {
         // the primary key should be in the object
-        if (!has(object, 'endpoint')) {
+        if (!has(object, this.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
         return this.create(object, true);

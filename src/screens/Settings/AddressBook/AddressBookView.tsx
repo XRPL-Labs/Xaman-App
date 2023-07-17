@@ -17,7 +17,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
-import { ContactSchema } from '@store/schemas/latest';
+import { ContactModel } from '@store/models';
 
 import { TouchableDebounce, Header, Button, SearchBar, Avatar } from '@components/General';
 
@@ -30,7 +30,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    contacts: Results<ContactSchema>;
+    contacts: Results<ContactModel>;
     dataSource: any;
 }
 
@@ -76,7 +76,7 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    convertContactsArrayToMap = (contacts: Results<ContactSchema>) => {
+    convertContactsArrayToMap = (contacts: Results<ContactModel>) => {
         const contactsCategoryMap = [] as any;
 
         sortBy(contacts, 'name').forEach((item) => {

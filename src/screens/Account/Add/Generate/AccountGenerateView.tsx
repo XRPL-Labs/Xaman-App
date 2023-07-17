@@ -17,6 +17,7 @@ import { SHA256 } from '@common/libs/crypto';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import backendService from '@services/BackendService';
@@ -84,8 +85,7 @@ class AccountGenerateView extends Component<Props, State> {
             accessLevel: AccessLevels.Full,
             encryptionVersion: Vault.getLatestCipherVersion(),
             address: generatedAccount.address,
-            default: true,
-        };
+        } as Partial<AccountModel>;
 
         this.setState({ generatedAccount, account });
     };
@@ -134,7 +134,16 @@ class AccountGenerateView extends Component<Props, State> {
             }
 
             // add account to store
-            await AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
+            const createdAccount = await AccountRepository.add(
+                account,
+                generatedAccount.keypair.privateKey,
+                encryptionKey,
+            );
+
+            // set the newly created account as default account
+            CoreRepository.saveSettings({
+                account: createdAccount,
+            });
 
             // update catch for this account
             getAccountName.cache.set(

@@ -8,7 +8,7 @@ import React, { Component, Fragment } from 'react';
 import { View, Text, ScrollView, InteractionManager } from 'react-native';
 
 import { CoreRepository, NetworkRepository } from '@store/repositories';
-import { NetworkSchema, CoreSchema } from '@store/schemas/latest';
+import { NetworkModel, CoreModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
 import { NetworkService } from '@services';
@@ -30,8 +30,8 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    coreSettings: CoreSchema;
-    networks: { [key: string]: NetworkSchema[] };
+    coreSettings: CoreModel;
+    networks: { [key: string]: NetworkModel[] };
     contentHeight: number;
     paddingBottom: number;
 }
@@ -103,24 +103,24 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         });
     };
 
-    changeNetwork = (network: NetworkSchema) => {
+    changeNetwork = (network: NetworkModel) => {
         // switch network
         NetworkService.switchNetwork(network);
         // slide down the panel
         this.actionPanel.slideDown();
     };
 
-    renderRow = (network: NetworkSchema) => {
+    renderRow = (network: NetworkModel) => {
         const { coreSettings } = this.state;
 
         // check if network is selected
-        const selected = network.networkId === coreSettings.network.networkId;
+        const selected = network.id === coreSettings.network.id;
 
         return (
             <TouchableDebounce
                 // eslint-disable-next-line react/jsx-no-bind
                 onPress={this.changeNetwork.bind(null, network)}
-                key={`${network.networkId}`}
+                key={`${network.id}`}
                 style={[AppStyles.row, AppStyles.centerAligned, styles.networkRow, { height: ROW_ITEM_HEIGHT }]}
             >
                 <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>

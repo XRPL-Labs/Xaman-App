@@ -7,12 +7,12 @@ import { find, has } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
 
-import { Navigation } from 'react-native-navigation';
+import { Navigation, EventSubscription } from 'react-native-navigation';
 
 import { AccountService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema, NetworkSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 
 // constants
 import { AppScreens } from '@common/constants';
@@ -36,10 +36,10 @@ export interface Props {
 }
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
     isSpendable: boolean;
     isSignable: boolean;
-    selectedNetwork: NetworkSchema;
+    selectedNetwork: NetworkModel;
     developerMode: boolean;
     discreetMode: boolean;
 }
@@ -47,7 +47,7 @@ export interface State {
 /* Component ==================================================================== */
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
-    private navigationListener: any;
+    private navigationListener: EventSubscription;
 
     static options() {
         return {
@@ -63,7 +63,7 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            account: undefined,
+            account: coreSettings.account,
             isSpendable: false,
             isSignable: false,
             selectedNetwork: coreSettings.network,
@@ -74,17 +74,15 @@ class HomeView extends Component<Props, State> {
 
     componentDidMount() {
         // update UI on accounts update
-        AccountRepository.on('accountUpdate', this.updateDefaultAccount);
-        // update spendable accounts on account add/remove
-        AccountRepository.on('accountCreate', this.getDefaultAccount);
-        AccountRepository.on('accountRemove', this.getDefaultAccount);
+        AccountRepository.on('accountUpdate', this.onAccountUpdate);
         // update discreetMode and developerMode on change
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
 
         // listen for screen appear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        InteractionManager.runAfterInteractions(this.getDefaultAccount);
+        // update account status
+        InteractionManager.runAfterInteractions(this.updateAccountStatus);
     }
 
     componentWillUnmount() {
@@ -93,9 +91,7 @@ class HomeView extends Component<Props, State> {
             this.navigationListener.remove();
         }
 
-        AccountRepository.off('accountUpdate', this.updateDefaultAccount);
-        AccountRepository.off('accountCreate', this.getDefaultAccount);
-        AccountRepository.off('accountRemove', this.getDefaultAccount);
+        AccountRepository.off('accountUpdate', this.onAccountUpdate);
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
     }
 
@@ -115,8 +111,19 @@ class HomeView extends Component<Props, State> {
         Handle events when something in CoreSettings has been changed
         Monitoring `discreetMode`, `developerMode`, `defaultNode` changes
      */
-    onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
         const { discreetMode } = this.state;
+
+        // default account changed
+        if (has(changes, 'account')) {
+            this.setState(
+                {
+                    account: coreSettings.account,
+                },
+                // when default account changed update account status
+                this.updateAccountStatus,
+            );
+        }
 
         // default discreetMode has changed
         if (has(changes, 'discreetMode') && discreetMode !== changes.discreetMode) {
@@ -134,8 +141,10 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    updateDefaultAccount = (updatedAccount: AccountSchema) => {
-        if (updatedAccount?.isValid() && updatedAccount.default) {
+    onAccountUpdate = (updatedAccount: AccountModel) => {
+        const { account } = this.state;
+
+        if (updatedAccount?.isValid() && updatedAccount.address === account.address) {
             // update the UI
             this.setState(
                 {
@@ -145,16 +154,6 @@ class HomeView extends Component<Props, State> {
                 this.updateAccountStatus,
             );
         }
-    };
-
-    getDefaultAccount = () => {
-        this.setState(
-            {
-                account: AccountRepository.getDefaultAccount(),
-            },
-            // when account balance changed update spendable accounts
-            this.updateAccountStatus,
-        );
     };
 
     updateAccountStatus = () => {

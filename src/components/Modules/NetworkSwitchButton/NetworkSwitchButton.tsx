@@ -5,14 +5,14 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { NetworkSchema } from '@store/schemas/latest';
+import { NetworkModel } from '@store/models';
 
 import { Button } from '@components/General';
 
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
-    network: NetworkSchema;
+    network: NetworkModel;
     containerStyle?: ViewStyle | ViewStyle[];
     hidden: boolean;
 }

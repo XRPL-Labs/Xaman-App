@@ -4,7 +4,7 @@
 
 import { flatMap, get, has, isUndefined, set } from 'lodash';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
@@ -48,11 +48,11 @@ class BasePseudoTransaction {
 
     /**
      Sign the transaction with provided account
-     * @param {AccountSchema} account object sign with
+     * @param {AccountModel} account object sign with
      * @param {bool} multiSign indicates if transaction should sign for multi signing
      * @returns {Promise<string>} signed tx blob
      */
-    sign = (account: AccountSchema, multiSign = false): Promise<string> => {
+    sign = (account: AccountModel, multiSign = false): Promise<string> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {

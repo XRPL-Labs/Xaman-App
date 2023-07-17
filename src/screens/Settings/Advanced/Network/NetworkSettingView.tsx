@@ -12,7 +12,7 @@ import { AppScreens } from '@common/constants';
 import NetworkService from '@services/NetworkService';
 
 import { NetworkRepository, NodeRepository, CoreRepository } from '@store/repositories';
-import { NetworkSchema, NodeSchema } from '@store/schemas/latest';
+import { NetworkModel, NodeModel } from '@store/models';
 
 import { Header } from '@components/General';
 import { NodeList } from '@components/Modules';
@@ -56,7 +56,7 @@ class NetworkSettingView extends Component<Props, State> {
 
         const dataSource = [] as any[];
 
-        networks.forEach((network: NetworkSchema) => {
+        networks.forEach((network: NetworkModel) => {
             dataSource.push({
                 key: network.key,
                 title: network.name,
@@ -72,7 +72,7 @@ class NetworkSettingView extends Component<Props, State> {
         });
     };
 
-    onNodePress = (node: NodeSchema) => {
+    onNodePress = (node: NodeModel) => {
         // nothing changed
         if (node.network.defaultNode.endpoint === node.endpoint) {
             return;
@@ -80,12 +80,12 @@ class NetworkSettingView extends Component<Props, State> {
 
         // update the datastore
         NetworkRepository.update({
-            networkId: node.network.networkId,
+            id: node.network.id,
             defaultNode: node,
         });
 
         // switch to the new default node if we already connected to the same network
-        if (node.network.networkId === NetworkService.getNetworkId()) {
+        if (node.network.id === NetworkService.getNetworkId()) {
             NetworkService.switchNetwork(node.network);
         }
 
@@ -93,13 +93,13 @@ class NetworkSettingView extends Component<Props, State> {
         this.updateDataSource();
     };
 
-    onNodeRemovePress = (node: NodeSchema) => {
+    onNodeRemovePress = (node: NodeModel) => {
         const { network } = node;
 
         // check if we are currently connected to this network
         const coreSettings = CoreRepository.getSettings();
 
-        if (coreSettings.network.networkId === network.networkId) {
+        if (coreSettings.network.id === network.id) {
             Alert.alert(Localize.t('global.error'), Localize.t('settings.unableToDeleteNodeWhenConnectedToNetwork'));
             return;
         }
@@ -116,7 +116,7 @@ class NetworkSettingView extends Component<Props, State> {
         } else if (shouldSwitchDefaultNode) {
             // if not empty then set the first node as default node for this network
             NetworkRepository.update({
-                networkId: network.networkId,
+                id: network.id,
                 defaultNode: network.nodes[0],
             });
         }

@@ -13,7 +13,7 @@ import LedgerService from '@services/LedgerService';
 import BackendService from '@services/BackendService';
 import NetworkService from '@services/NetworkService';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 
@@ -255,7 +255,7 @@ class DetailsStep extends Component<Props, State> {
         }
     };
 
-    onAccountChange = (item: AccountSchema) => {
+    onAccountChange = (item: AccountModel) => {
         const { setSource, setCurrency } = this.context;
 
         // restore currency to default native currency
@@ -265,7 +265,7 @@ class DetailsStep extends Component<Props, State> {
         setSource(item);
     };
 
-    onCurrencyChange = (item: string | TrustLineSchema) => {
+    onCurrencyChange = (item: string | TrustLineModel) => {
         const { setCurrency, setAmount } = this.context;
 
         // native currency

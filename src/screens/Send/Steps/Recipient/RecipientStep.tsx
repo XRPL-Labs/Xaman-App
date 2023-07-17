@@ -9,7 +9,7 @@ import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
-import { ContactSchema, AccountSchema } from '@store/schemas/latest';
+import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
@@ -42,8 +42,8 @@ export interface State {
     isSearching: boolean;
     isLoading: boolean;
     searchText: string;
-    accounts: Results<AccountSchema>;
-    contacts: Results<ContactSchema>;
+    accounts: Results<AccountModel>;
+    contacts: Results<ContactModel>;
     dataSource: any[];
 }
 

@@ -9,7 +9,7 @@ import { BaseLedgerObject } from '@common/libs/ledger/objects';
 
 import StyleService from '@services/StyleService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { LoadingIndicator } from '@components/General';
 
@@ -21,7 +21,7 @@ import styles from './styles';
 import * as EventListItems from './EventListItems';
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     isLoading?: boolean;
     isLoadingMore?: boolean;
     dataSource: any;

@@ -1,91 +1,97 @@
-import { flatMap, first, has, filter, find } from 'lodash';
-import Realm, { Results, ObjectSchema } from 'realm';
+import { flatMap, has, filter, find } from 'lodash';
+import Realm, { Results } from 'realm';
 
-import { AccountSchema, CurrencySchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, AccountDetailsModel, CurrencyModel, TrustLineModel } from '@store/models';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
-import Localize from '@locale';
-
-import Flag from '@common/libs/ledger/parser/common/flag';
 import Vault from '@common/libs/vault';
 
 import BaseRepository from './base';
-
-// events
+/* Events  ==================================================================== */
 declare interface AccountRepository {
-    on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountSchema) => void): this;
-    on(event: 'accountUpdate', listener: (account: AccountSchema, changes: Partial<AccountSchema>) => void): this;
-    on(event: 'accountCreate', listener: (account: AccountSchema) => void): this;
+    on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountModel) => void): this;
+    on(event: 'accountUpdate', listener: (account: AccountModel, changes: Partial<AccountModel>) => void): this;
+    on(event: 'accountCreate', listener: (account: AccountModel) => void): this;
     on(event: 'accountRemove', listener: () => void): this;
     on(event: string, listener: Function): this;
 }
 
 /* Repository  ==================================================================== */
 class AccountRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = AccountSchema.schema;
+        this.schema = AccountModel.schema;
     }
 
     /**
      * add new regular account to the store
      * this will store private key in the vault if full access
      */
-    add = (account: Partial<AccountSchema>, privateKey?: string, encryptionKey?: string): Promise<AccountSchema> => {
-        // remove default flag from any other account
-        const defaultAccount = this.getDefaultAccount();
-        if (defaultAccount && defaultAccount.address !== account.address) {
-            this.update({
-                address: defaultAccount.address,
-                default: false,
-            });
-        }
-
+    add = (account: Partial<AccountModel>, privateKey?: string, encryptionKey?: string): Promise<AccountModel> => {
         // READONLY || TANGEM CARD
         if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
-            return this.create(account).then((createdAccount: AccountSchema) => {
+            return this.create(account).then((createdAccount: AccountModel) => {
                 this.emit('accountCreate', createdAccount);
-                this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;
             });
         }
 
-        // FULLACCESS
+        // FULL ACCESS
         return Vault.create(account.publicKey, privateKey, encryptionKey).then(() => {
-            return this.create(account, true).then((createdAccount: AccountSchema) => {
+            return this.create(account, true).then((createdAccount: AccountModel) => {
                 this.emit('accountCreate', createdAccount);
-                this.emit('changeDefaultAccount', createdAccount);
                 return createdAccount;
             });
         });
     };
 
-    update = (object: Partial<AccountSchema>): Promise<AccountSchema> => {
+    /**
+     * update account object
+     */
+    update = (object: Partial<AccountModel>): Promise<AccountModel> => {
         // the primary key should be in the object
-        if (!has(object, 'address')) {
+        if (!has(object, this.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
 
-        return this.create(object, true).then((updatedAccount: AccountSchema) => {
+        return this.create(object, true).then((updatedAccount: AccountModel) => {
             this.emit('accountUpdate', updatedAccount, object);
             return updatedAccount;
         });
     };
 
     /**
-     * get default account
+     * update account details
      */
-    getDefaultAccount = (): AccountSchema => {
-        return this.findOne({ default: true });
+    updateDetails = (address: string, details: Partial<AccountDetailsModel>): Promise<AccountModel> => {
+        // the primary key should be in the object
+        if (!address) {
+            throw new Error('Update require primary key to be set');
+        }
+
+        if (!has(details, 'id')) {
+            throw new Error('Update details requires id to be set!');
+        }
+
+        return new Promise((resolve, reject) => {
+            try {
+                this.safeWrite(() => {
+                    const account = this.findOne({ address });
+                    const object = this.realm.create(AccountDetailsModel.schema.name, details, Realm.UpdateMode.All);
+                    account.details.push(object);
+                    this.emit('accountUpdate', account, details);
+                    resolve(account);
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
     };
 
     /**
      * get list all accounts
      */
-    getAccounts = (filters?: Partial<AccountSchema>): Results<AccountSchema> => {
+    getAccounts = (filters?: Partial<AccountModel>): Results<AccountModel> => {
         // sorted('default', true) will put the default account on top
         if (filters) {
             return this.query(filters);
@@ -103,14 +109,14 @@ class AccountRepository extends BaseRepository {
     /**
      * get list of accounts with full access
      */
-    getFullAccessAccounts = (): Array<AccountSchema> => {
+    getFullAccessAccounts = (): Array<AccountModel> => {
         return flatMap(this.query({ accessLevel: AccessLevels.Full }));
     };
 
     /**
      * get list of available accounts for spending
      */
-    getSpendableAccounts = (includeHidden = false): Array<AccountSchema> => {
+    getSpendableAccounts = (includeHidden = false): Array<AccountModel> => {
         const signableAccounts = this.getSignableAccounts();
 
         return filter(signableAccounts, (a) => a.balance > 0 && (includeHidden ? true : !a.hidden));
@@ -119,25 +125,22 @@ class AccountRepository extends BaseRepository {
     /**
      * get list of available accounts for signing
      */
-    getSignableAccounts = (): Array<AccountSchema> => {
+    getSignableAccounts = (): Array<AccountModel> => {
         const accounts = this.findAll();
 
-        const availableAccounts = [] as Array<AccountSchema>;
+        const availableAccounts = [] as Array<AccountModel>;
 
-        accounts.forEach((account: AccountSchema) => {
+        accounts.forEach((account: AccountModel) => {
             if (account.accessLevel === AccessLevels.Full) {
                 // check if master key is disable and regular key not imported
                 if (account.regularKey) {
-                    const flags = new Flag('Account', account.flags);
-                    const accountFlags = flags.parse();
-
                     // eslint-disable-next-line max-len
                     const regularKeyImported = !this.query({
                         address: account.regularKey,
                         accessLevel: AccessLevels.Full,
                     }).isEmpty();
 
-                    if ((accountFlags.disableMasterKey && regularKeyImported) || !accountFlags.disableMasterKey) {
+                    if ((account.flags?.disableMasterKey && regularKeyImported) || !account.flags?.disableMasterKey) {
                         availableAccounts.push(account);
                     }
                 } else {
@@ -159,23 +162,23 @@ class AccountRepository extends BaseRepository {
      * check if account is a regular key to one of xumm accounts
      */
     isRegularKey = (address: string) => {
-        return !this.findBy('regularKey', address).isEmpty();
+        return !!find(this.findAll(), (o) => o.regularKey === address);
     };
 
     /**
      * check if account is signable
      */
-    isSignable = (account: AccountSchema): boolean => {
+    isSignable = (account: AccountModel): boolean => {
         return !!find(this.getSignableAccounts(), (o) => o.address === account.address);
     };
 
     /**
      * check if account has currency
      */
-    hasCurrency = (account: AccountSchema, currency: Partial<CurrencySchema>): boolean => {
+    hasCurrency = (account: AccountModel, currency: Partial<CurrencyModel>): boolean => {
         let found = false;
 
-        account.lines.forEach((t: TrustLineSchema) => {
+        account.lines.forEach((t: TrustLineModel) => {
             if (t.currency.issuer === currency.issuer && t.currency.currency === currency.currency) {
                 found = true;
             }
@@ -185,38 +188,10 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
-     * set/change default account
-     */
-    setDefaultAccount = (address: string) => {
-        // update current default
-        const current = this.getDefaultAccount();
-
-        // set the current account default -> false
-        // if any exist
-        if (current) {
-            this.update({
-                address: current.address,
-                default: false,
-            });
-        }
-
-        // set the new account default -> true
-        this.update({
-            address,
-            default: true,
-        });
-
-        const newDefaultAccount = this.getDefaultAccount();
-
-        // emit changeDefaultAccount event
-        this.emit('changeDefaultAccount', newDefaultAccount);
-    };
-
-    /**
      * Downgrade access level to readonly
      * WARNING: this will remove private key from keychain
      */
-    downgrade = (account: AccountSchema): boolean => {
+    downgrade = (account: AccountModel): boolean => {
         // it's already readonly
         if (account.accessLevel === AccessLevels.Readonly) return true;
 
@@ -233,74 +208,11 @@ class AccountRepository extends BaseRepository {
         return true;
     };
 
-    getNewDefaultAccount = (ignoreAccount?: string): AccountSchema => {
-        let newDefaultAccount;
-
-        let accounts = this.getAccounts().toJSON() as AccountSchema[];
-
-        if (accounts.length === 0) return undefined;
-
-        if (ignoreAccount) {
-            accounts = filter(accounts, (a) => a.address !== ignoreAccount);
-        }
-
-        // first try to find the first not hidden account
-        newDefaultAccount = first(filter(accounts, (a) => a.hidden === false));
-
-        // if no not hidden account is available then choose one can account and make it visible
-        if (!newDefaultAccount) {
-            newDefaultAccount = first(accounts);
-            if (newDefaultAccount && newDefaultAccount.hidden) {
-                this.update({
-                    address: newDefaultAccount.address,
-                    hidden: false,
-                });
-            }
-        }
-
-        return newDefaultAccount;
-    };
-
-    /**
-     * Change account visibility
-     */
-    changeAccountVisibility = (account: AccountSchema, hidden: boolean) => {
-        return new Promise<void>((resolve, reject) => {
-            // if enable check prevent if this is the latest account getting hidden
-            if (hidden === true) {
-                const allAccounts = this.getAccounts();
-                const hiddenAccounts = this.getAccounts({ hidden: true });
-
-                if (allAccounts.length - hiddenAccounts.length === 1) {
-                    reject(new Error(Localize.t('account.unableToHideAllAccountsError')));
-                    return;
-                }
-
-                // if account is default change default to another account
-                if (account.default) {
-                    const newDefaultAccount = this.getNewDefaultAccount(account.address);
-                    if (newDefaultAccount) {
-                        this.setDefaultAccount(newDefaultAccount.address);
-                    }
-                }
-            }
-
-            // update account hidden value
-            this.update({
-                address: account.address,
-                hidden,
-            });
-
-            resolve();
-        });
-    };
-
     /**
      * Remove account
      * WARNING: this will be permanently and irreversible
      */
-    purge = async (account: AccountSchema): Promise<boolean> => {
-        const isDefault = account.default;
+    purge = async (account: AccountModel): Promise<boolean> => {
         // remove private key from vault
         if (account.accessLevel === AccessLevels.Full) {
             await Vault.purge(account.publicKey);
@@ -313,17 +225,6 @@ class AccountRepository extends BaseRepository {
 
         // remove the account
         await this.delete(account);
-
-        // if account is default then set new default account
-        if (isDefault) {
-            const newDefaultAccount = this.getNewDefaultAccount();
-            if (newDefaultAccount) {
-                this.setDefaultAccount(newDefaultAccount.address);
-            } else {
-                // emit new default account
-                this.emit('changeDefaultAccount', undefined);
-            }
-        }
 
         // emit the account remove event
         this.emit('accountRemove');

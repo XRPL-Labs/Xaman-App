@@ -3,7 +3,7 @@ import { View, Text, SectionList } from 'react-native';
 
 import { NetworkService, StyleService } from '@services';
 
-import { NodeSchema } from '@store/schemas/latest';
+import { NodeModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
 import { Badge } from '@components/General';
@@ -18,8 +18,8 @@ import { NodeListItem } from './NodeListItem';
 /* Types ==================================================================== */
 interface Props {
     dataSource: any;
-    onItemPress: (item: NodeSchema) => void;
-    onItemRemovePress: (item: NodeSchema) => void;
+    onItemPress: (item: NodeModel) => void;
+    onItemRemovePress: (item: NodeModel) => void;
 }
 
 interface State {
@@ -37,10 +37,10 @@ class NodeList extends PureComponent<Props, State> {
     }
 
     componentDidMount() {
-        const { key } = NetworkService.getConnectionDetails();
+        const { networkKey } = NetworkService.getConnectionDetails();
 
         this.setState({
-            connectedNetworkKey: key,
+            connectedNetworkKey: networkKey,
         });
     }
 
