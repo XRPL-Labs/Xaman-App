@@ -329,7 +329,7 @@ export class Payload {
             request_json.TransactionType &&
             !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
         ) {
-            throw new Error('Requested transaction type is not supported in XUMM!');
+            throw new Error(`Requested transaction type is not supported ${request_json.TransactionType}`);
         }
 
         // check if pseudo transaction and supported by Xumm
@@ -337,7 +337,7 @@ export class Payload {
             !request_json.TransactionType &&
             !Object.values(PseudoTransactionTypes).includes(tx_type as PseudoTransactionTypes)
         ) {
-            throw new Error('Requested pseudo transaction type is not supported in XUMM!');
+            throw new Error(`Requested pseudo transaction type is not supported ${request_json.TransactionType}`);
         }
 
         let craftedTransaction;
