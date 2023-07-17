@@ -10,7 +10,6 @@ import NetworkService from '@services/NetworkService';
 import Localize from '@locale';
 
 import Amount from '../parser/common/amount';
-import Flag from '../parser/common/flag';
 import { Destination, AmountType } from '../parser/types';
 
 import BaseTransaction from './base';
@@ -130,14 +129,11 @@ class AccountDelete extends BaseTransaction {
                     return;
                 }
 
-                const { account_data } = destinationAccountInfo;
+                const { account_flags } = destinationAccountInfo;
 
-                if (has(account_data, ['Flags'])) {
-                    const accountFlags = new Flag('Account', account_data.Flags).parse();
-                    if (accountFlags.requireDestinationTag && this.Destination.tag === undefined) {
-                        reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));
-                        return;
-                    }
+                if (account_flags?.requireDestinationTag && this.Destination.tag === undefined) {
+                    reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));
+                    return;
                 }
             } catch {
                 reject(new Error(Localize.t('account.unableGetDestinationAccountInfo')));

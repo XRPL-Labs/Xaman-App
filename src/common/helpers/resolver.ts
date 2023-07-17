@@ -1,6 +1,5 @@
 import { memoize, has, get, assign } from 'lodash';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import Amount from '@common/libs/ledger/parser/common/amount';
 
 import AccountRepository from '@store/repositories/account';
@@ -144,7 +143,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 return;
             }
 
-            const { account_data } = accountInfo;
+            const { account_data, account_flags } = accountInfo;
 
             // if balance is more than 1m possibly exchange account
             if (has(account_data, ['Balance'])) {
@@ -153,16 +152,10 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 }
             }
 
-            // parse account flags
-            let accountFlags = {} as any;
-            if (has(account_data, ['Flags'])) {
-                accountFlags = new Flag('Account', account_data.Flags).parse();
-            }
-
             // check for black hole
             if (has(account_data, ['RegularKey'])) {
                 if (
-                    accountFlags.disableMasterKey &&
+                    account_flags.disableMasterKey &&
                     ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
                 ) {
                     assign(info, { blackHole: true });
@@ -170,14 +163,14 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             }
 
             // check for disallow incoming XRP
-            if (accountFlags.disallowIncomingXRP) {
+            if (account_flags.disallowIncomingXRP) {
                 assign(info, { disallowIncomingXRP: true });
             }
 
             if (get(accountAdvisory, 'force_dtag')) {
                 // first check on account advisory
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
-            } else if (accountFlags.requireDestinationTag) {
+            } else if (account_flags.requireDestinationTag) {
                 // check if account have the required destination tag flag set
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
             } else {

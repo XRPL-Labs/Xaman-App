@@ -15,10 +15,9 @@ import LedgerService from '@services/LedgerService';
 import LoggerService from '@services/LoggerService';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { SignedObjectType } from '@common/libs/ledger/types';
 
 import Vault from '@common/libs/vault';
@@ -89,14 +88,11 @@ class VaultModal extends Component<Props, State> {
         // check if regular key account is imported to XUMM
         if (account.regularKey) {
             // check if regular key is imported in XUMM
-            const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountSchema;
+            const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountModel;
 
             // check for account regular key set
-            const flags = new Flag('Account', account.flags);
-            const accountFlags = flags.parse();
-
             // check if we are able to sign this tx with signer or alternative signer
-            if (accountFlags.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
+            if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
                 if (!regularAccount) {
                     Alert.alert(
                         Localize.t('global.error'),

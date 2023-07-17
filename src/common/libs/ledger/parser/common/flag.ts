@@ -1,4 +1,3 @@
-import { AccountFlags } from './flags/accountFlags';
 import { txFlags, txFlagIndices } from './flags/txFlags';
 
 /* Class ==================================================================== */
@@ -28,9 +27,6 @@ class Flag {
         let flagsList = {} as any;
 
         switch (this.type) {
-            case 'Account':
-                flagsList = AccountFlags;
-                break;
             case 'AccountSet':
                 flagsList = txFlags.AccountSet;
                 break;

@@ -7,9 +7,8 @@ import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
-import { TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineModel } from '@store/models';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -63,10 +62,8 @@ class TrustSetTemplate extends Component<Props, State> {
         const { transaction, source } = this.props;
 
         // check if trustLine is setting to the default state
-        // parse account flags
-        const accountFlags = new Flag('Account', source.flags).parse();
         const line = source.lines.find(
-            (token: TrustLineSchema) =>
+            (token: TrustLineModel) =>
                 token.currency.issuer === transaction.Issuer && token.currency.currency === transaction.Currency,
         );
 
@@ -75,8 +72,8 @@ class TrustSetTemplate extends Component<Props, State> {
         }
 
         if (
-            ((accountFlags.defaultRipple && transaction.Flags?.ClearNoRipple) ||
-                (!accountFlags.defaultRipple && transaction.Flags?.SetNoRipple)) &&
+            ((source.flags?.defaultRipple && transaction.Flags?.ClearNoRipple) ||
+                (!source.flags?.defaultRipple && transaction.Flags?.SetNoRipple)) &&
             (!line.freeze || (line.freeze && transaction.Flags?.ClearFreeze)) &&
             transaction.Limit === 0
         ) {
