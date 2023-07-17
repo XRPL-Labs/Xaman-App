@@ -390,6 +390,23 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderNetworkId = () => {
+        const { transaction } = this.props;
+
+        if (isUndefined(transaction.NetworkID)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={styles.label}>{Localize.t('global.networkId')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{transaction.NetworkID}</Text>
+                </View>
+            </>
+        );
+    };
+
     renderMemos = () => {
         const { transaction } = this.props;
 
@@ -420,6 +437,7 @@ class GlobalTemplate extends Component<Props, State> {
     render() {
         return (
             <>
+                {this.renderNetworkId()}
                 {this.renderTicketSequence()}
                 {this.renderSequence()}
                 {this.renderSigners()}

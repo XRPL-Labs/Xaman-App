@@ -6,7 +6,7 @@ import { View, Text } from 'react-native';
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
@@ -27,7 +27,7 @@ import { TemplateProps } from './types';
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: OfferCreate;
-    source: AccountSchema;
+    source: AccountModel;
 }
 
 export interface State {
@@ -119,7 +119,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         } else {
             // sell IOU
             const line = source.lines.find(
-                (l: TrustLineSchema) => l.currency.issuer === issuer && l.currency.currency === currency,
+                (l: TrustLineModel) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
 
             if (line) {

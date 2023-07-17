@@ -1,9 +1,5 @@
 import { AmountType, LedgerAmount } from './parser/types';
 
-export enum TransactionBaseTypes {
-    Transaction = 'Transaction',
-}
-
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -29,6 +25,15 @@ export enum TransactionTypes {
     NFTokenCreateOffer = 'NFTokenCreateOffer',
     NFTokenAcceptOffer = 'NFTokenAcceptOffer',
     NFTokenCancelOffer = 'NFTokenCancelOffer',
+    SetHook = 'SetHook',
+    ClaimReward = 'ClaimReward',
+    Invoke = 'Invoke',
+    Import = 'Import',
+    URITokenMint = 'URITokenMint',
+    URITokenBurn = 'URITokenBurn',
+    URITokenBuy = 'URITokenBuy',
+    URITokenCreateSellOffer = 'URITokenCreateSellOffer',
+    URITokenCancelSellOffer = 'URITokenCancelSellOffer',
 }
 
 export enum PseudoTransactionTypes {
@@ -138,18 +143,6 @@ export interface AccountRoot {
 }
 
 /**
- * Ledger Account tx ledger response
- */
-export type AccountTxResponse = {
-    account: string;
-    ledger_index_max: number;
-    ledger_index_min: number;
-    limit: number;
-    marker: LedgerMarker;
-    transactions: Array<LedgerTransactionType>;
-};
-
-/**
  * Ledger trustline type
  */
 export interface LedgerTrustline {
@@ -183,18 +176,37 @@ export interface LedgerNFToken {
 }
 
 /**
+ * Extra info for network responses
+ */
+export interface BaseResponse {
+    networkId: number;
+}
+
+/**
+ * Ledger Account tx ledger response
+ */
+export interface AccountTxResponse extends BaseResponse {
+    account: string;
+    ledger_index_max: number;
+    ledger_index_min: number;
+    limit: number;
+    marker: LedgerMarker;
+    transactions: Array<LedgerTransactionType>;
+}
+
+/**
  * Ledger account_lines response
  */
-export type AccountLinesResponse = {
+export interface AccountLinesResponse extends BaseResponse {
     account: string;
     lines: LedgerTrustline[];
     ledger_current_index?: number;
     ledger_index?: number;
     ledger_hash?: string;
     marker?: string;
-};
+}
 
-export interface AccountNFTsResponse {
+export interface AccountNFTsResponse extends BaseResponse {
     account: string;
     account_nfts: LedgerNFToken[];
     ledger_hash?: string;
@@ -205,7 +217,7 @@ export interface AccountNFTsResponse {
 /**
  * Ledger gateway_balances response
  */
-export interface GatewayBalancesResponse {
+export interface GatewayBalancesResponse extends BaseResponse {
     account: string;
     obligations?: { [currency: string]: string };
     balances?: { [address: string]: Balance[] };
@@ -218,8 +230,9 @@ export interface GatewayBalancesResponse {
 /**
  * Ledger account_info response
  */
-export interface AccountInfoResponse {
+export interface AccountInfoResponse extends BaseResponse {
     account_data: AccountRoot;
+    account_flags?: { [key: string]: boolean };
     signer_lists?: any;
     ledger_current_index?: number;
     ledger_index?: number;
@@ -230,7 +243,7 @@ export interface AccountInfoResponse {
 /**
  * Ledger account_objects response
  */
-export interface AccountObjectsResponse {
+export interface AccountObjectsResponse extends BaseResponse {
     account: string;
     account_objects: LedgerEntriesTypes[];
     ledger_hash?: string;
@@ -260,7 +273,7 @@ export interface FeeResponse {
 /**
  * Ledger ledger_entry command response
  */
-export interface LedgerEntryResponse {
+export interface LedgerEntryResponse extends BaseResponse {
     index: string;
     ledger_current_index: number;
     node?: LedgerEntriesTypes;
@@ -370,7 +383,7 @@ export interface PathOption {
     source_amount: LedgerAmount;
 }
 
-export interface RipplePathFindResponse {
+export interface RipplePathFindResponse extends BaseResponse {
     id?: any;
     error?: string;
     result: {

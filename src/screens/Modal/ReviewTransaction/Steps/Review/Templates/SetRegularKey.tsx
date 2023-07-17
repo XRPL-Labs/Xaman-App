@@ -83,8 +83,8 @@ class SetRegularKeyTemplate extends Component<Props, State> {
                         }}
                     />
                 ) : (
-                    <View style={[styles.contentBox]}>
-                        <Text style={[styles.value]}>{Localize.t('global.empty')}</Text>
+                    <View style={styles.contentBox}>
+                        <Text style={styles.value}>{Localize.t('global.empty')}</Text>
                     </View>
                 )}
             </>

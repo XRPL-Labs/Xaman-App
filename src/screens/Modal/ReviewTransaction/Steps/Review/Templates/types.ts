@@ -1,9 +1,9 @@
 import { Payload } from '@common/libs/payload';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 
 export interface TemplateProps {
-    source: AccountSchema;
+    source: AccountModel;
     payload: Payload;
     transaction: Transactions | PseudoTransactions;
     setLoading: (loading: boolean) => void;

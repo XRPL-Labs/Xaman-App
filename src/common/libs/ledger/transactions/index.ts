@@ -23,6 +23,15 @@ import NFTokenBurn from './nfTokenBurn';
 import NFTokenCreateOffer from './nfTokenCreateOffer';
 import NFTokenAcceptOffer from './nfTokenAcceptOffer';
 import NFTokenCancelOffer from './nfTokenCancelOffer';
+import SetHook from './setHook';
+import ClaimReward from './claimReward';
+import Invoke from './invoke';
+import Import from './import';
+import URITokenMint from './uriTokenMint';
+import URITokenBurn from './uriTokenBurn';
+import URITokenBuy from './uriTokenBuy';
+import URITokenCreateSellOffer from './uriTokenCreateSellOffer';
+import URITokenCancelSellOffer from './uriTokenCancelSellOffer';
 
 export {
     BaseTransaction,
@@ -50,4 +59,13 @@ export {
     NFTokenCreateOffer,
     NFTokenAcceptOffer,
     NFTokenCancelOffer,
+    SetHook,
+    ClaimReward,
+    Invoke,
+    Import,
+    URITokenMint,
+    URITokenBurn,
+    URITokenBuy,
+    URITokenCreateSellOffer,
+    URITokenCancelSellOffer,
 };
