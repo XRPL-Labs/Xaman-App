@@ -32,7 +32,7 @@
     "react-native-navigation": "7.32.1",
     "realm": "11.10.1",
     "ripple-address-codec": "4.3.0",
-    "ripple-binary-codec": "1.6.0",
+    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@3.0.0",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.0",
     "xrpl-accountlib": "2.0.6",
