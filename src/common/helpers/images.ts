@@ -160,4 +160,5 @@ export const Images = {
     IconWallet: buildImageSource('IconWallet', 'icon_wallet'),
     IconToggleRight: buildImageSource('IconToggleRight', 'icon_toggle_right'),
     IconCopy: buildImageSource('IconCopy', 'icon_copy'),
+    IconRadio: buildImageSource('IconRadio', 'icon_radio'),
 };

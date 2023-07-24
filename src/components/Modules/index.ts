@@ -14,3 +14,4 @@ export * from './InactiveAccount';
 export * from './NFTokenElement';
 export * from './NetworkSwitchButton';
 export * from './AccountSwitchElement';
+export * from './XAppBrowserHeader';

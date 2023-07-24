@@ -32,13 +32,14 @@ import { StringTypeCheck } from '@common/utils/string';
 
 import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
 
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccessLevels, NetworkType } from '@store/types';
+import { AccountModel, CoreModel, NetworkModel } from '@store/models';
+import { AccessLevels } from '@store/types';
 
-import { BackendService, NavigationService, PushNotificationsService, NetworkService, StyleService } from '@services';
+import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 
 import { Avatar, Button, LoadingIndicator, PulseAnimation, Spacer, WebView } from '@components/General';
+import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -52,7 +53,7 @@ export interface Props {
     params?: any;
     title?: string;
     icon?: string;
-    account?: AccountSchema;
+    account?: AccountModel;
     origin?: PayloadOrigin;
     originData?: any;
 }
@@ -62,16 +63,16 @@ export interface State {
     icon: string;
     identifier: string;
     supportUrl: string;
-    account: AccountSchema;
+    account: AccountModel;
+    network: NetworkModel;
     ott: string;
     error: string;
     permissions: any;
     isFetchingOTT: boolean;
     isLoadingApp: boolean;
-
     isAppReady: boolean;
     isAppReadyTimeout: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     appVersionCode: string;
 }
 
@@ -99,7 +100,6 @@ class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
     private backHandler: NativeEventSubscription;
-    private authenticationListener: any;
 
     private readonly webView: React.RefObject<WebView>;
 
@@ -115,12 +115,15 @@ class XAppBrowserModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const coreSettings = CoreRepository.getSettings();
+
         this.state = {
             title: props.title,
             icon: props.icon,
             identifier: props.identifier,
             supportUrl: undefined,
-            account: props.account || AccountRepository.getDefaultAccount(),
+            account: props.account || CoreRepository.getDefaultAccount(),
+            network: coreSettings.network,
             ott: undefined,
             error: undefined,
             permissions: undefined,
@@ -128,7 +131,7 @@ class XAppBrowserModal extends Component<Props, State> {
             isLoadingApp: false,
             isAppReady: false,
             isAppReadyTimeout: false,
-            coreSettings: CoreRepository.getSettings(),
+            coreSettings,
             appVersionCode: GetAppVersionCode(),
         };
 
@@ -489,7 +492,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     fetchOTT = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
-        const { identifier, appVersionCode, account, title, coreSettings, isFetchingOTT } = this.state;
+        const { identifier, appVersionCode, account, network, title, coreSettings, isFetchingOTT } = this.state;
 
         // check if identifier have a valid value
         if (!StringTypeCheck.isValidXAppIdentifier(identifier)) {
@@ -508,24 +511,16 @@ class XAppBrowserModal extends Component<Props, State> {
             });
         }
 
-        const { networkId, node, type } = NetworkService.getConnectionDetails();
-
         // default headers
         const data = {
             version: appVersionCode,
             locale: Localize.getCurrentLocale(),
             currency: coreSettings.currency,
             style: coreSettings.theme,
-            nodetype: type,
-            nodeid: networkId,
+            nodetype: network.type,
+            nodeid: network.id,
+            nodewss: network.defaultNode.endpoint,
         };
-
-        // include node endpoint if using custom network
-        if (type === NetworkType.Custom) {
-            assign(data, {
-                nodewss: node,
-            });
-        }
 
         // assign origin to the headers
         if (origin) {
@@ -604,6 +599,24 @@ class XAppBrowserModal extends Component<Props, State> {
             });
     };
 
+    onAccountChange = (account: AccountModel) => {
+        this.setState(
+            {
+                account,
+            },
+            this.fetchOTT,
+        );
+    };
+
+    onNetworkChange = (network: NetworkModel) => {
+        this.setState(
+            {
+                network,
+            },
+            this.fetchOTT,
+        );
+    };
+
     getSource = () => {
         const { identifier, ott, coreSettings } = this.state;
 
@@ -618,6 +631,8 @@ class XAppBrowserModal extends Component<Props, State> {
     getUserAgent = () => {
         const { appVersionCode, ott } = this.state;
 
+        // NOTE: we included the ott in the header for the server side xApps to be able to access the ott easier
+        // Security risk is really low as the ott details can only be fetched by application and only once
         return `xumm/xapp:${appVersionCode} (ott:${ott})`;
     };
 
@@ -808,26 +823,18 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { title } = this.state;
+        const { title, icon, network, account } = this.state;
 
         return (
-            <View style={styles.headerContainer}>
-                <View style={styles.headerTitle}>
-                    <Text numberOfLines={1} style={AppStyles.h5}>
-                        {title || 'Loading...'}
-                    </Text>
-                </View>
-                <View style={styles.headerButton}>
-                    <Button
-                        contrast
-                        testID="close-button"
-                        numberOfLines={1}
-                        roundedSmall
-                        label={Localize.t('global.quitXApp')}
-                        onPress={this.onClose}
-                    />
-                </View>
-            </View>
+            <XAppBrowserHeader
+                xappTitle={title}
+                xappIcon={icon}
+                account={account}
+                network={network}
+                onAccountChange={this.onAccountChange}
+                onNetworkChange={this.onNetworkChange}
+                onClosePress={this.onClose}
+            />
         );
     };
 

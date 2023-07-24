@@ -27,7 +27,9 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    onChangeNetwork?: (network: NetworkModel) => void;
+}
 
 export interface State {
     coreSettings: CoreModel;
@@ -104,8 +106,16 @@ class SwitchNetworkOverlay extends Component<Props, State> {
     };
 
     changeNetwork = (network: NetworkModel) => {
+        const { onChangeNetwork } = this.props;
+
         // switch network
         NetworkService.switchNetwork(network);
+
+        // callback
+        if (typeof onChangeNetwork === 'function') {
+            onChangeNetwork(network);
+        }
+
         // slide down the panel
         this.actionPanel.slideDown();
     };
@@ -141,19 +151,6 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         );
     };
 
-    renderContent = () => {
-        const { networks } = this.state;
-
-        return Object.keys(networks).map((type: string) => {
-            return (
-                <Fragment key={type}>
-                    {type !== NetworkType.Main && <Text style={styles.networkTypeLabel}>{type}</Text>}
-                    {networks[type].map(this.renderRow)}
-                </Fragment>
-            );
-        });
-    };
-
     render() {
         const { networks, contentHeight, paddingBottom } = this.state;
 
@@ -173,7 +170,14 @@ class SwitchNetworkOverlay extends Component<Props, State> {
                     </Text>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
-                    {this.renderContent()}
+                    {Object.keys(networks).map((type: string) => {
+                        return (
+                            <Fragment key={type}>
+                                {type !== NetworkType.Main && <Text style={styles.networkTypeLabel}>{type}</Text>}
+                                {networks[type].map(this.renderRow)}
+                            </Fragment>
+                        );
+                    })}
                 </ScrollView>
             </ActionPanel>
         );
