@@ -6,7 +6,7 @@
  */
 import React, { PureComponent } from 'react';
 
-import { View, Image, ImageSourcePropType, ViewStyle } from 'react-native';
+import { Animated, View, Image, ImageSourcePropType, ViewStyle, InteractionManager } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -19,6 +19,7 @@ import styles from './styles';
 export interface Props {
     source: ImageSourcePropType;
     size?: number;
+    isLoading?: boolean;
     imageScale?: number;
     border?: boolean;
     badge?: (() => React.ReactNode) | Extract<keyof typeof Images, string>;
@@ -29,11 +30,51 @@ export interface Props {
 
 /* Component ==================================================================== */
 class Avatar extends PureComponent<Props> {
+    private readonly animatedFade: Animated.Value;
+
     static defaultProps = {
         size: 40,
         imageScale: 1,
         border: false,
         badgeBorder: true,
+    };
+
+    constructor(props: Props) {
+        super(props);
+        this.animatedFade = new Animated.Value(0.3);
+    }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>) {
+        const { isLoading } = this.props;
+
+        if (!prevProps.isLoading && isLoading) {
+            InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
+        }
+    }
+
+    startPlaceholderAnimation = () => {
+        const { isLoading } = this.props;
+
+        if (!isLoading) {
+            return;
+        }
+
+        Animated.sequence([
+            Animated.timing(this.animatedFade, {
+                toValue: 0.1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(this.animatedFade, {
+                toValue: 0.3,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+        ]).start(this.startPlaceholderAnimation);
     };
 
     renderBadge = () => {
@@ -106,7 +147,33 @@ class Avatar extends PureComponent<Props> {
         );
     };
 
+    renderLoading = () => {
+        const { size, border, containerStyle } = this.props;
+
+        return (
+            <Animated.View
+                style={[
+                    styles.container,
+                    styles.placeholder,
+                    border && styles.border,
+                    {
+                        height: AppSizes.scale(size) + (border ? 1.3 : 0),
+                        width: AppSizes.scale(size) + (border ? 1.3 : 0),
+                    },
+                    containerStyle,
+                    { opacity: this.animatedFade },
+                ]}
+            />
+        );
+    };
+
     render() {
+        const { isLoading } = this.props;
+
+        if (isLoading) {
+            return this.renderLoading();
+        }
+
         return (
             <View>
                 {this.renderAvatar()}

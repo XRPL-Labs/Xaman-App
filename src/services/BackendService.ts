@@ -342,6 +342,10 @@ class BackendService {
         return ApiService.xAppLaunch.post({ xAppId }, data);
     };
 
+    getXAppInfo = (xAppId: string) => {
+        return ApiService.xAppInfo.get({ xAppId });
+    };
+
     getCurrenciesList = () => {
         const locale = Localize.getCurrentLocale();
         return ApiService.currencies.get({ locale });

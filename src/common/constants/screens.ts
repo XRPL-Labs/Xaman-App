@@ -68,6 +68,7 @@ const screens = {
         PassphraseAuthentication: 'overlay.PassphraseAuthentication',
         SwitchAssetCategory: 'overlay.SwitchAssetCategory',
         SwitchNetwork: 'overlay.SwitchNetwork',
+        XAppInfo: 'overlay.XAppInfo',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

@@ -9,21 +9,23 @@ import { Truncate } from '@common/utils/string';
 import { AccountRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 
-import { TouchableDebounce, Button, Avatar, Icon } from '@components/General';
+import { TouchableDebounce, Button, Avatar, Icon, TextPlaceholder } from '@components/General';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    xappTitle: string;
-    xappIcon: string;
+    identifier: string;
+    title: string;
+    icon: string;
     account: AccountModel;
     network: NetworkModel;
 
     onAccountChange?: (account: AccountModel) => void;
     onNetworkChange?: (network: any) => void;
     onClosePress?: () => void;
+    onInfoPress?: () => void;
 }
 
 interface State {
@@ -86,6 +88,14 @@ class XAppBrowserHeader extends Component<Props, State> {
         });
     };
 
+    showXAppInfo = () => {
+        const { onInfoPress } = this.props;
+
+        if (typeof onInfoPress === 'function') {
+            onInfoPress();
+        }
+    };
+
     onClosePress = () => {
         const { onClosePress } = this.props;
 
@@ -94,12 +104,9 @@ class XAppBrowserHeader extends Component<Props, State> {
         }
     };
 
-    showXAppInfo = () => {
-        // in progress
-    };
-
     toggleExpandedBar = () => {
         const { panelExpanded } = this.state;
+
         Animated.timing(this.animatedExpand, {
             toValue: panelExpanded ? 0 : 1,
             duration: 300,
@@ -112,16 +119,16 @@ class XAppBrowserHeader extends Component<Props, State> {
     };
 
     render() {
-        const { xappTitle, xappIcon, network, account } = this.props;
+        const { title, icon, network, account } = this.props;
 
         return (
             <>
                 <View style={styles.headerContainer}>
                     <View style={styles.headerLeftContainer}>
-                        <Avatar source={{ uri: xappIcon }} size={30} />
-                        <Text numberOfLines={1} style={styles.titleText}>
-                            {xappTitle || 'Loading...'}
-                        </Text>
+                        <Avatar isLoading={!icon} source={{ uri: icon }} size={30} />
+                        <TextPlaceholder isLoading={!title} style={styles.titleText} length={24}>
+                            {title}
+                        </TextPlaceholder>
                     </View>
                     <View style={styles.headerRightContainer}>
                         <Button
@@ -188,14 +195,14 @@ class XAppBrowserHeader extends Component<Props, State> {
                     >
                         <Icon name="IconRadio" size={18} style={AppStyles.imgColorGreen} />
                         <Text style={styles.networkText}>{network.name}</Text>
-                        <Icon name="IconChevronDown" />
+                        <Icon name="IconChevronDown" size={22} />
                     </TouchableDebounce>
                     <TouchableDebounce
                         onPress={this.showAccountSelect}
                         style={[styles.expandableButton, AppStyles.flex3, AppStyles.flexEnd]}
                     >
                         <Text style={styles.addressText}>{Truncate(account.address, 30)}</Text>
-                        <Icon name="IconChevronDown" />
+                        <Icon name="IconChevronDown" size={22} />
                     </TouchableDebounce>
                 </Animated.View>
             </>

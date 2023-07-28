@@ -9,7 +9,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { XAppOrigin } from '@common/libs/payload';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
+import { AppConfig, AppScreens } from '@common/constants';
 
 import { TouchableDebounce, Header, Icon } from '@components/General';
 
@@ -42,7 +42,7 @@ class SettingsView extends Component<Props, State> {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    identifier: 'xumm.support',
+                    identifier: AppConfig.xappIdentifiers.support,
                     origin: XAppOrigin.XUMM,
                 },
                 {

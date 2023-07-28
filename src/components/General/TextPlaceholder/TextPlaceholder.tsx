@@ -8,7 +8,10 @@ import styles from './styles';
 export interface Props {
     children: React.ReactNode;
     isLoading: boolean;
-    style: TextStyle | TextStyle[];
+    length?: number;
+    style?: TextStyle | TextStyle[];
+    selectable?: boolean;
+    numberOfLines?: number;
     onPress?: () => void;
 }
 
@@ -16,13 +19,25 @@ export interface Props {
 class TextPlaceholder extends PureComponent<Props> {
     private readonly animatedFade: Animated.Value;
 
+    static defaultProps = {
+        length: 12,
+    };
+
     constructor(props: Props) {
         super(props);
-        this.animatedFade = new Animated.Value(1);
+        this.animatedFade = new Animated.Value(0.3);
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
+    }
+
+    componentDidUpdate(prevProps: Readonly<Props>) {
+        const { isLoading } = this.props;
+
+        if (!prevProps.isLoading && isLoading) {
+            InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
+        }
     }
 
     startPlaceholderAnimation = () => {
@@ -56,19 +71,22 @@ class TextPlaceholder extends PureComponent<Props> {
     };
 
     render() {
-        const { style, isLoading, children } = this.props;
+        const { style, isLoading, length, numberOfLines, selectable, children } = this.props;
 
         if (isLoading) {
             return (
-                <Animated.Text numberOfLines={1} style={[style, styles.placeholder, { opacity: this.animatedFade }]}>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Animated.Text
+                    numberOfLines={numberOfLines}
+                    style={[style, styles.placeholder, { opacity: this.animatedFade }]}
+                >
+                    {'\u00A0'.repeat(length)}
                 </Animated.Text>
             );
         }
 
         return (
             <TouchableDebounce activeOpacity={0.8} onPress={this.onPress}>
-                <Text numberOfLines={2} style={style}>
+                <Text selectable={selectable} numberOfLines={numberOfLines} style={style}>
                     {children}
                 </Text>
             </TouchableDebounce>

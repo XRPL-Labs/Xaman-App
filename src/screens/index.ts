@@ -58,6 +58,7 @@ import HomeActions from './Overlay/HomeActions';
 import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
 import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
+import XAppInfo from './Overlay/XAppInfo';
 
 // Transaction
 import Send from './Send';
@@ -152,6 +153,7 @@ export {
     PassphraseAuthentication,
     SwitchAssetCategory,
     SwitchNetwork,
+    XAppInfo,
     // transaction
     Send,
     Request,

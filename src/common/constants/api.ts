@@ -29,6 +29,7 @@ export default {
         ['xAppsStore', '/v1/app/xapp/store/v1/{category}'],
         ['xAppsShortList', '/v1/app/xapp/shortlist'],
         ['xAppLaunch', '/v1/app/xapp/launch/{xAppId}'],
+        ['xAppInfo', '/v1/app/xapp/info/{xAppId}'],
         ['currencies', '/v1/app/currencies/{locale}'],
         ['rates', '/v1/app/rates/{currency}'],
         ['validEndpoints', '/v1/app/valid-endpoints/{hash}'],

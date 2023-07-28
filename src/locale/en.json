@@ -620,7 +620,14 @@
     "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
     "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
     "forceShowXApp": "Force show xApp",
-    "contactDeveloper": "Contact Developer"
+    "contactDeveloper": "Contact Developer",
+    "unableToFetchXAppInfo": "Unable to fetch the xApp info!",
+    "developedBy": "Developed by:",
+    "projectHomePage": "Project homepage:",
+    "supportAndQuestions": "Support & questions",
+    "website": "Website:",
+    "donateToTheCreator": "Donate to the creator",
+    "chooseAmount": "Choose amount"
   },
   "settings": {
     "generalSettings": "General",

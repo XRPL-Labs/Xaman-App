@@ -19,7 +19,7 @@ import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
-import { AppScreens } from '@common/constants';
+import { AppConfig, AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
@@ -276,8 +276,8 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    launchVeriffKYC = async (data: any) => {
-        const { sessionUrl } = data;
+    launchVeriffKyc = async (data: { sessionUrl: string }) => {
+        const sessionUrl = get(data, 'sessionUrl', undefined);
 
         if (!sessionUrl) return;
 
@@ -296,13 +296,15 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    navigateTo = (data: any) => {
-        const { xApp, title } = data;
+    navigateTo = (data: { xApp: string; title?: string; [key: string]: any }) => {
+        const identifier = get(data, 'xApp', undefined);
+        const title = get(data, 'title', undefined);
 
         this.setState(
             {
-                identifier: xApp,
+                identifier,
                 title,
+                icon: null,
             },
             () => {
                 this.fetchOTT(data);
@@ -310,7 +312,7 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    openBrowserLink = (data: any, launchDirectly: boolean) => {
+    openBrowserLink = (data: { url: string }, launchDirectly: boolean) => {
         const { title } = this.state;
 
         const url = get(data, 'url', undefined);
@@ -352,9 +354,9 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    openTxDetails = async (data: any) => {
-        const hash = get(data, 'tx');
-        const address = get(data, 'account');
+    openTxDetails = async (data: { tx: string; account: string }) => {
+        const hash = get(data, 'tx', undefined);
+        const address = get(data, 'account', undefined);
 
         // validate inputs
         if (!AccountLibUtils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
@@ -417,7 +419,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 this.navigateTo(parsedData);
                 break;
             case XAppMethods.KycVeriff:
-                this.launchVeriffKYC(parsedData);
+                this.launchVeriffKyc(parsedData);
                 break;
             case XAppMethods.OpenSignRequest:
                 this.handleSignRequest(parsedData);
@@ -554,22 +556,22 @@ class XAppBrowserModal extends Component<Props, State> {
             .then((res: any) => {
                 const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = res;
 
-                // check if the ott is a valid uuid v4
-                if (!StringTypeCheck.isValidUUID(ott)) {
-                    this.setState({
-                        ott: undefined,
-                        permissions: undefined,
-                        error: 'Provided ott is not valid!',
-                    });
-                    return;
-                }
-
                 // an error reported from backend
                 if (error) {
                     this.setState({
                         ott: undefined,
                         permissions: undefined,
                         error,
+                    });
+                    return;
+                }
+
+                // check if the ott is a valid uuid v4
+                if (!StringTypeCheck.isValidUUID(ott)) {
+                    this.setState({
+                        ott: undefined,
+                        permissions: undefined,
+                        error: 'Provided ott is not valid!',
                     });
                     return;
                 }
@@ -657,6 +659,27 @@ class XAppBrowserModal extends Component<Props, State> {
 
         Linking.openURL(supportUrl).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
+        });
+    };
+
+    openDonation = (amount?: number) => {
+        const { identifier } = this.state;
+
+        this.navigateTo({
+            xApp: AppConfig.xappIdentifiers.xappDonation,
+            destination: identifier,
+            amount,
+        });
+    };
+
+    onInfoPress = () => {
+        const { identifier, title, icon } = this.props;
+
+        Navigator.showOverlay(AppScreens.Overlay.XAppInfo, {
+            identifier,
+            title,
+            icon,
+            onDonationPress: this.openDonation,
         });
     };
 
@@ -823,17 +846,19 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { title, icon, network, account } = this.state;
+        const { identifier, title, icon, network, account } = this.state;
 
         return (
             <XAppBrowserHeader
-                xappTitle={title}
-                xappIcon={icon}
+                identifier={identifier}
+                title={title}
+                icon={icon}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}
                 onNetworkChange={this.onNetworkChange}
                 onClosePress={this.onClose}
+                onInfoPress={this.onInfoPress}
             />
         );
     };

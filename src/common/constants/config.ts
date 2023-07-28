@@ -16,6 +16,14 @@ export default {
         path: 'xumm.realm',
     },
 
+    // list of static xapp identifiers
+    xappIdentifiers: {
+        support: 'xumm.support',
+        nftInfo: 'xumm.nft-info',
+        activateAccount: 'xumm.activateacc',
+        xappDonation: 'xumm.xapp-donation',
+    },
+
     // localization config
     defaultLanguage: 'en',
 

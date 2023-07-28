@@ -11,6 +11,10 @@ const styles = StyleService.create({
         paddingTop: Platform.select({ ios: AppSizes.statusBarHeight, default: 10 }),
         paddingBottom: 5,
         zIndex: 1,
+        shadowColor: '$light',
+        shadowOffset: { width: 0, height: 10 },
+        shadowRadius: 5,
+        shadowOpacity: 1,
     },
     headerLeftContainer: {
         flex: 1,
@@ -43,7 +47,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
-        paddingLeft: AppSizes.paddingExtraSml,
+        marginLeft: AppSizes.paddingExtraSml,
     },
     addressText: {
         color: '$textPrimary',

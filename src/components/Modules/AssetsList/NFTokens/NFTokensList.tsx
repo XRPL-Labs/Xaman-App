@@ -6,7 +6,7 @@ import { FlatList, InteractionManager, RefreshControl, View, ViewStyle } from 'r
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
+import { AppConfig, AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 
 import { TransactionTypes } from '@common/libs/ledger/types';
@@ -214,7 +214,7 @@ class NFTokensList extends Component<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
-                identifier: 'xumm.nft-info',
+                identifier: AppConfig.xappIdentifiers.nftInfo,
                 params: {
                     token,
                 },

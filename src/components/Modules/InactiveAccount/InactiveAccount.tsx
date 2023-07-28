@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { AppScreens } from '@common/constants';
+import { AppConfig, AppScreens } from '@common/constants';
 
 import { XAppOrigin } from '@common/libs/payload';
 
@@ -41,9 +41,9 @@ class InactiveAccount extends PureComponent<Props, State> {
         Navigator.showModal(
             AppScreens.Modal.XAppBrowser,
             {
-                account,
+                identifier: AppConfig.xappIdentifiers.activateAccount,
                 params,
-                identifier: 'xumm.activateacc',
+                account,
                 origin: XAppOrigin.XUMM,
             },
             {
