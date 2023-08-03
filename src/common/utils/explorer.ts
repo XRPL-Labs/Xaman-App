@@ -1,9 +1,12 @@
-const GetTransactionLink = (hash: string) => {
-    return `${hash}`;
+import NetworkService from '@services/NetworkService';
+import { AppConfig } from '@common/constants';
+
+const GetTransactionLink = (ctid: string): string => {
+    return `${AppConfig.explorerProxy}${ctid}`;
 };
 
-const GetAccountLink = (address: string) => {
-    return `${address}`;
+const GetAccountLink = (address: string): string => {
+    return `${AppConfig.explorerProxy}${address}/?networkId=${NetworkService.getNetworkId()}`;
 };
 
 /* Export ==================================================================== */

@@ -152,6 +152,7 @@ describe('BaseTransaction tx', () => {
                     PreviousTxnLgrSeq: 58057100,
                     Sequence: 34321,
                 },
+                networkId: 0,
             }),
         );
 
@@ -200,5 +201,11 @@ describe('BaseTransaction tx', () => {
         expect(instance.LastLedgerSequence).toBe(LastLedger + 50);
 
         spy.mockRestore();
+    });
+
+    it('Should be able to generate the right CTID', () => {
+        const { tx, meta } = paymentTemplates.XRP2XRP;
+        const instance = new BaseTransaction(tx, meta);
+        expect(instance.CTID).toBe('C373B14A00040000');
     });
 });

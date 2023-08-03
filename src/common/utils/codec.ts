@@ -99,6 +99,41 @@ const DecodeNFTokenID = (nfTokenID: string) => {
 };
 
 /**
+ * Encode CTID
+ * @param ledgerSeq number
+ * @param txnIndex number
+ * @param networkId number
+ * @returns encoded CTID
+ */
+const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): string => {
+    if (typeof ledgerSeq !== 'number') {
+        throw new Error('ledgerSeq must be a number.');
+    }
+    if (ledgerSeq > 0xfffffff || ledgerSeq < 0) {
+        throw new Error('ledgerSeq must not be greater than 268435455 or less than 0.');
+    }
+
+    if (typeof txnIndex !== 'number') {
+        throw new Error('txnIndex must be a number.');
+    }
+    if (txnIndex > 0xffff || txnIndex < 0) {
+        throw new Error('txnIndex must not be greater than 65535 or less than 0.');
+    }
+
+    if (typeof networkId !== 'number') {
+        throw new Error('networkId must be a number.');
+    }
+    if (networkId > 0xffff || networkId < 0) {
+        throw new Error('networkId must not be greater than 65535 or less than 0.');
+    }
+
+    // @ts-ignore
+    return (((BigInt(0xc0000000) + BigInt(ledgerSeq)) << 32n) + (BigInt(txnIndex) << 16n) + BigInt(networkId))
+        .toString(16)
+        .toUpperCase();
+};
+
+/**
  * Convert seed/address to another alphabet
  * @param value string
  * @param alphabet string
@@ -158,4 +193,5 @@ export {
     EncodeNFTokenID,
     DecodeNFTokenID,
     DecodeAccountId,
+    EncodeCTID,
 };

@@ -3,6 +3,10 @@
  */
 import { get, has, set, isUndefined } from 'lodash';
 
+import { EncodeCTID } from '@common/utils/codec';
+
+import NetworkService from '@services/NetworkService';
+
 import { Account } from '../parser/types';
 import Flag from '../parser/common/flag';
 
@@ -15,6 +19,10 @@ class BaseLedgerObject {
 
     constructor(object?: LedgerEntriesTypes) {
         this.object = object;
+    }
+
+    get CTID(): string {
+        return EncodeCTID(this.Sequence, this.Index, NetworkService.getNetworkId());
     }
 
     get Account(): Account {
@@ -42,7 +50,7 @@ class BaseLedgerObject {
         return get(this, ['object', 'LedgerEntryType'], undefined);
     }
 
-    get Sequence(): string {
+    get Sequence(): number {
         return get(this, ['object', 'Sequence'], undefined);
     }
 
@@ -58,7 +66,7 @@ class BaseLedgerObject {
         return get(this, ['object', 'OwnerNode'], undefined);
     }
 
-    get Index(): string {
+    get Index(): number {
         return get(this, ['object', 'index'], undefined);
     }
 

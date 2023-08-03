@@ -46,12 +46,12 @@
       "__generate.js"
     ],
     "rules": {
-      "prettier/prettier": [0, {	
-        "printWidth": 120,	
-        "tabWidth": 4,	
-        "parser": "flow",	
-        "singleQuote": true,	
-        "trailingComma": "all"	
+      "prettier/prettier": [0, {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "parser": "flow",
+        "singleQuote": true,
+        "trailingComma": "all"
       }],
       "no-useless-constructor": 0,
       "arrow-body-style": 0,
@@ -80,7 +80,7 @@
       "no-param-reassign": 0,
       "no-nested-ternary": 0,
       "no-restricted-syntax": 0,
-      
+      "no-underscore-dangle": 0,
       "no-unused-vars": "off",
       "no-unused-expressions": ["error" , {"allowShortCircuit": true} ],
       "@typescript-eslint/no-unused-vars": "error",

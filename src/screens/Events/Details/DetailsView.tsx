@@ -397,8 +397,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     getTransactionLink = () => {
         const { tx } = this.state;
-        const hash = tx instanceof BaseTransaction ? tx.Hash : tx.PreviousTxnID;
-        return GetTransactionLink(hash);
+        return GetTransactionLink(tx.CTID);
     };
 
     shareTxLink = () => {

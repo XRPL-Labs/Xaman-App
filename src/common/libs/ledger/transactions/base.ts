@@ -12,6 +12,8 @@ import { AccountModel } from '@store/models';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
+import { EncodeCTID } from '@common/utils/codec';
+
 import {
     SignedObjectType,
     SubmitResultType,
@@ -603,6 +605,23 @@ class BaseTransaction {
         };
     }
 
+    // serialize transaction object to rippled tx json
+    get Json(): TransactionJSONType {
+        // shallow copy
+        const tx = { ...this.tx };
+        Object.getOwnPropertyNames(this.tx).forEach((k: string) => {
+            if (!this.fields.includes(k)) {
+                delete tx[k];
+            }
+        });
+
+        return tx;
+    }
+
+    get CTID(): string {
+        return EncodeCTID(this.LedgerIndex, this.TransactionIndex, NetworkService.getNetworkId());
+    }
+
     get Hash(): string {
         return get(this, ['tx', 'hash']);
     }
@@ -615,17 +634,16 @@ class BaseTransaction {
         return get(this, ['tx', 'ledger_index']);
     }
 
-    // serialize transaction object to rippled tx json
-    get Json(): TransactionJSONType {
-        // shallow copy
-        const tx = { ...this.tx };
-        Object.getOwnPropertyNames(this.tx).forEach((k: string) => {
-            if (!this.fields.includes(k)) {
-                delete tx[k];
-            }
-        });
+    set LedgerIndex(index: number) {
+        set(this, ['tx', 'ledger_index'], index);
+    }
 
-        return tx;
+    get TransactionIndex(): number {
+        return get(this, ['meta', 'TransactionIndex']);
+    }
+
+    set TransactionIndex(index: number) {
+        set(this, ['meta', 'TransactionIndex'], index);
     }
 
     get Signers(): Array<any> {

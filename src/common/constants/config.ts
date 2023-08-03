@@ -3,12 +3,13 @@
  */
 
 export default {
-    // App Details
+    // App Details and URL's
     appName: 'XUMM',
     supportEmail: 'support@xumm.dev',
     termOfUseURL: 'https://xumm.app/app/webviews/tos-privacy/',
     creditsURL: 'https://xumm.app/app/webviews/credits/',
     changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
+    explorerProxy: 'https://explorer.xumm.app/',
 
     // persist storage config
     storage: {
