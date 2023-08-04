@@ -2245,35 +2245,35 @@
     prompts "^2.4.0"
     semver "^6.3.0"
 
-"@react-native-community/netinfo@9.3.10":
-  version "9.3.10"
-  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-9.3.10.tgz#9b6cc2aec9329b5ccf35e866094c43aa420d927a"
-  integrity sha512-OwnqoJUp/4sa9e3ju+wQavAa8l0fiA3DheeLMKzKxtKeAe0CA7bNxWRM752JvRQ6A/igPnt1V0zSlu5owvQEuA==
+"@react-native-community/netinfo@9.4.1":
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-9.4.1.tgz#7b880758adca65fe47ee866cf7b00416b9dcc192"
+  integrity sha512-dAbY5mfw+6Kas/GJ6QX9AZyY+K+eq9ad4Su6utoph/nxyH3whp5cMSgRNgE2VhGQVRZ/OG0qq3IaD3+wzoqJXw==
 
-"@react-native-firebase/analytics@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-18.0.0.tgz#b3777dba767be7ac5abcb1e84f3b2d5c282a5ea4"
-  integrity sha512-ttnGpWthgbumGcG+gE5IhugJs1tesj8wZH8q3SwgLjunHUFIhBTd2ASEt+lghg1lYp2JIGz09k7s2TtAB4IzYQ==
+"@react-native-firebase/analytics@18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-18.3.0.tgz#7f8ec6e10db86654f13acbe3a6f55776deb7416c"
+  integrity sha512-N1J8R1pkdv+cBhzOSaEp780ksDQIKVGF8VoVpon+iSDbZtjSWLByyLMrEP21ucCvIRdBQ6DgJs4FmSURl35/YA==
 
-"@react-native-firebase/app@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-18.0.0.tgz#10036e5a480b1143bd88a50643f14ba0e9c62f82"
-  integrity sha512-jvxitPNkcxE6IyGHiOGaURA42ZHBesTeSLbOfqQL6ZtTkQ0sPkFk6VPM2OR5s5S2NfOCfd9dddOhFLIX5VE3ig==
+"@react-native-firebase/app@18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-18.3.0.tgz#8e19eb3f9e6d9596c1d0d904bca3a2effafe9d4f"
+  integrity sha512-4sJf5mM551Y6E8D1hQufAU/PNEecJEaJbF4Me0JyclI2RXUHlTxJUpAsB/gxPY74LY99FaogFsDEB+3BuZ2B9w==
   dependencies:
     opencollective-postinstall "^2.0.1"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-18.0.0.tgz#d52805287d7ff00e0bb5cb2fa8b2193bb47ffb11"
-  integrity sha512-uBbtTsqjwVDADXrkjZd1tdN6G++uFkRFK2czN53A+pTGQ+NF1lxgeVQ+Fk4uIZYFvIKhmgh5XLJE2i/pLsoCIg==
+"@react-native-firebase/crashlytics@18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-18.3.0.tgz#683b1acb253ed53233055475e4151daf9790629a"
+  integrity sha512-P788CRauPIpTDULckmHdp7JzLLw5Ux/XXRa8znVmoe27uUAPHbYO1i/ZcaSs4PvBH/1EbxKmmfJgdtpAtMOhIA==
   dependencies:
     stacktrace-js "^2.0.0"
 
-"@react-native-firebase/messaging@18.0.0":
-  version "18.0.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-18.0.0.tgz#3f9e5c280fe99279773c0d59575f2873839b5d39"
-  integrity sha512-BiYeHTNkEi67MBzMUXTjaTwEjbWTkCHcY/1PYejq9IQDxRoeYnlIPjd9J7GmJrY2nGKT14y0U5Q0aK7YU2ZKxA==
+"@react-native-firebase/messaging@18.3.0":
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-18.3.0.tgz#062e4844d1a5e409e035efc13ecd68f403165568"
+  integrity sha512-MolNWboyN+ZwfHgFTQ4NspIzpFxbtlROxrsiGjwpfzBcKL6cjpfS6uxwupidycuzVL+gaIq1xbCLQaNhv/bToA==
 
 "@react-native/assets-registry@^0.72.0":
   version "0.72.0"
@@ -3870,10 +3870,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/url-search-params/-/url-search-params-0.1.4.tgz#727e9b4c811beaa6be6d7e4cc0516663c884cfd0"
   integrity sha512-RLwrxCTDNiNev9hpr9rDq8NyeQ8Nn0X1we4Wu7Tlf368I8r+7hBj3uObhifhuLk74egaYaSX5nUsBlWz6kjj+A==
 
-"@veriff/react-native-sdk@4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-4.3.0.tgz#8adc50d5ea249d356e2cd51e9a15efe5ab7dd89f"
-  integrity sha512-fqhnJi8yuT5BFsMsy7v9oS3LxBmtB60W+VnNBeaoW8jx2YAhfk5VgnuE/GV5qxSF//kuIpHYZMIpTPwWbsOV9Q==
+"@veriff/react-native-sdk@4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@veriff/react-native-sdk/-/react-native-sdk-4.4.0.tgz#b1fbfce9a30ff5389823cc2b2110c07760e35f53"
+  integrity sha512-Jlni+60GrMZowMd65CpP5PwTAxm/U4pUk/AUPKUXY+VdhfnEFqqiW1zZEfX/+PM2GPBNi7F2ML3U4xiewsyl4g==
   dependencies:
     eslint-plugin-ft-flow "^2.0.3"
 
@@ -5450,14 +5450,6 @@ buffer-xor@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
   integrity sha512-571s0T7nZWK6vB67HI5dyUF7wXiNcfaPPPTl6zYCNApANjIvYJTg7hlud/+cJpdAhS7dVzqMLmfhfHR3rAcOjQ==
-
-buffer@5.6.0:
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
-  integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
-  dependencies:
-    base64-js "^1.0.2"
-    ieee754 "^1.1.4"
 
 buffer@6.0.3:
   version "6.0.3"
@@ -13463,10 +13455,10 @@ react-native-interactable@2.0.1:
   resolved "https://registry.yarnpkg.com/react-native-interactable/-/react-native-interactable-2.0.1.tgz#80a4608c4b6f19489b629926306afd980c73a309"
   integrity sha512-b5Mej8JnW9+q/hf+6bxWsKIX4E1rjILBgPnyYFIaEhJZGrZeu5jxENvw3+Q7t43ARp1wJIZZGfilVoFmwtgOdw==
 
-react-native-navigation@7.32.1:
-  version "7.32.1"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.32.1.tgz#29dd95dae6f4afb6dcbc756dae1849dbbdab2a54"
-  integrity sha512-qqpccWh6MqTG0hn/XeggKonSYg+h64kOsYBot/+g2EUC/Usp8TZsKi1B2gzsUrDQy8EmsF9iTBoZMIgjxFG/WQ==
+react-native-navigation@7.36.0:
+  version "7.36.0"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-7.36.0.tgz#3b1dcb194757fbe7a801895098cbd42795622bda"
+  integrity sha512-qYkV5YUIfjlyCh3k9MuZdRkZ6vFlacw4JII2H5jGuRn4KAYVk6mM5fK7QvilZSap2crDifX3UP8WIfbzRipy/Q==
   dependencies:
     hoist-non-react-statics "3.x.x"
     lodash "4.17.x"
@@ -14100,18 +14092,6 @@ ripple-address-codec@4.3.0, ripple-address-codec@^4.2.4, ripple-address-codec@^4
   dependencies:
     base-x "^3.0.9"
     create-hash "^1.1.2"
-
-"ripple-binary-codec@npm:xrpl-binary-codec-prerelease@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/xrpl-binary-codec-prerelease/-/xrpl-binary-codec-prerelease-2.0.0.tgz#319cc32094efc755fb3ca8e6f1072146e20c09da"
-  integrity sha512-Cocr3Phho6g1CjsRJeBzUQf2qJ5z5e/05ynQUxHSoNSa1+B2F+UGTgFa5Mwdjvq4XCOK+01NfPnm7QoFmWJwhA==
-  dependencies:
-    assert "^2.0.0"
-    big-integer "^1.6.48"
-    buffer "5.6.0"
-    create-hash "^1.2.0"
-    decimal.js "^10.2.0"
-    ripple-address-codec "^4.2.4"
 
 "ripple-binary-codec@npm:xrpl-binary-codec-prerelease@3.0.0":
   version "3.0.0"
@@ -16584,10 +16564,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.12.1"
 
-xrpl-accountlib@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-2.0.6.tgz#a2dd825d9380db7eb1d6ab8df3c5c23a9b515faf"
-  integrity sha512-DMb8zG3QWqSxTq5s7nLNOGE9bRX7f0ubGjJAb38Y7EoMc07V1i4EpoBPaAJrzJ4GI6iEEpy3gMgLEo9Opb1QWw==
+xrpl-accountlib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-2.3.0.tgz#c0a05af92d6e820df9a99f6dfdfcd436cc8fde95"
+  integrity sha512-fJELBY3nNm15A3JkG+K1M49R0EDTohnR/D1yTI6QyWfxkC5tF0aGLAneFMntC51Oc4MUqPuXqG7y+CjkvryYbw==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.6"
@@ -16597,16 +16577,17 @@ xrpl-accountlib@2.0.6:
     hash.js "^1.1.7"
     lodash "^4.17.21"
     ripple-address-codec "^4.2.5"
-    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@2.0.0"
+    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@3.0.0"
     ripple-keypairs "^1.1.4"
     ripple-secret-codec "^1.0.3"
+    xrpl-client "^2.1.0"
     xrpl-secret-numbers "^0.3.3"
-    xrpl-sign-keypairs "^2.1.4"
+    xrpl-sign-keypairs "^2.2.0"
 
-xrpl-client@2.0.11:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-2.0.11.tgz#7ccc39329cb574149d1e0a1681747c9a20511e8f"
-  integrity sha512-QPpJBRoIXF40wiET/zXICiX3R8BRBgnFUD7MBfVD76vRcBfGEkCDCszP5QW4xY0GTJA/PCWwknAsjrg0En49cA==
+xrpl-client@2.1.0, xrpl-client@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-2.1.0.tgz#1e6eebea28cedbdfc336148596450085db72bf3b"
+  integrity sha512-WuMQHTPFgEPq4yXA01vgoVI01iNNFmdHK0OTJoVf/PT6fAJWfTwJwV3AKh1Z7wmQqsAnlKVnMh8g7XzJqS0mFg==
   dependencies:
     debug "^4.1.1"
     websocket "^1.0.34"
@@ -16630,14 +16611,14 @@ xrpl-secret-numbers@^0.3.3:
     brorand "^1.1.0"
     ripple-keypairs "^1.1.5"
 
-xrpl-sign-keypairs@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.1.4.tgz#b901b5741d5328de4f357aa68f08ff9f7e37d06c"
-  integrity sha512-ZzpWXwZQO9DVhEIjDtZMwjON0RWEHFdyezvXEmjl7RjQ60noLjCGnuoqnCSMTqk7lMYwoYenMMbnac1pJaLKDw==
+xrpl-sign-keypairs@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.2.0.tgz#bbe0d52d52e341c227be7557c2fc928930611d1f"
+  integrity sha512-W+RiSSBDoltYj0MrDopee6bqL1KEDnNc9NRNddR6XTKcXDg5TCl83yz9izTnho79mLaXaYWuviT9y1jI5G0AsQ==
   dependencies:
     big-integer "^1.6.51"
     ripple-address-codec "^4.2.4"
-    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@2.0.0"
+    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@3.0.0"
     ripple-keypairs "^1.1.4"
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:

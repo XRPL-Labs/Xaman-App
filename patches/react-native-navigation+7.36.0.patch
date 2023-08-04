@@ -13,7 +13,7 @@ index a34598c..9703957 100644
 +                    }
 +                });
              }
- 
+
              @Override
              public void onHostResume() {
 -                eventEmitter = new EventEmitter(reactContext);
@@ -43,39 +43,12 @@ index a34598c..9703957 100644
              }
          });
      }
-diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/MotionEvent.kt b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/MotionEvent.kt
-index a79e487..b7af2b3 100644
---- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/MotionEvent.kt
-+++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/MotionEvent.kt
-@@ -3,11 +3,20 @@ package com.reactnativenavigation.utils
- import android.graphics.Rect
- import android.view.MotionEvent
- import android.view.View
-+import android.view.ViewGroup
- 
- val hitRect = Rect()
- 
- fun MotionEvent.coordinatesInsideView(view: View?): Boolean {
-     view ?: return false
--    view.getHitRect(hitRect)
--    return hitRect.contains(x.toInt(), y.toInt())
-+    val viewGroup = (view as ViewGroup).getChildAt(0) as ViewGroup
-+    return if (viewGroup.childCount > 0) {
-+        val content = viewGroup.getChildAt(0)
-+
-+        content.getHitRect(hitRect)
-+
-+        hitRect.contains(x.toInt(), y.toInt())
-+    } else {
-+        false
-+    }
- }
 diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
 index 89665d1..03eb03f 100644
 --- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
 +++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
 @@ -25,7 +25,7 @@ object SystemUiUtils {
- 
+
      @JvmStatic
      fun getStatusBarHeight(activity: Activity?): Int {
 -        val res = if (statusBarHeight > 0) {
@@ -90,7 +63,7 @@ index a9e2c53..7a8096b 100644
 @@ -4,7 +4,6 @@ import android.app.Activity;
  import android.content.res.Configuration;
  import android.view.View;
- 
+
 -import com.reactnativenavigation.utils.LogKt;
  import com.reactnativenavigation.viewcontrollers.viewcontroller.ScrollEventListener;
  import com.reactnativenavigation.options.Options;
@@ -101,7 +74,7 @@ index a9e2c53..7a8096b 100644
  import com.reactnativenavigation.viewcontrollers.child.ChildControllersRegistry;
 -import com.reactnativenavigation.viewcontrollers.viewcontroller.ViewController;
  import com.reactnativenavigation.views.component.ComponentLayout;
- 
+
  import androidx.annotation.NonNull;
 @@ -143,6 +141,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
      public int getTopInset() {
@@ -112,7 +85,7 @@ index a9e2c53..7a8096b 100644
          return statusBarInset + perform;
      }
 @@ -155,12 +154,14 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
- 
+
      @Override
      protected WindowInsetsCompat onApplyWindowInsets(View view, WindowInsetsCompat insets) {
 +        SystemUiUtils.saveStatusBarHeight(insets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars()).top);
@@ -126,5 +99,5 @@ index a9e2c53..7a8096b 100644
 +        int systemWindowInsetBottom = insets.getInsets(
 +                WindowInsetsCompat.Type.navigationBars()).bottom -
                  systemBarsInsets.bottom;
- 
+
          WindowInsetsCompat finalInsets = new WindowInsetsCompat.Builder()
