@@ -9,13 +9,6 @@ class LedgerService {
         };
     }
 
-    public getNetworkReserve() {
-        return {
-            BaseReserve: 10,
-            OwnerReserve: 2,
-        };
-    }
-
     public async getAccountInfo() {
         // return {
         //     account_data: {

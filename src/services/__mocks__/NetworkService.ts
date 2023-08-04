@@ -9,6 +9,13 @@ class NetworkService {
     public getNetworkId() {
         return 0;
     }
+
+    public getNetworkReserve() {
+        return {
+            BaseReserve: 10,
+            OwnerReserve: 2,
+        };
+    }
 }
 
 export default new NetworkService();
