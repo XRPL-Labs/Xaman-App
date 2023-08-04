@@ -8,7 +8,7 @@ export default class BaseRepository extends EventEmitter {
     realm: Realm;
     schema: ObjectSchema;
 
-    normalizeQuery = (query: string | Object): string => {
+    normalizeQuery = (query: string | { [key: string]: any }): string => {
         if (isString(query)) return query;
 
         if (isObject(query)) {
@@ -23,8 +23,6 @@ export default class BaseRepository extends EventEmitter {
                     let filter = '';
 
                     if (isObject(properties)) {
-                        // FIXME
-                        // @ts-ignore
                         type = properties.type;
                     } else {
                         type = properties;
@@ -78,7 +76,7 @@ export default class BaseRepository extends EventEmitter {
         return this.realm.objects(this.schema.name).filtered(`${key} == "${val}"`);
     };
 
-    findOne = (query: string | object): any => {
+    findOne = (query: string | { [key: string]: any }): any => {
         const result = this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {
@@ -92,7 +90,7 @@ export default class BaseRepository extends EventEmitter {
         throw new Error('Got more than one result');
     };
 
-    query = (query: string | object): Results<any> => {
+    query = (query: string | { [key: string]: any }): Results<any> => {
         return this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
     };
 

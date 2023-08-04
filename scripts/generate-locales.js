@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const fetch = require('node-fetch');
 const moment = require('moment/min/moment-with-locales');
 
 const translationMeta = {};

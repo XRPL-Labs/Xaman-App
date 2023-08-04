@@ -1,12 +1,12 @@
 import { memoize, has, get, assign } from 'lodash';
 
-import Amount from '@common/libs/ledger/parser/common/amount';
 
 import AccountRepository from '@store/repositories/account';
 import ContactRepository from '@store/repositories/contact';
 
 import LedgerService from '@services/LedgerService';
 import BackendService from '@services/BackendService';
+import Amount from '@common/libs/ledger/parser/common/amount';
 
 export interface PayIDInfo {
     account: string;
@@ -189,7 +189,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                         return (
                             typeof tx.tx.TransactionType === 'string' &&
                             typeof tx.tx.DestinationTag !== 'undefined' &&
-                            tx.tx.DestinationTag > 9999
+                            Number(tx.tx.DestinationTag) > 9999
                         );
                     }).length;
 
