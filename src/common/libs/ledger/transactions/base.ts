@@ -9,6 +9,8 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountModel } from '@store/models';
 
+import Localize from '@locale';
+
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -21,8 +23,6 @@ import {
     TransactionTypes,
     VerifyResultType,
 } from '@common/libs/ledger/types';
-
-import Localize from '@locale';
 
 import Meta from '../parser/meta';
 import LedgerDate from '../parser/common/date';
@@ -122,7 +122,7 @@ class BaseTransaction {
      * @param {number} ledgerOffset max ledger gap
      * @returns {void}
      */
-    populateLastLedgerSequence = (ledgerOffset = 10) => {
+    populateLastLedgerSequence = (ledgerOffset: number = 10): void => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
             return;
@@ -341,7 +341,7 @@ class BaseTransaction {
 
         // AccountDelete transactions require at least the owner reserve amount
         if (this.TransactionType === TransactionTypes.AccountDelete) {
-            const { OwnerReserve } = LedgerService.getNetworkReserve();
+            const { OwnerReserve } = NetworkService.getNetworkReserve();
             baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
         }
 

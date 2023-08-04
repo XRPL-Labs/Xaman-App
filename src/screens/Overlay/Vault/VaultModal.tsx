@@ -11,7 +11,7 @@ import RNTangemSdk from 'tangem-sdk-react-native';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 
-import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
@@ -251,7 +251,7 @@ class VaultModal extends Component<Props, State> {
             }
 
             // get current network definitions
-            let definitions = LedgerService.getNetworkDefinitions();
+            let definitions = NetworkService.getNetworkDefinitions();
 
             // if any definitions then wrap them in the object
             if (definitions) {

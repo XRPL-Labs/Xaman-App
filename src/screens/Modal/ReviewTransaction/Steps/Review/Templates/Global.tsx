@@ -2,7 +2,7 @@ import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
 import { Alert, Text, View } from 'react-native';
 
-import { LedgerService, NetworkService, StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
@@ -110,7 +110,7 @@ class GlobalTemplate extends Component<Props, State> {
 
             if (shouldOverrideFee) {
                 // calculate and persist the transaction fees
-                let { availableFees } = await LedgerService.getAvailableNetworkFee();
+                let { availableFees } = await NetworkService.getAvailableNetworkFee();
 
                 // normalize suggested and available fees base on transaction type
                 availableFees = availableFees.map((fee: FeeItem) => {

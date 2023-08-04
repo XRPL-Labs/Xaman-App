@@ -445,7 +445,7 @@ class RecipientStep extends Component<Props, State> {
                         Navigator.showAlertModal({
                             type: 'warning',
                             text: Localize.t('send.destinationCannotActivateWithIOU', {
-                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                                baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                             }),
                             buttons: [
                                 {
@@ -464,13 +464,13 @@ class RecipientStep extends Component<Props, State> {
                 // IMMEDIATE REJECT
                 if (
                     typeof currency === 'string' &&
-                    parseFloat(amount) < LedgerService.getNetworkReserve().BaseReserve
+                    parseFloat(amount) < NetworkService.getNetworkReserve().BaseReserve
                 ) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'warning',
                             text: Localize.t('send.destinationNotExistTooLittleToCreate', {
-                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                                baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                             }),
                             buttons: [
                                 {
@@ -488,7 +488,7 @@ class RecipientStep extends Component<Props, State> {
                 // check if the amount will create the account
                 if (
                     typeof currency === 'string' &&
-                    parseFloat(amount) >= LedgerService.getNetworkReserve().BaseReserve &&
+                    parseFloat(amount) >= NetworkService.getNetworkReserve().BaseReserve &&
                     passedChecks.indexOf(PassableChecks.AMOUNT_CREATE_ACCOUNT) === -1
                 ) {
                     setTimeout(() => {
@@ -496,7 +496,7 @@ class RecipientStep extends Component<Props, State> {
                             type: 'warning',
                             text: Localize.t('send.destinationNotExistCreationWarning', {
                                 amount,
-                                baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                                baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                             }),
                             buttons: [
                                 {
@@ -681,7 +681,7 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // calculate and persist the transaction fees
-            const { availableFees } = await LedgerService.getAvailableNetworkFee();
+            const { availableFees } = await NetworkService.getAvailableNetworkFee();
 
             setAvailableFees(availableFees);
             // set the suggested fee as selected fee

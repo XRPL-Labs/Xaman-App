@@ -9,9 +9,6 @@ import { has, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { NetworkConfig } from '@common/constants';
 
-import NetworkRepository from '@store/repositories/network';
-import { CoreModel, NetworkModel } from '@store/models';
-
 import {
     LedgerMarker,
     SubmitResultType,
@@ -20,7 +17,6 @@ import {
     GatewayBalancesResponse,
     AccountInfoResponse,
     AccountObjectsResponse,
-    FeeResponse,
     LedgerTrustline,
     LedgerEntryResponse,
     RippleStateLedgerEntry,
@@ -49,165 +45,18 @@ declare interface LedgerService {
 
 /* Service  ==================================================================== */
 class LedgerService extends EventEmitter {
-    networkReserve: any;
     logger: any;
-    ledgerListener: any;
 
     constructor() {
         super();
-
-        // cache network reserve
-        this.networkReserve = undefined;
 
         // create logger
         this.logger = LoggerService.createLogger('Ledger');
     }
 
-    initialize = (coreSettings: CoreModel) => {
-        return new Promise<void>((resolve, reject) => {
-            try {
-                // set default network reserve base on prev values
-                const { network } = coreSettings;
-
-                this.networkReserve = {
-                    base: network?.baseReserve,
-                    owner: network?.ownerReserve,
-                };
-
-                this.logger.debug(
-                    `Current Network Base/Owner reserve: ${this.networkReserve.base}/${this.networkReserve.owner}`,
-                );
-
-                // on network service connect set ledger listener if not set
-                NetworkService.on('connect', this.onNetworkConnect);
-
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
-    };
-
-    /**
-     * Listener for when network is connected
-     */
-    onNetworkConnect = (networkId: number) => {
-        // Set Ledger listener for tracking the base/owner reserve
-
-        // clear if exist
-        if (this.ledgerListener) {
-            NetworkService.offEvent('ledger', this.updateNetworkReserve);
-        }
-        // subscribe
-        this.ledgerListener = NetworkService.onEvent('ledger', this.updateNetworkReserve);
-
-        // update the network definitions
-        this.updateNetworkDefinitions(networkId);
-    };
-
     /**
      * Update network reserve
      */
-    updateNetworkDefinitions = (networkId: number) => {
-        // get the network object
-        const network = NetworkRepository.findOne({ id: networkId }) as NetworkModel;
-        // include definitions hash if exist in the request
-        const request = {
-            command: 'server_definitions',
-        };
-
-        let definitionsHash = '';
-
-        if (network.definitions) {
-            definitionsHash = network.definitions.hash as string;
-            Object.assign(request, { hash: definitionsHash });
-        }
-
-        NetworkService.send(request)
-            .then(async (resp: any) => {
-                // an error happened
-                if ('error' in resp) {
-                    // ignore
-                    return;
-                }
-
-                // nothing has been changed
-                if (resp?.hash === definitionsHash) {
-                    return;
-                }
-
-                // remove unnecessary fields
-                // eslint-disable-next-line no-underscore-dangle
-                delete resp.__command;
-                // eslint-disable-next-line no-underscore-dangle
-                delete resp.__replyMs;
-
-                NetworkRepository.update({
-                    id: network.id,
-                    definitionsString: JSON.stringify(resp),
-                });
-            })
-            .catch((error: any) => {
-                this.logger.error(error);
-            });
-    };
-
-    /**
-     * Update network reserve
-     */
-    updateNetworkReserve = (ledger: { reserve_base: number; reserve_inc: number }) => {
-        const { reserve_base, reserve_inc } = ledger;
-
-        const reserveBase = new BigNumber(reserve_base).dividedBy(1000000.0).toNumber();
-        const reserveOwner = new BigNumber(reserve_inc).dividedBy(1000000.0).toNumber();
-
-        if (reserveBase && reserveOwner) {
-            const { base, owner } = this.networkReserve;
-
-            if (reserveBase !== base || reserveOwner !== owner) {
-                this.logger.debug(`Network Base/Owner reserve changed to ${reserveBase}/${reserveOwner}`);
-
-                // store the changes locally
-                this.networkReserve = {
-                    base: reserveBase,
-                    owner: reserveOwner,
-                };
-
-                // persist new network base/owner reserve
-                NetworkRepository.update({
-                    id: NetworkService.getNetworkId(),
-                    baseReserve: reserveBase,
-                    ownerReserve: reserveOwner,
-                });
-            }
-        }
-    };
-
-    /**
-     * Get current network definitions
-     */
-    getNetworkDefinitions = (): any => {
-        // get connected networkId from network service
-        const network = NetworkRepository.findOne({ id: NetworkService.getNetworkId() });
-
-        if (network && network.definitions) {
-            return network.definitions;
-        }
-
-        return undefined;
-    };
-
-    /**
-     * Get current network base and owner reserve
-     */
-    getNetworkReserve = (): { BaseReserve: number; OwnerReserve: number } => {
-        const { base, owner } = this.networkReserve;
-
-        return {
-            BaseReserve: base,
-            OwnerReserve: owner,
-        };
-    };
 
     /**
      * Get Current ledger status
@@ -239,13 +88,6 @@ class LedgerService extends EventEmitter {
             Object.assign(request, options);
         }
         return NetworkService.send(request);
-    };
-
-    /**
-     * get ledger fee info
-     */
-    getLedgerFee = (): Promise<FeeResponse> => {
-        return NetworkService.send({ command: 'fee' });
     };
 
     /**
@@ -375,96 +217,6 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Get available fees on network base on the load
-     * NOTE: values are in drop
-     */
-    getAvailableNetworkFee = (): Promise<any> => {
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
-            try {
-                const feeDataSet = await this.getLedgerFee();
-
-                // set the suggested fee base on queue percentage
-                const { current_queue_size, max_queue_size } = feeDataSet;
-                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
-
-                const suggestedFee = queuePercentage.isEqualTo(1)
-                    ? 'feeHigh'
-                    : queuePercentage.isEqualTo(0)
-                    ? 'feeLow'
-                    : 'feeMedium';
-
-                // set the drops values to BigNumber instance
-                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
-                    .multipliedBy(1.5)
-                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
-                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
-                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
-
-                // calculate fees
-                const feeLow = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee,
-                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
-                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
-                    new BigNumber(1000),
-                ).toNumber();
-
-                const feeMedium = BigNumber.minimum(
-                    queuePercentage.isGreaterThan(0.1)
-                        ? minimumFee
-                              .plus(medianFee)
-                              .plus(openLedgerFee)
-                              .dividedBy(3)
-                              .integerValue(BigNumber.ROUND_HALF_CEIL)
-                        : queuePercentage.isEqualTo(0)
-                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
-                        : BigNumber.maximum(
-                              minimumFee.multipliedBy(10),
-                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
-                          ),
-
-                    new BigNumber(feeLow).multipliedBy(15),
-                    new BigNumber(10000),
-                ).toNumber();
-
-                const feeHigh = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee.multipliedBy(10),
-                        BigNumber.maximum(medianFee, openLedgerFee)
-                            .multipliedBy(1.1)
-                            .integerValue(BigNumber.ROUND_HALF_CEIL),
-                    ),
-                    new BigNumber(100000),
-                ).toNumber();
-
-                resolve({
-                    availableFees: [
-                        {
-                            type: 'low',
-                            value: feeLow,
-                            suggested: suggestedFee === 'feeLow',
-                        },
-                        {
-                            type: 'medium',
-                            value: feeMedium,
-                            suggested: suggestedFee === 'feeMedium',
-                        },
-                        {
-                            type: 'high',
-                            value: feeHigh,
-                            suggested: suggestedFee === 'feeHigh',
-                        },
-                    ],
-                });
-            } catch (e) {
-                this.logger.warn('Unable to calculate available network fees:', e);
-                reject(new Error('Unable to calculate available network fees!'));
-            }
-        });
-    };
-
-    /**
      * Get account obligation lines
      */
     getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
@@ -532,7 +284,7 @@ class LedgerService extends EventEmitter {
                         has(accountInfo, ['account_data', 'OwnerCount'])
                     ) {
                         const { Balance, OwnerCount } = accountInfo.account_data;
-                        const { BaseReserve, OwnerReserve } = this.getNetworkReserve();
+                        const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
 
                         const balance = new BigNumber(Balance);
 
@@ -587,24 +339,23 @@ class LedgerService extends EventEmitter {
      * Get account blocker objects
      * Note: should look for marker as it can be not in first page
      */
-    getAccountBlockerObjects = (
+    getAccountBlockerObjects = async (
         account: string,
         marker?: string,
         combined = [] as LedgerEntriesTypes[],
     ): Promise<LedgerEntriesTypes[]> => {
-        return this.getAccountObjects(account, { deletion_blockers_only: true, marker }).then((resp) => {
-            const { account_objects, marker: _marker } = resp;
-            if (_marker && _marker !== marker) {
-                return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
-            }
-            return account_objects.concat(combined);
-        });
+        const resp = await this.getAccountObjects(account, { deletion_blockers_only: true, marker });
+        const { account_objects, marker: _marker } = resp;
+        if (_marker && _marker !== marker) {
+            return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
+        }
+        return account_objects.concat(combined);
     };
 
     /**
      * Get account line base on provided peer
      */
-    getFilteredAccountLine = (account: string, peer: Issuer): Promise<LedgerTrustline> => {
+    getFilteredAccountLine = async (account: string, peer: Issuer): Promise<LedgerTrustline> => {
         return this.getLedgerEntry({
             ripple_state: { accounts: [account, peer.issuer], currency: peer.currency },
         })

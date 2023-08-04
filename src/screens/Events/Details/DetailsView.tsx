@@ -1522,10 +1522,10 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {changes.action === 'INC'
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
-                                  ownerReserve: Number(changes.value) * LedgerService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
                               })
                             : Localize.t('events.thisTransactionDecreaseAccountReserve', {
-                                  ownerReserve: Number(changes.value) * LedgerService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
                               })}
                     </Text>
                 </View>

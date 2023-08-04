@@ -67,7 +67,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             isLoading: true,
             accountObjects: [],
             nfTokenPageCount: 0,
-            networkReserve: LedgerService.getNetworkReserve(),
+            networkReserve: NetworkService.getNetworkReserve(),
         };
     }
 

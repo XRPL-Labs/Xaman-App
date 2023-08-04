@@ -7,7 +7,7 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, V
 
 import { AppScreens } from '@common/constants';
 
-import { LedgerService, PushNotificationsService, NetworkService, StyleService } from '@services';
+import { PushNotificationsService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
@@ -366,7 +366,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     type: 'error',
                     title: Localize.t('global.danger'),
                     text: Localize.t('account.deleteAccountWarning', {
-                        ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
                     }),
                     buttons: [
                         {

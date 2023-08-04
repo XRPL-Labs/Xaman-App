@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 import { AccountModel } from '@store/models';
 
@@ -13,7 +13,7 @@ const CalculateAvailableBalance = (account: AccountModel, allowNegative = false)
         return 0;
     }
 
-    const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
+    const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
 
     // calculate the spendable amount
     const spendable = account.balance - BaseReserve - account.ownerCount * OwnerReserve;
@@ -36,7 +36,7 @@ const CalculateTotalReserve = (account: AccountModel): number => {
         return 0;
     }
 
-    const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
+    const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
     // calculate the spendable amount
     return account.ownerCount * OwnerReserve + BaseReserve;
 };

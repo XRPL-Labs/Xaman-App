@@ -2,10 +2,12 @@
  * Network service
  */
 import EventEmitter from 'events';
+import BigNumber from 'bignumber.js';
 import { Platform } from 'react-native';
-import { XrplClient } from 'xrpl-client';
+import { ServerInfoResponse, XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
+import NetworkRepository from '@store/repositories/network';
 import { CoreModel, NetworkModel, NodeModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
@@ -33,28 +35,31 @@ declare interface NetworkService {
 class NetworkService extends EventEmitter {
     public network: NetworkModel;
     public connection: XrplClient;
-
-    private timeoutSeconds: number;
-    private origin: string;
     private status: NetworkStateStatus;
+    private networkReserve: any;
     private shownErrorDialog: boolean;
+
+    private ledgerListener: any;
     private logger: any;
+
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
+
+    static TIMEOUT_SECONDS = 40;
+    static ORIGIN = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
 
     constructor() {
         super();
 
         this.network = undefined;
         this.connection = undefined;
-        this.timeoutSeconds = 40;
-        this.origin = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
         this.status = NetworkStateStatus.Disconnected;
+        this.networkReserve = undefined;
         this.shownErrorDialog = false;
 
         this.logger = LoggerService.createLogger('Network');
 
-        // proxy events
+        // proxy on events
         this.onEvent = (event: string, fn: any) => {
             if (this.connection) {
                 return this.connection.addListener(event, fn);
@@ -62,7 +67,7 @@ class NetworkService extends EventEmitter {
             return undefined;
         };
 
-        // proxy remove event
+        // proxy off event
         this.offEvent = (event: string, fn: any) => {
             if (this.connection) {
                 return this.connection.removeListener(event, fn);
@@ -74,8 +79,18 @@ class NetworkService extends EventEmitter {
     initialize = (coreSettings: CoreModel) => {
         return new Promise<void>((resolve, reject) => {
             try {
-                // set the network
+                // set the current network
                 this.network = coreSettings.network;
+
+                // set current network reserve
+                this.networkReserve = {
+                    base: this.network?.baseReserve,
+                    owner: this.network?.ownerReserve,
+                };
+
+                this.logger.debug(
+                    `Current Network Base/Owner reserve: ${this.networkReserve.base}/${this.networkReserve.owner}`,
+                );
 
                 // listen on navigation root change
                 NavigationService.on('setRoot', this.onRootChange);
@@ -177,7 +192,7 @@ class NetworkService extends EventEmitter {
      * Get connected network nativeAsset
      * @returns {string}
      */
-    getNativeAsset = () => {
+    getNativeAsset = (): string => {
         return this.network.nativeAsset;
     };
 
@@ -185,16 +200,129 @@ class NetworkService extends EventEmitter {
      * Get connected network id
      * @returns {number}
      */
-    getNetworkId = () => {
+    getNetworkId = (): number => {
         return this.network.id;
     };
 
     /**
      * Get connected network instance
-     * @returns {number}
+     * @returns {NetworkModel}
      */
     getNetwork = (): NetworkModel => {
         return this.network;
+    };
+
+    /**
+     * Get current network definitions
+     */
+    getNetworkDefinitions = (): any => {
+        if (this.network && this.network.definitions) {
+            return this.network.definitions;
+        }
+
+        return undefined;
+    };
+
+    /**
+     * Get current network base and owner reserve
+     */
+    getNetworkReserve = (): { BaseReserve: number; OwnerReserve: number } => {
+        const { base, owner } = this.networkReserve;
+
+        return {
+            BaseReserve: base,
+            OwnerReserve: owner,
+        };
+    };
+
+    /**
+     * Get available fees on network base on the load
+     * NOTE: values are in drop
+     */
+    getAvailableNetworkFee = (): Promise<any> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                const feeDataSet = await this.send({ command: 'fee' });
+
+                // set the suggested fee base on queue percentage
+                const { current_queue_size, max_queue_size } = feeDataSet;
+                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
+
+                const suggestedFee = queuePercentage.isEqualTo(1)
+                    ? 'feeHigh'
+                    : queuePercentage.isEqualTo(0)
+                    ? 'feeLow'
+                    : 'feeMedium';
+
+                // set the drops values to BigNumber instance
+                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
+                    .multipliedBy(1.5)
+                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
+                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
+                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
+
+                // calculate fees
+                const feeLow = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee,
+                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
+                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
+                    new BigNumber(1000),
+                ).toNumber();
+
+                const feeMedium = BigNumber.minimum(
+                    queuePercentage.isGreaterThan(0.1)
+                        ? minimumFee
+                              .plus(medianFee)
+                              .plus(openLedgerFee)
+                              .dividedBy(3)
+                              .integerValue(BigNumber.ROUND_HALF_CEIL)
+                        : queuePercentage.isEqualTo(0)
+                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
+                        : BigNumber.maximum(
+                              minimumFee.multipliedBy(10),
+                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
+                          ),
+
+                    new BigNumber(feeLow).multipliedBy(15),
+                    new BigNumber(10000),
+                ).toNumber();
+
+                const feeHigh = BigNumber.minimum(
+                    BigNumber.maximum(
+                        minimumFee.multipliedBy(10),
+                        BigNumber.maximum(medianFee, openLedgerFee)
+                            .multipliedBy(1.1)
+                            .integerValue(BigNumber.ROUND_HALF_CEIL),
+                    ),
+                    new BigNumber(100000),
+                ).toNumber();
+
+                resolve({
+                    availableFees: [
+                        {
+                            type: 'low',
+                            value: feeLow,
+                            suggested: suggestedFee === 'feeLow',
+                        },
+                        {
+                            type: 'medium',
+                            value: feeMedium,
+                            suggested: suggestedFee === 'feeMedium',
+                        },
+                        {
+                            type: 'high',
+                            value: feeHigh,
+                            suggested: suggestedFee === 'feeHigh',
+                        },
+                    ],
+                });
+            } catch (e) {
+                this.logger.warn('Unable to calculate available network fees:', e);
+                reject(new Error('Unable to calculate available network fees!'));
+            }
+        });
     };
 
     /**
@@ -308,7 +436,7 @@ class NetworkService extends EventEmitter {
     send = (payload: any): Promise<any> => {
         return new Promise((resolve, reject) => {
             this.connection
-                .send(payload, { timeoutSeconds: this.timeoutSeconds })
+                .send(payload, { timeoutSeconds: NetworkService.TIMEOUT_SECONDS })
                 .then((res) => {
                     if (typeof res === 'object') {
                         resolve({
@@ -322,6 +450,110 @@ class NetworkService extends EventEmitter {
                 })
                 .catch(reject);
         });
+    };
+
+    /**
+     * Update network definitions
+     */
+    updateNetworkDefinitions = () => {
+        // include definitions hash if exist in the request
+        const request = {
+            command: 'server_definitions',
+        };
+
+        let definitionsHash = '';
+
+        if (this.network.definitions) {
+            definitionsHash = this.network.definitions.hash as string;
+            Object.assign(request, { hash: definitionsHash });
+        }
+
+        this.send(request)
+            .then(async (resp: any) => {
+                // an error happened
+                if ('error' in resp) {
+                    // ignore
+                    return;
+                }
+
+                // nothing has been changed
+                if (resp?.hash === definitionsHash) {
+                    return;
+                }
+
+                // remove unnecessary fields
+                delete resp.__command;
+                delete resp.__replyMs;
+
+                NetworkRepository.update({
+                    id: this.network.id,
+                    definitionsString: JSON.stringify(resp),
+                });
+            })
+            .catch((error: any) => {
+                this.logger.error(error);
+            });
+    };
+
+    /**
+     * Update network enabled amendments
+     */
+    updateNetworkFeatures = () => {
+        this.send({
+            command: 'ledger_entry',
+            index: '7DB0788C020F02780A673DC74757F23823FA3014C1866E72CC4CD8B226CD6EF4',
+        })
+            .then(async (resp: any) => {
+                // ignore if error happened
+                if ('error' in resp || !Array.isArray(resp?.node?.Amendments)) {
+                    return;
+                }
+
+                // persist the details
+                NetworkRepository.update({
+                    id: this.network.id,
+                    amendments: resp.node.Amendments,
+                });
+            })
+            .catch((error: any) => {
+                this.logger.error(error);
+            });
+    };
+
+    /**
+     * Update network reserve state
+     */
+    updateNetworkReserve = () => {
+        this.send({ command: 'server_info' })
+            .then(async (resp: ServerInfoResponse) => {
+                // ignore if error happened
+                if ('error' in resp || typeof resp?.info?.validated_ledger !== 'object') {
+                    return;
+                }
+
+                const { reserve_base_xrp, reserve_inc_xrp } = resp.info.validated_ledger;
+                const { base, owner } = this.networkReserve;
+
+                if (reserve_base_xrp !== base || reserve_inc_xrp !== owner) {
+                    this.logger.debug(`Network Base/Owner reserve changed to ${reserve_base_xrp}/${reserve_inc_xrp}`);
+
+                    // store the changes locally
+                    this.networkReserve = {
+                        base: reserve_base_xrp,
+                        owner: reserve_inc_xrp,
+                    };
+
+                    // persist new network base/owner reserve
+                    NetworkRepository.update({
+                        id: this.network.id,
+                        baseReserve: reserve_base_xrp,
+                        ownerReserve: reserve_inc_xrp,
+                    });
+                }
+            })
+            .catch((error: any) => {
+                this.logger.error(error);
+            });
     };
 
     /**
@@ -347,8 +579,8 @@ class NetworkService extends EventEmitter {
         }
 
         // remove path from cluster node
-        if (connectedNode.endsWith(this.origin)) {
-            connectedNode = connectedNode.replace(this.origin, '');
+        if (connectedNode.endsWith(NetworkService.ORIGIN)) {
+            connectedNode = connectedNode.replace(NetworkService.ORIGIN, '');
         }
 
         // change network status
@@ -356,6 +588,9 @@ class NetworkService extends EventEmitter {
 
         // log the connection
         this.logger.debug(`Connected to node ${connectedNode} [${publicKey}]`);
+
+        // run post connect functions
+        [this.updateNetworkReserve, this.updateNetworkDefinitions, this.updateNetworkFeatures].forEach((fn) => fn());
 
         // emit on connect event
         this.emit('connect', this.network.id);
@@ -395,9 +630,9 @@ class NetworkService extends EventEmitter {
         // for MainNet we add the list of all nodes for fail over
         if (this.network.type === NetworkType.Main) {
             nodes = this.network.nodes.map((node: NodeModel) => {
-                // for cluster we add origin
+                // for cluster, we add origin
                 if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
-                    return `${node.endpoint}${this.origin}`;
+                    return `${node.endpoint}${NetworkService.ORIGIN}`;
                 }
                 return node.endpoint;
             });

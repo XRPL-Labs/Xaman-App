@@ -20,6 +20,7 @@ class Network extends Realm.Object<Network> {
     public ownerReserve: number;
     public defaultNode: any;
     public nodes: any[];
+    public amendments?: string[];
     public definitionsString?: string;
     public registerAt?: Date;
     public updatedAt?: Date;

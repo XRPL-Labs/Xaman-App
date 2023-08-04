@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, ScrollView, Alert } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -158,7 +159,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
         const payload = Payload.build(
             trustSet.Json,
             Localize.t('asset.addingAssetReserveDescription', {
-                ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
             }),
         );
 
