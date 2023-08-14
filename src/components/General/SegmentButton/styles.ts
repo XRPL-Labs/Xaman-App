@@ -4,26 +4,12 @@ import { AppSizes, AppFonts } from '@theme';
 
 const styles = StyleService.create({
     container: {
-        height: AppSizes.scale(65),
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        overflow: 'hidden',
+        paddingVertical: AppSizes.paddingSml,
     },
     button: {
-        flex: 1,
-        marginVertical: 15,
-    },
-    selectedButton: {
-        backgroundColor: '$tint',
-        borderRadius: 12,
-        shadowColor: '$background',
-        shadowOffset: { width: 0, height: 4 },
-        shadowRadius: 4,
-        shadowOpacity: 0.1,
-        // elevation: 1,
-    },
-    selectedButtonText: {
-        color: '$textPrimary',
+        borderRadius: AppSizes.scale(75) / 10,
+        marginRight: AppSizes.paddingExtraSml,
     },
     textContainer: {
         flex: 1,
@@ -35,6 +21,9 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
         color: '$grey',
+    },
+    buttonTextSelected: {
+        color: '$textContrast',
     },
 });
 

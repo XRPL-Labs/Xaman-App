@@ -7,7 +7,7 @@ export default StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 10,
-        paddingHorizontal: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingList,
     },
     tokenImageContainer: {
         marginRight: 10,

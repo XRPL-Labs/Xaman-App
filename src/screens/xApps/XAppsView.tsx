@@ -18,8 +18,8 @@ import { XAppOrigin } from '@common/libs/payload/types';
 import BackendService from '@services/BackendService';
 
 // components
-import { Header, Button, TouchableDebounce, Icon, SearchBar } from '@components/General';
-import { AppsList, HeaderMessage, CategorySelect } from '@components/Modules/XAppStore';
+import { Header, Button, TouchableDebounce, Icon, SearchBar, SegmentButton } from '@components/General';
+import { AppsList, HeaderMessage } from '@components/Modules/XAppStore';
 import { XAppShortList } from '@components/Modules/XAppShortList';
 
 import Localize from '@locale';
@@ -27,12 +27,14 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
     message: any;
     selectedCategory: string;
+    selectedCategoryIndex: number;
     categories: any;
     dataSource: any;
     isLoading: boolean;
@@ -60,6 +62,7 @@ class XAppsView extends Component<Props, State> {
 
         this.state = {
             message: undefined,
+            selectedCategoryIndex: 0,
             selectedCategory: 'popular',
             categories: undefined,
             dataSource: Array(8).fill(undefined),
@@ -151,12 +154,29 @@ class XAppsView extends Component<Props, State> {
         );
     };
 
-    onCategoryChange = (category: string) => {
+    onCategoryChange = (categoryIndex: number) => {
         const { categories } = this.state;
+
+        let category;
+
+        switch (categoryIndex) {
+            case 0:
+                category = 'popular';
+                break;
+            case 1:
+                category = 'recent';
+                break;
+            case 2:
+                category = 'all';
+                break;
+            default:
+                break;
+        }
 
         this.setState({
             dataSource: get(categories, category),
             selectedCategory: category,
+            selectedCategoryIndex: categoryIndex,
         });
     };
 
@@ -208,7 +228,7 @@ class XAppsView extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { message, categories, dataSource, selectedCategory, searchEnabled, isLoading } = this.state;
+        const { message, categories, dataSource, selectedCategoryIndex, searchEnabled, isLoading } = this.state;
 
         if (searchEnabled) {
             return (
@@ -238,25 +258,14 @@ class XAppsView extends Component<Props, State> {
                     onAppPress={this.openXApp}
                     containerStyle={styles.featuredContainer}
                 />
-                <CategorySelect
-                    categories={[
-                        {
-                            title: Localize.t('xapp.popular'),
-                            value: 'popular',
-                        },
-                        {
-                            title: Localize.t('xapp.recentlyUsed'),
-                            value: 'recent',
-                        },
-                        {
-                            title: Localize.t('xapp.all'),
-                            value: 'all',
-                        },
-                    ]}
-                    containerStyle={styles.categorySelectContainer}
-                    selected={selectedCategory}
-                    onSelect={this.onCategoryChange}
+
+                <SegmentButton
+                    selectedIndex={selectedCategoryIndex}
+                    containerStyle={AppStyles.paddingHorizontalSml}
+                    buttons={[Localize.t('xapp.popular'), Localize.t('xapp.recentlyUsed'), Localize.t('xapp.all')]}
+                    onPress={this.onCategoryChange}
                 />
+
                 <AppsList
                     onAppPress={this.openXApp}
                     dataSource={dataSource}

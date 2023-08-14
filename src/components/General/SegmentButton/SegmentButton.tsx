@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Text, View, ViewStyle } from 'react-native';
+import { View, ViewStyle } from 'react-native';
 
-import { TouchableDebounce } from '@components/General/TouchableDebounce';
+import { Button } from '@components/General/Button';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -68,23 +68,17 @@ class SegmentButton extends PureComponent<Props, State> {
         return (
             <View style={[styles.container, containerStyle]}>
                 {buttons.map((button, i) => (
-                    <TouchableDebounce
-                        activeOpacity={0.6}
-                        onPress={() => {
-                            this.onButtonPress(i);
-                        }}
-                        key={i}
-                        style={[styles.button, selectedIndex === i && styles.selectedButton]}
-                    >
-                        <View style={[styles.textContainer]}>
-                            <Text
-                                numberOfLines={1}
-                                style={[styles.buttonText, selectedIndex === i && styles.selectedButtonText]}
-                            >
-                                {button}
-                            </Text>
-                        </View>
-                    </TouchableDebounce>
+                    <Button
+                        key={`segment-button-${i}`}
+                        light
+                        roundedMini
+                        contrast={selectedIndex === i}
+                        label={button}
+                        style={styles.button}
+                        textStyle={[styles.buttonText, selectedIndex === i && styles.buttonTextSelected]}
+                        // eslint-disable-next-line react/jsx-no-bind
+                        onPress={this.onButtonPress.bind(null, i)}
+                    />
                 ))}
             </View>
         );

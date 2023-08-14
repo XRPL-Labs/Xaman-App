@@ -22,7 +22,7 @@ const styles = StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
     },
     appListContainer: {
-        paddingHorizontal: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingList,
     },
     searchBarContainer: {
         marginHorizontal: AppSizes.paddingSml,

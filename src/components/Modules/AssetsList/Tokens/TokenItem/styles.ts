@@ -7,7 +7,7 @@ export default StyleService.create({
         width: AppSizes.screen.width,
         flexDirection: 'row',
         backgroundColor: '$background',
-        paddingHorizontal: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingList,
     },
     currencyLabel: {
         fontSize: AppFonts.subtext.size,
@@ -28,13 +28,10 @@ export default StyleService.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingRight: 5,
     },
     brandAvatarContainer: {
         marginRight: 10,
-        paddingLeft: 5,
     },
-
     currencyAvatarContainer: {
         paddingRight: 5,
     },
