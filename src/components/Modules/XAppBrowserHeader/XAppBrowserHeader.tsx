@@ -9,9 +9,9 @@ import { Truncate } from '@common/utils/string';
 import { AccountRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 
+import { AppSizes, AppStyles } from '@theme';
 import { TouchableDebounce, Button, Avatar, Icon, TextPlaceholder } from '@components/General';
 
-import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -195,14 +195,14 @@ class XAppBrowserHeader extends Component<Props, State> {
                     >
                         <Icon name="IconRadio" size={18} style={AppStyles.imgColorGreen} />
                         <Text style={styles.networkText}>{network.name}</Text>
-                        <Icon name="IconChevronDown" size={22} />
+                        <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
                     </TouchableDebounce>
                     <TouchableDebounce
                         onPress={this.showAccountSelect}
                         style={[styles.expandableButton, AppStyles.flex3, AppStyles.flexEnd]}
                     >
                         <Text style={styles.addressText}>{Truncate(account.address, 30)}</Text>
-                        <Icon name="IconChevronDown" size={22} />
+                        <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
                     </TouchableDebounce>
                 </Animated.View>
             </>

@@ -1,5 +1,7 @@
-import StyleService from '@services/StyleService';
 import { Platform } from 'react-native';
+
+import StyleService from '@services/StyleService';
+
 import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
@@ -7,14 +9,14 @@ const styles = StyleService.create({
     headerContainer: {
         flexDirection: 'row',
         backgroundColor: '$background',
-        height: AppSizes.heightPercentageToDP(6) + Platform.select({ ios: AppSizes.statusBarHeight, default: 0 }),
-        paddingTop: Platform.select({ ios: AppSizes.statusBarHeight, default: 10 }),
+        height:
+            AppSizes.heightPercentageToDP(6) +
+            Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
+        paddingTop: Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
         paddingBottom: 5,
         zIndex: 1,
-        shadowColor: '$light',
-        shadowOffset: { width: 0, height: 10 },
-        shadowRadius: 5,
-        shadowOpacity: 1,
+        borderBottomColor: '$tint',
+        borderBottomWidth: 1,
     },
     headerLeftContainer: {
         flex: 1,
@@ -66,6 +68,9 @@ const styles = StyleService.create({
     },
     networkIcon: {
         tintColor: '$green',
+    },
+    iconChevronDown: {
+        tintColor: '$contrast',
     },
 });
 
