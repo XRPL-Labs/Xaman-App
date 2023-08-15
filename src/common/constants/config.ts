@@ -9,7 +9,7 @@ export default {
     termOfUseURL: 'https://xumm.app/app/webviews/tos-privacy/',
     creditsURL: 'https://xumm.app/app/webviews/credits/',
     changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
-    explorerProxy: 'https://explorer.xumm.app/',
+    explorerProxy: 'https://xumm.app/explorer',
 
     // persist storage config
     storage: {
