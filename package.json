@@ -8,6 +8,7 @@
     "validate": "eslint --ignore-path .gitignore --ignore-pattern node_modules --quiet . && yarn run tsc",
     "tsc": "NODE_OPTIONS=--max_old_space_size=12000 tsc --noEmit",
     "test": "jest --forceExit --detectOpenHandles",
+    "sync-locals": "node scripts/sync-locales.js sync",
     "update-snapshots": "jest --updateSnapshot",
     "storybook": "start-storybook -p 7007",
     "postinstall": "make post-install"
