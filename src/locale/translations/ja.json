@@ -508,7 +508,7 @@
     "doNotRemindMe": "再通知しない",
     "domain": "ドメイン",
     "done": "完了",
-    "edit": "編集する",
+    "edit": "編集",
     "emailHash": "EmailHash",
     "empty": "まだ中身がありません",
     "enterPasscode": "パスコードを入力してください",
@@ -788,7 +788,7 @@
     "uriTokeId": "URI Token Id"
   },
   "home": {
-    "addAccount": "アカウントを追加する",
+    "addAccount": "アカウント追加",
     "addAsset": "追加",
     "addCurrency": "追加",
     "addressBalance": "アドレスと残高：",
@@ -800,7 +800,7 @@
     "explainMyBalance": "残高照会",
     "hideBalance": "非表示",
     "howActivateMyAccount": "アカウントを有効化するには",
-    "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP台帳を有効にするには、少なくとも%{baseReserve} XRPをアカウントに入金する必要があります。この２０ＸＲＰは失われることはありません：あなたのアカウントに残りますが、使用することはできません。アカウントの使用を開始するには、%{baseReserve} XRP以上の入金がアカウントに行われていることを確認してください。",
+    "howActivateMyAccountDesc": "スパムアカウントの作成を防ぐために、XRP台帳を有効にするには、少なくとも%{baseReserve} XRPをアカウントに入金する必要があります。この %{baseReserve} XRP は失われることはありません：あなたのアカウントに残りますが、使用することはできません。アカウントの使用を開始するには、%{baseReserve} XRP以上の入金がアカウントに行われていることを確認してください。",
     "iOwnTheKeys": "キーを持っている",
     "openSignRequest": "署名リクエストを開く",
     "otherAssets": "その他の資産",

@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Är du säker på att du vill byta %{payAmount} %{payCurrency} %{getCurrency}?",
     "errorDuringExchange": "Fel vid utväxling: %{error}",
     "exchangeByThirdPartyMessage": "Om du vill skapa ett erbjudande för exekvering på en begärd prisnivå kan du använda XUMM-funktionen XUMM-aktiverad XRP Toolkit för att skapa en beställningsorder.",
-    "exchangeRate": "Växelkurs (%{exchangeRate} XRP)",
+    "exchangeRate": "Växelkurs",
     "exchangeRateInToken": "Växelkurs: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Utbyte",
     "failedExchange": "Det går inte att växla just nu på grund av brist på likviditet eller uppdaterade växelkurser.",

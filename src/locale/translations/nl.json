@@ -15,7 +15,7 @@
     "accountLabel": "Account label",
     "accountMaxLabelLengthError": "Het account label moet korter zijn dan 16 karakters!",
     "accountRemoveWarning": "Uw account wordt permanent uit XUMM verwijderd. Weet u dat zeker?",
-    "accountReserveNotShownExplain": "Uw XRP reserve (%{baseReserve} XRP) zal niet als balans in XUMM zichtbaar zijn, maar u kunt uw reserve bekijken met de knop \"Verklaar mijn saldo\" in het home-scherm, boven uw XRP-balans.\r\n",
+    "accountReserveNotShownExplain": "Uw XRP reserve zal niet als balans in XUMM zichtbaar zijn, maar u kunt uw reserve bekijken met de knop \"Verklaar mijn saldo\" in het home-scherm, boven uw XRP-balans.\r\n",
     "accountSettings": "Bewerk account",
     "accountSettingsDescription": "Je kunt hier de instellingen of het label van je account veranderen.",
     "accountSetupCompleted": "Account toevoegen is voltooid.",
