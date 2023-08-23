@@ -307,8 +307,7 @@ class BackendService {
         return ApiService.addTransaction.post(null, {
             hash,
             node: network.node,
-            nodeType: network.type,
-            nodeKey: network.key,
+            nodeType: network.key,
         });
     };
 

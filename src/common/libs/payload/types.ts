@@ -86,13 +86,11 @@ export interface PatchRejectType {
 export interface Environment {
     nodeuri: string;
     nodetype: string;
-    nodekey: string;
 }
 
 export interface Dispatched {
     to: string;
     nodetype: string;
-    nodekey: string;
     result: string;
 }
 

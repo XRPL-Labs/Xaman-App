@@ -599,7 +599,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
-            const { node, networkKey, type } = NetworkService.getConnectionDetails();
+            const { node, networkKey } = NetworkService.getConnectionDetails();
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,
@@ -609,8 +609,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
                 environment: {
                     nodeuri: node,
-                    nodetype: type,
-                    nodekey: networkKey,
+                    nodetype: networkKey,
                 },
             } as PatchSuccessType;
 
@@ -657,8 +656,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 payload.patch({
                     dispatched: {
                         to: submitResult.network.node,
-                        nodetype: submitResult.network.type,
-                        nodekey: submitResult.network.key,
+                        nodetype: submitResult.network.key,
                         result: submitResult.engineResult,
                     },
                 });

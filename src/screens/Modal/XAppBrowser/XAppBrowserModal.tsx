@@ -519,8 +519,7 @@ class XAppBrowserModal extends Component<Props, State> {
             locale: Localize.getCurrentLocale(),
             currency: coreSettings.currency,
             style: coreSettings.theme,
-            nodetype: network.type,
-            nodekey: network.key,
+            nodetype: network.key,
             nodewss: network.defaultNode.endpoint,
         };
 
