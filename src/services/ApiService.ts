@@ -349,8 +349,8 @@ class ApiService {
                 if (typeof paramsClone === 'object') {
                     // Replace matching params in API routes eg. /recipes/{param}/foo
                     for (const param in paramsClone) {
-                        if (endpoint.includes(`{${param}}`)) {
-                            urlEndpoint = endpoint.split(`{${param}}`).join(paramsClone[param]);
+                        if (urlEndpoint.includes(`{${param}}`)) {
+                            urlEndpoint = urlEndpoint.split(`{${param}}`).join(paramsClone[param]);
                             delete paramsClone[param];
                         }
                     }
