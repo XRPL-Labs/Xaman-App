@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { Amendments } from '@common/constants';
+
 import { NetworkSchema } from '@store/models/schemas/latest';
 
 /* Model  ==================================================================== */
@@ -24,6 +26,10 @@ class Network extends Realm.Object<Network> {
     public definitionsString?: string;
     public registerAt?: Date;
     public updatedAt?: Date;
+
+    public isFeatureEnabled(amendment: keyof typeof Amendments): boolean {
+        return this.amendments.indexOf(Amendments[amendment]) > -1;
+    }
 
     get definitions(): Record<string, any> {
         if (this.definitionsString) {

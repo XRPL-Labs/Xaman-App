@@ -224,7 +224,7 @@ class VaultModal extends Component<Props, State> {
 
         try {
             if (!encryptionKey) {
-                throw new Error('No encryption key provided!');
+                throw new Error('Encryption key is required for signing with private key!');
             }
 
             // fetch private key from vault
@@ -251,12 +251,7 @@ class VaultModal extends Component<Props, State> {
             }
 
             // get current network definitions
-            let definitions = NetworkService.getNetworkDefinitions();
-
-            // if any definitions then wrap them in the object
-            if (definitions) {
-                definitions = new AccountLib.XrplDefinitions(definitions);
-            }
+            const definitions = NetworkService.getNetworkDefinitions();
 
             let signedObject = AccountLib.sign(transaction.Json, signerInstance, definitions) as SignedObjectType;
             signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };

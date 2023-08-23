@@ -4,6 +4,8 @@
 import EventEmitter from 'events';
 import BigNumber from 'bignumber.js';
 import { Platform } from 'react-native';
+
+import { XrplDefinitions } from 'xrpl-accountlib';
 import { ServerInfoResponse, XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
@@ -215,9 +217,9 @@ class NetworkService extends EventEmitter {
     /**
      * Get current network definitions
      */
-    getNetworkDefinitions = (): any => {
+    getNetworkDefinitions = (): XrplDefinitions => {
         if (this.network && this.network.definitions) {
-            return this.network.definitions;
+            return new XrplDefinitions(this.network.definitions);
         }
 
         return undefined;
