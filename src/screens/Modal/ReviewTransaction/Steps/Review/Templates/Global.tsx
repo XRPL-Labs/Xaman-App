@@ -45,7 +45,6 @@ export interface State {
 export interface FeeItem {
     type: string;
     value: number;
-    suggested?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -110,23 +109,22 @@ class GlobalTemplate extends Component<Props, State> {
 
             if (shouldOverrideFee) {
                 // calculate and persist the transaction fees
-                let { availableFees } = await NetworkService.getAvailableNetworkFee();
+                const { availableFees, suggested } = await NetworkService.getAvailableNetworkFee(transaction.Json);
 
                 // normalize suggested and available fees base on transaction type
-                availableFees = availableFees.map((fee: FeeItem) => {
+                const availableFeesNormalized = availableFees.map((fee: FeeItem) => {
                     return {
                         type: fee.type,
                         value: transaction.calculateFee(fee.value),
-                        suggested: fee.suggested,
                     };
                 });
 
                 // get suggested fee
-                const suggestedFee = find(availableFees, { suggested: true });
+                const suggestedFee = find(availableFeesNormalized, { type: suggested });
 
                 this.setState(
                     {
-                        availableFees,
+                        availableFees: availableFeesNormalized,
                         selectedFee: suggestedFee,
                     },
                     () => {
@@ -208,11 +206,11 @@ class GlobalTemplate extends Component<Props, State> {
         const { selectedFee } = this.state;
 
         switch (selectedFee.type) {
-            case 'low':
+            case 'LOW':
                 return StyleService.value('$green');
-            case 'medium':
+            case 'MEDIUM':
                 return StyleService.value('$orange');
-            case 'high':
+            case 'HIGH':
                 return StyleService.value('$red');
             default:
                 return StyleService.value('$textPrimary');
@@ -407,6 +405,35 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderHookParameters = () => {
+        const { transaction } = this.props;
+
+        if (isUndefined(transaction.HookParameters)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={styles.label}>{Localize.t('global.hookParameters')}</Text>
+                <View style={styles.contentBox}>
+                    {transaction.HookParameters.map((parameter, index: number) => {
+                        const { HookParameter } = parameter;
+
+                        return (
+                            <View key={`hook-parameter-${index}`} style={[]}>
+                                <Text style={styles.value}>
+                                    <Text style={styles.hookParamText}>{HookParameter.HookParameterName}</Text>
+                                    &nbsp;:&nbsp;
+                                    <Text style={styles.hookParamText}>{HookParameter.HookParameterValue}</Text>
+                                </Text>
+                            </View>
+                        );
+                    })}
+                </View>
+            </>
+        );
+    };
+
     renderMemos = () => {
         const { transaction } = this.props;
 
@@ -437,6 +464,7 @@ class GlobalTemplate extends Component<Props, State> {
     render() {
         return (
             <>
+                {this.renderHookParameters()}
                 {this.renderNetworkId()}
                 {this.renderTicketSequence()}
                 {this.renderSequence()}

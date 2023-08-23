@@ -77,6 +77,7 @@ class BaseTransaction {
             'SigningPubKey',
             'TxnSignature',
             'NetworkID',
+            'HookParameters',
         ];
 
         // memorize balance and owner count changes
@@ -716,6 +717,15 @@ class BaseTransaction {
 
     get NetworkID(): number {
         return get(this, ['tx', 'NetworkID'], undefined);
+    }
+
+    get HookParameters(): {
+        HookParameter: {
+            HookParameterName: string;
+            HookParameterValue: string;
+        };
+    }[] {
+        return get(this, ['tx', 'HookParameters'], undefined);
     }
 }
 

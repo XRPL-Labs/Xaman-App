@@ -141,6 +141,11 @@ const styles = StyleService.create({
         borderBottomRightRadius: 12,
         borderTopColor: '$lightGrey',
     },
+    hookParamText: {
+        backgroundColor: '$tint',
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
 });
 
 export default styles;
