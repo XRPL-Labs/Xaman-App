@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 
 import { PushNotificationsService, NetworkService, StyleService } from '@services';
 
-import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, CurrencyRepository, NetworkRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
@@ -80,10 +80,14 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
 
         // check if any forced network applied
-        const forcedNetwork = payload.getForcedNetwork();
-        if (forcedNetwork && NetworkService.getNetworkId() !== forcedNetwork) {
-            this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
-            return;
+        const forcedNetworkId = payload.getForcedNetwork();
+        if (typeof forcedNetworkId === 'number') {
+            const forcedNetwork = NetworkRepository.findOne({ id: forcedNetworkId });
+
+            if (forcedNetwork && NetworkService.getNetworkId() !== forcedNetwork.id) {
+                this.setError(Localize.t('payload.payloadForceNetworkError', { network: `"${forcedNetwork.name}"` }));
+                return;
+            }
         }
 
         // set transaction
@@ -595,7 +599,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
-            const { node, networkId, type } = NetworkService.getConnectionDetails();
+            const { node, networkKey, type } = NetworkService.getConnectionDetails();
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,
@@ -606,7 +610,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 environment: {
                     nodeuri: node,
                     nodetype: type,
-                    nodeid: networkId,
+                    nodekey: networkKey,
                 },
             } as PatchSuccessType;
 
@@ -652,9 +656,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // patch the payload again with submit result
                 payload.patch({
                     dispatched: {
-                        to: submitResult.node,
-                        nodetype: submitResult.nodeType,
-                        nodeid: submitResult.nodeId,
+                        to: submitResult.network.node,
+                        nodetype: submitResult.network.type,
+                        nodekey: submitResult.network.key,
                         result: submitResult.engineResult,
                     },
                 });

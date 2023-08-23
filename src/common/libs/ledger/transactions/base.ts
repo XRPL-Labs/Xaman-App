@@ -298,8 +298,12 @@ class BaseTransaction {
                 success: false,
                 engineResult: 'telFAILED',
                 message: e?.message,
-                node: undefined,
-                nodeType: undefined,
+                network: {
+                    id: undefined,
+                    node: undefined,
+                    key: undefined,
+                    type: undefined,
+                },
             } as SubmitResultType;
 
             // set submit result

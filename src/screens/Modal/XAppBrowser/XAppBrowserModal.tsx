@@ -520,7 +520,7 @@ class XAppBrowserModal extends Component<Props, State> {
             currency: coreSettings.currency,
             style: coreSettings.theme,
             nodetype: network.type,
-            nodeid: network.id,
+            nodekey: network.key,
             nodewss: network.defaultNode.endpoint,
         };
 

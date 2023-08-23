@@ -101,9 +101,12 @@ export type SubmitResultType = {
     engineResult: string;
     message: string;
     hash?: string;
-    node: string;
-    nodeType: string;
-    nodeId: number;
+    network: {
+        id: number;
+        node: string;
+        type: string;
+        key: string;
+    };
 };
 
 /**

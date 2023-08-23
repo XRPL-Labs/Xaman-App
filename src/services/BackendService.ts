@@ -62,12 +62,22 @@ class BackendService {
     /*
     On Ledger submit transaction
     */
-    onLedgerTransactionSubmit = ({ hash, node, nodeType }: { hash: string; node: string; nodeType: string }) => {
+    onLedgerTransactionSubmit = ({
+        hash,
+        network,
+    }: {
+        hash: string;
+        network: {
+            node: string;
+            type: string;
+            key: string;
+        };
+    }) => {
         // only if hash is provided
         if (!hash) {
             return;
         }
-        this.addTransaction(hash, node, nodeType).catch((e: any) => {
+        this.addTransaction(hash, network).catch((e: any) => {
             this.logger.error('Add transaction error: ', e);
         });
     };
@@ -286,11 +296,19 @@ class BackendService {
     /*
     Report submitted transaction for security checks
     */
-    addTransaction = (hash: string, node: string, nodeType: string) => {
+    addTransaction = (
+        hash: string,
+        network: {
+            node: string;
+            type: string;
+            key: string;
+        },
+    ) => {
         return ApiService.addTransaction.post(null, {
             hash,
-            node,
-            nodeType,
+            node: network.node,
+            nodeType: network.type,
+            nodeKey: network.key,
         });
     };
 
@@ -309,16 +327,14 @@ class BackendService {
     Get details for an account address
     */
     getAddressInfo = (address: string) => {
-        return ApiService.addressInfo.get(address, null, {
-            'X-XummNet': NetworkService.getNetworkId(),
-        });
+        return ApiService.addressInfo.get(address);
     };
 
     /*
     Look up on username's and addresses
     */
     lookup = (content: string) => {
-        return ApiService.lookup.get(content, null, { 'X-XummNet': NetworkService.getNetworkId() });
+        return ApiService.lookup.get(content);
     };
 
     /*
@@ -329,12 +345,11 @@ class BackendService {
     };
 
     getXAppStoreListings = (category: string) => {
-        return ApiService.xAppsStore.get({ category, network: NetworkService.getNetworkId() });
+        return ApiService.xAppsStore.get({ category });
     };
     getXAppShortList = () => {
         return ApiService.xAppsShortList.get({
             featured: true,
-            network: NetworkService.getNetworkId(),
         });
     };
 
@@ -364,12 +379,12 @@ class BackendService {
     };
 
     getXLS20Details = (account: string, tokens: string[]) => {
-        return ApiService.xls20Details.post(null, { account, tokens }, { 'X-XummNet': NetworkService.getNetworkId() });
+        return ApiService.xls20Details.post(null, { account, tokens });
     };
 
     getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
-            .get({ account }, null, { 'X-XummNet': NetworkService.getNetworkId() })
+            .get({ account })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];

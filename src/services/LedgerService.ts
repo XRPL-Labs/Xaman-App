@@ -36,10 +36,7 @@ import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
 declare interface LedgerService {
-    on(
-        event: 'submitTransaction',
-        listener: (blob: string, hash: string, node: string, nodeType: string) => void,
-    ): this;
+    on(event: 'submitTransaction', listener: (blob: string, hash: string, network: {}) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -423,15 +420,18 @@ class LedgerService extends EventEmitter {
     submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
         try {
             // get connection details from network service
-            const { node, type: nodeType, networkId } = NetworkService.getConnectionDetails();
+            const { node, type: networkType, networkId, networkKey } = NetworkService.getConnectionDetails();
 
             // send event about we are about to submit the transaction
             this.emit('submitTransaction', {
                 blob: txBlob,
                 hash: txHash,
-                node,
-                nodeType,
-                nodeId: networkId,
+                network: {
+                    id: networkId,
+                    node,
+                    type: networkType,
+                    key: networkKey,
+                },
             });
 
             // submit the tx blob to the ledger
@@ -452,8 +452,12 @@ class LedgerService extends EventEmitter {
             const result = {
                 hash: tx_json?.hash,
                 node,
-                nodeType,
-                nodeId: networkId,
+                network: {
+                    id: networkId,
+                    node,
+                    type: networkType,
+                    key: networkKey,
+                },
             };
 
             // error happened in validation of transaction
@@ -488,9 +492,12 @@ class LedgerService extends EventEmitter {
                 engineResult: 'telFAILED',
                 // @ts-ignore
                 message: e.message,
-                node: undefined,
-                nodeType: undefined,
-                nodeId: undefined,
+                network: {
+                    id: undefined,
+                    node: undefined,
+                    type: undefined,
+                    key: undefined,
+                },
             };
         }
     };
