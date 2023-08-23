@@ -2,9 +2,9 @@
    synchronous path_finding
 */
 
+import EventEmitter from 'events';
 import { flatMap } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import EventEmitter from 'events';
 
 import { NetworkService } from '@services';
 

@@ -124,6 +124,7 @@
       "import/no-unresolved": "error",
       "import/extensions": ["error", "never", { "json": "always" }],
       "import/no-extraneous-dependencies": 0,
+      "import/order": 0,
       "react-native/no-unused-styles": 2,
       "react-native/split-platform-components": 0,
       "react-native/no-inline-styles": 2,
