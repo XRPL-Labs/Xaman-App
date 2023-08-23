@@ -751,7 +751,8 @@
     "invoke": "Invoke",
     "blob": "Blob",
     "digest": "Digest",
-    "uriTokeId": "URI Token Id"
+    "uriTokeId": "URI Token Id",
+    "hookParameters": "Hook Parameters"
   },
   "home": {
     "addAccount": "Добавить аккаунт",

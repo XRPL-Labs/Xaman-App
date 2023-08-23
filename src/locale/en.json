@@ -355,7 +355,8 @@
     "invoke": "Invoke",
     "blob": "Blob",
     "digest": "Digest",
-    "uriTokeId": "URI Token Id"
+    "uriTokeId": "URI Token Id",
+    "hookParameters": "Hook Parameters"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
