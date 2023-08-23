@@ -7,6 +7,7 @@ import AppScreens from './screens';
 import ApiConfig from './api';
 import NetworkConfig from './network';
 
+import Amendments from './amendments';
 import ErrorMessages from './errors';
 
-export { AppConfig, AppScreens, ApiConfig, NetworkConfig, ErrorMessages };
+export { AppConfig, AppScreens, ApiConfig, NetworkConfig, Amendments, ErrorMessages };
