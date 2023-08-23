@@ -17,6 +17,7 @@ import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
 import LoggerService from '@services/LoggerService';
+import NetworkService from '@services/NetworkService';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -324,6 +325,7 @@ class ApiService {
                 headers: {
                     'User-Agent': this.userAgent,
                     'Content-Type': 'application/json',
+                    'X-XummNet': NetworkService.getNetwork()?.key,
                 },
                 body: '',
             };
