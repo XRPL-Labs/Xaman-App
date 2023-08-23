@@ -1,13 +1,12 @@
-import { get, has, mapKeys, isObject, isString, isUndefined } from 'lodash';
+import { get, find, has, mapKeys, isObject, isString, isUndefined } from 'lodash';
 import * as codec from 'ripple-binary-codec';
 
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
 import { SHA1 } from '@common/libs/crypto';
-
+import { NetworkConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
-
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
@@ -426,6 +425,13 @@ export class Payload {
     getForcedNetwork = (): number => {
         const { force_network } = this.meta;
 
-        return force_network;
+        if (typeof force_network === 'string') {
+            const network = find(NetworkConfig.networks, { key: force_network.toUpperCase() });
+            if (network) {
+                return network.networkId;
+            }
+        }
+
+        return undefined;
     };
 }
