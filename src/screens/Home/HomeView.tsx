@@ -134,10 +134,13 @@ class HomeView extends Component<Props, State> {
 
         // developer mode or default node has been changed
         if (has(changes, 'developerMode') || has(changes, 'network')) {
-            this.setState({
-                developerMode: coreSettings.developerMode,
-                selectedNetwork: coreSettings.network,
-            });
+            this.setState(
+                {
+                    developerMode: coreSettings.developerMode,
+                    selectedNetwork: coreSettings.network,
+                },
+                this.updateAccountStatus,
+            );
         }
     };
 
