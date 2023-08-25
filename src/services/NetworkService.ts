@@ -195,7 +195,18 @@ class NetworkService extends EventEmitter {
      * @returns {string}
      */
     getNativeAsset = (): string => {
-        return this.network.nativeAsset;
+        return this.network.nativeAsset.asset;
+    };
+
+    /**
+     * Get connected network native asset icons
+     * @returns {string}
+     */
+    getNativeAssetIcons = (): { currency: string; asset: string } => {
+        return {
+            currency: this.network.nativeAsset.icon,
+            asset: this.network.nativeAsset.iconSquare,
+        };
     };
 
     /**
