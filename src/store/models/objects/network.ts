@@ -8,6 +8,12 @@ import { Amendments } from '@common/constants';
 
 import { NetworkSchema } from '@store/models/schemas/latest';
 
+/* Dictionary  ==================================================================== */
+interface NativeAsset extends Realm.Dictionary {
+    asset: string;
+    icon: string;
+    iconSquare: string;
+}
 /* Model  ==================================================================== */
 class Network extends Realm.Object<Network> {
     public static schema: Realm.ObjectSchema = NetworkSchema.schema;
@@ -17,7 +23,7 @@ class Network extends Realm.Object<Network> {
     public name: string;
     public color: string;
     public type: string;
-    public nativeAsset: string;
+    public nativeAsset: NativeAsset;
     public baseReserve: number;
     public ownerReserve: number;
     public defaultNode: any;

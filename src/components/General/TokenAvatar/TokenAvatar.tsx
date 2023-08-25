@@ -6,7 +6,7 @@
  */
 import React, { PureComponent } from 'react';
 
-import { StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 
 import { TrustLineModel } from '@store/models';
 
@@ -14,7 +14,7 @@ import { Avatar, AvatarProps } from '@components/General/Avatar';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
-    token: TrustLineModel | string;
+    token: TrustLineModel | 'Native';
 }
 
 interface State {
@@ -41,14 +41,15 @@ class TokenAvatar extends PureComponent<Props, State> {
         return null;
     }
 
-    static getAvatar = (token: TrustLineModel | string): string => {
+    static getAvatar = (token: TrustLineModel | 'Native'): string => {
         if (!token) {
             return '';
         }
 
         // native
-        if (typeof token === 'string') {
-            return StyleService.getImage('IconXrpSquare').uri;
+        if (token === 'Native') {
+            const { asset } = NetworkService.getNativeAssetIcons();
+            return asset;
         }
 
         // IOU

@@ -30,7 +30,7 @@ class CurrencyItem extends Component<Props> {
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                 <View style={styles.currencyImageContainer}>
-                    <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} />
+                    <TokenAvatar token="Native" border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                     <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>

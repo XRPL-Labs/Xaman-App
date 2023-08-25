@@ -37,17 +37,17 @@ export default StyleService.create({
         justifyContent: 'center',
         marginRight: 5,
     },
-    brandAvatarContainer: {
+    tokenAvatarContainer: {
         marginRight: 10,
     },
-    brandAvatar: {
+    tokenAvatar: {
         backgroundColor: '$blue',
         borderColor: '$blue',
     },
-    currencyAvatar: {
+    tokenIcon: {
         tintColor: StyleService.isDarkMode() ? '$white' : '$blue',
     },
-    currencyAvatarContainer: {
+    tokenIconContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         paddingRight: 10,

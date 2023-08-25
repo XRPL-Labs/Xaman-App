@@ -22,7 +22,7 @@ import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
 
 // components
-import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar } from '@components/General';
+import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar, TokenIcon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -405,9 +405,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={styles.rowTitle}>{Localize.t('account.accountBalance')}</Text>
                         <View style={styles.objectItemCard}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={styles.iconContainer}>
-                                    <Icon name="IconXrp" size={20} style={[AppStyles.imgColorGrey]} />
-                                </View>
+                                <TokenIcon
+                                    size={20}
+                                    token="Native"
+                                    containerStyle={styles.iconContainer}
+                                    style={[AppStyles.imgColorGrey]}
+                                />
                                 <Text style={[styles.currencyLabel, AppStyles.colorGrey]}>
                                     {NetworkService.getNativeAsset()}
                                 </Text>
@@ -424,9 +427,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={styles.rowTitle}>{Localize.t('account.availableForSpending')}</Text>
                         <View style={styles.objectItemCard}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={styles.iconContainer}>
-                                    <Icon name="IconXrp" size={20} />
-                                </View>
+                                <TokenIcon size={20} token="Native" containerStyle={styles.iconContainer} />
                                 <Text style={styles.currencyLabel}>{NetworkService.getNativeAsset()}</Text>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>

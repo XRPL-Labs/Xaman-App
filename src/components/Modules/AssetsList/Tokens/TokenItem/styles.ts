@@ -29,16 +29,11 @@ export default StyleService.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
-    brandAvatarContainer: {
+    tokenAvatarContainer: {
         marginRight: 10,
     },
-    currencyAvatarContainer: {
+    tokenIconContainer: {
         paddingRight: 5,
-    },
-    currencyAvatar: {
-        width: AppSizes.scale(12),
-        height: AppSizes.scale(12),
-        resizeMode: 'contain',
     },
     reorderButtonContainer: {
         flexDirection: 'row',

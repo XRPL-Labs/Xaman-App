@@ -21,7 +21,7 @@ import styles from './styles';
 interface Props {
     testID?: string;
     isLoading?: boolean;
-    prefix?: string | (() => React.ReactNode);
+    prefix?: string | (() => React.ReactNode) | React.ReactNode;
     value: number | string;
     currency?: string;
     truncateCurrency?: boolean;
@@ -268,6 +268,7 @@ class AmountText extends Component<Props, State> {
         return (
             <View style={[styles.container, valueContainerStyle]}>
                 {typeof prefix === 'function' && prefix()}
+                {typeof prefix === 'object' && prefix}
                 <Text testID={testID} numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}

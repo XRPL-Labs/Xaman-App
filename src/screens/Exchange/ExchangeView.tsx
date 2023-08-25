@@ -557,11 +557,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={
-                                            direction === MarketDirection.SELL
-                                                ? NetworkService.getNativeAsset()
-                                                : trustLine
-                                        }
+                                        token={direction === MarketDirection.SELL ? 'Native' : trustLine}
                                         border
                                         size={37}
                                     />
@@ -632,11 +628,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={
-                                            direction === MarketDirection.BUY
-                                                ? NetworkService.getNativeAsset()
-                                                : trustLine
-                                        }
+                                        token={direction === MarketDirection.BUY ? 'Native' : trustLine}
                                         border
                                         size={37}
                                     />

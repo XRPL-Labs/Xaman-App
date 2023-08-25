@@ -16,7 +16,7 @@ const NetworkSchema = {
             name: { type: 'string' },
             color: { type: 'string' },
             type: { type: 'string' },
-            nativeAsset: { type: 'string' },
+            nativeAsset: { type: 'dictionary', default: {}, objectType: 'string' },
             baseReserve: { type: 'double', default: NetworkConfig.baseReserve },
             ownerReserve: { type: 'double', default: NetworkConfig.ownerReserve },
             defaultNode: { type: 'Node' },

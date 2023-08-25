@@ -118,7 +118,7 @@ class PaymentOptionItem extends Component<Props> {
             <>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
-                        <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} />
+                        <TokenAvatar token="Native" border size={35} />
                     </View>
                     <View style={AppStyles.centerContent}>
                         <Text style={styles.currencyItemLabel}>{NetworkService.getNativeAsset()}</Text>

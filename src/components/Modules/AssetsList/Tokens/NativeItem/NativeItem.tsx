@@ -1,4 +1,4 @@
-import { has } from 'lodash';
+import has from 'lodash/has';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -10,7 +10,7 @@ import { Toast } from '@common/helpers/interface';
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
-import { AmountText, Icon, TokenAvatar, TouchableDebounce } from '@components/General';
+import { AmountText, Icon, TokenAvatar, TokenIcon, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -27,10 +27,10 @@ interface Props {
 
 interface State {
     showReservePanel: boolean;
-    currency: string;
-    showRate: boolean;
+    fiatCurrency: string;
+    fiatRate: any;
+    showFiatRate: boolean;
     isLoadingRate: boolean;
-    currencyRate: any;
 }
 
 /* Component ==================================================================== */
@@ -44,10 +44,10 @@ class NativeItem extends Component<Props, State> {
 
         this.state = {
             showReservePanel: coreSettings.showReservePanel,
-            currency: coreSettings.currency,
-            showRate: false,
+            fiatCurrency: coreSettings.currency,
+            fiatRate: undefined,
+            showFiatRate: false,
             isLoadingRate: false,
-            currencyRate: undefined,
         };
     }
 
@@ -61,29 +61,29 @@ class NativeItem extends Component<Props, State> {
     }
 
     onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
-        const { currency, showReservePanel } = this.state;
+        const { fiatCurrency, showReservePanel } = this.state;
 
         // currency changed
-        if (has(changes, 'currency') && currency !== changes.currency) {
+        if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
             this.setState({
-                showRate: false,
-                currencyRate: undefined,
-                currency: coreSettings.currency,
+                showFiatRate: false,
+                fiatRate: undefined,
+                fiatCurrency: coreSettings.currency,
             });
         }
 
         // show reserve panel changed
         if (has(changes, 'showReservePanel') && showReservePanel !== changes.showReservePanel) {
             this.setState({
-                showRate: false,
-                currencyRate: undefined,
+                showFiatRate: false,
+                fiatRate: undefined,
                 showReservePanel: coreSettings.showReservePanel,
             });
         }
     };
 
     fetchCurrencyRate = () => {
-        const { currency, isLoadingRate } = this.state;
+        const { fiatCurrency, isLoadingRate } = this.state;
 
         if (!isLoadingRate) {
             this.setState({
@@ -91,10 +91,10 @@ class NativeItem extends Component<Props, State> {
             });
         }
 
-        BackendService.getCurrencyRate(currency)
+        BackendService.getCurrencyRate(fiatCurrency)
             .then((rate: any) => {
                 this.setState({
-                    currencyRate: rate,
+                    fiatRate: rate,
                     isLoadingRate: false,
                 });
             })
@@ -107,14 +107,14 @@ class NativeItem extends Component<Props, State> {
     };
 
     toggleBalance = () => {
-        const { showRate } = this.state;
+        const { showFiatRate } = this.state;
 
         this.setState({
-            showRate: !showRate,
+            showFiatRate: !showFiatRate,
         });
 
         // fetch the rate again if show rate is true
-        if (!showRate) {
+        if (!showFiatRate) {
             this.fetchCurrencyRate();
         }
     };
@@ -127,55 +127,54 @@ class NativeItem extends Component<Props, State> {
         }
     };
 
-    getAvatar = () => {
-        return (
-            <TokenAvatar token={NetworkService.getNativeAsset()} border size={35} containerStyle={styles.brandAvatar} />
-        );
+    getTokenAvatar = () => {
+        return <TokenAvatar token="Native" border size={35} containerStyle={styles.tokenAvatar} />;
     };
 
-    getCurrencyAvatar = () => {
+    getTokenIcon = () => {
         const { discreetMode } = this.props;
 
         return (
-            <View style={styles.currencyAvatarContainer}>
-                <Icon
-                    size={12}
-                    style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
-                    name="IconXrp"
-                />
-            </View>
+            <TokenIcon
+                token="Native"
+                containerStyle={styles.tokenIconContainer}
+                style={[styles.tokenIcon, discreetMode && AppStyles.imgColorGrey]}
+            />
         );
     };
 
-    getReserveCurrencyAvatar = () => {
+    getReserveTokenIcon = () => {
         return (
-            <View style={styles.reserveCurrencyAvatarContainer}>
-                <Icon size={8} style={AppStyles.imgColorGrey} name="IconXrp" />
-            </View>
+            <TokenIcon
+                token="Native"
+                size={8}
+                containerStyle={styles.reserveCurrencyAvatarContainer}
+                style={AppStyles.imgColorGrey}
+            />
         );
     };
 
     renderBalance = () => {
         const { account, discreetMode } = this.props;
-        const { showRate, currencyRate, isLoadingRate } = this.state;
+        const { showFiatRate, fiatRate, isLoadingRate } = this.state;
 
         const availableBalance = CalculateAvailableBalance(account, true);
 
         let balance: number;
         let prefix: any;
 
-        if (showRate && currencyRate) {
-            balance = Number(availableBalance) * Number(currencyRate.lastRate);
-            prefix = `${currencyRate.symbol} `;
+        if (showFiatRate && fiatRate) {
+            balance = Number(availableBalance) * Number(fiatRate.lastRate);
+            prefix = `${fiatRate.symbol} `;
         } else {
             balance = availableBalance;
-            prefix = this.getCurrencyAvatar;
+            prefix = this.getTokenIcon;
         }
 
         return (
             <View style={styles.balanceRow}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
+                    <View style={styles.tokenAvatarContainer}>{this.getTokenAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyItemLabel}>
                             {NetworkService.getNativeAsset()}
@@ -200,7 +199,7 @@ class NativeItem extends Component<Props, State> {
 
     renderReservePanel = () => {
         const { account, reorderEnabled, discreetMode } = this.props;
-        const { showRate, showReservePanel, currencyRate, isLoadingRate } = this.state;
+        const { showFiatRate, showReservePanel, fiatRate, isLoadingRate } = this.state;
 
         // show fiat panel
         if (!showReservePanel || reorderEnabled) {
@@ -212,12 +211,12 @@ class NativeItem extends Component<Props, State> {
 
         const accountReserve = CalculateTotalReserve(account);
 
-        if (showRate && currencyRate) {
-            totalReserve = Number(accountReserve) * Number(currencyRate.lastRate);
-            prefix = `${currencyRate.symbol} `;
+        if (showFiatRate && fiatRate) {
+            totalReserve = Number(accountReserve) * Number(fiatRate.lastRate);
+            prefix = `${fiatRate.symbol} `;
         } else {
             totalReserve = accountReserve;
-            prefix = this.getReserveCurrencyAvatar;
+            prefix = this.getReserveTokenIcon;
         }
 
         return (
