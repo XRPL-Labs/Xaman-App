@@ -805,7 +805,7 @@
     "iOwnTheKeys": "Ik heb de geheime sleutels (secret/private key)",
     "openSignRequest": "Open ondertekenverzoek",
     "otherAssets": "Andere middelen",
-    "otherAssetsDesc": "Tevens staat de XRP ledger je instaat om andere valuta's/middelen dan XRP te bewaren, ontvangen en verzenden. Deze middelen kunnen worden uitgegeven en verzonden door andere account sop de XRP ledger. Als je een middel anders dan XRP wilt kunnen verzenden of ontvangen, dient u eerst de uitgever te vertrouwen.",
+    "otherAssetsDesc": "Tevens staat de XRP ledger je instaat om andere valuta's/middelen dan XRP te bewaren, ontvangen en verzenden. Deze middelen kunnen worden uitgegeven en verzonden door andere account op de XRP ledger. Als je een middel anders dan XRP wilt kunnen verzenden of ontvangen, dient u eerst de uitgever te vertrouwen.",
     "otherCurrencies": "Andere valuta",
     "otherCurrenciesDesc": "De XRP ledger staat je ook toe om valuta, anders dan XRP, te verzenden en ontvangen. Deze valuta worden uitgegeven door andere accounts op de XRP ledger. Als je deze niet-XRP wil kunnen versturen of ontvangen, moet je de uitgever van de niet-XRP valuta vertrouwen.",
     "selfIssued": "Zelf uitgegeven",
