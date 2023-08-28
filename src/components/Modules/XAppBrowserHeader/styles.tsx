@@ -56,6 +56,9 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.small.size,
     },
+    addressTextDisabled: {
+        color: '$silver',
+    },
     networkText: {
         color: '$textPrimary',
         fontFamily: AppFonts.base.familyBold,
@@ -71,6 +74,9 @@ const styles = StyleService.create({
     },
     iconChevronDown: {
         tintColor: '$contrast',
+    },
+    iconChevronDownDisabled: {
+        tintColor: '$silver',
     },
 });
 

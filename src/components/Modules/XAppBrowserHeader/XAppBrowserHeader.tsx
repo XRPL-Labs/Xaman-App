@@ -12,6 +12,8 @@ import { AccountModel, NetworkModel } from '@store/models';
 import { AppSizes, AppStyles } from '@theme';
 import { TouchableDebounce, Button, Avatar, Icon, TextPlaceholder } from '@components/General';
 
+import Localize from '@locale';
+
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -74,6 +76,11 @@ class XAppBrowserHeader extends Component<Props, State> {
 
     showAccountSelect = () => {
         const { account } = this.props;
+
+        // no account is configured in xumm
+        if (!account) {
+            return;
+        }
 
         Navigator.showOverlay(AppScreens.Overlay.SelectAccount, {
             selected: account,
@@ -186,6 +193,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                 >
                     <TouchableDebounce
                         onPress={this.showNetworkSwitcher}
+                        activeOpacity={0.8}
                         style={[
                             styles.expandableButton,
                             AppStyles.flex1,
@@ -198,11 +206,18 @@ class XAppBrowserHeader extends Component<Props, State> {
                         <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
                     </TouchableDebounce>
                     <TouchableDebounce
+                        activeOpacity={0.8}
                         onPress={this.showAccountSelect}
                         style={[styles.expandableButton, AppStyles.flex3, AppStyles.flexEnd]}
                     >
-                        <Text style={styles.addressText}>{Truncate(account.address, 30)}</Text>
-                        <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
+                        <Text numberOfLines={1} style={[styles.addressText, !account && styles.addressTextDisabled]}>
+                            {account ? Truncate(account.address, 30) : Localize.t('global.noAccountConfigured')}
+                        </Text>
+                        <Icon
+                            name="IconChevronDown"
+                            size={22}
+                            style={[styles.iconChevronDown, !account && styles.iconChevronDownDisabled]}
+                        />
                     </TouchableDebounce>
                 </Animated.View>
             </>
