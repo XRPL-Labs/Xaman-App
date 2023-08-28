@@ -59,5 +59,4 @@ declare class WebView<P = {}> extends Component<WebViewProps & P> {
     clearHistory?: () => void;
 }
 
-export { WebView };
 export default WebView;

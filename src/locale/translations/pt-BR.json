@@ -1071,6 +1071,11 @@
     "donateToTheCreator": "Donate to the creator",
     "chooseAmount": "Choose amount"
   },
+  "errors": {
+    "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",
+    "unableToLoadCredits": "Oops! Unable to Retrieve Credits",
+    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs"
+  },
   "moment": {
     "calendar": {
       "sameDay": "[Hoje às] LT",

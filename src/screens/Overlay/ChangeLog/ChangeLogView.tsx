@@ -10,7 +10,7 @@ import { CoreRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
-import { WebView, Button, LoadingIndicator } from '@components/General';
+import { WebViewBrowser, Button } from '@components/General';
 
 import Localize from '@locale';
 
@@ -97,7 +97,7 @@ class ChangeLogModalView extends Component<Props, State> {
             >
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <View style={styles.headerContainer}>
-                        <View style={[AppStyles.flex1]}>
+                        <View style={AppStyles.flex1}>
                             <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
                                 {Localize.t('global.whatsNew')}
                             </Text>
@@ -114,11 +114,10 @@ class ChangeLogModalView extends Component<Props, State> {
                         </View>
                     </View>
                     <View style={[AppStyles.flex1, styles.contentContainer]}>
-                        <WebView
-                            containerStyle={[AppStyles.flex1]}
+                        <WebViewBrowser
                             startInLoadingState
-                            renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                             source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                            errorMessage={Localize.t('errors.unableToLoadChangeLogs')}
                         />
                     </View>
                 </Animated.View>

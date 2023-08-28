@@ -12,13 +12,12 @@ import { AppScreens, AppConfig } from '@common/constants';
 import { CoreRepository } from '@store/repositories';
 import { CoreModel } from '@store/models';
 
-import { WebView, Header, LoadingIndicator } from '@components/General';
+import { Header, WebViewBrowser } from '@components/General';
 
 import Localize from '@locale';
 
 // style
 import { AppStyles } from '@theme';
-import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -63,21 +62,19 @@ class CreditsView extends Component<Props, State> {
         const { paddingBottom } = this.state;
 
         return (
-            <View testID="credits-view" style={[AppStyles.flex1]}>
+            <View testID="credits-view" style={AppStyles.flex1}>
                 <Header
                     centerComponent={{ text: Localize.t('settings.credits') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                 />
-                <WebView
-                    containerStyle={[AppStyles.flex1, { paddingBottom }]}
+                <WebViewBrowser
+                    containerStyle={{ paddingBottom }}
                     startInLoadingState
-                    renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                    errorMessage={Localize.t('errors.unableToLoadCredits')}
                 />
             </View>
         );
