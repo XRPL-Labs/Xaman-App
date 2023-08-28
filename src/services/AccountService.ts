@@ -18,6 +18,7 @@ import { LedgerTransactionType } from '@common/libs/ledger/types';
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+import { AccountTypes } from '@store/types';
 
 /* events  ==================================================================== */
 declare interface AccountService {
@@ -120,7 +121,10 @@ class AccountService extends EventEmitter {
         // log the existent accounts in the session log
         this.logger.debug(
             `Presented accounts: ${accounts.reduce(
-                (acc, obj) => `${acc}\n${obj.address}-${obj.accessLevel}/${obj.type} `,
+                (account, item) =>
+                    `${account}\n${item.address}-${item.accessLevel} ${
+                        item.flags?.disableMasterKey ? '[MasterDisabled]' : ''
+                    } ${item.type !== AccountTypes.Regular ? `[${item.type}]` : ''}`,
                 '',
             )}`,
         );
