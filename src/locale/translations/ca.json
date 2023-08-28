@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Estàs segur que vols intercanviar  %{payAmount} %{payCurrency} per %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Error durant l'intercanvi: %{error}",
     "exchangeByThirdPartyMessage": "Si vols crear una oferta per a que sigui executada a un preu determinat, pots utilitzar l'aplicació de tercers XRP Toolkit (habilitada per XUMM) per crear una ordre amb límit.",
-    "exchangeRate": "Tipus de canvi (%{exchangeRate} XRP)",
+    "exchangeRate": "Tipus de canvi",
     "exchangeRateInToken": "Tipus de canvi: 1 XRP = %{exchangeRate} %{currency}\r\n",
     "exchanging": "Intercanviant",
     "failedExchange": "Ara mateix no es pot intercanviar per manca de liquiditat o per actualització dels tipus de canvi.",

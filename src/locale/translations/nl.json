@@ -400,7 +400,7 @@
     "doYouWantToExchange": "Weet je zeker dat je %{payAmount} %{payCurrency} voor %{getAmount} %{getCurrency} wilt wisselen?",
     "errorDuringExchange": "Fout tijdens het wisselen: %{error}",
     "exchangeByThirdPartyMessage": "Als u een bod wilt doen op een vastgezette prijs, kunt u de XRP Toolkit van Towo Labs gebruiken om een zogenaamde \"Limitorder\" te maken.",
-    "exchangeRate": "Wisselkoers (%{exchangeRate} XRP)",
+    "exchangeRate": "Wisselkoers",
     "exchangeRateInToken": "Wisselkoers: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Aan het wisselen",
     "failedExchange": "Wisselen momenteel niet mogelijk door ofwel een gebrek aan liquiditeit, of verouderde wisselkoersen.",

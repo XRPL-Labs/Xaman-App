@@ -391,7 +391,7 @@
     "doYouWantToExchange": "Bạn có chắc chắn muốn đổi %{payAmount} %{payCurrency} lấy %{getAmount} %{getCurrency} không?",
     "errorDuringExchange": "Lỗi trong quá trình trao đổi: %{error}",
     "exchangeByThirdPartyMessage": "Nếu bạn muốn tạo phiếu mua hàng để thực hiện ở mức giá được yêu cầu, bạn có thể sử dụng ứng dụng Bộ công cụ XRP hỗ trợ XUMM của bên thứ ba để tạo đơn đặt hàng giới hạn.",
-    "exchangeRate": "Tỷ giá hối đoái (%{exchangeRate} XRP)",
+    "exchangeRate": "Tỷ giá hối đoái",
     "exchangeRateInToken": "Tỷ giá: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Trao đổi",
     "failedExchange": "Không thể trao đổi ngay bây giờ do thiếu thanh khoản hoặc tỷ giá hối đoái cập nhật.",

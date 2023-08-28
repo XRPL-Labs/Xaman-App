@@ -402,7 +402,7 @@
     "doYouWantToExchange": "%{payAmount} %{payCurrency}を%{getAmount} %{getCurrency}に交換してもよろしいですか ？",
     "errorDuringExchange": "交換中のエラー：%{error}",
     "exchangeByThirdPartyMessage": "要求された価格レベルで実行するオファーを作成する場合は、サードパーティのXUMM対応XRPツールキットアプリケーションを使用して指値注文を作成できます。",
-    "exchangeRate": "為替レート （%{exchangeRate} XRP）",
+    "exchangeRate": "為替レート",
     "exchangeRateInToken": "為替レート: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "交換中",
     "failedExchange": "流動性が低すぎる、または最新の為替レートでないため、現在交換できません。",

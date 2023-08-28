@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Haluatko varmasti vaihtaa tämän %{payAmount} %{payCurrency}  tähän  %{getAmount}  %{getCurrency} ?",
     "errorDuringExchange": "Virhe vaihdon aikana: %{error}",
     "exchangeByThirdPartyMessage": "Jos haluat luoda ostotarjouksen vaadittuun hintatasoon, voit käyttää kolmannen osapuolen XUMM -asetusta XRP Toolkit -sovelluksen avulla.",
-    "exchangeRate": "Valuuttakurssi (%{exchangeRate} XRP)",
+    "exchangeRate": "Valuuttakurssi",
     "exchangeRateInToken": "Vaihtokurssi: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Vaihto",
     "failedExchange": "Tällä hetkellä valuuttoja ei voi vaihtaa likviditeetin puutteen tai päivitettyjen valuuttakurssien vuoksi.",

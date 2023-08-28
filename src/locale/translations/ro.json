@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Sunteţi sigur(ă) că doriţi să schimbați %{payAmount} %{payCurrency} pentru %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Eroare în timpul schimbului: %{error}",
     "exchangeByThirdPartyMessage": "Dacă doriţi să creaţi o ofertă care să fie executată la un anumit preţ , puteţi utiliza aplicaţia XRP Toolkit pentru a crea această condiție.",
-    "exchangeRate": "Rată de schimb (%{exchangeRate} XRP)",
+    "exchangeRate": "Rată de schimb",
     "exchangeRateInToken": "Curs de schimb: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Schimb",
     "failedExchange": "Nu se poate face schimb acum din cauza lipsei de lichidităţi, sau a ratelor de schimb actualizate.",

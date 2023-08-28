@@ -376,7 +376,7 @@
     "doYouWantToExchange": "%{getAmount} %{getCurrency} ವಿನಿಮಯ %{payAmount} %{payCurrency} ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?",
     "errorDuringExchange": "ವಿನಿಮಯದ ಸಮಯದಲ್ಲಿ ದೋಷ:%{error}",
     "exchangeByThirdPartyMessage": "ವಿನಂತಿಸಿದ ಬೆಲೆ ಮಟ್ಟದಲ್ಲಿ ಮರಣದಂಡನೆಗಾಗಿ ನೀವು ಪ್ರಸ್ತಾಪವನ್ನು ರಚಿಸಲು ಬಯಸಿದರೆ, ಮಿತಿ ಆದೇಶವನ್ನು ರಚಿಸಲು ನೀವು 3 ನೇ ವ್ಯಕ್ತಿ XUMM ಶಕ್ತಗೊಂಡ XRP ಟೂಲ್‌ಕಿಟ್ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಬಳಸಬಹುದು.",
-    "exchangeRate": "ವಿನಿಮಯ ದರ (%{exchangeRate} XRP)",
+    "exchangeRate": "ವಿನಿಮಯ ದರ",
     "exchangeRateInToken": "ವಿನಿಮಯ ದರ: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "ವಿನಿಮಯ",
     "failedExchange": "ದ್ರವ್ಯತೆಯ ಕೊರತೆ ಅಥವಾ ನವೀಕರಿಸಿದ ವಿನಿಮಯ ದರಗಳಿಂದ ಇದೀಗ ವಿನಿಮಯ ಮಾಡಿಕೊಳ್ಳಲು ಸಾಧ್ಯವಿಲ್ಲ.",

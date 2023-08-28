@@ -402,7 +402,7 @@
     "doYouWantToExchange": "您确定要将%{payAmount} %{payCurrency}兑换为%{getAmount} %{getCurrency}吗？",
     "errorDuringExchange": "兑换期间发生错误： %{error}",
     "exchangeByThirdPartyMessage": "如果要创建要价以执行的报价，可以使用第三方启用XUMM的XRP Toolkit应用程序创建限价单。",
-    "exchangeRate": "汇率 （ %{exchangeRate} XRP）",
+    "exchangeRate": "汇率",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "兑换中",
     "failedExchange": "由于缺乏流动性或更新的汇率，目前无法兑换。",

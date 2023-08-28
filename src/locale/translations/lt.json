@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Ar tikrai norite pasikeisti %{payAmount} %{payCurrency} dėl %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Klaida mainų metu: %{error}",
     "exchangeByThirdPartyMessage": "Jei norite sukurti pasiūlymą įvykdyti prašomu kainų lygiu, galite naudoti ribotos vertės užsakymą naudodami trečiosios šalies XUMM įgalintą XRP įrankių rinkinio programą.",
-    "exchangeRate": "Valiutų keitimo kursas (%{exchangeRate} XRP)",
+    "exchangeRate": "Valiutų keitimo kursas",
     "exchangeRateInToken": "Valiutos kursas: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Apsikeitimas",
     "failedExchange": "Negali keistis dabar dėl likvidumo stokos, arba atnaujintą valiutų keitimo kursus.",

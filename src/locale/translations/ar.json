@@ -400,7 +400,7 @@
     "doYouWantToExchange": "هل تريد بالتأكيد استبدال %{payAmount} %{payCurrency} مقابل %{getAmount} %{getCurrency}؟",
     "errorDuringExchange": "خطأ أثناء التبادل: %{error}",
     "exchangeByThirdPartyMessage": "إذا كنت ترغب في إنشاء عرض للتنفيذ عند مستوى السعر المطلوب ، يمكنك استخدام تطبيق XRP الذي تم تمكينه من طرف ثالث XUMM لإنشاء أمر محدد.",
-    "exchangeRate": "سعر الصرف (%{exchangeRate} XRP)",
+    "exchangeRate": "سعر الصرف",
     "exchangeRateInToken": "سعر الصرف: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "تبادل",
     "failedExchange": "لا يمكن الصرف الآن بسبب نقص السيولة أو أسعار الصرف المحدثة.",

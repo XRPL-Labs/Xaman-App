@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Jste si jisti, že chcete směnit %{payAmount} %{payCurrency} za %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Chyba během směny: %{error}",
     "exchangeByThirdPartyMessage": "Chcete-li vytvořit nabídku pro provedení transakce na požadované cenové úrovni, můžete pomocí spojení XUMM s aplikací třetí strany XRP Toolkit vytvořit limitní objednávku.",
-    "exchangeRate": "Směnný kurz (%{exchangeRate} XRP)",
+    "exchangeRate": "Směnný kurz",
     "exchangeRateInToken": "Směnný kurz: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Probíhá směna",
     "failedExchange": "Směnu nelze v tuto chvíli provést kvůli nedostatku likvidity nebo kvůli změně směnných kurzů.",

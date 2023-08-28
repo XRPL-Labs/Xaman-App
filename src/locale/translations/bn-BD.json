@@ -376,7 +376,7 @@
     "doYouWantToExchange": "আপনি কি আদান-প্রদানের বিষয়ে নিশ্চিত %{payAmount} %{payCurrency} জন্য %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "এক্সচেঞ্জের সময় ত্রুটি: %{error}\r\n",
     "exchangeByThirdPartyMessage": "আপনি যদি একটি অনুরোধ মূল্য পর্যায়ে সম্পাদন জন্য একটি প্রস্তাব তৈরি করতে চান, তাহলে আপনি 3 য় পক্ষের ব্যবহার করতে পারেন XUMM সক্রিয় XRP টুলকিট আবেদন একটা সীমা অর্ডার তৈরি করতে।",
-    "exchangeRate": " বিনিময় হার (%{exchangeRate} XRP)",
+    "exchangeRate": " বিনিময় হার",
     "exchangeRateInToken": "বিনিময় হার: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "এক্সচেঞ্জিং",
     "failedExchange": "তরলতার অভাব বা আপডেট এক্সচেঞ্জ হারের কারণে এখনই এক্সচেঞ্জ করা যায় না।",

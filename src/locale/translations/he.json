@@ -376,7 +376,7 @@
     "doYouWantToExchange": "האם אתה בטוח שברצונך להחליף %{payAmount} %{payCurrency} ב- %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "שגיאה במהלך ההחלפה: %{error}",
     "exchangeByThirdPartyMessage": "אם ברצונך ליצור הצעה לביצוע ברמת מחיר מבוקשת, באפשרותך להשתמש ביישום ערכת הכלים XRP המאפשר XUMP של צד שלישי כדי ליצור הזמנת מגבלה.",
-    "exchangeRate": "שער חליפין (%{exchangeRate} XRP)",
+    "exchangeRate": "שער חליפין",
     "exchangeRateInToken": "שער חליפין: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "מתחלפים",
     "failedExchange": "לא ניתן להחליף כרגע בגלל חוסר נזילות, או שערי חליפין מעודכנים.",

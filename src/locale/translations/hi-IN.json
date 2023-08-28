@@ -376,7 +376,7 @@
     "doYouWantToExchange": "क्या आप सुनिश्चित हैं कि आप %{payAmount} %{payCurrency} के लिए %{getAmount} %{getCurrency} का विनिमय करना चाहते हैं?",
     "errorDuringExchange": "विनिमय के दौरान त्रुटि: %{error}",
     "exchangeByThirdPartyMessage": "यदि आप अनुरोधित मूल्य स्तर पर निष्पादन के लिए एक प्रस्ताव बनाना चाहते हैं, तो आप एक सीमा आदेश बनाने के लिए 3rd पार्टी XUMM सक्षम XRP टूलकिट एप्लिकेशन का उपयोग कर सकते हैं।",
-    "exchangeRate": "विनिमय दर (%{exchangeRate} XRP)",
+    "exchangeRate": "विनिमय दर",
     "exchangeRateInToken": "विनिमय दर: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "विनिमय",
     "failedExchange": "तरलता की कमी, या अद्यतन विनिमय दरों के कारण अभी विनिमय नहीं किया जा सकता है।",

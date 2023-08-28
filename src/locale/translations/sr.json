@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Да ли сте сигурни да желите да размените %{payAmount} %{payCurrency} за %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Грешка приликом размене: %{error}",
     "exchangeByThirdPartyMessage": "Ако желите да креирате понуду за извршење по захтеваном нивоу цена, можете да употребите независну апликацију XRP Тоолкит са омогућеним XUMM -ом да бисте креирали поруџбину са ограничењем.",
-    "exchangeRate": "Курс (%{exchangeRate} XRP)",
+    "exchangeRate": "Курс",
     "exchangeRateInToken": "Курс: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Размена",
     "failedExchange": "Тренутно није могуће извршити размену због недостатка ликвидности или ажурираних курсева.",

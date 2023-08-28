@@ -376,7 +376,7 @@
     "doYouWantToExchange": "%{payAmount} %{payCurrency} ile %{getAmount} %{getCurrency} takas etmek istediğinize emin misiniz?",
     "errorDuringExchange": "Takas sırasında hata oluştu: %{error}",
     "exchangeByThirdPartyMessage": "İstenen fiyat düzeyinde işlem yapmak için bir teklif oluşturmak istiyorsanız, 3. parti XUMM destekleyen bir XRP Toolkit uygulamasını kullanabilirsiniz.",
-    "exchangeRate": "Döviz kuru (%{exchangeRate} XRP)",
+    "exchangeRate": "Döviz kuru",
     "exchangeRateInToken": "Döviz kuru: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Takas gerçekleşiyor",
     "failedExchange": "Likidite eksikliği veya değişmiş döviz kurları nedeniyle takas gerçekleştirilemiyor.",

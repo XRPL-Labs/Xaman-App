@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Èske ou sèten ou vle echanj %{payAmount} %{payCurrency} pou %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Erè pandan echanj la: %{error}",
     "exchangeByThirdPartyMessage": "Si ou vle kreye yon òf pou ekzekisyon nan yon nivo pri mande, ou ka itilize 3rd pati XUMM pèmèt XRP Toolkit aplikasyon pou kreye yon lòd limit.",
-    "exchangeRate": "Pousantaj dechanj (%{exchangeRate} XRP)",
+    "exchangeRate": "Pousantaj dechanj",
     "exchangeRateInToken": "Echanj pousantaj: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Echanj",
     "failedExchange": "Pa kapab chanje kounye a akòz mank lajan likid sikile, oswa pousantaj echanj mete ajou.",

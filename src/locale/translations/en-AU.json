@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Are you sure you want to exchange %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Error during the exchange: %{error}",
     "exchangeByThirdPartyMessage": "If you want to create an offer for execution at a requested price level, you can use the XUMM-enabled third party XRP Toolkit application to create a limit order.",
-    "exchangeRate": "Exchange Rate (%{exchangeRate} XRP)",
+    "exchangeRate": "Exchange Rate",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Exchanging",
     "failedExchange": "Due to insufficient liquidity or updated rates, exchanges are currently unavailable.",

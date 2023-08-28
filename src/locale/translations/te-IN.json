@@ -376,7 +376,7 @@
     "doYouWantToExchange": "మీరు ఖచ్చితంగా %{payAmount} %{getAmount} %{payCurrency} %{payCurrency} %{payAmount} %{payCurrency} ను හුවමාරු చేయాలనుకుంటున్నారా?",
     "errorDuringExchange": "ఎక్స్చేంజ్ సమయంలో దోషము: %{error}",
     "exchangeByThirdPartyMessage": "మీరు అభ్యర్థించిన ధర స్థాయిలో అమలు కోసం ఆఫర్‌ను సృష్టించాలనుకుంటే, మీరు పరిమితి క్రమాన్ని సృష్టించడానికి 3 వ పార్టీ XUMM ప్రారంభించబడిన XRP టూల్‌కిట్ అనువర్తనాన్ని ఉపయోగించవచ్చు.\r\n",
-    "exchangeRate": "మార్పిడి రేటు (%{exchangeRate} XRP)",
+    "exchangeRate": "మార్పిడి రేటు",
     "exchangeRateInToken": "మార్పిడి రేటు: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "మార్పిడి",
     "failedExchange": "ద్రవ్యత లేకపోవడం లేదా నవీకరించబడిన మార్పిడి రేట్ల కారణంగా ఇప్పుడే మార్పిడి చేయలేరు.\r\n",

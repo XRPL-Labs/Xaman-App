@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Jeste li sigurni da želite razmijeniti %{payAmount} %{payCurrency} za %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Pogreška za vrijeme razmjene: %{error}",
     "exchangeByThirdPartyMessage": "Ako želite napraviti ponudu koja će se provesti na određenoj razini cijene, možete koristiti XRP Toolkit koji je omogućen od strane XUMM aplikacije za kreiranje limitiranih narudžbi.\r\n",
-    "exchangeRate": "Tečaj (%{exchangeRate} XRP)",
+    "exchangeRate": "Tečaj",
     "exchangeRateInToken": "Devizni tečaj: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Zamjena",
     "failedExchange": "Trenutno se ne može zamijeniti zbog nedostatka likvidnosti ili promjene tečaja.",

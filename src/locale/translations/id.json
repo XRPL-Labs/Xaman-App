@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Anda yakin ingin menukar %{payAmount} %{payCurrency} dengan %{getAmount} %{getCurrency} ?",
     "errorDuringExchange": "Kesalahan selama pertukaran: %{error}",
     "exchangeByThirdPartyMessage": "Jika Anda ingin membuat penawaran untuk dieksekusi pada tingkat harga yang diminta, Anda dapat menggunakan aplikasi XRP Toolkit berkemampuan XUMM pihak ketiga untuk membuat pesanan batas.",
-    "exchangeRate": "Nilai tukar ( %{exchangeRate} XRP)",
+    "exchangeRate": "Nilai tukar",
     "exchangeRateInToken": "Kurs: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Bertukar",
     "failedExchange": "Tidak dapat bertukar sekarang karena kurangnya likuiditas, atau nilai tukar yang diperbarui.",

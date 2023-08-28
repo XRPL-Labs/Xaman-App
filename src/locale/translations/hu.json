@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Biztos benne, hogy a %{payAmount} %{getAmount} %{payCurrency} %{payCurrency} %{getAmount} %{getCurrency}értékre kívánja cserélni?",
     "errorDuringExchange": "Hiba a csere során: %{error}",
     "exchangeByThirdPartyMessage": "Ha egy kért árszinten kíván ajánlatot létrehozni, akkor a harmadik fél XUMM engedélyezett XRP Toolkit alkalmazás segítségével létrehozhat egy korlátot.",
-    "exchangeRate": "Exchange rate (%{exchangeRate} XRP)",
+    "exchangeRate": "Exchange rate",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Exchanging",
     "failedExchange": "A likviditás hiánya vagy a frissített árfolyamok miatt jelenleg nem cserélhetők le.",

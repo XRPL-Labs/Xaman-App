@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Ви впевнені, що хочете обміняти %{payAmount} %{payCurrency} на %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Помилка під час обміну: %{error}",
     "exchangeByThirdPartyMessage": "Якщо Ви хочете створити пропозицію(ставку) для виконання за необхідним рівнем ціни, Ви можете використовувати XRPToolkit - це додаток стороннього розробника, з підтримкою XUMM для створення 'Обмеженої пропозиції'.",
-    "exchangeRate": "Курс обміну (%{exchangeRate} XRP)",
+    "exchangeRate": "Курс обміну",
     "exchangeRateInToken": "Курс обміну: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Обмін",
     "failedExchange": "Зараз неможливо здійснити обмін через відсутність ліквідності або оновлені курси обміну",

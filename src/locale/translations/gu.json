@@ -376,7 +376,7 @@
     "doYouWantToExchange": "શું તમે ખરેખર આદાનપ્રદાન કરવા માંગો છો %{payAmount} %{payCurrency} માટે %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "વિનિમય દરમિયાન ભૂલ: %{error}\r\n",
     "exchangeByThirdPartyMessage": "જો તમે વિનંતી કરેલા ભાવ સ્તરે અમલ માટે offerફર બનાવવા માંગો છો, તો તમે મર્યાદા હુકમ બનાવવા માટે 3 જી પક્ષ XUMM સક્ષમ XRP ટૂલકિટ એપ્લિકેશનનો ઉપયોગ કરી શકો છો.",
-    "exchangeRate": "વિનિમય દર (%{exchangeRate} XRP)\r\n",
+    "exchangeRate": "વિનિમય દર",
     "exchangeRateInToken": "વિનિમય દર: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "વિનિમય",
     "failedExchange": "પ્રવાહિતાના અભાવ અથવા અદ્યતન વિનિમય દરને લીધે હમણાં વિનિમય કરી શકાતા નથી.",

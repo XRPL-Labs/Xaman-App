@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Сіз %{payAmount} %{payCurrency} %{getAmount} %{getCurrency} ауыстырғыңыз келетініне сенімдісіз бе?",
     "errorDuringExchange": "Бөлісу қатесі: %{error}",
     "exchangeByThirdPartyMessage": "Егер сіз сұралған баға деңгейінде орындау үшін ұсыныс жасағыңыз келсе, шекті тапсырыс жасау үшін үшінші тараптың XUMM XRP Toolkit қосымшасын қолдана аласыз.",
-    "exchangeRate": "Айырбас бағамы (%{exchangeRate} XRP)",
+    "exchangeRate": "Айырбас бағамы",
     "exchangeRateInToken": "Айырбастау бағамы: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Алмасу",
     "failedExchange": "Өтімділіктің немесе жаңартылған валюта бағамдарының болмауына байланысты дәл қазір айырбастай алмайды.",

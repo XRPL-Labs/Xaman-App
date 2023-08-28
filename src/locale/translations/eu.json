@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Ziur zaude trukatu nahi duzula %{payAmount} %{payCurrency} entzat %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "Akatsa trukatzean: %{error}",
     "exchangeByThirdPartyMessage": "Eskatutako prezio mailan exekutatzeko eskaintza sortu nahi baduzu, hirugarrenen XUMM gaitutako XRP TresnaKit aplikazioa erabil dezakezu muga eskaera bat sortzeko.",
-    "exchangeRate": "Truke-tasa (%{exchangeRate} XRP)",
+    "exchangeRate": "Truke-tasa",
     "exchangeRateInToken": "Truke-tasa: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Trukatzen",
     "failedExchange": "Ezin da trukatu oraintxe likidezia eza, edo truke-tasak eguneratzen dela eta.",

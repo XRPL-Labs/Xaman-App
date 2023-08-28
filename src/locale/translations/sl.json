@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Ali ste prepričani, da želite izmenjati %{payAmount} %{payCurrency} za %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Napaka med menjavo: %{error}",
     "exchangeByThirdPartyMessage": "Če želite ustvariti ponudbo za izvedbo na zahtevani ravni cen, lahko za ustvarjanje omenjenega naročila uporabite aplikacijo XRP Toolkit neodvisnega proizvajalca XUMM.",
-    "exchangeRate": "Menjalni tečaj (%{exchangeRate} XRP)",
+    "exchangeRate": "Menjalni tečaj",
     "exchangeRateInToken": "Menjalni tečaj: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Menjava",
     "failedExchange": "Zaradi pomanjkanja likvidnosti ali posodobljenih menjalnih tečajev izmenjava trenutno ni možna.",

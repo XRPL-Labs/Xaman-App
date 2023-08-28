@@ -376,7 +376,7 @@
     "doYouWantToExchange": "¿Estás seguro de que quieres intercambiar %{payAmount}%{payCurrency} por %{getAmount}%{getCurrency} ?",
     "errorDuringExchange": "Error durante el intercambio: %{error}",
     "exchangeByThirdPartyMessage": "Si deseas crear una oferta a ejecutarse al precio solicitado, puedes crear órdenes con límites  através de la aplicación de terceros conocida como XRP Toolkit, que está habilitada para Xumm.",
-    "exchangeRate": "Tasa de Cambio (%{exchangeRate} XRP)",
+    "exchangeRate": "Tasa de Cambio",
     "exchangeRateInToken": "Tipo de cambio: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Intercambiando",
     "failedExchange": "No se puede intercambiar en este momento debido a la falta de liquidez o tipos de cambio actualizados.",

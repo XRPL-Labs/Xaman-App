@@ -404,7 +404,7 @@
     "doYouWantToExchange": "¿Estás seguro que deseas cambiar %{payAmount} %{payCurrency} por %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Error durante el cambio: %{error}",
     "exchangeByThirdPartyMessage": "Si desea ordenar la ejecución al nivel de precio solicitado, puede utilizar la aplicación de terceros XRP Toolkit habilitada en XUMM para crear una orden limitada. ",
-    "exchangeRate": "Tasa de Cambio (%{exchangeRate} XRP)",
+    "exchangeRate": "Tasa de Cambio",
     "exchangeRateInToken": "Tipo de cambio: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Cambiando",
     "failedExchange": "No se puede cambiar en este momento debido a la falta de liquidez o tipos de cambio actualizados.",

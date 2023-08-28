@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Vai esat pārliecināti, ka vēlaties apmainīt Variable %{payAmount} Variable %{payCurrency} pret Variable %{getAmount} Variable %{getCurrency}?",
     "errorDuringExchange": "Kļūda apmaiņas laikā: %{error}",
     "exchangeByThirdPartyMessage": "Ja vēlaties izveidot piedāvājumu izpildei par prasīto cenu, jūs varat izmantot XUMM aplikācijas opciju XRP Toolkit, lai izveidotu limita rīkojumu izpildei.",
-    "exchangeRate": "Valūtas maiņas kurss (%{exchangeRate} XRP)",
+    "exchangeRate": "Valūtas maiņas kurss",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Apmainīšana",
     "failedExchange": "Pašlaik nevar veikt apmaiņu dēļ likviditātes, vai atjauniniet apmaiņas kursus.",

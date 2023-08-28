@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Наистина ли желаете да обмените %{payAmount} %{payCurrency} за %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Грешка по време на обмена: %{error}",
     "exchangeByThirdPartyMessage": "Ако искате да създадете оферта за изпълнение на заявено ценово ниво, можете да използвате приложението XRP Toolkit, активирано от XUMM като партньор /3-та страна/, за да създадете лимитирана поръчка.",
-    "exchangeRate": "Обменен курс (%{exchangeRate} XRP)",
+    "exchangeRate": "Обменен курс",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Обмен",
     "failedExchange": "В момента не може да се обменя поради липса на ликвидност или актуализирани обменни курсове.",

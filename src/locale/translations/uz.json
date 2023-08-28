@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Haqiqatan ham almashishni xohlaysizmi %{payAmount} %{payCurrency} uchun %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Error during the exchange: %{error}",
     "exchangeByThirdPartyMessage": "Agar siz talab qilingan narx darajasida bajarish uchun taklif yaratmoqchi bo'lsangiz, chegara tartibini yaratish uchun siz uchinchi tomon XUMM yoqilgan XRP Toolkit dasturidan foydalanishingiz mumkin.",
-    "exchangeRate": "Ayriboshlash kursi  (%{exchangeRate} XRP)",
+    "exchangeRate": "Ayriboshlash kursi",
     "exchangeRateInToken": "Ayirboshlash kursi: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Almashish",
     "failedExchange": "Likvidlik yo'qligi yoki valyuta kurslarining yangilanganligi sababli ayirboshlash mumkin emas.",

@@ -376,7 +376,7 @@
     "doYouWantToExchange": "ڇا تو کي پڪ آهي ته توهان تبادلو ڪرڻ چاهيو ٿا %{payAmount} %{payCurrency} لاءِ %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "تبديلي دوران غلطي: %{error}",
     "exchangeByThirdPartyMessage": "جيڪڏهن توهان کي هڪ درخواست قيمت سطح تي انجام ڏيڻ لاء هڪ آڇ پيدا ڪرڻ چاهيو ٿا، توهان حد آرڊر ٺاهڻ لاءِ ٽئين پارٽي XUMM فعال XRP ٽولڪيڪ ايپليڪيشن استعمال ڪري سگهو ٿا.",
-    "exchangeRate": "مٽا سٽا واري شرح (%{exchangeRate} XRP)",
+    "exchangeRate": "مٽا سٽا واري شرح",
     "exchangeRateInToken": "مٽا سٽا جي شرح 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "تبادلي",
     "failedExchange": "في الحال تبادلي نه ٿو ڪري سگهجي پاڻي جي گهٽتائي جي فنڊ, يا تازه ڪاري تبادلي شرح.",

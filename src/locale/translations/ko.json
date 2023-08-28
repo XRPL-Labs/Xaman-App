@@ -376,7 +376,7 @@
     "doYouWantToExchange": "%{payAmount} %{payCurrency} 을(를) %{getAmount} %{getCurrency} 로 교환하시겠습니까?",
     "errorDuringExchange": "교환 중 오류 :%{error}",
     "exchangeByThirdPartyMessage": "요청 된 가격 수준에서 실행할 제안을 생성하려는 경우 타사 XUMM 지원 XRP 툴킷 애플리케이션을 사용하여 지정가 주문을 생성 할 수 있습니다.",
-    "exchangeRate": "환율 (%{exchangeRate} XRP)",
+    "exchangeRate": "환율",
     "exchangeRateInToken": "환율: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "교환",
     "failedExchange": "현재 유동성 부족 또는 환율 변동으로 교환이 불가능합니다.",

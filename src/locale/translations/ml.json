@@ -376,7 +376,7 @@
     "doYouWantToExchange": "നിങ്ങൾക്ക് കൈമാറ്റം ചെയ്യണമെന്ന് ഉറപ്പാണോ %{payAmount} %{payCurrency} വേണ്ടി %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "കൈമാറ്റ സമയത്ത് പിശക്: %{error}\r\n",
     "exchangeByThirdPartyMessage": "അഭ്യർത്ഥിച്ച വില തലത്തിൽ നിർവ്വഹണത്തിനായി ഒരു ഓഫർ സൃഷ്ടിക്കാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നുവെങ്കിൽ, ഒരു പരിധി ഓർഡർ സൃഷ്ടിക്കുന്നതിന് നിങ്ങൾക്ക് മൂന്നാം കക്ഷി XUMM പ്രാപ്തമാക്കിയ എക്സ്ആർപി ടൂൾകിറ്റ് ആപ്ലിക്കേഷൻ ഉപയോഗിക്കാം.",
-    "exchangeRate": "വിനിമയ നിരക്ക്  (%{exchangeRate} XRP)\r\n",
+    "exchangeRate": "വിനിമയ നിരക്ക്",
     "exchangeRateInToken": "വിനിമയ നിരക്ക്: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "കൈമാറ്റം ചെയ്യുന്നു",
     "failedExchange": "ദ്രവ്യതയുടെ അഭാവം അല്ലെങ്കിൽ അപ്‌ഡേറ്റ് ചെയ്ത വിനിമയ നിരക്കുകൾ കാരണം ഇപ്പോൾ കൈമാറ്റം ചെയ്യാൻ കഴിയില്ല.",

@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Είστε βέβαιοι ότι θέλετε να ανταλλάξετε το %{payAmount} %{payCurrency} για το %{getAmount} %{getCurrency};",
     "errorDuringExchange": "Σφάλμα κατά την ανταλλαγή: %{error}",
     "exchangeByThirdPartyMessage": "Αν θέλετε να καταχωρήσετε μία προσφορά αγοράς/πώλησης σε μια συγκεκριμένη τιμή, μπορείτε να χρησιμοποιήσετε μια εφαρμογή τρίτων που υποστηρίζεται από το XUMM, την XRP Toolkit, ώστε να καθορίσετε όριο τιμής (limit order).",
-    "exchangeRate": "Ισοτιμία (%{exchangeRate} XRP)",
+    "exchangeRate": "Ισοτιμία",
     "exchangeRateInToken": "Συναλλαγματική ισοτιμία: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Ανταλλαγή",
     "failedExchange": "Δεν είναι δυνατή η ανταλλαγή αυτή τη στιγμή λόγω έλλειψης ρευστότητας, ή λόγο ενημέρωσης συναλλαγματικών ισοτιμιών.",

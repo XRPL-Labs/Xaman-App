@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Kas olete kindel, et soovite vahetada %{payAmount} %{payCurrency} for%{getCurrency}%{getCurrency}?",
     "errorDuringExchange": "Viga vahetuse ajal: %{error}",
     "exchangeByThirdPartyMessage": "Kui soovite luua pakkumist täitmiseks soovitud hinnatasemega, siis saate kasutada kolmanda osapoole XUMM'i poolt lubatud XRP Toolkit'i taotlust määratud tellimuse loomiseks.",
-    "exchangeRate": "Vahetuskurss (%{exchangeRate} XRP)",
+    "exchangeRate": "Vahetuskurss",
     "exchangeRateInToken": "Exchange rate: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Vahetamine",
     "failedExchange": "Ei saa praegu vahetada likviidsuse puudumise või uuendamata vahetuskursside tõttu.",

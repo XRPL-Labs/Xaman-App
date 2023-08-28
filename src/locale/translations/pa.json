@@ -376,7 +376,7 @@
     "doYouWantToExchange": "ਕੀ ਤੁਸੀਂ ਪੱਕਾ ਬਦਲਣਾ ਚਾਹੁੰਦੇ ਹੋ %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "ਐਕਸਚੇਂਜ ਦੌਰਾਨ ਗਲਤੀ: %{error}\r\n",
     "exchangeByThirdPartyMessage": "ਜੇ ਤੁਸੀਂ ਬੇਨਤੀ ਕੀਤੇ ਕੀਮਤ ਪੱਧਰ 'ਤੇ ਐਗਜ਼ੀਕਿ .ਸ਼ਨ ਲਈ ਇੱਕ ਪੇਸ਼ਕਸ਼ ਬਣਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ, ਤਾਂ ਤੁਸੀਂ ਇੱਕ ਸੀਮਾ ਕ੍ਰਮ ਬਣਾਉਣ ਲਈ ਤੀਜੀ ਧਿਰ XUMM ਸਮਰਥਿਤ XRP ਟੂਲਕਿੱਟ ਐਪਲੀਕੇਸ਼ਨ ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹੋ.",
-    "exchangeRate": "ਐਕਸਚੇਂਜ ਦਰ (%{exchangeRate} XRP)\r\n",
+    "exchangeRate": "ਐਕਸਚੇਂਜ ਦਰ",
     "exchangeRateInToken": "ਐਕਸਚੇਂਜ ਦਰ: 1 XRP = %{exchangeRate} %{currency}\r\n",
     "exchanging": "ਐਕਸਚੇਂਜ ਕਰ ਰਿਹਾ ਹੈ",
     "failedExchange": "ਤਰਲਤਾ ਦੀ ਘਾਟ, ਜਾਂ ਅਪਡੇਟ ਕੀਤੇ ਐਕਸਚੇਂਜ ਰੇਟਾਂ ਕਾਰਨ ਇਸ ਸਮੇਂ ਐਕਸਚੇਜ਼ ਨਹੀਂ ਕਰ ਸਕਦਾ.",

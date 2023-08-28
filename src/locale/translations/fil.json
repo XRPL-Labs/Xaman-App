@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Sigurado ka bang nais mong makipagpalitan %{payAmount} %{payCurrency} para sa %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "pagkakamali sa panahon ng palitan: %{error}",
     "exchangeByThirdPartyMessage": "Kung nais mong lumikha ng isang alok para sa pagpapatupad sa isang hiniling na antas ng presyo, maaari mong gamitin ang application ng XUMM na XUMM na pinaganang XRP Toolkit na application upang lumikha ng isang order ng limitasyon.",
-    "exchangeRate": "halaga ng palitan (%{exchangeRate} XRP)",
+    "exchangeRate": "halaga ng palitan",
     "exchangeRateInToken": "Pagpapalitan singil: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "pakikipagpalitan",
     "failedExchange": "Hindi maipagpalit ngayon dahil sa kakulangan ng pagkatubig, o na-update na mga rate ng palitan.",

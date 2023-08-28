@@ -376,7 +376,7 @@
     "doYouWantToExchange": "आपणास खात्री आहे की तुम्हाला देवाणघेवाण करायची आहे %{payAmount} %{payCurrency} च्या साठी %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "एक्सचेंज दरम्यान त्रुटी: %{error}\r\n",
     "exchangeByThirdPartyMessage": "आपण विनंती केलेल्या किंमतीच्या स्तरावर अंमलबजावणीसाठी ऑफर तयार करू इच्छित असल्यास आपण मर्यादा ऑर्डर तयार करण्यासाठी थर्ड पार्टी XUMM सक्षम एक्सआरपी टूलकिट अनुप्रयोग वापरू शकता.",
-    "exchangeRate": "विनिमय दर (%{exchangeRate} XRP)\r\n",
+    "exchangeRate": "विनिमय दर",
     "exchangeRateInToken": "विनिमय दर: 1 XRP = %{exchangeRate} %{currency}\r\n",
     "exchanging": "एक्सचेंज करत आहे",
     "failedExchange": "तरलतेच्या अभावामुळे किंवा अद्ययावत विनिमय दरामुळे आत्ता एक्सचेंज करणे शक्य नाही.",

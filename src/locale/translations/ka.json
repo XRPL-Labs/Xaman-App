@@ -376,7 +376,7 @@
     "doYouWantToExchange": "დარწმუნებული ხართ, რომ გსურთ გადაცვალოთ %{payAmount} %{payCurrency}, %{getAmount} %{getCurrency}-ში?",
     "errorDuringExchange": "გაცვლის პროცესში დაფიქსირდა შეცდომა: %{error}",
     "exchangeByThirdPartyMessage": "თუ გსურს რომ შექმნა ამ აქტივის ყიდვის ან გაყიდვის მოთხოვნა კონკრეტულ ფასზე-ლიმიტ ორდერი, შეგიძლია გამოიყენო XUMM აპლიკაციიდან გააქტიურებული მესამე წყაროს აპლიკაცია XRP Toolkit.",
-    "exchangeRate": "გაცვლითი კურსი: (%{exchangeRate} XRP)",
+    "exchangeRate": "გაცვლითი კურსი",
     "exchangeRateInToken": "Გაცვლითი კურსი: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "გაცვლა",
     "failedExchange": "ამჟამად გაცვლის განხორციელება შეუძლებელია, მოცულობის დეფიციტის ან განახლებული გაცვლითი კურსების გამო. ",

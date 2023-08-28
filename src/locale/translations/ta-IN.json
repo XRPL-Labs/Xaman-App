@@ -376,7 +376,7 @@
     "doYouWantToExchange": "நீங்கள் நிச்சயமாக பரிமாற விரும்புகிறீர்களா? %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?\r\n",
     "errorDuringExchange": "பரிமாற்றத்தின் போது பிழை: %{error}",
     "exchangeByThirdPartyMessage": "கோரப்பட்ட விலை மட்டத்தில் செயல்படுத்துவதற்கான சலுகையை உருவாக்க விரும்பினால், வரம்பு வரிசையை உருவாக்க 3 வது தரப்பு XUMM இயக்கப்பட்ட XRP கருவித்தொகுப்பு பயன்பாட்டைப் பயன்படுத்தலாம்.",
-    "exchangeRate": "பரிமாற்ற வீதம் (%{exchangeRate} XRP)\r\n",
+    "exchangeRate": "பரிமாற்ற வீதம்",
     "exchangeRateInToken": "பரிமாற்ற வீதம்: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "பரிமாற்றம்",
     "failedExchange": "பணப்புழக்கம் அல்லது புதுப்பிக்கப்பட்ட மாற்று விகிதங்கள் காரணமாக இப்போது பரிமாற முடியாது.",

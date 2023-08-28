@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Er du sikker på, at du vil udveksle %{payAmount} %{payCurrency} for %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Fejl under udvekslingen: %{error}",
     "exchangeByThirdPartyMessage": "Hvis du vil oprette et bud, der gennemføres på et anmodet prisniveau, kan du bruge den XUMM-forbundne tredjeparts-app, XRP Toolkit, til at oprette en limit-ordre.",
-    "exchangeRate": "Vekselkurs (%{exchangeRate} XRP)",
+    "exchangeRate": "Vekselkurs",
     "exchangeRateInToken": "Vekselkurs: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Veksel",
     "failedExchange": "Kan ikke veksle lige nu på grund af manglende likviditet eller opdaterede valutakurser.",

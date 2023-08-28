@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Is u seker dat u %{payAmount} %{payCurrency} wil verruil vir %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Fout tydens die uitruil: %{error}",
     "exchangeByThirdPartyMessage": "As u 'n aanbod vir die uitvoering teen 'n aangevraagde prysvlak wil opstel, kan u die XRP Toolkit-toepassing van die derde party XUMM gebruik om 'n limietorder te skep.",
-    "exchangeRate": "Wisselkoers (%{exchangeRate} XRP)",
+    "exchangeRate": "Wisselkoers",
     "exchangeRateInToken": "Wisselkoers: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Ruil uit",
     "failedExchange": "Kan nie nou ruil nie weens gebrek aan likiditeit, of bygewerkte wisselkoerse.",

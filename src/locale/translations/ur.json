@@ -376,7 +376,7 @@
     "doYouWantToExchange": "کیا آپ واقعی %{getAmount} %{getCurrency} کے لئے %{payAmount} %{payCurrency} کا تبادلہ کرنا چاہتے ہیں؟\r\n",
     "errorDuringExchange": " تبادلے کے دوران خرابی: %{error}",
     "exchangeByThirdPartyMessage": "آپ کو ایک درخواست کی قیمت کی سطح پر عملدرآمد کے لئے ایک تجویز پیدا کرنے کے لئے چاہتے ہیں تو، آپ کو 3rd پارٹی کے استعمال کر سکتے XUMM ایک حد کے لئے پیدا کرنے کے لئے XRP ٹولکٹ درخواست فعال.",
-    "exchangeRate": " (%{exchangeRate} XRP) زر مبادلہ کی شرح",
+    "exchangeRate": "زر مبادلہ کی شرح",
     "exchangeRateInToken": "زر مبادلہ کی شرح: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "تبادلہ کرنا",
     "failedExchange": "لیکویڈیٹی کی کمی ، یا شرح تبادلہ کی تازہ کاری کی وجہ سے ابھی تبادلہ نہیں ہوسکتا ہے۔",

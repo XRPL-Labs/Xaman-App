@@ -376,7 +376,7 @@
     "doYouWantToExchange": "Er du sikker på at du ønsker å veksle %{payAmount} %{payCurrency} til %{getAmount} %{getCurrency}?",
     "errorDuringExchange": "Feil oppstod ved veksling: %{error}",
     "exchangeByThirdPartyMessage": "Hvis du ønsker å lage et tilbud til en spesifik pris så kan du bruke 3. part XUMM-aktivert XRP Toolkit applikasjonen for å opprette en grenseordre.",
-    "exchangeRate": "Vekslingskurs (%{exchangeRate} XRP)",
+    "exchangeRate": "Vekslingskurs",
     "exchangeRateInToken": "Vekslingskurs: 1 XRP = %{exchangeRate} %{currency}",
     "exchanging": "Veksler",
     "failedExchange": "Kan ikke veksle akkurat nå pga. mangel på likviditet eller oppdatert vekslingskurs.",
