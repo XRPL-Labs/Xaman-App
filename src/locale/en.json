@@ -775,6 +775,7 @@
     "tangemNFCNotSupportedDeviceAlert": "Using Tangem cards requires NFC capabilities. Your phone does not seem to support NFC.",
     "cardEnforcedSecurity": "Card enforced security",
     "readOnly": "Read only",
+    "masterKeyDisabled": "Master key disabled",
     "fullAccessDesc": "Send, sign and receive transactions",
     "readOnlyDesc": "View balance & receive transactions",
     "youCanAlwaysGetFullAccess": "You can upgrade a read only account to a full access account later on",

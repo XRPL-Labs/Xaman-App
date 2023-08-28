@@ -178,7 +178,13 @@ class AccountListView extends Component<Props, State> {
         const signable = find(signableAccount, { address: item.address });
 
         if (!signable) {
-            accessLevelLabel = Localize.t('account.readOnly');
+            // if master key is disabled then show it in the label
+            if (item.flags?.disableMasterKey) {
+                accessLevelLabel = `${Localize.t('account.readOnly')} (${Localize.t('account.masterKeyDisabled')}) `;
+            } else {
+                accessLevelLabel = Localize.t('account.readOnly');
+            }
+
             accessLevelIcon = 'IconLock';
         }
 
@@ -203,7 +209,9 @@ class AccountListView extends Component<Props, State> {
                         </Text>
                         <View style={styles.accessLevelContainer}>
                             <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
-                            <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
+                            <Text numberOfLines={1} style={styles.accessLevelLabel}>
+                                {accessLevelLabel}
+                            </Text>
                             {item.hidden && (
                                 <>
                                     <Text style={styles.accessLevelLabel}> </Text>
