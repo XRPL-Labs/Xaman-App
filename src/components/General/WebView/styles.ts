@@ -7,9 +7,8 @@ export default StyleService.create({
         flex: 1,
         overflow: 'hidden',
     },
-    // eslint-disable-next-line react-native/no-color-literals
     webView: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '$background',
     },
     loadingStyle: {
         zIndex: 999999,
@@ -24,6 +23,7 @@ export default StyleService.create({
     },
     contentContainer: {
         flex: 1,
+        backgroundColor: '$background',
         overflow: 'hidden',
     },
     errorContainer: {
