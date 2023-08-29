@@ -327,7 +327,7 @@ class BaseTransaction {
      * @param {number} netFee in drops
      * @returns {string} calculated fee in drops
      */
-    calculateFee = (netFee?: number): string => {
+    calculateFee = (netFee?: number | string): string => {
         // if netFee is not set, default to 12 drops
         if (!netFee) {
             netFee = 12;

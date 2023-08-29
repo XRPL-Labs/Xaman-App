@@ -15,8 +15,7 @@ export enum Steps {
 
 export interface FeeItem {
     type: string;
-    value: number;
-    suggested?: boolean;
+    value: string;
 }
 
 export interface Props {
@@ -34,7 +33,6 @@ export interface State {
     currency: TrustLineModel | string;
     amount: string;
     memo: string;
-    availableFees: FeeItem[];
     selectedFee: FeeItem;
     issuerFee: number;
     payment: Payment;
@@ -52,8 +50,8 @@ export interface ContextProps extends State {
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;
     setFee: (fee: FeeItem) => void;
-    setAvailableFees: (availableFees: FeeItem[]) => void;
     setMemo: (memo: string) => void;
+    getPaymentJsonForFee: () => any;
     goNext: () => void;
     goBack: () => void;
 }

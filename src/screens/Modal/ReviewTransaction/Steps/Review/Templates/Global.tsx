@@ -1,15 +1,8 @@
 import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
-import { Alert, Text, View } from 'react-native';
-
-import { NetworkService, StyleService } from '@services';
-
-import { AppScreens } from '@common/constants';
+import { Text, View } from 'react-native';
 
 import { AccountNameType, getAccountName } from '@common/helpers/resolver';
-import { Navigator } from '@common/helpers/navigator';
-
-import { Capitalize } from '@common/utils/string';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
@@ -20,12 +13,11 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { AccountRepository } from '@store/repositories';
 
 // components
-import { Badge, Button, InfoMessage, LoadingIndicator, TouchableDebounce } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { InfoMessage, LoadingIndicator } from '@components/General';
+import { FeePicker, RecipientElement } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { TemplateProps } from './types';
@@ -34,17 +26,9 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
 }
 export interface State {
-    availableFees: FeeItem[];
-    selectedFee: FeeItem;
     signers: AccountNameType[];
     warnings: Array<string>;
-    isLoadingFee: boolean;
     isLoadingSigners: boolean;
-}
-
-export interface FeeItem {
-    type: string;
-    value: number;
 }
 
 /* Component ==================================================================== */
@@ -53,17 +37,13 @@ class GlobalTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            availableFees: undefined,
-            selectedFee: undefined,
             signers: undefined,
             warnings: undefined,
-            isLoadingFee: true,
             isLoadingSigners: true,
         };
     }
 
     componentDidMount() {
-        this.loadTransactionFee();
         this.fetchSignersDetails();
         this.setWarnings();
     }
@@ -100,54 +80,6 @@ class GlobalTemplate extends Component<Props, State> {
         });
     };
 
-    loadTransactionFee = async () => {
-        const { transaction, payload } = this.props;
-
-        try {
-            // set the fee if not set and can override the details of transaction
-            const shouldOverrideFee = typeof transaction.Fee === 'undefined' && !payload.isMultiSign();
-
-            if (shouldOverrideFee) {
-                // calculate and persist the transaction fees
-                const { availableFees, suggested } = await NetworkService.getAvailableNetworkFee(transaction.Json);
-
-                // normalize suggested and available fees base on transaction type
-                const availableFeesNormalized = availableFees.map((fee: FeeItem) => {
-                    return {
-                        type: fee.type,
-                        value: transaction.calculateFee(fee.value),
-                    };
-                });
-
-                // get suggested fee
-                const suggestedFee = find(availableFeesNormalized, { type: suggested });
-
-                this.setState(
-                    {
-                        availableFees: availableFeesNormalized,
-                        selectedFee: suggestedFee,
-                    },
-                    () => {
-                        this.setTransactionFee(suggestedFee);
-                    },
-                );
-            } else {
-                this.setState({
-                    selectedFee: {
-                        type: 'unknown',
-                        value: Number(transaction.Fee),
-                    },
-                });
-            }
-        } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToGetNetworkFee'));
-        } finally {
-            this.setState({
-                isLoadingFee: false,
-            });
-        }
-    };
-
     setWarnings = async () => {
         const { transaction } = this.props;
 
@@ -168,126 +100,11 @@ class GlobalTemplate extends Component<Props, State> {
         }
     };
 
-    setTransactionFee = (fee: FeeItem) => {
+    setTransactionFee = (fee: any) => {
         const { transaction } = this.props;
 
         // NOTE: setting the transaction fee require Native and not drops
         transaction.Fee = new Amount(fee.value).dropsToNative();
-    };
-
-    onTransactionFeeSelect = (fee: FeeItem) => {
-        this.setState(
-            {
-                selectedFee: fee,
-            },
-            () => {
-                this.setTransactionFee(fee);
-            },
-        );
-    };
-
-    showFeeSelectOverlay = () => {
-        const { availableFees, selectedFee } = this.state;
-
-        Navigator.showOverlay(AppScreens.Overlay.SelectFee, {
-            availableFees,
-            selectedFee,
-            onSelect: this.onTransactionFeeSelect,
-        });
-    };
-
-    getNormalizedFee = () => {
-        const { selectedFee } = this.state;
-
-        return new Amount(selectedFee.value).dropsToNative();
-    };
-
-    getFeeColor = () => {
-        const { selectedFee } = this.state;
-
-        switch (selectedFee.type) {
-            case 'LOW':
-                return StyleService.value('$green');
-            case 'MEDIUM':
-                return StyleService.value('$orange');
-            case 'HIGH':
-                return StyleService.value('$red');
-            default:
-                return StyleService.value('$textPrimary');
-        }
-    };
-
-    renderFee = () => {
-        const { transaction } = this.props;
-        const { isLoadingFee, selectedFee } = this.state;
-
-        // we are loading the fee
-        if (isLoadingFee || !selectedFee) {
-            return (
-                <>
-                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                    <View style={styles.contentBox}>
-                        <Text style={styles.value}>Loading ...</Text>
-                    </View>
-                </>
-            );
-        }
-
-        // fee is set by payload as it's already transformed to Native from drops
-        // we show it as it is
-        if (selectedFee.type === 'unknown') {
-            return (
-                <>
-                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                    <View style={styles.contentBox}>
-                        <Text style={styles.feeText}>
-                            {selectedFee.value} {NetworkService.getNativeAsset()}
-                        </Text>
-                    </View>
-                </>
-            );
-        }
-
-        // AccountDelete transaction have fixed fee value
-        // NOTE: this may change in the future, we may need to let user select higher fees
-        if (transaction.Type === TransactionTypes.AccountDelete) {
-            return (
-                <>
-                    <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                    <View style={styles.contentBox}>
-                        <Text style={styles.feeText}>
-                            {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
-                        </Text>
-                    </View>
-                </>
-            );
-        }
-
-        return (
-            <>
-                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                <TouchableDebounce
-                    activeOpacity={0.8}
-                    style={[styles.contentBox, AppStyles.row]}
-                    onPress={this.showFeeSelectOverlay}
-                >
-                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                        <Text style={styles.feeText}>
-                            {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
-                        </Text>
-                        <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
-                    </View>
-                    <Button
-                        onPress={this.showFeeSelectOverlay}
-                        style={styles.editButton}
-                        roundedSmall
-                        iconSize={13}
-                        light
-                        icon="IconEdit"
-                    />
-                </TouchableDebounce>
-            </>
-        );
     };
 
     renderWarnings = () => {
@@ -420,7 +237,7 @@ class GlobalTemplate extends Component<Props, State> {
                         const { HookParameter } = parameter;
 
                         return (
-                            <View key={`hook-parameter-${index}`} style={[]}>
+                            <View key={`hook-parameter-${index}`}>
                                 <Text style={styles.value}>
                                     <Text style={styles.hookParamText}>{HookParameter.HookParameterName}</Text>
                                     &nbsp;:&nbsp;
@@ -457,6 +274,22 @@ class GlobalTemplate extends Component<Props, State> {
                         );
                     })}
                 </View>
+            </>
+        );
+    };
+
+    renderFee = () => {
+        const { transaction } = this.props;
+
+        return (
+            <>
+                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                <FeePicker
+                    txJson={transaction.Json}
+                    onSelect={this.setTransactionFee}
+                    containerStyle={styles.contentBox}
+                    textStyle={styles.feeText}
+                />
             </>
         );
     };

@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import { Results } from 'realm';
-import { isEmpty, flatMap, remove, get, uniqBy, toNumber, find } from 'lodash';
+import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
 import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -660,7 +660,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setFee, setAvailableFees, setIssuerFee, source, destination, currency } = this.context;
+        const { goNext, setIssuerFee, source, destination, currency } = this.context;
 
         try {
             this.setState({
@@ -679,13 +679,6 @@ class RecipientStep extends Component<Props, State> {
                     setIssuerFee(issuerFee);
                 }
             }
-
-            // calculate and persist the transaction fees
-            const { availableFees } = await NetworkService.getAvailableNetworkFee();
-
-            setAvailableFees(availableFees);
-            // set the suggested fee as selected fee
-            setFee(find(availableFees, { suggested: true }));
 
             // move to summary step
             goNext();

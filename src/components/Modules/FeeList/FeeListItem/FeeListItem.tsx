@@ -36,11 +36,11 @@ class FeeItemList extends PureComponent<Props, State> {
         const { item } = this.props;
 
         switch (item.type) {
-            case 'low':
+            case 'LOW':
                 return StyleService.value('$green');
-            case 'medium':
+            case 'MEDIUM':
                 return StyleService.value('$orange');
-            case 'high':
+            case 'HIGH':
                 return StyleService.value('$red');
             default:
                 return StyleService.value('$red');
@@ -51,11 +51,11 @@ class FeeItemList extends PureComponent<Props, State> {
         const { item } = this.props;
 
         switch (item.type) {
-            case 'low':
+            case 'LOW':
                 return Localize.t('global.low');
-            case 'medium':
+            case 'MEDIUM':
                 return Localize.t('global.medium');
-            case 'high':
+            case 'HIGH':
                 return Localize.t('global.high');
             default:
                 return '';

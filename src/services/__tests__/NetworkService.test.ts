@@ -1,10 +1,14 @@
 import NetworkService from '../NetworkService';
 
-describe('LedgerService', () => {
+import * as FeeUtils from '@common/utils/fee';
+
+describe('NetworkService', () => {
     const networkService = NetworkService;
 
     it('should properly initialize', async () => {
-        const coreSettings = { network: { baseReserve: 10, ownerReserve: 2 } } as any;
+        const coreSettings = {
+            network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
+        } as any;
 
         await networkService.initialize(coreSettings);
 
@@ -15,49 +19,86 @@ describe('LedgerService', () => {
         });
     });
 
-    it('should return right calculated available fees', async () => {
-        // normal network fees
-        const spy = jest.spyOn(networkService, 'send').mockImplementation(() =>
-            Promise.resolve({
-                current_queue_size: '1924',
-                drops: { median_fee: '5000', minimum_fee: '10', open_ledger_fee: '5343' },
-                max_queue_size: '2000',
-            }),
-        );
+    describe('Not Hooks enabled network', () => {
+        let isFeatureEnabledSpy: any;
 
-        const availableFees = await networkService.getAvailableNetworkFee();
+        beforeAll(() => {
+            // set the network as normal network without hooks amendment
 
-        expect(availableFees).toStrictEqual({
-            availableFees: [
-                { type: 'low', value: 15, suggested: false },
-                { type: 'medium', value: 225, suggested: true },
-                { type: 'high', value: 5877, suggested: false },
-            ],
+            isFeatureEnabledSpy = jest
+                .spyOn(networkService.network, 'isFeatureEnabled')
+                .mockImplementation(() => false);
         });
 
-        spy.mockRestore();
+        afterAll(() => {
+            isFeatureEnabledSpy.mockRestore();
+        });
+
+        it('should return right calculated available fees', async () => {
+            // normal network fees
+            const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
+                Promise.resolve({
+                    drops: { base_fee: '15' },
+                }),
+            );
+
+            const availableFees = await networkService.getAvailableNetworkFee({});
+
+            expect(availableFees).toStrictEqual({
+                availableFees: [
+                    { type: 'LOW', value: '15' },
+                    { type: 'MEDIUM', value: '16' },
+                    { type: 'HIGH', value: '17' },
+                ],
+                feeHooks: 0,
+                suggested: 'MEDIUM',
+            });
+
+            spy0.mockRestore();
+        });
     });
 
-    it('should not exceed the max fees when network report high fees', async () => {
-        // normal network fees
-        const spy = jest.spyOn(networkService, 'send').mockImplementation(() =>
-            Promise.resolve({
-                current_queue_size: '2000',
-                drops: { median_fee: '100000', minimum_fee: '100000', open_ledger_fee: '1000000' },
-                max_queue_size: '2000',
-            }),
-        );
+    describe('Hooks enabled network', () => {
+        let isFeatureEnabledSpy: any;
+        let prepareTxForHookFeeSpy: any;
 
-        const availableFees = await networkService.getAvailableNetworkFee();
-
-        expect(availableFees).toStrictEqual({
-            availableFees: [
-                { type: 'low', value: 1000, suggested: false },
-                { type: 'medium', value: 10000, suggested: false },
-                { type: 'high', value: 100000, suggested: true },
-            ],
+        beforeAll(() => {
+            // set the network as hook enabled network
+            isFeatureEnabledSpy = jest.spyOn(networkService.network, 'isFeatureEnabled').mockImplementation(() => true);
+            prepareTxForHookFeeSpy = jest.spyOn(FeeUtils, 'PrepareTxForHookFee').mockImplementation(() => 'SIGNED_TX');
         });
 
-        spy.mockRestore();
+        afterAll(() => {
+            isFeatureEnabledSpy.mockRestore();
+            prepareTxForHookFeeSpy.mockRestore();
+        });
+
+        it('should return right calculated available fees', async () => {
+            // normal network fees
+            const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
+                Promise.resolve({
+                    drops: {
+                        base_fee: 6186,
+                    },
+                    fee_hooks_feeunits: 6176,
+                }),
+            );
+
+            const availableFees = await networkService.getAvailableNetworkFee({
+                TransactionType: 'Payment',
+            });
+
+            expect(availableFees).toStrictEqual({
+                availableFees: [
+                    { type: 'LOW', value: '6186' },
+                    { type: 'MEDIUM', value: '6496' },
+                    { type: 'HIGH', value: '6805' },
+                ],
+                feeHooks: 6176,
+                suggested: 'MEDIUM',
+            });
+
+            spy0.mockRestore();
+        });
     });
 });

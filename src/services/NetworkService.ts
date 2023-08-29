@@ -2,7 +2,6 @@
  * Network service
  */
 import EventEmitter from 'events';
-import BigNumber from 'bignumber.js';
 import { Platform } from 'react-native';
 
 import { XrplDefinitions } from 'xrpl-accountlib';
@@ -15,6 +14,8 @@ import { NetworkType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
+
+import { NormalizeFeeDataSet, PrepareTxForHookFee } from '@common/utils/fee';
 
 import { AppScreens, NetworkConfig } from '@common/constants';
 
@@ -252,85 +253,24 @@ class NetworkService extends EventEmitter {
      * Get available fees on network base on the load
      * NOTE: values are in drop
      */
-    getAvailableNetworkFee = (): Promise<any> => {
+    getAvailableNetworkFee = (
+        txJson: any,
+    ): Promise<{
+        availableFees: { type: string; value: string }[];
+        feeHooks: number;
+        suggested: string;
+    }> => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const feeDataSet = await this.send({ command: 'fee' });
+                const request = {
+                    command: 'fee',
+                    tx_blob: PrepareTxForHookFee(txJson, this.network.definitions),
+                };
 
-                // set the suggested fee base on queue percentage
-                const { current_queue_size, max_queue_size } = feeDataSet;
-                const queuePercentage = new BigNumber(current_queue_size).dividedBy(max_queue_size);
+                const feeDataSet = await this.send(request);
 
-                const suggestedFee = queuePercentage.isEqualTo(1)
-                    ? 'feeHigh'
-                    : queuePercentage.isEqualTo(0)
-                    ? 'feeLow'
-                    : 'feeMedium';
-
-                // set the drops values to BigNumber instance
-                const minimumFee = new BigNumber(feeDataSet.drops.minimum_fee)
-                    .multipliedBy(1.5)
-                    .integerValue(BigNumber.ROUND_HALF_FLOOR);
-                const medianFee = new BigNumber(feeDataSet.drops.median_fee);
-                const openLedgerFee = new BigNumber(feeDataSet.drops.open_ledger_fee);
-
-                // calculate fees
-                const feeLow = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee,
-                        BigNumber.maximum(medianFee, openLedgerFee).dividedBy(500),
-                    ).integerValue(BigNumber.ROUND_HALF_CEIL),
-                    new BigNumber(1000),
-                ).toNumber();
-
-                const feeMedium = BigNumber.minimum(
-                    queuePercentage.isGreaterThan(0.1)
-                        ? minimumFee
-                              .plus(medianFee)
-                              .plus(openLedgerFee)
-                              .dividedBy(3)
-                              .integerValue(BigNumber.ROUND_HALF_CEIL)
-                        : queuePercentage.isEqualTo(0)
-                        ? BigNumber.maximum(minimumFee.multipliedBy(10), BigNumber.minimum(minimumFee, openLedgerFee))
-                        : BigNumber.maximum(
-                              minimumFee.multipliedBy(10),
-                              minimumFee.plus(medianFee).dividedBy(2).integerValue(BigNumber.ROUND_HALF_CEIL),
-                          ),
-
-                    new BigNumber(feeLow).multipliedBy(15),
-                    new BigNumber(10000),
-                ).toNumber();
-
-                const feeHigh = BigNumber.minimum(
-                    BigNumber.maximum(
-                        minimumFee.multipliedBy(10),
-                        BigNumber.maximum(medianFee, openLedgerFee)
-                            .multipliedBy(1.1)
-                            .integerValue(BigNumber.ROUND_HALF_CEIL),
-                    ),
-                    new BigNumber(100000),
-                ).toNumber();
-
-                resolve({
-                    availableFees: [
-                        {
-                            type: 'low',
-                            value: feeLow,
-                            suggested: suggestedFee === 'feeLow',
-                        },
-                        {
-                            type: 'medium',
-                            value: feeMedium,
-                            suggested: suggestedFee === 'feeMedium',
-                        },
-                        {
-                            type: 'high',
-                            value: feeHigh,
-                            suggested: suggestedFee === 'feeHigh',
-                        },
-                    ],
-                });
+                resolve(NormalizeFeeDataSet(feeDataSet));
             } catch (e) {
                 this.logger.warn('Unable to calculate available network fees:', e);
                 reject(new Error('Unable to calculate available network fees!'));

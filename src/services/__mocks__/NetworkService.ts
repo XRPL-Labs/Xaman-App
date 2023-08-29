@@ -2,6 +2,13 @@
 /* eslint-disable spellcheck/spell-checker */
 
 class NetworkService {
+    public network = {
+        baseReserve: 10,
+        ownerReserve: 2,
+        isFeatureEnabled: () => {},
+        definitions: {},
+    };
+
     public getNativeAsset() {
         return 'XRP';
     }

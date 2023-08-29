@@ -70,7 +70,6 @@ class SendView extends Component<Props, State> {
             currency,
             amount,
             memo: undefined,
-            availableFees: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
             destination: undefined,
@@ -119,10 +118,6 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setAvailableFees = (availableFees: FeeItem[]) => {
-        this.setState({ availableFees });
-    };
-
     setFee = (selectedFee: FeeItem) => {
         this.setState({ selectedFee });
     };
@@ -149,6 +144,50 @@ class SendView extends Component<Props, State> {
 
     setScanResult = (result: any) => {
         this.setState({ scanResult: result });
+    };
+
+    getPaymentJsonForFee = () => {
+        const { currency, amount, destination, source, memo } = this.state;
+
+        const txJson = {
+            TransactionType: 'Payment',
+            Account: source.address,
+            Destination: destination.address,
+            Sequence: 0,
+        };
+
+        if (destination.tag) {
+            Object.assign(txJson, {
+                DestinationTag: Number(destination.tag),
+            });
+        }
+
+        // set the amount
+        if (typeof currency === 'string') {
+            Object.assign(txJson, {
+                Amount: new Amount(amount).nativeToDrops(),
+            });
+        } else {
+            Object.assign(txJson, {
+                Amount: {
+                    currency: currency.currency.currency,
+                    issuer: currency.currency.issuer,
+                    value: amount,
+                },
+            });
+        }
+
+        if (memo) {
+            Object.assign(txJson, {
+                Memos: [
+                    {
+                        Memo: Memo.Encode(memo),
+                    },
+                ],
+            });
+        }
+
+        return txJson;
     };
 
     changeStep = (step: Steps) => {
@@ -359,12 +398,12 @@ class SendView extends Component<Props, State> {
                     setCurrency: this.setCurrency,
                     setFee: this.setFee,
                     setMemo: this.setMemo,
-                    setAvailableFees: this.setAvailableFees,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,
                     setScanResult: this.setScanResult,
+                    getPaymentJsonForFee: this.getPaymentJsonForFee,
                 }}
             >
                 <Step />
@@ -374,9 +413,7 @@ class SendView extends Component<Props, State> {
 
     onHeaderBackPress = () => {
         Keyboard.dismiss();
-        setTimeout(() => {
-            Navigator.pop();
-        }, 10);
+        setTimeout(Navigator.pop, 10);
     };
 
     renderHeader = () => {

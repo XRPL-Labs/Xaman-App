@@ -356,7 +356,9 @@
     "blob": "Blob",
     "digest": "Digest",
     "uriTokeId": "URI Token Id",
-    "hookParameters": "Hook Parameters"
+    "hookParameters": "Hook Parameters",
+    "hookFeeNotice": "Note: The total transaction fee includes a %{hookFee} %{nativeAsset} hooks fee.",
+    "unableToLoadNetworkFee": "Unable to load the network fee!"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
