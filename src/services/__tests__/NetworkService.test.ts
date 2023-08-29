@@ -21,17 +21,20 @@ describe('NetworkService', () => {
 
     describe('Not Hooks enabled network', () => {
         let isFeatureEnabledSpy: any;
+        let prepareTxForHookFeeSpy: any;
 
         beforeAll(() => {
             // set the network as normal network without hooks amendment
-
             isFeatureEnabledSpy = jest
                 .spyOn(networkService.network, 'isFeatureEnabled')
                 .mockImplementation(() => false);
+            isFeatureEnabledSpy = jest.spyOn(networkService.network, 'isFeatureEnabled').mockImplementation(() => true);
+            prepareTxForHookFeeSpy = jest.spyOn(FeeUtils, 'PrepareTxForHookFee').mockImplementation(() => 'SIGNED_TX');
         });
 
         afterAll(() => {
             isFeatureEnabledSpy.mockRestore();
+            prepareTxForHookFeeSpy.mockRestore();
         });
 
         it('should return right calculated available fees', async () => {
