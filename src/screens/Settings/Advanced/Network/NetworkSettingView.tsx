@@ -125,6 +125,10 @@ class NetworkSettingView extends Component<Props, State> {
         this.updateDataSource();
     };
 
+    syncNetwork = () => {
+        Alert.alert('Unavailable', 'Network rail sync is gonna be available soon!');
+    };
+
     render() {
         const { dataSource } = this.state;
 
@@ -137,6 +141,12 @@ class NetworkSettingView extends Component<Props, State> {
                         onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('settings.networkList') }}
+                    rightComponent={{
+                        testID: 'sync-button',
+                        icon: 'IconRefresh',
+                        iconSize: 21,
+                        onPress: this.syncNetwork,
+                    }}
                 />
                 <NodeList
                     dataSource={dataSource}
