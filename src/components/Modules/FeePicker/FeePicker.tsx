@@ -1,4 +1,4 @@
-import { find, isEqual, debounce } from 'lodash';
+import { find, isEqual, debounce, omit } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-native';
@@ -27,7 +27,6 @@ export interface FeeItem {
 }
 interface Props {
     txJson: any;
-    fixedFee?: string;
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     showHooksFee?: boolean;
@@ -62,7 +61,7 @@ class FeePicker extends Component<Props, State> {
         const { txJson } = this.props;
 
         // re-fetch the fees when received new transaction json
-        if (!isEqual(txJson, prevProps.txJson)) {
+        if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
             this.setState(
                 {
                     availableFees: undefined,
@@ -76,16 +75,6 @@ class FeePicker extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { fixedFee } = this.props;
-
-        // if fee already provided we don't need to fetch it anymore
-        if (typeof fixedFee === 'string') {
-            this.setState({
-                selected: { value: fixedFee, type: 'FIXED' },
-            });
-            return;
-        }
-
         // fetch available fees from network
         InteractionManager.runAfterInteractions(this.fetchAvailableFees);
     }

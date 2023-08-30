@@ -10,6 +10,8 @@ import { TransactionTypes } from '@common/libs/ledger/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 
+import NetworkService from '@services/NetworkService';
+
 import { AccountRepository } from '@store/repositories';
 
 // components
@@ -21,6 +23,7 @@ import Localize from '@locale';
 import styles from './styles';
 
 import { TemplateProps } from './types';
+
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
@@ -29,6 +32,7 @@ export interface State {
     signers: AccountNameType[];
     warnings: Array<string>;
     isLoadingSigners: boolean;
+    showFeePicker: boolean;
 }
 
 /* Component ==================================================================== */
@@ -40,6 +44,7 @@ class GlobalTemplate extends Component<Props, State> {
             signers: undefined,
             warnings: undefined,
             isLoadingSigners: true,
+            showFeePicker: typeof props.transaction.Fee === 'undefined' && !props.payload.isMultiSign(),
         };
     }
 
@@ -280,6 +285,27 @@ class GlobalTemplate extends Component<Props, State> {
 
     renderFee = () => {
         const { transaction } = this.props;
+        const { showFeePicker } = this.state;
+
+        // we should not override the fee
+        // either transaction fee has already been set in payload
+        // or transaction is a multi sign tx
+        if (!showFeePicker) {
+            if (typeof transaction.Fee !== 'undefined') {
+                return (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.feeText}>
+                                {transaction.Fee} {NetworkService.getNativeAsset()}
+                            </Text>
+                        </View>
+                    </>
+                );
+            }
+
+            return null;
+        }
 
         return (
             <>
