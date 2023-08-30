@@ -397,7 +397,8 @@
     "buyNFToken": "Buy NFT token",
     "offerOnYouNFT": "Offer on your NFT",
     "sellMyNFT": "Sell my NFT",
-    "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer."
+    "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer.",
+    "myBalanceAndReserve": "My balance & reserve"
   },
   "exchange": {
     "doYouWantToExchange": "您确定要将%{payAmount} %{payCurrency}兑换为%{getAmount} %{getCurrency}吗？",

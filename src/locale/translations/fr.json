@@ -395,7 +395,8 @@
     "buyNFToken": "Buy NFT token",
     "offerOnYouNFT": "Offer on your NFT",
     "sellMyNFT": "Sell my NFT",
-    "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer."
+    "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer.",
+    "myBalanceAndReserve": "My balance & reserve"
   },
   "exchange": {
     "doYouWantToExchange": "Êtes-vous sûr de vouloir échanger %{payAmount} %{payCurrency} pour %{getAmount} %{getCurrency}?",

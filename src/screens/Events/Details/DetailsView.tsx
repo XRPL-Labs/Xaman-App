@@ -1530,7 +1530,12 @@ class TransactionDetailsView extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <Button roundedSmall secondary label="My balance & reserve" onPress={this.showBalanceExplain} />
+                <Button
+                    roundedSmall
+                    secondary
+                    label={Localize.t('events.myBalanceAndReserve')}
+                    onPress={this.showBalanceExplain}
+                />
             </View>
         );
     };
