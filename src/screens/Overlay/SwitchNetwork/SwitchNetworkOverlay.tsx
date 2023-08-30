@@ -107,13 +107,16 @@ class SwitchNetworkOverlay extends Component<Props, State> {
 
     changeNetwork = (network: NetworkModel) => {
         const { onChangeNetwork } = this.props;
+        const { coreSettings } = this.state;
 
-        // switch network
-        NetworkService.switchNetwork(network);
-
-        // callback
-        if (typeof onChangeNetwork === 'function') {
-            onChangeNetwork(network);
+        // if network has been changed
+        if (network.id !== coreSettings.network.id) {
+            // switch network
+            NetworkService.switchNetwork(network);
+            // callback
+            if (typeof onChangeNetwork === 'function') {
+                onChangeNetwork(network);
+            }
         }
 
         // slide down the panel

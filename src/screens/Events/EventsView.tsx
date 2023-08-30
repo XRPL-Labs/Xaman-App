@@ -3,12 +3,25 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
+import {
+    has,
+    filter,
+    flatMap,
+    get,
+    groupBy,
+    isEmpty,
+    isEqual,
+    isUndefined,
+    map,
+    orderBy,
+    uniqBy,
+    without,
+} from 'lodash';
 import React, { Component } from 'react';
 import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountModel } from '@store/models';
+import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
 import { AppScreens } from '@common/constants';
@@ -124,6 +137,8 @@ class EventsView extends Component<Props, State> {
 
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
+        // add listener for default account change
+        CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
         // update list on transaction received
         AccountService.on('transaction', this.onTransactionReceived);
         // update list on sign request received
@@ -142,6 +157,7 @@ class EventsView extends Component<Props, State> {
     componentWillUnmount() {
         // remove listeners
         AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
+        CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
         AppService.off('appStateChange', this.onAppStateChange);
@@ -160,6 +176,22 @@ class EventsView extends Component<Props, State> {
             },
             this.updateDataSource,
         );
+    };
+
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        if (has(changes, 'network')) {
+            // reset everything and load transaction
+            this.setState(
+                {
+                    dataSource: [],
+                    transactions: [],
+                    plannedTransactions: [],
+                    lastMarker: undefined,
+                    canLoadMore: true,
+                },
+                this.updateDataSource,
+            );
+        }
     };
 
     onSignRequestReceived = () => {
