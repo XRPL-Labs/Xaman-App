@@ -157,6 +157,15 @@ class TransactionItem extends Component<Props, State> {
             case TransactionTypes.NFTokenBurn:
             case TransactionTypes.NFTokenCreateOffer:
             case TransactionTypes.NFTokenCancelOffer:
+            case TransactionTypes.SetHook:
+            case TransactionTypes.ClaimReward:
+            case TransactionTypes.Invoke:
+            case TransactionTypes.Import:
+            case TransactionTypes.URITokenMint:
+            case TransactionTypes.URITokenBurn:
+            case TransactionTypes.URITokenBuy:
+            case TransactionTypes.URITokenCreateSellOffer:
+            case TransactionTypes.URITokenCancelSellOffer:
                 address = item.Account.address;
                 break;
             default:
@@ -354,6 +363,24 @@ class TransactionItem extends Component<Props, State> {
                 return Localize.t('events.cancelNFTOffer');
             case TransactionTypes.NFTokenAcceptOffer:
                 return Localize.t('events.acceptNFTOffer');
+            case TransactionTypes.SetHook:
+                return Localize.t('events.setHooks');
+            case TransactionTypes.ClaimReward:
+                return Localize.t('events.claimReward');
+            case TransactionTypes.Invoke:
+                return Localize.t('events.invoke');
+            case TransactionTypes.Import:
+                return Localize.t('events.import');
+            case TransactionTypes.URITokenMint:
+                return Localize.t('events.mintURIToken');
+            case TransactionTypes.URITokenBurn:
+                return Localize.t('events.burnURIToken');
+            case TransactionTypes.URITokenBuy:
+                return Localize.t('events.buyURIToken');
+            case TransactionTypes.URITokenCreateSellOffer:
+                return Localize.t('events.createURITokenSellOffer');
+            case TransactionTypes.URITokenCancelSellOffer:
+                return Localize.t('events.cancelURITokenSellOffer');
             default:
                 return 'Unsupported transaction';
         }

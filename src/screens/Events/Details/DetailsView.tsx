@@ -565,6 +565,24 @@ class TransactionDetailsView extends Component<Props, State> {
                     return Localize.t('events.sellNFToken');
                 }
                 return Localize.t('events.buyNFToken');
+            case TransactionTypes.SetHook:
+                return Localize.t('events.setHooks');
+            case TransactionTypes.ClaimReward:
+                return Localize.t('events.claimReward');
+            case TransactionTypes.Invoke:
+                return Localize.t('events.invoke');
+            case TransactionTypes.Import:
+                return Localize.t('events.import');
+            case TransactionTypes.URITokenMint:
+                return Localize.t('events.mintURIToken');
+            case TransactionTypes.URITokenBurn:
+                return Localize.t('events.burnURIToken');
+            case TransactionTypes.URITokenBuy:
+                return Localize.t('events.buyURIToken');
+            case TransactionTypes.URITokenCreateSellOffer:
+                return Localize.t('events.createURITokenSellOffer');
+            case TransactionTypes.URITokenCancelSellOffer:
+                return Localize.t('events.cancelURITokenSellOffer');
             default:
                 // @ts-ignore
                 return tx.Type;
