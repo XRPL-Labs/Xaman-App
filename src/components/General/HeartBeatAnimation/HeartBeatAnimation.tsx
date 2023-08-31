@@ -1,7 +1,7 @@
 /**
- * Pulse Animation
+ * Heart beat Animation
  *
-    <PulseAnimation>{children}</PulseAnimation>
+    <HeartBeatAnimation>{children}</HeartBeatAnimation>
  *
  */
 import React, { PureComponent } from 'react';
@@ -14,7 +14,7 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-class PulseAnimation extends PureComponent<Props> {
+class HeartBeatAnimation extends PureComponent<Props> {
     private scaleAnimation: Animated.Value;
 
     constructor(props: Props) {
@@ -69,4 +69,4 @@ class PulseAnimation extends PureComponent<Props> {
 }
 
 /* Export Component ==================================================================== */
-export default PulseAnimation;
+export default HeartBeatAnimation;

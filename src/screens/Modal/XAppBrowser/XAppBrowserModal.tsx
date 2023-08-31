@@ -38,7 +38,7 @@ import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 
-import { Avatar, Button, LoadingIndicator, PulseAnimation, Spacer, WebView } from '@components/General';
+import { Avatar, Button, LoadingIndicator, HeartBeatAnimation, Spacer, WebView } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
@@ -745,7 +745,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         if (icon) {
             LoaderComponent = (
-                <PulseAnimation>
+                <HeartBeatAnimation>
                     <Avatar
                         size={80}
                         source={{ uri: icon }}
@@ -753,7 +753,7 @@ class XAppBrowserModal extends Component<Props, State> {
                         // eslint-disable-next-line react-native/no-color-literals,react-native/no-inline-styles
                         containerStyle={{ backgroundColor: 'transparent' }}
                     />
-                </PulseAnimation>
+                </HeartBeatAnimation>
             );
         } else {
             LoaderComponent = <LoadingIndicator size="large" />;

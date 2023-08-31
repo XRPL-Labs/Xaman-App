@@ -78,7 +78,7 @@ export default class Button extends Component<Props> {
         } = this.props;
 
         return (
-            <View style={[styles.buttonWrapper]}>
+            <View style={styles.buttonWrapper}>
                 {icon && iconPosition === 'left' && (
                     <Icon
                         name={icon}

@@ -3,20 +3,40 @@ import StyleService from '@services/StyleService';
 import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
-    switchNetworkButton: {
-        backgroundColor: '$tint',
-        paddingHorizontal: 10,
+    buttonContainer: {
+        height: AppSizes.scale(28),
+        flexDirection: 'row',
         alignSelf: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        backgroundColor: '$tint',
+        borderColor: '$transparent',
+        borderRadius: AppSizes.scale(28) / 2,
+        paddingHorizontal: 10,
         marginRight: -10,
     },
-    switchNetworkButtonTextStyle: {
+    buttonText: {
         fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.subtext.size,
+        color: '$textPrimary',
+        textAlign: 'center',
+        paddingHorizontal: 5,
         marginRight: 5,
     },
-    networkColorCircle: {
-        height: AppSizes.scale(13),
-        width: AppSizes.scale(13),
-        borderRadius: AppSizes.scale(13) / 2,
+    exclamationMarkText: {
+        fontFamily: AppFonts.base.familyExtraBold,
+        fontSize: AppFonts.small.size,
+        color: '$textContrast',
+        textAlign: 'center',
+    },
+    pulseWrapper: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pulseCircle: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
     },
 });

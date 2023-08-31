@@ -24,13 +24,15 @@ import LoggerService from '@services/LoggerService';
 import NavigationService, { RootType } from '@services/NavigationService';
 
 /* Types  ==================================================================== */
-enum NetworkStateStatus {
+export enum NetworkStateStatus {
     Connected = 'Connected',
+    Connecting = 'Connecting',
     Disconnected = 'Disconnected',
 }
 
 declare interface NetworkService {
     on(event: 'connect', listener: (networkId: number) => void): this;
+    on(event: 'stateChange', listener: (networkStatus: NetworkStateStatus) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -40,7 +42,7 @@ class NetworkService extends EventEmitter {
     public connection: XrplClient;
     private status: NetworkStateStatus;
     private networkReserve: any;
-    private shownErrorDialog: boolean;
+    private lastNetworkErrorId: number;
 
     private ledgerListener: any;
     private logger: any;
@@ -58,7 +60,7 @@ class NetworkService extends EventEmitter {
         this.connection = undefined;
         this.status = NetworkStateStatus.Disconnected;
         this.networkReserve = undefined;
-        this.shownErrorDialog = false;
+        this.lastNetworkErrorId = undefined;
 
         this.logger = LoggerService.createLogger('Network');
 
@@ -181,6 +183,17 @@ class NetworkService extends EventEmitter {
      */
     setConnectionStatus = (status: NetworkStateStatus) => {
         this.status = status;
+
+        // send event
+        this.emit('stateChange', status);
+    };
+
+    /**
+     * Returns current connection status
+     * @returns {NetworkStateStatus}
+     */
+    getConnectionStatus = (): NetworkStateStatus => {
+        return this.status;
     };
 
     /**
@@ -514,7 +527,16 @@ class NetworkService extends EventEmitter {
      * @param err
      */
     onError = (err: any) => {
-        this.logger.error('Socket Error: ', err);
+        // set connection status
+        this.setConnectionStatus(NetworkStateStatus.Disconnected);
+
+        // show error if necessary
+        if (this.lastNetworkErrorId !== this.network.id) {
+            this.showConnectionProblem();
+            this.lastNetworkErrorId = this.network.id;
+        }
+
+        this.logger.error('Socket Error: ', err || 'Tried all nodes!');
     };
 
     /**
@@ -561,20 +583,13 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Triggers when unable to connect to any node
-     */
-    onFail = () => {
-        if (!this.shownErrorDialog) {
-            this.logger.error('Tried all node, unable to connect');
-            this.showConnectionProblem();
-            this.shownErrorDialog = true;
-        }
-    };
-
-    /**
      * Establish connection to the network
      */
     connect = () => {
+        // set the connection status to connecting
+        this.setConnectionStatus(NetworkStateStatus.Connecting);
+
+        // craft nodes
         let nodes: string[];
 
         // get default node for selected network
@@ -607,10 +622,11 @@ class NetworkService extends EventEmitter {
             connectAttemptTimeoutSeconds: 3,
         });
 
-        this.connection.on('error', this.onError);
         this.connection.on('online', this.onConnect);
         this.connection.on('offline', this.onClose);
-        this.connection.on('round', this.onFail);
+        this.connection.on('error', this.onError);
+        // @ts-ignore
+        this.connection.on('round', this.onError);
     };
 }
 

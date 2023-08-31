@@ -41,4 +41,4 @@ export * from './TokenIcon';
 export * from './ExpandableView';
 export * from './BlurView';
 export * from './WebView';
-export * from './PulseAnimation';
+export * from './HeartBeatAnimation';
