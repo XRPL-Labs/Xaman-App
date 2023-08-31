@@ -5,7 +5,7 @@
 import { get, isEqual } from 'lodash';
 import EventEmitter from 'events';
 
-import { Alert, NativeModules } from 'react-native';
+import { Alert, NativeModules, Platform } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import { utils } from 'xrpl-accountlib';
@@ -147,7 +147,11 @@ class PushNotificationsService extends EventEmitter {
     };
 
     getBadgeCount = (notification: any): number => {
-        return get(notification, ['notification', 'ios', 'badge']);
+        return Platform.select({
+            ios: Number(get(notification, ['notification', 'ios', 'badge'])),
+            android: Number(get(notification, ['data', '_badge_count'])),
+            default: undefined,
+        });
     };
 
     getType = (notification: any): NotificationType => {
@@ -191,6 +195,7 @@ class PushNotificationsService extends EventEmitter {
 
         // update the badge
         const badgeCount = this.getBadgeCount(message);
+
         this.updateBadge(badgeCount);
     };
 
