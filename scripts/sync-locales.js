@@ -15,11 +15,11 @@ const mergeObjects = (t1, t2) => {
     const out = { ...t1 };
     // eslint-disable-next-line guard-for-in
     for (const key in t2) {
-        if (typeof t2[key] === 'object') {
-            out[key] = mergeObjects(out[key], t2[key]);
-        }
-        if (typeof t2[key] === 'string') {
-            if (!(key in out)) {
+        if (key in out) {
+            if (typeof t2[key] === 'object') {
+                out[key] = mergeObjects(out[key], t2[key]);
+            }
+            if (typeof t2[key] === 'string') {
                 out[key] = t2[key];
             }
         }
@@ -35,7 +35,7 @@ const sync = () => {
             continue;
         }
 
-        let format;
+        const format = [];
         const file = `${TRANSLATIONS_DIR}/${dir[i]}`;
         const content = fs.readFileSync(file, 'utf-8');
         let contentNormalized = '';
@@ -43,29 +43,27 @@ const sync = () => {
         for (let line of content.split('\n')) {
             if (line.split(FORMAT_REGEX).length === 4) {
                 // eslint-disable-next-line prefer-destructuring
-                format = line.split(FORMAT_REGEX)[2];
-                line = line.replace(FORMAT_REGEX, '$1"FORMAT_REPLACED"');
+                const index = format.push(line.split(FORMAT_REGEX)[2]);
+                line = line.replace(FORMAT_REGEX, `$1"FORMAT_REPLACED${index}"`);
             }
             contentNormalized += line;
         }
 
+        const contentNormalizedJson = JSON.parse(contentNormalized);
+
         const currentENJson = require(path.join(LOCALES_DIR, 'en.json'));
-        const merged = mergeObjects(JSON.parse(contentNormalized), currentENJson);
+        const merged = mergeObjects(currentENJson, contentNormalizedJson);
 
-        const out = {};
-        for (const key in merged) {
-            if (key !== 'moment') {
-                out[key] = merged[key];
+        if (Object.prototype.hasOwnProperty.call(contentNormalizedJson, 'moment')) {
+            merged.moment = contentNormalizedJson.moment;
+        }
+
+        let fileContent = JSON.stringify(merged, null, 2);
+
+        if (format.length > 0) {
+            for (let j = 0; j < format.length; j++) {
+                fileContent = fileContent.replace(`"FORMAT_REPLACED${j + 1}"`, format[j]);
             }
-        }
-        if (Object.prototype.hasOwnProperty.call(merged, 'moment')) {
-            out.moment = merged.moment;
-        }
-
-        let fileContent = JSON.stringify(out, null, 2);
-
-        if (format) {
-            fileContent = fileContent.replace('"FORMAT_REPLACED"', format);
         }
 
         fs.writeFileSync(file, fileContent, (err) => {

@@ -37,8 +37,12 @@ class SetHookTemplate extends Component<Props, State> {
         this.state = {};
     }
 
-    renderHook = (hook: HookData) => {
-        return <Text style={styles.value}>{JSON.stringify(hook, null, 2)}</Text>;
+    renderHook = (hook: HookData, index: number) => {
+        return (
+            <Text key={`${index}`} style={styles.value}>
+                {JSON.stringify(hook, null, 2)}
+            </Text>
+        );
     };
 
     render() {
