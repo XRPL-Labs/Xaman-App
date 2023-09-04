@@ -123,11 +123,16 @@ class BaseTransaction {
      * @param {number} ledgerOffset max ledger gap
      * @returns {void}
      */
-    populateLastLedgerSequence = (ledgerOffset: number = 10): void => {
+    populateFields = ({ lastLedgerOffset }: { lastLedgerOffset?: number } = {}): void => {
         // ignore for pseudo transactions
         if (this.isPseudoTransaction()) {
             return;
         }
+
+        // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
+        // offset default to 10
+        const LastLedgerOffset = lastLedgerOffset || 10;
+
         // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
         // update with LastLedger + 10
         const { LastLedger } = LedgerService.getLedgerStatus();
@@ -136,7 +141,8 @@ class BaseTransaction {
             throw new Error(Localize.t('global.unableToGetLastClosedLedger'));
         }
         // expected LastLedger sequence
-        const ExpectedLastLedger = LastLedger + ledgerOffset;
+        const ExpectedLastLedger = LastLedger + LastLedgerOffset;
+
         // if LastLedgerSequence is not set
         if (isUndefined(this.LastLedgerSequence)) {
             // only set if last ledger is set
@@ -149,27 +155,21 @@ class BaseTransaction {
             // the Last Ledger is already passed, update it base on Last ledger
             this.LastLedgerSequence = ExpectedLastLedger;
         }
-    };
 
-    /**
-     Populate transaction NetworkID
-     * @returns {void}
-     */
-    populateNetworkId = () => {
-        // ignore for pseudo transactions
-        if (this.isPseudoTransaction()) {
-            return;
-        }
-
-        if (this.NetworkID === undefined) {
-            this.NetworkID = NetworkService.getNetworkId();
+        // check if we need to populate NetworkID
+        if (isUndefined(this.NetworkID)) {
+            // get current network definitions
+            const definitions = NetworkService.getNetworkDefinitions();
+            if (typeof definitions?.field === 'object' && find(definitions.field, { name: 'NetworkID' })) {
+                this.NetworkID = NetworkService.getNetworkId();
+            }
         }
     };
 
     /**
      Sign the transaction with provided account
      * @param {AccountModel} account object sign with
-     * @param {bool} multiSign indicates if transaction should sign for multi signing
+     * @param multiSign
      * @returns {Promise<string>} signed tx blob
      */
     sign = (account: AccountModel, multiSign = false): Promise<string> => {

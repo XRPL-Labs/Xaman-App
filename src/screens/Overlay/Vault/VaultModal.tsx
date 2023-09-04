@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, Linking, BackHandler, InteractionManager, NativeEventSubscription } from 'react-native';
+import { Alert, BackHandler, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
@@ -14,7 +14,7 @@ import { BaseTransaction } from '@common/libs/ledger/transactions';
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
-import { CoreRepository, AccountRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
@@ -25,7 +25,7 @@ import Vault from '@common/libs/vault';
 import { GetSignOptions, GetWalletDerivedPublicKey } from '@common/utils/tangem';
 
 import Keyboard from '@common/helpers/keyboard';
-import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
+import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -39,7 +39,7 @@ import { MethodsContext } from './Context';
 import { PasscodeMethod, PassphraseMethod, TangemMethod } from './Methods';
 
 /* types ==================================================================== */
-import { Props, State, AuthMethods, SignOptions } from './types';
+import { AuthMethods, Props, SignOptions, State } from './types';
 
 /* Component ==================================================================== */
 class VaultModal extends Component<Props, State> {
@@ -217,7 +217,7 @@ class VaultModal extends Component<Props, State> {
         }
     };
 
-    signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
+    private signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
         const { signer } = this.state;
         const { transaction, multiSign } = this.props;
         const { encryptionKey } = options;
@@ -243,15 +243,14 @@ class VaultModal extends Component<Props, State> {
                 signerInstance = signerInstance.signAs(signer.address);
             }
 
-            // populate transaction LastLedgerSequence before signing
-            // INGORE if multi signing or pseudo transaction
-            if (!multiSign && transaction instanceof BaseTransaction) {
-                transaction.populateLastLedgerSequence();
-                transaction.populateNetworkId();
-            }
-
             // get current network definitions
             const definitions = NetworkService.getNetworkDefinitions();
+
+            // INGORE if multi signing or pseudo transaction
+            if (!multiSign && transaction instanceof BaseTransaction) {
+                // populate transaction LastLedgerSequence before signing
+                transaction.populateFields();
+            }
 
             let signedObject = AccountLib.sign(transaction.Json, signerInstance, definitions) as SignedObjectType;
             signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };
@@ -266,7 +265,7 @@ class VaultModal extends Component<Props, State> {
         }
     };
 
-    signWithTangemCard = async (options: SignOptions) => {
+    private signWithTangemCard = async (options: SignOptions) => {
         const { transaction, multiSign } = this.props;
         const { tangemCard } = options;
 
@@ -275,19 +274,20 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('No card details provided for signing!');
             }
 
-            // populate transaction LastLedgerSequence before signing
-            // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
             // INGORE if multi signing or pseudo transaction
             if (!multiSign && transaction instanceof BaseTransaction) {
-                transaction.populateLastLedgerSequence(150);
-                transaction.populateNetworkId();
+                // populate transaction LastLedgerSequence before signing
+                transaction.populateFields({ lastLedgerOffset: 150 });
             }
 
             // get derived pub key from tangem card
             const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
+            // get current network definitions
+            const definitions = NetworkService.getNetworkDefinitions();
+
             // prepare the transaction for signing
-            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, publicKey, multiSign);
+            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, publicKey, multiSign, definitions);
 
             // get sign options base on HD wallet support
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
