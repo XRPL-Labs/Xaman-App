@@ -1,0 +1,985 @@
+ // Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[SecurePinInput] renders correctly 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignItems": "center",
+      "justifyContent": "center",
+    }
+  }
+  testID="pin-input-container"
+>
+  <TextInput
+    autoCorrect={false}
+    caretHidden={true}
+    disableFullscreenUI={true}
+    display="none"
+    keyboardType="number-pad"
+    maxLength={6}
+    onKeyPress={[Function]}
+    returnKeyType="done"
+    secureTextEntry={true}
+    spellCheck={false}
+    testID="pin-input"
+    value=""
+  />
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "display": "flex",
+        "flexDirection": "row",
+        "height": 156.94117647058823,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessible={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignItems": "center",
+      "justifyContent": "center",
+    }
+  }
+  testID="pin-input-container"
+>
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "display": "flex",
+        "flexDirection": "row",
+        "height": 156.94117647058823,
+        "justifyContent": "center",
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#ACB1C1",
+            "borderRadius": 9,
+            "height": 18,
+            "marginLeft": 12,
+            "marginRight": 12,
+            "opacity": 0.3,
+            "width": 18,
+          },
+          {},
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "marginTop": 98.08823529411764,
+        "width": 750,
+      }
+    }
+    testID="virtual-keyboard"
+  >
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "space-evenly",
+        }
+      }
+    >
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="1-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          1
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        />
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="2-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          2
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          ABC
+        </Text>
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="3-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          3
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          DEF
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "space-evenly",
+        }
+      }
+    >
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="4-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          4
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          GHI
+        </Text>
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="5-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          5
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          JKL
+        </Text>
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="6-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          6
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          MNO
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "space-evenly",
+        }
+      }
+    >
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="7-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          7
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          PQRS
+        </Text>
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="8-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          8
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          TUV
+        </Text>
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="9-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          9
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        >
+          WXYZ
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "flexDirection": "row",
+          "justifyContent": "space-evenly",
+        }
+      }
+    >
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="y-key"
+      >
+        <Image
+          resizeMode="contain"
+          source={
+            {
+              "uri": "IconFingerprint",
+            }
+          }
+          style={
+            [
+              {
+                "height": 55,
+                "width": 55,
+              },
+              {
+                "tintColor": "#000000",
+              },
+            ]
+          }
+        />
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="0-key"
+      >
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontFamily": "ProximaNova-Regular",
+              "fontSize": 64.28571428571428,
+              "textAlign": "center",
+            }
+          }
+        >
+          0
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#000000",
+              "fontSize": 20.892857142857142,
+              "letterSpacing": 2,
+              "textAlign": "center",
+            }
+          }
+        />
+      </View>
+      <View
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignItems": "center",
+            "borderRadius": 45,
+            "height": 127.51470588235294,
+            "justifyContent": "center",
+            "margin": 5,
+            "width": 141.42857142857144,
+          }
+        }
+        testID="x-key"
+      >
+        <Image
+          resizeMode="contain"
+          source={
+            {
+              "uri": "IconChevronLeft",
+            }
+          }
+          style={
+            [
+              {
+                "height": 55,
+                "width": 55,
+              },
+              {
+                "tintColor": "#000000",
+              },
+            ]
+          }
+        />
+      </View>
+    </View>
+  </View>
+</View>
+`;
