@@ -30,6 +30,9 @@ const AccountSchema = {
     migration: (oldRealm: Realm, newRealm: Realm) => {
         const coreSettings = newRealm.objects('Core') as any;
 
+        /*  eslint-disable-next-line */
+        console.log('migrating Account schema to 14');
+
         if (!coreSettings.isEmpty()) {
             // get connected network from settings
             const { network } = coreSettings[0];
