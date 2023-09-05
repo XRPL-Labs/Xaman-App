@@ -187,17 +187,17 @@ describe('BaseTransaction tx', () => {
         const { tx, meta } = paymentTemplates.SimplePayment;
         const instance = new BaseTransaction(tx, meta);
         instance.LastLedgerSequence = undefined;
-        instance.populateLastLedgerSequence();
+        instance.populateFields();
         expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
 
         // should update LastLedgerSequence if sequence is passed
         instance.LastLedgerSequence = LastLedger - 500;
-        instance.populateLastLedgerSequence();
+        instance.populateFields();
         expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
 
         // should update LastLedgerSequence if sequence is less than 32570
         instance.LastLedgerSequence = 50;
-        instance.populateLastLedgerSequence();
+        instance.populateFields();
         expect(instance.LastLedgerSequence).toBe(LastLedger + 50);
 
         spy.mockRestore();

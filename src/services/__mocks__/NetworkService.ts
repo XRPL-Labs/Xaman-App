@@ -23,6 +23,10 @@ class NetworkService {
             OwnerReserve: 2,
         };
     }
+
+    public getNetworkDefinitions(): any {
+        return undefined;
+    }
 }
 
 export default new NetworkService();
