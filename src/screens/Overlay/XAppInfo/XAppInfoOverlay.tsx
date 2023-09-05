@@ -22,7 +22,6 @@ import styles from './styles';
 /* types ==================================================================== */
 type XAppInfo = {
     description: string;
-    developer: string;
     supportUrl: string;
     websiteUrl: string;
     donation: boolean;
@@ -172,13 +171,6 @@ class XAppInfoOverlay extends Component<Props, State> {
 
                 <View style={[AppStyles.paddingExtraSml, AppStyles.leftAligned]}>
                     <Text style={styles.headerText}>👨‍💻&nbsp;{Localize.t('global.details')}</Text>
-                    <Spacer />
-                    <TextPlaceholder isLoading={isLoading} style={styles.contentTextHeader} length={40}>
-                        {Localize.t('xapp.developedBy')}
-                    </TextPlaceholder>
-                    <TextPlaceholder selectable isLoading={isLoading} style={styles.contentText} length={30}>
-                        {info?.developer}
-                    </TextPlaceholder>
                     <Spacer />
                     <TextPlaceholder isLoading={isLoading} style={styles.contentTextHeader} length={40}>
                         {Localize.t('xapp.projectHomePage')}
