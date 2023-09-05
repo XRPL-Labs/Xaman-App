@@ -201,8 +201,23 @@ class XAppBrowserHeader extends Component<Props, State> {
                             AppStyles.marginRightSml,
                         ]}
                     >
-                        <Icon name="IconRadio" size={18} style={AppStyles.imgColorGreen} />
-                        <Text style={styles.networkText}>{network.name}</Text>
+                        <View
+                            key={network.id}
+                            style={[
+                                AppStyles.centerContent,
+                                AppStyles.centerAligned,
+                                {
+                                    width: AppSizes.scale(10),
+                                    height: AppSizes.scale(10),
+                                    borderRadius: AppSizes.scale(10) / 2,
+                                    backgroundColor: network.color,
+                                },
+                            ]}
+                        />
+
+                        <Text numberOfLines={1} style={styles.networkText}>
+                            {network.name}
+                        </Text>
                         <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
                     </TouchableDebounce>
                     <TouchableDebounce
