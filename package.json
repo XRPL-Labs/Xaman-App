@@ -37,7 +37,7 @@
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.0",
     "xrpl-accountlib": "2.3.0",
-    "xrpl-client": "2.1.1",
+    "xrpl-client": "2.1.2",
     "xrpl-orderbook-reader": "0.3.4",
     "xumm-string-decode": "0.6.2"
   },

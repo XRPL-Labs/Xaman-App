@@ -15940,10 +15940,10 @@ xrpl-accountlib@2.3.0:
     xrpl-secret-numbers "^0.3.3"
     xrpl-sign-keypairs "^2.2.0"
 
-xrpl-client@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-2.1.1.tgz#a3fdddd19ae030174daa9bfdf90c899d6e775990"
-  integrity sha512-JKq6bMd50kdjyfrputVq8S7GI8Ttl1AxO7ALA6oRleAhoRfeicGbRjS5IFcL9pgsLIVzVC/7eKAtdhK+lf0ywA==
+xrpl-client@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/xrpl-client/-/xrpl-client-2.1.2.tgz#9fbda404c2c5bc670eb4095e8210927dd5d3974c"
+  integrity sha512-Lg9aq8CSeL/9nx7THJThoYpSZVQ9Eq7M4YrXbLv8nN91izoUYMM6qcx2b1qeIQFb3oxQdVYkkqqxfjoiwp05/w==
   dependencies:
     debug "^4.1.1"
     websocket "^1.0.34"

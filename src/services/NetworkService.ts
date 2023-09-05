@@ -1,6 +1,7 @@
 /**
  * Network service
  */
+import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
 
@@ -402,8 +403,17 @@ class NetworkService extends EventEmitter {
     send = (payload: any): Promise<any> => {
         return new Promise((resolve, reject) => {
             this.connection
-                .send(payload, { timeoutSeconds: NetworkService.TIMEOUT_SECONDS })
+                .send(
+                    { ...payload, id: `${uuidv4()}.${this.network.id}` },
+                    { timeoutSeconds: NetworkService.TIMEOUT_SECONDS },
+                )
                 .then((res) => {
+                    // check if we are still on the same network
+                    if (res.id?.split('.')[1] !== `${this.network.id}`) {
+                        reject(new Error('Invalidated response, wrong network id!'));
+                        return;
+                    }
+
                     if (typeof res === 'object') {
                         resolve({
                             ...res,
