@@ -165,7 +165,7 @@ class SendView extends Component<Props, State> {
         // set the amount
         if (typeof currency === 'string') {
             Object.assign(txJson, {
-                Amount: new Amount(amount).nativeToDrops(),
+                Amount: new Amount(amount, false).nativeToDrops(),
             });
         } else {
             Object.assign(txJson, {
