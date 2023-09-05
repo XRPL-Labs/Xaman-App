@@ -20,6 +20,8 @@ import {
 import React, { Component } from 'react';
 import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
+import { Navigation, EventSubscription } from 'react-native-navigation';
+
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
@@ -91,6 +93,9 @@ enum DataSourceType {
 class EventsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Events;
 
+    private forceReload: boolean;
+    private navigationListener: EventSubscription;
+
     static options() {
         return {
             topBar: {
@@ -116,6 +121,8 @@ class EventsView extends Component<Props, State> {
             plannedTransactions: [],
             dataSource: [],
         };
+
+        this.forceReload = false;
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -132,8 +139,30 @@ class EventsView extends Component<Props, State> {
         );
     }
 
+    componentDidAppear() {
+        if (this.forceReload) {
+            // set the flag to false
+            this.forceReload = false;
+
+            // reset everything and load transaction
+            this.setState(
+                {
+                    dataSource: [],
+                    transactions: [],
+                    plannedTransactions: [],
+                    lastMarker: undefined,
+                    canLoadMore: true,
+                },
+                this.updateDataSource,
+            );
+        }
+    }
+
     componentDidMount() {
         const { account } = this.state;
+
+        // componentDidDisappear event
+        this.navigationListener = Navigation.events().bindComponent(this);
 
         // add listener for default account change
         AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
@@ -161,6 +190,9 @@ class EventsView extends Component<Props, State> {
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
         AppService.off('appStateChange', this.onAppStateChange);
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
     onDefaultAccountChange = (account: AccountModel) => {
@@ -180,17 +212,7 @@ class EventsView extends Component<Props, State> {
 
     onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
         if (has(changes, 'network')) {
-            // reset everything and load transaction
-            this.setState(
-                {
-                    dataSource: [],
-                    transactions: [],
-                    plannedTransactions: [],
-                    lastMarker: undefined,
-                    canLoadMore: true,
-                },
-                this.updateDataSource,
-            );
+            this.forceReload = true;
         }
     };
 
