@@ -57,30 +57,26 @@ class InactiveAccount extends PureComponent<Props, State> {
         CoreRepository.setDefaultAccount(account);
     };
 
-    renderRegularKey = () => {
-        const { account } = this.props;
-
-        const keysForAccounts = AccountRepository.findBy('regularKey', account.address);
-
+    renderRegularKey = (accounts: AccountModel[]) => {
         return (
             <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}>
-                <InfoMessage icon="IconKey" type="info" label={Localize.t('account.regularKeyFor')} />
+                <InfoMessage icon="IconKey" type="success" label={Localize.t('account.regularKeyFor')} />
                 <Spacer />
-                {keysForAccounts.map((acc, index) => {
+                {accounts.map((account, index) => {
                     return (
                         <TouchableDebounce
                             key={index}
                             style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
                             /* eslint-disable-next-line react/jsx-no-bind */
-                            onPress={this.switchToRegularKey.bind(null, acc)}
+                            onPress={this.switchToRegularKey.bind(null, account)}
                             activeOpacity={0.9}
                         >
                             <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                                <Icon size={25} style={[styles.iconAccount]} name="IconAccount" />
+                                <Icon size={25} style={styles.iconAccount} name="IconAccount" />
                                 <View>
-                                    <Text style={[AppStyles.pbold]}>{acc.label}</Text>
+                                    <Text style={AppStyles.pbold}>{account.label}</Text>
                                     <Text style={[AppStyles.subtext, AppStyles.mono, AppStyles.colorBlue]}>
-                                        {acc.address}
+                                        {account.address}
                                     </Text>
                                 </View>
                             </View>
@@ -108,14 +104,15 @@ class InactiveAccount extends PureComponent<Props, State> {
     render() {
         const { account } = this.props;
 
-        const isRegularKey = AccountRepository.isRegularKey(account.address);
+        const regularKeyAccounts = AccountRepository.getRegularKeys(account.address);
 
-        if (isRegularKey) {
-            return this.renderRegularKey();
+        if (Array.isArray(regularKeyAccounts) && regularKeyAccounts.length > 0) {
+            return this.renderRegularKey(regularKeyAccounts);
         }
 
         return this.renderActivateAccount();
     }
 }
 
+/* Export ==================================================================== */
 export default InactiveAccount;

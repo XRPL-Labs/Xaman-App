@@ -91,11 +91,9 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     renderRegularKeys = () => {
         const { importedAccount } = this.context;
 
-        const isRegularKey = AccountRepository.isRegularKey(importedAccount.address);
+        const regularKeys = AccountRepository.getRegularKeys(importedAccount.address);
 
-        if (isRegularKey) {
-            const keysForAccounts = AccountRepository.findBy('regularKey', importedAccount.address);
-
+        if (Array.isArray(regularKeys) && regularKeys.length > 0) {
             return (
                 <View
                     style={[
@@ -126,7 +124,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     <Spacer size={10} />
 
                     <ScrollView contentContainerStyle={[AppStyles.flex1]}>
-                        {keysForAccounts.map((a, index) => {
+                        {regularKeys.map((account, index) => {
                             return (
                                 <View key={index} style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}>
                                     <View style={[AppStyles.row, AppStyles.flex1, AppStyles.centerAligned]}>
@@ -135,9 +133,9 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                                         </View>
 
                                         <View>
-                                            <Text style={[AppStyles.p, AppStyles.bold]}>{a.label}</Text>
+                                            <Text style={[AppStyles.p, AppStyles.bold]}>{account.label}</Text>
                                             <Text style={[AppStyles.subtext, AppStyles.monoBold, AppStyles.colorGrey]}>
-                                                {a.address}
+                                                {account.address}
                                             </Text>
                                         </View>
                                     </View>
@@ -160,7 +158,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         }
 
         return (
-            <SafeAreaView testID="account-import-show-address-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-show-address-view" style={AppStyles.container}>
                 <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseConfirmYourAccountAddress')}
                 </Text>
@@ -200,7 +198,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     )}
 
                     <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
-                        <Text testID="account-address-text" selectable style={[styles.addressField]}>
+                        <Text testID="account-address-text" selectable style={styles.addressField}>
                             {importedAccount.address}
                         </Text>
                     </View>
