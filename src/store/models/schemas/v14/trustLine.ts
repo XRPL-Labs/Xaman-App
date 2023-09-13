@@ -11,7 +11,7 @@ const TrustLineSchema = {
         primaryKey: 'id',
         properties: {
             id: { type: 'string' },
-            currency: { type: 'Currency' },
+            currency: { type: 'object', objectType: 'Currency' },
             balance: { type: 'string', default: '0' },
             no_ripple: { type: 'bool', default: false },
             no_ripple_peer: { type: 'bool', default: false },

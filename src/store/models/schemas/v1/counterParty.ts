@@ -10,8 +10,8 @@ const CounterPartySchema = {
         properties: {
             id: { type: 'int' },
             name: { type: 'string', indexed: true },
-            avatar: 'string',
-            domain: 'string',
+            avatar: { type: 'string' },
+            domain: { type: 'string' },
             currencies: { type: 'list', objectType: 'Currency' },
             registerAt: { type: 'date', default: new Date() },
             updatedAt: { type: 'date', default: new Date() },

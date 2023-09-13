@@ -11,7 +11,7 @@ const TrustLineSchema = {
         primaryKey: 'id',
         properties: {
             id: 'string',
-            currency: { type: 'Currency' },
+            currency: { type: 'object', objectType: 'Currency' },
             balance: { type: 'double', default: 0 },
             transfer_rate: { type: 'double', default: 0 },
             no_ripple: { type: 'bool', default: false },
