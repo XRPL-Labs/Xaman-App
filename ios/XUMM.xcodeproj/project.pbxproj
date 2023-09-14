@@ -996,7 +996,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1078,7 +1078,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/XUMM.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XUMMTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1106,7 +1106,7 @@
 				CODE_SIGN_ENTITLEMENTS = XUMM/XUMM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -1142,7 +1142,7 @@
 				CODE_SIGN_ENTITLEMENTS = XUMM/XUMM.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = XUMM/Info.plist;
