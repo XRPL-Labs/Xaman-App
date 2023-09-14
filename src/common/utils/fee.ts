@@ -51,39 +51,48 @@ const PrepareTxForHookFee = (txJson: any, definitions: any): string => {
  * @param feeDataSet
  * @returns object
  */
-const NormalizeFeeDataSet = (feeDataSet: any) => {
+const NormalizeFeeDataSet = (feeDataSet: { drops: { base_fee: number }; fee_hooks_feeunits: number }) => {
     if (!feeDataSet || typeof feeDataSet !== 'object') {
         throw new Error('NormalizeFeeDataSet required a valid fee data set!');
     }
-    // set the suggested fee base on queue percentage
-    const { drops: { base_fee } = { base_fee: 15 }, fee_hooks_feeunits: fee_hooks } = feeDataSet;
+    const { drops: { base_fee } = { base_fee: 12 }, fee_hooks_feeunits: fee_hooks } = feeDataSet;
 
-    const baseFee = new BigNumber(base_fee);
+    const baseFee = BigNumber.maximum(12, base_fee);
 
-    const addPercentage = (value: BigNumber, percentage: number) => {
-        return value.plus(value.multipliedBy(percentage).dividedBy(100)).toFixed(0, BigNumber.ROUND_UP);
+    const feeCalc = (level: number) => {
+        let nearest = new BigNumber(1);
+        if (level > 0) {
+            nearest = new BigNumber(0.5).multipliedBy(10 ** (baseFee.toString(10).length - 1));
+        }
+
+        return baseFee
+            .dividedBy(100)
+            .multipliedBy(
+                new BigNumber(100).plus(level ** new BigNumber(2.1).minus(baseFee.multipliedBy(0.000005)).toNumber()),
+            )
+            .dividedBy(nearest)
+            .integerValue(BigNumber.ROUND_CEIL)
+            .multipliedBy(nearest)
+            .toFixed(0, BigNumber.ROUND_UP);
     };
 
-    // LOW -> 0%
-    // MEDIUM -> +5%
-    // HIGH -> +10%
     return {
         availableFees: [
             {
                 type: 'LOW',
-                value: addPercentage(baseFee, 0),
+                value: feeCalc(0),
             },
             {
                 type: 'MEDIUM',
-                value: addPercentage(baseFee, 5),
+                value: feeCalc(4),
             },
             {
                 type: 'HIGH',
-                value: addPercentage(baseFee, 10),
+                value: feeCalc(8),
             },
         ],
         feeHooks: fee_hooks || 0,
-        suggested: 'MEDIUM',
+        suggested: 'LOW',
     };
 };
 
