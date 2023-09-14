@@ -66,7 +66,6 @@ const styles = StyleService.create({
         color: '$textContrast',
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.subtext.size,
-        paddingTop: 1,
     },
 });
 
