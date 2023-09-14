@@ -50,11 +50,11 @@ describe('NetworkService', () => {
             expect(availableFees).toStrictEqual({
                 availableFees: [
                     { type: 'LOW', value: '15' },
-                    { type: 'MEDIUM', value: '16' },
-                    { type: 'HIGH', value: '17' },
+                    { type: 'MEDIUM', value: '20' },
+                    { type: 'HIGH', value: '30' },
                 ],
                 feeHooks: 0,
-                suggested: 'MEDIUM',
+                suggested: 'LOW',
             });
 
             spy0.mockRestore();
@@ -94,11 +94,11 @@ describe('NetworkService', () => {
             expect(availableFees).toStrictEqual({
                 availableFees: [
                     { type: 'LOW', value: '6186' },
-                    { type: 'MEDIUM', value: '6496' },
-                    { type: 'HIGH', value: '6805' },
+                    { type: 'MEDIUM', value: '7500' },
+                    { type: 'HIGH', value: '11000' },
                 ],
                 feeHooks: 6176,
-                suggested: 'MEDIUM',
+                suggested: 'LOW',
             });
 
             spy0.mockRestore();
