@@ -77,10 +77,22 @@ class AccountRepository extends BaseRepository {
             try {
                 this.safeWrite(() => {
                     const account = this.findOne({ address });
-                    const object = this.realm.create(AccountDetailsModel.schema.name, details, Realm.UpdateMode.All);
+                    const detailsObject = this.realm.create(
+                        AccountDetailsModel.schema.name,
+                        details,
+                        Realm.UpdateMode.All,
+                    );
 
-                    if (!account.details.find((d: any) => d.id === object.id)) {
-                        account.details.push(object);
+                    let objectsCount = filter(account.details, { id: detailsObject.id }).length;
+
+                    // clean up stale records
+                    if (objectsCount > 1) {
+                        account.details = [];
+                        objectsCount = 0;
+                    }
+
+                    if (objectsCount === 0) {
+                        account.details.push(detailsObject);
                     }
 
                     this.emit('accountUpdate', account, details);
