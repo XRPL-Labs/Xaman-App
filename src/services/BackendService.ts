@@ -1,6 +1,6 @@
 /**
  * Backend service
- * Interact with XUMM backend
+ * Interact with Xaman backend
  */
 
 import { map, isEmpty, flatMap, get, reduce, compact } from 'lodash';
@@ -176,7 +176,7 @@ class BackendService {
     };
 
     /*
-    add use to the xumm
+    initiate/add user to the Xaman
     */
     initUser = async (): Promise<any> => {
         return new Promise((resolve, reject) => {
@@ -184,7 +184,7 @@ class BackendService {
                 .post()
                 .then((res: any) => {
                     if (!res) {
-                        throw new Error('Cannot add the device to the XUMM');
+                        throw new Error('Cannot add the device to the Xaman');
                     }
                     return resolve(res);
                 })
@@ -195,7 +195,7 @@ class BackendService {
     };
 
     /*
-    Active a device in xumm
+    Active a device in Xaman
     */
     activateDevice = async (user: any, device: any): Promise<string> => {
         /* eslint-disable-next-line */

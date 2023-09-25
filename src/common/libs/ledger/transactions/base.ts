@@ -32,6 +32,7 @@ import Memo from '../parser/common/memo';
 
 /* Types ==================================================================== */
 import { Account, AmountType, MemoType, TransactionResult } from '../parser/types';
+import {StringTypeCheck} from '@common/utils/string';
 
 /* Class ==================================================================== */
 class BaseTransaction {
@@ -367,7 +368,8 @@ class BaseTransaction {
         if (!memos) return undefined;
 
         for (const memo of memos) {
-            if (memo.MemoType === 'xumm/xapp' && memo.MemoData) {
+            if (['xumm/xapp', 'xaman/xapp'].includes(memo.MemoType) &&
+                StringTypeCheck.isValidXAppIdentifier(memo.MemoData)) {
                 return memo.MemoData;
             }
         }

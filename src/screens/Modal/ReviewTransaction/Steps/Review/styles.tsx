@@ -22,7 +22,7 @@ const styles = StyleService.create({
         marginLeft: 5,
         marginBottom: 5,
     },
-    xummAppBackground: {
+    xamanAppBackground: {
         resizeMode: 'cover',
         opacity: 0.03,
     },

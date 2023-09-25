@@ -27,7 +27,7 @@ describe('Payload', () => {
         expect(craftedPayload.getApplicationIcon()).toBe(
             'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png',
         );
-        expect(craftedPayload.getApplicationName()).toBe('XUMM');
+        expect(craftedPayload.getApplicationName()).toBe('Xaman');
         expect(craftedPayload.getTransaction().Json).toEqual(transaction);
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
@@ -225,7 +225,7 @@ describe('Payload', () => {
         try {
             payload.getTransaction();
         } catch (e) {
-            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in XUMM!');
+            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in Xaman!');
         }
     });
 

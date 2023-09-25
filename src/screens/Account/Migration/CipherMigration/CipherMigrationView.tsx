@@ -135,6 +135,7 @@ class CipherMigrationView extends Component<Props, State> {
     onSuccessAuth = (account: AccountModel, key: string) => {
         // start the migration
         Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+            title: Localize.t('global.encrypting'),
             task: this.processMigrateAccount.bind(null, account, key),
             onSuccess: this.onMigrationSuccess,
             onError: this.onMigrationError,

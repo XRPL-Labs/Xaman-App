@@ -21,7 +21,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'XUMM' do
+target 'Xaman' do
   config = use_native_modules!
 
   # Flags change depending on the env values.
@@ -35,7 +35,7 @@ target 'XUMM' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'XUMMTests' do
+  target 'XamanTests' do
     inherit! :complete
     # Pods for testing
   end

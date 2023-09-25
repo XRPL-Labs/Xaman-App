@@ -57,7 +57,7 @@ class Application {
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
             this.logger.debug(
-                `XUMM version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
+                `Xaman version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
             );
             this.logger.debug(`Device ${GetDeviceBrand()} - OS Version ${GetDeviceOSVersion()}`);
 
@@ -108,7 +108,7 @@ class Application {
                         text: 'Try again later',
                         onPress: ExitApp,
                     },
-                    { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
+                    { text: 'Wipe Xaman', style: 'destructive', onPress: this.wipeStorage },
                 ]);
             } else if (message.indexOf('Encrypted interprocess sharing is currently unsupported') > -1) {
                 Alert.alert('Error', ErrorMessages.appAlreadyRunningInDifferentProcess, [
@@ -133,7 +133,7 @@ class Application {
     wipeStorage = () => {
         Prompt(
             'WARNING',
-            'You are wiping XUMM, This action cannot be undone. Are you sure?',
+            'You are wiping Xaman, This action cannot be undone. Are you sure?',
             [
                 {
                     text: 'No',

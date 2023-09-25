@@ -109,6 +109,7 @@ class ChangePassphraseView extends Component<Props, State> {
 
             // show critical processing overlay
             Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+                title: Localize.t('global.encrypting'),
                 task: this.processChangePassphrase,
                 onSuccess: this.onChangePassphraseSuccess,
                 onError: this.onChangePassphraseError,

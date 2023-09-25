@@ -85,9 +85,8 @@ class VaultModal extends Component<Props, State> {
         let signer = account;
         let alternativeSigner;
 
-        // check if regular key account is imported to XUMM
+        // check if regular key account is imported to the app
         if (account.regularKey) {
-            // check if regular key is imported in XUMM
             const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountModel;
 
             // check for account regular key set

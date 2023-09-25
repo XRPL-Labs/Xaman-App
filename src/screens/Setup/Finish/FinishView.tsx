@@ -62,10 +62,10 @@ class FinishView extends Component<Props, State> {
         });
 
         try {
-            // init user in the xumm
+            // initiate user in the Xaman backend
             const { user, device } = await BackendService.initUser();
 
-            // register the device in xumm
+            // register the device in Xaman backend
             const accessToken = await BackendService.activateDevice(user, device);
 
             // create empty profile and store access token
@@ -117,7 +117,7 @@ class FinishView extends Component<Props, State> {
 
     getHeaders = () => {
         return {
-            'X-XUMM-Style': StyleService.getCurrentTheme(),
+            'X-Xaman-Style': StyleService.getCurrentTheme(),
         };
     };
 
@@ -131,7 +131,7 @@ class FinishView extends Component<Props, State> {
         return (
             <SafeAreaView testID="agreement-setup-screen" style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
                 <View style={AppStyles.flex8}>
                     <WebViewBrowser

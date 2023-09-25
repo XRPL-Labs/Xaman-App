@@ -220,7 +220,7 @@ class ReviewStep extends Component<Props, State> {
             <ImageBackground
                 testID="review-transaction-modal"
                 source={StyleService.getImage('BackgroundPattern')}
-                imageStyle={styles.xummAppBackground}
+                imageStyle={styles.xamanAppBackground}
                 style={styles.container}
             >
                 <View style={styles.blurView}>
@@ -296,7 +296,7 @@ class ReviewStep extends Component<Props, State> {
             <ImageBackground
                 testID="review-transaction-modal"
                 source={StyleService.getImage('BackgroundPattern')}
-                imageStyle={styles.xummAppBackground}
+                imageStyle={styles.xamanAppBackground}
                 style={styles.container}
             >
                 {/* header */}

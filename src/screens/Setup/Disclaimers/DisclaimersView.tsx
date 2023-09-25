@@ -161,7 +161,7 @@ class DisclaimersView extends Component<Props, State> {
         return (
             <SafeAreaView testID="disclaimers-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
 
                 <Spacer size={20} />

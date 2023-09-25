@@ -89,6 +89,7 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidURL({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidURL(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidURL(null)).toBe(false);
             expect(StringTypeCheck.isValidURL('')).toBe(false);
 
             for (let i = 0; i < validUrls.length; i++) {
@@ -107,6 +108,7 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidAmount({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidAmount(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidAmount(null)).toBe(false);
             expect(StringTypeCheck.isValidAmount('')).toBe(false);
 
             for (let i = 0; i < validAmounts.length; i++) {
@@ -122,6 +124,8 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidHash({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidHash(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidHash(null)).toBe(false);
+            expect(StringTypeCheck.isValidHash('')).toBe(false);
             expect(
                 StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C021889'),
             ).toBe(false);
@@ -137,6 +141,8 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidXAppIdentifier({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier(null)).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier('')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('something.@test')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('somethings_.test/')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_TEST28-z_identifier')).toBe(true);

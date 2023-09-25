@@ -9,7 +9,8 @@ import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 
-// components
+import Locale from '@locale';
+
 import { Spacer, Icon, LoadingIndicator, BlurView } from '@components/General';
 
 import { StyleService } from '@services';
@@ -21,6 +22,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     testID?: string;
+    title: string;
     task: () => Promise<void>;
     onSuccess: () => void;
     onError: (exception: any) => void;
@@ -150,7 +152,7 @@ class CriticalProcessing extends Component<Props, State> {
     };
 
     render() {
-        const { testID } = this.props;
+        const { testID, title } = this.props;
 
         const transform = [
             {
@@ -172,18 +174,18 @@ class CriticalProcessing extends Component<Props, State> {
                             <Icon style={styles.icon} name="IconAlertTriangle" size={60} />
                         </View>
                         <View style={AppStyles.centerAligned}>
-                            <Text style={styles.title}>Encrypting...</Text>
+                            <Text style={styles.title}>{title}</Text>
                         </View>
 
                         <Animated.View style={[AppStyles.centerAligned, { opacity: this.animateFade }]}>
-                            <Text style={styles.title2}>Still working on it</Text>
+                            <Text style={styles.title2}>{Locale.t('global.stillWorkingOnIt')}</Text>
                         </Animated.View>
 
                         <Spacer size={30} />
                         <LoadingIndicator size="large" color={StyleService.isDarkMode() ? 'dark' : 'light'} />
                         <Spacer size={30} />
                         <View style={AppStyles.centerAligned}>
-                            <Text style={styles.subTitle}>Do NOT close Xumm{'\n'}Do NOT lock your device</Text>
+                            <Text style={styles.subTitle}>{Locale.t('global.doNotCloseTheApp')}</Text>
                         </View>
                         <Spacer size={20} />
                     </Animated.View>

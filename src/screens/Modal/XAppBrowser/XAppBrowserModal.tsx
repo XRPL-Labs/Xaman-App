@@ -363,7 +363,7 @@ class XAppBrowserModal extends Component<Props, State> {
             return;
         }
 
-        // check if account exist in xumm
+        // check if account exist in Xaman
         const account = AccountRepository.findOne({ address });
         if (!account) return;
 

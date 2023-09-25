@@ -112,7 +112,7 @@ class AccountService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        // no account is present in XUMM
+        // no account is present in the app
         if (accounts.length === 0) {
             this.accounts = [];
             return;

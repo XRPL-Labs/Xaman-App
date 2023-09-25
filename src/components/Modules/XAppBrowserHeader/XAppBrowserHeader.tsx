@@ -77,7 +77,7 @@ class XAppBrowserHeader extends Component<Props, State> {
     showAccountSelect = () => {
         const { account } = this.props;
 
-        // no account is configured in xumm
+        // no account is configured in the app
         if (!account) {
             return;
         }

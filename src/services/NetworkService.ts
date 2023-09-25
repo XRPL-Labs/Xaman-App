@@ -52,7 +52,7 @@ class NetworkService extends EventEmitter {
     offEvent: (event: string, fn: any) => any;
 
     static TIMEOUT_SECONDS = 40;
-    static ORIGIN = `/xumm/${GetAppVersionCode()}/${Platform.OS}`;
+    static ORIGIN = `/xaman/${GetAppVersionCode()}/${Platform.OS}`;
 
     constructor() {
         super();

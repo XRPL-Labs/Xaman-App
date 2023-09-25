@@ -355,7 +355,9 @@
     "uriTokeId": "URI Token Id",
     "hookParameters": "Hook Parameters",
     "hookFeeNotice": "Note: The total transaction fee includes a %{hookFee} %{nativeAsset} hooks fee.",
-    "unableToLoadNetworkFee": "Unable to load the network fee!"
+    "unableToLoadNetworkFee": "Unable to load the network fee!",
+    "stillWorkingOnIt": "Still working on it",
+    "doNotCloseTheApp": "Do NOT close Xaman{'\\n'}Do NOT lock your device"
   },
   "onboarding": {
     "slideOne_title": "Ordainketak eta\r\nordainketa eskaerak\r\nXRP Ledger-en",

@@ -78,7 +78,7 @@ class RecipientElement extends Component<Props> {
 
         let badge = undefined as any;
         if (recipient.kycApproved) {
-            badge = 'IconCheckXumm';
+            badge = 'IconCheckXaman';
         }
 
         return <Avatar source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} badge={badge} border />;

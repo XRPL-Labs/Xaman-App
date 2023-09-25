@@ -128,7 +128,7 @@ class BiometrySetupView extends Component<Props, State> {
         return (
             <SafeAreaView testID="biometric-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
 
                 <View style={[AppStyles.flex8, AppStyles.paddingSml]}>

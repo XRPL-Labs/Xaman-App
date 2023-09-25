@@ -15,5 +15,5 @@ storiesOf('Avatar', module)
     .add('Original', () => <Avatar source={URI} />)
     .add('With Border', () => <Avatar source={URI} border />)
     .add('Big', () => <Avatar source={URI} size={100} />)
-    .add('badge', () => <Avatar source={URI} size={100} badge="IconCheckXumm" />)
+    .add('badge', () => <Avatar source={URI} size={100} badge="IconCheckXaman" />)
     .add('badge Color', () => <Avatar source={URI} size={100} badge="IconAlertTriangle" badgeColor="red" />);

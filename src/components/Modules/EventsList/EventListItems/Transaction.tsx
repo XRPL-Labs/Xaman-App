@@ -208,7 +208,7 @@ class TransactionItem extends Component<Props, State> {
             return (
                 <View style={styles.iconContainer}>
                     <Avatar
-                        badge={kycApproved ? 'IconCheckXumm' : undefined}
+                        badge={kycApproved ? 'IconCheckXaman' : undefined}
                         border
                         source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }}
                     />

@@ -229,7 +229,7 @@ class HomeView extends Component<Props, State> {
         return (
             <Fragment key="header">
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     <ProBadge />
                 </View>
                 <NetworkSwitchButton

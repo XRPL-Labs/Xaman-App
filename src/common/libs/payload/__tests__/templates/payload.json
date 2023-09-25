@@ -22,7 +22,7 @@
     },
     "application": {
       "name": "Xrpl Services",
-      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "description": "Website to provide easy access to XRP ledger protocol transactions via Xaman",
       "disabled": 0,
       "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
       "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
@@ -68,7 +68,7 @@
     },
     "application": {
       "name": "Xrpl Services",
-      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "description": "Website to provide easy access to XRP ledger protocol transactions via Xaman",
       "disabled": 0,
       "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
       "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",
@@ -122,7 +122,7 @@
     },
     "application": {
       "name": "Xrpl Services",
-      "description": "Website to provide easy access to XRPL transactions via Xumm",
+      "description": "Website to provide easy access to XRP ledger protocol transactions via Xaman",
       "disabled": 0,
       "uuidv4": "9ea0a9e1-3e5c-4b71-8b3e-d0f39f26e084",
       "icon_url": "https://xumm-cdn.imgix.net/app-logo/27ef1d94-bc3d-4983-a631-8047cf4b9148.png",

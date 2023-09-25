@@ -175,7 +175,7 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
-     * check if account is a regular key to one of xumm accounts
+     * check if account is a regular key to one of Xaman accounts
      */
     getRegularKeys = (address: string): AccountModel[] => {
         return filter(this.findAll(), (a) => a.regularKey === address);

@@ -170,6 +170,7 @@ class ChangePasscodeView extends Component<Props, State> {
 
     changePasscode = async () => {
         Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+            title: Localize.t('global.encrypting'),
             task: this.processChangePasscode,
             onSuccess: this.onChangePasscodeSuccess,
             onError: this.onChangePasscodeError,

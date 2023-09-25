@@ -161,7 +161,7 @@ class LockModal extends Component<Props, State> {
             >
                 <SafeAreaView testID="lock-overlay" style={styles.container}>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
-                        <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                        <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     </View>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>

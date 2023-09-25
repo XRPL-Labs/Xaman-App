@@ -4,7 +4,7 @@
 
 export default {
     // App Details and URL's
-    appName: 'XUMM',
+    appName: 'Xaman',
     supportEmail: 'support@xumm.dev',
     termOfUseURL: 'https://xumm.app/app/webviews/tos-privacy/',
     creditsURL: 'https://xumm.app/app/webviews/credits/',

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Xaman</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>xrpl</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xrpl</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>xrp</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xrp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>xumm</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>xumm</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>whatsapp</string>
+		<string>mailto</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>Use NFC to read Tangem Cards</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Enabling Face ID allows you quick and secure access to your account.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Access to microphone is needed for KYC propose and video identification</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Enabling access to your Photo Library allows you to store your account QR code for offline use and read QR codes from pictures.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>UbuntuMono-BoldItalic.ttf</string>
+		<string>UbuntuMono-Bold.ttf</string>
+		<string>UbuntuMono-RegularItalic.ttf</string>
+		<string>UbuntuMono-Regular.ttf</string>
+		<string>ProximaNova-Regular.otf</string>
+		<string>Proxima Nova Thin.otf</string>
+		<string>Proxima Nova Extrabold.otf</string>
+		<string>Proxima Nova Bold.otf</string>
+		<string>Proxima Nova Black.otf</string>
+		<string>Proxima Nova Alt Thin.otf</string>
+		<string>Proxima Nova Alt Bold.otf</string>
+		<string>Proxima Nova Alt Light.otf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
+	<array>
+		<string>A000000812010208</string>
+		<string>D2760000850101</string>
+	</array>
+</dict>
+</plist>
