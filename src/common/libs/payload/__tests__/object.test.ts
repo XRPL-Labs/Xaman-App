@@ -9,8 +9,6 @@ import { PayloadOrigin } from '../types';
 
 import PayloadTemplate from './templates/payload.json';
 
-// "e24cfcfd-c737-4de7-9f18-b809aa6b571d"
-
 describe('Payload', () => {
     it('Should be able to generate payload and return right values', () => {
         const transaction = {
@@ -32,6 +30,7 @@ describe('Payload', () => {
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
         const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
+        // @ts-ignore
         craftedPayload.patch({ signed_blob: '', tx_id: '', multisigned: '' });
         expect(payloadPatchSpy).toBeCalledTimes(0);
         payloadPatchSpy.mockClear();

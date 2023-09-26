@@ -1,12 +1,9 @@
-import { get, find, has, mapKeys, isObject, isString, isUndefined } from 'lodash';
-import * as codec from 'ripple-binary-codec';
+import { get, find, has, isObject, isString, isUndefined } from 'lodash';
 
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
-import { SHA1 } from '@common/libs/crypto';
 import { NetworkConfig } from '@common/constants';
-import { GetDeviceUniqueId } from '@common/helpers/device';
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
@@ -22,6 +19,8 @@ import {
     PayloadReferenceType,
     PayloadType,
 } from './types';
+
+import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
 import errors from './errors';
@@ -128,26 +127,11 @@ export class Payload {
                 return false;
             }
 
-            let hashEncodingMethod = 'encode';
-            let normalizedRequestJson = request_json;
+            // get digest for request json object
+            const digest = await DigestSerializeWithSHA1.digest(request_json);
 
-            // if it's the pseudo PaymentChannelAuthorize we need
-            // 1) use encodeForSigningClaim method for encoding
-            // 2) lower case the keys
-            if (tx_type === PseudoTransactionTypes.PaymentChannelAuthorize) {
-                hashEncodingMethod = 'encodeForSigningClaim';
-                normalizedRequestJson = mapKeys(request_json, (v, k) => k.toLowerCase());
-            }
-
-            // encode + hash and check for the checksum
-            // @ts-ignore
-            const encodedTX = codec[hashEncodingMethod](normalizedRequestJson);
-
-            const deviceId = GetDeviceUniqueId();
-            const checksum = await SHA1(`${encodedTX}+${deviceId}`);
-
-            return checksum === hash;
-        } catch {
+            return digest === hash;
+        } catch (error: any) {
             return false;
         }
     };
@@ -184,11 +168,14 @@ export class Payload {
     fetch = (uuid: string): Promise<PayloadType> => {
         return new Promise((resolve, reject) => {
             ApiService.payload
-                .get({ uuid, from: this.getOrigin() })
+                .get({ uuid, from: this.getOrigin() }, undefined, {
+                    'X-Xaman-Digest': DigestSerializeWithSHA1.DIGEST_HASH_ALGO,
+                })
                 .then(async (res: PayloadType) => {
                     // get verification status
                     const verified = await this.verify(res.payload);
 
+                    // if not verified then
                     if (!verified) {
                         reject(new Error(Localize.t('payload.UnableVerifyPayload')));
                         return;
