@@ -130,14 +130,14 @@ class XAppInfoOverlay extends Component<Props, State> {
                 <Spacer />
                 <View style={AppStyles.row}>
                     <Button
-                        roundedSmall
+                        roundedMini
                         secondary
                         label={`5 ${NetworkService.getNativeAsset()}`}
                         // eslint-disable-next-line react/jsx-no-bind
                         onPress={this.onDonationPress.bind(null, 5)}
                     />
                     <Button
-                        roundedSmall
+                        roundedMini
                         secondary
                         label={`10 ${NetworkService.getNativeAsset()}`}
                         // eslint-disable-next-line react/jsx-no-bind
@@ -145,7 +145,7 @@ class XAppInfoOverlay extends Component<Props, State> {
                         style={styles.donationButton}
                     />
                     <Button
-                        roundedSmall
+                        roundedMini
                         contrast
                         label={Localize.t('xapp.chooseAmount')}
                         onPress={this.onDonationPress}

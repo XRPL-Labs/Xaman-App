@@ -49,10 +49,11 @@ const styles = StyleService.create({
     networkDetailsContainer: {
         flexDirection: 'row',
         alignContent: 'center',
+        alignItems: 'center',
         backgroundColor: '$contrast',
         borderRadius: 12,
         paddingHorizontal: Sizes.paddingExtraSml,
-        paddingVertical: Sizes.paddingExtraSml,
+        paddingVertical: 5,
         marginHorizontal: Sizes.paddingSml,
         marginBottom: Sizes.paddingExtraSml,
     },
@@ -62,10 +63,9 @@ const styles = StyleService.create({
         fontSize: AppFonts.small.size,
     },
     networkTextContent: {
-        flexShrink: 1,
         color: '$textContrast',
         fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.subtext.size,
+        fontSize: AppFonts.subtext.size * 0.8,
     },
 });
 

@@ -26,6 +26,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
+        textAlign: 'center',
     },
     contentTextHeader: {
         color: '$textSecondary',

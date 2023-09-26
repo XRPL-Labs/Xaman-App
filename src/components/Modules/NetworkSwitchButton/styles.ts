@@ -2,6 +2,7 @@ import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
+
 export default StyleService.create({
     buttonContainer: {
         height: AppSizes.scale(28),
@@ -12,7 +13,7 @@ export default StyleService.create({
         borderWidth: 1,
         backgroundColor: '$tint',
         borderColor: '$transparent',
-        borderRadius: AppSizes.scale(28) / 2,
+        borderRadius: AppSizes.scale(18) / 2,
         paddingHorizontal: 10,
         marginRight: -10,
     },
@@ -21,7 +22,7 @@ export default StyleService.create({
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
         textAlign: 'center',
-        paddingHorizontal: 5,
+        paddingHorizontal: 3,
         marginRight: 5,
     },
     exclamationMarkText: {
