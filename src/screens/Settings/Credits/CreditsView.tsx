@@ -50,7 +50,7 @@ class CreditsView extends Component<Props, State> {
         const { coreSettings } = this.state;
 
         return {
-            'X-XUMM-Style': coreSettings.theme,
+            'X-Xaman-Style': coreSettings.theme,
         };
     };
 

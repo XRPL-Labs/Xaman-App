@@ -109,7 +109,7 @@ class TermOfUseView extends Component<Props, State> {
 
         if (coreSettings) {
             return {
-                'X-XUMM-Style': coreSettings.theme,
+                'X-Xaman-Style': coreSettings.theme,
             };
         }
         return {};

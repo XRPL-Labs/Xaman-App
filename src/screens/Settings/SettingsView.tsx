@@ -38,7 +38,7 @@ class SettingsView extends Component<Props, State> {
     }
 
     onRowPress = (route: string) => {
-        if (route === 'XUMM.Support.XApp') {
+        if (route === 'Xaman.Support.XApp') {
             Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
@@ -139,7 +139,7 @@ class SettingsView extends Component<Props, State> {
                         {this.renderRow(
                             'IconHelpCircle',
                             Localize.t('setupTermOfService.questionsAndSupport'),
-                            'XUMM.Support.XApp',
+                            'Xaman.Support.XApp',
                             'support-button',
                         )}
                         {this.renderRow(

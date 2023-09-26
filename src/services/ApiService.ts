@@ -325,7 +325,7 @@ class ApiService {
                 headers: {
                     'User-Agent': this.userAgent,
                     'Content-Type': 'application/json',
-                    'X-XamanNet': NetworkService.getNetwork()?.key,
+                    'X-Xaman-Net': NetworkService.getNetwork()?.key,
                 },
                 body: '',
             };
