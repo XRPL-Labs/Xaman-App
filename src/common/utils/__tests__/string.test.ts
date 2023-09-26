@@ -147,5 +147,17 @@ describe('Utils.String', () => {
             expect(StringTypeCheck.isValidXAppIdentifier('somethings_.test/')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_TEST28-z_identifier')).toBe(true);
         });
+
+        it('should check if string is valid destination tag', () => {
+            expect(StringTypeCheck.isValidDestinationTag('42')).toBe(true);
+            expect(StringTypeCheck.isValidDestinationTag('0')).toBe(true);
+            expect(StringTypeCheck.isValidDestinationTag('4294967297')).toBe(false); // 2^32 + 1
+            expect(StringTypeCheck.isValidDestinationTag('4294967296')).toBe(true); // 2^32
+            expect(StringTypeCheck.isValidDestinationTag('')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('-5')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('3.14')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag(' 42 ')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('4 2')).toBe(false);
+        });
     });
 });

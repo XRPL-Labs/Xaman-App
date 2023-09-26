@@ -147,6 +147,20 @@ const StringTypeCheck = {
         const identifier = new RegExp('^[A-Z0-9._-]+$', 'i');
         return identifier.test(input);
     },
+
+    isValidDestinationTag: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+
+        // not a valid number
+        if (!input.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
+            return false;
+        }
+
+        // valid positive 32 bits integer integer
+        return !(input === '' || Number(input) > 2 ** 32 || Number(input) < 0 || input.includes('.'));
+    },
 };
 
 /**
