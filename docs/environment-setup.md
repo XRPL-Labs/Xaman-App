@@ -1,8 +1,8 @@
-The following instructions apply to the mobile apps for iOS and Android built in React Native. Download the iOS version [here](https://apps.apple.com/us/app/id1492302343) and the Android version [here](https://play.google.com/store/apps/details?id=com.xrpllabs.xumm). Source code can be found at https://github.com/XRPL-Labs/XUMM-App.
+The following instructions apply to the mobile apps for iOS and Android built in React Native. Download the iOS version [here](https://apps.apple.com/us/app/id1492302343) and the Android version [here](https://play.google.com/store/apps/details?id=com.xrpllabs.xumm). Source code can be found at https://github.com/XRPL-Labs/Xaman-App.
 
 If you run into any issues getting your environment set up, check the [Troubleshooting](#troubleshooting) section at the bottom for common solutions.
 
-A macOS computer is required to build the XUMM App iOS mobile app.
+A macOS computer is required to build the Xaman App iOS mobile app.
 
 ## Environment Setup
 
@@ -126,20 +126,20 @@ In the SDK Manager using Android Studio or the [Android SDK command line tool](h
 
 ## Obtaining the Source Code
 
-In order to develop and build the XUMM mobile app you'll need to get a copy of the source code. Forking the `XUMM-App` repository will also make it easy to contribute your work back to the project in the future.
+In order to develop and build the Xaman mobile app you'll need to get a copy of the source code. Forking the `Xaman-App` repository will also make it easy to contribute your work back to the project in the future.
 
-1.  Fork the [XUMM-App](https://github.com/XRPL-Labs/XUMM-App) repository on GitHub.
+1.  Fork the [Xaman-App](https://github.com/XRPL-Labs/Xaman-App) repository on GitHub.
 
 2. Clone your fork locally:
     - Open a terminal
     - Change to a directory you want to hold your local copy
-    - Run `git clone https://github.com/<username>/XUMM-App.git` if you want to use HTTPS, or `git clone git@github.com:<username>/XUMM-App.git` if you want to use SSH
+    - Run `git clone https://github.com/<username>/Xaman-App.git` if you want to use HTTPS, or `git clone git@github.com:<username>/Xaman-App.git` if you want to use SSH
 
     **`<username>` refers to the username or organization in GitHub that forked the repository**
 
-3.  Change the directory to `XUMM-App`.
+3.  Change the directory to `Xaman-App`.
     ```sh
-    cd XUMM-App
+    cd Xaman-App
     ```
 
 4.  Run `make pre-run` in order to install all the dependencies.
