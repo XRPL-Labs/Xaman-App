@@ -41,8 +41,11 @@ RCT_EXPORT_METHOD(getBadge:(RCTPromiseResolveBlock)resolve
   resolve(@(RCTSharedApplication().applicationIconBadgeNumber));
 }
 
-RCT_EXPORT_METHOD(setBadge:(NSInteger)number) {
+RCT_EXPORT_METHOD(setBadge:(NSInteger)number
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
   RCTSharedApplication().applicationIconBadgeNumber = number;
+  resolve(@YES);
 }
 
 //Called when a notification is delivered to a foreground app.
