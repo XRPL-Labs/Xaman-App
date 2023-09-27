@@ -51,6 +51,47 @@ describe('DigestSerializeWithSHA1', () => {
             expect(DigestSerializeWithSHA1.serialize(input)).toEqual(expectedOutput);
         });
 
+        it('should serialize object with different key orders', () => {
+            const input = {
+                TransactionType: 'Payment',
+                Amount: {
+                    currency: 'USD',
+                    value: '1',
+                    issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                },
+                Memos: [
+                    {
+                        Memo: {
+                            MemoData: '5852502054697020426F74',
+                            MemoType: '587270546970426F744E6F7465',
+                        },
+                    },
+                ],
+            };
+            const input2 = {
+                Amount: {
+                    currency: 'USD',
+                    issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                    value: '1',
+                },
+                Memos: [
+                    {
+                        Memo: {
+                            MemoType: '587270546970426F744E6F7465',
+                            MemoData: '5852502054697020426F74',
+                        },
+                    },
+                ],
+                TransactionType: 'Payment',
+            };
+
+            const expectedOutput =
+                '{["Amount","Memos","TransactionType"]{["currency","issuer","value"]"USD","rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn","1",},[{["Memo"]{["MemoData","MemoType"]"5852502054697020426F74","587270546970426F744E6F7465",},}],"Payment",}';
+
+            expect(DigestSerializeWithSHA1.serialize(input)).toEqual(expectedOutput);
+            expect(DigestSerializeWithSHA1.serialize(input2)).toEqual(expectedOutput);
+        });
+
         it('should throw an error for unsupported data type', () => {
             const input = null as any;
             expect(() => DigestSerializeWithSHA1.serialize(input)).toThrow('Invalid object type object');
