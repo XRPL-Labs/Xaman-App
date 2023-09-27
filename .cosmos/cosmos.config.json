@@ -1,0 +1,4 @@
+{
+  "fixturesDir": "fixtures",
+  "globalImports": ["./prepare.ts"]
+}

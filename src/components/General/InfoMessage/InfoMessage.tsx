@@ -133,8 +133,8 @@ class InfoMessage extends PureComponent<Props> {
         style.push({ textAlign: icon ? 'left' : 'center' });
 
         return (
-            <View style={[styles.labelContainer]}>
-                <Text style={[style]}>{label}</Text>
+            <View style={styles.labelContainer}>
+                <Text style={style}>{label}</Text>
             </View>
         );
     };

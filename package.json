@@ -10,8 +10,8 @@
     "test": "jest --forceExit --detectOpenHandles",
     "sync-locals": "node scripts/sync-locales.js sync",
     "update-snapshots": "jest --updateSnapshot",
-    "storybook": "start-storybook -p 7007",
-    "postinstall": "make post-install"
+    "postinstall": "make post-install",
+    "cosmos": "cosmos-native --config .cosmos/cosmos.config.json"
   },
   "dependencies": {
     "@react-native-community/netinfo": "9.4.1",
@@ -46,13 +46,6 @@
     "@babel/plugin-transform-runtime": "7.19.6",
     "@babel/preset-env": "7.20.2",
     "@babel/runtime": "7.20.13",
-    "@storybook/addon-actions": "7.4.5",
-    "@storybook/addon-links": "7.4.5",
-    "@storybook/addon-ondevice-actions": "6.5.6",
-    "@storybook/addon-storyshots": "7.4.5",
-    "@storybook/addons": "7.4.5",
-    "@storybook/react-native": "6.5.6",
-    "@storybook/react-native-server": "6.5.6",
     "@react-native/metro-config": "0.72.11",
     "@types/detox": "18.1.0",
     "@types/i18n-js": "3.8.5",
@@ -90,7 +83,8 @@
     "metro-react-native-babel-preset": "0.76.8",
     "patch-package": "8.0.0",
     "prettier": "3.0.3",
-    "react-dom": "18.2.0",
+    "react-cosmos": "6.0.0-beta.6",
+    "react-cosmos-native": "6.0.0-beta.6",
     "react-test-renderer": "18.2.0",
     "ts-jest": "29.1.1",
     "typescript": "5.2.2"

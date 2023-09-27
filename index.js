@@ -1,4 +1,4 @@
-// import './storybook';
+// import './.cosmos/cosmos.app';
 
 import './debug';
 import './global';

@@ -18,22 +18,25 @@ To write a test, place a Javascript file with the `.spec.js` suffix in the
 `e2e` directory inside root directory. The test will be
 automatically picked up by the test runner.
 
+## Type checking with TypeScript
+Use [Typescript](https://www.typescriptlang.org/) to find and prevent type related issues.
+
 ## Linting
 `make check-style` checks the codebase against our linting rules. We're using
 the AirBnB [ES6](https://github.com/airbnb/javascript) and [React](https://github.com/airbnb/javascript/tree/master/react) style guides.
 
 
-## Storybook
-- Open index.js
+## Cosoms
 
-- Uncomment following line
-
+- Run cosmos server
 ```bash
-import './.storybook';
+npm run cosmos
 ```
 
-- Comment out all other lines
-- Start your application again
+- Uncomment following line in `<rootDir>/index.js`
+```js
+import './.cosmos/cosmos.app';
+```
 
-## Type checking with TypeScript
-Use [Typescript](https://www.typescriptlang.org/) to find and prevent type related issues.
+- Comment out all other lines and Start your application again
+
