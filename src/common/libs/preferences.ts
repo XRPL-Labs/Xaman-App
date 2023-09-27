@@ -37,7 +37,7 @@ const Preferences = {
     /**
      *  Delete shared preferences
      */
-    del: async (key: Keys): Promise<string> => {
+    del: async (key: Keys): Promise<boolean> => {
         return SharedPreferencesModule.del(key);
     },
 };

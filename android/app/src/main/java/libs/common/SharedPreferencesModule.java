@@ -35,13 +35,13 @@ public class SharedPreferencesModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void set(String key, String value, Promise promise) {
         getEditor().putString(key, value).commit();
-        promise.resolve(null);
+        promise.resolve(true);
     }
 
     @ReactMethod
     public void del(String key, Promise promise) {
         getEditor().remove(key).commit();
-        promise.resolve(null);
+        promise.resolve(true);
     }
 
 
