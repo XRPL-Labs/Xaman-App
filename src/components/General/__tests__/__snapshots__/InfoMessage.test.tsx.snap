@@ -31,30 +31,26 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
   >
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#FF5B5B",
-              },
-              {
-                "textAlign": "center",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#FF5B5B",
+            },
+            {
+              "textAlign": "center",
+            },
           ]
         }
       >
@@ -96,30 +92,26 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
   >
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#0030CF",
-              },
-              {
-                "textAlign": "center",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#0030CF",
+            },
+            {
+              "textAlign": "center",
+            },
           ]
         }
       >
@@ -161,30 +153,26 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
   >
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#F8BF4C",
-              },
-              {
-                "textAlign": "center",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#F8BF4C",
+            },
+            {
+              "textAlign": "center",
+            },
           ]
         }
       >
@@ -258,30 +246,26 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
     </View>
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#FF5B5B",
-              },
-              {
-                "textAlign": "left",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#FF5B5B",
+            },
+            {
+              "textAlign": "left",
+            },
           ]
         }
       >
@@ -355,30 +339,26 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
     </View>
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#0030CF",
-              },
-              {
-                "textAlign": "left",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#0030CF",
+            },
+            {
+              "textAlign": "left",
+            },
           ]
         }
       >
@@ -452,30 +432,26 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
     </View>
     <View
       style={
-        [
-          {
-            "flex": 1,
-            "paddingVertical": 10,
-          },
-        ]
+        {
+          "flex": 1,
+          "paddingVertical": 10,
+        }
       }
     >
       <Text
         style={
           [
-            [
-              {
-                "fontFamily": "ProximaNova-Bold",
-                "fontSize": 30,
-                "textAlign": "center",
-              },
-              {
-                "color": "#F8BF4C",
-              },
-              {
-                "textAlign": "left",
-              },
-            ],
+            {
+              "fontFamily": "ProximaNova-Bold",
+              "fontSize": 30,
+              "textAlign": "center",
+            },
+            {
+              "color": "#F8BF4C",
+            },
+            {
+              "textAlign": "left",
+            },
           ]
         }
       >
