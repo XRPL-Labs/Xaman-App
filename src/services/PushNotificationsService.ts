@@ -2,6 +2,7 @@
  * Push Notification service
  * handle push notification permission and received notifications
  */
+
 import { get, isEqual } from 'lodash';
 import EventEmitter from 'events';
 
@@ -27,7 +28,7 @@ import Localize from '@locale';
 /* Constants  ==================================================================== */
 const { LocalNotificationModule } = NativeModules;
 
-// events
+/* Types  ==================================================================== */
 declare interface PushNotificationsService {
     on(event: 'signRequestUpdate', listener: () => void): this;
     on(event: string, listener: Function): this;
@@ -47,17 +48,23 @@ class PushNotificationsService extends EventEmitter {
 
     constructor() {
         super();
+
+        // Do not double listen for notifications
         this.initialized = false;
+        // First app cold lunch notifications
         this.initialNotification = undefined;
+
         this.logger = LoggerService.createLogger('Push');
     }
 
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
             try {
+                // check if we have right permissions
                 this.checkPermission()
                     .then((hasPermission: boolean) => {
                         if (hasPermission) {
+                            // if so move forward
                             this.onPermissionGranted();
                         } else {
                             this.logger.warn('Push don"t have the right permission or unable to get FCM token');
@@ -73,25 +80,40 @@ class PushNotificationsService extends EventEmitter {
         });
     };
 
-    updateBadge = async (badge?: number) => {
-        // this.badge = badge;
-        // set badge count on tabbar
-        if (typeof badge !== 'undefined') {
-            await LocalNotificationModule.setBadge(badge);
-            Navigator.setBadge(AppScreens.TabBar.Events, badge === 0 ? '' : badge.toString());
-        } else {
-            const appBadge = await LocalNotificationModule.getBadge();
-            Navigator.setBadge(AppScreens.TabBar.Events, appBadge === 0 ? '' : appBadge.toString());
+    /**
+     * Update and persists badge count
+     * @param badge - badge count in number
+     */
+    updateBadge = async (badge?: number): Promise<void> => {
+        if (typeof badge !== 'number') {
+            this.logger.warn(`expected number for badge count but received "${typeof badge}"`);
+            return;
         }
+
+        // persist the badge count
+        await LocalNotificationModule.setBadge(badge).catch((error: any): void => {
+            this.logger.warn('LocalNotificationModule setBadge', error);
+        });
+
+        // update the TabBar Events badge count
+        Navigator.setBadge(AppScreens.TabBar.Events, badge === 0 ? '' : String(badge));
     };
 
-    onPermissionGranted = async () => {
+    /**
+     * Called when push notification got the right permission access
+     * will create necessary notifications listeners
+     */
+    onPermissionGranted = (): void => {
         if (!this.initialized) {
             this.createNotificationListeners();
             this.initialized = true;
         }
     };
 
+    /**
+     * Check if we have right notification permissions && We are able to get the FCM token
+     * @returns {Promise<boolean>} - result of the check in boolean
+     */
     checkPermission = async (): Promise<boolean> => {
         const authStatus = await messaging().hasPermission();
         const enabled =
@@ -105,22 +127,13 @@ class PushNotificationsService extends EventEmitter {
         return false;
     };
 
-    getToken = (): Promise<string> => {
-        return messaging()
-            .getToken()
-            .then((token) => {
-                return token;
-            })
-            .catch((e) => {
-                this.logger.error('Cannot get token from firebase', e);
-                return undefined;
-            });
-    };
-
+    /**
+     * Request permission for notifications
+     * @returns {Promise<boolean>} - results of permission request
+     */
     requestPermission = async (): Promise<boolean> => {
         try {
             const authStatus = await messaging().requestPermission();
-
             const enabled =
                 authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
                 authStatus === messaging.AuthorizationStatus.PROVISIONAL;
@@ -132,29 +145,44 @@ class PushNotificationsService extends EventEmitter {
                     return true;
                 }
             }
-
             return false;
         } catch (error) {
             return false;
         }
     };
 
-    createNotificationListeners = async () => {
-        await messaging().getToken();
-
+    /**
+     * Create listeners for incoming notifications
+     */
+    createNotificationListeners = (): void => {
         messaging().onMessage(this.handleNotification);
         messaging().onNotificationOpenedApp(this.handleNotificationOpen);
     };
 
-    getBadgeCount = (notification: any): number => {
-        return Platform.select({
-            ios: Number(get(notification, ['notification', 'ios', 'badge'])),
-            android: Number(get(notification, ['data', '_badge_count'])),
-            default: undefined,
-        });
+    /**
+     * Fetch FCM token from firebase
+     * @returns {Promise<string>} - firebase FCM token in string
+     */
+    getToken = async (): Promise<string> => {
+        try {
+            const token = await messaging().getToken();
+            return token;
+        } catch (error) {
+            this.logger.error('Cannot get FCM token from firebase', error);
+            return undefined;
+        }
     };
 
-    getType = (notification: any): NotificationType => {
+    /**
+     * Get notification type or category
+     *  - Types
+     *    - SIGNTX: Sign Payloads
+     *    - OPENXAPP: Opening xApp
+     *    - TXPUSH: Opening transaction details
+     * @param notification - FirebaseMessagingTypes.RemoteMessage
+     * @returns {NotificationType}
+     */
+    getType = (notification: { data: { category: 'SIGNTX' | 'OPENXAPP' | 'TXPUSH' } }): NotificationType => {
         const category = get(notification, ['data', 'category']);
         switch (category) {
             case 'SIGNTX':
@@ -168,46 +196,73 @@ class PushNotificationsService extends EventEmitter {
         }
     };
 
-    isSignRequest = (notification: any) => {
+    /**
+     * Check if this a sign request notification
+     * @param notification - FirebaseMessagingTypes.RemoteMessage
+     * @returns {boolean}
+     */
+    isSignRequest = (notification: any): boolean => {
         return this.getType(notification) === NotificationType.SignRequest;
     };
 
-    /* If the app was launched by a push notification  */
-    checkInitialNotification = async () => {
-        const initialNotification = await messaging().getInitialNotification();
-
-        if (initialNotification && !isEqual(this.initialNotification, initialNotification)) {
-            this.initialNotification = initialNotification;
-            this.handleNotificationOpen(initialNotification);
-        }
+    /**
+     * Check if the app was launched by a push notification and handle
+     */
+    checkInitialNotification = () => {
+        messaging()
+            .getInitialNotification()
+            .then((initialNotification) => {
+                if (initialNotification && !isEqual(this.initialNotification, initialNotification)) {
+                    this.initialNotification = initialNotification;
+                    this.handleNotificationOpen(initialNotification);
+                }
+            })
+            .catch((error) => {
+                this.logger.error('getInitialNotification', error);
+            });
     };
 
-    /* Handle notifications within the app when app is running in foreground */
+    /**
+     * Handle notifications within the app when app is running in foreground
+     * @param message - FirebaseMessagingTypes.RemoteMessage
+     */
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
         // complete the notification and show the notification if necessary
         const shouldShowNotification = NavigationService.getCurrentModal() !== AppScreens.Modal.ReviewTransaction;
         LocalNotificationModule.complete(message.messageId, shouldShowNotification);
 
-        // if any sign request exist then emit the event so we update the event list
+        // if any sign request exist then emit the event, this is needed for refreshing the events list
         if (this.isSignRequest(message)) {
             this.emit('signRequestUpdate');
         }
 
-        // update the badge
-        const badgeCount = this.getBadgeCount(message);
+        // update the badge count
+        const badgeCount = Platform.select({
+            ios: Number(get(message, ['notification', 'ios', 'badge'], 0)),
+            android: Number(get(message, ['data', '_badge_count'], 0)),
+            default: undefined,
+        });
 
         this.updateBadge(badgeCount);
     };
 
+    /**
+     * Route user base different part of the app
+     * @param screen - destination screen
+     * @param passProps - passed props while routing
+     * @param options - screen options
+     * @param screenType - screen type
+     */
     routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
-        // close any overlay
+        // check if we need to close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
         if (currentOverlay && currentOverlay !== AppScreens.Overlay.Lock) {
-            // dismiss overlay
+            // dismiss any overlay if NOT lock screen
             await Navigator.dismissOverlay();
         }
 
+        // no screen type provided, guessing ...
         if (!screenType) {
             screenType = NavigationService.getComponentType(screen);
         }
@@ -223,7 +278,12 @@ class PushNotificationsService extends EventEmitter {
         }
     };
 
+    /**
+     * Handle sign request notification
+     * @param notification
+     */
     handleSingRequest = async (notification: any) => {
+        // fetch payload UUID
         const payloadUUID = get(notification, ['data', 'payload']);
 
         // validate if valid payload UUID
@@ -249,6 +309,10 @@ class PushNotificationsService extends EventEmitter {
             });
     };
 
+    /**
+     * Handle opening xApp notification
+     * @param notification
+     */
     handleOpenXApp = async (notification: any) => {
         const xappIdentifier = get(notification, ['data', 'xappIdentifier']);
         const xappTitle = get(notification, ['data', 'xappTitle']);
@@ -283,6 +347,10 @@ class PushNotificationsService extends EventEmitter {
         }, delay);
     };
 
+    /**
+     * Handle opening transaction details
+     * @param notification
+     */
     handleOpenTx = async (notification: any) => {
         const hash = get(notification, ['data', 'tx']);
         const address = get(notification, ['data', 'account']);
@@ -292,7 +360,7 @@ class PushNotificationsService extends EventEmitter {
             return;
         }
 
-        // check if account exist in xumm
+        // check if account exist in Xaman
         const account = AccountRepository.findOne({ address });
         if (!account) return;
 
@@ -317,7 +385,10 @@ class PushNotificationsService extends EventEmitter {
         }, delay);
     };
 
-    /* Handle notifications when app is open from the notification */
+    /**
+     * Handle notifications when app is open from the notification
+     * @param notification
+     */
     handleNotificationOpen = (notification: any) => {
         if (!notification) return;
 

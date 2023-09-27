@@ -160,8 +160,6 @@ class BackendService {
             .then(async (res: { payloads: PayloadType[] }) => {
                 const { payloads } = res;
 
-                PushNotificationsService.updateBadge(payloads.length);
-
                 if (!isEmpty(payloads)) {
                     const result = await Promise.all(flatMap(payloads, Payload.from));
                     return result;

@@ -3,7 +3,6 @@ package libs.notification;
 import com.xrpllabs.xumm.R;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.SystemClock;
 
 import android.app.Notification;
@@ -153,10 +152,9 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
 
         // set the badge count
         try {
-            NotificationBadge.applyCount(badgeCount);
-            promise.resolve(badgeCount);
+            boolean result = NotificationBadge.applyCount(badgeCount);
+            promise.resolve(result);
         } catch (Exception e) {
-            e.printStackTrace();
             promise.reject(e);
         }
     }
