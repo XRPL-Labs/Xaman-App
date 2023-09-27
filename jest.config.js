@@ -11,15 +11,17 @@ module.exports = {
     coverageReporters: ['lcov'],
     globals: {
         window: {},
-        'ts-jest': {
-            babelConfig: false,
-            isolatedModules: true,
-            tsconfig: 'tsconfig.jest.json',
-        },
     },
     transform: {
         '^.+\\.(js|jsx)$': '<rootDir>/node_modules/babel-jest',
-        '\\.(ts|tsx)$': 'ts-jest',
+        '\\.(ts|tsx)$': [
+            'ts-jest',
+            {
+                babelConfig: false,
+                isolatedModules: true,
+                tsconfig: 'tsconfig.jest.json',
+            },
+        ],
     },
     testMatch: ['**/__tests__/**/?(*.)+(spec|test).(js|ts|tsx)'],
     testPathIgnorePatterns: ['\\.snap$', '<rootDir>/node_modules/', '<rootDir>/e2e/'],
