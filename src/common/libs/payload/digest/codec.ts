@@ -3,7 +3,7 @@
  */
 
 import { mapKeys } from 'lodash';
-import * as codec from 'ripple-binary-codec';
+import * as AccountLib from 'xrpl-accountlib';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA1 } from '@common/libs/crypto';
@@ -44,7 +44,7 @@ class DigestCodecWithSHA1 extends Digest {
 
             // calculate checksum
             // @ts-ignore
-            const checksum = codec[hashEncodingMethod](normalizedRequestJson);
+            const checksum = AccountLib.binary[hashEncodingMethod](normalizedRequestJson);
 
             // calculate digest SHA1{checksum}+{deviceId}
             const deviceId = GetDeviceUniqueId();

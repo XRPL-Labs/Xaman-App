@@ -32,7 +32,6 @@
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.37.0",
     "realm": "11.10.2",
-    "ripple-address-codec": "4.3.0",
     "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@3.0.0",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.1",
