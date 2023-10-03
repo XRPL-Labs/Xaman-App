@@ -1,6 +1,10 @@
 /**
- * Account Model
+ * Account model
+ *
+ * @class
+ * @extends Realm.Object
  */
+
 import get from 'lodash/get';
 import Realm from 'realm';
 
@@ -17,26 +21,44 @@ import AccountDetails from './accountDetails';
 class Account extends Realm.Object<Account> {
     public static schema: Realm.ObjectSchema = AccountSchema.schema;
 
+    /** Type of the account. @type {AccountTypes} */
     public type: AccountTypes;
+    /** Address of the account. @type {string} */
     public address: string;
+    /** Label of the account. @type {string} */
     public label: string;
+    /** Public key associated with the account. @type {string} */
     public publicKey: string;
+    /** Access level of the account. @type {AccessLevels} */
     public accessLevel: AccessLevels;
+    /** Encryption level for the account. @type {EncryptionLevels} */
     public encryptionLevel: EncryptionLevels;
+    /** CipherEncryption version used to encrypt this account. @type {number} */
     public encryptionVersion: number;
+    /** Index Order of the account when showing as list, if any. @type {number?} */
     public order?: number;
+    /** Whether the account is hidden in the accounts list. @type {boolean?} */
     public hidden?: boolean;
+    /** Additional information string about the account (contains stringify version of object). @type {string?} */
     public additionalInfoString?: string;
+    /** Detailed data associated with the account. @type {AccountDetails[]?} */
+    public details?: AccountDetails[];
+    /** Date when the account was registered. @type {Date?} */
     public registerAt?: Date;
+    /** Date when the account was last updated. @type {Date?} */
     public updatedAt?: Date;
 
-    // NOT accessible publicly
-    private details?: AccountDetails[];
-
+    /**
+     * Returns the parsed additional information object.
+     * @type {Object}
+     */
     get additionalInfo(): Object {
         return JSON.parse(this.additionalInfoString);
     }
 
+    /**
+     * Set the additional information after stringify it.
+     */
     set additionalInfo(data: Object) {
         this.additionalInfoString = JSON.stringify(data);
     }
@@ -73,7 +95,11 @@ class Account extends Realm.Object<Account> {
         return get(this.getDetails(), 'lines', undefined);
     }
 
-    public getStateVersion() {
+    /**
+     * Calculates and retrieves the state version of the account based on its details.
+     * @returns {number} The state version identifier.
+     */
+    public getStateVersion(): number {
         const details = this.getDetails();
 
         if (!details) {
@@ -81,24 +107,25 @@ class Account extends Realm.Object<Account> {
         }
 
         const state = JSON.stringify(details.toJSON(), (key, val) => {
-            if (val != null && typeof val === 'object' && ['owners', 'currency'].includes(key)) {
-                return;
+            if (val !== null && typeof val === 'object') {
+                if (['owners', 'currency'].includes(key)) {
+                    return undefined; // exclude these fields
+                }
             }
-            // eslint-disable-next-line consistent-return
             return val;
         });
         return StringIdentifier(state);
     }
 
+    /**
+     * Gets the details of the account based on the selected network.
+     * @private
+     * @returns {AccountDetails} The details of the account for the selected network.
+     */
+
     private getDetails(): AccountDetails {
         const network = CoreRepository.getSelectedNetwork();
-        const details = this.details.filter((d) => d.network.id === network.id);
-
-        if (details) {
-            return details[0];
-        }
-
-        return undefined;
+        return this.details.find((d) => d.network.id === network.id);
     }
 }
 

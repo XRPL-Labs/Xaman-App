@@ -5,6 +5,8 @@
 import Realm from 'realm';
 
 import { NetworkConfig } from '@common/constants';
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const NodeSchema = {
     schema: {
@@ -55,4 +57,4 @@ const NodeSchema = {
     },
 };
 
-export default NodeSchema;
+export default <ExtendedSchemaType>NodeSchema;

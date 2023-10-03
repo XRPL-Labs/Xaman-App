@@ -3,11 +3,9 @@
  */
 
 import React, { Component } from 'react';
-import { Results } from 'realm';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
 import { CoreRepository, AccountRepository } from '@store/repositories';
-import { AccountModel } from '@store/models';
 import { EncryptionLevels } from '@store/types';
 
 import Vault from '@common/libs/vault';
@@ -141,10 +139,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 }
 
                 // get all accounts with encryption level Passcode
-                const accounts = AccountRepository.findBy(
-                    'encryptionLevel',
-                    EncryptionLevels.Passcode,
-                ) as Results<AccountModel>;
+                const accounts = AccountRepository.findBy('encryptionLevel', EncryptionLevels.Passcode);
 
                 const passcodeVaultNames = accounts.map((account) => account.publicKey);
 

@@ -11,15 +11,15 @@ declare interface TrustLineRepository {
 }
 
 /* Repository  ==================================================================== */
-class TrustLineRepository extends BaseRepository {
+class TrustLineRepository extends BaseRepository<TrustLineModel> {
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = TrustLineModel.schema;
+        this.model = TrustLineModel;
     }
 
     update = (object: Partial<TrustLineModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.schema.primaryKey)) {
+        if (!has(object, this.model.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
 

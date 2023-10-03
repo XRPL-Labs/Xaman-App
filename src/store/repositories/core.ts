@@ -1,5 +1,5 @@
 import { assign } from 'lodash';
-import Realm, { Results } from 'realm';
+import Realm from 'realm';
 
 import { Platform } from 'react-native';
 
@@ -20,10 +20,10 @@ declare interface CoreRepository {
 }
 
 /* Repository  ==================================================================== */
-class CoreRepository extends BaseRepository {
+class CoreRepository extends BaseRepository<CoreModel> {
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CoreModel.schema;
+        this.model = CoreModel;
     }
 
     saveSettings = (settings: Partial<CoreModel>) => {
@@ -83,7 +83,7 @@ class CoreRepository extends BaseRepository {
     };
 
     getSettings = (): CoreModel => {
-        const result = this.findAll() as Results<CoreModel>;
+        const result = this.findAll();
 
         // settings exist
         if (!result.isEmpty()) {

@@ -2,6 +2,8 @@
  * Counter Parties Schema v1
  */
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const CounterPartySchema = {
     schema: {
@@ -19,4 +21,4 @@ const CounterPartySchema = {
     },
 };
 
-export default CounterPartySchema;
+export default <ExtendedSchemaType>CounterPartySchema;

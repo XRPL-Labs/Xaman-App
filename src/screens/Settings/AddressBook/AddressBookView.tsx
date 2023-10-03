@@ -3,8 +3,8 @@
  */
 
 import { isEmpty, sortBy, flatMap } from 'lodash';
+import Realm from 'realm';
 import Fuse from 'fuse.js';
-import { Results } from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, SectionList, Image, ImageBackground } from 'react-native';
@@ -30,7 +30,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    contacts: Results<ContactModel>;
+    contacts: Realm.Results<ContactModel>;
     dataSource: any;
 }
 
@@ -76,7 +76,7 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    convertContactsArrayToMap = (contacts: Results<ContactModel>) => {
+    convertContactsArrayToMap = (contacts: Realm.Results<ContactModel>) => {
         const contactsCategoryMap = [] as any;
 
         sortBy(contacts, 'name').forEach((item) => {
@@ -114,7 +114,7 @@ class AddressBookView extends Component<Props, State> {
             return;
         }
 
-        const contactsFilter = new Fuse(contacts, {
+        const contactsFilter = new Fuse(contacts as unknown as readonly unknown[], {
             keys: ['name', 'address', 'destinationTag'],
             shouldSort: false,
             includeScore: false,

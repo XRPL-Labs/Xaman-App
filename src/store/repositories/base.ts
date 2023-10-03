@@ -1,83 +1,109 @@
 import EventEmitter from 'events';
-import { forEach, isObject, isString, has } from 'lodash';
+import { has } from 'lodash';
 
-import Realm, { Results, ObjectSchema } from 'realm';
+import Realm from 'realm';
 
 /* Repository  ==================================================================== */
-export default class BaseRepository extends EventEmitter {
+export default class BaseRepository<T extends Realm.Object<any>> extends EventEmitter {
     realm: Realm;
-    schema: ObjectSchema;
+    model: Realm.ObjectClass<T>;
 
+    /**
+     * Normalizes the query for realm objects.
+     *
+     * @param {string | { [key: string]: any }} query - The query to normalize.
+     * @returns {string} - A normalized query string.
+     */
     normalizeQuery = (query: string | { [key: string]: any }): string => {
-        if (isString(query)) return query;
+        if (typeof query === 'string') return query;
 
-        if (isObject(query)) {
-            const props = this.schema.properties;
-            const queries = [] as string[];
-            let queryString = '';
+        const queryObject = { ...query };
 
-            forEach(query, (value, key) => {
-                if (Object.prototype.hasOwnProperty.call(props, key)) {
-                    const properties = props[key];
-                    let type = '';
-                    let filter = '';
+        const props = this.model.schema.properties;
+        const queries = Object.entries(queryObject)
+            .filter(([key]) => props[key])
+            .map(([key, value]) => {
+                // remove from query object
+                delete queryObject[key];
+                // @ts-expect-error
+                const type = typeof props[key] === 'object' ? props[key].type : props[key];
 
-                    if (isObject(properties)) {
-                        type = properties.type;
-                    } else {
-                        type = properties;
-                    }
-
-                    if (type === 'bool') {
-                        filter = value;
-                    } else {
-                        filter = ` "${value}"`;
-                    }
-
-                    queries.push(`${key} == ${filter}`);
+                // check type
+                if (!['string', 'boolean', 'number'].includes(typeof value)) {
+                    throw new Error(
+                        `Unrecognized value set for query param ${key}, expected ${type} but provided ${typeof value}`,
+                    );
                 }
-            });
-            forEach(queries, (value, index) => {
-                if (index < queries.length - 1) {
-                    queryString += ` ${value} AND `;
-                } else {
-                    queryString += ` ${value} `;
-                }
+
+                return type === 'bool' ? `${key} == ${value}` : `${key} == "${value}"`;
             });
 
-            return queryString;
+        // unrecognized field names in query params
+        if (Object.entries(queryObject).length > 0) {
+            throw new Error(`Unrecognized query field names ${Object.keys(queryObject).join(',')}`);
         }
 
-        return '';
+        // nothing to query
+        if (queries.length === 0) {
+            throw new Error('Cannot convert query object to string');
+        }
+
+        return queries.join(' AND ');
     };
 
+    /**
+     * Safely writes to the Realm.
+     *
+     * @param {Function} f - The write function to execute.
+     */
     safeWrite = (f: any) => {
         if (this.realm.isInTransaction) {
             setTimeout(() => {
                 this.safeWrite(f);
             }, 50);
         } else {
-            this.realm.write(() => {
-                f();
-            });
+            this.realm.write(f);
         }
     };
 
+    /**
+     * Gets the count of objects.
+     *
+     * @returns {number} - Count of objects.
+     */
     count = (): number => {
-        const result = this.findAll();
-        return result.length;
+        return this.findAll().length;
     };
 
-    findAll = (): Results<any> => {
-        return this.realm.objects(this.schema.name);
+    /**
+     * Finds all objects.
+     *
+     * @returns {Realm.Results<T>} - All objects.
+     */
+    findAll = (): Realm.Results<T> => {
+        return this.realm.objects(this.model);
     };
 
-    findBy = (key: string, val: string): Results<any> => {
-        return this.realm.objects(this.schema.name).filtered(`${key} == "${val}"`);
+    /**
+     * Finds objects by a given key-value.
+     *
+     * @param {string} key - The key.
+     * @param {string} val - The value.
+     * @returns {Realm.Results<T>} - Objects found.
+     */
+    findBy = (key: string, val: string): Realm.Results<T> => {
+        return this.findAll().filtered(`${key} == "${val}"`);
     };
 
-    findOne = (query: string | { [key: string]: any }): any => {
-        const result = this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
+    /**
+     * Finds one object based on the query.
+     *
+     * @param {string | { [key: string]: any }} query - The query to search.
+     * @returns {T} - Found object.
+     * @throws will throw an error if more than one result found.
+     */
+    findOne = (query: string | { [key: string]: any }): T => {
+        const result = this.realm.objects(this.model).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {
             return undefined;
@@ -90,43 +116,37 @@ export default class BaseRepository extends EventEmitter {
         throw new Error('Got more than one result');
     };
 
-    query = (query: string | { [key: string]: any }): Results<any> => {
-        return this.realm.objects(this.schema.name).filtered(this.normalizeQuery(query));
+    /**
+     * Queries objects based on the provided query.
+     *
+     * @param {string | { [key: string]: any }} query - The query.
+     * @returns {Realm.Results<T>} - Resulting objects.
+     */
+    query = (query: string | { [key: string]: any }) => {
+        return this.realm.objects(this.model).filtered(this.normalizeQuery(query));
     };
 
-    upsert = (data: any): Promise<any> => {
-        return new Promise((resolve, reject) => {
-            if (!has(data, 'id')) {
-                throw new Error('ID require primary key to be set');
-            }
+    /**
+     * Inserts or updates an object.
+     *
+     * @param {any} data - The data to upsert.
+     * @returns {Promise<T>} - The created or updated object.
+     */
+    upsert = async (data: any): Promise<T> => {
+        if (!has(data, 'id')) throw new Error('ID require primary key to be set');
 
-            const object = this.realm.objectForPrimaryKey(this.schema.name, data.id) as any;
+        const objectExists = !!this.realm.objectForPrimaryKey(this.model, data.id);
 
-            if (object) {
-                try {
-                    this.safeWrite(() => {
-                        resolve(this.realm.create(this.schema.name, data, Realm.UpdateMode.All));
-                    });
-                } catch (error) {
-                    reject(error);
-                }
-            } else {
-                try {
-                    this.safeWrite(() => {
-                        resolve(this.realm.create(this.schema.name, data));
-                    });
-                } catch (error) {
-                    reject(error);
-                }
-            }
-        });
-    };
-
-    create = (data: any, update = false): Promise<any> => {
         return new Promise((resolve, reject) => {
             try {
                 this.safeWrite(() => {
-                    resolve(this.realm.create(this.schema.name, data, update && Realm.UpdateMode.All));
+                    resolve(
+                        this.realm.create(
+                            this.model,
+                            data,
+                            objectExists ? Realm.UpdateMode.All : Realm.UpdateMode.Never,
+                        ),
+                    );
                 });
             } catch (error) {
                 reject(error);
@@ -134,70 +154,94 @@ export default class BaseRepository extends EventEmitter {
         });
     };
 
-    createList = (dataList: any[], update = false) => {
+    /**
+     * Creates a new object.
+     *
+     * @param {any} data - The data to create from.
+     * @param {boolean} [update=false] - Whether to update existing data.
+     * @returns {Promise<T>} - The created object.
+     */
+    create = (data: any, update: boolean = false): Promise<T> => {
+        return new Promise((resolve, reject) => {
+            try {
+                this.safeWrite(() => {
+                    resolve(
+                        this.realm.create(this.model, data, update ? Realm.UpdateMode.All : Realm.UpdateMode.Never),
+                    );
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+
+    /**
+     * Creates a list of objects.
+     *
+     * @param {any[]} dataList - The list of data to create from.
+     * @param {boolean} [update=false] - Whether to update existing data.
+     * @returns {any[] | Error} - The created objects or an error.
+     */
+    createList = (dataList: any[], update: boolean = false): any[] | Error => {
         try {
             this.safeWrite(() => {
-                for (let i = 0; i < dataList.length; i++) {
-                    const data = dataList[i];
-
-                    this.realm.create(this.schema.name, data, update && Realm.UpdateMode.All);
-                }
+                dataList.forEach((data) =>
+                    this.realm.create(this.model, data, update ? Realm.UpdateMode.All : Realm.UpdateMode.Never),
+                );
             });
 
             return dataList;
-        } catch (error) {
+        } catch (error: any) {
             return error;
         }
     };
 
-    deleteBy = (key: string, val: string): Promise<any> => {
-        return new Promise<void>((resolve, reject) => {
-            try {
-                const items = this.realm.objects(this.schema.name).filtered(`${key} == "${val}"`);
-                const item = items[0];
-
-                if (item) {
-                    this.safeWrite(() => {
-                        resolve(this.realm.delete(item));
-                    });
-                } else {
-                    resolve();
-                }
-            } catch (error) {
-                reject(error);
+    /**
+     * Deletes an object by a given id
+     *
+     * @returns {Promise<void>} - A promise.
+     * @param id
+     */
+    deleteById = (id: any): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            const item = this.realm.objectForPrimaryKey(this.model, id);
+            if (!item) {
+                reject(new Error('Item not found!'));
+                return;
             }
+            this.delete(item).then(resolve).catch(reject);
         });
     };
 
-    delete = (object: Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any> | any): Promise<void> => {
-        return new Promise<void>((resolve, reject) => {
+    /**
+     * Deletes an object or a set of objects.
+     *
+     * @param {Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any>} object - The object(s) to delete.
+     * @returns {Promise<void>} - A promise.
+     */
+    delete = async (object: Realm.Object<any> | Realm.Object<any>[]): Promise<void> => {
+        return new Promise((resolve, reject) => {
             try {
-                if (object) {
-                    this.safeWrite(() => {
-                        resolve(this.realm.delete(object));
-                    });
-                } else {
-                    resolve();
-                }
-            } catch (error) {
-                reject(error);
-            }
-        });
-    };
-
-    deleteAll = () => {
-        try {
-            const items = this.realm.objects(this.schema.name);
-
-            if (items.length > 0) {
                 this.safeWrite(() => {
-                    this.realm.delete(items);
+                    this.realm.delete(object);
+                    resolve();
                 });
+            } catch (error) {
+                reject(error);
             }
+        });
+    };
 
-            return true;
-        } catch (error) {
-            return error;
+    /**
+     * Deletes all objects of the model.
+     *
+     * @returns {boolean | Error} - True if successful, error otherwise.
+     */
+    deleteAll = (): boolean => {
+        const items = this.findAll();
+        if (items.length > 0) {
+            this.safeWrite(() => this.realm.delete(items));
         }
+        return true;
     };
 }

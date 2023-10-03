@@ -1,5 +1,8 @@
 /**
- * Account Details Model
+ * Account Details model
+ *
+ * @class
+ * @extends Realm.Object
  */
 
 import Realm from 'realm';
@@ -26,10 +29,17 @@ class AccountDetails extends Realm.Object<AccountDetails> {
     public registerAt?: Date;
     public updatedAt?: Date;
 
+    /**
+     * Returns the parsed flags as an object.
+     * @type {Object}
+     */
     get flags(): { [key: string]: boolean } {
         return JSON.parse(this.flagsString);
     }
 
+    /**
+     * Set the flags after stringify them.
+     */
     set flags(data: { [key: string]: boolean }) {
         this.flagsString = JSON.stringify(data);
     }

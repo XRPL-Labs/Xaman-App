@@ -1,5 +1,5 @@
-import Realm from 'realm';
 import { has } from 'lodash';
+import Realm from 'realm';
 
 import { CurrencyModel, CounterPartyModel } from '@store/models';
 import { Issuer } from '@common/libs/ledger/parser/types';
@@ -7,10 +7,10 @@ import { Issuer } from '@common/libs/ledger/parser/types';
 import BaseRepository from './base';
 
 /* Repository  ==================================================================== */
-class CurrencyRepository extends BaseRepository {
+class CurrencyRepository extends BaseRepository<CurrencyModel> {
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CurrencyModel.schema;
+        this.model = CurrencyModel;
     }
 
     include = (data: any): Promise<any> => {
@@ -21,12 +21,12 @@ class CurrencyRepository extends BaseRepository {
         return this.upsert(data);
     };
 
-    update = (object: CurrencyModel): void => {
+    update = (object: CurrencyModel) => {
         // the primary key should be in the object
         if (!has(object, 'id')) {
             throw new Error('Update require primary key (id) to be set');
         }
-        this.create(object, true);
+        return this.create(object, true);
     };
 
     isVettedCurrency = (issuer: Issuer): boolean => {
@@ -38,7 +38,8 @@ class CurrencyRepository extends BaseRepository {
     };
 
     getCounterParty = (currency: CurrencyModel): CounterPartyModel => {
-        const counterParty = currency.linkingObjects('CounterParty', 'currencies');
+        const counterParty = currency.linkingObjects<CounterPartyModel>('CounterParty', 'currencies');
+
         if (!counterParty.isEmpty()) {
             return counterParty[0] as CounterPartyModel;
         }

@@ -2,8 +2,8 @@
  * Switch Account Overlay
  */
 
-import { Results } from 'realm';
 import { find } from 'lodash';
+import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
@@ -34,7 +34,7 @@ export interface Props {
 
 export interface State {
     defaultAccount: AccountModel;
-    accounts: Results<AccountModel>;
+    accounts: Realm.Results<AccountModel>;
     signableAccount: Array<AccountModel>;
     contentHeight: number;
     paddingBottom: number;
