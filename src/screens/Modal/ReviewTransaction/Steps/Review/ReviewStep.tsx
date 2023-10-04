@@ -16,7 +16,7 @@ import { AccountModel } from '@store/models';
 
 // components
 import { Avatar, Button, KeyboardAwareScrollView, Spacer, SwipeButton } from '@components/General';
-import { AccountPicker } from '@components/Modules';
+import { AccountPicker, NetworkLabel } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -308,6 +308,7 @@ class ReviewStep extends Component<Props, State> {
                                     ? Localize.t('global.signIn')
                                     : Localize.t('global.reviewTransaction')}
                             </Text>
+                            <NetworkLabel type="both" />
                         </View>
                         <View style={AppStyles.rightAligned}>
                             <Button

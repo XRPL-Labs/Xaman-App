@@ -35,6 +35,7 @@ export enum NetworkStateStatus {
 declare interface NetworkService {
     on(event: 'connect', listener: (networkId: number) => void): this;
     on(event: 'stateChange', listener: (networkStatus: NetworkStateStatus) => void): this;
+    on(event: 'networkChange', listener: (network: NetworkModel) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -315,6 +316,9 @@ class NetworkService extends EventEmitter {
         if (network.id === this.network.id && network.defaultNode === this.network.defaultNode) {
             return;
         }
+
+        // emit the event
+        this.emit('networkChange', network);
 
         // log
         this.logger.debug(`Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`);

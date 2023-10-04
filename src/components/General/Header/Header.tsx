@@ -22,12 +22,14 @@ interface ChildrenProps {
     iconStyle?: ImageStyle;
     render?: any;
     onPress?: () => void;
+    extraComponent?: React.ReactNode;
 }
 
 interface Props {
     placement: placementType;
     leftComponent?: ChildrenProps;
     centerComponent?: ChildrenProps;
+    subComponent?: ChildrenProps;
     rightComponent?: ChildrenProps;
     backgroundColor?: string;
     containerStyle?: ViewStyle;
@@ -88,7 +90,7 @@ const Children = ({
             onPress={onPress}
         >
             {children.text && children.icon && (
-                <View style={[AppStyles.row]}>
+                <View style={AppStyles.row}>
                     {(placement === 'left' || placement === 'center') && (
                         <Icon style={styles.iconStyle} size={children.iconSize || 30} name={children.icon} />
                     )}
@@ -115,6 +117,8 @@ const Children = ({
                     style={[styles.iconStyle, children.iconStyle]}
                 />
             )}
+
+            {children.extraComponent && children.extraComponent}
         </TouchableDebounce>
     );
 };
