@@ -67,6 +67,9 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.subtext.size * 0.8,
     },
+    accountSwitchElement: {
+        marginHorizontal: AppSizes.paddingSml,
+    },
 });
 
 export default styles;

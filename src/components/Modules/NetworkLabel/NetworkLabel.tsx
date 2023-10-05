@@ -12,25 +12,30 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
+    type: 'circle' | 'text' | 'both';
+    size?: number;
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
-    type: 'circle' | 'text' | 'both';
     onPress?: (network: NetworkModel) => void;
 }
 
 interface State {
     network: NetworkModel;
+    size: number;
 }
 
 /* Component ==================================================================== */
 class NetworkLabel extends PureComponent<Props, State> {
-    public static CircleSize = AppSizes.scale(10);
+    static defaultProps = {
+        size: 10,
+    };
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             network: NetworkService.getNetwork(),
+            size: AppSizes.scale(props.size),
         };
     }
 
@@ -59,7 +64,7 @@ class NetworkLabel extends PureComponent<Props, State> {
 
     render() {
         const { type, containerStyle, textStyle } = this.props;
-        const { network } = this.state;
+        const { size, network } = this.state;
 
         if (!network) {
             return null;
@@ -73,22 +78,22 @@ class NetworkLabel extends PureComponent<Props, State> {
                 onPress={this.onPress}
                 activeOpacity={0.8}
             >
-                {['text', 'both'].includes(type) && (
-                    <Text style={[styles.textStyle, textStyle]} numberOfLines={1}>
-                        {network.name}
-                    </Text>
-                )}
                 {['circle', 'both'].includes(type) && (
                     <View
                         style={[
                             {
                                 backgroundColor: network.color,
-                                borderRadius: (NetworkLabel.CircleSize * 1.4) / 2,
-                                width: NetworkLabel.CircleSize,
-                                height: NetworkLabel.CircleSize,
+                                borderRadius: (size * 1.4) / 2,
+                                width: size,
+                                height: size,
                             },
                         ]}
                     />
+                )}
+                {['text', 'both'].includes(type) && (
+                    <Text style={[styles.textStyle, textStyle]} numberOfLines={1}>
+                        {network.name}
+                    </Text>
                 )}
             </TouchableDebounce>
         );

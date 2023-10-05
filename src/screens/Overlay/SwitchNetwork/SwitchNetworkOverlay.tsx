@@ -28,6 +28,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
+    onClose?: () => void;
     onChangeNetwork?: (network: NetworkModel) => void;
 }
 
@@ -123,6 +124,18 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         this.actionPanel.slideDown();
     };
 
+    onPanelSlideDown = () => {
+        const { onClose } = this.props;
+
+        // dismiss overlay
+        Navigator.dismissOverlay();
+
+        // callback
+        if (typeof onClose === 'function') {
+            onClose();
+        }
+    };
+
     renderRow = (network: NetworkModel) => {
         const { coreSettings } = this.state;
 
@@ -162,7 +175,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         return (
             <ActionPanel
                 height={contentHeight}
-                onSlideDown={Navigator.dismissOverlay}
+                onSlideDown={this.onPanelSlideDown}
                 ref={(r) => {
                     this.actionPanel = r;
                 }}

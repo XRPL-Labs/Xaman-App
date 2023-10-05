@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
 
-import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
-
-import { Truncate } from '@common/utils/string';
-
-import { AccountRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 
-import { AppSizes, AppStyles } from '@theme';
-import { TouchableDebounce, Button, Avatar, Icon, TextPlaceholder } from '@components/General';
+import { AccountSwitchElement } from '@components/Modules/AccountSwitchElement';
+import { NetworkLabel } from '@components/Modules/NetworkLabel';
+import { NetworkSwitchButton } from '@components/Modules/NetworkSwitchButton';
+import { Button, Avatar, TextPlaceholder } from '@components/General';
 
 import Localize from '@locale';
 
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -23,7 +20,6 @@ interface Props {
     icon: string;
     account: AccountModel;
     network: NetworkModel;
-
     onAccountChange?: (account: AccountModel) => void;
     onNetworkChange?: (network: any) => void;
     onClosePress?: () => void;
@@ -32,32 +28,33 @@ interface Props {
 
 interface State {
     panelExpanded: boolean;
+    isPanelExpanding: boolean;
 }
 
 /* Component ==================================================================== */
 class XAppBrowserHeader extends Component<Props, State> {
+    public static ExpandHeight = AppSizes.scale(100);
     private animatedExpand: Animated.Value;
     constructor(props: Props) {
         super(props);
 
         this.state = {
             panelExpanded: false,
+            isPanelExpanding: false,
         };
 
         this.animatedExpand = new Animated.Value(0);
     }
 
-    onAccountSelect = (selectedAccount: AccountModel) => {
+    onDefaultAccountChange = (selectedAccount: AccountModel) => {
         const { account, onAccountChange } = this.props;
-
-        // toggle expanded bar
-        this.toggleExpandedBar();
 
         // nothing has been changed
         if (selectedAccount.address === account.address) {
             return;
         }
 
+        // callback
         if (typeof onAccountChange === 'function') {
             onAccountChange(selectedAccount);
         }
@@ -66,37 +63,15 @@ class XAppBrowserHeader extends Component<Props, State> {
     onNetworkChange = (network: NetworkModel) => {
         const { onNetworkChange } = this.props;
 
-        // toggle expanded bar
-        this.toggleExpandedBar();
-
         if (typeof onNetworkChange === 'function') {
             onNetworkChange(network);
         }
     };
 
-    showAccountSelect = () => {
-        const { account } = this.props;
-
-        // no account is configured in the app
-        if (!account) {
-            return;
-        }
-
-        Navigator.showOverlay(AppScreens.Overlay.SelectAccount, {
-            selected: account,
-            accounts: AccountRepository.getAccounts(),
-            onSelect: this.onAccountSelect,
-        });
-    };
-
-    showNetworkSwitcher = () => {
-        Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork, {
-            onChangeNetwork: this.onNetworkChange,
-        });
-    };
-
     showXAppInfo = () => {
         const { onInfoPress } = this.props;
+
+        this.toggleExpandedBar();
 
         if (typeof onInfoPress === 'function') {
             onInfoPress();
@@ -112,7 +87,16 @@ class XAppBrowserHeader extends Component<Props, State> {
     };
 
     toggleExpandedBar = () => {
-        const { panelExpanded } = this.state;
+        const { panelExpanded, isPanelExpanding } = this.state;
+
+        // debounce
+        if (isPanelExpanding) {
+            return;
+        }
+
+        this.setState({
+            isPanelExpanding: true,
+        });
 
         Animated.timing(this.animatedExpand, {
             toValue: panelExpanded ? 0 : 1,
@@ -121,16 +105,18 @@ class XAppBrowserHeader extends Component<Props, State> {
         }).start(() => {
             this.setState({
                 panelExpanded: !panelExpanded,
+                isPanelExpanding: false,
             });
         });
     };
 
     render() {
-        const { title, icon, network, account } = this.props;
+        const { title, icon, account } = this.props;
+        const { isPanelExpanding, panelExpanded } = this.state;
 
         return (
             <>
-                <View style={styles.headerContainer}>
+                <View style={[styles.headerContainer, { borderBottomWidth: +!isPanelExpanding && +!panelExpanded }]}>
                     <View style={styles.headerLeftContainer}>
                         <Avatar isLoading={!icon} source={{ uri: icon }} size={30} />
                         <TextPlaceholder isLoading={!title} style={styles.titleText} length={24}>
@@ -139,26 +125,18 @@ class XAppBrowserHeader extends Component<Props, State> {
                     </View>
                     <View style={styles.headerRightContainer}>
                         <Button
-                            testID="info-button"
+                            testID="expand-button"
                             numberOfLines={1}
                             roundedMini
                             light
-                            icon="IconInfo"
-                            iconSize={15}
                             style={styles.headerButton}
-                            onPress={this.showXAppInfo}
-                        />
-                        <Button
-                            testID="info-button"
-                            numberOfLines={1}
-                            roundedMini
-                            light
-                            icon="IconRadio"
-                            iconSize={18}
-                            style={styles.headerButton}
-                            iconStyle={styles.networkIcon}
                             onPress={this.toggleExpandedBar}
-                        />
+                        >
+                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                <NetworkLabel size={13} type="circle" />
+                                <Text style={styles.headerButtonText}>•••</Text>
+                            </View>
+                        </Button>
                         <Button
                             contrast
                             testID="close-button"
@@ -166,7 +144,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                             roundedMini
                             icon="IconX"
                             iconSize={20}
-                            style={styles.headerButton}
+                            style={[styles.headerButton, styles.headerButtonClose]}
                             onPress={this.onClosePress}
                         />
                     </View>
@@ -178,62 +156,48 @@ class XAppBrowserHeader extends Component<Props, State> {
                         {
                             height: this.animatedExpand.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: [0, AppSizes.heightPercentageToDP(4)],
+                                outputRange: [0, XAppBrowserHeader.ExpandHeight],
                             }),
                             transform: [
                                 {
                                     translateY: this.animatedExpand.interpolate({
                                         inputRange: [0, 1],
-                                        outputRange: [-AppSizes.heightPercentageToDP(4), 0],
+                                        outputRange: [-XAppBrowserHeader.ExpandHeight, 0],
                                     }),
                                 },
                             ],
+                            zIndex: +!isPanelExpanding,
                         },
                     ]}
                 >
-                    <TouchableDebounce
-                        onPress={this.showNetworkSwitcher}
-                        activeOpacity={0.8}
-                        style={[
-                            styles.expandableButton,
-                            AppStyles.flex1,
-                            AppStyles.flexStart,
-                            AppStyles.marginRightSml,
-                        ]}
-                    >
-                        <View
-                            key={network.id}
-                            style={[
-                                AppStyles.centerContent,
-                                AppStyles.centerAligned,
-                                {
-                                    width: AppSizes.scale(10),
-                                    height: AppSizes.scale(10),
-                                    borderRadius: AppSizes.scale(10) / 2,
-                                    backgroundColor: network.color,
-                                },
-                            ]}
+                    {/* First Row */}
+                    <View style={styles.accountSwitchContainer}>
+                        <AccountSwitchElement
+                            account={account}
+                            onAccountSwitch={this.onDefaultAccountChange}
+                            onSwitcherClose={this.toggleExpandedBar}
                         />
+                    </View>
 
-                        <Text numberOfLines={1} style={styles.networkText}>
-                            {network.name}
-                        </Text>
-                        <Icon name="IconChevronDown" size={22} style={styles.iconChevronDown} />
-                    </TouchableDebounce>
-                    <TouchableDebounce
-                        activeOpacity={0.8}
-                        onPress={this.showAccountSelect}
-                        style={[styles.expandableButton, AppStyles.flex3, AppStyles.flexEnd]}
-                    >
-                        <Text numberOfLines={1} style={[styles.addressText, !account && styles.addressTextDisabled]}>
-                            {account ? Truncate(account.address, 30) : Localize.t('global.noAccountConfigured')}
-                        </Text>
-                        <Icon
-                            name="IconChevronDown"
-                            size={22}
-                            style={[styles.iconChevronDown, !account && styles.iconChevronDownDisabled]}
+                    {/* Second row */}
+                    <View style={AppStyles.row}>
+                        <NetworkSwitchButton
+                            containerStyle={AppStyles.flex1}
+                            loadingAnimation={false}
+                            showChevronIcon
+                            height="100%"
+                            onNetworkChange={this.onNetworkChange}
+                            onSwitcherClose={this.toggleExpandedBar}
                         />
-                    </TouchableDebounce>
+                        <Button
+                            light
+                            roundedSmallBlock
+                            label={Localize.t('xapp.aboutThisXApp')}
+                            onPress={this.showXAppInfo}
+                            activeOpacity={0.8}
+                            style={[AppStyles.flex1, styles.headerButton, { marginLeft: AppSizes.paddingSml }]}
+                        />
+                    </View>
                 </Animated.View>
             </>
         );

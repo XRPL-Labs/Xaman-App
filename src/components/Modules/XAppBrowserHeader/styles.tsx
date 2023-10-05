@@ -14,7 +14,7 @@ const styles = StyleService.create({
             Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
         paddingTop: Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
         paddingBottom: 5,
-        zIndex: 1,
+        zIndex: 2,
         borderBottomColor: '$tint',
         borderBottomWidth: 1,
     },
@@ -33,12 +33,11 @@ const styles = StyleService.create({
         justifyContent: 'flex-end',
     },
     headerExpandedContainer: {
-        flexDirection: 'row',
-        height: AppSizes.heightPercentageToDP(4),
         paddingLeft: AppSizes.paddingExtraSml,
         paddingRight: AppSizes.paddingExtraSml,
-        backgroundColor: '$tint',
-        zIndex: -99999,
+        backgroundColor: '$background',
+        borderBottomColor: '$tint',
+        borderBottomWidth: 1,
     },
     expandableButton: {
         flexDirection: 'row',
@@ -51,32 +50,25 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size,
         marginLeft: AppSizes.paddingExtraSml,
     },
-    addressText: {
-        color: '$textPrimary',
-        fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.small.size,
-    },
-    addressTextDisabled: {
-        color: '$silver',
-    },
-    networkText: {
-        color: '$textPrimary',
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.small.size,
-        paddingLeft: AppSizes.paddingExtraSml,
+    headerButtonClose: {
+        marginLeft: AppSizes.paddingExtraSml,
     },
     headerButton: {
         borderRadius: 10,
-        marginLeft: AppSizes.paddingExtraSml,
     },
-    networkIcon: {
-        tintColor: '$green',
+    headerButtonText: {
+        color: '$textPrimary',
+        textAlign: 'center',
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.h5.size,
+        paddingLeft: AppSizes.paddingExtraSml,
     },
     iconChevronDown: {
         tintColor: '$contrast',
     },
-    iconChevronDownDisabled: {
-        tintColor: '$silver',
+
+    accountSwitchContainer: {
+        marginBottom: AppSizes.paddingExtraSml,
     },
 });
 
