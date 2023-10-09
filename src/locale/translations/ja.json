@@ -612,7 +612,7 @@
     "offerOnYouNFT": "NFTへのオファー",
     "sellMyNFT": "所有NFTの売却",
     "thisOfferCanOnlyBeAcceptedByThirdParty": "このオファーには、第三者(ブローカーなど)が送信先として設定されています。この第三者のアカウントのみがオファーを受け入れることができます。",
-    "myBalanceAndReserve": "My balance & reserve"
+    "myBalanceAndReserve": "残高と準備金を確認"
   },
   "pro": {
     "proBeta": "Pro Beta",
