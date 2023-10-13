@@ -347,6 +347,7 @@
     "networks": "Networks",
     "network": "Network",
     "networkId": "Network ID",
+    "operationLimit": "Operation limit",
     "connectedTo": "Connected to:",
     "connected": "Connected",
     "hooks": "Hooks",

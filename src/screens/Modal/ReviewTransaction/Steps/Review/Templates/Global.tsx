@@ -227,6 +227,23 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderOperationLimit = () => {
+        const { transaction } = this.props;
+
+        if (isUndefined(transaction.OperationLimit)) {
+            return null;
+        }
+
+        return (
+            <>
+                <Text style={styles.label}>{Localize.t('global.operationLimit')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{transaction.OperationLimit}</Text>
+                </View>
+            </>
+        );
+    };
+
     renderHookParameters = () => {
         const { transaction } = this.props;
 
@@ -325,6 +342,7 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 {this.renderHookParameters()}
                 {this.renderNetworkId()}
+                {this.renderOperationLimit()}
                 {this.renderTicketSequence()}
                 {this.renderSequence()}
                 {this.renderSigners()}

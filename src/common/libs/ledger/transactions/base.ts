@@ -32,7 +32,7 @@ import Memo from '../parser/common/memo';
 
 /* Types ==================================================================== */
 import { Account, AmountType, MemoType, TransactionResult } from '../parser/types';
-import {StringTypeCheck} from '@common/utils/string';
+import { StringTypeCheck } from '@common/utils/string';
 
 /* Class ==================================================================== */
 class BaseTransaction {
@@ -79,6 +79,7 @@ class BaseTransaction {
             'TxnSignature',
             'NetworkID',
             'HookParameters',
+            'OperationLimit',
         ];
 
         // memorize balance and owner count changes
@@ -368,8 +369,10 @@ class BaseTransaction {
         if (!memos) return undefined;
 
         for (const memo of memos) {
-            if (['xumm/xapp', 'xaman/xapp'].includes(memo.MemoType) &&
-                StringTypeCheck.isValidXAppIdentifier(memo.MemoData)) {
+            if (
+                ['xumm/xapp', 'xaman/xapp'].includes(memo.MemoType) &&
+                StringTypeCheck.isValidXAppIdentifier(memo.MemoData)
+            ) {
                 return memo.MemoData;
             }
         }
@@ -719,6 +722,10 @@ class BaseTransaction {
 
     get NetworkID(): number {
         return get(this, ['tx', 'NetworkID'], undefined);
+    }
+
+    get OperationLimit(): number {
+        return get(this, ['tx', 'OperationLimit'], undefined);
     }
 
     get HookParameters(): {
