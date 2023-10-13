@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const TrustLineSchema = {
     schema: {
@@ -72,4 +74,4 @@ const TrustLineSchema = {
     },
 };
 
-export default TrustLineSchema;
+export default <ExtendedSchemaType>TrustLineSchema;

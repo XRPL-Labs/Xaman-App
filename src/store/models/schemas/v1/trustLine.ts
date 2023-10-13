@@ -2,12 +2,14 @@
  * Account Trust Lines Schema v1
  */
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const TrustLineSchema = {
     schema: {
         name: 'TrustLine',
         properties: {
-            currency: { type: 'Currency' },
+            currency: { type: 'object', objectType: 'Currency' },
             balance: { type: 'double', default: 0 },
             transfer_rate: { type: 'double', default: 0 },
             no_ripple: { type: 'bool', optional: true },
@@ -20,4 +22,4 @@ const TrustLineSchema = {
     },
 };
 
-export default TrustLineSchema;
+export default <ExtendedSchemaType>TrustLineSchema;

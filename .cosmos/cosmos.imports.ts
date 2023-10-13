@@ -5,12 +5,13 @@ import { RendererConfig, UserModuleWrappers } from 'react-cosmos-core';
 
 import './prepare';
 
-import * as fixture0 from './fixtures/SegmentButton.fixture';
-import * as fixture1 from './fixtures/RecipientElement.fixture';
-import * as fixture2 from './fixtures/InfoMessage.fixture';
-import * as fixture3 from './fixtures/Badge.fixture';
-import * as fixture4 from './fixtures/Avatar.fixture';
-import * as fixture5 from './fixtures/AmountText.fixture';
+import * as fixture0 from './fixtures/XAppShortList.fixture';
+import * as fixture1 from './fixtures/SegmentButton.fixture';
+import * as fixture2 from './fixtures/RecipientElement.fixture';
+import * as fixture3 from './fixtures/InfoMessage.fixture';
+import * as fixture4 from './fixtures/Badge.fixture';
+import * as fixture5 from './fixtures/Avatar.fixture';
+import * as fixture6 from './fixtures/AmountText.fixture';
 
 export const rendererConfig: RendererConfig = {
   "playgroundUrl": "http://localhost:5001",
@@ -18,12 +19,13 @@ export const rendererConfig: RendererConfig = {
 };
 
 const fixtures = {
-  'fixtures/SegmentButton.fixture.tsx': { module: fixture0 },
-  'fixtures/RecipientElement.fixture.tsx': { module: fixture1 },
-  'fixtures/InfoMessage.fixture.tsx': { module: fixture2 },
-  'fixtures/Badge.fixture.tsx': { module: fixture3 },
-  'fixtures/Avatar.fixture.tsx': { module: fixture4 },
-  'fixtures/AmountText.fixture.tsx': { module: fixture5 }
+  'fixtures/XAppShortList.fixture.tsx': { module: fixture0 },
+  'fixtures/SegmentButton.fixture.tsx': { module: fixture1 },
+  'fixtures/RecipientElement.fixture.tsx': { module: fixture2 },
+  'fixtures/InfoMessage.fixture.tsx': { module: fixture3 },
+  'fixtures/Badge.fixture.tsx': { module: fixture4 },
+  'fixtures/Avatar.fixture.tsx': { module: fixture5 },
+  'fixtures/AmountText.fixture.tsx': { module: fixture6 }
 };
 
 const decorators = {};

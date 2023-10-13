@@ -2,10 +2,12 @@
  * Send / Recipient step
  */
 
-import React, { Component } from 'react';
-import { Results } from 'realm';
 import { isEmpty, flatMap, remove, get, uniqBy, toNumber } from 'lodash';
+import Realm from 'realm';
+
+import React, { Component } from 'react';
 import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
+
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -42,8 +44,8 @@ export interface State {
     isSearching: boolean;
     isLoading: boolean;
     searchText: string;
-    accounts: Results<AccountModel>;
-    contacts: Results<ContactModel>;
+    accounts: Realm.Results<AccountModel>;
+    contacts: Realm.Results<ContactModel>;
     dataSource: any[];
 }
 

@@ -2,6 +2,8 @@
  * Custom Node Schema
  */
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const CustomNodeSchema = {
     schema: {
@@ -17,4 +19,4 @@ const CustomNodeSchema = {
     },
 };
 
-export default CustomNodeSchema;
+export default <ExtendedSchemaType>CustomNodeSchema;

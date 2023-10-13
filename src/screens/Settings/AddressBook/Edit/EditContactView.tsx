@@ -171,7 +171,7 @@ class EditContactView extends Component<Props, State> {
                 {
                     text: Localize.t('global.doIt'),
                     onPress: () => {
-                        ContactRepository.deleteBy('id', contact.id);
+                        ContactRepository.deleteById(contact.id);
                         Toast(Localize.t('settings.contactSuccessDeleted'));
 
                         Navigator.pop();

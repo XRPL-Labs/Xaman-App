@@ -9,7 +9,6 @@ export default StyleService.create({
         borderRadius: 12,
         padding: AppSizes.paddingExtraSml,
         paddingHorizontal: AppSizes.paddingSml,
-        marginHorizontal: AppSizes.paddingSml,
     },
     accountLabelText: {
         fontFamily: AppFonts.base.familyExtraBold,

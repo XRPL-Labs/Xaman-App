@@ -635,7 +635,8 @@
     "supportAndQuestions": "サポート & 質問",
     "website": "Webサイト:",
     "donateToTheCreator": "開発者を支援する",
-    "chooseAmount": "支援金額を選択"
+    "chooseAmount": "支援金額を選択",
+    "aboutThisXApp": "About this xApp"
   },
   "settings": {
     "generalSettings": "一般",

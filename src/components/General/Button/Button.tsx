@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { Component } from 'react';
+import React, { Component, PropsWithChildren } from 'react';
 import { isEqual } from 'lodash';
 
 import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
@@ -13,7 +13,7 @@ import { LoadingIndicator } from '@components/General/LoadingIndicator';
 import styles from './styles';
 
 /* Types ==================================================================== */
-interface Props {
+interface Props extends PropsWithChildren {
     style?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     disabledStyle?: TextStyle | TextStyle[];
@@ -40,7 +40,6 @@ interface Props {
     icon?: Extract<keyof typeof Images, string>;
     iconPosition?: 'right' | 'left';
     iconSize?: number;
-    extraComponent?: React.ReactNode;
     hitSlop?: any;
 }
 
@@ -55,8 +54,14 @@ export default class Button extends Component<Props> {
         numberOfLines: 2,
     };
 
-    renderChildren() {
+    shouldComponentUpdate(nextProps: Props) {
+        return !isEqual(nextProps, this.props);
+    }
+
+    renderInnerContent() {
         const {
+            children,
+            isLoading,
             label,
             icon,
             iconPosition,
@@ -74,8 +79,24 @@ export default class Button extends Component<Props> {
             iconStyle,
             iconSize,
             isDisabled,
-            extraComponent,
+            loadingIndicatorStyle,
         } = this.props;
+
+        // loading indicator
+        if (isLoading) {
+            return (
+                <LoadingIndicator
+                    size="small"
+                    style={styles.spinner}
+                    color={loadingIndicatorStyle || light ? 'default' : 'light'}
+                />
+            );
+        }
+
+        // if children provided
+        if (children) {
+            return children;
+        }
 
         return (
             <View style={styles.buttonWrapper}>
@@ -124,29 +145,8 @@ export default class Button extends Component<Props> {
                         ]}
                     />
                 )}
-                {extraComponent && extraComponent}
             </View>
         );
-    }
-
-    shouldComponentUpdate(nextProps: Props) {
-        return !isEqual(nextProps, this.props);
-    }
-
-    renderInnerContent() {
-        const { isLoading, light, loadingIndicatorStyle } = this.props;
-
-        if (isLoading) {
-            return (
-                <LoadingIndicator
-                    size="small"
-                    style={styles.spinner}
-                    color={loadingIndicatorStyle || light ? 'default' : 'light'}
-                />
-            );
-        }
-
-        return this.renderChildren();
     }
 
     onPress = () => {

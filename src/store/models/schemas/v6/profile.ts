@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const ProfileSchema = {
     schema: {
@@ -14,7 +16,7 @@ const ProfileSchema = {
             uuid: { type: 'string', optional: true },
             deviceUUID: { type: 'string', optional: true },
             signedTOSVersion: { type: 'int', optional: true },
-            signedTOSDate: 'date?',
+            signedTOSDate: { type: 'date', optional: true },
             accessToken: { type: 'string', optional: true },
             idempotency: { type: 'int', default: 0 },
             hasPro: { type: 'bool', default: false },
@@ -35,4 +37,4 @@ const ProfileSchema = {
     },
 };
 
-export default ProfileSchema;
+export default <ExtendedSchemaType>ProfileSchema;

@@ -14,5 +14,6 @@ export * from './PaymentOptionsPicker';
 export * from './InactiveAccount';
 export * from './NFTokenElement';
 export * from './NetworkSwitchButton';
+export * from './NetworkLabel';
 export * from './AccountSwitchElement';
 export * from './XAppBrowserHeader';

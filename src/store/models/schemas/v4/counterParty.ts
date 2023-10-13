@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const CounterPartySchema = {
     schema: {
@@ -33,4 +35,4 @@ const CounterPartySchema = {
     },
 };
 
-export default CounterPartySchema;
+export default <ExtendedSchemaType>CounterPartySchema;

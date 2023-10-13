@@ -2,8 +2,8 @@
  * Switch Account Overlay
  */
 
-import { Results } from 'realm';
 import { find } from 'lodash';
+import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
@@ -29,12 +29,14 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     discreetMode: boolean;
+    showAddAccountButton: boolean;
     onClose?: () => void;
+    onSwitch?: (account: AccountModel) => void;
 }
 
 export interface State {
     defaultAccount: AccountModel;
-    accounts: Results<AccountModel>;
+    accounts: Realm.Results<AccountModel>;
     signableAccount: Array<AccountModel>;
     contentHeight: number;
     paddingBottom: number;
@@ -123,9 +125,17 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     changeDefaultAccount = (account: AccountModel) => {
+        const { onSwitch } = this.props;
+
         // change default account
         CoreRepository.setDefaultAccount(account);
 
+        // callback
+        if (typeof onSwitch === 'function') {
+            onSwitch(account);
+        }
+
+        // slide down
         if (this.actionPanel) {
             this.actionPanel.slideDown();
         }
@@ -255,6 +265,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     render() {
+        const { showAddAccountButton } = this.props;
         const { accounts, contentHeight, paddingBottom } = this.state;
 
         if (!accounts || !contentHeight) return null;
@@ -273,16 +284,18 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             {Localize.t('account.myAccounts')}
                         </Text>
                     </View>
-                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                        <Button
-                            light
-                            roundedSmall
-                            label={Localize.t('home.addAccount')}
-                            icon="IconPlus"
-                            isDisabled={false}
-                            onPress={this.onAddPressed}
-                        />
-                    </View>
+                    {showAddAccountButton && (
+                        <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
+                            <Button
+                                light
+                                roundedSmall
+                                label={Localize.t('home.addAccount')}
+                                icon="IconPlus"
+                                isDisabled={false}
+                                onPress={this.onAddPressed}
+                            />
+                        </View>
+                    )}
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
                     {this.renderContent()}

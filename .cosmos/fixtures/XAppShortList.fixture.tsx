@@ -1,10 +1,6 @@
-/* eslint-disable spellcheck/spell-checker */
 import React from 'react';
-import { storiesOf } from '@storybook/react-native';
 
-import { withContainer } from '../../../../storybook/decoration';
-
-import { XAppShortList } from '../XAppShortList';
+import { XAppShortList } from '@components/Modules/XAppShortList';
 
 const apps = [
     {
@@ -33,6 +29,4 @@ const apps = [
     },
 ];
 
-storiesOf('XAppList', module)
-    .addDecorator(withContainer)
-    .add('default', () => <XAppShortList apps={apps} />);
+export default <XAppShortList apps={apps} />;

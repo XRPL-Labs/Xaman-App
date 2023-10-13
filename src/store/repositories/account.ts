@@ -1,5 +1,5 @@
 import { flatMap, has, filter, find } from 'lodash';
-import Realm, { Results } from 'realm';
+import Realm from 'realm';
 
 import { AccountModel, AccountDetailsModel, CurrencyModel, TrustLineModel } from '@store/models';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
@@ -7,6 +7,7 @@ import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 import Vault from '@common/libs/vault';
 
 import BaseRepository from './base';
+
 /* Events  ==================================================================== */
 declare interface AccountRepository {
     on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountModel) => void): this;
@@ -17,47 +18,56 @@ declare interface AccountRepository {
 }
 
 /* Repository  ==================================================================== */
-class AccountRepository extends BaseRepository {
+class AccountRepository extends BaseRepository<AccountModel> {
+    /**
+     * Initialize the repository with realm instance and default model.
+     * @param {Realm} realm - The realm instance.
+     */
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = AccountModel.schema;
+        this.model = AccountModel;
     }
 
     /**
-     * add new regular account to the store
-     * this will store private key in the vault if full access
+     * Adds a new account to the store.
+     * @param {Partial<AccountModel>} account - Partial data for the account.
+     * @param {string} [privateKey] - Private key of the account (optional).
+     * @param {string} [encryptionKey] - Encryption key (optional).
+     * @returns {Promise<AccountModel>} Promise that resolves to the created AccountModel.
      */
-    add = (account: Partial<AccountModel>, privateKey?: string, encryptionKey?: string): Promise<AccountModel> => {
-        // READONLY || TANGEM CARD
+    add = async (
+        account: Partial<AccountModel>,
+        privateKey?: string,
+        encryptionKey?: string,
+    ): Promise<AccountModel> => {
+        // Handle special cases for Readonly or Tangem card accounts
         if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
-            return this.create(account).then((createdAccount: AccountModel) => {
-                this.emit('accountCreate', createdAccount);
-                return createdAccount;
-            });
+            const createdAccount = await this.create(account);
+            this.emit('accountCreate', createdAccount);
+            return createdAccount;
         }
 
-        // FULL ACCESS
-        return Vault.create(account.publicKey, privateKey, encryptionKey).then(() => {
-            return this.create(account, true).then((createdAccount: AccountModel) => {
-                this.emit('accountCreate', createdAccount);
-                return createdAccount;
-            });
-        });
+        // Handle full access accounts
+        await Vault.create(account.publicKey, privateKey, encryptionKey);
+        const createdFullAccessAccount = await this.create(account, true);
+        this.emit('accountCreate', createdFullAccessAccount);
+        return createdFullAccessAccount;
     };
 
     /**
-     * update account object
+     * Update an existing account.
+     * @param {Partial<AccountModel>} object Data to update the account with.
+     * @returns {Promise<AccountModel>} Updated account.
      */
-    update = (object: Partial<AccountModel>): Promise<AccountModel> => {
-        // the primary key should be in the object
-        if (!has(object, this.schema.primaryKey)) {
+    update = async (object: Partial<AccountModel>): Promise<AccountModel> => {
+        // Validate object has a primary key
+        if (!has(object, this.model.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
 
-        return this.create(object, true).then((updatedAccount: AccountModel) => {
-            this.emit('accountUpdate', updatedAccount, object);
-            return updatedAccount;
-        });
+        const updatedAccount = await this.create(object, true);
+        this.emit('accountUpdate', updatedAccount, object);
+        return updatedAccount;
     };
 
     /**
@@ -107,7 +117,7 @@ class AccountRepository extends BaseRepository {
     /**
      * get list all accounts
      */
-    getAccounts = (filters?: Partial<AccountModel>): Results<AccountModel> => {
+    getAccounts = (filters?: Partial<AccountModel>) => {
         // sorted('default', true) will put the default account on top
         if (filters) {
             return this.query(filters);
@@ -125,14 +135,14 @@ class AccountRepository extends BaseRepository {
     /**
      * get list of accounts with full access
      */
-    getFullAccessAccounts = (): Array<AccountModel> => {
+    getFullAccessAccounts = (): AccountModel[] => {
         return flatMap(this.query({ accessLevel: AccessLevels.Full }));
     };
 
     /**
      * get list of available accounts for spending
      */
-    getSpendableAccounts = (includeHidden = false): Array<AccountModel> => {
+    getSpendableAccounts = (includeHidden = false): AccountModel[] => {
         const signableAccounts = this.getSignableAccounts();
 
         return filter(signableAccounts, (a) => a.balance > 0 && (includeHidden ? true : !a.hidden));
@@ -141,7 +151,7 @@ class AccountRepository extends BaseRepository {
     /**
      * get list of available accounts for signing
      */
-    getSignableAccounts = (): Array<AccountModel> => {
+    getSignableAccounts = (): AccountModel[] => {
         const accounts = this.findAll();
 
         const availableAccounts = [] as Array<AccountModel>;
@@ -225,24 +235,26 @@ class AccountRepository extends BaseRepository {
     };
 
     /**
-     * Remove account
-     * WARNING: this will be permanently and irreversible
+     * Remove an account permanently.
+     * WARNING: This operation is irreversible.
+     * @param {AccountModel} account The account to be removed.
+     * @returns {Promise<boolean>} Whether the account was successfully removed.
      */
     purge = async (account: AccountModel): Promise<boolean> => {
-        // remove private key from vault
+        // Remove private key if account has full access
         if (account.accessLevel === AccessLevels.Full) {
             await Vault.purge(account.publicKey);
         }
 
-        // remove account lines
+        // Remove account trust lines
         for (const line of account.lines) {
             await this.delete(line);
         }
 
-        // remove the account
+        // Delete the account
         await this.delete(account);
 
-        // emit the account remove event
+        // Emit account removal event
         this.emit('accountRemove');
 
         return true;

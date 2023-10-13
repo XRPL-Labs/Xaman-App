@@ -48,7 +48,7 @@ class Application {
 
     constructor() {
         this.storage = new DataStorage();
-        this.logger = services.LoggerService.createLogger('Application');
+        this.logger = services.LoggerService.createLogger('App');
         this.initialized = false;
     }
 
@@ -237,11 +237,11 @@ class Application {
 
                 // if there is a language set in the settings load the setting base on the settings
                 if (core?.language) {
-                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
+                    this.logger.debug(`Settings [Locale]/[Currency]: ${core.language.toUpperCase()}/${core.currency}`);
                     Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
                 } else {
                     // app is not initialized yet, set to default device locale
-                    this.logger.debug('Locale is not initialized, setting base on device languageCode');
+                    this.logger.debug('Locale is not initialized, setting base on device settings');
                     const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
                     CoreRepository.saveSettings({ language: locale });
                 }

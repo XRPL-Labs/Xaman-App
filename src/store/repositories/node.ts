@@ -1,4 +1,4 @@
-import Realm, { Results } from 'realm';
+import Realm from 'realm';
 import { has } from 'lodash';
 
 import { NodeModel } from '@store/models';
@@ -6,10 +6,10 @@ import { NodeModel } from '@store/models';
 import BaseRepository from './base';
 
 /* Repository  ==================================================================== */
-class NodeRepository extends BaseRepository {
+class NodeRepository extends BaseRepository<NodeModel> {
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = NodeModel.schema;
+        this.model = NodeModel;
     }
 
     add = (node: Partial<NodeModel>) => {
@@ -18,17 +18,19 @@ class NodeRepository extends BaseRepository {
 
         // if not exist add it to the store
         if (!exist) {
-            this.create(node);
+            return this.create(node);
         }
+
+        return undefined;
     };
 
-    getNodes = (): Results<NodeModel> => {
+    getNodes = () => {
         return this.findAll();
     };
 
     update = (object: Partial<NodeModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.schema.primaryKey)) {
+        if (!has(object, this.model.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
         return this.create(object, true);

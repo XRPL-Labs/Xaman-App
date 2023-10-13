@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const AccountSchema = {
     schema: {
@@ -41,4 +43,4 @@ const AccountSchema = {
     },
 };
 
-export default AccountSchema;
+export default <ExtendedSchemaType>AccountSchema;

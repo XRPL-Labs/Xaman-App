@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Animated, Easing, InteractionManager, Text, View, ViewStyle } from 'react-native';
+import { Animated, Easing, InteractionManager, Text, View, ViewStyle, DimensionValue } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -9,32 +9,45 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { NetworkModel } from '@store/models';
 
-import { TouchableDebounce } from '@components/General';
+import { Icon, TouchableDebounce } from '@components/General';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    network: NetworkModel;
+    hidden?: boolean;
+    showChevronIcon?: boolean;
+    loadingAnimation?: boolean;
+    height?: DimensionValue;
+    onNetworkChange?: (network: NetworkModel) => void;
+    onSwitcherClose?: () => void;
     containerStyle?: ViewStyle | ViewStyle[];
-    hidden: boolean;
 }
 
 interface State {
+    network: NetworkModel;
     networkState: NetworkStateStatus;
+    isSwitcherOpen: boolean;
 }
 
 /* Component ==================================================================== */
 class NetworkSwitchButton extends PureComponent<Props, State> {
-    public static CircleSize = AppSizes.scale(12);
+    public static CircleSize = AppSizes.scale(13);
+    public static ButtonHeight = AppSizes.scale(30);
     private animation: Animated.Value;
+
+    static defaultProps = {
+        loadingAnimation: true,
+    };
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
+            network: NetworkService.getNetwork(),
             networkState: NetworkService.getConnectionStatus(),
+            isSwitcherOpen: false,
         };
 
         this.animation = new Animated.Value(0);
@@ -45,6 +58,8 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
 
         // network service state change listener
         NetworkService.on('stateChange', this.onNetworkStateChange);
+        // network switch events
+        NetworkService.on('networkChange', this.onNetworkChange);
 
         // start the pulse animation if
         if (networkState === NetworkStateStatus.Connecting) {
@@ -54,6 +69,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
 
     componentWillUnmount() {
         NetworkService.off('stateChange', this.onNetworkStateChange);
+        NetworkService.off('networkChange', this.onNetworkChange);
     }
 
     onNetworkStateChange = (state: NetworkStateStatus) => {
@@ -77,7 +93,12 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
     };
 
     startPulseAnimation = () => {
+        const { loadingAnimation } = this.props;
         const { networkState } = this.state;
+
+        if (!loadingAnimation) {
+            return;
+        }
 
         // set animation value to zero
         this.animation.setValue(0);
@@ -94,77 +115,119 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
         });
     };
 
+    onNetworkChange = (network: NetworkModel) => {
+        const { onNetworkChange } = this.props;
+
+        this.setState(
+            {
+                network,
+            },
+            () => {
+                if (typeof onNetworkChange === 'function') {
+                    onNetworkChange(network);
+                }
+            },
+        );
+    };
+
+    onSwitcherClose = () => {
+        const { onSwitcherClose } = this.props;
+
+        this.setState({
+            isSwitcherOpen: false,
+        });
+
+        if (typeof onSwitcherClose === 'function') {
+            onSwitcherClose();
+        }
+    };
+
     onButtonPress = () => {
-        Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork);
+        this.setState({
+            isSwitcherOpen: true,
+        });
+
+        Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork, {
+            onChangeNetwork: this.onNetworkChange,
+            onClose: this.onSwitcherClose,
+        });
     };
 
     render() {
-        const { network, hidden, containerStyle } = this.props;
-        const { networkState } = this.state;
+        const { height, containerStyle, hidden, showChevronIcon } = this.props;
+        const { network, networkState, isSwitcherOpen } = this.state;
 
         if (hidden || !network) {
             return null;
         }
 
         return (
-            <View style={containerStyle}>
-                <TouchableDebounce
-                    accessibilityRole="button"
-                    delayPressIn={0}
-                    style={styles.buttonContainer}
-                    onPress={this.onButtonPress}
-                    activeOpacity={0.8}
-                >
-                    <Text style={styles.buttonText} numberOfLines={1}>
-                        {network.name}
-                    </Text>
-
-                    <View style={styles.pulseWrapper}>
-                        <Animated.View
-                            style={[
-                                styles.pulseCircle,
-                                {
-                                    backgroundColor: network.color,
-                                    borderRadius: (NetworkSwitchButton.CircleSize * 1.4) / 2,
-                                    width: NetworkSwitchButton.CircleSize,
-                                    height: NetworkSwitchButton.CircleSize,
-                                    transform: [
-                                        {
-                                            scale: this.animation.interpolate({
-                                                inputRange: [0, 1],
-                                                outputRange: [1, 1.7],
-                                            }),
-                                        },
-                                    ],
-                                    opacity: this.animation.interpolate({
-                                        inputRange: [0.02, 1],
-                                        outputRange: [1, 0],
-                                    }),
-                                },
-                            ]}
-                        />
-                        <View
-                            key={network.id}
-                            style={[
-                                AppStyles.centerContent,
-                                AppStyles.centerAligned,
-                                {
-                                    width: NetworkSwitchButton.CircleSize,
-                                    height: NetworkSwitchButton.CircleSize,
-                                    borderRadius: NetworkSwitchButton.CircleSize / 2,
-                                    backgroundColor: network.color,
-                                },
-                            ]}
-                        >
-                            {networkState === NetworkStateStatus.Disconnected && (
-                                <Text adjustsFontSizeToFit style={styles.exclamationMarkText}>
-                                    !
-                                </Text>
-                            )}
-                        </View>
+            <TouchableDebounce
+                accessibilityRole="button"
+                delayPressIn={0}
+                style={[styles.buttonContainer, containerStyle, { height: height || NetworkSwitchButton.ButtonHeight }]}
+                onPress={this.onButtonPress}
+                activeOpacity={0.8}
+            >
+                <View style={styles.pulseWrapper}>
+                    <Animated.View
+                        style={[
+                            styles.pulseCircle,
+                            {
+                                backgroundColor: network.color,
+                                borderRadius: (NetworkSwitchButton.CircleSize * 1.4) / 2,
+                                width: NetworkSwitchButton.CircleSize,
+                                height: NetworkSwitchButton.CircleSize,
+                                transform: [
+                                    {
+                                        scale: this.animation.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [1, 1.7],
+                                        }),
+                                    },
+                                ],
+                                opacity: this.animation.interpolate({
+                                    inputRange: [0.02, 1],
+                                    outputRange: [1, 0],
+                                }),
+                            },
+                        ]}
+                    />
+                    <View
+                        key={network.id}
+                        style={[
+                            AppStyles.centerContent,
+                            AppStyles.centerAligned,
+                            {
+                                width: NetworkSwitchButton.CircleSize,
+                                height: NetworkSwitchButton.CircleSize,
+                                borderRadius: NetworkSwitchButton.CircleSize / 2,
+                                backgroundColor: network.color,
+                            },
+                        ]}
+                    >
+                        {networkState === NetworkStateStatus.Disconnected && (
+                            <Text adjustsFontSizeToFit style={styles.exclamationMarkText}>
+                                !
+                            </Text>
+                        )}
                     </View>
-                </TouchableDebounce>
-            </View>
+                </View>
+
+                <Text style={[styles.buttonText, showChevronIcon && AppStyles.flex4]} numberOfLines={1}>
+                    {network.name}
+                </Text>
+
+                {showChevronIcon && (
+                    <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                        <Icon
+                            style={styles.iconChevron}
+                            size={25}
+                            name={isSwitcherOpen ? 'IconChevronUp' : 'IconChevronDown'}
+                        />
+                    </View>
+                )}
+            </TouchableDebounce>
         );
     }
 }

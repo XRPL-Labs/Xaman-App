@@ -1,6 +1,7 @@
 /**
  * Network service
  */
+
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
@@ -21,8 +22,8 @@ import { NormalizeFeeDataSet, PrepareTxForHookFee } from '@common/utils/fee';
 import { AppScreens, NetworkConfig } from '@common/constants';
 
 import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
-import LoggerService from '@services/LoggerService';
 import NavigationService, { RootType } from '@services/NavigationService';
+import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
 export enum NetworkStateStatus {
@@ -34,6 +35,7 @@ export enum NetworkStateStatus {
 declare interface NetworkService {
     on(event: 'connect', listener: (networkId: number) => void): this;
     on(event: 'stateChange', listener: (networkStatus: NetworkStateStatus) => void): this;
+    on(event: 'networkChange', listener: (network: NetworkModel) => void): this;
     on(event: string, listener: Function): this;
 }
 
@@ -315,6 +317,9 @@ class NetworkService extends EventEmitter {
             return;
         }
 
+        // emit the event
+        this.emit('networkChange', network);
+
         // log
         this.logger.debug(`Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`);
 
@@ -342,7 +347,7 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Destroy the connection
+     * Attempts to destroy the current socket connection.
      */
     destroyConnection = () => {
         try {
@@ -355,7 +360,7 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Close socket connection
+     * Attempts to close the current socket connection.
      */
     closeConnection = () => {
         try {
@@ -368,7 +373,7 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Reinstate current socket connection
+     * Attempts to reinstate the current socket connection.
      */
     reinstateConnection = () => {
         try {
@@ -381,7 +386,7 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Reconnect current connection
+     * Re-establishes the current network connection.
      */
     reconnect = () => {
         try {
@@ -396,40 +401,38 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Sends passed payload to the connected node
-     * @param payload
-     * @returns {Promise<any>}
+     * Asynchronously sends a payload to the connected node and ensures that the response is valid by
+     * matching the network ID.
+     *
+     * @param {Object} payload - The data object that needs to be sent to the connected node. Should contain an 'id'
+     * property or it will be automatically assigned a unique identifier.
+     * @returns {Promise<Object>} The response from the node. If the response is an object, it is augmented with
+     * the original ID and network ID before being returned.
+     * @throws {Error} Throws an error if the network ID in the response does not match the current network ID.
+     *
+     * @todo refining the error handling to distinguish between network issues and ID mismatches.
      */
-    send = (payload: any): Promise<any> => {
-        return new Promise((resolve, reject) => {
-            this.connection
-                .send(
-                    { ...payload, id: `${uuidv4()}.${this.network.id}` },
-                    { timeoutSeconds: NetworkService.TIMEOUT_SECONDS },
-                )
-                .then((res) => {
-                    // check if we are still on the same network
-                    if (res.id?.split('.')[1] !== `${this.network.id}`) {
-                        reject(new Error('Invalidated response, wrong network id!'));
-                        return;
-                    }
+    send = async (payload: any): Promise<any> => {
+        const payloadWithNetworkId = {
+            ...payload,
+            id: `${payload.id || uuidv4()}.${this.network.id}`,
+        };
 
-                    if (typeof res === 'object') {
-                        resolve({
-                            ...res,
-                            networkId: this.network.id,
-                        });
-                        return;
-                    }
-
-                    resolve(res);
-                })
-                .catch(reject);
+        const res = await this.connection.send(payloadWithNetworkId, {
+            timeoutSeconds: NetworkService.TIMEOUT_SECONDS,
         });
+
+        const [resId, resNetworkId] = res.id?.split('.') || [];
+
+        if (resNetworkId !== this.network.id.toString()) {
+            throw new Error('Mismatched network ID in response.');
+        }
+
+        return typeof res === 'object' ? { ...res, id: resId, networkId: this.network.id } : res;
     };
 
     /**
-     * Update network definitions
+     * Updates the network definitions and persists them to the `NetworkRepository`.
      */
     updateNetworkDefinitions = () => {
         // include definitions hash if exist in the request
@@ -472,7 +475,7 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Update network enabled amendments
+     * Updates the network's enabled amendments by fetching and persisting them.
      */
     updateNetworkFeatures = () => {
         this.send({
@@ -497,7 +500,8 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Update network reserve state
+     * Updates the network reserve state by querying the server for current values and
+     * persists any changes locally and to the `NetworkRepository`.
      */
     updateNetworkReserve = () => {
         this.send({ command: 'server_info' })
@@ -534,9 +538,9 @@ class NetworkService extends EventEmitter {
 
     /**
      * Logs socket errors
-     * @param err
+     * @param error
      */
-    onError = (err: any) => {
+    onError = (error: any) => {
         // set connection status
         this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
@@ -546,7 +550,7 @@ class NetworkService extends EventEmitter {
             this.lastNetworkErrorId = this.network.id;
         }
 
-        this.logger.error('Socket Error: ', err || 'Tried all nodes!');
+        this.logger.error('Socket Error: ', error || 'Tried all nodes!');
     };
 
     /**
@@ -593,7 +597,16 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Establish connection to the network
+     * Establishes a network connection using predefined or custom nodes.
+     *
+     * This method initiates the connection by:
+     * - Setting the connection status to 'Connecting'.
+     * - Determining the nodes to connect based on the network type.
+     * - Instantiating a new `XrplClient` with specified nodes and configuration.
+     * - Setting up event listeners for various connection states ('online', 'offline', and 'error').
+     *
+     * @throws Will log an error if connection instantiation fails or event listeners encounter an issue.
+     *
      */
     connect = () => {
         // set the connection status to connecting

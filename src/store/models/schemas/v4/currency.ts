@@ -4,6 +4,8 @@
 
 import Realm from 'realm';
 
+import { ExtendedSchemaType } from '@store/types';
+
 /* Schema  ==================================================================== */
 const CurrencySchema = {
     schema: {
@@ -32,4 +34,4 @@ const CurrencySchema = {
     },
 };
 
-export default CurrencySchema;
+export default <ExtendedSchemaType>CurrencySchema;

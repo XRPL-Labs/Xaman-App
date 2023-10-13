@@ -2,6 +2,7 @@
  * Account Details Schema
  */
 
+import { ExtendedSchemaType } from '@store/types';
 /* Schema  ==================================================================== */
 const AccountDetailsSchema = {
     schema: {
@@ -26,4 +27,4 @@ const AccountDetailsSchema = {
     },
 };
 
-export default AccountDetailsSchema;
+export default <ExtendedSchemaType>AccountDetailsSchema;

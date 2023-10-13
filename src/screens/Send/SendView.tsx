@@ -25,6 +25,7 @@ import Memo from '@common/libs/ledger/parser/common/memo';
 
 // components
 import { Header } from '@components/General';
+import { NetworkLabel } from '@components/Modules';
 
 // local
 import Localize from '@locale';
@@ -434,7 +435,7 @@ class SendView extends Component<Props, State> {
                     icon: 'IconChevronLeft',
                     onPress: this.onHeaderBackPress,
                 }}
-                centerComponent={{ text: title }}
+                centerComponent={{ text: title, extraComponent: <NetworkLabel type="both" /> }}
             />
         );
     };

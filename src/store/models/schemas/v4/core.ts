@@ -3,7 +3,9 @@
  */
 
 import Realm from 'realm';
+
 import { AppConfig, NetworkConfig } from '@common/constants';
+import { ExtendedSchemaType } from '@store/types';
 
 /* Schema  ==================================================================== */
 const CoreSchema = {
@@ -41,4 +43,4 @@ const CoreSchema = {
 };
 
 /* Migration  ==================================================================== */
-export default CoreSchema;
+export default <ExtendedSchemaType>CoreSchema;

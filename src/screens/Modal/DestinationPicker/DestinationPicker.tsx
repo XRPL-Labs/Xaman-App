@@ -2,9 +2,10 @@
  * Destination Picker modal
  */
 
-import React, { Component } from 'react';
-import { Results } from 'realm';
 import { isEmpty, flatMap, get, uniqBy, toNumber } from 'lodash';
+import Realm from 'realm';
+
+import React, { Component } from 'react';
 import { View, Text, SectionList, BackHandler, NativeEventSubscription } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
@@ -43,8 +44,8 @@ export interface State {
     isSearching: boolean;
     isLoading: boolean;
     searchText: string;
-    accounts: Results<AccountModel>;
-    contacts: Results<ContactModel>;
+    accounts: Realm.Results<AccountModel>;
+    contacts: Realm.Results<ContactModel>;
     dataSource: any[];
     destination: Destination;
     destinationInfo: AccountInfoType;

@@ -1,25 +1,25 @@
-import Realm, { Results } from 'realm';
+import Realm from 'realm';
 import has from 'lodash/has';
 
 import { ContactModel } from '@store/models';
 import BaseRepository from './base';
 
 /* Repository  ==================================================================== */
-class ContactRepository extends BaseRepository {
+class ContactRepository extends BaseRepository<ContactModel> {
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = ContactModel.schema;
+        this.model = ContactModel;
     }
 
     update = (object: Partial<ContactModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.schema.primaryKey)) {
+        if (!has(object, this.model.schema.primaryKey)) {
             throw new Error('Update require primary key to be set');
         }
         return this.create(object, true);
     };
 
-    getContacts = (): Results<ContactModel> => {
+    getContacts = () => {
         return this.findAll();
     };
 

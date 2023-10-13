@@ -154,7 +154,7 @@ class LedgerPathFinding extends EventEmitter {
 
                     // request is canceled
                     if (id !== this.requestId) {
-                        reject(new Error('CANCELED'));
+                        reject(new Error('Request has been canceled and invalidated'));
                         return;
                     }
 

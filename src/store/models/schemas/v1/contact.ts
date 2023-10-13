@@ -2,7 +2,9 @@
  * Contact Schema v1
  */
 
+import { ExtendedSchemaType } from '@store/types';
 /* Schema  ==================================================================== */
+
 const ContactSchema = {
     schema: {
         name: 'Contact',
@@ -18,4 +20,4 @@ const ContactSchema = {
     },
 };
 
-export default ContactSchema;
+export default <ExtendedSchemaType>ContactSchema;

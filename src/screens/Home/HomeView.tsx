@@ -224,7 +224,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { account, selectedNetwork } = this.state;
+        const { account } = this.state;
 
         return (
             <Fragment key="header">
@@ -232,11 +232,7 @@ class HomeView extends Component<Props, State> {
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     <ProBadge />
                 </View>
-                <NetworkSwitchButton
-                    network={selectedNetwork}
-                    hidden={!account?.isValid()}
-                    containerStyle={[AppStyles.flex1, AppStyles.centerAligned]}
-                />
+                <NetworkSwitchButton hidden={!account?.isValid()} />
             </Fragment>
         );
     };
@@ -355,7 +351,14 @@ class HomeView extends Component<Props, State> {
     renderAccountAddress = () => {
         const { account, discreetMode } = this.state;
 
-        return <AccountSwitchElement account={account} discreet={discreetMode} />;
+        return (
+            <AccountSwitchElement
+                account={account}
+                discreet={discreetMode}
+                showAddAccountButton
+                containerStyle={styles.accountSwitchElement}
+            />
+        );
     };
 
     render() {

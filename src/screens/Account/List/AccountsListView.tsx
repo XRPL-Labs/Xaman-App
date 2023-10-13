@@ -3,7 +3,7 @@
  */
 
 import { find } from 'lodash';
-import { Results } from 'realm';
+import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager } from 'react-native';
@@ -38,7 +38,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    accounts: Results<AccountModel>;
+    accounts: Realm.Results<AccountModel>;
     dataSource: any;
     signableAccount: Array<AccountModel>;
     reorderEnabled: boolean;

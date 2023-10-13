@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, Image } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
-import { encodeForSigning } from 'ripple-binary-codec';
 
 import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
 
@@ -103,7 +102,11 @@ class VerifySignatureStep extends Component<Props, State> {
         const { txJson, signedTransaction } = AccountLib.rawSigning.complete(preparedTx, signature);
 
         // verify signature
-        const verified = AccountLib.utils.verifySignature(encodeForSigning(txJson), txJson.TxnSignature, publicKey);
+        const verified = AccountLib.utils.verifySignature(
+            AccountLib.binary.encodeForSigning(txJson),
+            txJson.TxnSignature,
+            publicKey,
+        );
 
         // set signature if verified
         if (verified) {

@@ -1,4 +1,11 @@
-/* Global ==================================================================== */
+import Realm from 'realm';
+
+export type ExtendedSchemaType = {
+    schema: Realm.ObjectSchema;
+    populate?: (realm: Realm) => void;
+    migration?: (oldRealm: Realm, newRealm: Realm) => void;
+};
+
 export enum AccountTypes {
     Regular = 'Regular', // XRPL Regular account
     Tangem = 'Tangem', // Tangem Card account

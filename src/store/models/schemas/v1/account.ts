@@ -2,7 +2,9 @@
  * Account Schema v1
  */
 
+import { ExtendedSchemaType } from '@store/types';
 /* Schema  ==================================================================== */
+
 const AccountSchema = {
     schema: {
         name: 'Account',
@@ -15,8 +17,8 @@ const AccountSchema = {
             sequence: { type: 'int', default: 0 },
             publicKey: { type: 'string', optional: true },
             regularKey: { type: 'string', optional: true },
-            accessLevel: 'string',
-            encryptionLevel: 'string',
+            accessLevel: { type: 'string' },
+            encryptionLevel: { type: 'string' },
             flags: { type: 'int', default: 0 },
             default: { type: 'bool', default: false },
             lines: { type: 'list', objectType: 'TrustLine' },
@@ -26,4 +28,4 @@ const AccountSchema = {
     },
 };
 
-export default AccountSchema;
+export default <ExtendedSchemaType>AccountSchema;
