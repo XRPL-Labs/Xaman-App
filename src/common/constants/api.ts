@@ -32,7 +32,6 @@ export default {
         ['xAppInfo', '/v1/app/xapp/info/{xAppId}'],
         ['currencies', '/v1/app/currencies/{locale}'],
         ['rates', '/v1/app/rates/{currency}'],
-        ['validEndpoints', '/v1/app/valid-endpoints/{hash}'],
         ['auditTrail', '/v1/app/audit-trail/{destination}'],
         ['addAccount', '/v1/app/add-account'],
         ['addTransaction', '/v1/app/add-tx'],

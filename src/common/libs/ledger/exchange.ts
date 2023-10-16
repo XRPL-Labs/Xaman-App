@@ -12,7 +12,8 @@ import {
 
 import Localize from '@locale';
 
-import { ApiService, NetworkService } from '@services';
+import NetworkService from '@services/NetworkService';
+import BackendService from '@services/BackendService';
 
 import { ValueToIOU } from '@common/utils/amount';
 
@@ -59,14 +60,10 @@ class LedgerExchange {
         };
     }
 
-    initialize = (direction: MarketDirection) => {
+    initialize = async (direction: MarketDirection) => {
         // fetch liquidity boundaries
-        return ApiService.liquidityBoundaries
-            .get({
-                issuer: this.pair.issuer,
-                currency: this.pair.currency,
-            })
-            .then((res: any) => {
+        return BackendService.getLiquidityBoundaries(this.pair.issuer, this.pair.currency)
+            .then((res) => {
                 if (res && has(res, 'options')) {
                     this.boundaryOptions = res.options;
                 }
