@@ -358,7 +358,7 @@
     "unableToLoadNetworkFee": "Unable to load the network fee!",
     "encrypting": "Encrypting...",
     "stillWorkingOnIt": "Still working on it",
-    "doNotCloseTheApp": "Do NOT close Xaman{'\\n'}Do NOT lock your device"
+    "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device"
   },
   "onboarding": {
     "slideOne_title": "অর্থ প্রদান এবং\r\nপেমেন্ট অনুরোধ\r\nএক্সআরপি লেজারে",

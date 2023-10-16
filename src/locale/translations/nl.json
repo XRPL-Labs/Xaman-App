@@ -358,7 +358,7 @@
     "unableToLoadNetworkFee": "Kan netwerk fee niet laden!",
     "encrypting": "Encrypting...",
     "stillWorkingOnIt": "Nog even bezig",
-    "doNotCloseTheApp": "Sluit Xaman NIET af{'\\n'}Zet je apparaat NIET op slot"
+    "doNotCloseTheApp": "Sluit Xaman NIET af\r\nZet je apparaat NIET op slot"
   },
   "onboarding": {
     "slideOne_title": "Betalingen en\nbetaalverzoeken\nop de XRP ledger",
