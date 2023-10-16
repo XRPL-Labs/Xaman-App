@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+/* eslint-disable spellcheck/spell-checker */
 
 // Supported networks
 // NOTE: any changes here should be applied in patches/react-native+VERSION.patch as well
@@ -15,9 +16,9 @@ export default {
             name: 'XRP Ledger',
             key: 'MAINNET',
             networkId: 0,
-            color: '#3C06F3',
+            color: '#4CA1F8',
             type: NetworkType.Main,
-            nodes: ['wss://xrplcluster.com', 'wss://xrpl.link', 'wss://s2.ripple.com'],
+            nodes: ['wss://xrplcluster.com', 'wss://s2.ripple.com', 'wss://xrpl.link'],
             nativeAsset: {
                 asset: 'XRP',
                 icon: 'data:image/png;base64,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',
@@ -29,7 +30,7 @@ export default {
             name: 'Xahau',
             key: 'XAHAU',
             networkId: 21337,
-            color: '#F27920',
+            color: '#0E0143',
             type: NetworkType.Main,
             nodes: ['wss://xahau.network'],
             nativeAsset: {
@@ -42,8 +43,8 @@ export default {
         {
             name: 'XAHAU Testnet',
             key: 'XAHAUTESTNET',
-            networkId: 31338,
-            color: '#DC143C',
+            networkId: 21338,
+            color: '#C0E12B',
             type: NetworkType.Test,
             nodes: ['wss://dev.xahau.network'],
             nativeAsset: {
@@ -57,7 +58,7 @@ export default {
             name: 'XRPL Testnet',
             key: 'TESTNET',
             networkId: 1,
-            color: '#56CA24',
+            color: '#FF6719',
             type: NetworkType.Test,
             nodes: ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net:51233'],
             nativeAsset: {
@@ -71,7 +72,7 @@ export default {
             name: 'XRPL Devnet',
             key: 'DEVNET',
             networkId: 2,
-            color: '#E12BD3',
+            color: '#B480FF',
             type: NetworkType.Dev,
             nodes: ['wss://s.devnet.rippletest.net:51233'],
             nativeAsset: {
