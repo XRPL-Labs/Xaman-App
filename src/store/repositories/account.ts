@@ -10,7 +10,6 @@ import BaseRepository from './base';
 
 /* Events  ==================================================================== */
 declare interface AccountRepository {
-    on(event: 'changeDefaultAccount', listener: (defaultAccount: AccountModel) => void): this;
     on(event: 'accountUpdate', listener: (account: AccountModel, changes: Partial<AccountModel>) => void): this;
     on(event: 'accountCreate', listener: (account: AccountModel) => void): this;
     on(event: 'accountRemove', listener: () => void): this;

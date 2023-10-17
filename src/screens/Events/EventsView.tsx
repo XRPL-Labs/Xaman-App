@@ -22,7 +22,7 @@ import { Image, ImageBackground, InteractionManager, Text, View } from 'react-na
 
 import { Navigation, EventSubscription } from 'react-native-navigation';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
@@ -147,6 +147,7 @@ class EventsView extends Component<Props, State> {
             // reset everything and load transaction
             this.setState(
                 {
+                    account: CoreRepository.getDefaultAccount(),
                     dataSource: [],
                     transactions: [],
                     plannedTransactions: [],
@@ -164,8 +165,6 @@ class EventsView extends Component<Props, State> {
         // componentDidDisappear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        // add listener for default account change
-        AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
         // add listener for default account change
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
         // update list on transaction received
@@ -185,33 +184,19 @@ class EventsView extends Component<Props, State> {
 
     componentWillUnmount() {
         // remove listeners
-        AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
         AppService.off('appStateChange', this.onAppStateChange);
+
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
     }
 
-    onDefaultAccountChange = (account: AccountModel) => {
-        // reset everything and load transaction
-        this.setState(
-            {
-                account,
-                dataSource: [],
-                transactions: [],
-                plannedTransactions: [],
-                lastMarker: undefined,
-                canLoadMore: true,
-            },
-            this.updateDataSource,
-        );
-    };
-
-    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
-        if (has(changes, 'network')) {
+    onCoreSettingsUpdate = (_coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        // force reload if network or default account changed
+        if (has(changes, 'network') || has(changes, 'account')) {
             this.forceReload = true;
         }
     };
@@ -224,7 +209,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
+    onTransactionReceived = (_transaction: any, effectedAccounts: Array<string>) => {
         const { account } = this.state;
 
         if (account?.isValid()) {
@@ -243,7 +228,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    fetchPlannedObjects = (
+    fetchPlannedObjects = async (
         account: string,
         type: string,
         marker?: string,
@@ -278,8 +263,8 @@ class EventsView extends Component<Props, State> {
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
-                .reduce((accumulator, type) => {
-                    return accumulator.then(() => {
+                .reduce(async (accumulator, type) => {
+                    return accumulator.then(async () => {
                         return this.fetchPlannedObjects(account.address, type).then((res) => {
                             if (res) {
                                 objects = [...objects, ...res];
