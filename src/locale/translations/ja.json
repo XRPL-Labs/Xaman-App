@@ -347,6 +347,7 @@
     "networks": "ネットワーク",
     "network": "ネットワーク",
     "networkId": "ネットワークID",
+    "operationLimit": "Operation limit",
     "connectedTo": "接続先:",
     "connected": "接続中",
     "hooks": "Hooks",
@@ -717,7 +718,10 @@
     "noAuthorizedThirdPartyApp": "許可されたサードパーティアプリはありません！",
     "onceYouAuthorizedAppYouWillSeeItHere": "アクセスを許可したサードパーティアプリがここに表示されます。",
     "networkList": "ネットワーク一覧",
-    "unableToDeleteNodeWhenConnectedToNetwork": "このネットワークに接続中のノードは削除できません！"
+    "unableToDeleteNodeWhenConnectedToNetwork": "このネットワークに接続中のノードは削除できません！",
+    "developerModeEnabledWarning": "Enabling Developer Mode may reduce certain security functions. Proceed with utmost caution, and only enable it if you comprehend the potential consequences.",
+    "disablingDeveloperMode": "Disabling Developer Mode",
+    "disableDeveloperModeRevertNetworkWarning": "Please note that this action will revert your selected network from '%{currentNetwork}' to the '%{defaultNetwork}'. Are you sure you want to proceed?"
   },
   "account": {
     "addAccount": "アカウントを追加",

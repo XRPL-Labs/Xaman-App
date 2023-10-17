@@ -347,6 +347,7 @@
     "networks": "Networks",
     "network": "Network",
     "networkId": "Network ID",
+    "operationLimit": "Operation limit",
     "connectedTo": "Connected to:",
     "connected": "Connected",
     "hooks": "Hooks",
@@ -717,7 +718,10 @@
     "noAuthorizedThirdPartyApp": "No authorized third party app!",
     "onceYouAuthorizedAppYouWillSeeItHere": "Once you authorize access to a third party app you'll see them here.",
     "networkList": "Network List",
-    "unableToDeleteNodeWhenConnectedToNetwork": "Unable to remove the node while connected to this network, please switch network and try again!"
+    "unableToDeleteNodeWhenConnectedToNetwork": "Unable to remove the node while connected to this network, please switch network and try again!",
+    "developerModeEnabledWarning": "Enabling Developer Mode may reduce certain security functions. Proceed with utmost caution, and only enable it if you comprehend the potential consequences.",
+    "disablingDeveloperMode": "Disabling Developer Mode",
+    "disableDeveloperModeRevertNetworkWarning": "Please note that this action will revert your selected network from '%{currentNetwork}' to the '%{defaultNetwork}'. Are you sure you want to proceed?"
   },
   "account": {
     "addAccount": "Есептік жазба қосу",

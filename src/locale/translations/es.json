@@ -347,6 +347,7 @@
     "networks": "Redes",
     "network": "Red",
     "networkId": "ID de la Red",
+    "operationLimit": "Operation limit",
     "connectedTo": "Conectado a:",
     "connected": "Conectado",
     "hooks": "Hooks",
@@ -717,7 +718,10 @@
     "noAuthorizedThirdPartyApp": "¡App de terceros no autorizada!",
     "onceYouAuthorizedAppYouWillSeeItHere": "Una vez autorices el acceso a una app de terceros, las verás aquí.",
     "networkList": "Lista de redes",
-    "unableToDeleteNodeWhenConnectedToNetwork": "No es posible eliminar el nodo mientras estas conectado a esta red, por favor, ¡cambia de red y prueba otra vez!"
+    "unableToDeleteNodeWhenConnectedToNetwork": "No es posible eliminar el nodo mientras estas conectado a esta red, por favor, ¡cambia de red y prueba otra vez!",
+    "developerModeEnabledWarning": "Enabling Developer Mode may reduce certain security functions. Proceed with utmost caution, and only enable it if you comprehend the potential consequences.",
+    "disablingDeveloperMode": "Disabling Developer Mode",
+    "disableDeveloperModeRevertNetworkWarning": "Please note that this action will revert your selected network from '%{currentNetwork}' to the '%{defaultNetwork}'. Are you sure you want to proceed?"
   },
   "account": {
     "addAccount": "Agregar una cuenta",

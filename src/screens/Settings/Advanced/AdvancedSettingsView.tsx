@@ -7,10 +7,11 @@ import { View, Text, ScrollView, Alert } from 'react-native';
 
 import { PushNotificationsService, ApiService } from '@services';
 
-import { CoreRepository, ProfileRepository } from '@store/repositories';
+import { CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { CoreModel, ProfileModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
-import { AppScreens } from '@common/constants';
+import { AppScreens, NetworkConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/app';
@@ -22,6 +23,7 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -110,9 +112,86 @@ class AdvancedSettingsView extends Component<Props, State> {
         }
     };
 
-    developerModeChange = (value: boolean) => {
-        // save in store
-        CoreRepository.saveSettings({ developerMode: value });
+    enableDeveloperMode = () => {
+        // authenticate with passcode before enabling the developer mode
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            canAuthorizeBiometrics: false,
+            onSuccess: () => {
+                CoreRepository.saveSettings({ developerMode: true });
+            },
+        });
+    };
+
+    disableDeveloperMode = () => {
+        CoreRepository.saveSettings({
+            developerMode: false,
+        });
+    };
+
+    onDeveloperModeChangeRequest = (enable: boolean) => {
+        // Enabling developer mode
+        // NOTE: enabling developer mode requires authentication
+        if (enable) {
+            Navigator.showAlertModal({
+                type: 'warning',
+                title: Localize.t('global.warning'),
+                text: Localize.t('settings.developerModeEnabledWarning'),
+                buttons: [
+                    {
+                        text: Localize.t('global.cancel'),
+                        type: 'dismiss',
+                        light: false,
+                    },
+                    {
+                        text: Localize.t('global.continue'),
+                        onPress: this.enableDeveloperMode,
+                        type: 'continue',
+                        light: true,
+                    },
+                ],
+            });
+            return;
+        }
+
+        // Disabling developer mode
+        // NOTE: If user is connected to non Mainnet network like `TestNet` we need to revert to `MainNet`
+        const selectedNetwork = CoreRepository.getSelectedNetwork();
+
+        // already in the MainNet, no need to show warning
+        if (selectedNetwork.type === NetworkType.Main) {
+            this.disableDeveloperMode();
+            return;
+        }
+
+        // get default network object
+        const defaultNetwork = NetworkRepository.findOne({ id: NetworkConfig.defaultNetworkId });
+
+        Navigator.showAlertModal({
+            type: 'warning',
+            title: Localize.t('settings.disablingDeveloperMode'),
+            text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
+                currentNetwork: selectedNetwork.name,
+                defaultNetwork: defaultNetwork.name,
+            }),
+            buttons: [
+                {
+                    text: Localize.t('global.cancel'),
+                    type: 'dismiss',
+                    light: false,
+                },
+                {
+                    text: Localize.t('global.continue'),
+                    onPress: () => {
+                        // switch the network
+                        NetworkService.switchNetwork(defaultNetwork);
+                        // disable developer mode
+                        this.disableDeveloperMode();
+                    },
+                    type: 'continue',
+                    light: true,
+                },
+            ],
+        });
     };
 
     render() {
@@ -187,7 +266,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </TouchableDebounce>
                     </View>
-                    <TouchableDebounce style={[styles.row]} onPress={this.showChangeLog}>
+                    <TouchableDebounce style={styles.row} onPress={this.showChangeLog}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.viewChangeLog')}
@@ -224,7 +303,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.developerMode} onChange={this.developerModeChange} />
+                            <Switch checked={coreSettings.developerMode} onChange={this.onDeveloperModeChangeRequest} />
                         </View>
                     </View>
                     <TouchableDebounce
