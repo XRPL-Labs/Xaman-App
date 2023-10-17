@@ -11,6 +11,11 @@ export default {
     ownerReserve: 2, // default network owner reserve in native currency
     netFee: 12, // default network net fee in drops
 
+    // default network id
+    // NOTE: 0 -> XRPL Mainnet
+    defaultNetworkId: 0,
+
+    // list of network rails
     networks: [
         {
             name: 'XRP Ledger',

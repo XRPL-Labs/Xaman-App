@@ -9,6 +9,7 @@ import Realm from 'realm';
 
 import { Amendments } from '@common/constants';
 
+import { NetworkType } from '@store/types';
 import { NetworkSchema } from '@store/models/schemas/latest';
 
 /* Dictionary  ==================================================================== */
@@ -31,7 +32,7 @@ class Network extends Realm.Object<Network> {
     /** Hex Color associated with the network. */
     public color: string;
     /** Specifies the type or category of the network. */
-    public type: string;
+    public type: NetworkType;
     /** Details of the network's native asset, including its visual representation. */
     public nativeAsset: NativeAsset;
     /** The basic reserve required on this network. */

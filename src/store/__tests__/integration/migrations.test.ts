@@ -204,6 +204,13 @@ describe('Storage', () => {
         });
 
         it('should run v14 migrations successfully', async () => {
+            // enable developer mode before running migrations as we need for tests
+            const v13Instance = RealmTestUtils.getRealmInstanceWithVersion(13);
+            v13Instance.write(() => {
+                RealmTestUtils.getFirstModelItem(v13Instance, 'Core').developerMode = true;
+            });
+            v13Instance.close();
+
             const instance = RealmTestUtils.getRealmInstanceWithVersion(14);
             expect(instance.schemaVersion).toBe(14);
 
@@ -214,7 +221,8 @@ describe('Storage', () => {
             expect(instance.objects('Network').length).toBeGreaterThan(0);
             expect(instance.objects('Node').length).toBeGreaterThan(0);
 
-            expect(core.network.id).toBe(1);
+            expect(core.developerMode).toBe(false);
+            expect(core.network.id).toBe(0);
             expect(core.account.address).toBe(account.address);
             expect(core.showReservePanel).toBe(true);
 

@@ -43,23 +43,13 @@ const CoreSchema = {
         // get core settings to determine which nodes/network we should select as default
         const oldCoreSettings = oldRealm.objects('Core') as any;
 
-        // by default select network id zero
-        let selectedNetworkId = 0;
-
-        // check if we have core settings
-        if (!oldCoreSettings.isEmpty()) {
-            const { defaultNode } = oldCoreSettings[0];
-            for (let i = 0; i < NetworkConfig.networks.length; i++) {
-                if (NetworkConfig.networks[i].nodes.includes(defaultNode)) {
-                    selectedNetworkId = NetworkConfig.networks[i].networkId;
-                }
-            }
-        }
-
         // update the new core settings
         const newCoreSettings = newRealm.objects('Core') as any;
         if (!newCoreSettings.isEmpty()) {
-            newCoreSettings[0].network = networks.find((n: any) => n.id === selectedNetworkId);
+            // disable developer mode
+            newCoreSettings[0].developerMode = false;
+            // set the default network to XRPL Mainnet
+            newCoreSettings[0].network = networks.find((n: any) => n.id === NetworkConfig.defaultNetworkId);
         }
 
         // ========== Update selected account ==========
@@ -86,7 +76,7 @@ const CoreSchema = {
         // get all networks
         const networks = realm.objects('Network') as any;
 
-        const defaultNetworkId = NetworkConfig.networks[0].networkId;
+        const { defaultNetworkId } = NetworkConfig;
         const selectedNetwork = networks.find((n: any) => n.id === defaultNetworkId);
 
         realm.create('Core', {
