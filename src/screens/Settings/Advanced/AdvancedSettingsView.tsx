@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert, Platform } from 'react-native';
 
 import { PushNotificationsService, ApiService } from '@services';
 
@@ -14,7 +14,7 @@ import { NetworkType } from '@store/types';
 import { AppScreens, NetworkConfig } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/app';
+import { SetFlagSecure, GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/app';
 
 import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
@@ -117,15 +117,27 @@ class AdvancedSettingsView extends Component<Props, State> {
         Navigator.showOverlay(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: () => {
+                // persist the settings
                 CoreRepository.saveSettings({ developerMode: true });
+
+                // enable blocking screenshots on android
+                if (Platform.OS === 'android') {
+                    SetFlagSecure(false);
+                }
             },
         });
     };
 
     disableDeveloperMode = () => {
+        // persist the settings
         CoreRepository.saveSettings({
             developerMode: false,
         });
+
+        // enable blocking screenshots on android
+        if (Platform.OS === 'android') {
+            SetFlagSecure(true);
+        }
     };
 
     onDeveloperModeChangeRequest = (enable: boolean) => {
