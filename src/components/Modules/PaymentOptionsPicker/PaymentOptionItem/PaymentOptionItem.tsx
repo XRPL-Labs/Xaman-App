@@ -146,12 +146,12 @@ class PaymentOptionItem extends Component<Props> {
         if (Array.isArray(paths_computed) && paths_computed.length === 0 && typeof amount === 'object') {
             issuer = amount.issuer;
         } else {
-            issuer = find(flatMap(paths_computed), (o) => {
+            const typeOneStep = find(flatMap(paths_computed), (o) => {
                 return o.type === 1;
             });
 
-            if (issuer) {
-                issuer = issuer.account;
+            if (typeOneStep) {
+                issuer = typeOneStep.account;
             }
         }
 

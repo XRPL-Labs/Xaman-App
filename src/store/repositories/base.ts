@@ -102,7 +102,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @returns {T} - Found object.
      * @throws will throw an error if more than one result found.
      */
-    findOne = (query: string | { [key: string]: any }): T => {
+    findOne = (query: string | Partial<T>): T => {
         const result = this.realm.objects(this.model).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {
@@ -122,7 +122,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {string | { [key: string]: any }} query - The query.
      * @returns {Realm.Results<T>} - Resulting objects.
      */
-    query = (query: string | { [key: string]: any }) => {
+    query = (query: string | Partial<T>) => {
         return this.realm.objects(this.model).filtered(this.normalizeQuery(query));
     };
 
@@ -132,9 +132,10 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {any} data - The data to upsert.
      * @returns {Promise<T>} - The created or updated object.
      */
-    upsert = async (data: any): Promise<T> => {
+    upsert = async (data: Partial<T>): Promise<T> => {
         if (!has(data, 'id')) throw new Error('ID require primary key to be set');
 
+        // @ts-ignore
         const objectExists = !!this.realm.objectForPrimaryKey(this.model, data.id);
 
         return new Promise((resolve, reject) => {
@@ -161,7 +162,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {boolean} [update=false] - Whether to update existing data.
      * @returns {Promise<T>} - The created object.
      */
-    create = (data: any, update: boolean = false): Promise<T> => {
+    create = (data: Partial<T>, update: boolean = false): Promise<T> => {
         return new Promise((resolve, reject) => {
             try {
                 this.safeWrite(() => {
@@ -182,7 +183,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {boolean} [update=false] - Whether to update existing data.
      * @returns {any[] | Error} - The created objects or an error.
      */
-    createList = (dataList: any[], update: boolean = false): any[] | Error => {
+    createList = (dataList: Partial<T>[], update: boolean = false): any[] | Error => {
         try {
             this.safeWrite(() => {
                 dataList.forEach((data) =>
@@ -219,7 +220,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any>} object - The object(s) to delete.
      * @returns {Promise<void>} - A promise.
      */
-    delete = async (object: Realm.Object<any> | Realm.Object<any>[]): Promise<void> => {
+    delete = async (object: Realm.Object<T> | Realm.Object<T>[]): Promise<void> => {
         return new Promise((resolve, reject) => {
             try {
                 this.safeWrite(() => {

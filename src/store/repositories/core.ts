@@ -21,11 +21,19 @@ declare interface CoreRepository {
 
 /* Repository  ==================================================================== */
 class CoreRepository extends BaseRepository<CoreModel> {
+    /**
+     * Initialize the CoreRepository with the Realm instance.
+     * @param realm - The Realm database instance.
+     */
     initialize(realm: Realm) {
         this.realm = realm;
         this.model = CoreModel;
     }
 
+    /**
+     * Save the application settings.
+     * @param settings - The settings changes to be saved.
+     */
     saveSettings = (settings: Partial<CoreModel>) => {
         const current = this.getSettings();
 
@@ -40,6 +48,10 @@ class CoreRepository extends BaseRepository<CoreModel> {
         }
     };
 
+    /**
+     * Get the app currency from settings.
+     * @returns {string} - The app currency.
+     */
     getAppCurrency = (): string => {
         const settings = this.getSettings();
 
@@ -50,6 +62,10 @@ class CoreRepository extends BaseRepository<CoreModel> {
         return AppConfig.defaultCurrency;
     };
 
+    /**
+     * Get the selected network from settings.
+     * @returns {NetworkModel | undefined} - The selected network.
+     */
     getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
@@ -60,6 +76,10 @@ class CoreRepository extends BaseRepository<CoreModel> {
         return undefined;
     };
 
+    /**
+     * Get the default account from settings.
+     * @returns {any | undefined} - The default account.
+     */
     getDefaultAccount = (): any => {
         const settings = this.getSettings();
 
@@ -70,18 +90,30 @@ class CoreRepository extends BaseRepository<CoreModel> {
         return undefined;
     };
 
+    /**
+     * Set the default account in settings.
+     * @param account - The default account to set.
+     */
     setDefaultAccount = (account: any) => {
         this.saveSettings({
             account,
         });
     };
 
+    /**
+     * Set the default network in settings.
+     * @param network - The default network to set.
+     */
     setDefaultNetwork = (network: NetworkModel) => {
         this.saveSettings({
             network,
         });
     };
 
+    /**
+     * Get the app settings.
+     * @returns {CoreModel | undefined} - The application settings.
+     */
     getSettings = (): CoreModel => {
         const result = this.findAll();
 
@@ -93,6 +125,11 @@ class CoreRepository extends BaseRepository<CoreModel> {
         return undefined;
     };
 
+    /**
+     * Hash the passcode
+     * @param passcode - The passcode to hash.
+     * @returns {Promise<string>} - A promise that resolves to the hashed passcode.
+     */
     hashPasscode = async (passcode: string): Promise<string> => {
         try {
             // for better security we mix passcode with device unique id
@@ -125,6 +162,11 @@ class CoreRepository extends BaseRepository<CoreModel> {
         }
     };
 
+    /**
+     * Set the passcode for the app.
+     * @param passcode - The passcode to set.
+     * @returns {Promise<string>} - A promise that resolves to the hashed passcode.
+     */
     setPasscode = async (passcode: string): Promise<string> => {
         try {
             const hashedPasscode = await this.hashPasscode(passcode);
@@ -144,7 +186,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
     };
 
     /**
-     * Purge everything
+     * Purge all data from the Realm database.
      * WARNING: This will delete all objects in the Realm!
      */
     purge = (): void => {
