@@ -25,7 +25,7 @@ RCT_EXPORT_METHOD(get:(NSString *)key
   if (result) {
     resolve(result);
   } else {
-    resolve(@NO);
+    resolve([NSNull null]);
   }
 }
 
