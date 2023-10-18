@@ -5,7 +5,6 @@
 
 import { compact, flatMap, get, isEmpty, map, reduce } from 'lodash';
 import moment from 'moment-timezone';
-
 import { Platform } from 'react-native';
 
 import { AppScreens } from '@common/constants';
@@ -20,6 +19,8 @@ import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
 import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
+
+import Preferences from '@common/libs/preferences';
 
 import { Payload, PayloadType } from '@common/libs/payload';
 
@@ -92,63 +93,75 @@ class BackendService {
     };
 
     /**
-     * Updates IOUs from the backend.
+     * Updates Curated IOUs list from the backend.
      */
-    syncCuratedIOUs = () => {
-        ApiService.curatedIOUs
-            .get()
-            .then(async (res: XamanBackend.CuratedIOUsResponse) => {
-                const { details } = res;
+    syncCuratedIOUs = async () => {
+        try {
+            const LOCALE_VERSION = await Preferences.get(Preferences.keys.CURATED_LIST_VERSION);
 
-                const updatedParties = await reduce(
-                    details,
-                    async (result, value) => {
-                        const currenciesList = [] as CurrencyModel[];
+            // in case of not exist, then Number(LOCALE_VERSION) will be 0
 
-                        await Promise.all(
-                            map(value.currencies, async (c) => {
-                                const currency = await CurrencyRepository.include({
-                                    id: `${c.issuer}.${c.currency}`,
-                                    issuer: c.issuer,
-                                    currency: c.currency,
-                                    name: c.name,
-                                    avatar: c.avatar || '',
-                                    shortlist: c.shortlist === 1,
-                                    xapp_identifier: c.xapp_identifier || '',
-                                });
+            const { details, version, changed } = (await ApiService.curatedIOUs.get({
+                version: Number(LOCALE_VERSION),
+            })) as XamanBackend.CuratedIOUsResponse;
 
-                                currenciesList.push(currency);
-                            }),
-                        );
+            // nothing has been changed
+            if (!changed) {
+                return;
+            }
 
-                        await CounterPartyRepository.upsert({
-                            id: value.id,
-                            name: value.name,
-                            domain: value.domain,
-                            avatar: value.avatar || '',
-                            shortlist: value.shortlist === 1,
-                            currencies: currenciesList,
-                        });
+            // update the list
+            const updatedParties = await reduce(
+                details,
+                async (result, value) => {
+                    const currenciesList = [] as CurrencyModel[];
 
-                        (await result).push(value.id);
-                        return result;
-                    },
-                    Promise.resolve([]),
-                );
+                    await Promise.all(
+                        map(value.currencies, async (c) => {
+                            const currency = await CurrencyRepository.include({
+                                id: `${c.issuer}.${c.currency}`,
+                                issuer: c.issuer,
+                                currency: c.currency,
+                                name: c.name,
+                                avatar: c.avatar || '',
+                                shortlist: c.shortlist === 1,
+                                xapp_identifier: c.xapp_identifier || '',
+                            });
 
-                // delete removed parties from data store
-                const counterParties = CounterPartyRepository.findAll();
-                const removedParties = counterParties.filter((c: any) => {
-                    return !updatedParties.includes(c.id);
-                });
+                            currenciesList.push(currency);
+                        }),
+                    );
 
-                if (removedParties.length > 0) {
-                    CounterPartyRepository.delete(removedParties);
-                }
-            })
-            .catch((error: string) => {
-                this.logger.error('Update Curated IOUs Error: ', error);
+                    await CounterPartyRepository.upsert({
+                        id: value.id,
+                        name: value.name,
+                        domain: value.domain,
+                        avatar: value.avatar || '',
+                        shortlist: value.shortlist === 1,
+                        currencies: currenciesList,
+                    });
+
+                    (await result).push(value.id);
+                    return result;
+                },
+                Promise.resolve([]),
+            );
+
+            // delete removed parties from data store
+            const counterParties = CounterPartyRepository.findAll();
+            const removedParties = counterParties.filter((c: any) => {
+                return !updatedParties.includes(c.id);
             });
+
+            if (removedParties.length > 0) {
+                CounterPartyRepository.delete(removedParties);
+            }
+
+            // persist the latest version
+            await Preferences.set(Preferences.keys.CURATED_LIST_VERSION, String(version));
+        } catch (error: any) {
+            this.logger.error('Update Curated IOUs list: ', error);
+        }
     };
 
     /**

@@ -1,5 +1,7 @@
 declare namespace XamanBackend {
     interface CuratedIOUsResponse {
+        version: number;
+        changed: boolean;
         network: string;
         issuers: string[];
         currencies: string[];

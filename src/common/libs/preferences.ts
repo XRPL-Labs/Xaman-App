@@ -14,6 +14,7 @@ enum Keys {
     LATEST_VERSION_CODE = 'LATEST_VERSION_CODE',
     UPDATE_IGNORE_VERSION_CODE = 'UPDATE_IGNORE_VERSION_CODE',
     XAPP_STORE_IGNORE_MESSAGE_ID = 'XAPP_STORE_IGNORE_MESSAGE_ID',
+    CURATED_LIST_VERSION = 'CURATED_LIST_VERSION',
 }
 
 /* Lib ==================================================================== */
