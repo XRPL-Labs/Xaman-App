@@ -51,7 +51,17 @@ const PrepareTxForHookFee = (txJson: any, definitions: any): string => {
  * @param feeDataSet
  * @returns object
  */
-const NormalizeFeeDataSet = (feeDataSet: { drops: { base_fee: number }; fee_hooks_feeunits: number }) => {
+const NormalizeFeeDataSet = (feeDataSet: {
+    drops: { base_fee: number };
+    fee_hooks_feeunits: number;
+}): {
+    availableFees: {
+        type: 'LOW' | 'MEDIUM' | 'HIGH';
+        value: string;
+    }[];
+    feeHooks: number;
+    suggested: 'LOW';
+} => {
     if (!feeDataSet || typeof feeDataSet !== 'object') {
         throw new Error('NormalizeFeeDataSet required a valid fee data set!');
     }
@@ -61,15 +71,18 @@ const NormalizeFeeDataSet = (feeDataSet: { drops: { base_fee: number }; fee_hook
 
     const feeCalc = (level: number) => {
         let nearest = new BigNumber(1);
+        let multiplier = new BigNumber(100);
+
         if (level > 0) {
             nearest = new BigNumber(0.5).multipliedBy(10 ** (baseFee.toString(10).length - 1));
+            multiplier = new BigNumber(100).plus(
+                level ** new BigNumber(2.1).minus(baseFee.multipliedBy(0.000005)).toNumber(),
+            );
         }
 
         return baseFee
             .dividedBy(100)
-            .multipliedBy(
-                new BigNumber(100).plus(level ** new BigNumber(2.1).minus(baseFee.multipliedBy(0.000005)).toNumber()),
-            )
+            .multipliedBy(multiplier)
             .dividedBy(nearest)
             .integerValue(BigNumber.ROUND_CEIL)
             .multipliedBy(nearest)
