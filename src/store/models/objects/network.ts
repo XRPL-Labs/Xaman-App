@@ -12,6 +12,8 @@ import { Amendments } from '@common/constants';
 import { NetworkType } from '@store/types';
 import { NetworkSchema } from '@store/models/schemas/latest';
 
+import NodeModel from '@store/models/objects/node';
+
 /* Dictionary  ==================================================================== */
 interface NativeAsset {
     asset: string;
@@ -42,7 +44,7 @@ class Network extends Realm.Object<Network> {
     /** Default node associated with this network. */
     public defaultNode: any;
     /** Collection of nodes that belong to this network. */
-    public nodes: any[];
+    public nodes: Realm.List<NodeModel>;
     /** List of amendments that apply to this network. */
     public amendments?: string[];
     /** Serialized string representation of network definitions. */
