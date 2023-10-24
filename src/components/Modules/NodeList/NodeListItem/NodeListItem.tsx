@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import { View, Text, Animated } from 'react-native';
-import Interactable from 'react-native-interactable';
+import React, { PureComponent } from 'react';
+import { View, Text } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
-import { TouchableDebounce, Icon, Badge } from '@components/General';
+import { TouchableDebounce, Badge } from '@components/General';
 
 import { NodeModel } from '@store/models';
 
 import Localize from '@locale';
 
-import { AppStyles, AppSizes } from '@theme';
+import { AppStyles } from '@theme';
 
 import styles from './styles';
 
@@ -18,25 +17,13 @@ import styles from './styles';
 export interface Props {
     item: NodeModel;
     isDefault?: boolean;
-    canRemove?: boolean;
     onPress?: (item: NodeModel) => void;
-    onRemovePress?: (item: NodeModel) => void;
 }
 
 export interface State {}
 
 /* component ==================================================================== */
-class NodeListItem extends Component<Props, State> {
-    private deltaY: Animated.Value;
-    private deltaX: Animated.Value;
-
-    constructor(props: Props) {
-        super(props);
-
-        this.deltaY = new Animated.Value(AppSizes.screen.width);
-        this.deltaX = new Animated.Value(0);
-    }
-
+class NodeListItem extends PureComponent<Props, State> {
     onPress = () => {
         const { item, onPress } = this.props;
 
@@ -45,70 +32,25 @@ class NodeListItem extends Component<Props, State> {
         }
     };
 
-    onRemovePress = () => {
-        const { item, onRemovePress } = this.props;
-
-        if (typeof onRemovePress === 'function') {
-            onRemovePress(item);
-        }
-    };
-
     render() {
-        const { isDefault, item, canRemove } = this.props;
+        const { isDefault, item } = this.props;
 
         return (
-            <View>
-                <View style={styles.removeContainer} pointerEvents="box-none">
-                    <Animated.View
-                        style={[
-                            styles.removeHolder,
-                            {
-                                transform: [
-                                    {
-                                        translateX: this.deltaX.interpolate({
-                                            inputRange: [-155, 0],
-                                            outputRange: [0, 155],
-                                        }),
-                                    },
-                                ],
-                            },
-                        ]}
-                    >
-                        <TouchableDebounce onPress={this.onRemovePress}>
-                            <Icon name="IconTrash" size={28} style={AppStyles.imgColorWhite} />
-                        </TouchableDebounce>
-                    </Animated.View>
+            <TouchableDebounce
+                style={styles.row}
+                activeOpacity={0.8}
+                testID={`node-${item.endpoint}`}
+                onPress={this.onPress}
+            >
+                <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
+                    <Text style={styles.url}>{item.endpoint}</Text>
                 </View>
-
-                <Interactable.View
-                    dragEnabled={canRemove}
-                    horizontalOnly
-                    snapPoints={[
-                        { x: 78, damping: 1 - 1 - 0.7, tension: 150 },
-                        { x: 0, damping: 1 - 1 - 0.7, tension: 150 },
-                        { x: -AppSizes.screen.width * 0.25, damping: 1 - 1 - 0.7, tension: 150 },
-                    ]}
-                    boundaries={{ left: -AppSizes.screen.width * 0.3, right: 0, bounce: 0 }}
-                    animatedValueX={this.deltaX}
-                    animatedValueY={this.deltaY}
-                >
-                    <TouchableDebounce
-                        style={styles.row}
-                        activeOpacity={0.8}
-                        testID={`node-${item.endpoint}`}
-                        onPress={this.onPress}
-                    >
-                        <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
-                            <Text style={styles.url}>{item.endpoint}</Text>
-                        </View>
-                        {isDefault && (
-                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                <Badge label={Localize.t('global.default')} color={StyleService.value('$grey')} />
-                            </View>
-                        )}
-                    </TouchableDebounce>
-                </Interactable.View>
-            </View>
+                {isDefault && (
+                    <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                        <Badge label={Localize.t('global.default')} color={StyleService.value('$grey')} />
+                    </View>
+                )}
+            </TouchableDebounce>
         );
     }
 }

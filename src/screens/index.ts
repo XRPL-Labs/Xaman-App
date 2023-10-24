@@ -59,6 +59,7 @@ import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
 import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
 import XAppInfo from './Overlay/XAppInfo';
+import NetworkRailsSync from './Overlay/NetworkRailsSync';
 
 // Transaction
 import Send from './Send';
@@ -154,6 +155,7 @@ export {
     SwitchAssetCategory,
     SwitchNetwork,
     XAppInfo,
+    NetworkRailsSync,
     // transaction
     Send,
     Request,

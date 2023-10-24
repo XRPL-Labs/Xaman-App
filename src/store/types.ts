@@ -37,4 +37,12 @@ export enum NetworkType {
     Custom = 'Custom',
 }
 
+export enum NetworkRailsChangesType {
+    AddedNetwork = 'AddedNetwork',
+    RemovedNetwork = 'RemovedNetwork',
+    AddedNode = 'AddedNode',
+    RemovedNode = 'RemovedNode',
+    ChangedProperty = 'ChangedProperty',
+}
+
 export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

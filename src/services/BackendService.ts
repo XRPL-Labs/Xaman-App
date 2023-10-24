@@ -495,6 +495,14 @@ class BackendService {
     };
 
     /**
+     * Gets network rails data.
+     * @returns {Promise} A promise that resolves with network rails data.
+     */
+    getNetworkRails = (): Promise<XamanBackend.NetworkRailsResponse> => {
+        return ApiService.networkRails.get();
+    };
+
+    /**
      * Get liquidity boundaries for a specific issuer and currency.
      *
      * @param {string} issuer - The issuer's identifier.

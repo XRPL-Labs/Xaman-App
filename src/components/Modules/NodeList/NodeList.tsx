@@ -4,7 +4,6 @@ import { View, Text, SectionList } from 'react-native';
 import { NetworkService, StyleService } from '@services';
 
 import { NodeModel } from '@store/models';
-import { NetworkType } from '@store/types';
 
 import { Badge } from '@components/General';
 
@@ -19,7 +18,6 @@ import { NodeListItem } from './NodeListItem';
 interface Props {
     dataSource: any;
     onItemPress: (item: NodeModel) => void;
-    onItemRemovePress: (item: NodeModel) => void;
 }
 
 interface State {
@@ -45,36 +43,30 @@ class NodeList extends PureComponent<Props, State> {
     }
 
     renderItem = ({ item, section }: { item: any; section: any }): React.ReactElement => {
-        const { onItemPress, onItemRemovePress } = this.props;
+        const { onItemPress } = this.props;
 
-        const { defaultNode, type } = section;
+        const { defaultNode } = section;
         const isDefault = item.endpoint === defaultNode.endpoint;
 
-        // only custom nodes can be remove
-        const canRemove = type === NetworkType.Custom;
-
-        return (
-            <NodeListItem
-                onPress={onItemPress}
-                item={item}
-                isDefault={isDefault}
-                onRemovePress={onItemRemovePress}
-                canRemove={canRemove}
-            />
-        );
+        return <NodeListItem onPress={onItemPress} item={item} isDefault={isDefault} />;
     };
 
     renderSectionHeader = ({ section: { title, color, key } }: any) => {
         const { connectedNetworkKey } = this.state;
 
         return (
-            <View style={styles.sectionHeader}>
+            <View
+                style={[
+                    styles.sectionHeader,
+                    connectedNetworkKey === key && { backgroundColor: StyleService.value('$lightGreen') },
+                ]}
+            >
                 <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 <Text numberOfLines={1} style={styles.sectionHeaderText}>
                     {title}
                 </Text>
                 {connectedNetworkKey === key && (
-                    <Badge label={Localize.t('global.connected')} color={StyleService.value('$green')} />
+                    <Badge label={Localize.t('global.connected')} color={StyleService.value('$black')} />
                 )}
             </View>
         );
