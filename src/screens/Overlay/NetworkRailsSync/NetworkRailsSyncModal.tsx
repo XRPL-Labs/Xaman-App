@@ -33,14 +33,14 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     rails: XamanBackend.NetworkRailsResponse;
-    changes: any;
+    changes: Record<string, any[]>;
 }
 /* Component ==================================================================== */
 class NetworkRailsSyncModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.NetworkRailsSync;
 
-    private readonly animatedDialog: React.RefObject<AnimatedDialog>;
-    private mounted: boolean;
+    private readonly animatedDialog = React.createRef<AnimatedDialog>();
+    private mounted = false;
 
     static options() {
         return {
@@ -55,12 +55,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
         this.state = {
             rails: undefined,
-            changes: undefined,
+            changes: {},
             isLoading: true,
         };
-
-        this.animatedDialog = React.createRef();
-        this.mounted = false;
     }
 
     componentDidMount() {
@@ -158,26 +155,11 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
                 // changed property
                 [
-                    {
-                        locale: 'name',
-                        remote: 'name',
-                    },
-                    {
-                        locale: 'color',
-                        remote: 'color',
-                    },
-                    {
-                        locale: 'nativeAsset.asset',
-                        remote: 'native_asset',
-                    },
-                    {
-                        locale: 'nativeAsset.icon',
-                        remote: 'icons.icon_asset',
-                    },
-                    {
-                        locale: 'nativeAsset.iconSquare',
-                        remote: 'icons.icon_square',
-                    },
+                    { locale: 'name', remote: 'name' },
+                    { locale: 'color', remote: 'color' },
+                    { locale: 'nativeAsset.asset', remote: 'native_asset' },
+                    { locale: 'nativeAsset.icon', remote: 'icons.icon_asset' },
+                    { locale: 'nativeAsset.iconSquare', remote: 'icons.icon_square' },
                 ].forEach((property) => {
                     if (get(remoteNetwork, property.remote) !== get(localeNetwork, property.locale)) {
                         changes[networkKey].push({
@@ -369,7 +351,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                     </Text>
                 );
             default:
-                return '';
+                return null;
         }
     };
 
