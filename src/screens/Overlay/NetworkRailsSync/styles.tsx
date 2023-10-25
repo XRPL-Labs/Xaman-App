@@ -5,8 +5,12 @@ import StyleService from '@services/StyleService';
 import { AppStyles, AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    container: {
+        paddingVertical: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+    },
     scrollContainer: {
-        paddingVertical: AppSizes.paddingSml,
+        paddingBottom: AppSizes.paddingSml,
         width: '100%',
     },
     loadingContainer: {

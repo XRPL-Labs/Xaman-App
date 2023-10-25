@@ -359,8 +359,25 @@ class NetworkRailsSyncModal extends Component<Props, State> {
         const { changes } = this.state;
 
         return (
-            <>
-                <Text style={styles.title}>{Localize.t('settings.networkRailChanges')}</Text>
+            <View style={{}}>
+                <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
+                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.centerContent]}>
+                        <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
+                            {Localize.t('settings.networkRailChanges')}
+                        </Text>
+                    </View>
+                    <View>
+                        <Button
+                            light
+                            roundedSmall
+                            isDisabled={false}
+                            onPress={this.onDismissPress}
+                            textStyle={[AppStyles.subtext, AppStyles.bold]}
+                            label={Localize.t('global.cancel')}
+                        />
+                    </View>
+                </View>
+
                 <ScrollView style={styles.scrollContainer}>
                     {Object.keys(changes).map((key) => {
                         return (
@@ -372,15 +389,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                     })}
                 </ScrollView>
                 <View style={AppStyles.row}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button
-                            light
-                            testID="cancel-button"
-                            label={Localize.t('global.cancel')}
-                            onPress={this.onDismissPress}
-                        />
-                    </View>
-                    <View style={AppStyles.flex2}>
+                    <View style={AppStyles.flex1}>
                         <Button
                             testID="apply-button"
                             textStyle={AppStyles.strong}
@@ -390,7 +399,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                         />
                     </View>
                 </View>
-            </>
+            </View>
         );
     };
 
@@ -435,10 +444,12 @@ class NetworkRailsSyncModal extends Component<Props, State> {
     renderContent = () => {
         const { isLoading, changes } = this.state;
 
+        // still loading
         if (isLoading) {
             return this.renderLoading();
         }
 
+        // there is no changes
         if (isEmpty(changes)) {
             return this.renderNoChanges();
         }
@@ -454,6 +465,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                 ref={this.animatedDialog}
                 height={AppSizes.heightPercentageToDP(isEmpty(changes) ? 30 : 70)}
                 onDismiss={this.onDismissRequested}
+                containerStyle={styles.container}
             >
                 {this.renderContent()}
             </AnimatedDialog>

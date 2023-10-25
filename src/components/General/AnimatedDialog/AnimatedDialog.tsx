@@ -89,9 +89,13 @@ class AnimatedDialog extends PureComponent<Props, State> {
         });
 
         return (
-            <Animated.View style={[styles.container, containerStyle, { backgroundColor: interpolateColor }]}>
+            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
                 <Animated.View
-                    style={[styles.visibleContent, { opacity: this.animatedOpacity, height: this.animatedHeight }]}
+                    style={[
+                        styles.visibleContent,
+                        containerStyle,
+                        { opacity: this.animatedOpacity, height: this.animatedHeight },
+                    ]}
                 >
                     {children}
                 </Animated.View>

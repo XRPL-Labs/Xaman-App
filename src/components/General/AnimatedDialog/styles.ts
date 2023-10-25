@@ -1,6 +1,6 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes, AppStyles } from '@theme';
+import { AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
@@ -19,7 +19,6 @@ const styles = StyleService.create({
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 1,
         shadowOpacity: 0.4,
-        ...AppStyles.paddingSml,
     },
 });
 
