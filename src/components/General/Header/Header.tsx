@@ -88,6 +88,7 @@ const Children = ({
             ]}
             activeOpacity={children.onPress ? 0.8 : 1}
             onPress={onPress}
+            hitSlop={{ right: 20, left: 20 }}
         >
             {children.text && children.icon && (
                 <View style={AppStyles.row}>
@@ -171,7 +172,7 @@ class Header extends PureComponent<Props> {
                     {centerComponent}
                 </Children>
 
-                <Children style={this.getChildStyle('right')} placement="right">
+                <Children style={[this.getChildStyle('right')]} placement="right">
                     {rightComponent}
                 </Children>
             </View>
