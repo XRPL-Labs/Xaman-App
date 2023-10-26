@@ -11,7 +11,7 @@ const styles = StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: Sizes.moderateScale(60),
-        paddingRight: Sizes.padding,
+        paddingRight: Sizes.paddingSml,
         paddingLeft: Sizes.paddingSml,
     },
     tokenListContainer: {
