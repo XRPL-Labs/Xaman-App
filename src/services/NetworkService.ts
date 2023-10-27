@@ -7,6 +7,8 @@ import EventEmitter from 'events';
 import { Platform } from 'react-native';
 
 import { XrplDefinitions } from 'xrpl-accountlib';
+import { DEFAULT_DEFINITIONS } from 'ripple-binary-codec/dist/enums';
+
 import { ServerInfoResponse, XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
@@ -250,7 +252,7 @@ class NetworkService extends EventEmitter {
             return new XrplDefinitions(this.network.definitions);
         }
 
-        return undefined;
+        return DEFAULT_DEFINITIONS;
     };
 
     /**
@@ -311,32 +313,43 @@ class NetworkService extends EventEmitter {
      * Switch network
      * @param network
      */
-    switchNetwork = (network: NetworkModel) => {
-        // nothing has been changed
-        if (network.id === this.network.id && network.defaultNode === this.network.defaultNode) {
-            return;
-        }
+    switchNetwork = (network: NetworkModel): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            try {
+                // nothing has been changed
+                if (network.id === this.network.id && network.defaultNode === this.network.defaultNode) {
+                    return;
+                }
 
-        // emit the event
-        this.emit('networkChange', network);
+                // emit the event
+                this.emit('networkChange', network);
 
-        // log
-        this.logger.debug(`Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`);
+                // log
+                this.logger.debug(
+                    `Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`,
+                );
 
-        // set the default network on the store
-        CoreRepository.setDefaultNetwork(network);
+                // set the default network on the store
+                CoreRepository.setDefaultNetwork(network);
 
-        // change network
-        this.network = network;
+                // change network
+                this.network = network;
 
-        // destroy prev connection
-        this.destroyConnection();
+                // destroy prev connection
+                this.destroyConnection();
 
-        // change the connection status
-        this.setConnectionStatus(NetworkStateStatus.Disconnected);
+                // change the connection status
+                this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
-        // reconnect
-        this.connect();
+                // reconnect
+                this.connect();
+
+                // resolve
+                resolve();
+            } catch (error: any) {
+                reject(error);
+            }
+        });
     };
 
     /**

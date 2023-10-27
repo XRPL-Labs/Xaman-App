@@ -176,9 +176,9 @@ class VaultModal extends Component<Props, State> {
         );
     };
 
-    onSignError = (method: AuthMethods, e: Error) => {
+    onSignError = (method: AuthMethods, error: Error) => {
         // log
-        LoggerService.recordError(`Unexpected error in sign process [${method}]`, e);
+        LoggerService.recordError(`Unexpected error in sign process [${method}]`, error);
         // show alert
         Prompt(
             Localize.t('global.unexpectedErrorOccurred'),
@@ -195,7 +195,7 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
-    sign = (method: AuthMethods, options: any) => {
+    sign = (method: AuthMethods, options: SignOptions) => {
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -245,7 +245,7 @@ class VaultModal extends Component<Props, State> {
             // get current network definitions
             const definitions = NetworkService.getNetworkDefinitions();
 
-            // INGORE if multi signing or pseudo transaction
+            // IGNORE if multi signing or pseudo transaction
             if (!multiSign && transaction instanceof BaseTransaction) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields();
@@ -273,7 +273,7 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('No card details provided for signing!');
             }
 
-            // INGORE if multi signing or pseudo transaction
+            // IGNORE if multi signing or pseudo transaction
             if (!multiSign && transaction instanceof BaseTransaction) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields({ lastLedgerOffset: 150 });

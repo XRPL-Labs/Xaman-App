@@ -359,7 +359,8 @@
     "unableToLoadNetworkFee": "Unable to load the network fee!",
     "encrypting": "Encrypting...",
     "stillWorkingOnIt": "Still working on it",
-    "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device"
+    "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
+    "switchNetwork": "Switch network"
   },
   "onboarding": {
     "slideOne_title": "Maksed ja maksetaotlused XRP pearaamatus",

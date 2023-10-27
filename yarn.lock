@@ -8735,17 +8735,25 @@ ripple-address-codec@^4.2.4, ripple-address-codec@^4.2.5, ripple-address-codec@^
     base-x "^3.0.9"
     create-hash "^1.1.2"
 
+ripple-address-codec@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.3.1.tgz#68fbaf646bb8567f70743af7f1ce4479f73efbf6"
+  integrity sha512-Qa3+9wKVvpL/xYtT6+wANsn0A1QcC5CT6IMZbRJZ/1lGt7gmwIfsrCuz1X0+LCEO7zgb+3UT1I1dc0k/5dwKQQ==
+  dependencies:
+    base-x "^3.0.9"
+    create-hash "^1.1.2"
+
 "ripple-binary-codec@npm:xrpl-binary-codec-prerelease@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/xrpl-binary-codec-prerelease/-/xrpl-binary-codec-prerelease-3.0.0.tgz#ab4e30b7456d8ff8874817535ee64fd5272f0a89"
-  integrity sha512-gE6XixBOrEVDjRANydjjxfS625rz3BIwr6wYKNwj7rgGAO7dvgBFYFuDIvVfA56Z0F+8U8UzWLAlpy3ic20Htw==
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.10.0.tgz#549f7fb3d3faf6b2d09fe7032bdcc4e6f8b5a511"
+  integrity sha512-qWXxubgXBV3h5NTaaLiusZ1FhPqSy+bCYHHarfZ3bMmO2alRa1Ox61jvX1Zyozok8PcF3gs3bKwZci4RTlA07w==
   dependencies:
     assert "^2.0.0"
     big-integer "^1.6.48"
     buffer "6.0.3"
     create-hash "^1.2.0"
     decimal.js "^10.2.0"
-    ripple-address-codec "^4.3.0"
+    ripple-address-codec "^4.3.1"
 
 ripple-keypairs@^1.1.4, ripple-keypairs@^1.1.5:
   version "1.3.0"

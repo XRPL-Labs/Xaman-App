@@ -359,7 +359,8 @@
     "unableToLoadNetworkFee": "¡No es posible cargar la comisión de red!",
     "encrypting": "Encriptando...",
     "stillWorkingOnIt": "Seguimos trabajando en ello",
-    "doNotCloseTheApp": "NO cierres Xaman\r\nNO bloquees tu dispositivo"
+    "doNotCloseTheApp": "NO cierres Xaman\r\nNO bloquees tu dispositivo",
+    "switchNetwork": "Switch network"
   },
   "onboarding": {
     "slideOne_title": "Pagos y solicitudes de pago en el XRP ledger",

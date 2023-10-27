@@ -152,7 +152,7 @@
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
           "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
           "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA", "Misconfiguration", "kyc", "debounce", "debounced",
-          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype", "Xaman", "xls20", "livenet", "feeunits"
+          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype", "Xaman", "xls20", "livenet", "feeunits", "Preflight"
         ],
         "skipIfMatch": [
           "http://[^s]*",

@@ -49,28 +49,6 @@ const styles = StyleService.create({
         paddingHorizontal: 10,
         color: '$textPrimary',
     },
-    // eslint-disable-next-line
-    blurView: {
-        zIndex: 99999,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        width: AppSizes.screen.width,
-        height: AppSizes.screen.height,
-        backgroundColor: '$background',
-    },
-    absolute: {
-        zIndex: 999999,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        width: AppSizes.screen.width,
-        height: AppSizes.screen.height,
-    },
     headerContainer: {
         backgroundColor: '$background',
         alignItems: 'center',

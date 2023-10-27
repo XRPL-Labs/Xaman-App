@@ -359,7 +359,8 @@
     "unableToLoadNetworkFee": "ネットワーク手数料を取得することができません!",
     "encrypting": "暗号化しています...",
     "stillWorkingOnIt": "Still working on it",
-    "doNotCloseTheApp": "Xamanを閉じないでください\r\nデバイスをロックしないでください"
+    "doNotCloseTheApp": "Xamanを閉じないでください\r\nデバイスをロックしないでください",
+    "switchNetwork": "Switch network"
   },
   "onboarding": {
     "slideOne_title": "XRPレジャーでの\r\n支払いと\r\n支払いリクエスト",

@@ -1,9 +1,8 @@
-import { get, find, has, isObject, isString, isUndefined } from 'lodash';
+import { get, has, isObject, isString, isUndefined } from 'lodash';
 
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
-import { NetworkConfig } from '@common/constants';
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
@@ -242,7 +241,7 @@ export class Payload {
     /**
      * reject the payload
      */
-    reject = (initiator: 'USER' | 'XUMM', reason?: string) => {
+    reject = (initiator: 'USER' | 'APP', reason?: string) => {
         // ignore the method if payload is generated
         if (this.isGenerated()) {
             return;
@@ -315,7 +314,7 @@ export class Payload {
             request_json.TransactionType &&
             !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
         ) {
-            throw new Error(`Requested transaction type is not supported ${request_json.TransactionType}`);
+            throw new Error(`Requested transaction type is not supported "${request_json.TransactionType}".`);
         }
 
         // check if pseudo transaction and supported by the app
@@ -323,7 +322,7 @@ export class Payload {
             !request_json.TransactionType &&
             !Object.values(PseudoTransactionTypes).includes(tx_type as PseudoTransactionTypes)
         ) {
-            throw new Error(`Requested pseudo transaction type is not supported ${request_json.TransactionType}`);
+            throw new Error(`Requested pseudo transaction type is not supported "${request_json.TransactionType}".`);
         }
 
         let craftedTransaction;
@@ -409,14 +408,11 @@ export class Payload {
     /**
      * Return forced network if any
      */
-    getForcedNetwork = (): number => {
+    getForcedNetwork = (): string | undefined => {
         const { force_network } = this.meta;
 
         if (typeof force_network === 'string') {
-            const network = find(NetworkConfig.networks, { key: force_network.toUpperCase() });
-            if (network) {
-                return network.networkId;
-            }
+            return force_network;
         }
 
         return undefined;

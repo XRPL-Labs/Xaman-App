@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 
 import { PushNotificationsService, NetworkService, StyleService } from '@services';
 
-import { AccountRepository, CoreRepository, CurrencyRepository, NetworkRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
@@ -27,16 +27,17 @@ import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 
-import { ResultStep, ReviewStep, SubmittingStep } from './Steps';
+import { PreflightStep, ReviewStep, SubmittingStep, ResultStep } from './Steps';
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
     private backHandler: NativeEventSubscription;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -52,48 +53,30 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.state = {
             payload: props.payload,
             transaction: undefined,
+            accounts: undefined,
             source: undefined,
-            currentStep: Steps.Review,
+            currentStep: Steps.Preflight,
             submitResult: undefined,
             isLoading: false,
             isReady: true,
             isValidPayload: true,
             hasError: false,
-            softErrorMessage: '',
-            hardErrorMessage: '',
+            errorMessage: undefined,
             coreSettings: CoreRepository.getSettings(),
         };
     }
 
-    static getDerivedStateFromError(error: any) {
+    static getDerivedStateFromError(error: any): Partial<State> {
         // Update state so the next render will show the fallback UI.
-        return { hasError: true, hardErrorMessage: error.message };
+        return { hasError: true, errorMessage: error?.message };
     }
 
     componentDidMount() {
-        const { payload } = this.state;
-
         // track if component is mounted
         this.mounted = true;
 
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
-
-        // check if any forced network applied
-        const forcedNetworkId = payload.getForcedNetwork();
-        if (typeof forcedNetworkId === 'number') {
-            const forcedNetwork = NetworkRepository.findOne({ id: forcedNetworkId });
-
-            if (forcedNetwork && NetworkService.getNetworkId() !== forcedNetwork.id) {
-                this.setError(Localize.t('payload.payloadForceNetworkError', { network: `"${forcedNetwork.name}"` }));
-                return;
-            }
-        }
-
-        // set transaction
-        this.setState({
-            transaction: payload.getTransaction(),
-        });
     }
 
     componentWillUnmount() {
@@ -211,8 +194,8 @@ class ReviewTransactionModal extends Component<Props, State> {
             .catch((e) => {
                 if (this.mounted) {
                     if (e) {
-                        if (typeof e.toString === 'function') {
-                            Alert.alert(Localize.t('global.error'), e.toString());
+                        if (typeof e.message === 'string') {
+                            Alert.alert(Localize.t('global.error'), e.message);
                         } else {
                             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                         }
@@ -228,10 +211,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onDecline = () => {
         const { onDecline, payload } = this.props;
-        const { hardErrorMessage, softErrorMessage } = this.state;
+        const { hasError, errorMessage } = this.state;
 
         // reject the payload
-        payload.reject(hardErrorMessage ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
+        payload.reject(hasError ? 'APP' : 'USER', errorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -552,10 +535,28 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
     };
 
-    setError = (message: string) => {
+    setError = (error: Error) => {
         this.setState({
             hasError: true,
-            softErrorMessage: message,
+            errorMessage: error?.message,
+        });
+    };
+
+    setTransaction = (tx: Transactions | PseudoTransactions) => {
+        const { transaction } = this.state;
+
+        if (transaction) {
+            throw new Error('Transaction is already set and cannot be overwrite!');
+        }
+
+        this.setState({
+            transaction: tx,
+        });
+    };
+
+    setAccounts = (accounts: AccountModel[]) => {
+        this.setState({
+            accounts,
         });
     };
 
@@ -706,19 +707,15 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    onErrorBackPress = () => {
-        const { hardErrorMessage } = this.state;
-
-        // in case of hard error decline the payload
-        if (hardErrorMessage) {
-            this.onDecline();
-        } else {
-            this.onClose();
-        }
+    onPreflightPass = () => {
+        this.setState({
+            currentStep: Steps.Review,
+            isLoading: false,
+        });
     };
 
     renderError = () => {
-        const { softErrorMessage } = this.state;
+        const { errorMessage } = this.state;
 
         return (
             <View
@@ -726,38 +723,36 @@ class ReviewTransactionModal extends Component<Props, State> {
                 style={[
                     AppStyles.container,
                     AppStyles.paddingSml,
-                    { backgroundColor: StyleService.value('$lightBlue') },
+                    { backgroundColor: StyleService.value('$lightRed') },
                 ]}
             >
-                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$orange') }} size={70} />
-                <Text style={[AppStyles.h5, { color: StyleService.value('$orange') }]}>
-                    {Localize.t('global.error')}
-                </Text>
+                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$red') }} size={70} />
+                <Text style={[AppStyles.h5, { color: StyleService.value('$red') }]}>{Localize.t('global.error')}</Text>
                 <Spacer size={20} />
                 <InfoMessage
-                    type="neutral"
+                    type="error"
                     labelStyle={[AppStyles.p, AppStyles.bold]}
-                    label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
+                    label={errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
                 />
                 <Spacer size={40} />
-                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onErrorBackPress} />
+                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
             </View>
         );
     };
 
     render() {
-        const { transaction, currentStep, hasError } = this.state;
+        const { currentStep, hasError } = this.state;
 
         // don't render if any error happened
         // this can happen if there is a missing field in the payload
         if (hasError) return this.renderError();
 
-        // wait for transaction to be set
-        if (!transaction) return null;
-
         let Step = null;
 
         switch (currentStep) {
+            case Steps.Preflight:
+                Step = PreflightStep;
+                break;
             case Steps.Review:
                 Step = ReviewStep;
                 break;
@@ -776,10 +771,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             <StepsContext.Provider
                 value={{
                     ...this.state,
+                    setTransaction: this.setTransaction,
+                    setAccounts: this.setAccounts,
+                    setSource: this.setSource,
                     setError: this.setError,
                     setLoading: this.setLoading,
                     setReady: this.setReady,
-                    setSource: this.setSource,
+                    onPreflightPass: this.onPreflightPass,
                     onClose: this.onClose,
                     onAccept: this.onAccept,
                     onFinish: this.onFinish,

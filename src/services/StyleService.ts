@@ -2,7 +2,7 @@
  * Style service
  */
 import { has, get, toLower } from 'lodash';
-import { Appearance } from 'react-native';
+import { Appearance, StyleSheet } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -19,6 +19,8 @@ export type StyleType = Record<string, any>;
 class StyleService {
     private themeName: Themes;
     private currentStyle: any;
+
+    public hairlineWidth = StyleSheet.hairlineWidth;
 
     constructor() {
         this.themeName = 'light';
@@ -107,6 +109,14 @@ class StyleService {
 
     isDarkMode = (): boolean => {
         return this.themeName !== 'light';
+    };
+
+    select = (spec: { light?: string; dark?: string; default?: string }): string => {
+        return 'light' in spec && !this.isDarkMode()
+            ? spec.light
+            : 'dark' in spec && this.isDarkMode()
+            ? spec.dark
+            : spec.default;
     };
 
     getImage = (image: Extract<keyof typeof Images, string>) => {
