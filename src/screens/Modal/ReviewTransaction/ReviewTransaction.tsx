@@ -333,7 +333,14 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // account is not activated and want to sign a tx
-            if (!payload.isPseudoTransaction() && !payload.isMultiSign() && source.balance === 0) {
+            // ignore for "Import" transaction as it can be submitted even if account is not activated
+            if (
+                !payload.isPseudoTransaction() &&
+                // @ts-ignore
+                ![TransactionTypes.Import].includes(transaction.Type) &&
+                !payload.isMultiSign() &&
+                source.balance === 0
+            ) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
