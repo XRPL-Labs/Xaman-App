@@ -178,13 +178,30 @@ class BaseTransaction {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
+                // account params should be provided
                 if (!account) {
                     reject(new Error('Account param is required!'));
                     return;
                 }
 
+                // transaction is already been signed?
                 if (this.SignedBlob) {
-                    reject(new Error('Transaction already signed!'));
+                    reject(new Error('Transaction already been signed!'));
+                    return;
+                }
+
+                // check transaction can be signed by the network user is connected with before triggering the sign flow
+                const definitions = NetworkService.getNetworkDefinitions();
+
+                if (
+                    Array.isArray(definitions.transactionNames) &&
+                    !definitions.transactionNames.includes(this.TransactionType)
+                ) {
+                    reject(
+                        new Error(
+                            `Your current connected network doesn't support "${this.TransactionType}" transaction. Please switch to a compatible network.`,
+                        ),
+                    );
                     return;
                 }
 
@@ -207,6 +224,7 @@ class BaseTransaction {
                     return;
                 }
 
+                // show vault overlay and handle the reset of signing
                 Navigator.showOverlay(AppScreens.Overlay.Vault, {
                     account,
                     multiSign,
@@ -230,9 +248,7 @@ class BaseTransaction {
 
                         resolve(this.SignedBlob);
                     },
-                    onDismissed: () => {
-                        reject();
-                    },
+                    onDismissed: reject,
                 });
             } catch (e) {
                 reject(e);
