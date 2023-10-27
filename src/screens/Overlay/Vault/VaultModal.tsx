@@ -305,14 +305,18 @@ class VaultModal extends Component<Props, State> {
                     let signedObject = undefined as SignedObjectType;
 
                     if (multiSign) {
-                        signedObject = AccountLib.rawSigning.completeMultiSigned(transaction.Json, [
-                            {
-                                pubKey: publicKey,
-                                signature: sig,
-                            },
-                        ]);
+                        signedObject = AccountLib.rawSigning.completeMultiSigned(
+                            transaction.Json,
+                            [
+                                {
+                                    pubKey: publicKey,
+                                    signature: sig,
+                                },
+                            ],
+                            definitions,
+                        );
                     } else {
-                        signedObject = AccountLib.rawSigning.complete(preparedTx, sig);
+                        signedObject = AccountLib.rawSigning.complete(preparedTx, sig, definitions);
                     }
 
                     // include sign method
