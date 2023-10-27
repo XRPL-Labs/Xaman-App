@@ -12,8 +12,6 @@ import { Images } from '@common/helpers/images';
 import { Button } from '@components/General/Button';
 import { Icon } from '@components/General/Icon';
 
-import Localize from '@locale';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -28,16 +26,26 @@ interface Props {
     label?: string;
     type: 'info' | 'warning' | 'error' | 'success' | 'neutral';
     flat?: boolean;
-    moreButtonLabel?: string;
-    moreButtonIcon?: Extract<keyof typeof Images, string>;
-    onMoreButtonPress?: () => void;
-    isMoreButtonLoading?: boolean;
+    hideActionButton?: boolean;
+    actionButtonLabel?: string;
+    actionButtonIcon?: Extract<keyof typeof Images, string>;
+    actionButtonIconSize?: number;
+    onActionButtonPress?: () => void;
+    isActionButtonLoading?: boolean;
 }
 
 /* Component ==================================================================== */
 class InfoMessage extends PureComponent<Props> {
     static defaultProps = {
         iconSize: 20,
+    };
+
+    onActionButtonPress = () => {
+        const { onActionButtonPress } = this.props;
+
+        if (typeof onActionButtonPress === 'function') {
+            onActionButtonPress();
+        }
     };
 
     getContainerStyle = () => {
@@ -140,16 +148,18 @@ class InfoMessage extends PureComponent<Props> {
     };
 
     renderFooter = () => {
-        const { onMoreButtonPress, moreButtonLabel, moreButtonIcon, isMoreButtonLoading } = this.props;
+        const { hideActionButton, actionButtonLabel, actionButtonIcon, actionButtonIconSize, isActionButtonLoading } =
+            this.props;
 
-        if (typeof onMoreButtonPress === 'function') {
+        if (typeof actionButtonLabel === 'string' && !hideActionButton) {
             return (
                 <Button
-                    onPress={onMoreButtonPress}
+                    onPress={this.onActionButtonPress}
                     style={styles.moreInfoButton}
-                    icon={moreButtonIcon || 'IconInfo'}
-                    label={moreButtonLabel || Localize.t('global.moreInfo')}
-                    isLoading={isMoreButtonLoading}
+                    icon={actionButtonIcon}
+                    iconSize={actionButtonIconSize}
+                    label={actionButtonLabel}
+                    isLoading={isActionButtonLoading}
                     light
                     roundedSmallBlock
                 />

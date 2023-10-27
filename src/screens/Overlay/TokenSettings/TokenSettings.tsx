@@ -707,9 +707,10 @@ class TokenSettingsModal extends Component<Props, State> {
                                             ? Localize.t('asset.dangerousConfigurationDetected')
                                             : Localize.t('asset.restrictingConfigurationDetected')
                                     }
-                                    moreButtonLabel={Localize.t('asset.moreInfoAndFix')}
-                                    onMoreButtonPress={this.showConfigurationAlert}
-                                    isMoreButtonLoading={isLoading}
+                                    actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
+                                    actionButtonIcon="IconInfo"
+                                    isActionButtonLoading={isLoading}
+                                    onActionButtonPress={this.showConfigurationAlert}
                                 />
                             </>
                         )}

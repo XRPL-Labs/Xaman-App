@@ -170,8 +170,9 @@ class FeePicker extends Component<Props, State> {
                 <InfoMessage
                     label={Localize.t('global.unableToLoadNetworkFee')}
                     type="error"
-                    moreButtonLabel={Localize.t('global.tryAgain')}
-                    onMoreButtonPress={this.fetchAvailableFees}
+                    actionButtonLabel={Localize.t('global.tryAgain')}
+                    actionButtonIcon="IconRefresh"
+                    onActionButtonPress={this.fetchAvailableFees}
                 />
             </View>
         );

@@ -190,9 +190,9 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                     type="error"
                     flat
                     label={Localize.t('payload.unableToFindTheOfferObject')}
-                    moreButtonLabel={Localize.t('global.tryAgain')}
-                    moreButtonIcon="IconRefresh"
-                    onMoreButtonPress={this.fetchDetails}
+                    actionButtonLabel={Localize.t('global.tryAgain')}
+                    actionButtonIcon="IconRefresh"
+                    onActionButtonPress={this.fetchDetails}
                 />
             );
         }
