@@ -220,6 +220,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 TransactionTypes.PaymentChannelCreate,
                 TransactionTypes.PaymentChannelFund,
                 TransactionTypes.NFTokenAcceptOffer,
+                TransactionTypes.GenesisMint,
             ].includes(tx.Type)
         ) {
             this.setState({
@@ -369,6 +370,9 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else if (tx.Offer) {
                     address = tx.Offer.Owner;
                 }
+                break;
+            case TransactionTypes.GenesisMint:
+                address = tx.Account.address;
                 break;
             case LedgerObjectTypes.NFTokenOffer:
                 if (tx.Owner !== account.address) {
@@ -583,6 +587,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 return Localize.t('events.createURITokenSellOffer');
             case TransactionTypes.URITokenCancelSellOffer:
                 return Localize.t('events.cancelURITokenSellOffer');
+            case TransactionTypes.GenesisMint:
+                return Localize.t('events.genesisMint');
             default:
                 // @ts-ignore
                 return tx.Type;
@@ -1910,6 +1916,22 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
+            case TransactionTypes.GenesisMint: {
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                }
+                break;
+            }
+
             case LedgerObjectTypes.PayChannel:
                 break;
             default:
@@ -2392,6 +2414,7 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
+        // escrow finish
         if (tx.Type === TransactionTypes.EscrowFinish) {
             from = {
                 address: tx.Owner,
@@ -2412,6 +2435,16 @@ class TransactionDetailsView extends Component<Props, State> {
                           name: account.label,
                           source: 'accounts',
                       }),
+            };
+        }
+
+        // genesis mint
+        if (tx.Type === TransactionTypes.GenesisMint) {
+            from = { address: tx.Account.address, ...partiesDetails };
+            to = {
+                address: account.address,
+                name: account.label,
+                source: 'accounts',
             };
         }
 

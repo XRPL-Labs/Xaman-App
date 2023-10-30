@@ -34,6 +34,7 @@ export enum TransactionTypes {
     URITokenBuy = 'URITokenBuy',
     URITokenCreateSellOffer = 'URITokenCreateSellOffer',
     URITokenCancelSellOffer = 'URITokenCancelSellOffer',
+    GenesisMint = 'GenesisMint',
 }
 
 export enum PseudoTransactionTypes {
@@ -117,16 +118,25 @@ export type VerifyResultType = {
     transaction?: any;
 };
 
+/**
+ * Ledger marker
+ */
 export type LedgerMarker = {
     ledger: number;
     seq: number;
 };
 
+/**
+ * Ledger balance
+ */
 export interface Balance {
     currency: string;
     value: string;
 }
 
+/**
+ * Ledger account root
+ */
 export interface AccountRoot {
     Account: string;
     Balance: string;
@@ -308,6 +318,9 @@ export interface OfferLedgerEntry {
     Expiration?: number;
 }
 
+/**
+ * Escrow leger entry
+ */
 export interface EscrowLedgerEntry {
     LedgerEntryType: 'Escrow';
     Account: string;
@@ -325,6 +338,9 @@ export interface EscrowLedgerEntry {
     PreviousTxnLgrSeq: number;
 }
 
+/**
+ * Check leger entry
+ */
 export interface CheckLedgerEntry {
     LedgerEntryType: 'Check';
     Account: string;
@@ -342,6 +358,9 @@ export interface CheckLedgerEntry {
     SourceTag: number;
 }
 
+/**
+ * Ripple state leger entry
+ */
 export interface RippleStateLedgerEntry {
     LedgerEntryType: 'RippleState';
     Flags: number;
@@ -358,6 +377,9 @@ export interface RippleStateLedgerEntry {
     HighQualityOut?: number;
 }
 
+/**
+ * NFTokenOffer leger entry
+ */
 export interface NFTokenOfferLedgerEntry {
     LedgerEntryType: 'NFTokenOffer';
     Owner: string;
@@ -372,6 +394,9 @@ export interface NFTokenOfferLedgerEntry {
     PreviousTxnLgrSeq: number;
 }
 
+/**
+ * Path finding
+ */
 interface PathStep {
     account?: string;
     currency?: string;
@@ -401,3 +426,14 @@ export interface RipplePathFindResponse extends BaseResponse {
         validated: boolean;
     };
 }
+
+/**
+ * GenesisMints type
+ */
+export interface GenesisMintsType
+    extends Array<{
+        GenesisMint: {
+            Amount: string;
+            Destination: string;
+        };
+    }> {}

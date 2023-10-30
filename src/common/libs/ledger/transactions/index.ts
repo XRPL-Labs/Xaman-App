@@ -32,6 +32,7 @@ import URITokenBurn from './uriTokenBurn';
 import URITokenBuy from './uriTokenBuy';
 import URITokenCreateSellOffer from './uriTokenCreateSellOffer';
 import URITokenCancelSellOffer from './uriTokenCancelSellOffer';
+import GenesisMint from './genesisMint';
 
 export {
     BaseTransaction,
@@ -68,4 +69,5 @@ export {
     URITokenBuy,
     URITokenCreateSellOffer,
     URITokenCancelSellOffer,
+    GenesisMint,
 };

@@ -70,24 +70,36 @@ export type MemoType = {
     MemoType?: string;
 };
 
+/**
+ * Transaction Account
+ */
 export type Account = {
     name?: string;
     address: string;
     tag?: number;
 };
 
+/**
+ * Transaction Destination
+ */
 export type Destination = {
     name?: string;
     address: string;
     tag?: number;
 };
 
+/**
+ * Transaction Result submitted by the app
+ */
 export type TransactionResult = {
     success: boolean;
     code: string;
     message?: string;
 };
 
+/**
+ * Signer entry
+ */
 export type SignerEntry = {
     account: string;
     weight: number;

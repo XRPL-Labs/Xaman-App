@@ -166,6 +166,7 @@ class TransactionItem extends Component<Props, State> {
             case TransactionTypes.URITokenBuy:
             case TransactionTypes.URITokenCreateSellOffer:
             case TransactionTypes.URITokenCancelSellOffer:
+            case TransactionTypes.GenesisMint:
                 address = item.Account.address;
                 break;
             default:
@@ -381,6 +382,8 @@ class TransactionItem extends Component<Props, State> {
                 return Localize.t('events.createURITokenSellOffer');
             case TransactionTypes.URITokenCancelSellOffer:
                 return Localize.t('events.cancelURITokenSellOffer');
+            case TransactionTypes.GenesisMint:
+                return Localize.t('events.genesisMint');
             default:
                 return 'Unsupported transaction';
         }
@@ -626,6 +629,22 @@ class TransactionItem extends Component<Props, State> {
                         currency={amount.currency}
                         prefix={!!balanceChanges.sent && '-'}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.GenesisMint) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && balanceChanges.received) {
+                return (
+                    <AmountText
+                        value={balanceChanges.received.value}
+                        currency={balanceChanges.received.currency}
+                        style={[styles.amount, styles.incomingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
                         truncateCurrency

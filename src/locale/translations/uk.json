@@ -506,6 +506,7 @@
     "createNFTOffer": "Створити NFT пропозицію",
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
+    "genesisMint": "Genesis Mint",
     "cancelNFTOffer": "Скасувати NFT пропозицію",
     "acceptNFTOffer": "Прийняти пропозицію NFT",
     "setHooks": "Set Hooks",

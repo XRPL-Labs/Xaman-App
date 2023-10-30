@@ -506,6 +506,7 @@
     "createNFTOffer": "Buat penawaran NFT",
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
+    "genesisMint": "Genesis Mint",
     "cancelNFTOffer": "Batalkan tawaran NFT",
     "acceptNFTOffer": "Terima tawaran NFT",
     "setHooks": "Set Hooks",
