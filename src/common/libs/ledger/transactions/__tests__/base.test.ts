@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
+
 import BaseTransaction from '../base';
 
 import Memo from '../../parser/common/memo';
@@ -98,9 +100,12 @@ describe('BaseTransaction tx', () => {
             success: true,
             engineResult: 'tecNO_LINE_INSUF_RESERVE',
             message: 'No such line. Too little reserve to create it.',
-            node: 'wss://xrplcluster.com',
-            nodeType: 'Mainnet',
-            nodeId: 0,
+            network: {
+                id: 0,
+                node: 'wss://xrplcluster.com',
+                type: 'Mainnet',
+                key: 'MAINNET',
+            },
         };
 
         instance.VerifyResult = {
@@ -121,9 +126,12 @@ describe('BaseTransaction tx', () => {
             success: false,
             engineResult: 'temBAD_FEE',
             message: 'temBAD_FEE description',
-            node: 'wss://xrplcluster.com',
-            nodeType: 'Mainnet',
-            nodeId: 0,
+            network: {
+                id: 0,
+                node: 'wss://xrplcluster.com',
+                type: 'Mainnet',
+                key: 'MAINNET',
+            },
         };
 
         instance.VerifyResult = {
@@ -201,6 +209,56 @@ describe('BaseTransaction tx', () => {
         expect(instance.LastLedgerSequence).toBe(LastLedger + 50);
 
         spy.mockRestore();
+    });
+
+    describe('Should be able to handle setting NetworkID', () => {
+        let getLedgerStatusSpy: any;
+
+        beforeAll(() => {
+            // mock the ledger service response
+            getLedgerStatusSpy = jest.spyOn(LedgerService, 'getLedgerStatus').mockImplementation(() => {
+                return { Fee: 12, LastLedger: 123 };
+            });
+        });
+
+        afterAll(() => {
+            getLedgerStatusSpy.mockRestore();
+        });
+
+        it('Should populate the transaction NetworkID on NON legacy networks', async () => {
+            const connectedNetworkId = 1337;
+
+            // mock the ledger service response
+            const spy = jest.spyOn(NetworkService, 'getNetworkId').mockImplementation(() => {
+                return connectedNetworkId;
+            });
+
+            const { tx, meta } = paymentTemplates.SimplePayment;
+            const instance = new BaseTransaction(tx, meta);
+
+            instance.populateFields();
+            expect(instance.NetworkID).toBe(connectedNetworkId);
+
+            spy.mockRestore();
+        });
+
+        it('Should not populate the transaction NetworkID on legacy networks', async () => {
+            const connectedNetworkId = 0;
+
+            // mock the ledger service response
+            const spy = jest.spyOn(NetworkService, 'getNetworkId').mockImplementation(() => {
+                return connectedNetworkId;
+            });
+
+            // should set if LastLedgerSequence undefined
+            const { tx, meta } = paymentTemplates.SimplePayment;
+            const instance = new BaseTransaction({ tx }, meta);
+
+            instance.populateFields();
+            expect(instance.NetworkID).toBe(undefined);
+
+            spy.mockRestore();
+        });
     });
 
     it('Should be able to generate the right CTID', () => {

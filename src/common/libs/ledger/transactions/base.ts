@@ -160,9 +160,10 @@ class BaseTransaction {
 
         // check if we need to populate NetworkID
         if (isUndefined(this.NetworkID)) {
-            // get current network definitions
-            const definitions = NetworkService.getNetworkDefinitions();
-            if (typeof definitions?.field === 'object' && find(definitions.field, { name: 'NetworkID' })) {
+            // get current network id
+            const networkId = NetworkService.getNetworkId();
+            // legacy networks have ids less than 1024, these networks cannot specify NetworkID in txn
+            if (networkId > 1024) {
                 this.NetworkID = NetworkService.getNetworkId();
             }
         }
