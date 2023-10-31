@@ -136,8 +136,6 @@ class NetworkService extends EventEmitter {
     reinstate = () => {
         // destroy the connection
         this.destroyConnection();
-        // set the new connection status
-        this.setConnectionStatus(NetworkStateStatus.Disconnected);
         // remove listeners
         this.removeAppStateListeners();
     };
@@ -321,25 +319,27 @@ class NetworkService extends EventEmitter {
                     return;
                 }
 
-                // emit the event
-                this.emit('networkChange', network);
-
-                // log
                 this.logger.debug(
                     `Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`,
                 );
 
-                // set the default network on the store
-                CoreRepository.setDefaultNetwork(network);
-
                 // change network
                 this.network = network;
 
+                // update cached reserve
+                this.networkReserve = {
+                    base: network.baseReserve,
+                    owner: network.ownerReserve,
+                };
+
+                // set the default network on the store
+                CoreRepository.setDefaultNetwork(network);
+
+                // emit the event
+                this.emit('networkChange', network);
+
                 // destroy prev connection
                 this.destroyConnection();
-
-                // change the connection status
-                this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
                 // reconnect
                 this.connect();
@@ -364,11 +364,15 @@ class NetworkService extends EventEmitter {
      */
     destroyConnection = () => {
         try {
+            // destroy the connection if exist
             if (this.connection) {
                 this.connection.destroy();
             }
-        } catch (e) {
-            this.logger.error('Unable to destroy the connection', e);
+
+            // set the new connection status
+            this.setConnectionStatus(NetworkStateStatus.Disconnected);
+        } catch (error) {
+            this.logger.error('Unable to destroy the connection', error);
         }
     };
 
