@@ -1040,7 +1040,7 @@
     "scannedQRIsNotXummPayload": "Gescande QR-code is bevat geen XUMM verzoek!",
     "theClipboardDataIsNotContainXummPayload": "Het klembord bevat geen geldig XUMM-verzoek!",
     "theQRIsNotWhatWeExpect": "Deze QR-code bevat voor XUMM geen bruikbare informatie!",
-    "theClipboardDataIsNotWhatWeExpect": "Het klembord zijn niet wat wij verwachten!",
+    "theClipboardDataIsNotWhatWeExpect": "De geplakte gegevens kunnen niet door Xumm worden verwerkt!",
     "invalidQRTryNewOneOrTryAgain": "Ongeldige QR-code (voor XUMM). Probeer het opnieuw of scan een andere QR-code",
     "invalidClipboardDateTryNewOneOrTryAgain": "Ongeldige klembordgegevens (voor XUMM), probeer een andere of probeer het opnieuw",
     "importFromClipboard": "Importeer van klembord"
