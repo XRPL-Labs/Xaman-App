@@ -7,6 +7,11 @@ class NetworkService {
         ownerReserve: 2,
         isFeatureEnabled: () => {},
         definitions: {},
+        nativeAsset: {
+            asset: 'XRP',
+            icon: 'icon_uri',
+            iconSquare: 'icon_square_uri',
+        },
     };
 
     public getNativeAsset() {

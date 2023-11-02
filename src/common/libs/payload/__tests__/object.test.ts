@@ -70,7 +70,7 @@ describe('Payload', () => {
         try {
             await Payload.from(invalidTypesPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -86,7 +86,7 @@ describe('Payload', () => {
         try {
             await Payload.from(invalidSignInPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -102,7 +102,7 @@ describe('Payload', () => {
         try {
             await Payload.from(InvalidPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -170,7 +170,9 @@ describe('Payload', () => {
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.payloadAlreadyResolved" translation]');
+            expect(e.toString()).toEqual(
+                'Error: This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
+            );
         }
 
         payloadFetchSpy.mockClear();
@@ -189,7 +191,9 @@ describe('Payload', () => {
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.payloadExpired" translation]');
+            expect(e.toString()).toEqual(
+                'Error: This payload has expired. Please repeat the process that generated the request, and scan the new request.',
+            );
         }
 
         payloadFetchSpy2.mockClear();

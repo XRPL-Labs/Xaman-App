@@ -73,6 +73,11 @@ const styles = StyleService.create({
     naturalColor: {
         color: '$grey',
     },
+    requestTimeText: {
+        fontFamily: AppFonts.small.family,
+        fontSize: AppFonts.small.size,
+        color: '$grey',
+    },
 });
 
 export default styles;

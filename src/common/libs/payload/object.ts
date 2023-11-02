@@ -417,4 +417,11 @@ export class Payload {
 
         return undefined;
     };
+
+    /**
+     * Return the time when payload has been created
+     */
+    getRequestTime = () => {
+        return this.payload.created_at;
+    };
 }

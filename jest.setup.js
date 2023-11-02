@@ -1,3 +1,5 @@
+import Locale from '@locale';
+
 /* Hide console.log console.error in jest tests */
 jest.spyOn(global.console, 'log').mockImplementation(() => jest.fn());
 jest.spyOn(global.console, 'error').mockImplementation(() => jest.fn());
@@ -9,3 +11,6 @@ jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
 /* Realm */
 process.env.REALM_DISABLE_ANALYTICS = true;
+
+// Localization
+Locale.setLocale('EN');

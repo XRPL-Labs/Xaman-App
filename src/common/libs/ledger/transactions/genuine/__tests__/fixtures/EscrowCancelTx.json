@@ -1,0 +1,9 @@
+{
+  "tx": {
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "TransactionType": "EscrowCancel",
+    "Owner": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "OfferSequence": 7
+  },
+  "meta": {}
+}

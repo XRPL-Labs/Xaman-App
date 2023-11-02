@@ -1,0 +1,59 @@
+{
+    "tx": {
+        "Account": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+        "Fee": "20",
+        "Flags": 0,
+        "LastLedgerSequence": 64,
+        "NetworkID": 21337,
+        "Sequence": 14,
+        "SigningPubKey": "0388935426E0D08083314842EDFBB2D517BD47699F9A4527318A8E10468C97C052",
+        "TransactionType": "URITokenCancelSellOffer",
+        "TxnSignature": "3045022100AC5CEEEEAAB016C471CEDAD64F6AF1B556DE93BB24FA2355ADFFCDF469311CA2022000F56DFAB528189AD79705CFF7461A0537154C2270AA92DA0234AFD8B40DBDA4",
+        "URITokenID": "9CE208D4743A11AB5BAE47E23E917D456EB722A89568EDCCCA94B3B04ADC95D2",
+        "ctid": "C000002D00005359",
+        "date": 749731893,
+        "hash": "1B81816E413B1F8841129B518F3403E574F57A130D2861CBC39771C495001469",
+        "inLedger": 45,
+        "ledger_index": 45,
+        "validated": true
+    },
+    "meta": {
+        "AffectedNodes": [
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Account": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "Balance": "19999999928",
+                        "Flags": 0,
+                        "OwnerCount": 2,
+                        "Sequence": 15
+                    },
+                    "LedgerEntryType": "AccountRoot",
+                    "LedgerIndex": "92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F",
+                    "PreviousFields": {
+                        "Balance": "19999999948",
+                        "Sequence": 14
+                    }
+                }
+            },
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Flags": 0,
+                        "Issuer": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "Owner": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "OwnerNode": "0",
+                        "URI": "697066733A2F2F43494443414E43454C"
+                    },
+                    "LedgerEntryType": "URIToken",
+                    "LedgerIndex": "9CE208D4743A11AB5BAE47E23E917D456EB722A89568EDCCCA94B3B04ADC95D2",
+                    "PreviousFields": {
+                        "Amount": "10000000"
+                    }
+                }
+            }
+        ],
+        "TransactionIndex": 0,
+        "TransactionResult": "tesSUCCESS"
+    }
+}

@@ -72,7 +72,7 @@ class GlobalTemplate extends Component<Props, State> {
                         signers.push(res);
                     })
                     .catch(() => {
-                        signers.push({ account: signer.Account });
+                        signers.push({ account: signer.account });
                     });
 
                 return signers;

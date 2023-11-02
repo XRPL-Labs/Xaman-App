@@ -18,7 +18,7 @@ import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { Payment } from '@common/libs/ledger/transactions';
+import { Payment, PaymentValidation } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Memo from '@common/libs/ledger/parser/common/memo';
@@ -298,7 +298,7 @@ class SendView extends Component<Props, State> {
             }
 
             // validate payment for all possible mistakes
-            await payment.validate();
+            await PaymentValidation(payment);
 
             // sign the transaction and then submit
             await payment.sign(source).then(this.submit);

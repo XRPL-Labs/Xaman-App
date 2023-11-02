@@ -38,7 +38,7 @@ import {
 import { SignIn, PaymentChannelAuthorize } from './pseudo';
 
 /**
- * All Transactions types
+ * Genuine Transactions types
  */
 export type Transactions =
     | Payment

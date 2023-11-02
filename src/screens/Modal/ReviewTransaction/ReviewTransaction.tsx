@@ -31,6 +31,7 @@ import { PreflightStep, ReviewStep, SubmittingStep, ResultStep } from './Steps';
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import ValidationFactory from '@common/libs/ledger/factory/validation';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -303,18 +304,19 @@ class ReviewTransactionModal extends Component<Props, State> {
             try {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
+                const validation = ValidationFactory.fromType(transaction.Type);
                 if (
                     transaction instanceof BaseTransaction &&
-                    typeof transaction.validate === 'function' &&
+                    typeof validation === 'function' &&
                     !payload.isMultiSign()
                 ) {
-                    await transaction.validate();
+                    await validation(transaction, source);
                 }
-            } catch (e: any) {
+            } catch (validationError: any) {
                 if (this.mounted) {
                     Navigator.showAlertModal({
                         type: 'error',
-                        text: e.message,
+                        text: validationError.message,
                         buttons: [
                             {
                                 text: Localize.t('global.ok'),

@@ -105,3 +105,9 @@ export type SignerEntry = {
     weight: number;
     walletLocator?: string;
 };
+
+export interface Signer {
+    account: string;
+    signature: string;
+    pubKey: string;
+}

@@ -1,0 +1,92 @@
+{
+  "tx": {
+    "TransactionType": "EscrowFinish",
+    "Account": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "Fulfillment": "A0028000",
+    "Condition": "A0258020E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855810100",
+    "Fee": "12",
+    "Flags": 2147483648,
+    "LastLedgerSequence": 57885237,
+    "OfferSequence": 22,
+    "Owner": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Sequence": 31,
+    "SigningPubKey": "03289275F786BB7CA4E960931E9D96638849BFA445770B949B4365ADDCC293D3D7",
+    "TxnSignature": "3044022043FC36A6BFF0926E8ABD55CBA905D9F54AF641FA0ACD25B27AD93627301E13CA02203B7FCA454DC0C69585043BB22F670B7308ED65087DA755475C523F243F62DEDA",
+    "date": 652233611,
+    "hash": "D292CE89F8EDB65C2F1930DAB6F80476FF061BB455F840B808A23D5ACBC652FA",
+    "inLedger": 57885156,
+    "ledger_index": 57885156
+  },
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Flags": 0,
+            "Owner": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "RootIndex": "1EA8DBF223B8F9BCABA4F5185C3ABA96D4EAAE84545E2FF8B6DA06563B38BE8A"
+          },
+          "LedgerEntryType": "DirectoryNode",
+          "LedgerIndex": "1EA8DBF223B8F9BCABA4F5185C3ABA96D4EAAE84545E2FF8B6DA06563B38BE8A"
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+            "Balance": "20999604",
+            "Flags": 0,
+            "OwnerCount": 0,
+            "Sequence": 32
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "27BB55D1F31075E514FDC112EFB687A1D551AD1A8317D5CCE647F575EF210A78",
+          "PreviousFields": {
+            "Balance": "20999616",
+            "Sequence": 31
+          },
+          "PreviousTxnID": "B907C4AE96C13BB2F486E0F86E91F92C4C3174051632A78710E22E63EF362BD3",
+          "PreviousTxnLgrSeq": 57885155
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "Balance": "800000200930520",
+            "Flags": 1048576,
+            "OwnerCount": 12,
+            "Sequence": 40
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "875F97C6293127CF84490851CB474E613C968F686A0F601FB88027A7DACC4ADA",
+          "PreviousFields": {
+            "Balance": "300000200930520",
+            "OwnerCount": 13
+          },
+          "PreviousTxnID": "EE77A0F9A443EC710529FC35B5715A663BCF380315E8D863CE5BF8C3971BC642",
+          "PreviousTxnLgrSeq": 57217428
+        }
+      },
+      {
+        "DeletedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "Amount": "500000000000000",
+            "Destination": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "DestinationTag": 1337,
+            "FinishAfter": 652233600,
+            "Flags": 0,
+            "OwnerNode": "0000000000000000",
+            "PreviousTxnID": "C9AD36030158FE0E21D5654C3C54710B6406B6D996073ADEDF556C497650FE70",
+            "PreviousTxnLgrSeq": 35059629
+          },
+          "LedgerEntryType": "Escrow",
+          "LedgerIndex": "D6D410E6257423FE6D9E60838E66BADC71AD81EFC787D1D6D977438C4C621B8E"
+        }
+      }
+    ],
+    "TransactionIndex": 24,
+    "TransactionResult": "tesSUCCESS"
+  }
+}
