@@ -13,7 +13,7 @@ interface State {
 interface Props {
     buttons: Array<string>;
     selectedIndex?: number;
-    containerStyle?: ViewStyle;
+    containerStyle?: ViewStyle | ViewStyle[];
     onPress: (index: number) => void;
 }
 

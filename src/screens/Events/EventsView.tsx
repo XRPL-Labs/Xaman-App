@@ -851,7 +851,7 @@ class EventsView extends Component<Props, State> {
                 />
                 <SegmentButton
                     selectedIndex={sectionIndex}
-                    containerStyle={AppStyles.paddingHorizontalSml}
+                    containerStyle={[AppStyles.paddingHorizontalSml, AppStyles.leftSelf]}
                     buttons={[
                         Localize.t('events.eventTypeAll'),
                         Localize.t('events.eventTypePlanned'),
