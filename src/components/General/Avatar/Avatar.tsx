@@ -30,7 +30,8 @@ export interface Props {
 
 /* Component ==================================================================== */
 class Avatar extends PureComponent<Props> {
-    private readonly animatedFade: Animated.Value;
+    private readonly animatedPulse: Animated.Value;
+    private readonly animatedFadeIn: Animated.Value;
 
     static defaultProps = {
         size: 40,
@@ -41,7 +42,9 @@ class Avatar extends PureComponent<Props> {
 
     constructor(props: Props) {
         super(props);
-        this.animatedFade = new Animated.Value(0.3);
+
+        this.animatedPulse = new Animated.Value(0.3);
+        this.animatedFadeIn = new Animated.Value(props.isLoading ? 0.3 : 1);
     }
 
     componentDidMount() {
@@ -54,6 +57,11 @@ class Avatar extends PureComponent<Props> {
         if (!prevProps.isLoading && isLoading) {
             InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
         }
+
+        // start the pulse animation
+        if (prevProps.isLoading && !isLoading) {
+            InteractionManager.runAfterInteractions(this.startFadeInAnimation);
+        }
     }
 
     startPlaceholderAnimation = () => {
@@ -64,17 +72,25 @@ class Avatar extends PureComponent<Props> {
         }
 
         Animated.sequence([
-            Animated.timing(this.animatedFade, {
+            Animated.timing(this.animatedPulse, {
                 toValue: 0.1,
                 duration: 1000,
                 useNativeDriver: true,
             }),
-            Animated.timing(this.animatedFade, {
+            Animated.timing(this.animatedPulse, {
                 toValue: 0.3,
                 duration: 1000,
                 useNativeDriver: true,
             }),
         ]).start(this.startPlaceholderAnimation);
+    };
+
+    startFadeInAnimation = () => {
+        Animated.timing(this.animatedFadeIn, {
+            toValue: 1,
+            duration: 250,
+            useNativeDriver: true,
+        }).start();
     };
 
     renderBadge = () => {
@@ -124,13 +140,14 @@ class Avatar extends PureComponent<Props> {
         const { source, size, imageScale, border, containerStyle } = this.props;
 
         return (
-            <View
+            <Animated.View
                 style={[
                     styles.container,
                     border && styles.border,
                     {
                         height: AppSizes.scale(size) + (border ? 1.3 : 0),
                         width: AppSizes.scale(size) + (border ? 1.3 : 0),
+                        opacity: this.animatedFadeIn,
                     },
                     containerStyle,
                 ]}
@@ -143,7 +160,7 @@ class Avatar extends PureComponent<Props> {
                         { height: AppSizes.scale(size) * imageScale, width: AppSizes.scale(size) * imageScale },
                     ]}
                 />
-            </View>
+            </Animated.View>
         );
     };
 
@@ -161,7 +178,7 @@ class Avatar extends PureComponent<Props> {
                         width: AppSizes.scale(size) + (border ? 1.3 : 0),
                     },
                     containerStyle,
-                    { opacity: this.animatedFade },
+                    { opacity: this.animatedPulse },
                 ]}
             />
         );
