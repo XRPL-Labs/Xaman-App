@@ -2,27 +2,29 @@
  * Network rails sync modal
  */
 
+import Realm from 'realm';
 import { get, isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text, ScrollView, InteractionManager, Alert } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
+import { NodeModel } from '@store/models';
 import { NetworkRailsChangesType, NetworkType } from '@store/types';
-import { NetworkRepository, NodeRepository } from '@store/repositories';
+import { CoreRepository, NetworkRepository, NodeRepository } from '@store/repositories';
 
 import BackendService from '@services/BackendService';
+import NetworkService from '@services/NetworkService';
 
 import { AnimatedDialog, Button, LoadingIndicator, Spacer, TouchableDebounce, Icon } from '@components/General';
+
 import Localize from '@locale';
 
 // style
-import styles from './styles';
 import { AppSizes, AppStyles } from '@theme';
-import NetworkService from '@services/NetworkService';
-import Realm from 'realm';
-import { NodeModel } from '@store/models';
+import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
@@ -104,6 +106,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
     fetchChanges = async () => {
         try {
+            // get core settings
+            const coreSettings = CoreRepository.getSettings();
+
             // fetch network rails
             const rails = await BackendService.getNetworkRails();
 
@@ -112,6 +117,16 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
             // added || existing network
             Object.keys(rails).forEach((networkKey) => {
+                // clean up networks from duplicated items
+                const foundNetworks = NetworkRepository.findBy('key', networkKey);
+                if (foundNetworks.length > 1) {
+                    for (const duplicatedNetwork of foundNetworks) {
+                        if (duplicatedNetwork.id !== coreSettings.network.id) {
+                            NetworkRepository.delete(duplicatedNetwork);
+                        }
+                    }
+                }
+
                 // default changes
                 changes[networkKey] = [];
 
