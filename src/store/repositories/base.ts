@@ -113,7 +113,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
             return result[0];
         }
 
-        throw new Error('Got more than one result');
+        throw new Error(`Got more than one result for query ${JSON.stringify(query)}`);
     };
 
     /**
@@ -220,7 +220,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any>} object - The object(s) to delete.
      * @returns {Promise<void>} - A promise.
      */
-    delete = async (object: Realm.Object<T> | Realm.Object<T>[]): Promise<void> => {
+    delete = async (object: Realm.Object<T> | Realm.Object<T>[] | Realm.Results<T>): Promise<void> => {
         return new Promise((resolve, reject) => {
             try {
                 this.safeWrite(() => {
