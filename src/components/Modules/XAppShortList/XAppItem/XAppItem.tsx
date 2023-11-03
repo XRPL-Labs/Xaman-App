@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import { Spacer, TouchableDebounce } from '@components/General';
 
 import styles from './styles';
 
@@ -99,6 +99,7 @@ class XAppItem extends Component<Props> {
                 >
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </Animated.Text>
+                <Spacer size={2} />
                 <Animated.Text
                     numberOfLines={1}
                     style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}

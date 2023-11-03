@@ -27,7 +27,9 @@ class XAppShortList extends Component<Props, State> {
         super(props);
 
         this.state = {
-            apps: props.apps || Array(props.size).fill(undefined),
+            apps: Array.isArray(props.apps)
+                ? Array.from({ length: props.size }, (v, k) => props.apps[k] || {})
+                : Array(props.size).fill(undefined),
         };
     }
 
@@ -37,9 +39,9 @@ class XAppShortList extends Component<Props, State> {
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
-        if (nextProps.apps && !isEqual(prevState.apps, nextProps.apps)) {
+        if (Array.isArray(nextProps.apps) && !isEqual(prevState.apps, nextProps.apps)) {
             return {
-                apps: nextProps.apps,
+                apps: Array.from({ length: nextProps.size }, (v, k) => nextProps.apps[k] || {}),
             };
         }
         return null;

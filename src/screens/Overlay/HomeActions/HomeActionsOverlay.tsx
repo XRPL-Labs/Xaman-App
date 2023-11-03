@@ -41,7 +41,7 @@ class HomeActionsOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.HomeActions;
 
     private actionPanel: React.RefObject<ActionPanel>;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -81,18 +81,22 @@ class HomeActionsOverlay extends Component<Props, State> {
     }
 
     fetchApps = () => {
-        BackendService.getXAppShortList().then((resp: any) => {
-            const { apps, featured } = resp;
+        BackendService.getXAppShortList()
+            .then((resp: any) => {
+                const { apps, featured } = resp;
 
-            if (!this.mounted) {
-                return;
-            }
+                if (!this.mounted) {
+                    return;
+                }
 
-            this.setState({
-                apps,
-                featured,
+                this.setState({
+                    apps,
+                    featured,
+                });
+            })
+            .catch(() => {
+                // ignore
             });
-        });
     };
 
     onScanButtonPress = () => {
