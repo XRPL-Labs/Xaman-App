@@ -48,6 +48,8 @@ class NFTokenMint extends BaseTransaction {
     get NFTokenID(): string {
         let tokenID = get(this, 'nfTokenID', undefined);
 
+        // TODO: fixNFTokenRemint will include the minted nfTokenId in the meta data
+
         // if we already set the token id return
         if (tokenID) {
             return tokenID;
@@ -59,6 +61,7 @@ class NFTokenMint extends BaseTransaction {
         // Fetch minted token sequence
         let tokenSequence;
         let nextTokenSequence;
+        let firstNFTokenSequence;
 
         this.meta.AffectedNodes.forEach((node: any) => {
             if (node.ModifiedNode && node.ModifiedNode.LedgerEntryType === 'AccountRoot') {
@@ -66,6 +69,7 @@ class NFTokenMint extends BaseTransaction {
                 if (PreviousFields && FinalFields && FinalFields.Account === Issuer) {
                     tokenSequence = PreviousFields.MintedNFTokens;
                     nextTokenSequence = FinalFields.MintedNFTokens;
+                    firstNFTokenSequence = PreviousFields?.FirstNFTokenSequence || FinalFields?.FirstNFTokenSequence;
                 }
             }
         });
@@ -74,6 +78,9 @@ class NFTokenMint extends BaseTransaction {
         if (typeof tokenSequence === 'undefined' && nextTokenSequence === 1) {
             tokenSequence = 0;
         }
+
+        // Include first NFToken Sequence
+        tokenSequence += firstNFTokenSequence ?? 0;
 
         // Unable to find TokenSequence
         if (typeof tokenSequence === 'undefined') {
