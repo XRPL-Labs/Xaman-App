@@ -8743,10 +8743,10 @@ ripple-address-codec@^4.3.1:
     base-x "^3.0.9"
     create-hash "^1.1.2"
 
-"ripple-binary-codec@npm:xrpl-binary-codec-prerelease@3.0.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.10.0.tgz#549f7fb3d3faf6b2d09fe7032bdcc4e6f8b5a511"
-  integrity sha512-qWXxubgXBV3h5NTaaLiusZ1FhPqSy+bCYHHarfZ3bMmO2alRa1Ox61jvX1Zyozok8PcF3gs3bKwZci4RTlA07w==
+"ripple-binary-codec@npm:xrpl-binary-codec-prerelease@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/xrpl-binary-codec-prerelease/-/xrpl-binary-codec-prerelease-5.0.2.tgz#44945e52bd93ba2bf3760da025acfd5883c3b053"
+  integrity sha512-bKxrHKZyWZF3V8/o9BTJbtm7EUVMY9/IkXkSM1LHNZqaB5+t2OOjDneCYY5j0BbDdlxNomPafcSjLWVf7sJpuw==
   dependencies:
     assert "^2.0.0"
     big-integer "^1.6.48"
@@ -10232,10 +10232,10 @@ xregexp@^4.2.4:
   dependencies:
     "@babel/runtime-corejs3" "^7.12.1"
 
-xrpl-accountlib@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-2.3.1.tgz#0112b87d9ef511c6bcfeb58f9a95523cbce5af60"
-  integrity sha512-vaSLbC4SByMMKXb1r9S/ZSok3PuagC+PlLNV/odFdbk5TFM2eVPJ0K1ai4DdfXdELP4WkpSiJ9re0Y0i5Pw8GA==
+xrpl-accountlib@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/xrpl-accountlib/-/xrpl-accountlib-3.0.0.tgz#238df5d1d5bfd5f98cab0515fff83f4314b40b1f"
+  integrity sha512-V4C6tlWTnFGM48JVfokCSH/sI+0ms9lsTck8V6DqC7D5OZ8d9T+GfXPJJqnCnce4kXRbANJWsiMA22i8DphHZg==
   dependencies:
     assert "^2.0.0"
     bip32 "^2.0.6"
@@ -10245,12 +10245,12 @@ xrpl-accountlib@2.3.1:
     hash.js "^1.1.7"
     lodash "^4.17.21"
     ripple-address-codec "^4.2.5"
-    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@3.0.0"
+    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@5.0.2"
     ripple-keypairs "^1.1.4"
     ripple-secret-codec "^1.0.3"
     xrpl-client "^2.1.0"
     xrpl-secret-numbers "^0.3.3"
-    xrpl-sign-keypairs "^2.2.0"
+    xrpl-sign-keypairs "^2.2.1"
 
 xrpl-client@2.2.0:
   version "2.2.0"
@@ -10287,14 +10287,14 @@ xrpl-secret-numbers@^0.3.3:
     brorand "^1.1.0"
     ripple-keypairs "^1.1.5"
 
-xrpl-sign-keypairs@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.2.0.tgz#bbe0d52d52e341c227be7557c2fc928930611d1f"
-  integrity sha512-W+RiSSBDoltYj0MrDopee6bqL1KEDnNc9NRNddR6XTKcXDg5TCl83yz9izTnho79mLaXaYWuviT9y1jI5G0AsQ==
+xrpl-sign-keypairs@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/xrpl-sign-keypairs/-/xrpl-sign-keypairs-2.2.1.tgz#56f9e5dc5d59e25fda7de01644ec48cad7b09b3b"
+  integrity sha512-H5sJqWqTZxmc3vJSqOqkobFJgHGXs82qr80+9SDM/xwpvOfzAxIpe8yxsR1CaovyO0oq1wsALbJNpRc7MugpfA==
   dependencies:
     big-integer "^1.6.51"
     ripple-address-codec "^4.2.4"
-    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@3.0.0"
+    ripple-binary-codec "npm:xrpl-binary-codec-prerelease@5.0.2"
     ripple-keypairs "^1.1.4"
 
 xtend@^4.0.0, xtend@~4.0.1:
