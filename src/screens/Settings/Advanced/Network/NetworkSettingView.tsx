@@ -1,12 +1,13 @@
 /**
  * Networks settings Screen
  */
-import { first } from 'lodash';
+import { first, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, InteractionManager } from 'react-native';
+import { View, InteractionManager, Alert } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
@@ -15,13 +16,13 @@ import NetworkService from '@services/NetworkService';
 import { NetworkRepository } from '@store/repositories';
 import { NetworkModel, NodeModel } from '@store/models';
 
-import { Header } from '@components/General';
+import { Header, InfoMessage } from '@components/General';
 import { NodeList } from '@components/Modules';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
+import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -73,9 +74,15 @@ class NetworkSettingView extends Component<Props, State> {
         });
     };
 
-    onNodePress = (node: NodeModel) => {
+    onNodePress = async (node: NodeModel) => {
         // get network
         const network = first(node.linkingObjects<NetworkModel>('Network', 'nodes'));
+
+        // if this is the only node for this network then show a message
+        if (network.nodes.length === 1) {
+            Prompt(Localize.t('global.notice'), Localize.t('settings.networkHaveOnlyOneNodeAsDefault'));
+            return;
+        }
 
         // nothing changed
         if (network.defaultNode.endpoint === node.endpoint) {
@@ -90,16 +97,29 @@ class NetworkSettingView extends Component<Props, State> {
 
         // switch to the new default node if we already connected to the same network
         if (network.id === NetworkService.getNetworkId()) {
-            NetworkService.switchNetwork(network);
+            await NetworkService.switchNetwork(network);
         }
 
         // update dataSource
         this.updateDataSource();
     };
 
+    onSuccessSync = (changes: Record<string, any[]>) => {
+        // nothing changed
+        if (isEmpty(changes)) {
+            Alert.alert(Localize.t('settings.everythingIsUpdateToDate'), Localize.t('settings.networkAreUpdateToDate'));
+            return;
+        }
+
+        // update the datastore
+        this.updateDataSource();
+        // show message
+        Alert.alert(Localize.t('global.success'), Localize.t('settings.networkRailsSuccessfullyUpdated'));
+    };
+
     showNetworkRailsSync = async () => {
         Navigator.showOverlay(AppScreens.Overlay.NetworkRailsSync, {
-            onSuccessSync: this.updateDataSource,
+            onSuccessSync: this.onSuccessSync,
         });
     };
 
@@ -107,20 +127,26 @@ class NetworkSettingView extends Component<Props, State> {
         const { dataSource } = this.state;
 
         return (
-            <View testID="network-list-screen" style={AppStyles.container}>
+            <View testID="network-list-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: Navigator.pop,
                     }}
-                    centerComponent={{ text: Localize.t('settings.networkList') }}
+                    centerComponent={{ text: Localize.t('settings.networkSettings') }}
                     rightComponent={{
                         testID: 'sync-rails-button',
                         icon: 'IconRefresh',
                         iconSize: 21,
                         onPress: this.showNetworkRailsSync,
                     }}
+                />
+                <InfoMessage
+                    label={Localize.t('settings.changeDefaultNodeInfo')}
+                    type="neutral"
+                    containerStyle={styles.infoMessage}
+                    flat
                 />
                 <NodeList dataSource={dataSource} onItemPress={this.onNodePress} />
             </View>

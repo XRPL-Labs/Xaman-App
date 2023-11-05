@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import StyleService from '@services/StyleService';
-
-import { TouchableDebounce, Badge } from '@components/General';
+import { TouchableDebounce } from '@components/General';
 
 import { NodeModel } from '@store/models';
-
-import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 
@@ -17,6 +13,7 @@ import styles from './styles';
 export interface Props {
     item: NodeModel;
     isDefault?: boolean;
+    selectable?: boolean;
     onPress?: (item: NodeModel) => void;
 }
 
@@ -33,21 +30,22 @@ class NodeListItem extends PureComponent<Props, State> {
     };
 
     render() {
-        const { isDefault, item } = this.props;
+        const { item, isDefault, selectable } = this.props;
 
         return (
             <TouchableDebounce
-                style={styles.row}
-                activeOpacity={0.8}
                 testID={`node-${item.endpoint}`}
+                activeOpacity={0.8}
                 onPress={this.onPress}
+                style={[styles.container, isDefault && selectable && styles.selected]}
             >
-                <View style={[AppStyles.row, AppStyles.flex6, AppStyles.centerAligned]}>
-                    <Text style={styles.url}>{item.endpoint}</Text>
+                <View style={AppStyles.flex6}>
+                    <Text style={[styles.url, isDefault && selectable && styles.urlSelected]}>{item.endpoint}</Text>
                 </View>
-                {isDefault && (
+
+                {selectable && (
                     <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                        <Badge label={Localize.t('global.default')} color={StyleService.value('$grey')} />
+                        <View style={[styles.dot, isDefault && styles.dotSelected]} />
                     </View>
                 )}
             </TouchableDebounce>

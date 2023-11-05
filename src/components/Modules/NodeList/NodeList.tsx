@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList } from 'react-native';
 
-import { NetworkService, StyleService } from '@services';
+import StyleService from '@services/StyleService';
 
 import { NodeModel } from '@store/models';
-
-import { Badge } from '@components/General';
-
-import Localize from '@locale';
 
 import styles from './styles';
 
@@ -20,54 +16,26 @@ interface Props {
     onItemPress: (item: NodeModel) => void;
 }
 
-interface State {
-    connectedNetworkKey: any;
-}
+interface State {}
 
 /* Component ==================================================================== */
 class NodeList extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-
-        this.state = {
-            connectedNetworkKey: undefined,
-        };
-    }
-
-    componentDidMount() {
-        const { networkKey } = NetworkService.getConnectionDetails();
-
-        this.setState({
-            connectedNetworkKey: networkKey,
-        });
-    }
-
     renderItem = ({ item, section }: { item: any; section: any }): React.ReactElement => {
         const { onItemPress } = this.props;
 
-        const { defaultNode } = section;
+        const { defaultNode, data } = section;
         const isDefault = item.endpoint === defaultNode.endpoint;
 
-        return <NodeListItem onPress={onItemPress} item={item} isDefault={isDefault} />;
+        return <NodeListItem onPress={onItemPress} item={item} selectable={data.length > 1} isDefault={isDefault} />;
     };
 
-    renderSectionHeader = ({ section: { title, color, key } }: any) => {
-        const { connectedNetworkKey } = this.state;
-
+    renderSectionHeader = ({ section: { title, color } }: any) => {
         return (
-            <View
-                style={[
-                    styles.sectionHeader,
-                    connectedNetworkKey === key && { backgroundColor: StyleService.value('$lightGreen') },
-                ]}
-            >
+            <View style={styles.sectionHeader}>
                 <View style={[styles.colorCircle, { backgroundColor: color }]} />
                 <Text numberOfLines={1} style={styles.sectionHeaderText}>
                     {title}
                 </Text>
-                {connectedNetworkKey === key && (
-                    <Badge label={Localize.t('global.connected')} color={StyleService.value('$black')} />
-                )}
             </View>
         );
     };
@@ -83,6 +51,7 @@ class NodeList extends PureComponent<Props, State> {
                 initialNumToRender={50}
                 maxToRenderPerBatch={50}
                 keyExtractor={(item, index) => item.endpoint + index}
+                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );
     }

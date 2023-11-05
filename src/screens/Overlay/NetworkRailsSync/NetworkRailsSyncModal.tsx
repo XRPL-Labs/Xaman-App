@@ -18,7 +18,7 @@ import { CoreRepository, NetworkRepository, NodeRepository } from '@store/reposi
 import BackendService from '@services/BackendService';
 import NetworkService from '@services/NetworkService';
 
-import { AnimatedDialog, Button, LoadingIndicator, Spacer, TouchableDebounce, Icon } from '@components/General';
+import { AnimatedDialog, Button, Icon, LoadingIndicator, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -28,7 +28,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    onSuccessSync: () => void;
+    onSuccessSync: (changes: Record<string, any[]>) => void;
     onError: () => void;
 }
 
@@ -36,6 +36,7 @@ export interface State {
     isLoading: boolean;
     rails: XamanBackend.NetworkRailsResponse;
     changes: Record<string, any[]>;
+    headerHeight: number;
 }
 /* Component ==================================================================== */
 class NetworkRailsSyncModal extends Component<Props, State> {
@@ -59,6 +60,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
             rails: undefined,
             changes: {},
             isLoading: true,
+            headerHeight: 0,
         };
     }
 
@@ -92,15 +94,14 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
     onSuccessSync = () => {
         const { onSuccessSync } = this.props;
+        const { changes } = this.state;
+
         // close overlay
         this.onDismissPress();
 
-        // show message
-        Alert.alert(Localize.t('global.success'), Localize.t('settings.networkRailsSuccessfullyUpdated'));
-
         // callback
         if (typeof onSuccessSync === 'function') {
-            onSuccessSync();
+            onSuccessSync(changes);
         }
     };
 
@@ -206,10 +207,18 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
             // user could have been already closed the modal
             if (this.mounted) {
-                this.setState({
-                    rails,
-                    changes,
-                });
+                this.setState(
+                    {
+                        rails,
+                        changes,
+                    },
+                    () => {
+                        // no changes to apply
+                        if (isEmpty(changes)) {
+                            this.onSuccessSync();
+                        }
+                    },
+                );
             }
         } catch (error: any) {
             this.onError(error);
@@ -335,75 +344,105 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
     getChangesDescription = (type: NetworkRailsChangesType, value: string): React.ReactNode => {
         switch (type) {
-            case NetworkRailsChangesType.AddedNetwork:
-                return (
-                    <Text key={`${type}-${value}`} style={[styles.changesValue, styles.changesAdded]}>
-                        + {Localize.t('settings.addedNetwork')}
-                    </Text>
-                );
             case NetworkRailsChangesType.RemovedNetwork:
                 return (
-                    <Text key={`${type}-${value}`} style={[styles.changesValue, styles.changesRemoved]}>
-                        - {Localize.t('settings.removeNetwork')}
-                    </Text>
+                    <View style={[styles.changesRow, styles.changesRowRed]}>
+                        <View style={AppStyles.flex1}>
+                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesRemoved]}>
+                                {Localize.t('settings.removeNetwork')}
+                            </Text>
+                        </View>
+                        <Icon size={20} name="IconX" style={AppStyles.imgColorRed} />
+                    </View>
                 );
             case NetworkRailsChangesType.AddedNode:
                 return (
-                    <Text key={`${type}-${value}`} style={[styles.changesValue, styles.changesAdded]}>
-                        + {Localize.t('settings.addedNode', { node: value })}
-                    </Text>
+                    <View style={[styles.changesRow, styles.changesRowGreen]}>
+                        <View style={AppStyles.flex1}>
+                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesAdded]}>
+                                {Localize.t('settings.addedNode')}: <Text style={styles.changesValue}>{value}</Text>
+                            </Text>
+                        </View>
+                        <Icon size={20} name="IconPlus" style={AppStyles.imgColorGreen} />
+                    </View>
                 );
             case NetworkRailsChangesType.RemovedNode:
                 return (
-                    <Text key={`${type}-${value}`} style={[styles.changesValue, styles.changesRemoved]}>
-                        - {Localize.t('settings.removedNode', { node: value })}
-                    </Text>
+                    <View style={[styles.changesRow, styles.changesRowRed]}>
+                        <View style={AppStyles.flex1}>
+                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesRemoved]}>
+                                {Localize.t('settings.removedNode')}: <Text style={styles.changesValue}>{value}</Text>
+                            </Text>
+                        </View>
+                        <Icon size={20} name="IconMinus" style={AppStyles.imgColorRed} />
+                    </View>
                 );
             case NetworkRailsChangesType.ChangedProperty:
                 return (
-                    <Text key={`${type}-${value}`} style={[styles.changesValue, styles.changesModified]}>
-                        ~ {Localize.t('settings.changedProperty', { property: value })}
-                    </Text>
+                    <View style={[styles.changesRow, styles.changesRowOrange]}>
+                        <View style={AppStyles.flex1}>
+                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesModified]}>
+                                {Localize.t('settings.changedProperty')}:{' '}
+                                <Text style={styles.changesValue}>{value}</Text>
+                            </Text>
+                        </View>
+                        <Icon size={15} name="IconEdit" style={AppStyles.imgColorOrange} />
+                    </View>
                 );
             default:
                 return null;
         }
     };
 
-    renderChanges = () => {
-        const { changes } = this.state;
+    renderChangeHeader = (networkKey: string) => {
+        const { rails } = this.state;
+
+        let networkName = '';
+        let networkColor = '';
+
+        if (Object.prototype.hasOwnProperty.call(rails, networkKey)) {
+            networkName = rails[networkKey].name;
+            networkColor = rails[networkKey].color;
+        } else {
+            const localNetwork = NetworkRepository.findOne({ key: networkKey });
+
+            networkName = localNetwork.name;
+            networkColor = localNetwork.color;
+        }
 
         return (
-            <View style={{}}>
-                <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.centerContent]}>
-                        <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
-                            {Localize.t('settings.networkRailChanges')}
-                        </Text>
-                    </View>
-                    <View>
-                        <Button
-                            light
-                            roundedSmall
-                            isDisabled={false}
-                            onPress={this.onDismissPress}
-                            textStyle={[AppStyles.subtext, AppStyles.bold]}
-                            label={Localize.t('global.cancel')}
-                        />
-                    </View>
-                </View>
+            <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingHorizontalExtraSml]}>
+                <View
+                    style={[
+                        {
+                            backgroundColor: networkColor,
+                            borderRadius: (AppSizes.scale(13) * 1.4) / 2,
+                            width: AppSizes.scale(13),
+                            height: AppSizes.scale(13),
+                        },
+                    ]}
+                />
+                <Text style={styles.networkNameText}>{networkName}</Text>
+            </View>
+        );
+    };
 
+    renderChanges = () => {
+        const { changes, headerHeight } = this.state;
+
+        return (
+            <>
                 <ScrollView style={styles.scrollContainer}>
                     {Object.keys(changes).map((key) => {
                         return (
                             <View key={key} style={styles.changesContainer}>
-                                <Text style={styles.changesTitle}>{key}</Text>
+                                {this.renderChangeHeader(key)}
                                 {changes[key].map((c: any) => this.getChangesDescription(c.type, c.value))}
                             </View>
                         );
                     })}
                 </ScrollView>
-                <View style={AppStyles.row}>
+                <View style={[AppStyles.row, { marginBottom: headerHeight }]}>
                     <View style={AppStyles.flex1}>
                         <Button
                             testID="apply-button"
@@ -414,45 +453,39 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                         />
                     </View>
                 </View>
-            </View>
+            </>
         );
     };
 
     renderLoading = () => {
         return (
-            <View style={styles.loadingContainer}>
-                <TouchableDebounce onPress={this.onDismissPress} style={styles.dismissButton}>
-                    <Icon name="IconX" />
-                </TouchableDebounce>
-
-                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <LoadingIndicator size="large" />
-                    <Spacer />
-                    <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.loading')}...</Text>
-                </View>
+            <View style={AppStyles.centerAligned}>
+                <LoadingIndicator size="large" />
+                <Spacer />
+                <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.loading')}...</Text>
             </View>
         );
     };
 
-    renderNoChanges = () => {
+    renderHeader = () => {
         return (
-            <View style={styles.loadingContainer}>
-                <TouchableDebounce onPress={this.onDismissPress} style={styles.dismissButton}>
-                    <Icon name="IconX" />
-                </TouchableDebounce>
-
-                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Icon size={50} name="IconCheckXaman" style={AppStyles.imgColorGreen} />
-                    <Spacer />
-                    <Text
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        style={[AppStyles.h5, AppStyles.bold, AppStyles.textCenterAligned]}
-                    >
-                        {Localize.t('settings.networkRailsAreAlreadyUpdateToDate')}
+            <>
+                <View style={AppStyles.flex1}>
+                    <Text numberOfLines={1} style={[AppStyles.p, AppStyles.bold]}>
+                        {Localize.t('settings.networkUpdates')}
                     </Text>
                 </View>
-            </View>
+                <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
+                    <Button
+                        numberOfLines={1}
+                        testID="close-button"
+                        label={Localize.t('global.close')}
+                        roundedSmall
+                        secondary
+                        onPress={this.onDismissPress}
+                    />
+                </View>
+            </>
         );
     };
 
@@ -464,9 +497,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
             return this.renderLoading();
         }
 
-        // there is no changes
+        // no changes
         if (isEmpty(changes)) {
-            return this.renderNoChanges();
+            return null;
         }
 
         return this.renderChanges();
@@ -478,11 +511,11 @@ class NetworkRailsSyncModal extends Component<Props, State> {
         return (
             <AnimatedDialog
                 ref={this.animatedDialog}
-                height={AppSizes.heightPercentageToDP(isEmpty(changes) ? 30 : 70)}
+                height={AppSizes.heightPercentageToDP(isEmpty(changes) ? 50 : 70)}
                 onDismiss={this.onDismissRequested}
-                containerStyle={styles.container}
             >
-                {this.renderContent()}
+                <View style={styles.headerContainer}>{this.renderHeader()}</View>
+                <View style={styles.contentContainer}>{this.renderContent()}</View>
             </AnimatedDialog>
         );
     }

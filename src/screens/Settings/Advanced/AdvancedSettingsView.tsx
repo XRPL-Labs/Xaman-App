@@ -234,14 +234,11 @@ class AdvancedSettingsView extends Component<Props, State> {
                     >
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('global.network')}
+                                {Localize.t('settings.networkSettings')}
                             </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text numberOfLines={1} style={styles.value}>
-                                {coreSettings.network.name}
-                            </Text>
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
                     </TouchableDebounce>
