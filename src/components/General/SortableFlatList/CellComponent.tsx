@@ -50,8 +50,12 @@ class CellComponent extends PureComponent<Props> {
         });
     }
 
-    isValid = () => {
-        return this.itemRef.current != null;
+    isValid = (): Promise<boolean> => {
+        return new Promise((resolve) => {
+            requestAnimationFrame(() => {
+                resolve(!!this.itemRef?.current);
+            });
+        });
     };
 
     getCellState = () => {

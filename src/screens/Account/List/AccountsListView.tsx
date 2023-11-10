@@ -166,6 +166,10 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
+    itemKeyExtractor = (item: AccountModel) => {
+        return `account-${item.address}`;
+    };
+
     renderItem = ({ item }: { item: AccountModel }) => {
         const { signableAccount, reorderEnabled } = this.state;
 
@@ -357,7 +361,7 @@ class AccountListView extends Component<Props, State> {
                             itemHeight={styles.rowContainer.height}
                             separatorHeight={10}
                             dataSource={dataSource}
-                            keyExtractor={(item) => `account-${item.address}`}
+                            keyExtractor={this.itemKeyExtractor}
                             renderItem={this.renderItem}
                             onDataChange={this.onAccountReorder}
                             onItemPress={this.onItemPress}

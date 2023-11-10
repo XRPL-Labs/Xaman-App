@@ -44,7 +44,6 @@ enum AutoScrollState {
 export default class SortableFlatList extends Component<Props, State> {
     private itemRefs: Map<number, CellComponent>;
     private itemRefsSnapShot: Map<number, CellComponent>;
-    private itemPositions: Map<number, number>;
     private activeItem: CellComponent;
     private listRef: React.RefObject<FlatList>;
 
@@ -75,7 +74,6 @@ export default class SortableFlatList extends Component<Props, State> {
 
         this.itemRefs = new Map();
         this.itemRefsSnapShot = new Map();
-        this.itemPositions = new Map();
         this.listRef = React.createRef();
         this.activeItem = undefined;
 
@@ -154,8 +152,8 @@ export default class SortableFlatList extends Component<Props, State> {
             this.itemRefs = new Map(this.itemRefsSnapShot);
 
             // reset any item ref and remove invalid items
-            this.itemRefs.forEach((item, key) => {
-                if (item && item.isValid()) {
+            this.itemRefs.forEach(async (item, key) => {
+                if (item && (await item.isValid())) {
                     item.resetState();
                 } else {
                     this.itemRefs.delete(key);
@@ -410,7 +408,7 @@ export default class SortableFlatList extends Component<Props, State> {
         }
     };
 
-    onDataChange = () => {
+    onDataChange = async () => {
         const { dataSource, onDataChange } = this.props;
 
         const newDataSource = [] as any[];
@@ -418,7 +416,7 @@ export default class SortableFlatList extends Component<Props, State> {
         for (let i = 0; i < dataSource.length; i++) {
             const item = this.itemRefs.get(i);
 
-            if (item && item.isValid()) {
+            if (item && (await item.isValid())) {
                 newDataSource[i] = dataSource[item.props.index];
             } else {
                 newDataSource[i] = dataSource[i];
@@ -499,8 +497,8 @@ export default class SortableFlatList extends Component<Props, State> {
                 key={`cellComponent-${index}`}
                 // key={cellKey}
                 testID={cellKey}
-                ref={(ref) => {
-                    if (!this.itemRefs.has(index) || !this.itemRefs.get(index)?.isValid()) {
+                ref={async (ref) => {
+                    if (!this.itemRefs.has(index) || !(await this.itemRefs.get(index)?.isValid())) {
                         this.itemRefs.set(index, ref);
                     }
                     // create a fresh snapshot from refs when list size changes
@@ -527,7 +525,7 @@ export default class SortableFlatList extends Component<Props, State> {
             <FlatList
                 testID={testID}
                 ref={this.listRef}
-                style={[styles.container]}
+                style={styles.container}
                 contentContainerStyle={[
                     styles.contentContainerStyle,
                     { height: containerHeight !== 0 ? containerHeight : undefined },
