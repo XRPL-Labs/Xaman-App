@@ -11,7 +11,7 @@ const InvokeInfo = {
 
     getDescription: (tx: Invoke): string => {
         // TODO: add more description
-        return `This is an ${tx.Type}} transaction`;
+        return `This is an ${tx.Type} transaction`;
     },
 
     getRecipient: (tx: Invoke, account: AccountModel): { address: string; tag?: number } => {
