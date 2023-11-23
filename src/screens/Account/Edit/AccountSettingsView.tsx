@@ -427,7 +427,7 @@ class AccountSettingsView extends Component<Props, State> {
 
                         <Button
                             numberOfLines={1}
-                            label={Localize.t('account.removeFromXUMM')}
+                            label={Localize.t('account.removeFromXaman')}
                             icon="IconTrash"
                             iconStyle={AppStyles.imgColorWhite}
                             style={[AppStyles.marginSml, AppStyles.buttonRed]}

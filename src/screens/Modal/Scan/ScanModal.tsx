@@ -468,14 +468,14 @@ class ScanView extends Component<Props, State> {
             switch (type) {
                 case StringType.XrplDestination:
                     message = clipboard
-                        ? Localize.t('scan.theClipboardDataIsNotContainXummPayload')
+                        ? Localize.t('scan.theClipboardDataIsNotContainXamanPayload')
                         : Localize.t('scan.scannedQRIsNotXRPAddress');
                     break;
                 // @ts-ignore
                 case StringType.XummPayloadReference:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainXRPAddress')
-                        : Localize.t('scan.scannedQRIsNotXummPayload');
+                        : Localize.t('scan.scannedQRIsNotXamanPayload');
                     break;
                 default:
                     message = clipboard
