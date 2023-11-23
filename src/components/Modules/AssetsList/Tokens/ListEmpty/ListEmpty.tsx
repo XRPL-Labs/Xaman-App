@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
+import NetworkService from '@services/NetworkService';
+
 import { TouchableDebounce, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
@@ -15,7 +17,7 @@ import styles from './styles';
 class ListEmpty extends PureComponent {
     openTrustLineDescription = () => {
         Navigator.showModal(AppScreens.Modal.Help, {
-            title: Localize.t('home.whatAreOtherAssets'),
+            title: Localize.t('home.whatAreOtherAssets', { nativeAsset: NetworkService.getNativeAsset() }),
             content: Localize.t('home.otherAssetsDesc'),
         });
     };
@@ -23,14 +25,19 @@ class ListEmpty extends PureComponent {
     render() {
         return (
             <View testID="tokens-list-empty-view" style={[styles.container]}>
-                <InfoMessage type="warning" label={Localize.t('home.youDonNotHaveOtherAssets')} />
+                <InfoMessage
+                    type="warning"
+                    label={Localize.t('home.youDonNotHaveOtherAssets', {
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    })}
+                />
                 <TouchableDebounce
                     style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingSml]}
                     onPress={this.openTrustLineDescription}
                 >
                     <Icon name="IconInfo" size={20} style={[styles.trustLineInfoIcon]} />
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.link, AppStyles.colorGrey]}>
-                        {Localize.t('home.whatAreOtherAssets')}
+                        {Localize.t('home.whatAreOtherAssets', { nativeAsset: NetworkService.getNativeAsset() })}
                     </Text>
                 </TouchableDebounce>
             </View>

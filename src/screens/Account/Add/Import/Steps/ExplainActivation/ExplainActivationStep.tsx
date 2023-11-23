@@ -53,6 +53,7 @@ class ExplainActivationStep extends Component<Props, State> {
                     <Text style={[AppStyles.baseText, AppStyles.bold, AppStyles.textCenterAligned]}>
                         {Localize.t('account.accountImportActivationExplain', {
                             baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                            nativeAsset: NetworkService.getNativeAsset(),
                         })}
                     </Text>
 
@@ -61,13 +62,16 @@ class ExplainActivationStep extends Component<Props, State> {
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                         {Localize.t('account.accountActivateReserveExplain', {
                             baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                            nativeAsset: NetworkService.getNativeAsset(),
                         })}
                     </Text>
 
                     <Spacer size={20} />
 
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.accountReserveNotShownExplain')}
+                        {Localize.t('account.accountReserveNotShownExplain', {
+                            nativeAsset: NetworkService.getNativeAsset(),
+                        })}
                     </Text>
 
                     <Spacer size={20} />
@@ -83,7 +87,7 @@ class ExplainActivationStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}

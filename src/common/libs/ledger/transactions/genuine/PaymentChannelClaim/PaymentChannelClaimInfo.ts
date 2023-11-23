@@ -17,7 +17,10 @@ const PaymentChannelClaimInfo = {
         content += '\n';
 
         if (tx.Balance) {
-            content += Localize.t('events.theChannelBalanceClaimedIs', { balance: tx.Balance.value });
+            content += Localize.t('events.theChannelBalanceClaimedIs', {
+                balance: tx.Balance.value,
+                currency: tx.Balance.currency,
+            });
             content += '\n';
         }
 

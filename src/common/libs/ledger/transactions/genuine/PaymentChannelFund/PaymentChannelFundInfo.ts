@@ -15,7 +15,10 @@ const PaymentChannelFundInfo = {
 
         content += Localize.t('events.itWillUpdateThePaymentChannel', { channel: tx.Channel });
         content += '\n';
-        content += Localize.t('events.itWillIncreaseTheChannelAmount', { amount: tx.Amount.value });
+        content += Localize.t('events.itWillIncreaseTheChannelAmount', {
+            amount: tx.Amount.value,
+            currency: tx.Amount.currency,
+        });
 
         return content;
     },

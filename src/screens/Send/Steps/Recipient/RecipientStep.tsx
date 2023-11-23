@@ -448,6 +448,7 @@ class RecipientStep extends Component<Props, State> {
                             type: 'warning',
                             text: Localize.t('send.destinationCannotActivateWithIOU', {
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                                nativeAsset: NetworkService.getNativeAsset(),
                             }),
                             buttons: [
                                 {
@@ -473,6 +474,7 @@ class RecipientStep extends Component<Props, State> {
                             type: 'warning',
                             text: Localize.t('send.destinationNotExistTooLittleToCreate', {
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                                nativeAsset: NetworkService.getNativeAsset(),
                             }),
                             buttons: [
                                 {
@@ -499,6 +501,7 @@ class RecipientStep extends Component<Props, State> {
                             text: Localize.t('send.destinationNotExistCreationWarning', {
                                 amount,
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                                nativeAsset: NetworkService.getNativeAsset(),
                             }),
                             buttons: [
                                 {
@@ -610,7 +613,9 @@ class RecipientStep extends Component<Props, State> {
                 setTimeout(() => {
                     Navigator.showAlertModal({
                         type: 'warning',
-                        text: Localize.t('send.sendToAccountWithDisallowXrpFlagWarning'),
+                        text: Localize.t('send.sendToAccountWithDisallowNativeAssetFlagWarning', {
+                            nativeAsset: NetworkService.getNativeAsset(),
+                        }),
                         buttons: [
                             {
                                 text: Localize.t('global.back'),

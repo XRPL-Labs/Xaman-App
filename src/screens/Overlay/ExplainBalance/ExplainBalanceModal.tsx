@@ -390,7 +390,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     ]}
                 >
                     <Text style={[AppStyles.p, AppStyles.subtext, AppStyles.textCenterAligned]}>
-                        {Localize.t('home.xrpYouOwnVsYourSpendableBalance')}
+                        {Localize.t('home.nativeAssetYouOwnVsYourSpendableBalance', {
+                            nativeAsset: NetworkService.getNativeAsset(),
+                        })}
                     </Text>
                 </View>
 

@@ -160,6 +160,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             trustSet.Json,
             Localize.t('asset.addingAssetReserveDescription', {
                 ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                nativeAsset: NetworkService.getNativeAsset(),
             }),
         );
 

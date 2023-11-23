@@ -363,6 +363,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     title: Localize.t('global.danger'),
                     text: Localize.t('account.deleteAccountWarning', {
                         ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
                     }),
                     buttons: [
                         {
@@ -511,7 +512,9 @@ class ReviewTransactionModal extends Component<Props, State> {
                     ) {
                         Navigator.showAlertModal({
                             type: 'warning',
-                            text: Localize.t('payload.paymentToDisallowedXRPWarning'),
+                            text: Localize.t('payload.paymentToDisallowedNativeAssetWarning', {
+                                nativeAsset: NetworkService.getNativeAsset(),
+                            }),
                             buttons: [
                                 {
                                     text: Localize.t('global.cancel'),

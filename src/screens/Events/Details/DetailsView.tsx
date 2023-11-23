@@ -640,14 +640,16 @@ class TransactionDetailsView extends Component<Props, State> {
                     <Text style={styles.labelText}> {Localize.t('global.reserve')}</Text>
                 </View>
 
-                <View style={[AppStyles.paddingBottomSml]}>
+                <View style={AppStyles.paddingBottomSml}>
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {changes.action === 'INC'
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
                                   ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
+                                  nativeAsset: NetworkService.getNativeAsset(),
                               })
                             : Localize.t('events.thisTransactionDecreaseAccountReserve', {
                                   ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
+                                  nativeAsset: NetworkService.getNativeAsset(),
                               })}
                     </Text>
                 </View>
@@ -672,9 +674,12 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.detailContainer}>
-                <Text style={[styles.labelText]}>{Localize.t('events.transactionCost')}</Text>
-                <Text style={[styles.contentText]}>
-                    {Localize.t('events.sendingThisTransactionConsumed', { fee: tx.Fee })}
+                <Text style={styles.labelText}>{Localize.t('events.transactionCost')}</Text>
+                <Text style={styles.contentText}>
+                    {Localize.t('events.sendingThisTransactionConsumed', {
+                        fee: tx.Fee,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    })}
                 </Text>
             </View>
         );
@@ -697,7 +702,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.detailContainer}>
-                <Text style={[styles.labelText]}>{Localize.t('global.invoiceID')}</Text>
+                <Text style={styles.labelText}>{Localize.t('global.invoiceID')}</Text>
                 <Text selectable style={styles.hashText}>
                     {tx.InvoiceID}
                 </Text>

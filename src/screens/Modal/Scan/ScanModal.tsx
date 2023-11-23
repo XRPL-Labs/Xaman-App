@@ -11,7 +11,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService } from '@services';
+import { StyleService, BackendService, NetworkService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { CoreModel } from '@store/models';
@@ -469,12 +469,16 @@ class ScanView extends Component<Props, State> {
                 case StringType.XrplDestination:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainXamanPayload')
-                        : Localize.t('scan.scannedQRIsNotXRPAddress');
+                        : Localize.t('scan.scannedQRIsNotAccountAddress', {
+                              nativeAsset: NetworkService.getNativeAsset(),
+                          });
                     break;
                 // @ts-ignore
                 case StringType.XummPayloadReference:
                     message = clipboard
-                        ? Localize.t('scan.theClipboardDataIsNotContainXRPAddress')
+                        ? Localize.t('scan.theClipboardDataIsNotContainAccountAddress', {
+                              nativeAsset: NetworkService.getNativeAsset(),
+                          })
                         : Localize.t('scan.scannedQRIsNotXamanPayload');
                     break;
                 default:
@@ -628,7 +632,9 @@ class ScanView extends Component<Props, State> {
 
         switch (type) {
             case StringType.XrplDestination:
-                description = Localize.t('scan.pleaseScanXRPAddress');
+                description = Localize.t('scan.pleaseScanAccountAddress', {
+                    nativeAsset: NetworkService.getNativeAsset(),
+                });
                 break;
             default:
                 description = Localize.t('scan.aimAtTheCode');

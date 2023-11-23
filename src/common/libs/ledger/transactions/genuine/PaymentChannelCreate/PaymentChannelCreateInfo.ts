@@ -34,7 +34,10 @@ const PaymentChannelCreateInfo = {
         content += '\n';
 
         if (tx.Type === TransactionTypes.PaymentChannelCreate) {
-            content += Localize.t('events.theChannelAmountIs', { amount: tx.Amount.value });
+            content += Localize.t('events.theChannelAmountIs', {
+                amount: tx.Amount.value,
+                currency: tx.Amount.currency,
+            });
             content += '\n';
         }
 

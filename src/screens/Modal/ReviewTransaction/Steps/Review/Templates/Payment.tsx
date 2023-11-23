@@ -499,9 +499,10 @@ class PaymentTemplate extends Component<Props, State> {
                                 <>
                                     <Spacer size={15} />
                                     <InfoMessage
-                                        label={Localize.t('payload.payingWithXRPExchangeRate', {
+                                        label={Localize.t('payload.payingWithNativeAssetExchangeRate', {
                                             nativeRoundedUp,
                                             exchangeRate,
+                                            nativeAsset: NetworkService.getNativeAsset(),
                                         })}
                                         type="info"
                                     />
