@@ -1,4 +1,4 @@
-import { findKey, get, set, isUndefined } from 'lodash';
+import { find, get, set, isUndefined } from 'lodash';
 
 import NetworkService from '@services/NetworkService';
 
@@ -29,41 +29,35 @@ class EscrowFinish extends BaseTransaction {
     get Amount(): AmountType {
         const affectedNodes = get(this, ['meta', 'AffectedNodes'], []);
 
-        const finalFields = get(
-            affectedNodes,
-            `${findKey(affectedNodes, 'DeletedNode')}.DeletedNode.FinalFields`,
-            undefined,
-        );
+        const node = find(affectedNodes, (o) => o?.DeletedNode?.LedgerEntryType === 'Escrow');
+        const object = get(node, 'DeletedNode.FinalFields');
 
-        if (isUndefined(finalFields)) return undefined;
+        if (isUndefined(object)) return undefined;
 
-        if (typeof finalFields.Amount === 'string') {
+        if (typeof object.Amount === 'string') {
             return {
                 currency: NetworkService.getNativeAsset(),
-                value: new Amount(finalFields.Amount).dropsToNative(),
+                value: new Amount(object.Amount).dropsToNative(),
             };
         }
 
         return {
-            currency: finalFields.Amount.currency,
-            value: finalFields.Amount.value,
-            issuer: finalFields.Amount.issuer,
+            currency: object.Amount.currency,
+            value: object.Amount.value,
+            issuer: object.Amount.issuer,
         };
     }
 
     get Destination(): Destination {
         const affectedNodes = get(this, ['meta', 'AffectedNodes'], []);
 
-        const finalFields = get(
-            affectedNodes,
-            `${findKey(affectedNodes, 'DeletedNode')}.DeletedNode.FinalFields`,
-            undefined,
-        );
+        const node = find(affectedNodes, (o) => o?.DeletedNode?.LedgerEntryType === 'Escrow');
+        const object = get(node, 'DeletedNode.FinalFields');
 
-        if (!isUndefined(finalFields)) {
+        if (!isUndefined(object)) {
             return {
-                address: finalFields.Destination,
-                tag: finalFields.DestinationTag,
+                address: object.Destination,
+                tag: object.DestinationTag,
             };
         }
 
