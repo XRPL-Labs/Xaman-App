@@ -628,7 +628,8 @@
     "website": "Website:",
     "donateToTheCreator": "Donate to the creator",
     "chooseAmount": "Choose amount",
-    "aboutThisXApp": "About this xApp"
+    "aboutThisXApp": "About this xApp",
+    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with.\nPlease switch to the supported networks and try again.\n\nSupported networks:\n%{supportedNetworks}"
   },
   "settings": {
     "generalSettings": "Generelt",
@@ -975,7 +976,7 @@
     "unableToSendPaymentTrustLineLimitIsExceeded": "Unable to send the token to the recipient.\r\nThe 'Limit' for the amount of tokens the recipient wants to hold is exceeded. The recipient will have to update their TrustLine for the token you're sending with a higher 'Limit' to be able to receive this token.",
     "destinationTagWarningConfirm": "Du sender til en konto med destinasjons-kode. Vennligst dobbelsjekk denne koden: oppgir du feil her så må du kontakte supporten til destinasjonen for å gjenfinne midlene dine.",
     "doubleCheckDestinationTag": "Dobbelsjekk destinasjons-kode",
-    "sendToAccountWithDisallowNativeAssetyFlagWarning": "Destinasjonskontoen indikerer at den ikke ønsker å motta XRP innbetalinger. Bare ikke-XRP (IOU) betalinger kan bli sendt til denne destinasjonen.",
+    "sendToAccountWithDisallowNativeAssetFlagWarning": "The destination account indicates that it doesn't want to receive %{nativeAsset} payments. Only non-%{nativeAsset} payments can be sent to this destination.",
     "unableToSendPaymentNotEnoughLiquidity": "Klarer ikke å sende betalingen akkurat nå pga. mangel på likviditet.",
     "probableLossOfFunds": "Sannsynlig tap av midler",
     "addressIsUnderInvestigationPleaseCancel": "er under etterforskning. Vennligst avbryt denne transaksjonen.",

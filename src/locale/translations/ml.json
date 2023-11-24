@@ -628,7 +628,8 @@
     "website": "Website:",
     "donateToTheCreator": "Donate to the creator",
     "chooseAmount": "Choose amount",
-    "aboutThisXApp": "About this xApp"
+    "aboutThisXApp": "About this xApp",
+    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with.\nPlease switch to the supported networks and try again.\n\nSupported networks:\n%{supportedNetworks}"
   },
   "settings": {
     "generalSettings": "ജനറൽ",
@@ -784,7 +785,6 @@
     "addTangemCard": "ടാംഗെം കാർഡ് ചേർക്കുക",
     "tangemCardEmptyGenerateWalletAlert": "നിങ്ങളുടെ ടാംഗെം കാർഡിൽ ഇതുവരെ ഒരു എക്സ്ആർപി ലെഡ്ജർ അക്കൗണ്ട് അടങ്ങിയിട്ടില്ല. ഈ കാർഡ് ഉപയോഗിക്കുന്നതിന്, കാർഡ് ഉപയോഗിച്ച് ഒരു അക്കൗണ്ട് സൃഷ്ടിക്കേണ്ടതുണ്ട്.",
     "generateAccount": "അക്കൌണ്ട് ഉണ്ടാക്കുക",
-    "scannedCardIsNotATangemXRPCard": "സ്കാൻ ചെയ്ത ടാംഗെം കാർഡ് ഒരു എക്സ്ആർപി കാർഡല്ല",
     "cardSecurity": "കാർഡ് സുരക്ഷ",
     "tangemLongTapExplain": "ഈ സംവിധാനം പ്രോക്സിമിറ്റി ആക്രമണങ്ങളിൽ നിന്ന് കാർഡിനെ പരിരക്ഷിക്കുന്നു: ഇത് കമാൻഡുകളുടെ സ്വീകരണവും നിർവ്വഹണവും തമ്മിലുള്ള കാലതാമസം നടപ്പിലാക്കും.",
     "tangemPasscodeExplain": "കാർഡിന്റെ അവസ്ഥയിൽ മാറ്റം വരുത്തുന്ന ഏതെങ്കിലും കമാൻഡ് നടപ്പിലാക്കുന്നതിന് മുമ്പ്, നിങ്ങൾ പാസ്‌കോഡ് നൽകേണ്ടതുണ്ട്.",

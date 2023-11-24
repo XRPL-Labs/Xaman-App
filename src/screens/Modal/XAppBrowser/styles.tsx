@@ -1,4 +1,5 @@
 import StyleService from '@services/StyleService';
+import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
@@ -23,6 +24,15 @@ const styles = StyleService.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: AppSizes.paddingSml,
+    },
+    infoIcon: {
+        tintColor: '$red',
     },
 });
 

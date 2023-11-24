@@ -628,7 +628,8 @@
     "website": "Sitio web:",
     "donateToTheCreator": "Donar al creador",
     "chooseAmount": "Elegir cantidad",
-    "aboutThisXApp": "Sobre esta xApp"
+    "aboutThisXApp": "Sobre esta xApp",
+    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with.\nPlease switch to the supported networks and try again.\n\nSupported networks:\n%{supportedNetworks}"
   },
   "settings": {
     "generalSettings": "General",

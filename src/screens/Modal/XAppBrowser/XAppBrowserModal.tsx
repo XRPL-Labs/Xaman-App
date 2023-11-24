@@ -31,14 +31,24 @@ import { AccountInfoType } from '@common/helpers/resolver';
 import { StringTypeCheck } from '@common/utils/string';
 
 import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
+import NetworkService from '@services/NetworkService';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 
-import { Avatar, Button, LoadingIndicator, HeartBeatAnimation, Spacer, WebView } from '@components/General';
+import {
+    Avatar,
+    Button,
+    LoadingIndicator,
+    HeartBeatAnimation,
+    Spacer,
+    WebView,
+    Icon,
+    InfoMessage,
+} from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
@@ -59,19 +69,26 @@ export interface Props {
 }
 
 export interface State {
-    title: string;
-    icon: string;
-    identifier: string;
-    supportUrl: string;
+    ott: string;
+    app: {
+        title: string;
+        icon: string;
+        identifier: string;
+        supportUrl: string;
+        permissions: {
+            special: string[];
+            commands: string[];
+        };
+        networks: string[];
+    };
     account: AccountModel;
     network: NetworkModel;
-    ott: string;
     error: string;
-    permissions: any;
-    isFetchingOTT: boolean;
+    isLaunchingApp: boolean;
     isLoadingApp: boolean;
     isAppReady: boolean;
     isAppReadyTimeout: boolean;
+    isRequiredNetworkSwitch: boolean;
     coreSettings: CoreModel;
     appVersionCode: string;
 }
@@ -118,21 +135,25 @@ class XAppBrowserModal extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            title: props.title,
-            icon: props.icon,
-            identifier: props.identifier,
-            supportUrl: undefined,
+            ott: undefined,
+            app: {
+                title: props.title,
+                icon: props.icon,
+                identifier: props.identifier,
+                supportUrl: undefined,
+                permissions: undefined,
+                networks: undefined,
+            },
             account: props.account || CoreRepository.getDefaultAccount(),
             network: coreSettings.network,
-            ott: undefined,
             error: undefined,
-            permissions: undefined,
-            isFetchingOTT: true,
+            isLaunchingApp: true,
             isLoadingApp: false,
             isAppReady: false,
             isAppReadyTimeout: false,
-            coreSettings,
+            isRequiredNetworkSwitch: false,
             appVersionCode: GetAppVersionCode(),
+            coreSettings,
         };
 
         this.webView = React.createRef();
@@ -147,7 +168,7 @@ class XAppBrowserModal extends Component<Props, State> {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
 
         // fetch OTT on browser start
-        InteractionManager.runAfterInteractions(this.fetchOTT);
+        InteractionManager.runAfterInteractions(this.lunchApp);
 
         // listen for authentication lock state changes
         AuthenticationService.on('lockStateChange', this.onLockStateChange);
@@ -302,18 +323,23 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.setState(
             {
-                identifier,
-                title,
-                icon: null,
+                app: {
+                    identifier,
+                    title,
+                    icon: null,
+                    supportUrl: null,
+                    permissions: undefined,
+                    networks: undefined,
+                },
             },
             () => {
-                this.fetchOTT(data);
+                this.lunchApp(data);
             },
         );
     };
 
     openBrowserLink = (data: { url: string }, launchDirectly: boolean) => {
-        const { title } = this.state;
+        const { app } = this.state;
 
         const url = get(data, 'url', undefined);
 
@@ -333,7 +359,7 @@ class XAppBrowserModal extends Component<Props, State> {
         Navigator.showAlertModal({
             type: 'warning',
             title: Localize.t('global.notice'),
-            text: Localize.t('global.xAppWantsToOpenURLNotice', { xapp: title, url }),
+            text: Localize.t('global.xAppWantsToOpenURLNotice', { xapp: app.title, url }),
             buttons: [
                 {
                     text: Localize.t('global.cancel'),
@@ -392,15 +418,15 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     handleCommand = (command: XAppMethods, parsedData: any) => {
-        const { permissions, isAppReady } = this.state;
+        const { app, isAppReady } = this.state;
 
         // when there is no permission available just do not run any command
-        if (!permissions || isEmpty(get(permissions, 'commands'))) {
+        if (!app.permissions || isEmpty(get(app.permissions, 'commands'))) {
             return;
         }
 
         // check if the xApp have the permission to run this command
-        const { commands: AllowedCommands, special: SpecialPermissions } = permissions;
+        const { commands: AllowedCommands, special: SpecialPermissions } = app.permissions;
 
         // xApp doesn't have the permission to run this command
         if (!AllowedCommands.includes(command.toUpperCase())) {
@@ -492,112 +518,120 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    fetchOTT = async (xAppNavigateData?: any) => {
+    lunchApp = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
-        const { identifier, appVersionCode, account, network, title, coreSettings, isFetchingOTT } = this.state;
+        const { app, appVersionCode, account, network, coreSettings, isLaunchingApp } = this.state;
 
-        // check if identifier have a valid value
-        if (!StringTypeCheck.isValidXAppIdentifier(identifier)) {
-            this.setState({
-                ott: undefined,
-                permissions: undefined,
-                isFetchingOTT: false,
-                error: 'Provided xApp identifier is not valid!',
-            });
-            return;
-        }
+        try {
+            // check if identifier have a valid value
+            if (!StringTypeCheck.isValidXAppIdentifier(app.identifier)) {
+                throw new Error('Provided xApp identifier is not valid!');
+            }
 
-        if (!isFetchingOTT) {
-            this.setState({
-                isFetchingOTT: true,
-            });
-        }
-
-        // default headers
-        const data = {
-            version: appVersionCode,
-            locale: Localize.getCurrentLocale(),
-            currency: coreSettings.currency,
-            style: coreSettings.theme,
-            nodetype: network.key,
-            nodewss: network.defaultNode.endpoint,
-        };
-
-        // assign origin to the headers
-        if (origin) {
-            assign(data, {
-                origin: {
-                    type: origin,
-                    data: originData,
-                },
-            });
-        }
-
-        if (params) {
-            assign(data, params);
-        }
-
-        // assign account headers
-        if (account) {
-            assign(data, {
-                account: account.address,
-                accounttype: account.type,
-                accountaccess: AccountRepository.isSignable(account) ? AccessLevels.Full : AccessLevels.Readonly,
-            });
-        }
-
-        // assign any extra data
-        if (xAppNavigateData) {
-            assign(data, { xAppNavigateData });
-        }
-
-        BackendService.getXAppLaunchToken(identifier, data)
-            .then((res: any) => {
-                const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = res;
-
-                // an error reported from backend
-                if (error) {
-                    this.setState({
-                        ott: undefined,
-                        permissions: undefined,
-                        error,
-                    });
-                    return;
-                }
-
-                // check if the ott is a valid uuid v4
-                if (!StringTypeCheck.isValidUUID(ott)) {
-                    this.setState({
-                        ott: undefined,
-                        permissions: undefined,
-                        error: 'Provided ott is not valid!',
-                    });
-                    return;
-                }
-
-                // everything is fine
+            if (!isLaunchingApp) {
                 this.setState({
-                    ott,
-                    title: xappTitle || title,
+                    isLaunchingApp: true,
+                });
+            }
+
+            // get xapp info
+            const xAppInfo = await BackendService.getXAppInfo(app.identifier);
+
+            if (!xAppInfo?.networks || !Array.isArray(xAppInfo?.networks)) {
+                throw new Error('Unable to check for the xApp supported networks!');
+            }
+
+            const { networks } = xAppInfo;
+
+            // user is not connected to the expected network
+            if (networks.includes(NetworkService.getNetwork().key)) {
+                // user is not connected to the supported networks
+                // show network selection view
+                this.setState({
+                    app: {
+                        ...app,
+                        networks: xAppInfo.networks,
+                    },
+                    isLaunchingApp: false,
+                    isRequiredNetworkSwitch: true,
+                });
+            }
+
+            // default headers
+            const data = {
+                version: appVersionCode,
+                locale: Localize.getCurrentLocale(),
+                currency: coreSettings.currency,
+                style: coreSettings.theme,
+                nodetype: network.key,
+                nodewss: network.defaultNode.endpoint,
+            };
+
+            // assign origin to the headers
+            if (origin) {
+                assign(data, {
+                    origin: {
+                        type: origin,
+                        data: originData,
+                    },
+                });
+            }
+
+            if (params) {
+                assign(data, params);
+            }
+
+            // assign account headers
+            if (account) {
+                assign(data, {
+                    account: account.address,
+                    accounttype: account.type,
+                    accountaccess: AccountRepository.isSignable(account) ? AccessLevels.Full : AccessLevels.Readonly,
+                });
+            }
+
+            // assign any extra data
+            if (xAppNavigateData) {
+                assign(data, { xAppNavigateData });
+            }
+
+            const response = await BackendService.getXAppLaunchToken(app.identifier, data);
+            const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = response;
+
+            // an error reported from backend
+            if (error) {
+                throw new Error(error);
+            }
+
+            // check if the ott is a valid uuid v4
+            if (!StringTypeCheck.isValidUUID(ott)) {
+                throw new Error('Provided ott is not valid from response!');
+            }
+
+            // everything is fine
+            this.setState({
+                ott,
+                app: {
+                    identifier: app.identifier,
+                    title: xappTitle || app.title,
                     supportUrl: xappSupportUrl,
                     icon,
                     permissions,
-                    isLoadingApp: true,
-                    error: undefined,
-                });
-            })
-            .catch(() => {
-                this.setState({
-                    ott: undefined,
-                    permissions: undefined,
-                    error: 'FETCH_OTT_FAILED',
-                });
-            })
-            .finally(() => {
-                this.setState({
-                    isFetchingOTT: false,
-                });
+                    networks,
+                },
+                isLaunchingApp: false,
+                isLoadingApp: true,
+                error: undefined,
             });
+            // @ts-ignore
+        } catch (error: Error) {
+            this.setState({
+                ott: undefined,
+                app: undefined,
+                isLaunchingApp: false,
+                error: error?.message,
+            });
+        }
     };
 
     onAccountChange = (account: AccountModel) => {
@@ -605,7 +639,7 @@ class XAppBrowserModal extends Component<Props, State> {
             {
                 account,
             },
-            this.fetchOTT,
+            this.lunchApp,
         );
     };
 
@@ -613,16 +647,19 @@ class XAppBrowserModal extends Component<Props, State> {
         this.setState(
             {
                 network,
+                isRequiredNetworkSwitch: false,
             },
-            this.fetchOTT,
+            this.lunchApp,
         );
     };
 
     getSource = () => {
-        const { identifier, ott, coreSettings } = this.state;
+        const { app, ott, coreSettings } = this.state;
 
         return {
-            uri: `https://xumm.app/detect/xapp:${identifier}?xAppToken=${ott}&xAppStyle=${toUpper(coreSettings.theme)}`,
+            uri: `https://xumm.app/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+                coreSettings.theme,
+            )}`,
             headers: {
                 'X-OTT': ott,
             },
@@ -654,19 +691,19 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     openDeveloperSupport = () => {
-        const { supportUrl } = this.state;
+        const { app } = this.state;
 
-        Linking.openURL(supportUrl).catch(() => {
+        Linking.openURL(app.supportUrl).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };
 
     openDonation = (amount?: number) => {
-        const { identifier } = this.state;
+        const { app } = this.state;
 
         this.navigateTo({
             xApp: AppConfig.xappIdentifiers.xappDonation,
-            destination: identifier,
+            destination: app.identifier,
             amount,
         });
     };
@@ -683,7 +720,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     onLoadEnd = (e: any) => {
-        const { permissions } = this.state;
+        const { app } = this.state;
 
         const { loading } = e.nativeEvent;
 
@@ -694,7 +731,10 @@ class XAppBrowserModal extends Component<Props, State> {
         let shouldSetAppReady = true;
 
         // when xApp have permission to set the app ready then just wait for the app to set the ready state
-        if (Array.isArray(permissions?.commands) && permissions?.commands.includes(toUpper(XAppMethods.Ready))) {
+        if (
+            Array.isArray(app.permissions?.commands) &&
+            app.permissions?.commands.includes(toUpper(XAppMethods.Ready))
+        ) {
             // set timeout for loading
             if (this.softLoadingTimeout) {
                 clearTimeout(this.softLoadingTimeout);
@@ -730,7 +770,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     roundedSmall
                     icon="IconRefresh"
                     iconSize={14}
-                    onPress={this.fetchOTT}
+                    onPress={this.lunchApp}
                     label={Localize.t('global.tryAgain')}
                 />
             </View>
@@ -738,17 +778,17 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderLoading = () => {
-        const { icon, supportUrl, isAppReadyTimeout, coreSettings } = this.state;
+        const { app, isAppReadyTimeout, coreSettings } = this.state;
 
         let LoaderComponent;
         let LoadingStateComponent;
 
-        if (icon) {
+        if (app.icon) {
             LoaderComponent = (
                 <HeartBeatAnimation>
                     <Avatar
                         size={80}
-                        source={{ uri: icon }}
+                        source={{ uri: app.icon }}
                         badgeColor={StyleService.value('$orange')}
                         // eslint-disable-next-line react-native/no-color-literals,react-native/no-inline-styles
                         containerStyle={{ backgroundColor: 'transparent' }}
@@ -782,7 +822,7 @@ class XAppBrowserModal extends Component<Props, State> {
                             {Localize.t('xapp.theXAppHasNotBeenFullyLoaded')}
                         </Text>
                         <Spacer />
-                        {supportUrl && (
+                        {app.supportUrl && (
                             <Button
                                 roundedMini
                                 secondary
@@ -799,6 +839,35 @@ class XAppBrowserModal extends Component<Props, State> {
             <View style={styles.stateContainer}>
                 {LoaderComponent}
                 {LoadingStateComponent}
+            </View>
+        );
+    };
+
+    renderNetworkSwitch = () => {
+        const { app } = this.state;
+
+        let supportedNetworks = '';
+
+        const networks = NetworkRepository.findAll();
+
+        for (const network of networks) {
+            if (app.networks.includes(network.key)) {
+                supportedNetworks += `"${network.name}"\n`;
+            }
+        }
+
+        return (
+            <View style={styles.errorContainer}>
+                <Icon name="IconInfo" style={styles.infoIcon} size={80} />
+                <Spacer size={18} />
+                <InfoMessage
+                    type="neutral"
+                    labelStyle={styles.actionDescription}
+                    label={Localize.t('xapp.xAppSupportNetworkError', {
+                        supportedNetworks,
+                    })}
+                    containerStyle={styles.actionContainer}
+                />
             </View>
         );
     };
@@ -820,17 +889,21 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { isFetchingOTT, isLoadingApp, isAppReady, error } = this.state;
+        const { isLaunchingApp, isLoadingApp, isAppReady, isRequiredNetworkSwitch, error } = this.state;
 
         let appView = null;
         let stateView = null;
 
         // if still fetching OTT only show the loading spinner
-        if (!isFetchingOTT) {
-            appView = this.renderApp();
+        if (!isLaunchingApp) {
+            if (isRequiredNetworkSwitch) {
+                appView = this.renderNetworkSwitch();
+            } else {
+                appView = this.renderApp();
+            }
         }
 
-        if (isFetchingOTT || isLoadingApp || !isAppReady) {
+        if ((isLaunchingApp || isLoadingApp || !isAppReady) && !isRequiredNetworkSwitch) {
             stateView = this.renderLoading();
         } else if (error) {
             stateView = this.renderError();
@@ -845,13 +918,13 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { identifier, title, icon, network, account } = this.state;
+        const { app, network, account } = this.state;
 
         return (
             <XAppBrowserHeader
-                identifier={identifier}
-                title={title}
-                icon={icon}
+                identifier={app.identifier}
+                title={app.title}
+                icon={app.icon}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}
