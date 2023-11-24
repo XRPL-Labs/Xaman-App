@@ -80,6 +80,7 @@ export interface State {
             commands: string[];
         };
         networks: string[];
+        __ott: string;
     };
     account: AccountModel;
     network: NetworkModel;
@@ -143,6 +144,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 supportUrl: undefined,
                 permissions: undefined,
                 networks: undefined,
+                __ott: undefined,
             },
             account: props.account || CoreRepository.getDefaultAccount(),
             network: coreSettings.network,
@@ -318,11 +320,20 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     navigateTo = (data: { xApp: string; title?: string; [key: string]: any }) => {
+        const { app } = this.state;
+
         const identifier = get(data, 'xApp', undefined);
         const title = get(data, 'title', undefined);
 
+        // we are reloading the same xapp, we don't need to clear the app
+        if (app?.identifier === identifier) {
+            this.lunchApp(data);
+            return;
+        }
+
         this.setState(
             {
+                ott: undefined,
                 app: {
                     identifier,
                     title,
@@ -330,6 +341,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     supportUrl: null,
                     permissions: undefined,
                     networks: undefined,
+                    __ott: undefined,
                 },
             },
             () => {
@@ -558,7 +570,7 @@ class XAppBrowserModal extends Component<Props, State> {
             }
 
             // default headers
-            const data = {
+            const data: XamanBackend.XappLunchDataType = {
                 version: appVersionCode,
                 locale: Localize.getCurrentLocale(),
                 currency: coreSettings.currency,
@@ -577,6 +589,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 });
             }
 
+            // if there is any param, we include it
             if (params) {
                 assign(data, params);
             }
@@ -593,6 +606,16 @@ class XAppBrowserModal extends Component<Props, State> {
             // assign any extra data
             if (xAppNavigateData) {
                 assign(data, { xAppNavigateData });
+            }
+
+            // if there is any original ott for this app include it
+            if (app?.__ott) {
+                assign(data, {
+                    xAppNavigateData: {
+                        ...data.xAppNavigateData,
+                        __ott: app.__ott,
+                    },
+                });
             }
 
             const response = await BackendService.getXAppLaunchToken(app.identifier, data);
@@ -613,11 +636,12 @@ class XAppBrowserModal extends Component<Props, State> {
                 ott,
                 app: {
                     identifier: app.identifier,
-                    title: xappTitle || app.title,
+                    title: xappTitle || app?.title,
                     supportUrl: xappSupportUrl,
                     icon,
                     permissions,
                     networks,
+                    __ott: app?.__ott || ott,
                 },
                 isLaunchingApp: false,
                 isLoadingApp: true,
