@@ -544,7 +544,7 @@ class XAppBrowserModal extends Component<Props, State> {
             const { networks } = xAppInfo;
 
             // user is not connected to the expected network
-            if (networks.includes(NetworkService.getNetwork().key)) {
+            if (!networks.includes(NetworkService.getNetwork().key)) {
                 // user is not connected to the supported networks
                 // show network selection view
                 this.setState({
