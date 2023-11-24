@@ -30,21 +30,29 @@ import { NFTokenOffer } from '@common/libs/ledger/objects';
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
-import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
 // Locale
 import Localize from '@locale';
+import NetworkService from '@services/NetworkService';
+
+/* Types  ==================================================================== */
+export interface RatesType {
+    rate: number;
+    code: string;
+    symbol: string;
+    lastSync: number;
+}
 
 /* Service  ==================================================================== */
 class BackendService {
     private logger: any;
-    private latestCurrencyRate: { symbol: string; code: string; lastSync: number; lastRate: any };
+    private rates: Map<string, RatesType>;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
-        this.latestCurrencyRate = undefined;
+        this.rates = new Map();
     }
 
     public initialize = () => {
@@ -518,37 +526,35 @@ class BackendService {
 
     /**
      * Gets the exchange rate for a currency.
-     * @param {string} currency - The currency code.
+     * @param {string} currencyCode - The currency code.
      * @returns {Promise} A promise that resolves with the exchange rate data.
      */
-    getCurrencyRate = (currency: string): Promise<typeof this.latestCurrencyRate> => {
+    getCurrencyRate = (currencyCode: string): Promise<RatesType> => {
         return new Promise((resolve, reject) => {
-            // prevent unnecessary requests
-            if (this.latestCurrencyRate && this.latestCurrencyRate.code === currency) {
+            // check the cached version before requesting from backend
+            if (this.rates.has(currencyCode)) {
                 // calculate passed seconds from the latest sync
-                const passedSeconds = moment().diff(moment.unix(this.latestCurrencyRate.lastSync), 'second');
+                const passedSeconds = moment().diff(moment.unix(this.rates.get(currencyCode).lastSync), 'second');
 
                 // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.latestCurrencyRate);
+                    resolve(this.rates.get(currencyCode));
                     return;
                 }
             }
 
             // fetch/update the rate from backend
             ApiService.rates
-                .get({ currency })
+                .get({ currency: currencyCode })
                 .then((response: XamanBackend.CurrencyRateResponse) => {
-                    const rate = get(response, NetworkService.getNativeAsset());
-                    const symbol = get(response, '__meta.currency.symbol');
-
-                    this.latestCurrencyRate = {
-                        code: currency,
-                        symbol,
-                        lastRate: rate,
+                    const rate = {
+                        rate: get(response, NetworkService.getNativeAsset(), 0),
+                        code: currencyCode,
+                        symbol: get(response, '__meta.currency.symbol'),
                         lastSync: moment().unix(),
                     };
-                    resolve(this.latestCurrencyRate);
+                    this.rates.set(currencyCode, rate);
+                    resolve(rate);
                 })
                 .catch(reject);
         });

@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
+import { RatesType } from '@services/BackendService';
 
 import { CoreRepository } from '@store/repositories';
 
@@ -44,7 +45,7 @@ export interface State {
     shouldCheckForConversation: boolean;
     exchangeRate: number;
     nativeRoundedUp: string;
-    currencyRate: any;
+    currencyRate: RatesType;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
@@ -384,7 +385,7 @@ class PaymentTemplate extends Component<Props, State> {
 
         if (isLoadingRate) {
             return (
-                <View style={[styles.rateContainer]}>
+                <View style={styles.rateContainer}>
                     <Text style={styles.rateText}>Loading ...</Text>
                 </View>
             );
@@ -392,10 +393,10 @@ class PaymentTemplate extends Component<Props, State> {
 
         // only show rate for native asset
         if (currencyRate && amount) {
-            const rate = Number(amount) * currencyRate.lastRate;
+            const rate = Number(amount) * currencyRate.rate;
             if (rate > 0) {
                 return (
-                    <View style={[styles.rateContainer]}>
+                    <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
                             ~{currencyRate.code} {Localize.formatNumber(rate)}
                         </Text>

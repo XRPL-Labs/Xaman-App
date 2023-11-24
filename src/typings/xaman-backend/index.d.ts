@@ -231,8 +231,7 @@ declare namespace XamanBackend {
         processed: boolean;
     }
     interface CurrencyRateResponse {
-        USD: number;
-        XRP: number;
+        [string]: number;
         __meta: {
             currency: {
                 en: string;

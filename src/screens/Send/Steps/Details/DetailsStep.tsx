@@ -9,8 +9,8 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager, Platform } from 'react-native';
 
+import BackendService, { RatesType } from '@services/BackendService';
 import LedgerService from '@services/LedgerService';
-import BackendService from '@services/BackendService';
 import NetworkService from '@services/NetworkService';
 
 import { AccountModel, TrustLineModel } from '@store/models';
@@ -38,7 +38,7 @@ interface Props {}
 interface State {
     isLoadingAvailableBalance: boolean;
     isCheckingBalance: boolean;
-    currencyRate: any;
+    currencyRate: RatesType;
     amountRate: string;
 }
 
@@ -207,7 +207,7 @@ class DetailsStep extends Component<Props, State> {
         const { amount } = this.context;
 
         if (amount && currencyRate) {
-            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.rate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: inRate,
             });
@@ -229,7 +229,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (typeof currency === 'string' && currencyRate) {
-            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.rate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: inRate,
             });
@@ -250,7 +250,7 @@ class DetailsStep extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inNativeCurrency = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
+            const inNativeCurrency = new BigNumber(amount).dividedBy(currencyRate.rate).decimalPlaces(6).toFixed();
             setAmount(String(inNativeCurrency));
         }
     };

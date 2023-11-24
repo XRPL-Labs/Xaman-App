@@ -2,7 +2,8 @@ import has from 'lodash/has';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { BackendService, NetworkService } from '@services';
+import BackendService, { RatesType } from '@services/BackendService';
+import NetworkService from '@services/NetworkService';
 
 import { CalculateAvailableBalance, CalculateTotalReserve } from '@common/utils/balance';
 import { Toast } from '@common/helpers/interface';
@@ -28,7 +29,7 @@ interface Props {
 interface State {
     showReservePanel: boolean;
     fiatCurrency: string;
-    fiatRate: any;
+    fiatRate: RatesType;
     showFiatRate: boolean;
     isLoadingRate: boolean;
 }
@@ -164,7 +165,7 @@ class NativeItem extends Component<Props, State> {
         let prefix: any;
 
         if (showFiatRate && fiatRate) {
-            balance = Number(availableBalance) * Number(fiatRate.lastRate);
+            balance = Number(availableBalance) * Number(fiatRate.rate);
             prefix = `${fiatRate.symbol} `;
         } else {
             balance = availableBalance;
@@ -212,7 +213,7 @@ class NativeItem extends Component<Props, State> {
         const accountReserve = CalculateTotalReserve(account);
 
         if (showFiatRate && fiatRate) {
-            totalReserve = Number(accountReserve) * Number(fiatRate.lastRate);
+            totalReserve = Number(accountReserve) * Number(fiatRate.rate);
             prefix = `${fiatRate.symbol} `;
         } else {
             totalReserve = accountReserve;

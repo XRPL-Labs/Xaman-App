@@ -6,7 +6,8 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, NetworkService } from '@services';
+import NetworkService from '@services/NetworkService';
+import BackendService, { RatesType } from '@services/BackendService';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -47,7 +48,7 @@ export interface Props {}
 export interface State {
     confirmedDestinationTag: number;
     destinationTagInputVisible: boolean;
-    currencyRate: any;
+    currencyRate: RatesType;
     canScroll: boolean;
 }
 
@@ -290,7 +291,7 @@ class SummaryStep extends Component<Props, State> {
 
         // only show rate for native currency
         if (typeof currency === 'string' && currencyRate && amount) {
-            const rate = Number(amount) * currencyRate.lastRate;
+            const rate = Number(amount) * currencyRate.rate;
             if (rate > 0) {
                 return (
                     <View style={styles.rateContainer}>

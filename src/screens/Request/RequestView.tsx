@@ -8,7 +8,8 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
 
-import { BackendService } from '@services';
+import BackendService, { RatesType } from '@services/BackendService';
+
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -47,7 +48,7 @@ interface State {
     source: AccountModel;
     amount: string;
     amountRate: string;
-    currencyRate: any;
+    currencyRate: RatesType;
     withAmount: boolean;
 }
 
@@ -111,7 +112,7 @@ class RequestView extends Component<Props, State> {
         const { amount, currencyRate } = this.state;
 
         if (amount && currencyRate) {
-            const inRate = Number(amount) * currencyRate.lastRate;
+            const inRate = Number(amount) * currencyRate.rate;
             this.setState({
                 amountRate: String(inRate),
             });
@@ -140,7 +141,7 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.rate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: String(inRate),
             });
@@ -162,7 +163,7 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.rate).decimalPlaces(6).toFixed();
             this.setState({
                 amount: inXRP,
             });
