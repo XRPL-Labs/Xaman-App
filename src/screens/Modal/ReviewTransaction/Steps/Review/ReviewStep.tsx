@@ -63,7 +63,7 @@ class ReviewStep extends Component<Props, State> {
     getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        if (coreSettings.developerMode) {
+        if (coreSettings?.developerMode && coreSettings?.network) {
             return coreSettings.network.color;
         }
 

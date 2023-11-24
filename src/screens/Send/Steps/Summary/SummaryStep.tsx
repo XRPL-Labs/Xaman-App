@@ -223,7 +223,7 @@ class SummaryStep extends Component<Props, State> {
     getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        if (coreSettings.network) {
+        if (coreSettings?.developerMode && coreSettings?.network) {
             return coreSettings.network.color;
         }
 

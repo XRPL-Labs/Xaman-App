@@ -292,7 +292,7 @@ class SwipeButton extends Component<Props, State> {
                 ]}
                 onLayout={this.onLayoutChange}
             >
-                <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+                <Text style={[styles.label, labelColor && { color: labelColor }]}>{label}</Text>
                 <Animated.View
                     testID={testID}
                     style={[styles.thumpContainer, { width: this.animatedWidth }]}
@@ -303,7 +303,7 @@ class SwipeButton extends Component<Props, State> {
                         style={[
                             styles.iconContainer,
                             secondary && styles.iconContainerSecondary,
-                            { backgroundColor: iconColor },
+                            iconColor && { backgroundColor: iconColor },
                         ]}
                     >
                         <Icon size={30} name="IconArrowRightLong" />
