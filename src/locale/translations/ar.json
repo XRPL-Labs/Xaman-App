@@ -629,7 +629,8 @@
     "donateToTheCreator": "Donate to the creator",
     "chooseAmount": "Choose amount",
     "aboutThisXApp": "About this xApp",
-    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with.\nPlease switch to the supported networks and try again.\n\nSupported networks:\n%{supportedNetworks}"
+    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with",
+    "switchToSupportedNetworks": "Please switch to one of the supported networks below"
   },
   "settings": {
     "generalSettings": "عام",

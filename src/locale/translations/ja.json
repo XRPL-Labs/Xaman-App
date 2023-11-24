@@ -629,7 +629,8 @@
     "donateToTheCreator": "開発者を支援する",
     "chooseAmount": "支援金額を選択",
     "aboutThisXApp": "このxAppについて",
-    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with.\nPlease switch to the supported networks and try again.\n\nSupported networks:\n%{supportedNetworks}"
+    "xAppSupportNetworkError": "This xApp is not available on the network you are connected with",
+    "switchToSupportedNetworks": "Please switch to one of the supported networks below"
   },
   "settings": {
     "generalSettings": "一般",

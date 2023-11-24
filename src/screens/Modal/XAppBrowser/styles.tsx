@@ -1,5 +1,5 @@
 import StyleService from '@services/StyleService';
-import { AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
@@ -27,12 +27,30 @@ const styles = StyleService.create({
     },
     errorContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         paddingHorizontal: AppSizes.paddingSml,
     },
-    infoIcon: {
-        tintColor: '$red',
+    networkSwitchSubtext: {
+        fontFamily: AppFonts.subtext.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        textAlign: 'center',
+    },
+    supportedNetworkName: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        textAlign: 'center',
+        paddingTop: AppSizes.paddingExtraSml,
+        textDecorationLine: 'underline',
+    },
+    arrowUpImage: {
+        resizeMode: 'contain',
+        alignSelf: 'flex-end',
+        tintColor: '$tint',
+        marginTop: AppSizes.paddingSml,
+        marginRight: AppSizes.moderateScale(70),
+        width: AppSizes.moderateScale(30),
+        height: AppSizes.moderateScale(60),
     },
 });
 

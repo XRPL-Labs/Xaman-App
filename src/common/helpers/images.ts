@@ -54,6 +54,7 @@ export const Images = {
     ImageEncryptionMigration: buildImageSource('ImageEncryptionMigration', 'image_encryption_migration'),
     ImageBlankNFT: buildImageSource('ImageBlankNFT', 'image_blank_nft'),
     ImageBlankNFTLight: buildImageSource('ImageBlankNFTLight', 'image_blank_nft_light'),
+    ImageArrowUp: buildImageSource('ImageArrowUp', 'image_arrow_up'),
     // Xaman
     XamanLogo: buildImageSource('XamanLogo', 'xaman_logo'),
     XamanLogoLight: buildImageSource('XamanLogoLight', 'xaman_logo_light'),

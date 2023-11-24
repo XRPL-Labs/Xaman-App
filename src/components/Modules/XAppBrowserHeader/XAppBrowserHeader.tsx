@@ -133,7 +133,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                             onPress={this.toggleExpandedBar}
                         >
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <NetworkLabel size={13} type="circle" />
+                                <NetworkLabel size={13} type="circle" onPress={this.toggleExpandedBar} />
                                 <Text style={styles.headerButtonText}>•••</Text>
                             </View>
                         </Button>
@@ -181,21 +181,21 @@ class XAppBrowserHeader extends Component<Props, State> {
 
                     {/* Second row */}
                     <View style={AppStyles.row}>
-                        <NetworkSwitchButton
-                            containerStyle={AppStyles.flex1}
-                            loadingAnimation={false}
-                            showChevronIcon
-                            height="100%"
-                            onNetworkChange={this.onNetworkChange}
-                            onSwitcherClose={this.toggleExpandedBar}
-                        />
                         <Button
                             light
                             roundedSmallBlock
                             label={Localize.t('xapp.aboutThisXApp')}
                             onPress={this.showXAppInfo}
                             activeOpacity={0.8}
-                            style={[AppStyles.flex1, styles.headerButton, { marginLeft: AppSizes.paddingSml }]}
+                            style={[AppStyles.flex1, styles.headerButton]}
+                        />
+                        <NetworkSwitchButton
+                            containerStyle={[AppStyles.flex1, { marginLeft: AppSizes.paddingSml }]}
+                            loadingAnimation={false}
+                            showChevronIcon
+                            height="100%"
+                            onNetworkChange={this.onNetworkChange}
+                            onSwitcherClose={this.toggleExpandedBar}
                         />
                     </View>
                 </Animated.View>

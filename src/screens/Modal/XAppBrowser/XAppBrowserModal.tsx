@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import {
     Alert,
     BackHandler,
+    Image,
     InteractionManager,
     Linking,
     NativeEventSubscription,
@@ -39,16 +40,7 @@ import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 
-import {
-    Avatar,
-    Button,
-    LoadingIndicator,
-    HeartBeatAnimation,
-    Spacer,
-    WebView,
-    Icon,
-    InfoMessage,
-} from '@components/General';
+import { Avatar, Button, LoadingIndicator, HeartBeatAnimation, Spacer, WebView } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
@@ -56,6 +48,7 @@ import Localize from '@locale';
 // style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
+import { Images } from '@common/helpers/images';
 
 /* types ==================================================================== */
 export interface Props {
@@ -870,28 +863,29 @@ class XAppBrowserModal extends Component<Props, State> {
     renderNetworkSwitch = () => {
         const { app } = this.state;
 
-        let supportedNetworks = '';
+        const supportedNetworks = [];
 
         const networks = NetworkRepository.findAll();
 
         for (const network of networks) {
             if (app.networks.includes(network.key)) {
-                supportedNetworks += `"${network.name}"\n`;
+                supportedNetworks.push(network);
             }
         }
 
         return (
             <View style={styles.errorContainer}>
-                <Icon name="IconInfo" style={styles.infoIcon} size={80} />
+                <Image source={Images.ImageArrowUp} style={styles.arrowUpImage} />
                 <Spacer size={18} />
-                <InfoMessage
-                    type="neutral"
-                    labelStyle={styles.actionDescription}
-                    label={Localize.t('xapp.xAppSupportNetworkError', {
-                        supportedNetworks,
-                    })}
-                    containerStyle={styles.actionContainer}
-                />
+                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                    {Localize.t('xapp.xAppSupportNetworkError')}
+                </Text>
+                <Spacer size={18} />
+                <Text style={styles.networkSwitchSubtext}>{Localize.t('xapp.switchToSupportedNetworks')}</Text>
+                <Spacer size={18} />
+                {supportedNetworks.map((n) => (
+                    <Text style={styles.supportedNetworkName}>{n.name}</Text>
+                ))}
             </View>
         );
     };
