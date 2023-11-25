@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Больше информации и исправление",
     "addingTrustLineWarning": "XRPL Labs/Xaman не поддерживает ни маркер, ни эмитент маркеров. Продолжить работу следует только в том случае, если вы доверяете эмитенту маркеров.\nВ случае вопросов или проблем, связанных с маркером (Trust Line), необходимо связаться с эмитентом маркеров.\n\nПродолжай на свой страх и риск.",
     "trustLineIsAlreadyExist": "Этот маркер уже существует. Нельзя повторно добавить один и тот же маркер.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Обменивающий",

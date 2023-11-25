@@ -3,6 +3,13 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    errorContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        paddingHorizontal: AppSizes.padding,
+    },
     cancelButton: {
         height: AppSizes.screen.heightHalf * 0.1,
         backgroundColor: '$grey',

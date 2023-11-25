@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Další informace a oprava",
     "addingTrustLineWarning": "XRPL Labs/Xaman neschvaluje žádný token nebo vydavatele tokenu. Měli byste pokračovat pouze v případě, že důvěřujete vydavateli tokenů.\r\nV případě otázek nebo problémů týkajících se tokenu (Trust Line) se musíte obrátit na vydavatele tokenu.\r\n\r\nPokračujte ve svém vlastním riziku.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Probíhá směna",

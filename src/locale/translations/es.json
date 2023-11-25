@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Más información y arreglo",
     "addingTrustLineWarning": "XRPL Labs/Xaman no respalda ningún token o emisor de tokens. Sólo debe continuar si confía en el emisor del token.\r\nEn caso de preguntas o problemas relacionados con el token (línea de confianza), deberá ponerse en contacto con el emisor de token.\r\n\r\nContinúe bajo su propio riesgo.",
     "trustLineIsAlreadyExist": "Este token ya existe. No puede volver a añadir el mismo token.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Cambiando",

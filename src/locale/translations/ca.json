@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Més informació i solucionar",
     "addingTrustLineWarning": "XRPL Labs / Xaman no avala cap token ni cap emissor de tokens. Continua només en el cas que l'emissor del token sigui de la teva confiança.\r\nEn cas de dubtes o problemes amb relació al token (Línia de confiança) hauràs de contactar amb l'emissor del token.\r\nSi continues ho fas al teu propi risc.\r\n",
     "trustLineIsAlreadyExist": "Aquest token ja existeix. No pots tornar a afegir el mateix token un altre cop.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Intercanviant",

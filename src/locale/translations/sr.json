@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Више информација и поправак",
     "addingTrustLineWarning": "XRPL Labs/Xaman не подржава било који токен или токен издавач. Требало би да наставите само ако верујете у токен издаваоца.\nУ случају питања или проблема у вези са токеном (Поверење поверења), потребно је да контактирате издавач токена.\n\nНаставите са својим ризиком.",
     "trustLineIsAlreadyExist": "Овај токен већ постоји. Не можете додати исти токен поново.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Размена",

@@ -105,13 +105,10 @@ class BackendService {
      */
     syncCuratedIOUs = async () => {
         try {
+            // in case of not exist, then Number(LOCALE_VERSION) will be 0
             const LOCALE_VERSION = await Preferences.get(Preferences.keys.CURATED_LIST_VERSION);
 
-            // in case of not exist, then Number(LOCALE_VERSION) will be 0
-
-            const { details, version, changed } = (await ApiService.curatedIOUs.get({
-                version: Number(LOCALE_VERSION),
-            })) as XamanBackend.CuratedIOUsResponse;
+            const { details, version, changed } = await this.getCuratedIOUs(Number(LOCALE_VERSION));
 
             // nothing has been changed
             if (!changed) {
@@ -300,6 +297,10 @@ class BackendService {
             .catch((e: any) => {
                 this.logger.error('Ping Backend Error: ', e);
             });
+    };
+
+    getCuratedIOUs = (version = 0, promoted = false): Promise<XamanBackend.CuratedIOUsResponse> => {
+        return ApiService.curatedIOUs.get({ version, promoted });
     };
 
     /**

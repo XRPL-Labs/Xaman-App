@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Περισσότερες πληροφορίες & διόρθωση",
     "addingTrustLineWarning": "Το XRPL Labs/Xaman δεν υποστηρίζει κανένα διακριτικό ή εκδότη διακριτικών. Θα πρέπει να προχωρήσετε μόνο αν εμπιστεύεστε τον εκδότη του διακριτικού.\nΣε περίπτωση ερωτήσεων ή προβλημάτων σχετικά με το διακριτικό (Trust Line) θα πρέπει να επικοινωνήσετε με τον εκδότη του διακριτικού.\n\nΣυνεχίστε με δικό σας ρίσκο.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Ανταλλαγή",

@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Več informacij in popravek",
     "addingTrustLineWarning": "XRPL Labs / Xaman ne podpira nobenega žetona ali izdajatelja žetona. Nadaljujte samo, če zaupate izdajatelju žetonov.\r\nV primeru vprašanj ali težav v zvezi z žetonom (TrustLine) boste morali stopiti v stik z izdajateljem žetonov.\r\n\r\nNadaljujte na lastno odgovornost.",
     "trustLineIsAlreadyExist": "Ta žeton že obstaja. Istega žetona ne morete več dodati.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Menjava",

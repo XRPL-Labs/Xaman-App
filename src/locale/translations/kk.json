@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Қосымша ақпарат және түзету",
     "addingTrustLineWarning": "XRPL Labs / Xaman таңбалауыштарды немесе эмитенттерді қолдамайды. Егер сіз токен эмитентіне сенсеңіз ғана жалғастыруыңыз керек.\r\nТаңбалауышқа қатысты сұрақтар немесе мәселелер туындаған жағдайда (сенім желісі), сіз таңбалауыштың эмитентімен байланысуыңыз керек.\r\nӨз тәуекеліңізді жалғастырыңыз.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Алмасу",

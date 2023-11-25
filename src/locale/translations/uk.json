@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Більше інформації та виправлення",
     "addingTrustLineWarning": "XRPL Labs / Xaman не схвалює жодного емітента токенів або токен. Ви повинні продовжити, лише якщо довіряєте емітенту токена.\r\nУ разі виникнення запитань або проблем щодо токена (Лінії довіри) вам потрібно буде зв’язатися з емітентом токена.\r\n\r\nПродовжуйте на свій страх і ризик.",
     "trustLineIsAlreadyExist": "Цей токен вже існує. Ви не можете знову додати той самий токен.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Обмін",

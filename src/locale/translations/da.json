@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Flere oplysninger og fix",
     "addingTrustLineWarning": "XRPL Labs / Xaman står ikke bag nogen token- eller tokenudsteder. Du bør kun fortsætte, hvis du har tillid til tokenudstederen.\r\nI tilfælde af spørgsmål eller problemer vedrørende den pågældende token (Trust Line) skal du kontakte tokenudstederen.\r\n\r\nFortsæt på egen risiko.",
     "trustLineIsAlreadyExist": "Denne token findes allerede. Du kan ikke tilføje den samme token igen.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Veksel",

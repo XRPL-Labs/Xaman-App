@@ -36,7 +36,7 @@ import DestinationPicker from './Modal/DestinationPicker';
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
 import ShareAccount from './Overlay/ShareAccount';
-import AddCurrency from './Overlay/AddCurrency';
+import AddToken from './Overlay/AddToken';
 import Vault from './Overlay/Vault';
 import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
@@ -132,7 +132,7 @@ export {
     // overlay
     SwitchAccount,
     ShareAccount,
-    AddCurrency,
+    AddToken,
     TokenSettings,
     Vault,
     Auth,

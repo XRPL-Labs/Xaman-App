@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Mer informasjon og retting",
     "addingTrustLineWarning": "XRPL Labs / Xaman does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk.",
     "trustLineIsAlreadyExist": "Denne enheten eksistrer allerede. Du kan ikke legge til denne enheten flere ganger.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Veksler",

@@ -179,7 +179,7 @@ class TokensList extends Component<Props, State> {
 
     onTokenAddButtonPress = () => {
         const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.AddCurrency, { account });
+        Navigator.showOverlay(AppScreens.Overlay.AddToken, { account });
     };
 
     onTokenItemPress = (token: TrustLineModel) => {

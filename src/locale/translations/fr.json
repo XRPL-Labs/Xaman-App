@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Plus d'informations et de correctifs",
     "addingTrustLineWarning": "XRPL Labs / Xaman n'endosse aucun émetteur de jeton ou de jeton. Vous ne devez procéder que si vous faites confiance à l'émetteur du jeton.\nEn cas de questions ou de problèmes concernant le jeton (Ligne de confiance), vous devez contacter l'émetteur du jeton.\n\nContinuez à vos propres risques.",
     "trustLineIsAlreadyExist": "Ce jeton existe déjà. Vous ne pouvez pas ajouter le même jeton.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Conversion en cours",

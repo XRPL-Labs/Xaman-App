@@ -203,8 +203,8 @@ class AccountRepository extends BaseRepository<AccountModel> {
     hasCurrency = (account: AccountModel, currency: Partial<CurrencyModel>): boolean => {
         let found = false;
 
-        account.lines.forEach((t: TrustLineModel) => {
-            if (t.currency.issuer === currency.issuer && t.currency.currency === currency.currency) {
+        account.lines.forEach((line: TrustLineModel) => {
+            if (line.currency.issuer === currency.issuer && line.currency.currency === currency.currency) {
                 found = true;
             }
         });

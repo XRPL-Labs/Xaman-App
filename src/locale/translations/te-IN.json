@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "మరింత సమాచారం & పరిష్కరించండి",
     "addingTrustLineWarning": "XRPL Labs/Xaman ఏదైనా టోకెన్ లేదా టోకెన్ జారీని దోహదించదు. మీరు టోకెన్ జారీని విశ్వసించండి ఉంటే మాత్రమే కదిలించాలి.\nటోకెన్ (ట్రస్ట్ లైన్) గురించి ప్రశ్నలు లేదా సమస్యలు లేదా సమస్యలు విషయంలో మీరు టోకెన్ జారీని సంప్రదించవలసి ఉంటుంది.\n\nమీ సొంత ప్రమాదంలో కొనసాగించు.",
     "trustLineIsAlreadyExist": "ఈ టోకెన్ ఇప్పటికే వుంది. మీరు మళ్ళీ అదే టోకెన్ను జతచేయలేరు.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "మార్పిడి",

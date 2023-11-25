@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Ek bilgi ve düzeltme",
     "addingTrustLineWarning": "XRPL Labs / Xaman, herhangi bir jeton veya jeton vereni onaylamaz. Yalnızca jeton verene güveniyorsanız devam etmelisiniz.\r\nToken (Güven Hattı) ile ilgili sorularınız veya sorunlarınız olması durumunda, jeton veren kuruluşla iletişime geçmeniz gerekecektir.\r\n\r\nKendi sorumluluğunuzda devam edin.",
     "trustLineIsAlreadyExist": "Bu Token zaten var. Aynı Token'ı yeniden ekleyemezsiniz.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Takas gerçekleşiyor",

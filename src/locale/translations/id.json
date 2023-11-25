@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Info lebih lanjut & memperbaiki",
     "addingTrustLineWarning": "XRPL Labs/Xaman tidak mendukung penerbit token atau token apapun. Anda hanya harus melanjutkan jika Anda percaya pada penerbit token.\r\nDalam hal pertanyaan atau masalah mengenai token (TrustLine) Anda akan perlu menghubungi penerbit token.\r\n\r\nLanjutkan dengan risikonya sendiri.",
     "trustLineIsAlreadyExist": "Token ini sudah ada. Anda tidak dapat menambahkan token yang sama lagi.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Bertukar",

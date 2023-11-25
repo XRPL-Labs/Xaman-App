@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "詳細情報および修正",
     "addingTrustLineWarning": "XRPL Labs / Xamanは、いかなるトークンやトークン発行者も推奨していません。トークン発行者を信頼する場合にのみ手続きを行ってください。\r\nトークン（TrustLine）に関する質問や問題が発生した場合には、トークン発行者に連絡する必要があります。\r\n\r\nご自身のリスクでお進みください。",
     "trustLineIsAlreadyExist": "このトークンはすでに存在しています。同じトークンを再度追加することはできません。",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "両替中",

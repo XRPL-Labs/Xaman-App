@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "Mai multe informaţii şi corecţii",
     "addingTrustLineWarning": "XRPL Labs/Xaman nu sprijină niciun emitent de monedă sau o monedă. Avansați doar dacă aveți încredere în emitentul monedei.\r\nÎn cazul în care aveți întrebări sau probleme în ceea ce privește moneda (TrustLine), va trebui să contactați emitentul monedei.\r\n\r\nContinuați pe propria răspundere.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "Schimb",

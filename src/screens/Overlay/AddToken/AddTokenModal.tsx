@@ -1,14 +1,15 @@
 /**
- * Add Currency Screen
+ * Add Token Screen
  */
 
-import { head, first, forEach, isEmpty, get } from 'lodash';
+import { first, get, values, find, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, Alert, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
+import BackendService from '@services/BackendService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -16,11 +17,19 @@ import { AppScreens } from '@common/constants';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
 import { Payload } from '@common/libs/payload';
-import { AccountRepository, CounterPartyRepository } from '@store/repositories';
-import { CounterPartyModel, CurrencyModel, AccountModel } from '@store/models';
+import { AccountRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 
 // components
-import { TouchableDebounce, Button, Footer, ActionPanel } from '@components/General';
+import {
+    TouchableDebounce,
+    Button,
+    Footer,
+    ActionPanel,
+    LoadingIndicator,
+    Spacer,
+    InfoMessage,
+} from '@components/General';
 
 import Localize from '@locale';
 
@@ -33,21 +42,18 @@ export interface Props {
     account: AccountModel;
 }
 
-export interface CurrenciesList {
-    [key: string]: CurrencyModel[];
-}
-
 export interface State {
-    counterParties: CounterPartyModel[];
-    currencies: CurrenciesList;
-    selectedCurrency: CurrencyModel;
-    selectedParty: CounterPartyModel;
+    dataSource: XamanBackend.CuratedIOUsDetails;
+    selectedPartyId: number;
+    selectedCurrencyId: number;
     isLoading: boolean;
+    isLoadingTokenInfo: boolean;
+    error: boolean;
 }
 
 /* Component ==================================================================== */
-class AddCurrencyOverlay extends Component<Props, State> {
-    static screenName = AppScreens.Overlay.AddCurrency;
+class AddTokenModal extends Component<Props, State> {
+    static screenName = AppScreens.Overlay.AddToken;
 
     private actionPanel: ActionPanel;
 
@@ -66,65 +72,82 @@ class AddCurrencyOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            counterParties: undefined,
-            currencies: undefined,
-            selectedParty: undefined,
-            selectedCurrency: undefined,
-            isLoading: false,
+            dataSource: undefined,
+            selectedPartyId: undefined,
+            selectedCurrencyId: undefined,
+            isLoading: true,
+            isLoadingTokenInfo: false,
+            error: false,
         };
     }
 
     componentDidMount() {
-        this.setDefaults();
+        InteractionManager.runAfterInteractions(this.loadVettedTokens);
     }
 
-    setDefaults = () => {
-        const counterParties = CounterPartyRepository.query({ shortlist: true }).sorted([['id', false]]) as any;
+    loadVettedTokens = async () => {
+        const { isLoading } = this.state;
 
-        if (counterParties.isEmpty()) return;
-
-        const availableParties = [] as CounterPartyModel[];
-        const availableCurrencies = [] as any;
-
-        forEach(counterParties, (counterParty) => {
-            const currencies = [] as any;
-
-            forEach(counterParty.currencies, (currency) => {
-                if (currency.shortlist === true) {
-                    currencies.push(currency);
-                }
-            });
-
-            if (!isEmpty(currencies)) {
-                availableParties.push(counterParty);
-                availableCurrencies[counterParty.id] = currencies;
+        try {
+            if (!isLoading) {
+                this.setState({
+                    isLoading: true,
+                    error: false,
+                });
             }
-        });
 
-        this.setState({
-            counterParties: availableParties,
-            currencies: availableCurrencies,
-            selectedParty: head(availableParties),
-            selectedCurrency: head(get(availableCurrencies, head(availableParties)?.id)),
-        });
+            const { details } = await BackendService.getCuratedIOUs(0, true);
+
+            // set default selected party and currency to the first in the list
+            const selectedParty = first(values(details));
+            const selectedPartyId = get(selectedParty, 'id');
+            const selectedCurrencyId = get(first(values(get(selectedParty, 'currencies'))), 'id');
+
+            // something is not right,
+            if (!selectedPartyId || !selectedCurrencyId) {
+                this.setState({
+                    error: true,
+                });
+                return;
+            }
+
+            this.setState({
+                dataSource: details,
+                selectedPartyId,
+                selectedCurrencyId,
+            });
+        } catch {
+            this.setState({
+                error: true,
+            });
+        } finally {
+            this.setState({
+                isLoading: false,
+            });
+        }
     };
 
     onAddPress = async () => {
         const { account } = this.props;
-        const { selectedCurrency } = this.state;
+        const { dataSource, selectedPartyId, selectedCurrencyId } = this.state;
 
-        if (!selectedCurrency.isValid()) {
-            return;
-        }
+        const selectedCurrency = find(values(get(find(values(dataSource), { id: selectedPartyId }), 'currencies')), {
+            id: selectedCurrencyId,
+        });
 
         // if trustline is already exist return
-        if (AccountRepository.hasCurrency(account, selectedCurrency)) {
+        if (
+            AccountRepository.hasCurrency(account, {
+                issuer: selectedCurrency.issuer,
+                currency: selectedCurrency.currency,
+            })
+        ) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.trustLineIsAlreadyExist'));
             return;
         }
 
         this.setState({
-            isLoading: true,
+            isLoadingTokenInfo: true,
         });
 
         // set the default line limit
@@ -142,7 +165,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
             // ignore
         } finally {
             this.setState({
-                isLoading: false,
+                isLoadingTokenInfo: false,
             });
         }
 
@@ -180,9 +203,11 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderCurrencies = () => {
-        const { counterParties, selectedParty, selectedCurrency, currencies } = this.state;
+        const { dataSource, selectedPartyId, selectedCurrencyId } = this.state;
 
-        if (isEmpty(counterParties)) {
+        const currencies = values(get(find(values(dataSource), { id: selectedPartyId }), 'currencies'));
+
+        if (isEmpty(currencies)) {
             return (
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]} adjustsFontSizeToFit numberOfLines={1}>
                     No Item to show
@@ -190,35 +215,31 @@ class AddCurrencyOverlay extends Component<Props, State> {
             );
         }
 
-        return currencies[selectedParty.id].map((c, index) => {
-            if (!c.isValid()) {
-                return null;
-            }
+        return currencies.map((currency, index) => {
+            const selected = currency.id === selectedCurrencyId;
 
             return (
                 <TouchableDebounce
-                    testID={c.id}
+                    testID={`currency=${currency.id}`}
                     key={index}
-                    style={[styles.listItem, selectedCurrency.id === c.id && styles.selectedRow]}
+                    style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
-                        if (c.isValid() && selectedParty.isValid()) {
-                            this.setState({
-                                selectedCurrency: c,
-                            });
-                        }
+                        this.setState({
+                            selectedCurrencyId: currency.id,
+                        });
                     }}
                 >
                     <View style={[AppStyles.flex3, AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex1]}>
-                            <Image style={[styles.currencyAvatar]} source={{ uri: c.avatar }} />
+                        <View style={AppStyles.flex1}>
+                            <Image style={styles.currencyAvatar} source={{ uri: currency.avatar }} />
                         </View>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text
-                                style={[AppStyles.subtext, selectedCurrency.id === c.id && styles.selectedText]}
+                                style={[AppStyles.subtext, selected && styles.selectedText]}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             >
-                                {c.name}
+                                {currency.name}
                             </Text>
                         </View>
                     </View>
@@ -228,9 +249,11 @@ class AddCurrencyOverlay extends Component<Props, State> {
     };
 
     renderParties = () => {
-        const { counterParties, selectedParty, currencies } = this.state;
+        const { dataSource, selectedPartyId } = this.state;
 
-        if (isEmpty(counterParties)) {
+        const parties = values(dataSource);
+
+        if (isEmpty(parties)) {
             return (
                 <Text
                     key="empty-parties"
@@ -243,37 +266,34 @@ class AddCurrencyOverlay extends Component<Props, State> {
             );
         }
 
-        return counterParties.map((c, index) => {
-            if (!c?.isValid()) return null;
-
-            const selected = selectedParty.id === c.id;
+        return parties.map((party, index) => {
+            // if selected party on the list
+            const selected = selectedPartyId === party.id;
 
             return (
                 <TouchableDebounce
-                    testID={`counterParty-${c.name}`}
+                    testID={`counterParty-${party.name}`}
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
-                        if (c.isValid()) {
-                            this.setState({
-                                selectedParty: c,
-                                selectedCurrency: first(get(currencies, c.id)),
-                            });
-                        }
+                        this.setState({
+                            selectedPartyId: party.id,
+                            selectedCurrencyId: get(first(values(get(party, 'currencies'))), 'id'),
+                        });
                     }}
                 >
                     <View style={[AppStyles.flex3, AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex1]}>
-                            <Image style={styles.avatar} source={{ uri: c.avatar }} />
+                        <View style={AppStyles.flex1}>
+                            <Image style={styles.avatar} source={{ uri: party.avatar }} />
                         </View>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text
                                 style={[AppStyles.subtext, selected && styles.selectedText]}
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                             >
-                                {c.name}
-                                {c.name && ` (${currencies[c.id].length})`}
+                                {party.name}
+                                {party.name && ` (${values(get(party, 'currencies')).length})`}
                             </Text>
                         </View>
                     </View>
@@ -282,8 +302,44 @@ class AddCurrencyOverlay extends Component<Props, State> {
         });
     };
 
+    renderContent = () => {
+        const { isLoading, error } = this.state;
+
+        if (isLoading) {
+            return (
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <LoadingIndicator size="large" />
+                    <Spacer />
+                    <Text style={AppStyles.p}>{Localize.t('global.loading')}</Text>
+                </View>
+            );
+        }
+
+        if (error) {
+            return (
+                <View style={styles.errorContainer}>
+                    <InfoMessage
+                        type="error"
+                        label={Localize.t('asset.unableToLoadListOfTokens')}
+                        actionButtonLabel={Localize.t('global.tryAgain')}
+                        actionButtonIcon="IconRefresh"
+                        onActionButtonPress={this.loadVettedTokens}
+                    />
+                </View>
+            );
+        }
+
+        return (
+            <View style={[AppStyles.flex1, AppStyles.row]}>
+                <ScrollView style={AppStyles.flex1}>{this.renderParties()}</ScrollView>
+                <View style={styles.separator} />
+                <ScrollView style={AppStyles.flex1}>{this.renderCurrencies()}</ScrollView>
+            </View>
+        );
+    };
+
     render() {
-        const { selectedCurrency, isLoading } = this.state;
+        const { selectedCurrencyId, isLoadingTokenInfo } = this.state;
 
         return (
             <ActionPanel
@@ -323,7 +379,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                 </View>
 
                 <View style={[AppStyles.row, AppStyles.paddingExtraSml]}>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Text
                             numberOfLines={1}
                             style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
@@ -332,7 +388,7 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         </Text>
                     </View>
                     <View style={styles.separator} />
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Text
                             numberOfLines={1}
                             style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}
@@ -341,20 +397,17 @@ class AddCurrencyOverlay extends Component<Props, State> {
                         </Text>
                     </View>
                 </View>
-                <View style={[AppStyles.flex1, AppStyles.row]}>
-                    <ScrollView style={[AppStyles.flex1]}>{this.renderParties()}</ScrollView>
-                    <View style={styles.separator} />
-                    <ScrollView style={[AppStyles.flex1]}>{this.renderCurrencies()}</ScrollView>
-                </View>
+
+                {this.renderContent()}
 
                 <Footer style={styles.footer}>
                     <Button
-                        isLoading={isLoading}
+                        isLoading={isLoadingTokenInfo}
                         numberOfLines={1}
                         testID="add-and-sign-button"
-                        isDisabled={!selectedCurrency}
+                        isDisabled={!selectedCurrencyId}
                         onPress={this.onAddPress}
-                        style={[AppStyles.buttonGreen]}
+                        style={AppStyles.buttonGreen}
                         label={Localize.t('asset.addAndSign')}
                     />
                 </Footer>
@@ -364,4 +417,4 @@ class AddCurrencyOverlay extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AddCurrencyOverlay;
+export default AddTokenModal;

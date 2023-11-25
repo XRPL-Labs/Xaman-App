@@ -1,39 +1,41 @@
 declare namespace XamanBackend {
+    interface CuratedIOUsDetails {
+        [key: string]: {
+            id: number;
+            name: string;
+            domain: string;
+            avatar: string;
+            shortlist: number;
+            info_source: {
+                type: string;
+                source: string;
+            };
+            currencies: {
+                [key: string]: {
+                    id: number;
+                    issuer_id: number;
+                    issuer: string;
+                    currency: string;
+                    name: string;
+                    avatar: string;
+                    shortlist: number;
+                    info_source: {
+                        type: string;
+                        source: string;
+                    };
+                    xapp_identifier: string | null;
+                };
+            };
+        };
+    }
+
     interface CuratedIOUsResponse {
         version: number;
         changed: boolean;
         network: string;
         issuers: string[];
         currencies: string[];
-        details: {
-            [key: string]: {
-                id: number;
-                name: string;
-                domain: string;
-                avatar: string;
-                shortlist: number;
-                info_source: {
-                    type: string;
-                    source: string;
-                };
-                currencies: {
-                    [key: string]: {
-                        id: number;
-                        issuer_id: number;
-                        issuer: string;
-                        currency: string;
-                        name: string;
-                        avatar: string;
-                        shortlist: number;
-                        info_source: {
-                            type: string;
-                            source: string;
-                        };
-                        xapp_identifier: string | null;
-                    };
-                };
-            };
-        };
+        details: CuratedIOUsDetails;
     }
     interface AddUserResponse {
         user: {

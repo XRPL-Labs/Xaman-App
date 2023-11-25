@@ -1002,7 +1002,8 @@
     "moreInfoAndFix": "დამატებითი ინფორმაცია და დაფიქსირება",
     "addingTrustLineWarning": "XRPL Labs / Xaman არ ადასტურებს ტოკენის ან ტოკენის გამცემს. თქვენ უნდა გააგრძელოთ მხოლოდ იმ შემთხვევაში, თუ ენდობით ჟეტონის გამცემს.\r\nჟეტონთან დაკავშირებით კითხვების ან პრობლემების შემთხვევაში (TrustLine) თქვენ უნდა დაუკავშირდეთ ტოკენის გამცემს.\r\n\r\nგანაგრძეთ თქვენი რისკის ქვეშ.",
     "trustLineIsAlreadyExist": "ეს ჟეტონი უკვე არსებობს. თქვენ აღარ შეგიძლიათ დაამატოთ იგივე ჟეტონი",
-    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard"
+    "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
   },
   "exchange": {
     "exchanging": "გაცვლა",
