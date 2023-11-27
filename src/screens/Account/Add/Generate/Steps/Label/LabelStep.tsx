@@ -5,17 +5,17 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert } from 'react-native';
 
-// components
+import { AppConfig } from '@common/constants';
+
 import { Button, Spacer, TextInput, KeyboardAwareScrollView, Footer } from '@components/General';
 
-// locale
 import Localize from '@locale';
 
-// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -40,27 +40,30 @@ class LabelStep extends Component<Props, State> {
         const { goNext, setLabel } = this.context;
         const { label } = this.state;
 
-        if (label.length > 64) {
+        if (label.length > AppConfig.accountLabelLimit) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountLabelCannotBeMoreThan'));
             return;
         }
 
         // set the label
-        setLabel(label.trim());
+        setLabel(label, () => {
+            // go to next step
+            goNext('FinishStep');
+        });
+    };
 
-        // go to next step
-        goNext('FinishStep');
+    onLabelTextChange = (label: string) => {
+        this.setState({
+            label: label.trim().replace(/\n/g, '').substring(0, AppConfig.accountLabelLimit),
+        });
     };
 
     render() {
         const { goBack } = this.context;
         const { label } = this.state;
         return (
-            <SafeAreaView testID="account-generate-label-view" style={[AppStyles.container]}>
-                <KeyboardAwareScrollView
-                    style={[AppStyles.flex1]}
-                    contentContainerStyle={[AppStyles.paddingHorizontal]}
-                >
+            <SafeAreaView testID="account-generate-label-view" style={AppStyles.container}>
+                <KeyboardAwareScrollView style={AppStyles.flex1} contentContainerStyle={AppStyles.paddingHorizontal}>
                     <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
                         {Localize.t('account.pleaseChooseAccountLabel')}
                     </Text>
@@ -69,10 +72,10 @@ class LabelStep extends Component<Props, State> {
 
                     <TextInput
                         testID="label-input"
-                        maxLength={16}
+                        maxLength={AppConfig.accountLabelLimit}
                         placeholder={Localize.t('account.accountLabel')}
                         value={label}
-                        onChangeText={(l) => this.setState({ label: l })}
+                        onChangeText={this.onLabelTextChange}
                         inputStyle={styles.inputText}
                         autoCapitalize="sentences"
                     />
@@ -87,7 +90,7 @@ class LabelStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!label.trim()}

@@ -33,4 +33,7 @@ export default {
 
     // app theme config
     defaultTheme: 'light',
+
+    // account label limit
+    accountLabelLimit: 64,
 };

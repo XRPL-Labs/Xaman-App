@@ -11,7 +11,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
 
 import { GetCardEnforcedSecurity, GetCardId, TangemSecurity } from '@common/utils/tangem';
-import { AppScreens } from '@common/constants';
+import { AppConfig, AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
@@ -85,26 +85,28 @@ class AccountSettingsView extends Component<Props, State> {
         );
     };
 
-    changeAccountLabel = (newLabel: string) => {
+    changeAccountLabel = (label: string) => {
         const { account } = this.state;
 
-        if (!newLabel || newLabel === account.label) return;
+        if (!label || label === account.label) return;
 
-        if (newLabel.length > 64) {
+        if (label.length > AppConfig.accountLabelLimit) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountLabelCannotBeMoreThan'));
             return;
         }
 
+        const labelClean = label.replace(/\n/g, '');
+
         AccountRepository.update({
             address: account.address,
-            label: newLabel,
+            label: labelClean,
         });
 
         // update catch for this account
         getAccountName.cache.set(
             account.address,
             new Promise((resolve) => {
-                resolve({ name: newLabel, source: 'accounts' });
+                resolve({ name: labelClean, source: 'accounts' });
             }),
         );
     };
