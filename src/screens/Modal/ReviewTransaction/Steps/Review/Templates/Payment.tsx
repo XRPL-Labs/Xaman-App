@@ -1,22 +1,19 @@
-import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual, get } from 'lodash';
+import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 import { RatesType } from '@services/BackendService';
 
 import { CoreRepository } from '@store/repositories';
 
-import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { PathOption } from '@common/libs/ledger/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { AmountInput, AmountText, Button, InfoMessage, Spacer } from '@components/General';
+import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { RecipientElement, PaymentOptionsPicker } from '@components/Modules';
 
@@ -41,10 +38,6 @@ export interface State {
     currencyName: string;
     editableAmount: boolean;
     destinationDetails: AccountNameType;
-    isPartialPayment: boolean;
-    shouldCheckForConversation: boolean;
-    exchangeRate: number;
-    nativeRoundedUp: string;
     currencyRate: RatesType;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
@@ -71,11 +64,6 @@ class PaymentTemplate extends Component<Props, State> {
                 ? NormalizeCurrencyCode(transaction.Amount.currency)
                 : NetworkService.getNativeAsset(),
             destinationDetails: undefined,
-            isPartialPayment: false,
-            shouldCheckForConversation:
-                !transaction.SendMax && !props.payload.isMultiSign() && !props.payload.isPathFinding(),
-            exchangeRate: undefined,
-            nativeRoundedUp: undefined,
             currencyRate: undefined,
             isLoadingRate: false,
             shouldShowIssuerFee: false,
@@ -90,9 +78,6 @@ class PaymentTemplate extends Component<Props, State> {
     componentDidMount() {
         // fetch the destination name e
         this.fetchDestinationInfo();
-
-        // Payload payment request in IOU amount: handle conversion if required:
-        this.checkForPartialPaymentRequired();
 
         // if native currency then show equal amount in selected currency
         this.fetchCurrencyRate();
@@ -109,14 +94,6 @@ class PaymentTemplate extends Component<Props, State> {
             return { account: nextProps.source?.address };
         }
         return null;
-    }
-
-    componentDidUpdate(prevProps: Props, prevState: State) {
-        const { account } = this.state;
-
-        if (!isEqual(prevState.account, account)) {
-            InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
-        }
     }
 
     setIsReady = () => {
@@ -189,113 +166,6 @@ class PaymentTemplate extends Component<Props, State> {
                 });
                 Toast(Localize.t('global.unableToFetchCurrencyRate'));
             });
-    };
-
-    checkForPartialPaymentRequired = async () => {
-        const { transaction, forceRender } = this.props;
-        const { account, shouldCheckForConversation } = this.state;
-
-        // only check if IOU
-        if (
-            !account ||
-            !transaction.Amount ||
-            transaction.Amount?.currency === NetworkService.getNativeAsset() ||
-            !shouldCheckForConversation
-        ) {
-            return;
-        }
-
-        try {
-            // get source trust lines
-            const sourceLine = await LedgerService.getFilteredAccountLine(
-                transaction.Account.address,
-                transaction.Amount,
-            );
-
-            // if this condition applies we try to pay the requested amount with native currency
-            // 1) the source account doesn't have the trustline or proper trustline
-            // 2) the source account balance doesn't cover the entire requested amount
-            // 3) the sender is not issuer
-            const shouldPayWithNative =
-                (!sourceLine ||
-                    (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
-                    Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
-                account !== transaction.Amount.issuer;
-
-            // if not have the same trust line or the balance is not covering requested value
-            // Pay with native currency instead
-            if (shouldPayWithNative) {
-                const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
-
-                const ledgerExchange = new LedgerExchange(PAIR);
-                // sync with latest order book
-                await ledgerExchange.initialize(MarketDirection.BUY);
-
-                // get liquidity grade
-                const liquidity = await ledgerExchange.getLiquidity(
-                    MarketDirection.BUY,
-                    Number(transaction.Amount.value),
-                );
-
-                // not enough liquidity
-                if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
-                    this.setState({
-                        isPartialPayment: true,
-                        exchangeRate: 0,
-                    });
-                    return;
-                }
-
-                const sendMaxNative = new BigNumber(transaction.Amount.value)
-                    .multipliedBy(liquidity.rate)
-                    .multipliedBy(1.04)
-                    .decimalPlaces(8)
-                    .toString(10);
-
-                // @ts-ignore
-                transaction.SendMax = sendMaxNative;
-
-                if (get(transaction.Flags, 'PartialPayment', false) === false) {
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-                    // force re-render the parent
-                    forceRender();
-                }
-
-                this.setState({
-                    isPartialPayment: true,
-                    exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
-                    nativeRoundedUp: sendMaxNative,
-                });
-            } else {
-                // check for transfer fee
-                // if issuer have transfer fee add PartialPayment if not present
-                // TODO: this is developer responsibility to add this flag in the first place
-                const issuerFee = await LedgerService.getAccountTransferRate(transaction.Amount.issuer);
-
-                // if issuer have fee and Source/Destination is not issuer set Partial Payment flag
-                if (
-                    issuerFee &&
-                    transaction.Account.address !== transaction.Amount.issuer &&
-                    transaction.Destination.address !== transaction.Amount.issuer &&
-                    get(transaction.Flags, 'PartialPayment', false) === false
-                ) {
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-                    // force re-render the parent
-                    forceRender();
-                }
-
-                // if we already set the SendMax remove it
-                if (transaction.SendMax) {
-                    transaction.SendMax = undefined;
-                }
-
-                this.setState({
-                    isPartialPayment: false,
-                });
-            }
-        } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckAssetConversion'));
-        }
     };
 
     fetchDestinationInfo = () => {
@@ -413,9 +283,6 @@ class PaymentTemplate extends Component<Props, State> {
         const {
             account,
             isLoading,
-            isPartialPayment,
-            exchangeRate,
-            nativeRoundedUp,
             editableAmount,
             amount,
             currencyName,
@@ -450,7 +317,7 @@ class PaymentTemplate extends Component<Props, State> {
                     <View style={styles.contentBox}>
                         <TouchableOpacity
                             activeOpacity={1}
-                            style={[AppStyles.row]}
+                            style={AppStyles.row}
                             onPress={() => {
                                 if (editableAmount) {
                                     this.amountInput.current?.focus();
@@ -495,34 +362,11 @@ class PaymentTemplate extends Component<Props, State> {
                                 />
                             )}
                         </TouchableOpacity>
-                        {isPartialPayment &&
-                            (exchangeRate ? (
-                                <>
-                                    <Spacer size={15} />
-                                    <InfoMessage
-                                        label={Localize.t('payload.payingWithNativeAssetExchangeRate', {
-                                            nativeRoundedUp,
-                                            exchangeRate,
-                                            nativeAsset: NetworkService.getNativeAsset(),
-                                        })}
-                                        type="info"
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <Spacer size={15} />
-                                    <InfoMessage
-                                        label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
-                                        type="error"
-                                    />
-                                </>
-                            ))}
-
                         {this.renderAmountRate()}
                     </View>
                 </>
 
-                {transaction.SendMax && !isPartialPayment && !selectedPath && (
+                {transaction.SendMax && !selectedPath && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.sendMax')}</Text>
                         <View style={styles.contentBox}>
