@@ -354,7 +354,8 @@
     "encrypting": "Encrypting...",
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
-    "switchNetwork": "Switch network"
+    "switchNetwork": "Switch network",
+    "theme": "Theme"
   },
   "onboarding": {
     "slideOne_title": "Płatności i wezwania do zapłaty w sieci XRPL.",

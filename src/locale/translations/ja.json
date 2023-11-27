@@ -354,7 +354,8 @@
     "encrypting": "暗号化しています...",
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Xamanを閉じないでください\r\nデバイスをロックしないでください",
-    "switchNetwork": "Switch network"
+    "switchNetwork": "Switch network",
+    "theme": "Theme"
   },
   "onboarding": {
     "slideOne_title": "XRPレジャーでの\r\n支払いと\r\n支払いリクエスト",

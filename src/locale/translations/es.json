@@ -354,7 +354,8 @@
     "encrypting": "Encriptando...",
     "stillWorkingOnIt": "Seguimos trabajando en ello",
     "doNotCloseTheApp": "NO cierres Xaman\r\nNO bloquees tu dispositivo",
-    "switchNetwork": "Switch network"
+    "switchNetwork": "Switch network",
+    "theme": "Theme"
   },
   "onboarding": {
     "slideOne_title": "Pagos y solicitudes de pago en el XRP ledger",

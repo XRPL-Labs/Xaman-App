@@ -354,7 +354,8 @@
     "encrypting": "Encrypting...",
     "stillWorkingOnIt": "Nog even bezig",
     "doNotCloseTheApp": "Sluit Xaman NIET af\r\nZet je apparaat NIET op slot",
-    "switchNetwork": "Switch network"
+    "switchNetwork": "Switch network",
+    "theme": "Theme"
   },
   "onboarding": {
     "slideOne_title": "Betalingen en\nbetaalverzoeken\nop de XRP ledger",
