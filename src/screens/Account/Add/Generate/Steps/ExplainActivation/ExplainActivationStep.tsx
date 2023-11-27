@@ -37,7 +37,7 @@ class ExplainActivationStep extends Component<Props, State> {
         const { goBack } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-explain-activation-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-explain-activation-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
                     <Image
                         style={styles.headerImage}

@@ -2,6 +2,8 @@
  * Import Account/Mnemonic Screen
  */
 
+// TODO: refactor this code for better ref handling and anon functions
+
 import { get, set, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
@@ -340,7 +342,7 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { length, isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-enter-mnemonic-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-enter-mnemonic-view" style={AppStyles.container}>
                 <Text
                     numberOfLines={1}
                     style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}

@@ -29,7 +29,7 @@ class EnterSecretNumbers extends Component<Props, State> {
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
 
-    secretNumberInput: SecretNumberInput;
+    private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 
     constructor(props: Props) {
         super(props);
@@ -37,14 +37,22 @@ class EnterSecretNumbers extends Component<Props, State> {
         this.state = {
             allFilled: false,
         };
+
+        this.secretNumberInputRef = React.createRef();
     }
 
     goNext = () => {
         const { goNext, setImportedAccount, importOfflineSecretNumber } = this.context;
 
-        const secretNumber = this.secretNumberInput.getNumbers();
+        const secretNumber = this.secretNumberInputRef.current?.getNumbers();
 
         try {
+            // double check, this should never happen
+            if (!secretNumber || !Array.isArray(secretNumber)) {
+                Alert.alert(Localize.t('global.error'), 'No secret number provided!');
+                return;
+            }
+
             const account = derive.secretNumbers(secretNumber, importOfflineSecretNumber);
 
             // set imported account
@@ -68,7 +76,7 @@ class EnterSecretNumbers extends Component<Props, State> {
         const { goBack, importOfflineSecretNumber } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-enter-secretNumbers" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-enter-secretNumbers" style={AppStyles.container}>
                 <Text
                     style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontalSml]}
                 >
@@ -77,9 +85,7 @@ class EnterSecretNumbers extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={(r) => {
-                            this.secretNumberInput = r;
-                        }}
+                        ref={this.secretNumberInputRef}
                         onAllFilled={this.onAllFilled}
                         checksum={!importOfflineSecretNumber}
                     />
@@ -95,7 +101,7 @@ class EnterSecretNumbers extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!allFilled}

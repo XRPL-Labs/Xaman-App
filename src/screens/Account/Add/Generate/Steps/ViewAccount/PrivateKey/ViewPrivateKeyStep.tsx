@@ -28,10 +28,10 @@ const ROWS = 8;
 
 /* Component ==================================================================== */
 class ViewPrivateKeyStep extends Component<Props, State> {
-    secretNumberInput: SecretNumberInput;
-
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
+
+    private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 
     constructor(props: Props) {
         super(props);
@@ -39,6 +39,8 @@ class ViewPrivateKeyStep extends Component<Props, State> {
         this.state = {
             currentRow: 0,
         };
+
+        this.secretNumberInputRef = React.createRef();
     }
 
     goBack = () => {
@@ -76,17 +78,15 @@ class ViewPrivateKeyStep extends Component<Props, State> {
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <SafeAreaView testID="account-generate-show-private-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-show-private-view" style={AppStyles.container}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>
                     {Localize.t('account.secretNumbersOfRow', { row: abcdefgh[currentRow] })}
                 </Text>
-                <Text style={[AppStyles.p]}>{Localize.t('account.pleaseWriteDownAllNumbers')}</Text>
+                <Text style={AppStyles.p}>{Localize.t('account.pleaseWriteDownAllNumbers')}</Text>
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={(r) => {
-                            this.secretNumberInput = r;
-                        }}
+                        ref={this.secretNumberInputRef}
                         currentRow={currentRow}
                         secretNumbers={generatedAccount.secret.secretNumbers}
                         readonly
@@ -94,7 +94,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
                 </View>
 
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[AppStyles.flex8]}>
+                    <View style={AppStyles.flex8}>
                         <Button
                             testID="back-button"
                             light
@@ -107,7 +107,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
 
                     <View style={AppStyles.flex1} />
 
-                    <View style={[AppStyles.flex8]}>
+                    <View style={AppStyles.flex8}>
                         <Button
                             testID="next-button"
                             secondary={currentRow !== ROWS - 1}

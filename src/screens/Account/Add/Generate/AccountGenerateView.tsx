@@ -90,18 +90,31 @@ class AccountGenerateView extends Component<Props, State> {
         this.setState({ generatedAccount, account });
     };
 
-    setEncryptionLevel = (encryptionLevel: EncryptionLevels) => {
+    setEncryptionLevel = (encryptionLevel: EncryptionLevels, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, { encryptionLevel }) });
+
+        this.setState({ account: Object.assign(account, { encryptionLevel }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
-    setLabel = (label: string) => {
+    setLabel = (label: string, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, { label }) });
+        this.setState({ account: Object.assign(account, { label }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
-    setPassphrase = (passphrase: string) => {
-        this.setState({ passphrase });
+    setPassphrase = (passphrase: string, callback?: any) => {
+        this.setState({ passphrase }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
     saveAccount = async () => {
@@ -268,10 +281,10 @@ class AccountGenerateView extends Component<Props, State> {
     render() {
         return (
             <View
-                onResponderRelease={() => Keyboard.dismiss()}
+                onResponderRelease={Keyboard.dismiss}
                 onStartShouldSetResponder={() => true}
                 testID="account-generate-view"
-                style={[AppStyles.flex1]}
+                style={AppStyles.flex1}
             >
                 {this.renderHeader()}
                 {this.renderStep()}

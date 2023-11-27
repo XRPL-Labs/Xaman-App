@@ -123,7 +123,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     </View>
                     <Spacer size={10} />
 
-                    <ScrollView contentContainerStyle={[AppStyles.flex1]}>
+                    <ScrollView contentContainerStyle={AppStyles.flex1}>
                         {regularKeys.map((account, index) => {
                             return (
                                 <View key={index} style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}>
@@ -176,7 +176,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                             {Localize.t('account.yourChainAddressWas', { chain: alternativeSeedAlphabet.name })}
                         </Text>
                         <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
-                            <Text testID="account-alternative-address" selectable style={[styles.addressField]}>
+                            <Text testID="account-alternative-address" selectable style={styles.addressField}>
                                 {this.getOtherChainAddress()}
                             </Text>
                         </View>
@@ -223,7 +223,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                             onPress={this.goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

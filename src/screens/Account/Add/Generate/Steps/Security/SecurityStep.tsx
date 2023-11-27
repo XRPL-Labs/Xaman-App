@@ -57,7 +57,7 @@ class SecurityStep extends Component<Props, State> {
         const { goBack, account } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-security-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-security-view" style={AppStyles.container}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.chooseWisely')}
                 </Text>
@@ -91,7 +91,7 @@ class SecurityStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

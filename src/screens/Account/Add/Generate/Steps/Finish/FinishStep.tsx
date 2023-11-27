@@ -52,7 +52,7 @@ class FinishStep extends Component<Props, State> {
         const { isLoading } = this.state;
 
         return (
-            <SafeAreaView style={[AppStyles.flex1]}>
+            <SafeAreaView style={AppStyles.flex1}>
                 <ImageBackground
                     testID="account-generate-finish-view"
                     source={StyleService.getImage('BackgroundPattern')}
@@ -67,7 +67,7 @@ class FinishStep extends Component<Props, State> {
                             AppStyles.centerContent,
                         ]}
                     >
-                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageComplete')} />
+                        <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageComplete')} />
                         <Text style={AppStyles.h5}>{Localize.t('global.congratulations')}</Text>
                         <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                             {Localize.t('account.accountSetupCompleted')}

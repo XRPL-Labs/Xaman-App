@@ -65,9 +65,9 @@ class ViewPublicKeyStep extends Component<Props, State> {
         const { generatedAccount } = this.context;
 
         return (
-            <SafeAreaView testID="account-generate-show-address-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-show-address-view" style={AppStyles.container}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
-                    <Text style={[AppStyles.h3]}>{Localize.t('global.great')}</Text>
+                    <Text style={AppStyles.h3}>{Localize.t('global.great')}</Text>
                     <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
                         {Localize.t('account.hereIsYourPublicKey')}
                     </Text>
@@ -77,7 +77,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     </Text>
                     <View style={[styles.labelWrapper, AppStyles.stretchSelf]}>
                         {generatedAccount ? (
-                            <Text testID="account-address-text" selectable style={[styles.addressField]}>
+                            <Text testID="account-address-text" selectable style={styles.addressField}>
                                 {generatedAccount.address}
                             </Text>
                         ) : (
@@ -93,7 +93,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                     />
                 </View>
 
-                <Footer style={[AppStyles.row]}>
+                <Footer style={AppStyles.row}>
                     <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
@@ -103,7 +103,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
                             onPress={this.goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!generatedAccount}

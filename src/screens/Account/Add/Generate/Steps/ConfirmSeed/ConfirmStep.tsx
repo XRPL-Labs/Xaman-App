@@ -26,10 +26,10 @@ export interface State {
 
 /* Component ==================================================================== */
 class ConfirmStep extends Component<Props, State> {
-    secretNumberInput: SecretNumberInput;
-
     static contextType = StepsContext;
     context: React.ContextType<typeof StepsContext>;
+
+    private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 
     constructor(props: Props) {
         super(props);
@@ -38,12 +38,14 @@ class ConfirmStep extends Component<Props, State> {
             currentRow: 0,
             allFilled: false,
         };
+
+        this.secretNumberInputRef = React.createRef();
     }
 
     goNext = () => {
         const { generatedAccount, goNext } = this.context;
 
-        const secretNumber = this.secretNumberInput.getNumbers();
+        const secretNumber = this.secretNumberInputRef.current?.getNumbers();
 
         if (isEqual(generatedAccount.secret.secretNumbers, secretNumber)) {
             goNext('ViewPublicKey');
@@ -61,9 +63,7 @@ class ConfirmStep extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.goBack'),
-                    onPress: () => {
-                        goBack();
-                    },
+                    onPress: goBack,
                     style: 'destructive',
                 },
                 { text: Localize.t('global.cancel') },
@@ -77,12 +77,24 @@ class ConfirmStep extends Component<Props, State> {
         return isEqual(generatedAccount.secret.secretNumbers[row], numbers);
     };
 
+    onSecretNumberAllFilled = (filled: boolean) => {
+        this.setState({
+            allFilled: filled,
+        });
+    };
+
+    onSecretNumberRowChange = (row: number) => {
+        this.setState({
+            currentRow: row,
+        });
+    };
+
     render() {
         const { allFilled, currentRow } = this.state;
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
         return (
-            <SafeAreaView testID="account-generate-confirm-private-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-confirm-private-view" style={AppStyles.container}>
                 {currentRow < 8 ? (
                     <>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
@@ -102,19 +114,9 @@ class ConfirmStep extends Component<Props, State> {
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
-                        ref={(r) => {
-                            this.secretNumberInput = r;
-                        }}
-                        onAllFilled={(filled) => {
-                            this.setState({
-                                allFilled: filled,
-                            });
-                        }}
-                        onRowChanged={(row) => {
-                            this.setState({
-                                currentRow: row,
-                            });
-                        }}
+                        ref={this.secretNumberInputRef}
+                        onAllFilled={this.onSecretNumberAllFilled}
+                        onRowChanged={this.onSecretNumberRowChange}
                         validateRow={this.validateRow}
                     />
                 </View>
@@ -129,7 +131,7 @@ class ConfirmStep extends Component<Props, State> {
                             onPress={this.goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!allFilled}
