@@ -32,13 +32,6 @@ describe('AccountDelete', () => {
                 address: 'rDestinationxxxxxxxxxxxxxxxxxxxxxx',
             });
         });
-
-        it('it should calculate right fee', () => {
-            const { tx, meta } = txTemplates;
-            const instance = new AccountDelete(tx, meta);
-
-            expect(instance.calculateFee()).toBe('2000000');
-        });
     });
 
     describe('Info', () => {

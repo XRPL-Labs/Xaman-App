@@ -340,42 +340,6 @@ class BaseTransaction {
     };
 
     /**
-     * Calculate the fee base on transaction type
-     * @param {number} netFee in drops
-     * @returns {string} calculated fee in drops
-     */
-    calculateFee = (netFee?: number | string): string => {
-        // if netFee is not set, default to 12 drops
-        if (!netFee) {
-            netFee = 12;
-        }
-
-        let baseFee = new BigNumber(0);
-
-        // netFee × (33 + (Fulfillment size in bytes ÷ 16))
-        // @ts-ignore
-        if (this.TransactionType === TransactionTypes.EscrowFinish && this.Fulfillment) {
-            baseFee = new BigNumber(netFee).multipliedBy(
-                // @ts-ignore
-                new BigNumber(Buffer.from(this.Fulfillment).length).dividedBy(16).plus(33),
-            );
-        }
-
-        // AccountDelete transactions require at least the owner reserve amount
-        if (this.TransactionType === TransactionTypes.AccountDelete) {
-            const { OwnerReserve } = NetworkService.getNetworkReserve();
-            baseFee = new BigNumber(OwnerReserve).multipliedBy(1000000);
-        }
-
-        // if no changing needs to apply set the net fee as base fee
-        if (baseFee.isZero()) {
-            baseFee = new BigNumber(netFee);
-        }
-
-        return baseFee.toFixed(0, BigNumber.ROUND_UP);
-    };
-
-    /**
      * check if transaction contain any xApp identifier and return it
      * @returns {string} xApp identifier if found any
      */
@@ -777,6 +741,10 @@ class BaseTransaction {
         };
     }[] {
         return get(this, ['tx', 'HookParameters'], undefined);
+    }
+
+    get MetaData() {
+        return { ...this.meta };
     }
 }
 
