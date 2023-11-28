@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Ödeme kanalı kapatılacak, kalan herhangi bir fon kaynak hesaba iade edilecek",
     "thisTransactionIncreaseAccountReserve": "Bu işlem, hesap rezervini %{ownerReserve} %{nativeAsset} artırdı",
     "thisTransactionDecreaseAccountReserve": "Bu işlem, hesap rezervini %{ownerReserve} %{nativeAsset} düşürdü",
-    "nftokenBurnExplain": "Hareket, %{tokenID} olan NFT Token'i  yakacak",
+    "nfTokenBurnExplain": "Hareket, %{tokenID} olan NFT Token'i  yakacak",
     "theTokenIdIs": "Token Tanıtıcısı: %{tokenID}",
     "theTokenHasATransferFee": "Token aktarma ücreti: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Bu Token'a ait vergi %{taxon}",

@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "გადახდის არხი დაიხურება. დარჩენილი თანხა დაბრუნდება წყაროს ანგარიშზე.",
     "thisTransactionIncreaseAccountReserve": "ამ ტრანზაქციამ გაზარდა ანგარიშის რეზერვი %{ownerReserve} %{nativeAsset}-ით",
     "thisTransactionDecreaseAccountReserve": "ამ ტრანზაქციამ შეამცირა ანგარიშის რეზერვი %{ownerReserve} %{nativeAsset}-ით",
-    "nftokenBurnExplain": "ტრანზაქცია დაწვავს NFT აქტივს ID-ით %{tokenID}",
+    "nfTokenBurnExplain": "ტრანზაქცია დაწვავს NFT აქტივს ID-ით %{tokenID}",
     "theTokenIdIs": "ტოკენის ID არის %{tokenID}\r\nთარგმანი",
     "theTokenHasATransferFee": "ტოკენს აქვს გადარიცხვის საკომისიო: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "ამ აქტივის Taxonი არის %{taxon}",

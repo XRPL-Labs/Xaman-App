@@ -83,8 +83,10 @@
   "ToSelfWithPath": {
     "tx": {
       "Account": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+      "SourceTag": 1337,
       "Amount": "1000000",
       "Destination": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+      "DestinationTag": 1338,
       "Fee": "12",
       "Flags": 2147614720,
       "Paths": [

@@ -13,12 +13,12 @@ const NFTokenMintInfo = {
 
         content += Localize.t('events.theTokenIdIs', { tokenID: tx.NFTokenID });
 
-        if (tx.TransferFee) {
+        if (typeof tx.TransferFee === 'number') {
             content += '\n';
             content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
         }
 
-        if (tx.NFTokenTaxon) {
+        if (typeof tx.NFTokenTaxon === 'number') {
             content += '\n';
             content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.NFTokenTaxon });
         }

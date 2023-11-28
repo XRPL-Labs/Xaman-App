@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "చెల్లింపు ఛానెల్ మూసివేసి ఉంటుంది, ఏదైనా మిగిలిన సమతుల్యత సోర్సు ఖాతాకు తిరిగి ఉంటుంది",
     "thisTransactionIncreaseAccountReserve": "ఈ లావాదేవీ ఖాతా రిజర్వ్‌ని %{ownerReserve} %{nativeAsset} పెంచింది",
     "thisTransactionDecreaseAccountReserve": "ఈ లావాదేవీ ఖాతా రిజర్వ్‌ని %{ownerReserve} %{nativeAsset} తగ్గించింది",
-    "nftokenBurnExplain": "లావాదేవీ ID %{tokenID}తో NFT టోకెన్‌ను బర్న్ చేస్తుంది",
+    "nfTokenBurnExplain": "లావాదేవీ ID %{tokenID}తో NFT టోకెన్‌ను బర్న్ చేస్తుంది",
     "theTokenIdIs": "టోకెన్ ID %{tokenID}\r\n",
     "theTokenHasATransferFee": "టోకెన్‌కు బదిలీ రుసుము ఉంది: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "ఈ టోకెన్ యొక్క టాక్సన్ %{taxon}",

@@ -1019,21 +1019,6 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case TransactionTypes.GenesisMint: {
-                if (tx.BalanceChange() && (tx.BalanceChange().received || tx.BalanceChange().sent)) {
-                    const incoming = !!tx.BalanceChange().received;
-                    const amount = tx.BalanceChange()?.received || tx.BalanceChange()?.sent;
-
-                    Object.assign(props, {
-                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
-                        color: incoming ? styles.incomingColor : styles.outgoingColor,
-                        prefix: incoming ? '' : '-',
-                        value: amount.value,
-                        currency: amount.currency,
-                    });
-                }
-                break;
-            }
 
             case LedgerObjectTypes.PayChannel:
                 break;
@@ -1538,16 +1523,6 @@ class TransactionDetailsView extends Component<Props, State> {
                           name: account.label,
                           source: 'accounts',
                       }),
-            };
-        }
-
-        // genesis mint
-        if (tx.Type === TransactionTypes.GenesisMint) {
-            from = { address: tx.Account.address, ...partiesDetails };
-            to = {
-                address: account.address,
-                name: account.label,
-                source: 'accounts',
             };
         }
 

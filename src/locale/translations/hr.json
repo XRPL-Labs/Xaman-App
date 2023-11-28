@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Kanal za plaćanje će se zatvoriti, bilo koji ostatak salda će se vratiti na izvorni račun",
     "thisTransactionIncreaseAccountReserve": "Ova transakcija je povećala rezervu računa za %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Ova transakcija je smanjila rezervaciju računa za %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Transakcija će spaliti NFT token s ID-om %{tokenID}",
+    "nfTokenBurnExplain": "Transakcija će spaliti NFT token s ID-om %{tokenID}",
     "theTokenIdIs": "ID tokena je %{tokenID}",
     "theTokenHasATransferFee": "Token ima naknadu za prijenos: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Taxon za ovaj token je %{taxon}",

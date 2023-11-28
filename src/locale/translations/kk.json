@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Төлем арнасы жабылады, қалған қалдық бастапқы шотқа қайтарылады",
     "thisTransactionIncreaseAccountReserve": "Бұл транзакция шот резервін %{ownerReserve} %{nativeAsset} айнымалысына арттырды",
     "thisTransactionDecreaseAccountReserve": "Бұл транзакция шот резервін %{ownerReserve} %{nativeAsset} айнымалысына азайтты",
-    "nftokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

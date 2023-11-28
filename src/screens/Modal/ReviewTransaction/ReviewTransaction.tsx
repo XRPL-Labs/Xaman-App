@@ -192,11 +192,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         await transaction
             .sign(source, payload.isMultiSign())
             .then(this.submit)
-            .catch((e) => {
+            .catch((error: Error) => {
                 if (this.mounted) {
-                    if (e) {
-                        if (typeof e.message === 'string') {
-                            Alert.alert(Localize.t('global.error'), e.message);
+                    if (error) {
+                        if (typeof error.message === 'string') {
+                            Alert.alert(Localize.t('global.error'), error.message);
                         } else {
                             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                         }

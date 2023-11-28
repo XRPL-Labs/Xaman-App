@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "A canle de pagamento será pechada, a cantidade restante será devolta á conta principal.",
     "thisTransactionIncreaseAccountReserve": "Esta transacción aumentou a reserva da conta con (Variable%{ownerReserve} ) %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Esta transacción disminui a reserva da conta con (Variable%{ownerReserve}) %{nativeAsset}",
-    "nftokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

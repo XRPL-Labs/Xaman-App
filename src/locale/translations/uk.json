@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Платіжний канал буде закритий, а залишок коштів буде повернено на вихідний акаунт",
     "thisTransactionIncreaseAccountReserve": "Ця транзакція збільшила резерви акаунта на %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Ця транзакція зменшила резерви акаунта на %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Операція спалює NFT токен з ідентифікатором %{tokenID}",
+    "nfTokenBurnExplain": "Операція спалює NFT токен з ідентифікатором %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

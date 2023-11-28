@@ -79,7 +79,9 @@ class PaymentChannelCreate extends BaseTransaction {
 
     get CancelAfter(): string {
         const date = get(this, ['tx', 'CancelAfter'], undefined);
+
         if (isUndefined(date)) return undefined;
+
         const ledgerDate = new LedgerDate(date);
         return ledgerDate.toISO8601();
     }

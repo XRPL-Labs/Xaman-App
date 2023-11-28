@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Denne betalingskanalen vil bli stengt, gjennstående balanse vil bli returnert til kildekonto.",
     "thisTransactionIncreaseAccountReserve": "Denne transaksjonen økte konto-reservasjonen med %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Denne transaksjonen minsker konto reserven med %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

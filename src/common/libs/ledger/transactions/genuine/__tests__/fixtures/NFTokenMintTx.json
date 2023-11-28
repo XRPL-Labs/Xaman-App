@@ -1,0 +1,99 @@
+{
+  "tx": {
+    "Account": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "Fee": "12",
+    "Flags": 8,
+    "LastLedgerSequence": 84225380,
+    "NFTokenTaxon": 0,
+    "Sequence": 78472094,
+    "SigningPubKey": "ED3A409EB9BD901129A836032F0F830DE77D27A0EA969C4402CC9C328FECFF9B85",
+    "TransactionType": "NFTokenMint",
+    "TransferFee": 0,
+    "TxnSignature": "7873406C908CEC48413708047CFBADAE1D530AE95E3AC04E15B656EC83824231D0EC9719E5827EC9C925FB717E2F0B965175B6C5A60BA5C5E4D805289568EF06",
+    "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469",
+    "ctid": "C5052D52000D0000",
+    "date": 754485621,
+    "hash": "0450038456D8A50668ED96519A2371E490537A8A7E0798676DF27518F9E5DA2C",
+    "inLedger": 84225362,
+    "ledger_index": 84225362
+  },
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Flags": 0,
+            "NFTokens": [
+              {
+                "NFToken": {
+                  "NFTokenID": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E3602C00ED90000673E",
+                  "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+                }
+              },
+              {
+                "NFToken": {
+                  "NFTokenID": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E3627DB44A50000110A",
+                  "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+                }
+              },
+              {
+                "NFToken": {
+                  "NFTokenID": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E3629ABA6A80000000D",
+                  "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+                }
+              }
+            ],
+            "NextPageMin": "05DF7FD60139521C210F16EC69DF105ACFAF3E36CFAF3E366F2BAD8200000CE7"
+          },
+          "LedgerEntryType": "NFTokenPage",
+          "LedgerIndex": "05DF7FD60139521C210F16EC69DF105ACFAF3E36CFAF3E362A332AB60000161B",
+          "PreviousFields": {
+            "NFTokens": [
+              {
+                "NFToken": {
+                  "NFTokenID": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E3602C00ED90000673E",
+                  "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+                }
+              },
+              {
+                "NFToken": {
+                  "NFTokenID": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E360A09DA0400001769",
+                  "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+                }
+              }
+            ]
+          },
+          "PreviousTxnID": "BFDB0E4C516A80E88A6CD378B17D83297843BD91F88C8AFAC178DEA010D528CF",
+          "PreviousTxnLgrSeq": 84225335
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "Balance": "36865178977",
+            "BurnedNFTokens": 11140,
+            "Domain": "7872706E732E636F6D",
+            "FirstNFTokenSequence": 78472083,
+            "Flags": 0,
+            "MintedNFTokens": 27793,
+            "OwnerCount": 3,
+            "Sequence": 78472095
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "E1EC2CEE58A6276199ACCDF22AC61F9B9F345A46C33BAD1DCDE4D2F211F520B5",
+          "PreviousFields": {
+            "Balance": "36865178989",
+            "MintedNFTokens": 27792,
+            "Sequence": 78472094
+          },
+          "PreviousTxnID": "BFDB0E4C516A80E88A6CD378B17D83297843BD91F88C8AFAC178DEA010D528CF",
+          "PreviousTxnLgrSeq": 84225335
+        }
+      }
+    ],
+    "TransactionIndex": 13,
+    "TransactionResult": "tesSUCCESS",
+    "nftoken_id": "0008000005DF7FD60139521C210F16EC69DF105ACFAF3E361CE96CBE04ADD023"
+  }
+}

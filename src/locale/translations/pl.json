@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Kanał płatności zostanie zamknięty, pozostałe saldo zostanie zwrócone do konta źródłowego",
     "thisTransactionIncreaseAccountReserve": "Ta transakcja zwiększyła rezerwę konta o %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Ta transakcja obniżyła rezerwę konta o %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Transakcja spala tokena NFT o identyfikatorze %{tokenID}",
+    "nfTokenBurnExplain": "Transakcja spala tokena NFT o identyfikatorze %{tokenID}",
     "theTokenIdIs": "Identyfikator tokena to %{tokenID}",
     "theTokenHasATransferFee": "Token ma opłatę za przelew: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Taxon dla tego tokenu to %{taxon}",

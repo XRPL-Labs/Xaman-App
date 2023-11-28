@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 import { AccountModel } from '@store/models';
 
 import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
@@ -64,7 +66,9 @@ const PaymentChannelCreateInfo = {
         }
 
         if (tx.CancelAfter) {
-            content += Localize.t('events.itCanBeCancelledAfter', { cancelAfter: tx.CancelAfter });
+            content += Localize.t('events.itCanBeCancelledAfter', {
+                cancelAfter: moment(tx.CancelAfter).format('LLLL'),
+            });
         }
 
         return content;

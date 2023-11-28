@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "支払いチャネルは閉鎖され、残額はソースアカウントに返却されます。",
     "thisTransactionIncreaseAccountReserve": "この取引により、アカウントの準備金が %{ownerReserve} %{nativeAsset}分増加しました。",
     "thisTransactionDecreaseAccountReserve": "この取引により、アカウントの準備金が %{ownerReserve} %{nativeAsset}分減少しました。",
-    "nftokenBurnExplain": "トランザクションは、NFT(ID:%{tokenID})をバーンします。",
+    "nfTokenBurnExplain": "トランザクションは、NFT(ID:%{tokenID})をバーンします。",
     "theTokenIdIs": "トークンIDは %{tokenID} です。",
     "theTokenHasATransferFee": "トークン転送料金 : %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "トークンの分類： %{taxon}",

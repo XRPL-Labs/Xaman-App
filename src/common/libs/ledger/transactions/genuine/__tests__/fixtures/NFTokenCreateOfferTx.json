@@ -1,0 +1,24 @@
+{
+  "sellOffer": {
+    "tx": {
+      "TransactionType": "NFTokenCreateOffer",
+      "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+      "NFTokenID": "000100001E962F495F07A990F4ED55ACCFEEF365DBAA76B6A048C0A200000007",
+      "Amount": "1000000",
+      "Owner": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+      "Destination": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+      "Expiration": 570113521,
+      "Flags": 1
+    },
+    "meta": {}
+  },
+  "buyOffer": {
+      "tx": {
+        "TransactionType": "NFTokenCreateOffer",
+        "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+        "NFTokenID": "000100001E962F495F07A990F4ED55ACCFEEF365DBAA76B6A048C0A200000007",
+        "Amount": "1000000"
+      },
+      "meta": {}
+    }
+}

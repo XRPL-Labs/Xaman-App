@@ -1,4 +1,4 @@
-import { set, get, isUndefined } from 'lodash';
+import { set, get, isUndefined, isEmpty } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import { HexEncoding } from '@common/utils/string';
@@ -42,17 +42,20 @@ class NFTokenMint extends BaseTransaction {
     }
 
     set NFTokenID(id: string) {
-        set(this, 'nfTokenID', id);
+        set(this, ['meta', 'nftoken_id'], id);
     }
 
     get NFTokenID(): string {
-        let tokenID = get(this, 'nfTokenID', undefined);
+        if (isEmpty(this.meta)) {
+            throw new Error('Determining the minted NFTokenID necessitates the metadata!');
+        }
 
-        // TODO: fixNFTokenRemint will include the minted nfTokenId in the meta data
+        // fixNFTokenRemint will include the minted nfTokenId in the meta data
+        let nfTokenID = get(this, ['meta', 'nftoken_id'], undefined);
 
         // if we already set the token id return
-        if (tokenID) {
-            return tokenID;
+        if (nfTokenID) {
+            return nfTokenID;
         }
 
         // which account issued this token
@@ -89,12 +92,12 @@ class NFTokenMint extends BaseTransaction {
 
         const intFlags = get(this, ['tx', 'Flags'], undefined);
 
-        tokenID = EncodeNFTokenID(Issuer, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
+        nfTokenID = EncodeNFTokenID(Issuer, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
 
         // store the token id
-        this.NFTokenID = tokenID;
+        this.NFTokenID = nfTokenID;
 
-        return tokenID;
+        return nfTokenID;
     }
 
     get TransferFee(): number {

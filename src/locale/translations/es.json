@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "El canal de pago se cerrará, cualquier saldo restante se devolverá a la cuenta de origen",
     "thisTransactionIncreaseAccountReserve": "Esta transacción ha aumentado la reserva de cuenta por parte de %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Esta transacción ha disminuido la reserva de cuenta por parte de %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "La transacción quemará el token NFT con el ID %{tokenID}",
+    "nfTokenBurnExplain": "La transacción quemará el token NFT con el ID %{tokenID}",
     "theTokenIdIs": "El ID del token es %{tokenID}",
     "theTokenHasATransferFee": "El token tiene una cuota de transferencia: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "El Taxón para este token es %{taxon}",

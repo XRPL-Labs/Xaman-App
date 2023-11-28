@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Ang channel ng pagbabayad ay isasara. Anumang natitirang pondo  ay babalik sa pinagmulang account.",
     "thisTransactionIncreaseAccountReserve": "Pinalaki ng transaksyong ito ang reserba ng account ng %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Binabawasan ng transaksyong ito ang reserba ng account ng %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Ang transaksyon ay magsusunog ng NFT token na may ID %{tokenID}",
+    "nfTokenBurnExplain": "Ang transaksyon ay magsusunog ng NFT token na may ID %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Bayad sa paglilipat ng token: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

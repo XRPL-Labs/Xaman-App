@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Το κανάλι πληρωμής θα κλείσει. Το υπόλοιπο θα επιστραφεί στον λογαριασμό πηγής",
     "thisTransactionIncreaseAccountReserve": "Αυτή η συναλλαγή αύξησε το αποθεματικό λογαριασμού κατά %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Αυτή η συναλλαγή μείωσε το αποθεματικό λογαριασμού κατά %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",

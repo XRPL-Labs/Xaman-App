@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Платежный канал будет закрыт, любой оставшийся остаток будет возвращен на исходный счет",
     "thisTransactionIncreaseAccountReserve": "Эта транзакция увеличила резерв учетных записей на%{nativeAsset}%{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Эта транзакция уменьшила резерв учетных записей на%{nativeAsset}%{nativeAsset}",
-    "nftokenBurnExplain": "Транзакция будет сжигать маркер NFT с ID %{tokenID}",
+    "nfTokenBurnExplain": "Транзакция будет сжигать маркер NFT с ID %{tokenID}",
     "theTokenIdIs": "ИД маркера: %{tokenID}",
     "theTokenHasATransferFee": "Маркер имеет плату за передачу: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Taxon для этого маркера- %{taxon}",

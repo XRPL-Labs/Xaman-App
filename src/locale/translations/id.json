@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Saluran pembayaran akan ditutup, setiap saldo yang tersisa akan dikembalikan ke akun sumber",
     "thisTransactionIncreaseAccountReserve": "Transaksi ini meningkatkan cadangan akun sebesar %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Transaksi ini menurunkan cadangan akun sebesar %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Transaksi akan membakar token NFT dengan ID %{tokenID}",
+    "nfTokenBurnExplain": "Transaksi akan membakar token NFT dengan ID %{tokenID}",
     "theTokenIdIs": "ID Token adalah %{tokenID}",
     "theTokenHasATransferFee": "Token memiliki biaya transfer: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Taxon untuk token ini adalah %{taxon}",

@@ -44,7 +44,7 @@ const OfferCreateInfo = {
                     : NormalizeCurrencyCode(tx.TakerGets.currency),
         });
 
-        if (tx.OfferSequence) {
+        if (typeof tx.OfferSequence === 'number') {
             content += '\n';
             content += Localize.t('events.theTransactionIsAlsoCancelOffer', {
                 address: tx.Account.address,

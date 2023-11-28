@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Betalningskanalen kommer att stängas, eventuell återstående behållning kommer att returneras till källkontot",
     "thisTransactionIncreaseAccountReserve": "Transaktionen ökade kontoreserven med %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Den här transaktionen minskade kontoreserven med %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Transaktionen kommer att bränna NFT-token med ID %{tokenID}",
+    "nfTokenBurnExplain": "Transaktionen kommer att bränna NFT-token med ID %{tokenID}",
     "theTokenIdIs": "Token-ID är %{tokenID}",
     "theTokenHasATransferFee": "Elementet har en överföringsavgift: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Beskattningen för det här elementet är %{taxon}",

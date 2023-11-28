@@ -11,7 +11,7 @@ const NFTokenBurnInfo = {
     },
 
     getDescription: (tx: NFTokenBurn): string => {
-        return Localize.t('events.nftokenBurnExplain', { tokenID: tx.NFTokenID });
+        return Localize.t('events.nfTokenBurnExplain', { tokenID: tx.NFTokenID });
     },
 
     getRecipient: (tx: NFTokenBurn, account: AccountModel): { address: string; tag?: number } => {

@@ -586,7 +586,7 @@
     "thePaymentChannelWillBeClosed": "Канал плаћања ће бити затворен, сваки преостали баланс ће бити враћен на налог извора",
     "thisTransactionIncreaseAccountReserve": "Ова трансакција је повећала резерве налога помоћу %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Ова трансакција смањила је резерве налога %{ownerReserve} %{nativeAsset}",
-    "nftokenBurnExplain": "Трансакција ће спалити НФТ токен са идентификатором %{tokenID}",
+    "nfTokenBurnExplain": "Трансакција ће спалити НФТ токен са идентификатором %{tokenID}",
     "theTokenIdIs": "Идентификатор токена је %{tokenID}",
     "theTokenHasATransferFee": "Токен има надокнаду за трансфер: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Таксон за овај токен је %{taxon}",

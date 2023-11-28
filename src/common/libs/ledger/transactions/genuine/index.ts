@@ -32,4 +32,3 @@ export * from './URITokenBurn';
 export * from './URITokenBuy';
 export * from './URITokenCreateSellOffer';
 export * from './URITokenCancelSellOffer';
-export * from './GenesisMint';

@@ -15,7 +15,7 @@ class Meta {
         if (!meta.AffectedNodes) {
             this.nodes = [];
         }
-        this.nodes = meta.AffectedNodes.map(this.normalizeNode);
+        this.nodes = meta.AffectedNodes?.map(this.normalizeNode) || [];
     }
 
     private normalizeNode = (affectedNode: any) => {
