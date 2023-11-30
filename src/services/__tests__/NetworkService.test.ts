@@ -81,9 +81,9 @@ describe('NetworkService', () => {
             const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
                 Promise.resolve({
                     drops: {
-                        base_fee: 6186,
+                        base_fee: 6176,
                     },
-                    fee_hooks_feeunits: 6176,
+                    fee_hooks_feeunits: 6186,
                 }),
             );
 
@@ -93,11 +93,11 @@ describe('NetworkService', () => {
 
             expect(availableFees).toStrictEqual({
                 availableFees: [
-                    { type: 'LOW', value: '6186' },
+                    { type: 'LOW', value: '6176' },
                     { type: 'MEDIUM', value: '7500' },
                     { type: 'HIGH', value: '11000' },
                 ],
-                feeHooks: 6176,
+                feeHooks: 10,
                 suggested: 'LOW',
             });
 

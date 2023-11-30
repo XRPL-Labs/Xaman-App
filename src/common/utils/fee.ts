@@ -65,7 +65,7 @@ const NormalizeFeeDataSet = (feeDataSet: {
     if (!feeDataSet || typeof feeDataSet !== 'object') {
         throw new Error('NormalizeFeeDataSet required a valid fee data set!');
     }
-    const { drops: { base_fee } = { base_fee: 12 }, fee_hooks_feeunits } = feeDataSet;
+    const { drops: { base_fee } = { base_fee: 12 }, fee_hooks_feeunits = 0 } = feeDataSet;
 
     const baseFee = BigNumber.maximum(12, base_fee);
     const feeHooks = BigNumber.maximum(new BigNumber(fee_hooks_feeunits).minus(baseFee), 0).toNumber();
