@@ -1,0 +1,306 @@
+/**
+ * Transaction Loader modal
+ * A Modal to load transaction base on the transaction hash and redirect to details screen
+ */
+
+import { get } from 'lodash';
+
+import React, { Component } from 'react';
+import { View, Text, InteractionManager, ImageBackground } from 'react-native';
+
+import NetworkService from '@services/NetworkService';
+import LedgerService from '@services/LedgerService';
+import StyleService from '@services/StyleService';
+
+import { AppScreens } from '@common/constants';
+
+import { Prompt } from '@common/helpers/interface';
+
+import { TransactionFactory } from '@common/libs/ledger/factory';
+
+import { Navigator } from '@common/helpers/navigator';
+
+import { CoreRepository, NetworkRepository } from '@store/repositories';
+import { AccountModel, NetworkModel } from '@store/models';
+import { NetworkType } from '@store/types';
+
+// components
+import { Icon, Spacer, LoadingIndicator, InfoMessage, Button, Footer } from '@components/General';
+
+import Localize from '@locale';
+
+// style
+import { AppStyles } from '@theme';
+import styles from './styles';
+
+/* types ==================================================================== */
+export interface Props {
+    hash: string;
+    account: AccountModel;
+    network: string;
+}
+
+export interface State {
+    isLoading: boolean;
+    requiredSwitchNetwork: boolean;
+    requiredNetwork: NetworkModel;
+    error: boolean;
+}
+
+/* Component ==================================================================== */
+class TransactionLoaderModal extends Component<Props, State> {
+    static screenName = AppScreens.Modal.TransactionLoader;
+
+    private mounted = false;
+
+    static options() {
+        return {
+            topBar: {
+                visible: false,
+            },
+        };
+    }
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            isLoading: true,
+            requiredSwitchNetwork: false,
+            requiredNetwork: undefined,
+            error: false,
+        };
+    }
+
+    componentDidMount() {
+        // track mount status
+        this.mounted = true;
+
+        InteractionManager.runAfterInteractions(this.loadTransaction);
+    }
+
+    componentWillUnmount() {
+        // keep track of mounted status
+        this.mounted = false;
+    }
+
+    loadTransaction = async () => {
+        const { hash, account, network } = this.props;
+        const { isLoading } = this.state;
+
+        // no transaction hash has been provided ?
+        if (!hash) return;
+
+        // check if we are connected to the network that this push is coming from
+        const { networkKey } = NetworkService.getConnectionDetails();
+
+        if (network && network !== networkKey) {
+            // get required network
+            const requiredNetwork = NetworkRepository.findOne({ key: network });
+
+            // set return
+            this.setState({
+                isLoading: false,
+                requiredSwitchNetwork: true,
+                requiredNetwork,
+            });
+            return;
+        }
+
+        if (!isLoading) {
+            this.setState({
+                isLoading: true,
+                error: false,
+            });
+        }
+
+        // some timing issue can be fixed with this
+        await new Promise((resolve) => {
+            setTimeout(resolve, 1000);
+        });
+
+        // load the transaction from ledger
+        try {
+            const resp = await LedgerService.getTransaction(hash);
+
+            if (!this.mounted) {
+                return;
+            }
+
+            if (get(resp, 'error')) {
+                this.setState({
+                    error: true,
+                });
+                return;
+            }
+
+            // separate transaction meta
+            const { meta } = resp;
+
+            // cleanup
+            delete resp.meta;
+            // eslint-disable-next-line no-underscore-dangle
+            delete resp.__replyMs;
+            // eslint-disable-next-line no-underscore-dangle
+            delete resp.__command;
+            delete resp.inLedger;
+
+            // build transaction instance
+            const tx = TransactionFactory.fromLedger({ tx: resp, meta });
+
+            // close this modal and open the transaction details screen
+            await Navigator.dismissModal();
+
+            // redirect to details screen with a little-bit delay
+            setTimeout(() => {
+                Navigator.showModal(AppScreens.Transaction.Details, { tx, account, asModal: true });
+            }, 300);
+        } catch (error) {
+            if (!this.mounted) {
+                return;
+            }
+            this.setState({
+                error: true,
+            });
+        }
+    };
+
+    switchNetwork = async () => {
+        const { requiredNetwork } = this.state;
+
+        // switch to the desired network
+        await NetworkService.switchNetwork(requiredNetwork);
+
+        // re-run the preFlight
+        this.loadTransaction();
+    };
+
+    onSwitchNetworkPress = () => {
+        const { requiredNetwork } = this.state;
+
+        // get currently connected network
+        const connectedNetwork = NetworkService.getNetwork();
+
+        // ask user if they want to switch the network
+        Prompt(
+            Localize.t('global.switchNetwork'),
+            Localize.t('settings.nodeChangeWarning', {
+                from: `"${connectedNetwork.name}"`,
+                to: `"${requiredNetwork.name}`,
+            }),
+            [
+                { text: Localize.t('global.cancel') },
+                {
+                    text: Localize.t('global.switch'),
+                    onPress: this.switchNetwork,
+                },
+            ],
+        );
+    };
+
+    dismiss = () => {
+        Navigator.dismissModal();
+    };
+
+    renderNetworkSwitch = () => {
+        const { requiredNetwork } = this.state;
+
+        const coreSettings = CoreRepository.getSettings();
+
+        // only enable network switch if developer mode is on
+        let ShouldShowSwitchButton = true;
+        if (requiredNetwork.type !== NetworkType.Main && !coreSettings.developerMode) {
+            ShouldShowSwitchButton = false;
+        }
+
+        return (
+            <>
+                <Icon name="IconInfo" style={styles.infoIcon} size={80} />
+                <Spacer size={18} />
+                <InfoMessage
+                    type="neutral"
+                    label={Localize.t('events.transactionDetailsDifferentNetworkError', {
+                        network: `"${requiredNetwork.name}"`,
+                    })}
+                    hideActionButton={!ShouldShowSwitchButton}
+                    actionButtonLabel={Localize.t('global.switchNetwork')}
+                    actionButtonIcon="IconSwitchAccount"
+                    actionButtonIconSize={17}
+                    onActionButtonPress={this.onSwitchNetworkPress}
+                />
+            </>
+        );
+    };
+
+    renderLoading = () => {
+        return (
+            <>
+                <LoadingIndicator size="large" />
+                <Spacer size={30} />
+                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                    {Localize.t('events.fetchingTransactionFromNetwork')}
+                </Text>
+                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorGrey]}>
+                    {Localize.t('global.pleaseWait')}
+                </Text>
+            </>
+        );
+    };
+
+    renderError = () => {
+        return (
+            <>
+                <Icon size={50} name="IconAlertTriangle" style={AppStyles.imgColorOrange} />
+                <Spacer size={40} />
+                <InfoMessage
+                    type="neutral"
+                    label={Localize.t('events.unableToLoadTheTransaction')}
+                    actionButtonLabel={Localize.t('global.tryAgain')}
+                    actionButtonIcon="IconRefresh"
+                    onActionButtonPress={this.loadTransaction}
+                />
+            </>
+        );
+    };
+
+    renderContent = () => {
+        const { isLoading, requiredSwitchNetwork, error } = this.state;
+
+        if (isLoading) {
+            return this.renderLoading();
+        }
+        if (requiredSwitchNetwork) {
+            return this.renderNetworkSwitch();
+        }
+        if (error) {
+            return this.renderError();
+        }
+        return null;
+    };
+
+    render() {
+        const { isLoading } = this.state;
+
+        return (
+            <ImageBackground
+                source={StyleService.getImage('BackgroundShapes')}
+                imageStyle={AppStyles.BackgroundShapes}
+                style={styles.container}
+            >
+                <View style={styles.contentContainer}>{this.renderContent()}</View>
+
+                <Footer>
+                    <Button
+                        light
+                        textStyle={AppStyles.strong}
+                        label={isLoading ? Localize.t('global.cancel') : Localize.t('global.close')}
+                        onPress={this.dismiss}
+                    />
+                </Footer>
+            </ImageBackground>
+        );
+    }
+}
+
+/* Export Component ==================================================================== */
+export default TransactionLoaderModal;

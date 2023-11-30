@@ -42,6 +42,7 @@ const screens = {
         MigrationExplain: 'modal.MigrationExplain',
         XAppBrowser: 'modal.XAppBrowser',
         DestinationPicker: 'modal.DestinationPicker',
+        TransactionLoader: 'modal.TransactionLoader',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',

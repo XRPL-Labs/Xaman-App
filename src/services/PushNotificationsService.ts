@@ -354,6 +354,7 @@ class PushNotificationsService extends EventEmitter {
     handleOpenTx = async (notification: any) => {
         const hash = get(notification, ['data', 'tx']);
         const address = get(notification, ['data', 'account']);
+        const network = get(notification, ['data', 'network']);
 
         // validate inputs
         if (!utils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
@@ -362,6 +363,8 @@ class PushNotificationsService extends EventEmitter {
 
         // check if account exist in Xaman
         const account = AccountRepository.findOne({ address });
+
+        // account is not present in the app, just return
         if (!account) return;
 
         let delay = 0;
@@ -381,7 +384,7 @@ class PushNotificationsService extends EventEmitter {
         }
 
         setTimeout(() => {
-            this.routeUser(AppScreens.Transaction.Details, { hash, account, asModal: true }, {}, ComponentTypes.Modal);
+            this.routeUser(AppScreens.Modal.TransactionLoader, { hash, account, network }, {}, ComponentTypes.Modal);
         }, delay);
     };
 

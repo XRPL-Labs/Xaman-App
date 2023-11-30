@@ -32,6 +32,7 @@ import MigrationExplain from './Modal/MigrationExplain';
 import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
+import TransactionLoader from './Modal/TransactionLoader';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
@@ -129,6 +130,7 @@ export {
     XAppBrowser,
     CurrencyPicker,
     DestinationPicker,
+    TransactionLoader,
     // overlay
     SwitchAccount,
     ShareAccount,
