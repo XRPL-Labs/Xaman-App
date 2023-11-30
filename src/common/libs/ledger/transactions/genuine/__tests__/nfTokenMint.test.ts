@@ -16,6 +16,19 @@ describe('NFTokenMint tx', () => {
             expect(instance.TransactionType).toBe('NFTokenMint');
             expect(instance.Type).toBe('NFTokenMint');
         });
+
+        it('Should return right NFTokenID from meta data', () => {
+            const { tx, meta } = nfTokenMintTemplate;
+            const instance = new NFTokenMint(tx, meta);
+            expect(instance.NFTokenID).toEqual(meta.nftoken_id);
+        });
+
+        it('Should calculate right NFTokenID', () => {
+            const { tx, meta } = nfTokenMintTemplate;
+            const { nftoken_id } = meta;
+            const instance = new NFTokenMint(tx, { ...meta, nftoken_id: undefined });
+            expect(instance.NFTokenID).toEqual(nftoken_id);
+        });
     });
 
     describe('Info', () => {

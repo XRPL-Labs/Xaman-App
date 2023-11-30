@@ -50,7 +50,7 @@ class NFTokenMint extends BaseTransaction {
             throw new Error('Determining the minted NFTokenID necessitates the metadata!');
         }
 
-        // fixNFTokenRemint will include the minted nfTokenId in the meta data
+        // fixNFTokenRemint will include the minted nfTokenId in the metaData
         let nfTokenID = get(this, ['meta', 'nftoken_id'], undefined);
 
         // if we already set the token id return
@@ -59,7 +59,7 @@ class NFTokenMint extends BaseTransaction {
         }
 
         // which account issued this token
-        const Issuer = this.Issuer || this.Account.address;
+        const issuer = this.Issuer || this.Account.address;
 
         // Fetch minted token sequence
         let tokenSequence;
@@ -69,7 +69,7 @@ class NFTokenMint extends BaseTransaction {
         this.meta.AffectedNodes.forEach((node: any) => {
             if (node.ModifiedNode && node.ModifiedNode.LedgerEntryType === 'AccountRoot') {
                 const { PreviousFields, FinalFields } = node.ModifiedNode;
-                if (PreviousFields && FinalFields && FinalFields.Account === Issuer) {
+                if (PreviousFields && FinalFields && FinalFields.Account === issuer) {
                     tokenSequence = PreviousFields.MintedNFTokens;
                     nextTokenSequence = FinalFields.MintedNFTokens;
                     firstNFTokenSequence = PreviousFields?.FirstNFTokenSequence || FinalFields?.FirstNFTokenSequence;
@@ -85,14 +85,11 @@ class NFTokenMint extends BaseTransaction {
         // Include first NFToken Sequence
         tokenSequence += firstNFTokenSequence ?? 0;
 
-        // Unable to find TokenSequence
-        if (typeof tokenSequence === 'undefined') {
-            return '';
-        }
-
         const intFlags = get(this, ['tx', 'Flags'], undefined);
+        const rawTransferFee = get(this, ['tx', 'TransferFee'], undefined);
+        const taxon = get(this, ['tx', 'NFTokenTaxon']);
 
-        nfTokenID = EncodeNFTokenID(Issuer, tokenSequence, intFlags, this.TransferFee, this.NFTokenTaxon);
+        nfTokenID = EncodeNFTokenID(issuer, tokenSequence, intFlags, rawTransferFee, taxon);
 
         // store the token id
         this.NFTokenID = nfTokenID;

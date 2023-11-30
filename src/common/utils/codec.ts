@@ -46,7 +46,15 @@ const EncodeNFTokenID = (
     tokenTaxon: number,
 ): string => {
     const issuer = decodeAccountID(account);
-    const cipheredTaxon = tokenTaxon ^ (384160001 * tokenSequence + 2459);
+
+    const unscrambleTaxon = new BigNumber(384160001)
+        .multipliedBy(tokenSequence)
+        .modulo(4294967296)
+        .plus(2459)
+        .modulo(4294967296)
+        .toNumber();
+
+    const cipheredTaxon = (tokenTaxon ^ unscrambleTaxon) >>> 0;
 
     const tokenID = Buffer.concat([
         Buffer.from([(flags >> 8) & 0xff, flags & 0xff]),
@@ -86,7 +94,11 @@ const DecodeNFTokenID = (nfTokenID: string) => {
 
     const scrambledTaxon = new BigNumber(nfTokenID.substring(48, 56), 16).toNumber();
     const sequence = new BigNumber(nfTokenID.substring(56, 64), 16).toNumber();
-    const taxon = (scrambledTaxon ^ (384160001 * sequence + 2459)) % 4294967296;
+    const unscrambleTaxon = new BigNumber(384160001).multipliedBy(sequence).modulo(4294967296).plus(2459).toNumber();
+
+    const cipheredTaxon = (scrambledTaxon ^ unscrambleTaxon) >>> 0;
+
+    const taxon = new BigNumber(cipheredTaxon).modulo(4294967296).toNumber();
 
     return {
         NFTokenID: nfTokenID,
