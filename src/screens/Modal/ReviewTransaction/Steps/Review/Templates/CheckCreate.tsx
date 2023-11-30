@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
@@ -8,11 +7,10 @@ import { CheckCreate } from '@common/libs/ledger/transactions';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { FormatDate } from '@common/utils/date';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -26,11 +24,9 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    isLoading: boolean;
     amount: string;
     currencyName: string;
     editableAmount: boolean;
-    destinationDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -41,48 +37,15 @@ class CheckCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
             editableAmount: !props.transaction.SendMax?.value,
             amount: props.transaction.SendMax?.value,
             currencyName: props.transaction.SendMax?.currency
                 ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
                 : NetworkService.getNativeAsset(),
-            destinationDetails: undefined,
         };
 
         this.amountInput = React.createRef();
     }
-
-    componentDidMount() {
-        // fetch the destination name e
-        this.fetchDestinationInfo();
-    }
-
-    fetchDestinationInfo = () => {
-        const { transaction } = this.props;
-
-        this.setState({
-            isLoading: true,
-        });
-
-        // fetch destination details
-        getAccountName(transaction.Destination.address, transaction.Destination.tag)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        destinationDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
-            });
-    };
 
     onSendMaxChange = (amount: string) => {
         const { transaction } = this.props;
@@ -106,7 +69,7 @@ class CheckCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, editableAmount, currencyName, amount, destinationDetails } = this.state;
+        const { editableAmount, currencyName, amount } = this.state;
         return (
             <>
                 <View style={styles.label}>
@@ -115,19 +78,14 @@ class CheckCreateTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Destination.address}
+                    tag={transaction.Destination.tag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    recipient={{
-                        address: transaction.Destination.address,
-                        tag: transaction.Destination.tag,
-                        ...destinationDetails,
-                    }}
                 />
 
                 {/* Amount */}
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-
                 <View style={styles.contentBox}>
                     <TouchableOpacity
                         activeOpacity={1}

@@ -14,7 +14,7 @@ import { ContactRepository } from '@store/repositories';
 
 // components
 import { Button, Spacer, ActionPanel } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { GetAccountLink } from '@common/utils/explorer';
 
@@ -22,22 +22,17 @@ import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes } from '@theme';
-
+import { AccountNameType } from '@common/helpers/resolver';
 /* types ==================================================================== */
-export type RecipientType = {
-    id?: string;
-    address: string;
-    tag?: number;
-    name: string;
-    source?: string;
-};
 
 export interface Props {
-    recipient: RecipientType;
+    address: string;
+    tag?: number;
     onClose: () => void;
 }
 
 export interface State {
+    recipientName: string;
     contactExist: boolean;
 }
 
@@ -45,7 +40,7 @@ export interface State {
 class RecipientMenuOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.RecipientMenu;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -63,8 +58,11 @@ class RecipientMenuOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
+            recipientName: undefined,
             contactExist: false,
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -72,10 +70,10 @@ class RecipientMenuOverlay extends Component<Props, State> {
     }
 
     checkContactExist = () => {
-        const { recipient } = this.props;
+        const { address, tag } = this.props;
 
         this.setState({
-            contactExist: ContactRepository.exist(recipient.address, toString(recipient.tag)),
+            contactExist: ContactRepository.exist(address, toString(tag)),
         });
     };
 
@@ -89,45 +87,46 @@ class RecipientMenuOverlay extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    getAccountLink = () => {
-        const { recipient } = this.props;
-
-        return GetAccountLink(recipient.address);
+    onRecipientInfoUpdate = (info: AccountNameType) => {
+        if (info?.name) {
+            this.setState({
+                recipientName: info.name,
+            });
+        }
     };
 
     addContact = () => {
-        const { recipient } = this.props;
+        const { address, tag } = this.props;
+        const { recipientName } = this.state;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Settings.AddressBook.Add, recipient);
+            Navigator.push(AppScreens.Settings.AddressBook.Add, { address, tag, name: recipientName });
         }, 500);
     };
 
     shareAddress = () => {
-        const { recipient } = this.props;
+        const { address } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
+
         setTimeout(() => {
             Share.share({
                 title: Localize.t('home.shareAccount'),
-                message: recipient.address,
+                message: address,
                 url: undefined,
             }).catch(() => {});
         }, 1000);
     };
 
     openAccountLink = () => {
-        const url = this.getAccountLink();
+        const { address } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        const url = GetAccountLink(address);
+
+        this.actionPanelRef?.current?.slideDown();
+
         setTimeout(() => {
             Linking.openURL(url).catch(() => {
                 Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
@@ -136,7 +135,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { recipient } = this.props;
+        const { address, tag } = this.props;
         const { contactExist } = this.state;
 
         return (
@@ -144,12 +143,15 @@ class RecipientMenuOverlay extends Component<Props, State> {
                 height={AppSizes.moderateScale(50) * (!contactExist ? 7 : 6)}
                 onSlideDown={this.onClose}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.paddingHorizontalSml, AppStyles.centerContent]}>
-                    <RecipientElement showTag={false} recipient={recipient} />
+                    <AccountElement
+                        address={address}
+                        tag={tag}
+                        visibleElements={{ avatar: true, tag: false, button: false, source: false }}
+                        onInfoUpdate={this.onRecipientInfoUpdate}
+                    />
 
                     <Spacer size={20} />
 

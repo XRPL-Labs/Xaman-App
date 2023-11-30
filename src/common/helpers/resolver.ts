@@ -1,6 +1,5 @@
 import { memoize, has, get, assign } from 'lodash';
 
-
 import AccountRepository from '@store/repositories/account';
 import ContactRepository from '@store/repositories/contact';
 
@@ -14,7 +13,7 @@ export interface PayIDInfo {
 }
 
 export interface AccountNameType {
-    address: string;
+    address?: string;
     name: string;
     source: string;
     kycApproved?: boolean;

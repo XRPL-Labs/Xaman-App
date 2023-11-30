@@ -25,7 +25,7 @@ import { BackendService, LedgerService, NetworkService, StyleService } from '@se
 
 // components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -745,11 +745,21 @@ class RecipientStep extends Component<Props, State> {
         const selected = item.address === get(destination, 'address') && item.name === get(destination, 'name');
 
         return (
-            <RecipientElement
-                recipient={item}
-                selected={selected}
-                showTag={false}
-                showSource
+            <AccountElement
+                address={item.address}
+                tag={item.tag}
+                info={{
+                    name: item.name,
+                    source: item.source,
+                }}
+                containerStyle={selected && styles.accountElementSelected}
+                textStyle={selected && styles.accountElementSelectedText}
+                visibleElements={{
+                    tag: false,
+                    avatar: true,
+                    source: true,
+                    button: false,
+                }}
                 onPress={() => {
                     if (isLoading) {
                         return;

@@ -1,17 +1,13 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-
-import { isEmpty, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { NFTokenMint } from '@common/libs/ledger/transactions';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
-
 import Localize from '@locale';
 
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -22,48 +18,18 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: NFTokenMint;
 }
 
-export interface State {
-    isLoadingIssuerDetails: boolean;
-    issuerDetails: AccountNameType;
-}
+export interface State {}
 
 /* Component ==================================================================== */
 class NFTokenMintTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            isLoadingIssuerDetails: true,
-            issuerDetails: undefined,
-        };
-    }
-
-    componentDidMount() {
-        const { transaction } = this.props;
-
-        if (transaction.Issuer) {
-            getAccountName(transaction.Issuer)
-                .then((res: any) => {
-                    if (!isEmpty(res)) {
-                        this.setState({
-                            issuerDetails: res,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                })
-                .finally(() => {
-                    this.setState({
-                        isLoadingIssuerDetails: false,
-                    });
-                });
-        }
+        this.state = {};
     }
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails } = this.state;
 
         return (
             <>
@@ -74,30 +40,26 @@ class NFTokenMintTemplate extends Component<Props, State> {
                                 {Localize.t('global.issuer')}
                             </Text>
                         </View>
-                        <RecipientElement
+                        <AccountElement
+                            address={transaction.Issuer}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoadingIssuerDetails}
-                            recipient={{
-                                address: transaction.Issuer,
-                                ...issuerDetails,
-                            }}
                         />
                     </>
                 )}
 
                 {!isUndefined(transaction.NFTokenTaxon) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.tokenTaxon')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.NFTokenTaxon}</Text>
+                        <Text style={styles.label}>{Localize.t('global.tokenTaxon')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.NFTokenTaxon}</Text>
                         </View>
                     </>
                 )}
 
                 {transaction.URI && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.uri')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.uri')}</Text>
+                        <View style={styles.contentBox}>
                             <Text selectable style={[styles.value]}>
                                 {transaction.URI}
                             </Text>
@@ -107,9 +69,9 @@ class NFTokenMintTemplate extends Component<Props, State> {
 
                 {!isUndefined(transaction.TransferFee) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.transferFee')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.TransferFee}%</Text>
+                        <Text style={styles.label}>{Localize.t('global.transferFee')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.TransferFee}%</Text>
                         </View>
                     </>
                 )}

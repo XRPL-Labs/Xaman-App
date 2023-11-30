@@ -1,6 +1,5 @@
-import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 import { RatesType } from '@services/BackendService';
@@ -11,11 +10,10 @@ import { Payment } from '@common/libs/ledger/transactions';
 import { PathOption } from '@common/libs/ledger/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { RecipientElement, PaymentOptionsPicker } from '@components/Modules';
+import { AccountElement, PaymentOptionsPicker } from '@components/Modules';
 
 import { Toast } from '@common/helpers/interface';
 
@@ -33,11 +31,9 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 
 export interface State {
     account: string;
-    isLoading: boolean;
     amount: string;
     currencyName: string;
     editableAmount: boolean;
-    destinationDetails: AccountNameType;
     currencyRate: RatesType;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
@@ -57,13 +53,11 @@ class PaymentTemplate extends Component<Props, State> {
 
         this.state = {
             account: undefined,
-            isLoading: false,
             editableAmount: !transaction.Amount?.value,
             amount: transaction.Amount?.value,
             currencyName: transaction.Amount?.currency
                 ? NormalizeCurrencyCode(transaction.Amount.currency)
                 : NetworkService.getNativeAsset(),
-            destinationDetails: undefined,
             currencyRate: undefined,
             isLoadingRate: false,
             shouldShowIssuerFee: false,
@@ -76,17 +70,16 @@ class PaymentTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        // fetch the destination name e
-        this.fetchDestinationInfo();
+        InteractionManager.runAfterInteractions(() => {
+            // if native currency then show equal amount in selected currency
+            this.fetchCurrencyRate();
 
-        // if native currency then show equal amount in selected currency
-        this.fetchCurrencyRate();
+            // check issuer fee if IOU payment
+            this.fetchIssuerFee();
 
-        // check issuer fee if IOU payment
-        this.fetchIssuerFee();
-
-        // set isReady to false if payment options are required
-        this.setIsReady();
+            // set isReady to false if payment options are required
+            this.setIsReady();
+        });
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -165,32 +158,6 @@ class PaymentTemplate extends Component<Props, State> {
                     isLoadingRate: false,
                 });
                 Toast(Localize.t('global.unableToFetchCurrencyRate'));
-            });
-    };
-
-    fetchDestinationInfo = () => {
-        const { transaction } = this.props;
-
-        this.setState({
-            isLoading: true,
-        });
-
-        // fetch destination details
-        getAccountName(transaction.Destination.address, transaction.Destination.tag)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        destinationDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
             });
     };
 
@@ -282,11 +249,9 @@ class PaymentTemplate extends Component<Props, State> {
         const { transaction, payload } = this.props;
         const {
             account,
-            isLoading,
             editableAmount,
             amount,
             currencyName,
-            destinationDetails,
             shouldShowIssuerFee,
             isLoadingIssuerFee,
             issuerFee,
@@ -301,14 +266,10 @@ class PaymentTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Destination.address}
+                    tag={transaction.Destination.tag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    recipient={{
-                        address: transaction.Destination.address,
-                        tag: transaction.Destination.tag,
-                        ...destinationDetails,
-                    }}
                 />
 
                 {/* Amount */}

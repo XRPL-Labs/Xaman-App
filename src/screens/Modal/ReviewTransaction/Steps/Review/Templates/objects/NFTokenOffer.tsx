@@ -1,5 +1,3 @@
-import { isEmpty } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Text, InteractionManager } from 'react-native';
 
@@ -9,15 +7,13 @@ import { NFTokenMint } from '@common/libs/ledger/transactions';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
-
-import Localize from '@locale';
-
 import { AmountText, LoadingIndicator, InfoMessage } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
 import { DecodeNFTokenID } from '@common/utils/codec';
+
+import Localize from '@locale';
 
 import styles from './styles';
 
@@ -30,10 +26,6 @@ export interface State {
     object: NFTokenOffer;
     isTokenBurnable: any;
     isLoading: boolean;
-    isLoadingDestinationDetails: boolean;
-    isLoadingOwnerDetails: boolean;
-    destinationDetails: AccountNameType;
-    ownerDetails: AccountNameType;
 }
 
 /* Component ==================================================================== */
@@ -45,10 +37,6 @@ class NFTokenOfferTemplate extends Component<Props, State> {
             object: undefined,
             isTokenBurnable: false,
             isLoading: true,
-            isLoadingDestinationDetails: true,
-            isLoadingOwnerDetails: true,
-            destinationDetails: undefined,
-            ownerDetails: undefined,
         };
     }
 
@@ -62,9 +50,6 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
         // check if token is burnable
         this.checkTokenBurnable();
-
-        // fetch parties details
-        this.fetchPartiesDetails();
     };
 
     fetchObject = () => {
@@ -122,63 +107,8 @@ class NFTokenOfferTemplate extends Component<Props, State> {
         }
     };
 
-    fetchPartiesDetails = () => {
-        const { object } = this.state;
-
-        // no object found
-        if (!object) {
-            return;
-        }
-
-        if (object.Destination) {
-            getAccountName(object.Destination.address)
-                .then((res: any) => {
-                    if (!isEmpty(res)) {
-                        this.setState({
-                            destinationDetails: res,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                })
-                .finally(() => {
-                    this.setState({
-                        isLoadingDestinationDetails: false,
-                    });
-                });
-        }
-
-        if (object.Owner) {
-            getAccountName(object.Owner)
-                .then((res: any) => {
-                    if (!isEmpty(res)) {
-                        this.setState({
-                            ownerDetails: res,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                })
-                .finally(() => {
-                    this.setState({
-                        isLoadingOwnerDetails: false,
-                    });
-                });
-        }
-    };
-
     render() {
-        const {
-            object,
-            isTokenBurnable,
-            isLoading,
-            isLoadingDestinationDetails,
-            isLoadingOwnerDetails,
-            ownerDetails,
-            destinationDetails,
-        } = this.state;
+        const { object, isTokenBurnable, isLoading } = this.state;
 
         if (isLoading) {
             return <LoadingIndicator />;
@@ -202,13 +132,10 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                 {object.Destination && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.destination')}</Text>
-                        <RecipientElement
+                        <AccountElement
+                            address={object.Destination.address}
+                            tag={object.Destination.tag}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoadingDestinationDetails}
-                            recipient={{
-                                address: object.Destination.address,
-                                ...destinationDetails,
-                            }}
                         />
                     </>
                 )}
@@ -216,13 +143,9 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                 {object.Owner && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.owner')}</Text>
-                        <RecipientElement
+                        <AccountElement
+                            address={object.Owner}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoadingOwnerDetails}
-                            recipient={{
-                                address: object.Owner,
-                                ...ownerDetails,
-                            }}
                         />
                     </>
                 )}

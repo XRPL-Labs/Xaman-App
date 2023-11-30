@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 
 import { Invoke } from '@common/libs/ledger/transactions';
 
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -29,6 +29,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
+
         return (
             <>
                 {transaction.Blob && (
@@ -47,13 +48,10 @@ class EscrowCreateTemplate extends Component<Props, State> {
                                 {Localize.t('global.destination')}
                             </Text>
                         </View>
-                        <RecipientElement
+                        <AccountElement
+                            address={transaction.Destination.address}
+                            tag={transaction.Destination.tag}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            recipient={{
-                                name: undefined,
-                                address: transaction.Destination.address,
-                                tag: transaction.Destination.tag,
-                            }}
                         />
                     </>
                 )}

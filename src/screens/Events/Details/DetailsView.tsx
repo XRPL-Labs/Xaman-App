@@ -1,24 +1,14 @@
 /**
  * Transaction Details screen
  */
-import { find, get, isEmpty, isUndefined } from 'lodash';
+import { find, isEmpty, isUndefined } from 'lodash';
 import moment from 'moment-timezone';
 import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import React, { Component, Fragment } from 'react';
-import {
-    Alert,
-    ImageBackground,
-    InteractionManager,
-    Linking,
-    Platform,
-    ScrollView,
-    Share,
-    Text,
-    View,
-} from 'react-native';
+import { Alert, InteractionManager, Linking, Platform, ScrollView, Share, Text, View } from 'react-native';
 
-import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
+import { BackendService, NetworkService, StyleService } from '@services';
 
 import AccountRepository from '@store/repositories/account';
 import { AccountModel } from '@store/models';
@@ -33,16 +23,14 @@ import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
 import { OfferStatus } from '@common/libs/ledger/parser/types';
-import { TransactionFactory, ExplainerFactory } from '@common/libs/ledger/factory';
+import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { AppScreens } from '@common/constants';
 
-import { ActionSheet, Toast } from '@common/helpers/interface';
+import { ActionSheet } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { GetTransactionLink } from '@common/utils/explorer';
-
-import { getAccountName } from '@common/helpers/resolver';
 
 import {
     AmountText,
@@ -51,12 +39,11 @@ import {
     Header,
     Icon,
     InfoMessage,
-    LoadingIndicator,
     ReadMore,
     Spacer,
     TouchableDebounce,
 } from '@components/General';
-import { NFTokenElement, RecipientElement } from '@components/Modules';
+import { NFTokenElement, AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -74,17 +61,11 @@ export interface Props {
 
 export interface State {
     tx: Transactions | LedgerObjects;
-    partiesDetails: {
-        address: string;
-        tag?: number;
-        name?: string;
-        kycApproved?: boolean;
-    };
     spendableAccounts: AccountModel[];
+    recipient: { address: string; tag?: number };
     incomingTx: boolean;
     scamAlert: boolean;
     showMemo: boolean;
-    isLoading: boolean;
     label: string;
     description: string;
 }
@@ -93,9 +74,7 @@ export interface State {
 class TransactionDetailsView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Details;
 
-    private forceFetchDetails = false;
     private navigationListener: any;
-    private closeTimeout: any;
     private mounted = false;
 
     static options() {
@@ -109,31 +88,22 @@ class TransactionDetailsView extends Component<Props, State> {
 
         this.state = {
             tx: props.tx,
-            partiesDetails: undefined,
+            recipient: undefined,
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             incomingTx: props.tx?.Account && props.tx?.Account?.address !== props.account.address,
             scamAlert: false,
             showMemo: true,
-            isLoading: !props.tx,
             label: undefined,
             description: undefined,
         };
     }
 
     componentDidMount() {
-        const { tx } = this.props;
-
         this.mounted = true;
 
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        InteractionManager.runAfterInteractions(() => {
-            if (tx) {
-                this.setDetails();
-            } else {
-                this.loadTransaction();
-            }
-        });
+        InteractionManager.runAfterInteractions(this.setDetails);
     }
 
     componentWillUnmount() {
@@ -142,20 +112,6 @@ class TransactionDetailsView extends Component<Props, State> {
         if (this.navigationListener) {
             this.navigationListener.remove();
         }
-
-        if (this.closeTimeout) clearTimeout(this.closeTimeout);
-    }
-
-    componentDidAppear() {
-        if (this.forceFetchDetails) {
-            this.forceFetchDetails = false;
-
-            InteractionManager.runAfterInteractions(this.setDetails);
-        }
-    }
-
-    componentDidDisappear() {
-        this.forceFetchDetails = true;
     }
 
     close = () => {
@@ -166,45 +122,6 @@ class TransactionDetailsView extends Component<Props, State> {
         } else {
             Navigator.pop();
         }
-    };
-
-    loadTransaction = () => {
-        const { hash, account } = this.props;
-
-        if (!hash) return;
-
-        LedgerService.getTransaction(hash)
-            .then((resp: any) => {
-                if (get(resp, 'error')) {
-                    throw new Error('Not found');
-                }
-
-                // separate transaction meta
-                const { meta } = resp;
-
-                // cleanup
-                delete resp.meta;
-                // eslint-disable-next-line no-underscore-dangle
-                delete resp.__replyMs;
-                // eslint-disable-next-line no-underscore-dangle
-                delete resp.__command;
-                delete resp.inLedger;
-
-                const tx = TransactionFactory.fromLedger({ tx: resp, meta });
-
-                this.setState(
-                    {
-                        tx,
-                        isLoading: false,
-                        incomingTx: tx?.Account && tx?.Account?.address !== account.address,
-                    },
-                    this.setDetails,
-                );
-            })
-            .catch(() => {
-                Toast(Localize.t('events.unableToLoadTheTransaction'));
-                this.closeTimeout = setTimeout(this.close, 2000);
-            });
     };
 
     setDetails = async () => {
@@ -221,8 +138,7 @@ class TransactionDetailsView extends Component<Props, State> {
         this.setState({
             label: transactionLabel,
             description: transactionDescription,
-            partiesDetails: recipient,
-            isLoading: false,
+            recipient,
         });
 
         // check for scam alert
@@ -233,24 +149,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         this.setState({
                             scamAlert: true,
                             showMemo: false,
-                        });
-                    }
-                })
-                .catch(() => {
-                    // ignore
-                });
-        }
-
-        if (!isEmpty(recipient)) {
-            getAccountName(recipient.address, recipient.tag)
-                .then((resp) => {
-                    if (!isEmpty(resp) && this.mounted) {
-                        this.setState({
-                            partiesDetails: {
-                                ...recipient,
-                                name: resp.name,
-                                kycApproved: resp.kycApproved,
-                            },
                         });
                     }
                 })
@@ -320,7 +218,10 @@ class TransactionDetailsView extends Component<Props, State> {
         if (!recipient) {
             return;
         }
-        Navigator.showOverlay(AppScreens.Overlay.RecipientMenu, { recipient });
+        Navigator.showOverlay(AppScreens.Overlay.RecipientMenu, {
+            address: recipient.address,
+            tag: recipient.tag,
+        });
     };
 
     onActionButtonPress = async (type: string) => {
@@ -1382,7 +1283,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     renderSourceDestination = () => {
         const { account } = this.props;
-        const { tx, partiesDetails, incomingTx } = this.state;
+        const { tx, recipient, incomingTx } = this.state;
 
         let from = {
             // @ts-ignore
@@ -1396,7 +1297,7 @@ class TransactionDetailsView extends Component<Props, State> {
         let through;
 
         if (incomingTx) {
-            from = Object.assign(from, partiesDetails);
+            from = Object.assign(from, recipient);
             if (to.address === account.address) {
                 to = Object.assign(to, {
                     name: account.label,
@@ -1404,7 +1305,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
             }
         } else {
-            to = Object.assign(to, partiesDetails);
+            to = Object.assign(to, recipient);
             if (from.address === account.address) {
                 from = Object.assign(from, {
                     name: account.label,
@@ -1415,7 +1316,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         // incoming trustline
         if (tx.Type === TransactionTypes.TrustSet && tx.Issuer === account.address) {
-            from = { address: tx.Account.address, ...partiesDetails };
+            from = { address: tx.Account.address, tag: tx.Account.tag };
             to = {
                 address: account.address,
                 name: account.label,
@@ -1426,14 +1327,14 @@ class TransactionDetailsView extends Component<Props, State> {
         // incoming CheckCash
         if (tx.Type === TransactionTypes.CheckCash) {
             if (incomingTx) {
-                to = { address: tx.Account.address, ...partiesDetails };
+                to = { address: tx.Account.address, tag: tx.Account.tag };
                 from = {
                     address: account.address,
                     name: account.label,
                     source: 'accounts',
                 };
             } else {
-                from = { address: tx.Account.address, ...partiesDetails };
+                from = { address: tx.Account.address, tag: tx.Account.tag };
                 to = {
                     address: account.address,
                     name: account.label,
@@ -1452,7 +1353,6 @@ class TransactionDetailsView extends Component<Props, State> {
             } else {
                 from = {
                     address: tx.Owner,
-                    ...partiesDetails,
                 };
             }
 
@@ -1472,7 +1372,7 @@ class TransactionDetailsView extends Component<Props, State> {
             from = {
                 address: buyer,
                 ...(buyer !== account.address
-                    ? { ...partiesDetails }
+                    ? { ...recipient }
                     : {
                           address: account.address,
                           name: account.label,
@@ -1482,7 +1382,7 @@ class TransactionDetailsView extends Component<Props, State> {
             to = {
                 address: seller,
                 ...(seller !== account.address
-                    ? { ...partiesDetails }
+                    ? { ...recipient }
                     : {
                           address: account.address,
                           name: account.label,
@@ -1495,8 +1395,8 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx.Type === TransactionTypes.Payment) {
             if ([tx.Account.address, tx.Destination?.address].indexOf(account.address) === -1) {
                 if (tx.BalanceChange()?.sent || tx.BalanceChange()?.received) {
-                    from = { address: tx.Account.address };
-                    to = { address: tx.Destination?.address };
+                    from = { address: tx.Account.address, tag: tx.Account.tag };
+                    to = { address: tx.Destination?.address, tag: tx.Destination.tag };
                     through = { address: account.address, name: account.label, source: 'accounts' };
                 }
             }
@@ -1507,7 +1407,7 @@ class TransactionDetailsView extends Component<Props, State> {
             from = {
                 address: tx.Owner,
                 ...(tx.Owner !== account.address
-                    ? { ...partiesDetails }
+                    ? { ...recipient }
                     : {
                           address: account.address,
                           name: account.label,
@@ -1517,7 +1417,7 @@ class TransactionDetailsView extends Component<Props, State> {
             to = {
                 address: tx.Destination.address,
                 ...(tx.Owner === account.address
-                    ? { ...partiesDetails }
+                    ? { ...recipient }
                     : {
                           address: account.address,
                           name: account.label,
@@ -1540,7 +1440,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return (
                 <View style={styles.extraHeaderContainer}>
                     <Text style={styles.labelText}>{Localize.t('global.from')}</Text>
-                    <RecipientElement recipient={from} />
+                    <AccountElement address={from.address} tag={from.tag} />
                 </View>
             );
         }
@@ -1548,28 +1448,30 @@ class TransactionDetailsView extends Component<Props, State> {
         return (
             <View style={styles.extraHeaderContainer}>
                 <Text style={styles.labelText}>{Localize.t('global.from')}</Text>
-                <RecipientElement
-                    recipient={from}
-                    showMoreButton={from.source !== 'accounts'}
-                    onMorePress={this.showRecipientMenu}
+                <AccountElement
+                    address={from.address}
+                    tag={from.tag}
+                    visibleElements={{ tag: true, avatar: true, button: from.source !== 'accounts' }}
+                    onButtonPress={this.showRecipientMenu}
                 />
                 {!!through && (
                     <>
                         <Icon name="IconArrowDown" style={[AppStyles.centerSelf, styles.iconArrow]} />
                         <Text style={styles.labelText}>{Localize.t('events.throughOfferBy')}</Text>
-                        <RecipientElement
-                            recipient={through}
-                            showMoreButton={through.source !== 'accounts'}
-                            onMorePress={this.showRecipientMenu}
+                        <AccountElement
+                            address={through.address}
+                            visibleElements={{ tag: true, avatar: true, button: through.source !== 'accounts' }}
+                            onButtonPress={this.showRecipientMenu}
                         />
                     </>
                 )}
                 <Icon name="IconArrowDown" style={[AppStyles.centerSelf, styles.iconArrow]} />
                 <Text style={styles.labelText}>{Localize.t('global.to')}</Text>
-                <RecipientElement
-                    recipient={to}
-                    showMoreButton={to.source !== 'accounts'}
-                    onMorePress={this.showRecipientMenu}
+                <AccountElement
+                    address={to.address}
+                    tag={to.tag}
+                    visibleElements={{ tag: true, avatar: true, button: to.source !== 'accounts' }}
+                    onButtonPress={this.showRecipientMenu}
                 />
             </View>
         );
@@ -1577,7 +1479,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
     render() {
         const { asModal } = this.props;
-        const { isLoading, scamAlert } = this.state;
+        const { scamAlert } = this.state;
 
         return (
             <View style={AppStyles.container}>
@@ -1595,52 +1497,34 @@ class TransactionDetailsView extends Component<Props, State> {
                     containerStyle={asModal && { paddingTop: 0 }}
                 />
 
-                {isLoading ? (
-                    <ImageBackground
-                        source={StyleService.getImage('BackgroundShapes')}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.container, AppStyles.paddingSml, AppStyles.BackgroundShapesWH]}
-                    >
-                        <LoadingIndicator size="large" />
-                        <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                            {Localize.t('global.pleaseWait')}
+                {scamAlert && (
+                    <View style={styles.dangerHeader}>
+                        <Text style={[AppStyles.h4, AppStyles.colorWhite]}>{Localize.t('global.alertDanger')}</Text>
+                        <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
+                            {Localize.t(
+                                'global.thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution',
+                            )}
                         </Text>
-                    </ImageBackground>
-                ) : (
-                    <>
-                        {scamAlert && (
-                            <View style={styles.dangerHeader}>
-                                <Text style={[AppStyles.h4, AppStyles.colorWhite]}>
-                                    {Localize.t('global.alertDanger')}
-                                </Text>
-                                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorWhite]}>
-                                    {Localize.t(
-                                        'global.thisAccountIsReportedAsScamOrFraudulentAddressPleaseProceedWithCaution',
-                                    )}
-                                </Text>
-                            </View>
-                        )}
-
-                        <ScrollView testID="transaction-details-view">
-                            {this.renderHeader()}
-                            {this.renderAmount()}
-                            {this.renderMemos()}
-                            {this.renderReserveChange()}
-                            {this.renderSourceDestination()}
-                            {this.renderActionButtons()}
-                            {this.renderWarnings()}
-                            <View style={styles.detailsContainer}>
-                                {this.renderTransactionId()}
-                                {this.renderDescription()}
-                                {this.renderFlags()}
-                                {this.renderInvoiceId()}
-                                {this.renderFee()}
-                                {this.renderStatus()}
-                            </View>
-                        </ScrollView>
-                    </>
+                    </View>
                 )}
+
+                <ScrollView testID="transaction-details-view">
+                    {this.renderHeader()}
+                    {this.renderAmount()}
+                    {this.renderMemos()}
+                    {this.renderReserveChange()}
+                    {this.renderSourceDestination()}
+                    {this.renderActionButtons()}
+                    {this.renderWarnings()}
+                    <View style={styles.detailsContainer}>
+                        {this.renderTransactionId()}
+                        {this.renderDescription()}
+                        {this.renderFlags()}
+                        {this.renderInvoiceId()}
+                        {this.renderFee()}
+                        {this.renderStatus()}
+                    </View>
+                </ScrollView>
             </View>
         );
     }

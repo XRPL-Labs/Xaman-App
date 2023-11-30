@@ -125,11 +125,6 @@ const styles = StyleService.create({
         paddingVertical: 10,
         paddingHorizontal: 5,
     },
-    signerEntryRecipientElement: {
-        marginBottom: 0,
-        borderBottomRightRadius: 0,
-        borderBottomLeftRadius: 0,
-    },
     signerEntryDetailsContainer: {
         paddingVertical: 10,
         paddingHorizontal: 8,

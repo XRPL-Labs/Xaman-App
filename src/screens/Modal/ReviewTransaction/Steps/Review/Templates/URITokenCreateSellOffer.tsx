@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { URITokenCreateSellOffer } from '@common/libs/ledger/transactions';
 
 import { AmountText } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -12,7 +12,6 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { TemplateProps } from './types';
-
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: URITokenCreateSellOffer;
@@ -59,13 +58,10 @@ class URITokenCreateSellOfferTemplate extends Component<Props, State> {
                                 {Localize.t('global.destination')}
                             </Text>
                         </View>
-                        <RecipientElement
+                        <AccountElement
+                            address={transaction.Destination.address}
+                            tag={transaction.Destination.tag}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            recipient={{
-                                name: undefined,
-                                address: transaction.Destination.address,
-                                tag: transaction.Destination.tag,
-                            }}
                         />
                     </>
                 )}

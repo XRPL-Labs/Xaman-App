@@ -1,15 +1,14 @@
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, InteractionManager } from 'react-native';
 
 import { LedgerService } from '@services';
 
 import { CheckCancel, CheckCreate } from '@common/libs/ledger/transactions';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -23,8 +22,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    isLoading: boolean;
-    destinationDetails: AccountNameType;
+    checkObject: CheckCreate;
 }
 
 /* Component ==================================================================== */
@@ -33,48 +31,32 @@ class CheckCancelTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: false,
-            destinationDetails: undefined,
+            checkObject: undefined,
         };
     }
 
     componentDidMount() {
-        // fetch the destination name e
-        this.fetchCheckDetails();
+        InteractionManager.runAfterInteractions(this.fetchCheckDetails);
     }
 
     fetchCheckDetails = () => {
         const { transaction } = this.props;
 
-        this.setState({
-            isLoading: true,
-        });
-
         // assign actual check object to the CashCheck tx
         LedgerService.getLedgerEntry({ index: transaction.CheckID })
             .then((ledgerEntry: any) => {
-                const checkObject = get(ledgerEntry, 'node', undefined);
+                const checkEntry = get(ledgerEntry, 'node', undefined);
+                if (checkEntry) {
+                    const checkObject = new CheckCreate(checkEntry);
 
-                if (checkObject) {
-                    transaction.Check = new CheckCreate(checkObject);
-
-                    // fetch destination details
-                    getAccountName(transaction.Check?.Destination.address, transaction.Check?.Destination.tag)
-                        .then((resp) => {
-                            if (!isEmpty(resp)) {
-                                this.setState({
-                                    destinationDetails: resp,
-                                });
-                            }
-                        })
-                        .catch(() => {
-                            // ignore
-                        })
-                        .finally(() => {
-                            this.setState({
-                                isLoading: false,
-                            });
-                        });
+                    this.setState(
+                        {
+                            checkObject,
+                        },
+                        () => {
+                            transaction.Check = checkEntry;
+                        },
+                    );
                 } else {
                     Alert.alert(Localize.t('global.error'), Localize.t('payload.checkObjectDoesNotExist'));
                 }
@@ -86,7 +68,7 @@ class CheckCancelTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, destinationDetails } = this.state;
+        const { checkObject } = this.state;
 
         return (
             <>
@@ -96,30 +78,24 @@ class CheckCancelTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <RecipientElement
+                <AccountElement
+                    address={checkObject?.Destination.address}
+                    tag={checkObject?.Destination.tag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    recipient={{
-                        address: transaction.Check?.Destination.address,
-                        tag: transaction.Check?.Destination.tag,
-                        ...destinationDetails,
-                    }}
                 />
 
                 {/* Check Amount */}
-                <Text style={[styles.label]}>{Localize.t('global.checkAmount')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.amountRed]}>
-                        {`${transaction.Check?.SendMax.value || 0} ${NormalizeCurrencyCode(
-                            transaction.Check?.SendMax.currency,
-                        )}`}
+                <Text style={styles.label}>{Localize.t('global.checkAmount')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.amountRed}>
+                        {`${checkObject?.SendMax.value || 0} ${NormalizeCurrencyCode(checkObject?.SendMax.currency)}`}
                     </Text>
                 </View>
 
                 {transaction.CheckID && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.checkID')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.checkID')}</Text>
+                        <View style={styles.contentBox}>
                             <Text style={styles.valueSubtext}>{transaction.CheckID}</Text>
                         </View>
                     </>

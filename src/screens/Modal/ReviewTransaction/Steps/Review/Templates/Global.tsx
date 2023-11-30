@@ -1,8 +1,6 @@
 import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-
-import { AccountNameType, getAccountName } from '@common/helpers/resolver';
+import { InteractionManager, Text, View } from 'react-native';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
@@ -14,9 +12,8 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository } from '@store/repositories';
 
-// components
-import { InfoMessage, LoadingIndicator } from '@components/General';
-import { FeePicker, RecipientElement } from '@components/Modules';
+import { InfoMessage } from '@components/General';
+import { FeePicker, AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -29,9 +26,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
 }
 export interface State {
-    signers: AccountNameType[];
     warnings: Array<string>;
-    isLoadingSigners: boolean;
     showFeePicker: boolean;
 }
 
@@ -41,49 +36,14 @@ class GlobalTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            signers: undefined,
             warnings: undefined,
-            isLoadingSigners: true,
             showFeePicker: typeof props.transaction.Fee === 'undefined' && !props.payload.isMultiSign(),
         };
     }
 
     componentDidMount() {
-        this.fetchSignersDetails();
-        this.setWarnings();
+        InteractionManager.runAfterInteractions(this.setWarnings);
     }
-
-    fetchSignersDetails = async () => {
-        const { transaction } = this.props;
-
-        if (isEmpty(transaction.Signers)) {
-            this.setState({
-                isLoadingSigners: false,
-            });
-            return;
-        }
-
-        const signers = [] as any;
-
-        await Promise.all(
-            transaction.Signers.map(async (signer) => {
-                await getAccountName(signer.account)
-                    .then((res) => {
-                        signers.push(res);
-                    })
-                    .catch(() => {
-                        signers.push({ account: signer.account });
-                    });
-
-                return signers;
-            }),
-        );
-
-        this.setState({
-            signers,
-            isLoadingSigners: false,
-        });
-    };
 
     setWarnings = async () => {
         const { transaction } = this.props;
@@ -154,22 +114,17 @@ class GlobalTemplate extends Component<Props, State> {
 
     renderSigners = () => {
         const { transaction } = this.props;
-        const { signers, isLoadingSigners } = this.state;
 
         if (isEmpty(transaction.Signers)) {
             return null;
-        }
-
-        if (isLoadingSigners || !signers) {
-            return <LoadingIndicator />;
         }
 
         return (
             <>
                 <Text style={styles.label}>{Localize.t('global.signers')}</Text>
                 <View style={styles.signersContainer}>
-                    {signers.map((signer) => {
-                        return <RecipientElement key={`${signer.address}`} recipient={signer} />;
+                    {transaction.Signers.map((signer) => {
+                        return <AccountElement key={`${signer.account}`} address={signer.account} />;
                     })}
                 </View>
             </>

@@ -13,11 +13,7 @@ export default StyleService.create({
         borderWidth: 2,
         borderColor: '$tint',
     },
-    containerSelected: {
-        borderColor: '$blue',
-        borderWidth: 2,
-        backgroundColor: '$lightBlue',
-    },
+
     centerContent: {
         paddingLeft: 10,
     },

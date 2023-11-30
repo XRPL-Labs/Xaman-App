@@ -5,7 +5,7 @@ import Localize from '@locale';
 
 import { ClaimReward } from '@common/libs/ledger/transactions';
 
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
 import styles from '../styles';
@@ -37,12 +37,9 @@ class ClaimRewardTemplate extends Component<Props, State> {
                         {Localize.t('global.issuer')}
                     </Text>
                 </View>
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Issuer}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    recipient={{
-                        name: undefined,
-                        address: transaction.Issuer,
-                    }}
                 />
             </>
         );

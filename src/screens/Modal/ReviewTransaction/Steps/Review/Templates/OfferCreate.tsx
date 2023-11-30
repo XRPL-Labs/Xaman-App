@@ -1,7 +1,7 @@
-import { isEmpty, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
@@ -9,10 +9,9 @@ import NetworkService from '@services/NetworkService';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountText, InfoMessage } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -31,9 +30,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    isLoadingIssuerDetails: boolean;
     isLoadingIssuerFee: boolean;
-    issuerDetails: AccountNameType;
     issuerFee: number;
     warnings: string;
 }
@@ -44,18 +41,17 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: undefined,
             issuerFee: 0,
             warnings: undefined,
         };
     }
 
     componentDidMount() {
-        this.setIssuerTransferFee();
-        this.setIssuerDetails();
-        this.setWarnings();
+        InteractionManager.runAfterInteractions(() => {
+            this.setIssuerTransferFee();
+            this.setWarnings();
+        });
     }
 
     setIssuerTransferFee = () => {
@@ -78,29 +74,6 @@ class OfferCreateTemplate extends Component<Props, State> {
             .finally(() => {
                 this.setState({
                     isLoadingIssuerFee: false,
-                });
-            });
-    };
-
-    setIssuerDetails = () => {
-        const { transaction } = this.props;
-
-        const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
-
-        getAccountName(issuerAddress)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        issuerDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoadingIssuerDetails: false,
                 });
             });
     };
@@ -138,18 +111,14 @@ class OfferCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee, warnings } = this.state;
+        const { isLoadingIssuerFee, issuerFee, warnings } = this.state;
 
         return (
             <>
                 <Text style={styles.label}>{Localize.t('global.issuer')}</Text>
-                <RecipientElement
+                <AccountElement
+                    address={transaction.TakerGets.issuer || transaction.TakerPays.issuer}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoadingIssuerDetails}
-                    recipient={{
-                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
-                        ...issuerDetails,
-                    }}
                 />
 
                 {warnings && (
