@@ -20,26 +20,26 @@ const ValidationFactory = {
     fromType: (
         type: TransactionTypes | PseudoTransactionTypes,
     ): ValidationType<TransactionsType | PseudoTransactionsType> => {
-        let explainer;
+        let validator;
 
         switch (true) {
             // Genuine transaction
             case type in TransactionTypes:
-                explainer = get(Transactions, `${type}Info`, undefined);
+                validator = get(Transactions, `${type}Validation`, undefined);
                 break;
             // Pseudo transaction
             case type in PseudoTransactionTypes:
-                explainer = get(PseudoTransactions, `${type}Info`, undefined);
+                validator = get(PseudoTransactions, `${type}Validation`, undefined);
                 break;
             default:
                 break;
         }
 
-        if (typeof explainer === 'undefined') {
+        if (typeof validator === 'undefined') {
             throw new Error(`Validation "${type}Validation" not found. Did you forget to include it?`);
         }
 
-        return explainer;
+        return validator;
     },
 };
 
