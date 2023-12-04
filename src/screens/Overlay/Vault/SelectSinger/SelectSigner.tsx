@@ -90,6 +90,7 @@ class SelectSigner extends Component<Props, State> {
                         {signers.map((signer) => {
                             return (
                                 <RadioButton
+                                    key={`${signer.address}`}
                                     testID={`signer-${signer.address}`}
                                     onPress={this.onSignerSelect}
                                     label={signer.label}
