@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Ako nastavite, uvozit ćete XRP račun glavne knjige s tajnim brojevima. Tajne brojeve biste trebali ** generirati ** vi izvanmrežnom metodom (npr. kockicama). Morali ste ** pohraniti generirane tajne brojeve (npr. otisnuti u metal, zapisati).\r\nSAMO NASTAVI AKO ZNAŠ ŠTO RADIŠ.",
     "tangemCardPasscodeSetWarning": "Prilikom dodavanja pristupne šifre na vašu karticu poboljšava sigurnost vaših sredstava u slučaju izgubljene (i pronađene) kartice, važno je shvatiti da će vaša sredstva biti NEPRISTUPNA i NE MOŽU * BITI OBNOVLJENA (od strane bilo koga) ako se ne sjećate pristupne šifre.\r\n\r\nJeste li stvarno sigurni da želite dodati pristopnu šifru na vašu karticu?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Postoje dva računa koja ispunjavaju uvjete za potpisivanje. Koji želite koristiti za potpisivanje?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Glavni račun",
     "backupAccount": "Redovni ključ (sigurnosni račun)",
     "verifyTangemCard": "Potvrdite Tangem karticu",

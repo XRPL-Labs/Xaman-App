@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "جيڪڏهن توهان اڳتي وڌو ، توهان راز نمبرن مان هڪ ايڪس آر پي ليجر اڪائونٽ درآمد ڪريو. توهان اڪيلي پارٽي آهيو ، ڳجهي نمبر ٺاهڻ لاءِ. اسان توهان کي صلاح ڏيو اسان هڪ آف لائن طريقو استعمال ڪرڻ جي لاءِ (مثال طور. نمبر پيدا ڪرڻ کان پوءِ ، توهان کي انهن کي ذخيرو ڪرڻ گهرجي (مثال طور ، دات ۾ رکيل ، هيٺ لکيل).\r\nتوهان صرف اڳتي وڃي جيڪڏھن اوھين ڄاڻندا آھيو تون ڇا ڪري رهيو آهين.",
     "tangemCardPasscodeSetWarning": "توهان جي ڪارڊ ۾ پاسڪوڊ شامل ڪرڻ دوران گم ٿيل (۽ مليل) ڪارڊ جي صورت ۾ توهان جي فنڊن جي حفاظت کي بهتر بڻائي ٿي ، اهو toاڻڻ ضروري آهي ته توهان جا فنڊ ناقابل قبول هوندا ۽ * نه * ٿي سگهي ٿو (ڪنهن جي طرفان) جيڪڏهن توهان ڊان نه ڪندا. پنهنجو پاس ورڊ ياد رکو.\r\n\r\nڇا توهين واقعي پڪ آهي ته توهان پنهنجي ڪارڊ ۾ پاسڪوڊ شامل ڪرڻ چاهيو ٿا؟",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "اتي ٻه اڪائونٽ سائن ڪرڻ جا اهل آهن ، توهان ڪهڙو سائن ان استعمال ڪرڻ چاهيندا آهيو؟",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "مين کاتو",
     "backupAccount": "باقاعده چاٻي (بيڪ اپ کاتو)",
     "verifyTangemCard": "Verify Tangem card",

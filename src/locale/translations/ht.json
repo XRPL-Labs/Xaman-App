@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Si ou kontinye, ou pral enpòte yon kont XRP Ledger soti nan nimewo sekrè. Nimewo sekrè yo ta dwe pwodwi ** pa ou ** lè l sèvi avèk yon metòd offline (egzanp. Ak zo). Ou ** dwe ** te estoke nimewo sekrè pwodwi ou yo (pa egzanp. Mete so an metal, ekri).\r\nSELMAN KONTINYE SI OU KONNEN SA WAP FE.",
     "tangemCardPasscodeSetWarning": "Pandan ke ou ajoute yon paskod nan kat ou amelyore sekirite nan fon ou nan ka ta gen yon pèdi (epi yo te jwenn) kat, li enpòtan reyalize ke lajan ou yo pral inaksesib epi yo ka * PA * dwe rekipere (pa nenpòt moun) si ou pa ' pa sonje paskod ou.\r\n\r\nÈske ou reyèlman asire w ke ou vle ajoute yon paskod sou kat ou a?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Gen de kont ki kalifye pou siyen, kiyès ou vle itilize pou siyen?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Kont prensipal",
     "backupAccount": "Regilye kle (kont backup)",
     "verifyTangemCard": "Verify Tangem card",

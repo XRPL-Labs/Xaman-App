@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "நீங்கள் தொடர்ந்தால், ரகசிய எண்களிலிருந்து எக்ஸ்ஆர்பி லெட்ஜர் கணக்கை இறக்குமதி செய்வீர்கள். நீங்கள் இரகசிய எண்கள் உருவாக்க வேண்டிய பொறுப்பு ஒரே கட்சி உள்ளன. அவற்றை உருவாக்க ஆஃப்லைன் முறையைப் பயன்படுத்த பரிந்துரைக்கிறோம் (எ.கா. பகடைகளுடன்). நீங்கள் எண்களை உருவாக்கிய பிறகு, அவற்றை சேமிக்க வேண்டும் (எ.கா. உலோகத்தில் முத்திரை, எழுதப்பட்டவை).\r\nநீங்கள் என்ன செய்கிறீர்கள் என்று உங்களுக்குத் தெரிந்தால் மட்டுமே நீங்கள் செயலாக்க வேண்டும்.",
     "tangemCardPasscodeSetWarning": "உங்கள் அட்டையில் கடவுக்குறியீட்டைச் சேர்ப்பது இழந்த (மற்றும் கண்டுபிடிக்கப்பட்ட) அட்டையின் போது உங்கள் நிதிகளின் பாதுகாப்பை மேம்படுத்துகிறது, உங்கள் நிதி அணுக முடியாதது என்பதை உணர வேண்டியது அவசியம், மேலும் நீங்கள் செய்யாவிட்டால் * (யாராலும்) மீட்டெடுக்க முடியாது ' உங்கள் கடவுக்குறியீட்டை நினைவில் கொள்ள வேண்டாம்.\r\n\r\nஉங்கள் அட்டையில் கடவுக்குறியீட்டைச் சேர்க்க விரும்புகிறீர்களா?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "கையொப்பமிட இரண்டு கணக்குகள் உள்ளன, கையெழுத்திட நீங்கள் எதைப் பயன்படுத்த விரும்புகிறீர்கள்?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "பிரதான கணக்கு",
     "backupAccount": "வழக்கமான விசை (காப்பு கணக்கு)",
     "verifyTangemCard": "Verify Tangem card",

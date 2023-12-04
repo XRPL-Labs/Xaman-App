@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Kung magpapatuloy ka, angkat ka ng isang XRP Ledger account mula sa Lihim na Mga Numero. Ang Lihim na Mga Numero ay dapat mabuo ** mo ** gamit ang isang offline na pamamaraan (hal. Na may dice). Dapat mong ** naimbak ang iyong nabuong mga lihim na numero (hal. Nakatatak sa metal, nakasulat).\r\nPATULOY LANG KUNG ALAM MO ANG GINAGAWA MO.",
     "tangemCardPasscodeSetWarning": "Habang ang pagdaragdag ng isang passcode sa iyong card ay nagpapabuti sa kaligtasan ng iyong mga pondo kung sakaling nawala (at nahanap) na card, mahalagang maunawaan na ang iyong mga pondo ay INACCESSIBLE at HINDI * MAAARING MABUTI (ng sinuman) kung hindi mo nagawa t tandaan ang iyong passcode.\r\n\r\nSigurado ka bang nais mong magdagdag ng isang passcode sa iyong card?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Mayroong dalawang mga account na karapat-dapat na mag-sign, Aling alin ang nais mong gamitin upang mag-sign?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Pangunahing account",
     "backupAccount": "regular na susi (backup account)",
     "verifyTangemCard": "I-verify ang Tangem card",

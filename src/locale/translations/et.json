@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Kui te jätkate, siis impordite XRP pearaamatust konto salajased numbrid. Salajased numbrid tuleks genereerida ** poolt sa * * kasutades offline meetodit (nt. koos täringuga). Sa **pead** oled salvestanud oma loodud salajased numbrid (nt. on tembeldanud metalli, on paberile kirja pandud).\r\nJÄTKA AINULT SIIS, KUI SA TEAD, MIDA SA TEED.",
     "tangemCardPasscodeSetWarning": "Lisades pääsukoodi kaardile suurendad oma varade hoiustamise turvalisust juhul kui kaotad kaardi. On oluline teada, et sinu varadele puudub JUURDEPÄÄS ja varasid EI OLE VÕIMALIK TAASTADA (mittekellegi poolt) kui sa ei mäleta pääsukoodi.\r\n\r\nOled kindel, et soovid lisada pääsukoodi oma kaardile?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "There are two accounts eligible to sign. Which one do you want to sign with?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Main account",
     "backupAccount": "Regular key (backup account)",
     "verifyTangemCard": "Verify Tangem card",

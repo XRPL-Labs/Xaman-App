@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Budete-li pokračovat, importujete XRPL účet na základě tajných čísel. Tajná čísla by měla být vygenerována ** uživatelem * * offline (např. s kostkami). Svá tajná čísla ** musíte** mít zaznamenaná (například vyražená do kovu, zapsaná na papír).\r\nPOKRAČUJTE, POUZE POKUD VÍTE, CO DĚLÁTE.",
     "tangemCardPasscodeSetWarning": "Při přidávání přístupového hesla do vaší karty se zvyšuje bezpečnost vašich finančních prostředků. V případě ztráty (a nalezené) karty, je důležité si uvědomit, že vaše finanční prostředky budou NEDOSTUPNÉ a  NEOBNOVITELNÉ ( a to nikým), pokud si nepamatujete své přístupové heslo.\r\n\r\nOpravdu chcete přidat přístupové heslo ke své kartě?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "K dispozici jsou dva účty které jsou vhodné k podpisu. Který účet chcete použít?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Hlavní účet",
     "backupAccount": "Běžný klíč (záložní účet)",
     "verifyTangemCard": "Verify Tangem card",

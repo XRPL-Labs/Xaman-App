@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "നിങ്ങൾ തുടരുകയാണെങ്കിൽ, രഹസ്യ നമ്പറുകളിൽ നിന്ന് നിങ്ങൾ ഒരു എക്സ്ആർപി ലെഡ്ജർ അക്കൗണ്ട് ഇറക്കുമതി ചെയ്യും. രഹസ്യ നമ്പറുകൾ സൃഷ്ടിക്കുന്നതിനുള്ള ഉത്തരവാദിത്തമുള്ള ഏക കക്ഷി നിങ്ങളാണ്. അവ സൃഷ്ടിക്കുന്നതിന് ഒരു ഓഫ്‌ലൈൻ രീതി (ഉദാ. ഡൈസ് ഉപയോഗിച്ച്) ഉപയോഗിക്കാൻ ഞങ്ങൾ ശുപാർശ ചെയ്യുന്നു. നിങ്ങൾ‌ അക്കങ്ങൾ‌ സൃഷ്‌ടിച്ചതിന്‌ ശേഷം, നിങ്ങൾ‌ അവ സംഭരിക്കണം (ഉദാ. ലോഹത്തിൽ‌ സ്റ്റാമ്പ്‌ ചെയ്‌തത്, എഴുതിയിരിക്കുന്നു).\r\nനിങ്ങൾ എന്താണ് ചെയ്യുന്നതെന്ന് നിങ്ങൾക്കറിയാമെങ്കിൽ മാത്രം നിങ്ങൾ പ്രോസസ്സ് ചെയ്യണം.",
     "tangemCardPasscodeSetWarning": "നിങ്ങളുടെ കാർഡിലേക്ക് ഒരു പാസ്‌കോഡ് ചേർക്കുന്നത് നഷ്ടപ്പെട്ട (കണ്ടെത്തിയ) കാർഡിന്റെ കാര്യത്തിൽ നിങ്ങളുടെ ഫണ്ടുകളുടെ സുരക്ഷ മെച്ചപ്പെടുത്തുന്നു, നിങ്ങളുടെ ഫണ്ടുകൾ അപ്രാപ്യമാകുമെന്നും നിങ്ങൾ * ഇല്ലെങ്കിൽ (ആർക്കും) വീണ്ടെടുക്കാനാവില്ലെന്നും മനസ്സിലാക്കേണ്ടതുണ്ട്. നിങ്ങളുടെ പാസ്‌കോഡ് ഓർക്കുന്നില്ല.\r\n\r\nനിങ്ങളുടെ കാർഡിലേക്ക് ഒരു പാസ്‌കോഡ് ചേർക്കാൻ ആഗ്രഹിക്കുന്നുവെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "ഒപ്പിടാൻ യോഗ്യതയുള്ള രണ്ട് അക്കൗണ്ടുകളുണ്ട്, ഏതാണ് ഒപ്പിടാൻ നിങ്ങൾ ആഗ്രഹിക്കുന്നത്?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "പ്രധാന അക്കൗണ്ട്",
     "backupAccount": "പതിവ് കീ (ബാക്കപ്പ് അക്കൗണ്ട്)",
     "verifyTangemCard": "Verify Tangem card",

@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "यदि आप आगे बढ़ते हैं, तो आप गुप्त संख्याओं से एक XRP लेजर खाता आयात करेंगे। सीक्रेट नंबर जेनरेट करने वाली आप एकमात्र पार्टी हैं। हम आपको उन्हें उत्पन्न करने के लिए एक ऑफ़लाइन विधि (जैसे पासा के साथ) का उपयोग करने की सलाह देते हैं। आपके द्वारा संख्याएँ उत्पन्न करने के बाद, आपको उन्हें संग्रहित करना होगा (उदाहरण के लिए, धातु में मुद्रांकित, नीचे लिखा हुआ)।\r\nयदि आप जानते हैं कि आप क्या कर रहे हैं, तो आप केवल तभी पेश होंगे।",
     "tangemCardPasscodeSetWarning": "अपने कार्ड में पासकोड जोड़ने से कार्ड के खो जाने (और पाए जाने) के मामले में आपके फंड की सुरक्षा में सुधार होता है, यह महसूस करना महत्वपूर्ण है कि आपकी धनराशि अप्राप्य होगी और यदि आप ऐसा नहीं करते हैं तो (किसी के द्वारा) पुनर्प्राप्त नहीं किया जा सकता अपना पासकोड याद नहीं है।\r\n\r\nक्या आप वाकई अपने कार्ड में पासकोड जोड़ना चाहते हैं?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "हस्ताक्षर करने के योग्य दो खाते हैं, आप किस पर हस्ताक्षर करने के लिए उपयोग करना चाहते हैं?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "मुख्य खाता",
     "backupAccount": "नियमित रूप से कुंजी (बैकअप खाता)",
     "verifyTangemCard": "Verify Tangem card",

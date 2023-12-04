@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Jarraitzen baduzu, XRP liburu kontua inportatuko duzu zenbaki sekretuetatik. Zenbaki sekretuak ** zuk ** sortu behar dituzu lineaz kanpoko metodo bat erabiliz (adibidez, dadoekin). ** Sortu behar dituzun ** zenbaki sekretuak gorde behar dituzu (adibidez, metalez estanpatuta, idatzita).\r\nJARRAITU ZER EGITEN ZARA JAKIN BADUZU.",
     "tangemCardPasscodeSetWarning": "Zure txartelari pasakode bat gehitzeak zure funtsen segurtasuna hobetzen duen bitartean (eta aurkitutako) txartela galtzen baduzu, garrantzitsua da konturatzea zure fondoak IRABAZITZINAK izango direla eta ezin duzula (inork) berreskuratu (inork) \" Ez ahaztu zure pasakodea.\r\n\r\nZiur zaude txartelean pasakode bat gehitu nahi duzula?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Bi kontu daude sinatzeko eskubidea. Zein erabili nahi duzu sinatzeko?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Kontu nagusia",
     "backupAccount": "Gako arrunta (segurtasun kopia kontua)",
     "verifyTangemCard": "Verify Tangem card",

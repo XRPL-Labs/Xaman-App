@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Si continúa, importará una cuenta del XRPL de los números secretos. Los números secretos deben ser generados ** por usted * * usando un método fuera de línea (por ejemplo, con dados). Usted **DEBE HABER** almacenado sus números secretos generados (por ejemplo, estampada en metal, anotado en papel).\r\nSÓLO CONTINÚE SI SABE LO QUE ESTÁ HACIENDO.",
     "tangemCardPasscodeSetWarning": "Si bien agregar un código de acceso a su tarjeta mejora la seguridad de sus fondos en caso de una tarjeta perdida (y encontrada), es importante darse cuenta de que sus fondos serán INACCESIBLES y *NOT* SER RECUPERADOS (por cualquiera) si no recuerda su código de acceso.\n\n¿Está seguro de que desea añadir un código de acceso a la tarjeta?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Hay dos cuentas elegibles para firmar. ¿Cuál desea utilizar para firmar?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Cuenta principal",
     "backupAccount": "Clave regular (cuenta de seguridad)",
     "verifyTangemCard": "Verificar tarjeta de Tangem",

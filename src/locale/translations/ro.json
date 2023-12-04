@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Dacă continuaţi, veţi deschide un cont XRP Ledger cu numerele secrete. Numerele secrete ar trebui generate de către dumneavoastră folosind o metodă offline (de exemplu: cu zaruri). Dumneavoastră trebuie să vă asigurați ca aveți copii la aceste numere secrete generate (de exemplu: copiate pe mai multe hârtii).\r\nContinuați doar dacă sunteți sigur(ă) că știți ce faceți.",
     "tangemCardPasscodeSetWarning": "În timp ce adăugarea unui cod de acces la cardul ddumneavoastră îmbunătăţeşte siguranţa fondurilor, în cazul unui card pierdut (şi găsit), este important să vă daţi seama că fondurile vor fi INACCESIBILE şi NU POT FI RECUPERATE (de nimeni) dacă nu vă amintiţi codul de acces.\r\n\r\nSunteţi sigur că doriţi să adăugaţi un cod de acces la cardul dumneavoastră?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Există două conturi eligibile pentru a semna. Pe care doriţi să-l folosiţi pentru această operațiune?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Cont principal",
     "backupAccount": "Cheie obişnuită (cont de rezervă)",
     "verifyTangemCard": "Verify Tangem card",

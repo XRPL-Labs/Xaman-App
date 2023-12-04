@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Als u doorgaat, importeert u een XRP-Ledger-account uit de geheime nummers. De geheime nummers moeten worden gegenereerd ** door u * * met behulp van een offline methode (bijvoorbeeld. met dobbelstenen). Je hebt je gegenereerde geheime nummers opgeslagen. gestempeld in metaal, naar beneden geschreven).\nGA ALLEEN DOOR ALS JE WEET WAT JE DOET.",
     "tangemCardPasscodeSetWarning": "Terwijl het toevoegen van een toegangscode aan uw kaart verbetert de veiligheid van uw fondsen in het geval van een verloren (en gevonden) kaart, is het belangrijk om te beseffen dat uw geld zal worden TOEGANKELIJK en kan *NO* * worden hersteld (door iedereen) als je je toegangscode niet herinneren.\n\nWeet u zeker dat u een toegangscode aan uw kaart wilt toevoegen?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Er zijn twee accounts die in aanmerking komen om te ondertekenen, welke wil je gebruiken om te tekenen?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Hoofdrekening",
     "backupAccount": "Normale sleutel (backupaccount)",
     "verifyTangemCard": "Verify Tangem card",

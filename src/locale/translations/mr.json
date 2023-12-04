@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "आपण पुढे गेल्यास, आपण सिक्रेट नंबरवरून एक्सआरपी लेजर खाते आयात कराल. आपण सिक्रेट नंबर व्युत्पन्न करण्यासाठी एकमेव पक्ष जबाबदार आहात. आम्ही आपल्याला ते तयार करण्यासाठी ऑफलाइन पद्धत (उदा. पासासह) वापरण्याची शिफारस करतो. आपण संख्या व्युत्पन्न केल्यानंतर, आपण त्या साठवल्या पाहिजेत (उदा. धातूवर शिक्का, लिहिलेले).\r\nआपण काय करीत आहात हे आपल्याला माहित असल्यासच आपण पुढे जाणे आवश्यक आहे.",
     "tangemCardPasscodeSetWarning": "गमावलेला (आणि सापडलेला) कार्ड आढळल्यास तुमच्या कार्डमध्ये पासकोड जोडल्यास तुमच्या फंडाची सुरक्षितता सुधारते, हे लक्षात ठेवणे आवश्यक आहे की जर तुम्ही पैसे न दिल्यास तुमचे फंड बिनचूक होईल आणि * (कोणाकडूनही) पुनर्प्राप्त केले जाऊ शकत नाही. टी आपला पासकोड लक्षात नाही.\r\n\r\nआपल्याला खात्री आहे की आपण आपल्या कार्डमध्ये पासकोड जोडू इच्छिता?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "स्वाक्षरीस पात्र अशी दोन खाती आहेत, आपण कोणती सही करण्यासाठी वापरू इच्छिता?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "मुख्य खाते",
     "backupAccount": "नियमित की (बॅकअप खाते)",
     "verifyTangemCard": "Verify Tangem card",

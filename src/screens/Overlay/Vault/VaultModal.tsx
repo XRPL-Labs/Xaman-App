@@ -14,8 +14,8 @@ import { BaseTransaction } from '@common/libs/ledger/transactions';
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import { SignedObjectType } from '@common/libs/ledger/types';
@@ -25,8 +25,8 @@ import Vault from '@common/libs/vault';
 import { GetSignOptions, GetWalletDerivedPublicKey } from '@common/utils/tangem';
 
 import Keyboard from '@common/helpers/keyboard';
-import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
@@ -38,8 +38,11 @@ import { MethodsContext } from './Context';
 // methods
 import { PasscodeMethod, PassphraseMethod, TangemMethod } from './Methods';
 
+// select signer
+import { SelectSigner } from './SelectSinger';
+
 /* types ==================================================================== */
-import { AuthMethods, Props, SignOptions, State } from './types';
+import { AuthMethods, Props, SignOptions, State, Steps } from './types';
 
 /* Component ==================================================================== */
 class VaultModal extends Component<Props, State> {
@@ -59,15 +62,16 @@ class VaultModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            signer: undefined,
-            alternativeSigner: undefined,
+            step: undefined,
+            signers: undefined,
+            preferredSigner: undefined,
             coreSettings: CoreRepository.getSettings(),
             isSigning: false,
         };
     }
 
     componentDidMount() {
-        InteractionManager.runAfterInteractions(this.setSignerAccount);
+        InteractionManager.runAfterInteractions(this.setSigners);
 
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.dismiss);
     }
@@ -78,47 +82,67 @@ class VaultModal extends Component<Props, State> {
         }
     }
 
-    setSignerAccount = () => {
+    setSigners = () => {
         const { account } = this.props;
 
-        // set signer by default
-        let signer = account;
-        let alternativeSigner;
+        try {
+            const signers: AccountModel[] = [];
+            let preferredSigner;
 
-        // check if regular key account is imported to the app
-        if (account.regularKey) {
-            const regularAccount = AccountRepository.findOne({ address: account.regularKey }) as AccountModel;
-
-            // check for account regular key set
-            // check if we are able to sign this tx with signer or alternative signer
-            if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
-                if (!regularAccount) {
-                    Alert.alert(
-                        Localize.t('global.error'),
-                        Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound'),
-                    );
-                    return;
-                }
-
-                if (regularAccount.accessLevel !== AccessLevels.Full) {
-                    Alert.alert(
-                        Localize.t('global.error'),
-                        Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'),
-                    );
-                    return;
-                }
-
-                // we should sign this tx with regular key as signer will not be able to sign it
-                signer = regularAccount;
-            } else if (regularAccount && regularAccount.accessLevel === AccessLevels.Full) {
-                alternativeSigner = regularAccount;
+            // check if we can sign the transaction with provided account
+            // account is Readonly and no RegularKey is set
+            // NOTE: we shouldn't allow user to reach to this point but we are double-checking
+            if (account.accessLevel === AccessLevels.Readonly && !account.regularKey) {
+                throw new Error('Unable to sign the transaction with provided account');
             }
-        }
 
-        this.setState({
-            signer,
-            alternativeSigner,
-        });
+            // by default include the provided account if full access
+            if (account.accessLevel === AccessLevels.Full) {
+                signers.push(account);
+                preferredSigner = account;
+            }
+
+            // if regular key is set to the account then we check if we should include it in the list of signer
+            if (account.regularKey) {
+                // check if regular key account is imported in the app
+                const regularKeyAccount = AccountRepository.findOne({ address: account.regularKey });
+
+                // Master key is disabled and the regular key is not present is the app
+                if (account.flags?.disableMasterKey && !regularKeyAccount) {
+                    throw new Error(Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound'));
+                }
+
+                // Regular key exist but it's not imported as full access
+                if (regularKeyAccount.accessLevel !== AccessLevels.Full) {
+                    throw new Error(Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'));
+                }
+
+                // everything is find we can sign with the regular key beside the main account
+                signers.push(regularKeyAccount);
+
+                // if Master key is disabled on the main account set the preferred Signer to regular key
+                if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
+                    preferredSigner = regularKeyAccount;
+                }
+            }
+
+            // decide which step we are taking after setting signers
+            // if signers more than one then let user to select which account they want to sign the transaction with
+            const step = signers.length > 1 ? Steps.SelectSigner : Steps.Authentication;
+
+            // set the state
+            this.setState({
+                step,
+                signers,
+                preferredSigner,
+            });
+        } catch (error: any) {
+            // something happened and we cannot continue
+            Alert.alert(Localize.t('global.error'), error?.message ?? Localize.t('global.unexpectedErrorOccurred'));
+
+            // just dismiss the overlay
+            this.dismiss();
+        }
     };
 
     close = () => {
@@ -129,11 +153,14 @@ class VaultModal extends Component<Props, State> {
     dismiss = () => {
         const { onDismissed } = this.props;
 
+        // callback
         if (onDismissed) {
             onDismissed();
         }
 
+        // close the overlay
         this.close();
+
         return true;
     };
 
@@ -145,8 +172,8 @@ class VaultModal extends Component<Props, State> {
             VibrateHapticFeedback('notificationError');
         }
 
-        let title = '';
-        let content = '';
+        let title: string;
+        let content: string;
 
         switch (method) {
             case AuthMethods.PIN:
@@ -195,6 +222,13 @@ class VaultModal extends Component<Props, State> {
         });
     };
 
+    onPreferredSignerSelect = (singer: AccountModel) => {
+        this.setState({
+            preferredSigner: singer,
+            step: Steps.Authentication,
+        });
+    };
+
     sign = (method: AuthMethods, options: SignOptions) => {
         switch (method) {
             case AuthMethods.BIOMETRIC:
@@ -217,7 +251,7 @@ class VaultModal extends Component<Props, State> {
     };
 
     private signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
-        const { signer } = this.state;
+        const { preferredSigner } = this.state;
         const { transaction, multiSign } = this.props;
         const { encryptionKey } = options;
 
@@ -227,7 +261,7 @@ class VaultModal extends Component<Props, State> {
             }
 
             // fetch private key from vault
-            const privateKey = await Vault.open(signer.publicKey, encryptionKey);
+            const privateKey = await Vault.open(preferredSigner.publicKey, encryptionKey);
 
             // unable to fetch private key from vault base on provided encryption key
             if (!privateKey) {
@@ -239,7 +273,7 @@ class VaultModal extends Component<Props, State> {
             let signerInstance = AccountLib.derive.privatekey(privateKey);
             // check if multi sign then add sign as
             if (multiSign) {
-                signerInstance = signerInstance.signAs(signer.address);
+                signerInstance = signerInstance.signAs(preferredSigner.address);
             }
 
             // get current network definitions
@@ -345,29 +379,41 @@ class VaultModal extends Component<Props, State> {
     onSign = (signedObject: SignedObjectType) => {
         const { onSign } = this.props;
 
+        // callback
         if (typeof onSign === 'function') {
             onSign(signedObject);
         }
 
+        // close the overlay
         this.close();
     };
 
     render() {
-        const { signer } = this.state;
+        const { step, preferredSigner } = this.state;
 
-        if (!signer) return null;
+        // preferred signer has not been set yet, we should wait more
+        if (!step || !preferredSigner) return null;
 
-        let Method = null;
+        let Step = null;
 
-        switch (signer.encryptionLevel) {
-            case EncryptionLevels.Passcode:
-                Method = PasscodeMethod;
+        switch (true) {
+            case step === Steps.SelectSigner:
+                Step = SelectSigner;
                 break;
-            case EncryptionLevels.Passphrase:
-                Method = PassphraseMethod;
-                break;
-            case EncryptionLevels.Physical:
-                Method = TangemMethod;
+            case step === Steps.Authentication:
+                switch (preferredSigner.encryptionLevel) {
+                    case EncryptionLevels.Passcode:
+                        Step = PasscodeMethod;
+                        break;
+                    case EncryptionLevels.Passphrase:
+                        Step = PassphraseMethod;
+                        break;
+                    case EncryptionLevels.Physical:
+                        Step = TangemMethod;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             default:
                 break;
@@ -379,10 +425,11 @@ class VaultModal extends Component<Props, State> {
                     ...this.state,
                     sign: this.sign,
                     onInvalidAuth: this.onInvalidAuth,
+                    onPreferredSignerSelect: this.onPreferredSignerSelect,
                     dismiss: this.dismiss,
                 }}
             >
-                <Method />
+                <Step />
             </MethodsContext.Provider>
         );
     }

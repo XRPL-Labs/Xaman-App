@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "જો તમે આગળ વધશો, તો તમે સિક્રેટ નંબર્સથી એક XRP લેજર એકાઉન્ટ આયાત કરશો. તમે સિક્રેટ નંબર્સ ઉત્પન્ન કરવા માટે જવાબદાર એકમાત્ર પક્ષ છો. અમે ભલામણ કરીએ છીએ કે તમે એક ઑફલાઇન પદ્ધતિ વાપરવા માટે (દા.ત. ડાઇસ સાથે.) તેમને જનરેટ કરવા માટે. તમે નંબરો ઉત્પન્ન કર્યા પછી, તમારે તેમને સ્ટોર કરવું આવશ્યક છે (દા.ત. ધાતુમાં સ્ટેમ્પ્ડ, નીચે લખાયેલ).\r\nતમે ફક્ત આગળ ધપાવો જો તમે જાણતા હોવ કે તમે શું કરી રહ્યા છો.",
     "tangemCardPasscodeSetWarning": "જ્યારે તમારા કાર્ડમાં પાસકોડ ઉમેરવું એ ખોવાઈ ગયેલા (અને મળેલા) કાર્ડની સ્થિતિમાં તમારા ભંડોળની સલામતીમાં સુધારો કરે છે, ત્યારે તમારે એ સમજવું અગત્યનું છે કે તમારા ભંડોળ અયોગ્ય હશે અને જો તમે ડોન ન કરો તો (કોઈપણ દ્વારા) રિકવર કરી શકાશે નહીં ' ટી તમારો પાસકોડ યાદ નથી.\r\n\r\nશું તમને ખરેખર ખાતરી છે કે તમે તમારા કાર્ડમાં પાસકોડ ઉમેરવા માંગો છો?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "સહી કરવા માટે બે ખાતા યોગ્ય છે, તમે સાઇન કરવા માટે કયું એકાઉન્ટ વાપરવા માંગો છો?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "મુખ્ય ખાતું",
     "backupAccount": "નિયમિત કી (બેકઅપ એકાઉન્ટ)",
     "verifyTangemCard": "Verify Tangem card",

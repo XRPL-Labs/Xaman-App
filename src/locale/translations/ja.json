@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "続行すると、シークレットナンバーからXRP Ledgerアカウントをインポートすることになります。シークレットナンバーの生成は、あなた自身の責任で行ってください。サイコロなどを使ったオフラインの方法で生成することをお勧めします。シークレットナンバーを作成した後は、必ず保管してください（金属製の刻印やメモなど）。\r\n自分が何をしているのか分かっている場合にのみ、作業を進めてください。",
     "tangemCardPasscodeSetWarning": "カードにパスコードを追加すると、紛失 (および検出 ) カードの場合の資金の安全性が向上しますが、パスコードを覚えていない場合は、お客様の資金が INACCESSIBLE および CAN *NOT* BE RECOVERED になることを認識することが重要です。\n\nカードにパスコードを追加しても本当によろしいですか ?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "署名可能なアカウントが2つありますが、どちらを使って署名しますか？",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "メインアカウント",
     "backupAccount": "レギュラーキー（バックアップアカウント）",
     "verifyTangemCard": "Tangemカードを確認する",

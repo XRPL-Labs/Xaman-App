@@ -18,6 +18,11 @@ export interface SignOptions {
     tangemCard?: Card;
 }
 
+export enum Steps {
+    SelectSigner = 'SelectSigner',
+    Authentication = 'Authentication',
+}
+
 export interface Props {
     account: AccountModel;
     transaction: Transactions | PseudoTransactions;
@@ -27,14 +32,16 @@ export interface Props {
 }
 
 export interface State {
-    signer: AccountModel;
-    alternativeSigner: AccountModel;
+    step: Steps;
+    signers: AccountModel[];
+    preferredSigner: AccountModel;
     coreSettings: CoreModel;
     isSigning: boolean;
 }
 
 export interface ContextProps extends State {
     sign: (method: AuthMethods, options: SignOptions) => void;
+    onPreferredSignerSelect: (signer: AccountModel) => void;
     onInvalidAuth: (method: AuthMethods) => void;
     dismiss: () => void;
 }

@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "إذا تابعت ، فستستورد حساب دفتر أستاذ XRP من الأرقام السرية. أنت المسؤول الوحيد عن إنشاء الأرقام السرية. نوصيك باستخدام طريقة غير متصلة بالإنترنت (على سبيل المثال ، باستخدام الزهر) لتوليدها. بعد إنشاء الأرقام ، يجب عليك تخزينها (على سبيل المثال ، مختومة في المعدن ، مكتوبة).\r\nيجب أن تستمر فقط إذا كنت تعرف ما تفعله.",
     "tangemCardPasscodeSetWarning": "بينما تعمل إضافة رمز مرور إلى بطاقتك على تحسين سلامة أموالك في حالة فقدان البطاقة (والعثور عليها) ، من المهم أن تدرك أن أموالك ستكون غير قابلة للوصول ولا يمكن * لا * استردادها (من قبل أي شخص) إذا لم تقم بذلك. ر أتذكر رمز المرور الخاص بك.\r\n\r\nهل أنت متأكد أنك تريد إضافة رمز مرور إلى بطاقتك؟",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "هناك حسابان مؤهلان للتوقيع ، أيهما تريد استخدامه للتوقيع؟",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "الحساب الرئيسي",
     "backupAccount": "مفتاح عادي (حساب احتياطي)",
     "verifyTangemCard": "Verify Tangem card",

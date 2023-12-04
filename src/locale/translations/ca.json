@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Si continues, importaràs un compte d'XRPL des de les teves Claus Privades. Les Claus Privades han d'haver estat creades per TU utilitzant un mètode fora de línia (p. ex. amb daus) i CAL que les desis en un lloc segur (p. ex., estampades en metall, anotades en un paper).\r\n\r\nCONTINUA NOMÉS SI SAPS EL QUE FAS.",
     "tangemCardPasscodeSetWarning": "Si bé afegir una contrasenya a la teva targeta millora la seguretat dels teus fons en cas d'una targeta perduda (i trobada), és important tenir en compte que els fons seran INACCESSIBLES i NO ES PODRAN RECUPERAR (per ningú) si no recordes la contrasenya.\r\n\r\nConfirmes que vols afegir una contrasenya a la teva targeta?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Hi ha dos comptes elegibles per signar, quin voleu utilitzar per signar?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Compte principal",
     "backupAccount": "Clau Habitual (compte de còpia de seguretat)",
     "verifyTangemCard": "Verifica la Targeta Tangem",

@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Om du fortsätter kommer du att importera ett XRP-kontokonto från hemliga tal. Hemliga siffror bör genereras ** av dig * * med en offlinemetod (t. ex. med tärningar). Du ** sen** har lagrat dina genererade hemliga nummer (t. ex. stämplad i metall, nedskriven).\nFORTSÄTT BARA OM DU VET VAD DU GÖR.",
     "tangemCardPasscodeSetWarning": "När du lägger till en passerkod till ditt kort förbättrar du säkerheten för dina tillgångar om det finns ett förlorat (och hittat) kort, men det är viktigt att du inser att dina tillgångar kommer att vara INACCESSIBLE och CAN *NOT* BE RECOVERED (av någon) om du inte kommer ihåg din passerkod.\n\nÄr du säker på att du vill lägga till en passerkod till ditt kort?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Det finns två konton som kan signera, vilken vill du använda för att skriva under?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Huvudkonto",
     "backupAccount": "Reguljärt nyckel (säkerhetskopieringskonto)",
     "verifyTangemCard": "Verifiera Tangem-kort",

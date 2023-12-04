@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Nếu tiếp tục, bạn sẽ nhập tài khoản Sổ cái XRP từ Số bí mật. Bạn là bên duy nhất chịu trách nhiệm tạo ra các Số bí mật. Chúng tôi khuyên bạn nên sử dụng phương pháp ngoại tuyến (ví dụ: với xúc xắc) để tạo chúng. Sau khi tạo các số, bạn phải lưu trữ chúng (ví dụ: đóng dấu bằng kim loại, viết ra giấy).\r\nBẠN CHỈ NÊN TIẾN HÀNH NẾU BẠN BIẾT BẠN ĐANG LÀM GÌ.",
     "tangemCardPasscodeSetWarning": "Mặc dù việc thêm mật mã vào thẻ của bạn giúp cải thiện sự an toàn cho tiền của bạn trong trường hợp thẻ bị mất (và được tìm thấy), điều quan trọng là phải nhận ra rằng tiền của bạn sẽ KHÔNG THỂ TRUY CẬP được và KHÔNG THỂ * KHÔNG * ĐƯỢC THU HỒI (bởi bất kỳ ai) nếu bạn không ' t nhớ mật mã của bạn.\r\n\r\nBạn có thực sự chắc chắn muốn thêm mật mã vào thẻ của mình không?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Có hai tài khoản đủ điều kiện để ký, Bạn muốn sử dụng tài khoản nào để ký?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Tài khoản chính",
     "backupAccount": "Khóa thông thường (tài khoản dự phòng)",
     "verifyTangemCard": "Verify Tangem card",

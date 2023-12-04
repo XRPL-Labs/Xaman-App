@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "ਜੇ ਤੁਸੀਂ ਅੱਗੇ ਵੱਧਦੇ ਹੋ, ਤਾਂ ਤੁਸੀਂ ਸੀਕਰੇਟ ਨੰਬਰਾਂ ਤੋਂ ਐਕਸਆਰਪੀ ਲੇਜਰ ਖਾਤਾ ਆਯਾਤ ਕਰੋਗੇ. ਤੁਸੀਂ ਇਕੱਲੇ ਧਿਰ ਹੋ ਜੋ ਗੁਪਤ ਨੰਬਰ ਤਿਆਰ ਕਰਨ ਲਈ ਜ਼ਿੰਮੇਵਾਰ ਹੈ. ਅਸੀਂ ਤੁਹਾਨੂੰ ਔਫਲਾਈਨ ਵਿਧੀ ਦੀ ਵਰਤੋਂ ਕਰਨ ਦੀ ਸਿਫਾਰਸ਼ ਕਰਦੇ ਹਾਂ (ਜਿਵੇਂ ਕਿ ਪਾਸਾ ਦੇ ਨਾਲ) ਉਹਨਾਂ ਨੂੰ ਬਣਾਉਣ ਲਈ. ਤੁਹਾਡੇ ਦੁਆਰਾ ਨੰਬਰ ਤਿਆਰ ਕਰਨ ਤੋਂ ਬਾਅਦ, ਤੁਹਾਨੂੰ ਉਨ੍ਹਾਂ ਨੂੰ ਸਟੋਰ ਕਰਨਾ ਪਵੇਗਾ (ਉਦਾਹਰਣ ਲਈ ਧਾਤ ਵਿੱਚ ਮੋਹਰ ਲੱਗੀ, ਹੇਠ ਲਿਖੀ).\r\nਜੇ ਤੁਸੀਂ ਜਾਣਦੇ ਹੋ ਕਿ ਤੁਸੀਂ ਕੀ ਕਰ ਰਹੇ ਹੋ ਤਾਂ ਸਿਰਫ ਤੁਹਾਨੂੰ ਜਾਰੀ ਰੱਖਣਾ ਚਾਹੀਦਾ ਹੈ.",
     "tangemCardPasscodeSetWarning": "ਜਦੋਂ ਤੁਹਾਡੇ ਕਾਰਡ ਵਿਚ ਇਕ ਪਾਸਕੋਡ ਸ਼ਾਮਲ ਕਰਨਾ ਤੁਹਾਡੇ ਗੁੰਮ ਹੋਏ (ਅਤੇ ਮਿਲੇ) ਕਾਰਡ ਦੀ ਸਥਿਤੀ ਵਿਚ ਤੁਹਾਡੇ ਫੰਡਾਂ ਦੀ ਸੁਰੱਖਿਆ ਵਿਚ ਸੁਧਾਰ ਕਰਦਾ ਹੈ, ਇਹ ਅਹਿਸਾਸ ਕਰਨਾ ਮਹੱਤਵਪੂਰਣ ਹੈ ਕਿ ਤੁਹਾਡੇ ਫੰਡ ਬੇਕਾਬੂ ਹੋਣਗੇ ਅਤੇ ਜੇ ਤੁਸੀਂ ਨਹੀਂ ਕਰਦੇ ਤਾਂ '(ਕਿਸੇ ਦੁਆਰਾ ਵੀ) ਪ੍ਰਾਪਤ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ' ਆਪਣੇ ਪਾਸਕੋਡ ਨੂੰ ਯਾਦ ਨਾ ਕਰੋ.\r\n\r\nਕੀ ਤੁਹਾਨੂੰ ਸੱਚਮੁੱਚ ਯਕੀਨ ਹੈ ਕਿ ਤੁਸੀਂ ਆਪਣੇ ਕਾਰਡ ਵਿੱਚ ਇੱਕ ਪਾਸਕੋਡ ਸ਼ਾਮਲ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "ਦਸਤਖਤ ਕਰਨ ਦੇ ਯੋਗ ਦੋ ਖਾਤੇ ਹਨ, ਕਿਹੜਾ ਤੁਸੀਂ ਸਾਈਨ ਕਰਨ ਲਈ ਵਰਤਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "ਮੁੱਖ ਖਾਤਾ",
     "backupAccount": "ਨਿਯਮਤ ਕੁੰਜੀ (ਬੈਕਅਪ ਖਾਤਾ)",
     "verifyTangemCard": "Verify Tangem card",

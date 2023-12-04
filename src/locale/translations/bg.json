@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Ако продължите, ще импортирате сметка XRP Ledger от Secret Numbers. Тайните номера трябва да бъдат генерирани ** от вас * * използване на офлайн метод (напр. със зарове). Вие ** must** са съхранявани вашите генерирани тайни номера (напр. подпечатан в метал, написан на долу).\nПродължавай, само ако знаеш какво правиш.",
     "tangemCardPasscodeSetWarning": "While adding a passcode to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your passcode.\r\n\r\nAre you really sure you want to add a passcode to your card?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "There are two accounts eligible to sign. Which one do you want to sign with?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Main account",
     "backupAccount": "Regular key (backup account)",
     "verifyTangemCard": "Verify Tangem card",

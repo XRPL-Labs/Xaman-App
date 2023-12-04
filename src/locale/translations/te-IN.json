@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "మీరు కొనసాగితే, మీరు సీక్రెట్ నంబర్స్ నుండి XRP లెడ్జర్ ఖాతాను దిగుమతి చేస్తారు. సీక్రెట్ నంబర్లను రూపొందించే ఏకైక పార్టీ మీరే. వాటిని ఉత్పత్తి చేయడానికి ఆఫ్‌లైన్ పద్ధతిని (ఉదా. పాచికలతో) ఉపయోగించమని మేము మీకు సిఫార్సు చేస్తున్నాము. మీరు సంఖ్యలను ఉత్పత్తి చేసిన తర్వాత, మీరు వాటిని నిల్వ చేయాలి (ఉదా. లోహంలో స్టాంప్, వ్రాసినవి).\r\nమీరు ఏమి చేస్తున్నారో మీకు తెలిస్తే మాత్రమే మీరు ప్రాసెస్ చేయాలి.",
     "tangemCardPasscodeSetWarning": "మీ కార్డుకు పాస్‌కోడ్‌ను జోడించడం వల్ల కోల్పోయిన (మరియు దొరికిన) కార్డ్ విషయంలో మీ నిధుల భద్రతను మెరుగుపరుస్తుంది, మీ నిధులు అసంభవం అవుతాయని గ్రహించడం చాలా ముఖ్యం మరియు మీరు చేయకపోతే * (ఎవరైనా) తిరిగి పొందలేరు. మీ పాస్‌కోడ్ గుర్తులేదు.\r\n\r\nమీరు మీ కార్డుకు పాస్‌కోడ్‌ను జోడించాలనుకుంటున్నారా?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "సంతకం చేయడానికి రెండు ఖాతాలు అర్హులు, మీరు సంతకం చేయడానికి ఏది ఉపయోగించాలనుకుంటున్నారు?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "ప్రధాన ఖాతా",
     "backupAccount": "సాధారణ కీ (బ్యాకప్ ఖాతా)",
     "verifyTangemCard": "Tangem కార్డ్‌ని ధృవీకరించండి\r\n",

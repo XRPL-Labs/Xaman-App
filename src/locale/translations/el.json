@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Εάν συνεχίσετε, θα εισαγάγετε έναν λογαριασμό XRP καθολικού από τους Secret Numbers. Οι μυστικοί αριθμοί θα πρέπει να δημιουργηθούν ** από εσάς ** χρησιμοποιώντας μια μέθοδο εκτός σύνδεσης (π.χ. με ζάρια). ** Πρέπει ** να έχετε αποθηκεύσει τους δημιουργημένους μυστικούς αριθμούς σας (π.χ. σφραγισμένοι σε μέταλλο, καταγεγραμμένοι).\r\nΣΥΝΕΧΕΤΕ ΜΟΝΟ ΑΝ ΓΝΩΡΙΖΕΤΕ ΤΙ ΚΑΝΕΤΕ.",
     "tangemCardPasscodeSetWarning": "Αν και η προσθήκη κωδικού πρόσβασης στην κάρτα σας βελτιώνει την ασφάλεια των κεφαλαίων σας σε περίπτωση απώλειας (και διαπιστευμένου) κάρτας, είναι σημαντικό να συνειδητοποιήσετε ότι τα χρήματά σας θα είναι INACCESSIBLE και CAN *NOT* ΑΝΑΚΤΗΤΑΙ (από οποιονδήποτε) αν δεν θυμάστε τον κωδικό πρόσβασής σας.\n\nΕίστε βέβαιοι ότι θέλετε να προσθέσετε έναν κωδικό πρόσβασης στην κάρτα σας;",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Υπάρχουν δύο λογαριασμοί που πληρούν τις προϋποθέσεις για υπογραφή, σε ποιον θέλετε να χρησιμοποιήσετε για να υπογράψετε;",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Κύριος λογαριασμός",
     "backupAccount": "Κανονικό κλειδί (εφεδρικός λογαριασμός)",
     "verifyTangemCard": "Verify Tangem card",

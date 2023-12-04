@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Якщо Ви продовжите, Ви імпортуєте акаунт XRP Ledger використовуючи секретні цифри. Секретні цифри повинні бути згенеровані **Вами**, використовуючи офлайн метод (наприклад, гральні кубики). Ви **повинні** зберегти Ваші згенеровані секретні цифри (відтиснути на металі, записати на папері, тощо).\r\nПРОДОВЖУЙТЕ, ТІЛЬКИ ЯКЩО ВИ ЗНАЄТЕ, ЩО РОБИТЕ.",
     "tangemCardPasscodeSetWarning": "Хоча додавання ПІН-коду до Вашої картки покращує безпеку Ваших коштів у разі втрати (та знаходження) картки, важливо усвідомлювати, що Ваші кошти будуть НЕДОСТУПНІ і *НЕ МОЖУТЬ* БУТИ ВІДНОВЛЕНІ (будь-ким), якщо Ви не пам'ятатимете свій ПІН-код.\r\n\r\nВи дійсно впевнені, що хочете додати ПІН-код до своєї картки?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Є два акаунти, які мають право на підпис, який з них ви хочете використовувати для підписування?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Головний акаунт",
     "backupAccount": "RegularKey (резервний акаунт/ключ)\r\n",
     "verifyTangemCard": "Верифікуйте 'Tangem' карту",

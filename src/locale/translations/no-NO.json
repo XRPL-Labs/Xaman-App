@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Hvis du fortsetter, må du importere en XRP Ledger konto fra hemmelige numre. Du er eneste ansvarlig part for å generere disse. Vi anbefaler deg å gjøre dette når du er frakoblet Internet (feks. med Dice). Etter at du har generert nummerene må du lagre disse (skrevet ned på noe fysisk).\r\nFORTSETT BARE HVIS DU VET HVA DU HOLDER PÅ MED!",
     "tangemCardPasscodeSetWarning": "Selv om du legger til et passord på kortet ditt, forbedrer du sikkerheten til midlene dine i tilfelle et tapt (og funnet) kort, er det viktig å innse at midlene dine vil være UTILGJENGELIGE og kan IKKE gjenopprettes (av noen) hvis du ikke gjør det husk passordet ditt.\r\n\r\nEr du virkelig sikker på at du ønsker å legge til et passord til kortet ditt?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Det er to kontoer som kan signere, hvilken ønsker du å benytte.",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Hovedkonto",
     "backupAccount": "Standardnøkkel (backup-konto)",
     "verifyTangemCard": "Verify Tangem card",

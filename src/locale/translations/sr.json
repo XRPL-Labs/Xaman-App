@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "Ако наставите, увешћете XRP Ledger налог из тајних лозинки. Ви сте једина одговорна страна за креирање лозинке. Препоручујемо вам да користите офлајн метод (нпр. Коцкицама) да би сте креирали лозинку. Након што сте креирали лозинку морате је сачувати (нпр. утиснути у метал, написати). НАСТАВИТЕ САМО АКО ЗНАТЕ ШТА РАДИТЕ.\r\n",
     "tangemCardPasscodeSetWarning": "Приликом додавање шифре на вашу картицу побољшава сигурност ваших средстава у случају изгубљене (и пронађене) картице, важно је схватити да ће ваша средства бити НЕПРИСТУПНА и НЕ МОЖУ * БИТИ ВРАЋЕНА (ако их нико не добије) не памтите своју лозинку.\r\n\r\nДа ли сте заиста сигурни да желите да додате лозинку на картицу?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "Постоје два рачуна који могу да се потпишу, који желите да користите да потпишете?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "Главни налог",
     "backupAccount": "Регуларни кључ (резервни налог)",
     "verifyTangemCard": "Потврди картицу Тангем",

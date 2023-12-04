@@ -906,7 +906,7 @@
     "importSecretWithoutChecksumWarning": "계속하면, 비밀 키에서 XRP 원장 계정을 가져옵니다. 비밀 키는 반드시  **당신에 의해서**  오프라인 방법 (예: 오프라인) 을 사용하여 생성되어야 합니다. (예. 다이스). 당신은 생성된 비밀 키를 (예: 금속에 새겨 기록, 손으로 써서 기록) 저장해야 합니다.\r\n당신이 이 과정을 제대로 할 수 있는 경우에만 계속하십시오.",
     "tangemCardPasscodeSetWarning": "While adding a passcode to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your passcode.\r\n\r\nAre you really sure you want to add a passcode to your card?",
     "tangemCardAccessCodeSetWarning": "While adding a access code to your card improves the safety of your funds in case of a lost (and found) card, it is important to realize that your funds will be INACCESSIBLE and CAN *NOT* BE RECOVERED (by anyone) if you don't remember your access code.\r\n\r\nAre you really sure you want to add a access code to your card?",
-    "thereAreTwoAccountsEligibleToSign": "서명할 수 있는 계정은 두 개입니다. 서명하기 위해 사용하려는 계정은 무엇입니까?",
+    "thereAreAccountsEligibleToSign": "There are %{signersCount} accounts eligible to sign. Which one do you want to sign with?",
     "mainAccount": "메인 계정",
     "backupAccount": "일반 키 (백업 계정)",
     "verifyTangemCard": "Verify Tangem card",
