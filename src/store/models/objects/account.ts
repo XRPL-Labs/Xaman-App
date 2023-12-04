@@ -122,7 +122,6 @@ class Account extends Realm.Object<Account> {
      * @private
      * @returns {AccountDetails} The details of the account for the selected network.
      */
-
     private getDetails(): AccountDetails {
         const network = CoreRepository.getSelectedNetwork();
         return this.details.find((d) => d.network?.id === network.id);
