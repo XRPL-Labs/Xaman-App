@@ -204,6 +204,12 @@ class VaultModal extends Component<Props, State> {
     };
 
     onSignError = (method: AuthMethods, error: Error) => {
+        // ignore showing error when auth tangem and user just cancels dialog
+        if (method === AuthMethods.TANGEM && error?.message === 'The user cancelled the operation') {
+            this.dismiss();
+            return;
+        }
+
         // log
         LoggerService.recordError(`Unexpected error in sign process [${method}]`, error);
         // show alert
