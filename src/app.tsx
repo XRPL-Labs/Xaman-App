@@ -197,6 +197,7 @@ class Application {
                         reject(e);
                     });
             } catch (e) {
+                reject(e);
                 this.logger.error('initializeServices Error:', e);
             }
         });
