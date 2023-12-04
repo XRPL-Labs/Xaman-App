@@ -3,15 +3,18 @@
  */
 import React, { PureComponent } from 'react';
 import { Animated, InteractionManager, ViewStyle } from 'react-native';
+import { GestureResponderEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 // style
 import styles from './styles';
+
 /* types ==================================================================== */
 interface Props extends React.PropsWithChildren {
-    height: number;
     testID?: string;
+    height?: number;
     containerStyle?: ViewStyle | ViewStyle[];
     onDismiss?: () => void;
+    onStartShouldSetResponder?: ((event: GestureResponderEvent) => boolean) | undefined;
 }
 
 interface State {}
@@ -25,7 +28,7 @@ class AnimatedDialog extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.animatedHeight = new Animated.Value(props.height);
+        this.animatedHeight = new Animated.Value(props.height ?? 0);
         this.animatedColor = new Animated.Value(0);
         this.animatedOpacity = new Animated.Value(1);
     }
@@ -81,7 +84,7 @@ class AnimatedDialog extends PureComponent<Props, State> {
     };
 
     render() {
-        const { children, containerStyle } = this.props;
+        const { children, containerStyle, onStartShouldSetResponder, height } = this.props;
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -89,12 +92,15 @@ class AnimatedDialog extends PureComponent<Props, State> {
         });
 
         return (
-            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
+            <Animated.View
+                onStartShouldSetResponder={onStartShouldSetResponder}
+                style={[styles.container, { backgroundColor: interpolateColor }]}
+            >
                 <Animated.View
                     style={[
                         styles.visibleContent,
                         containerStyle,
-                        { opacity: this.animatedOpacity, height: this.animatedHeight },
+                        { opacity: this.animatedOpacity, ...(height && { height: this.animatedHeight }) },
                     ]}
                 >
                     {children}
