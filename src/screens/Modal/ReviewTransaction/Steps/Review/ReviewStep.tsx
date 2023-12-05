@@ -10,7 +10,7 @@ import { StyleService } from '@services';
 
 // components
 import { Avatar, KeyboardAwareScrollView, SwipeButton } from '@components/General';
-import { AccountPicker } from '@components/Modules';
+import { AccountElement, AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -31,6 +31,7 @@ import * as PseudoTemplates from './Templates/pseudo';
 import { StepsContext } from '../../Context';
 
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -77,6 +78,14 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
+    getHeaderTitle = () => {
+        const { transaction } = this.context;
+
+        return transaction.Type === PseudoTransactionTypes.SignIn
+            ? Localize.t('global.signIn')
+            : Localize.t('global.reviewTransaction');
+    };
+
     renderDetails = () => {
         const { payload, transaction, source, setLoading, setReady } = this.context;
 
@@ -117,11 +126,19 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const { accounts } = this.context;
+        const {
+            accounts,
+            payload,
+            transaction,
+            source,
+            isReady,
+            isLoading,
+            setSource,
+            onAccept,
+            onClose,
+            getTransactionLabel,
+        } = this.context;
         const { canScroll } = this.state;
-
-        const { payload, transaction, source, isReady, isLoading, setSource, onAccept, onClose, getTransactionLabel } =
-            this.context;
 
         // waiting for accounts to be initiated
         if (typeof accounts === 'undefined' || !source) {
@@ -136,14 +153,7 @@ class ReviewStep extends Component<Props, State> {
                 style={styles.container}
             >
                 {/* header */}
-                <ReviewHeader
-                    title={
-                        transaction.Type === PseudoTransactionTypes.SignIn
-                            ? Localize.t('global.signIn')
-                            : Localize.t('global.reviewTransaction')
-                    }
-                    onClose={onClose}
-                />
+                <ReviewHeader title={this.getHeaderTitle()} onClose={onClose} />
 
                 <KeyboardAwareScrollView
                     testID="review-content-container"
@@ -189,9 +199,23 @@ class ReviewStep extends Component<Props, State> {
                             <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
                         </View>
 
+                        {/* in multi-sign transactions and in some cases in Import transaction */}
+                        {/* the Account can be different than the signing account */}
+
+                        {transaction.Account && source.address !== transaction.Account.address && (
+                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingTopSml]}>
+                                <View style={styles.rowLabel}>
+                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                        {Localize.t('global.signFor')}
+                                    </Text>
+                                </View>
+                                <AccountElement address={transaction.Account.address} />
+                            </View>
+                        )}
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
                             {this.renderDetails()}
                         </View>
+
                         <View style={[styles.acceptButtonContainer, AppStyles.paddingHorizontalSml]}>
                             <SwipeButton
                                 testID="accept-button"
