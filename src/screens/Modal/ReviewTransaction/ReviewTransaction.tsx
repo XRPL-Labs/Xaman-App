@@ -3,16 +3,19 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
+import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { PushNotificationsService, NetworkService, StyleService } from '@services';
+import { NetworkService, PushNotificationsService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import ValidationFactory from '@common/libs/ledger/factory/validation';
+
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 
 import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
@@ -21,17 +24,13 @@ import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountInfo } from '@common/helpers/resolver';
 
-import { Button, Icon, InfoMessage, Spacer } from '@components/General';
-
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
+import { PreflightStep, ResultStep, ReviewStep, SubmittingStep } from './Steps';
+import ErrorView from './Shared/ErrorView';
 
-import { PreflightStep, ReviewStep, SubmittingStep, ResultStep } from './Steps';
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
-import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
-import ValidationFactory from '@common/libs/ledger/factory/validation';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -557,6 +556,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     setTransaction = (tx: Transactions | PseudoTransactions) => {
         const { transaction } = this.state;
 
+        // we shouldn't override already set transaction
         if (transaction) {
             throw new Error('Transaction is already set and cannot be overwrite!');
         }
@@ -566,19 +566,29 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
+    /*
+    Set available accounts for signing
+    */
     setAccounts = (accounts: AccountModel[]) => {
         this.setState({
             accounts,
         });
     };
 
+    /*
+    Set selected account to the transaction
+    */
     setSource = (account: AccountModel) => {
         const { payload } = this.props;
         const { transaction } = this.state;
 
-        // set the source account to transaction
-        // ignore if the payload is multiSign
-        if (!payload.isMultiSign()) {
+        // assign the source account address to transaction Account field
+        // ignore if the payload is multiSign || Import transaction
+
+        // NOTE: in some specific case the Import transaction can only be signed with regularKey account
+        // As the Master account is imported as readonly and transaction can only be signed by regular key
+        // we should not override the Account field, we should show the actual account
+        if (!payload.isMultiSign() && transaction.Type !== TransactionTypes.Import) {
             transaction.Account = { address: account.address };
         }
 
@@ -687,13 +697,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.setState({
                 currentStep: Steps.Result,
             });
-        } catch (e) {
+        } catch (error: any) {
             if (this.mounted) {
                 this.setState({
                     currentStep: Steps.Review,
                 });
-                if (typeof e.toString === 'function') {
-                    Alert.alert(Localize.t('global.error'), e.toString());
+                if (typeof error?.message === 'string') {
+                    Alert.alert(Localize.t('global.error'), error.message);
                 } else {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                 }
@@ -726,38 +736,14 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    renderError = () => {
-        const { errorMessage } = this.state;
-
-        return (
-            <View
-                testID="review-error-view"
-                style={[
-                    AppStyles.container,
-                    AppStyles.paddingSml,
-                    { backgroundColor: StyleService.value('$lightRed') },
-                ]}
-            >
-                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$red') }} size={70} />
-                <Text style={[AppStyles.h5, { color: StyleService.value('$red') }]}>{Localize.t('global.error')}</Text>
-                <Spacer size={20} />
-                <InfoMessage
-                    type="error"
-                    labelStyle={[AppStyles.p, AppStyles.bold]}
-                    label={errorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
-                />
-                <Spacer size={40} />
-                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onDecline} />
-            </View>
-        );
-    };
-
     render() {
-        const { currentStep, hasError } = this.state;
+        const { currentStep, hasError, errorMessage } = this.state;
 
         // don't render if any error happened
-        // this can happen if there is a missing field in the payload
-        if (hasError) return this.renderError();
+        // this can happen if there is a missing field in the payload or any unexpected error
+        if (hasError) {
+            return <ErrorView onBackPress={this.onDecline} errorMessage={errorMessage} />;
+        }
 
         let Step = null;
 

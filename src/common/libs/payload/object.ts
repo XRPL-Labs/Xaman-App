@@ -299,6 +299,9 @@ export class Payload {
         return isUndefined(get(request_json, 'TransactionType', undefined));
     };
 
+    /**
+     * Return true if path finding is enabled in the payload
+     */
     isPathFinding = (): boolean => {
         return !!this.meta.pathfinding;
     };
