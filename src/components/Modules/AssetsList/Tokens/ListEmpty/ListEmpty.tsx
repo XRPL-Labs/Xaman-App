@@ -18,7 +18,7 @@ class ListEmpty extends PureComponent {
     openTrustLineDescription = () => {
         Navigator.showModal(AppScreens.Modal.Help, {
             title: Localize.t('home.whatAreOtherAssets', { nativeAsset: NetworkService.getNativeAsset() }),
-            content: Localize.t('home.otherAssetsDesc'),
+            content: Localize.t('home.otherAssetsDesc', { nativeAsset: NetworkService.getNativeAsset() }),
         });
     };
 
