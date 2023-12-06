@@ -53,14 +53,13 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    tx?: Transactions | LedgerObjects;
+    tx: Transactions | LedgerObjects;
     hash?: string;
     account: AccountModel;
     asModal?: boolean;
 }
 
 export interface State {
-    tx: Transactions | LedgerObjects;
     spendableAccounts: AccountModel[];
     recipient: { address: string; tag?: number };
     incomingTx: boolean;
@@ -87,7 +86,6 @@ class TransactionDetailsView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            tx: props.tx,
             recipient: undefined,
             spendableAccounts: AccountRepository.getSpendableAccounts(),
             incomingTx: props.tx?.Account && props.tx?.Account?.address !== props.account.address,
@@ -125,8 +123,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     setDetails = async () => {
-        const { account } = this.props;
-        const { incomingTx, tx } = this.state;
+        const { tx, account } = this.props;
+        const { incomingTx } = this.state;
 
         const explainer = ExplainerFactory.fromType(tx.Type);
 
@@ -159,7 +157,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     getTransactionLink = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
         return GetTransactionLink(tx.CTID);
     };
 
@@ -183,7 +181,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     showMenu = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         // transaction still loading
         if (!tx) {
@@ -225,8 +223,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     onActionButtonPress = async (type: string) => {
-        const { tx, incomingTx } = this.state;
-        const { account, asModal } = this.props;
+        const { tx, account, asModal } = this.props;
+        const { incomingTx } = this.state;
 
         // no action button show be available when opening details as modal
         if (asModal) {
@@ -415,7 +413,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderStatus = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         // ignore if it's ledger object
         if (!(tx instanceof BaseTransaction)) {
@@ -424,8 +422,8 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.detailContainer}>
-                <Text style={[styles.labelText]}>{Localize.t('global.status')}</Text>
-                <Text style={[styles.contentText]}>
+                <Text style={styles.labelText}>{Localize.t('global.status')}</Text>
+                <Text style={styles.contentText}>
                     {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
                     <Text style={AppStyles.monoBold}> {tx.LedgerIndex} </Text>
                     {Localize.t('events.onDate')}
@@ -449,8 +447,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderMemos = () => {
-        const { asModal } = this.props;
-        const { tx, showMemo, scamAlert } = this.state;
+        const { tx, asModal } = this.props;
+        const { showMemo, scamAlert } = this.state;
 
         // if ledger object or no Memo return null
         if (!(tx instanceof BaseTransaction) || !tx.Memos) return null;
@@ -506,8 +504,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderReserveChange = () => {
-        const { account } = this.props;
-        const { tx } = this.state;
+        const { tx, account } = this.props;
 
         let changes;
 
@@ -566,7 +563,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderFee = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         // ignore if it's ledger object
         if (!(tx instanceof BaseTransaction)) {
@@ -587,7 +584,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderInvoiceId = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         // InvoiceID only exist in Payment and CheckCreate transactions and Check objects
         if (
@@ -612,7 +609,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderFlags = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         if (!tx.Flags) {
             return null;
@@ -635,20 +632,20 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.detailContainer}>
-                <Text style={[styles.labelText]}>{Localize.t('global.flags')}</Text>
+                <Text style={styles.labelText}>{Localize.t('global.flags')}</Text>
                 {flags}
             </View>
         );
     };
 
     renderTransactionId = () => {
-        const { tx } = this.state;
+        const { tx } = this.props;
 
         if (tx instanceof BaseLedgerObject) {
             return (
                 <View style={styles.detailContainer}>
-                    <Text style={[styles.labelText]}>{Localize.t('events.ledgerIndex')}</Text>
-                    <Text selectable style={[styles.hashText]}>
+                    <Text style={styles.labelText}>{Localize.t('events.ledgerIndex')}</Text>
+                    <Text selectable style={styles.hashText}>
                         {tx.Index}
                     </Text>
                 </View>
@@ -657,8 +654,8 @@ class TransactionDetailsView extends Component<Props, State> {
 
         return (
             <View style={styles.detailContainer}>
-                <Text style={[styles.labelText]}>{Localize.t('events.transactionId')}</Text>
-                <Text selectable style={[styles.hashText]}>
+                <Text style={styles.labelText}>{Localize.t('events.transactionId')}</Text>
+                <Text selectable style={styles.hashText}>
                     {tx.Hash}
                 </Text>
             </View>
@@ -666,7 +663,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { tx, label } = this.state;
+        const { tx } = this.props;
+        const { label } = this.state;
 
         let badgeType: any;
 
@@ -700,14 +698,14 @@ class TransactionDetailsView extends Component<Props, State> {
                 <Spacer />
                 <Badge size="medium" type={badgeType} />
                 <Spacer />
-                {date && <Text style={[styles.dateText]}>{date}</Text>}
+                {date && <Text style={styles.dateText}>{date}</Text>}
             </View>
         );
     };
 
     renderAmount = () => {
-        const { account } = this.props;
-        const { tx, incomingTx } = this.state;
+        const { tx, account } = this.props;
+        const { incomingTx } = this.state;
 
         let shouldShowAmount = true;
 
@@ -922,6 +920,8 @@ class TransactionDetailsView extends Component<Props, State> {
             }
 
             // all new transactions types
+            case TransactionTypes.Import:
+            case TransactionTypes.SetHook:
             case TransactionTypes.ClaimReward:
             case TransactionTypes.GenesisMint:
             case TransactionTypes.EnableAmendment: {
@@ -969,7 +969,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         <AmountText
                             value={takerGets.value}
                             currency={takerGets.currency}
-                            style={[styles.amountTextSmall]}
+                            style={styles.amountTextSmall}
                         />
                     </View>
 
@@ -1003,7 +1003,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 <AmountText
                                     value={tx.BalanceChange().sent.value}
                                     currency={tx.BalanceChange().sent.currency}
-                                    style={[styles.amountTextSmall]}
+                                    style={styles.amountTextSmall}
                                 />
                             </View>
 
@@ -1037,7 +1037,7 @@ class TransactionDetailsView extends Component<Props, State> {
                                 <AmountText
                                     value={tx.BalanceChange().sent.value}
                                     currency={tx.BalanceChange().sent.currency}
-                                    style={[styles.amountTextSmall]}
+                                    style={styles.amountTextSmall}
                                 />
                             </View>
 
@@ -1143,8 +1143,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderActionButtons = () => {
-        const { account, asModal } = this.props;
-        const { tx, spendableAccounts } = this.state;
+        const { tx, account, asModal } = this.props;
+        const { spendableAccounts } = this.state;
 
         // just return as the account is not a spendable account or details presented as modal
         if (!find(spendableAccounts, { address: account.address }) || asModal) {
@@ -1275,8 +1275,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderWarnings = () => {
-        const { account } = this.props;
-        const { tx } = this.state;
+        const { tx, account } = this.props;
 
         const warnings = [] as Array<string>;
 
@@ -1301,8 +1300,8 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     renderSourceDestination = () => {
-        const { account } = this.props;
-        const { tx, recipient, incomingTx } = this.state;
+        const { tx, account } = this.props;
+        const { recipient, incomingTx } = this.state;
 
         let from = {
             // @ts-ignore
