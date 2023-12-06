@@ -5,7 +5,7 @@ import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapVa
 import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
-import { BalanceChangeType, OfferStatus } from './types';
+import { BalanceChangeType, OfferStatus, OwnerCountChangeType } from './types';
 
 /* Class ==================================================================== */
 class Meta {
@@ -238,7 +238,7 @@ class Meta {
         return this.groupByAddress(compact(flatten(values)));
     };
 
-    parseOwnerCountChanges = () => {
+    parseOwnerCountChanges = (): OwnerCountChangeType[] => {
         const values = this.nodes.map((node) => {
             if (node.entryType === 'AccountRoot') {
                 return this.parseOwnerCountQuantity(node, this.computeOwnerCountChange);

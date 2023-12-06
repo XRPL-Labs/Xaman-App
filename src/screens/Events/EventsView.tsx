@@ -331,7 +331,7 @@ class EventsView extends Component<Props, State> {
                     }
 
                     let parsedList = filter(flatMap(txResp, TransactionFactory.fromLedger), (t) => {
-                        return t.TransactionResult.success;
+                        return t?.TransactionResult?.success;
                     });
 
                     if (loadMore) {

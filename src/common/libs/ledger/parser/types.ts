@@ -14,6 +14,12 @@ export interface BalanceChangeType extends AmountType {
     action: 'DEC' | 'INC';
 }
 
+export interface OwnerCountChangeType {
+    address: string;
+    value: number;
+    action: string;
+}
+
 /**
  * Ledger and transaction types
  */

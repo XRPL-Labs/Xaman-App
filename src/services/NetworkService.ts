@@ -49,7 +49,6 @@ class NetworkService extends EventEmitter {
     private networkReserve: any;
     private lastNetworkErrorId: number;
 
-    private ledgerListener: any;
     private logger: any;
 
     onEvent: (event: string, fn: any) => any;

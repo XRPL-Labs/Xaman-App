@@ -38,6 +38,7 @@ const ExplainerFactory = {
             case type in PseudoTransactionTypes:
                 explainer = get(PseudoTransactions, `${type}Info`, undefined);
                 break;
+            // Ledger object
             case type in LedgerObjectTypes:
                 explainer = get(LedgerObjects, `${type}Info`, undefined);
                 break;
