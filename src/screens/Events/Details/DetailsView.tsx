@@ -43,7 +43,7 @@ import {
     Spacer,
     TouchableDebounce,
 } from '@components/General';
-import { AccountElement, NFTokenElement } from '@components/Modules';
+import { AccountElement, HooksExplainer, NFTokenElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -606,6 +606,30 @@ class TransactionDetailsView extends Component<Props, State> {
                 </Text>
             </View>
         );
+    };
+
+    renderHookDetails = () => {
+        const { tx, account } = this.props;
+
+        if (tx instanceof BaseLedgerObject) {
+            return null;
+        }
+
+        if (
+            tx.Type === TransactionTypes.SetHook ||
+            tx.EmitDetails ||
+            tx.MetaData?.HookExecutions ||
+            tx.MetaData?.HookEmissions
+        ) {
+            return (
+                <View style={styles.detailContainer}>
+                    <Text style={styles.labelText}>{Localize.t('global.hooks')}</Text>
+                    <HooksExplainer transaction={tx} account={account} />
+                </View>
+            );
+        }
+
+        return null;
     };
 
     renderFlags = () => {
@@ -1539,6 +1563,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         {this.renderDescription()}
                         {this.renderFlags()}
                         {this.renderInvoiceId()}
+                        {this.renderHookDetails()}
                         {this.renderFee()}
                         {this.renderStatus()}
                     </View>

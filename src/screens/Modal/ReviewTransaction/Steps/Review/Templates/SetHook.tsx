@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import { Payload } from '@common/libs/payload';
 import { SetHook } from '@common/libs/ledger/transactions';
+
+import { AccountModel } from '@store/models';
+
+import { HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -25,6 +30,8 @@ export type HookData = {
 };
 
 export interface Props extends Omit<TemplateProps, 'transaction'> {
+    source: AccountModel;
+    payload: Payload;
     transaction: SetHook;
 }
 
@@ -37,16 +44,8 @@ class SetHookTemplate extends Component<Props, State> {
         this.state = {};
     }
 
-    renderHook = (hook: HookData, index: number) => {
-        return (
-            <Text key={`${index}`} style={styles.value}>
-                {JSON.stringify(hook, null, 2)}
-            </Text>
-        );
-    };
-
     render() {
-        const { transaction } = this.props;
+        const { source, payload, transaction } = this.props;
 
         return (
             <>
@@ -55,7 +54,9 @@ class SetHookTemplate extends Component<Props, State> {
                         {Localize.t('global.hooks')}
                     </Text>
                 </View>
-                <View style={styles.contentBox}>{transaction.Hooks.map(this.renderHook)}</View>
+                <View style={styles.contentBox}>
+                    <HooksExplainer account={source} payload={payload} transaction={transaction} />
+                </View>
             </>
         );
     }

@@ -164,6 +164,16 @@ const styles = StyleService.create({
         marginTop: 12,
         marginBottom: -12,
     },
+    hookParamValue: {
+        fontFamily: AppFonts.base.familyMono,
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
+    },
+    hookParamText: {
+        backgroundColor: '$tint',
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
 });
 
 export default styles;
