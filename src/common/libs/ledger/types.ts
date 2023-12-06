@@ -34,6 +34,8 @@ export enum TransactionTypes {
     URITokenBuy = 'URITokenBuy',
     URITokenCreateSellOffer = 'URITokenCreateSellOffer',
     URITokenCancelSellOffer = 'URITokenCancelSellOffer',
+    GenesisMint = 'GenesisMint',
+    EnableAmendment = 'EnableAmendment',
 }
 
 export enum PseudoTransactionTypes {

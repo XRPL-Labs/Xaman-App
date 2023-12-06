@@ -32,6 +32,8 @@ import {
     URITokenBuy,
     URITokenCreateSellOffer,
     URITokenCancelSellOffer,
+    GenesisMint,
+    EnableAmendment,
 } from '.';
 
 import { SignIn, PaymentChannelAuthorize } from './pseudo';
@@ -72,7 +74,9 @@ export type Transactions =
     | URITokenBurn
     | URITokenBuy
     | URITokenCreateSellOffer
-    | URITokenCancelSellOffer;
+    | URITokenCancelSellOffer
+    | GenesisMint
+    | EnableAmendment;
 
 /**
  * Pseudo Transactions types

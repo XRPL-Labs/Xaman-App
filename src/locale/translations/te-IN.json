@@ -501,6 +501,7 @@
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
     "genesisMint": "Genesis Mint",
+    "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "NFT ఆఫర్‌ని రద్దు చేయండి",
     "acceptNFTOffer": "NFT ఆఫర్‌ని అంగీకరించండి",
     "setHooks": "Set Hooks",

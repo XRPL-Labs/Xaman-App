@@ -43,7 +43,7 @@ import {
     Spacer,
     TouchableDebounce,
 } from '@components/General';
-import { NFTokenElement, AccountElement } from '@components/Modules';
+import { AccountElement, NFTokenElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -921,6 +921,25 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             }
 
+            // all new transactions types
+            case TransactionTypes.ClaimReward:
+            case TransactionTypes.GenesisMint:
+            case TransactionTypes.EnableAmendment: {
+                const balanceChanges = tx.BalanceChange(account.address);
+                if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                    const incoming = !!balanceChanges.received;
+                    const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                    Object.assign(props, {
+                        icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
+                        color: incoming ? styles.incomingColor : styles.outgoingColor,
+                        prefix: incoming ? '' : '-',
+                        value: amount.value,
+                        currency: amount.currency,
+                    });
+                }
+                break;
+            }
             case LedgerObjectTypes.PayChannel:
                 break;
             default:

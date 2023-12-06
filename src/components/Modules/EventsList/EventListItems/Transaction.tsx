@@ -445,6 +445,38 @@ class TransactionItem extends Component<Props, State> {
             }
         }
 
+        if (item.Type === TransactionTypes.GenesisMint) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && balanceChanges.received) {
+                return (
+                    <AmountText
+                        value={balanceChanges.received.value}
+                        currency={balanceChanges.received.currency}
+                        style={[styles.amount, styles.incomingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.EnableAmendment) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && balanceChanges.received) {
+                return (
+                    <AmountText
+                        value={balanceChanges.received.value}
+                        currency={balanceChanges.received.currency}
+                        style={[styles.amount, styles.incomingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
         return null;
     };
 

@@ -501,6 +501,7 @@
     "createURITokenSellOffer": "URI Tokenの売却オファーの作成",
     "cancelURITokenSellOffer": "URI Tokenの売却オファーのキャンセル",
     "genesisMint": "Genesis Mint",
+    "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "NFTオファーのキャンセル",
     "acceptNFTOffer": "NFTオファーの受け入れ",
     "setHooks": "Hookの設定",

@@ -501,6 +501,7 @@
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
     "genesisMint": "Genesis Mint",
+    "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "Kanselahin ang alok ng NFT",
     "acceptNFTOffer": "Tanggapin ang alok ng NFT",
     "setHooks": "Set Hooks",
