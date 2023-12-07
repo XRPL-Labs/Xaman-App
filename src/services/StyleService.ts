@@ -111,7 +111,11 @@ class StyleService {
         return this.themeName !== 'light';
     };
 
-    select = (spec: { light?: string; dark?: string; default?: string }): string => {
+    select = (spec: {
+        light?: string | number;
+        dark?: string | number;
+        default?: string | number;
+    }): string | number => {
         return 'light' in spec && !this.isDarkMode()
             ? spec.light
             : 'dark' in spec && this.isDarkMode()

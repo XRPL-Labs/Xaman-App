@@ -19,14 +19,28 @@ const styles = StyleService.create({
         width: '100%',
         alignItems: 'center',
     },
-
     actionDescription: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
         color: '$contrast',
     },
     infoIcon: {
-        tintColor: '$red',
+        tintColor: '$orange',
+    },
+    messageContainer: {
+        backgroundColor: StyleService.select({
+            light: '$lightGrey',
+            dark: '$black',
+        }),
+        borderWidth: StyleService.select({ light: 0, dark: 1 }),
+        borderColor: '$tint',
+    },
+    backgroundShapes: {
+        resizeMode: 'contain',
+        opacity: StyleService.select({
+            light: 0.4,
+            dark: 0.2,
+        }),
     },
 });
 

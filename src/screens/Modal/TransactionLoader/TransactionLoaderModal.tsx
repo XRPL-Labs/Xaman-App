@@ -222,6 +222,7 @@ class TransactionLoaderModal extends Component<Props, State> {
                     actionButtonIcon="IconSwitchAccount"
                     actionButtonIconSize={17}
                     onActionButtonPress={this.onSwitchNetworkPress}
+                    containerStyle={styles.messageContainer}
                 />
             </>
         );
@@ -253,6 +254,7 @@ class TransactionLoaderModal extends Component<Props, State> {
                     actionButtonLabel={Localize.t('global.tryAgain')}
                     actionButtonIcon="IconRefresh"
                     onActionButtonPress={this.loadTransaction}
+                    containerStyle={styles.messageContainer}
                 />
             </>
         );
@@ -279,7 +281,7 @@ class TransactionLoaderModal extends Component<Props, State> {
         return (
             <ImageBackground
                 source={StyleService.getImage('BackgroundShapes')}
-                imageStyle={AppStyles.BackgroundShapes}
+                imageStyle={styles.backgroundShapes}
                 style={styles.container}
             >
                 <View style={styles.contentContainer}>{this.renderContent()}</View>

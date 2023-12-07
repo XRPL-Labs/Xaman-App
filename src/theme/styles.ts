@@ -495,7 +495,6 @@ export default StyleService.create({
     BackgroundShapes: {
         resizeMode: 'contain',
         opacity: 0.4,
-        tintColor: StyleService.select({ light: '$black', dark: '$tint' }),
     },
     BackgroundShapesWH: {
         width: '100%',

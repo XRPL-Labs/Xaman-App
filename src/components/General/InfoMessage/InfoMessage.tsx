@@ -51,22 +51,28 @@ class InfoMessage extends PureComponent<Props> {
     getContainerStyle = () => {
         const { type, containerStyle } = this.props;
 
-        if (containerStyle) return containerStyle;
+        let baseStyle = null;
 
         switch (type) {
             case 'info':
-                return styles.info;
+                baseStyle = styles.info;
+                break;
             case 'warning':
-                return styles.warning;
+                baseStyle = styles.warning;
+                break;
             case 'error':
-                return styles.error;
+                baseStyle = styles.error;
+                break;
             case 'success':
-                return styles.success;
+                baseStyle = styles.success;
+                break;
             case 'neutral':
-                return styles.neutral;
+                baseStyle = styles.neutral;
+                break;
             default:
-                return null;
+                return containerStyle;
         }
+        return { ...baseStyle, ...containerStyle };
     };
 
     renderIcon = () => {
