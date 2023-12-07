@@ -102,7 +102,12 @@ class HooksExplainer extends Component<Props, State> {
         const { containerHeight } = this.state;
 
         return (
-            <WebViewBrowser source={this.getSource()} onMessage={this.onMessage} style={{ height: containerHeight }} />
+            <WebViewBrowser
+                source={this.getSource()}
+                onMessage={this.onMessage}
+                style={{ height: containerHeight }}
+                errorMessage={Localize.t('events.unableToLoadExplainer')}
+            />
         );
     }
 }

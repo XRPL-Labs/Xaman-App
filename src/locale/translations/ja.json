@@ -615,7 +615,8 @@
     "thisOfferCanOnlyBeAcceptedByThirdParty": "このオファーには、第三者(ブローカーなど)が送信先として設定されています。この第三者のアカウントのみがオファーを受け入れることができます。",
     "myBalanceAndReserve": "残高と準備金を確認",
     "transactionDetailsDifferentNetworkError": "This transaction is not valid on the network you are connected with.\n\nPlease switch to %{network} and try again.",
-    "fetchingTransactionFromNetwork": "Fetching transaction from network"
+    "fetchingTransactionFromNetwork": "Fetching transaction from network",
+    "unableToLoadExplainer": "Unable to load the explainer"
   },
   "xapp": {
     "popular": "人気",

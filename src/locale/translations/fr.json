@@ -615,7 +615,8 @@
     "thisOfferCanOnlyBeAcceptedByThirdParty": "This offer has a third party (e.g. a Broker) set as a destination. Only this account can accept the offer.",
     "myBalanceAndReserve": "My balance & reserve",
     "transactionDetailsDifferentNetworkError": "This transaction is not valid on the network you are connected with.\n\nPlease switch to %{network} and try again.",
-    "fetchingTransactionFromNetwork": "Fetching transaction from network"
+    "fetchingTransactionFromNetwork": "Fetching transaction from network",
+    "unableToLoadExplainer": "Unable to load the explainer"
   },
   "xapp": {
     "popular": "Popular",
