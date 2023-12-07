@@ -11,13 +11,16 @@ const URITokenBurnInfo = {
     },
 
     getDescription: (tx: URITokenBurn): string => {
-        // TODO: add more description
-        return `This is an ${tx.Type} transaction`;
+        const { URITokenID } = tx;
+
+        return Localize.t('events.uriTokenBurnExplain', { tokenID: URITokenID });
     },
 
     getRecipient: (tx: URITokenBurn, account: AccountModel): { address: string; tag?: number } => {
-        if (tx.Account.address !== account.address) {
-            return tx.Account;
+        const { Account } = tx;
+
+        if (Account.address !== account.address) {
+            return Account;
         }
         return undefined;
     },

@@ -11,8 +11,12 @@ const URITokenCancelSellOfferInfo = {
     },
 
     getDescription: (tx: URITokenCancelSellOffer): string => {
-        // TODO: add more description
-        return `This is an ${tx.Type} transaction`;
+        const { Account, URITokenID } = tx;
+
+        return Localize.t('events.theTransactionWillCancelURITokenOffer', {
+            address: Account.address,
+            tokenId: URITokenID,
+        });
     },
 
     getRecipient: (tx: URITokenCancelSellOffer, account: AccountModel): { address: string; tag?: number } => {

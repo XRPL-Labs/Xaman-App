@@ -11,13 +11,21 @@ const URITokenBuyInfo = {
     },
 
     getDescription: (tx: URITokenBuy): string => {
-        // TODO: add more description
-        return `This is an ${tx.Type} transaction`;
+        const { Account, Amount, URITokenID } = tx;
+
+        return Localize.t('events.uriTokenBuyExplain', {
+            address: Account.address,
+            amount: Amount.value,
+            currency: Amount.currency,
+            tokenID: URITokenID,
+        });
     },
 
     getRecipient: (tx: URITokenBuy, account: AccountModel): { address: string; tag?: number } => {
-        if (tx.Account.address !== account.address) {
-            return tx.Account;
+        const { Account } = tx;
+
+        if (Account.address !== account.address) {
+            return Account;
         }
         return undefined;
     },

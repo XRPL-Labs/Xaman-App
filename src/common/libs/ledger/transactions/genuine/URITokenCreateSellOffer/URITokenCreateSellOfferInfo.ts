@@ -1,3 +1,4 @@
+import { isUndefined } from 'lodash';
 import { AccountModel } from '@store/models';
 
 import Localize from '@locale';
@@ -11,8 +12,23 @@ const URITokenCreateSellOfferInfo = {
     },
 
     getDescription: (tx: URITokenCreateSellOffer): string => {
-        // TODO: add more description
-        return `This is an ${tx.Type} transaction`;
+        const { Account, URITokenID, Destination, Amount } = tx;
+
+        let content = Localize.t('events.uriTokenSellOfferExplain', {
+            address: Account.address,
+            uriToken: URITokenID,
+            value: Amount.value,
+            currency: Amount.currency,
+        });
+
+        if (!isUndefined(Destination)) {
+            content += '\n';
+            content += Localize.t('events.thisURITokenOfferMayOnlyBeAcceptedBy', {
+                address: Destination.address,
+            });
+        }
+
+        return content;
     },
 
     getRecipient: (tx: URITokenCreateSellOffer, account: AccountModel): { address: string; tag?: number } => {
