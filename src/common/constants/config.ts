@@ -10,6 +10,7 @@ export default {
     creditsURL: 'https://xumm.app/app/webviews/credits/',
     changeLogURL: 'https://xumm.app/app/webviews/update/en/?update=',
     explorerProxy: 'https://xumm.app/explorer',
+    hooksExplainerURL: 'https://xumm.app/app/webviews/hooks/',
 
     // persist storage config
     storage: {

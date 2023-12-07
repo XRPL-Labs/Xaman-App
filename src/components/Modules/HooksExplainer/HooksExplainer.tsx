@@ -2,6 +2,8 @@ import { get } from 'lodash';
 
 import React, { Component } from 'react';
 
+import { AppConfig } from '@common/constants';
+
 import { Payload } from '@common/libs/payload';
 
 import NetworkService from '@services/NetworkService';
@@ -15,7 +17,6 @@ import { AccountModel } from '@store/models';
 import Localize from '@locale';
 
 import { AppSizes } from '@theme';
-
 /* Types ==================================================================== */
 interface Props {
     account: AccountModel;
@@ -37,10 +38,8 @@ class HooksExplainer extends Component<Props, State> {
         };
     }
 
-    getURL = () => {
+    getSource = () => {
         const { account, payload, transaction } = this.props;
-
-        const baseURL = `https://xumm.app/app/webviews/hooks/${Localize.getCurrentLocale()}`;
 
         const params = {
             network: NetworkService.getNetwork().key,
@@ -52,11 +51,16 @@ class HooksExplainer extends Component<Props, State> {
             });
         }
 
+        // The size of tx_data by a sample transaction using different methods
+        // LOG  Hex.Encode     1792
+        // LOG  JSON.stringify 896
+        // LOG  codec.encode   646
+
         if (transaction) {
             Object.assign(params, {
                 tx_hash: transaction.Hash,
-                tx_data: transaction.Json,
-                tx_metadata: transaction.MetaData,
+                tx_data: JSON.stringify(transaction.Json),
+                tx_metadata: JSON.stringify(transaction.MetaData),
             });
         }
 
@@ -66,22 +70,13 @@ class HooksExplainer extends Component<Props, State> {
             });
         }
 
-        const urlParams: Array<string> = [];
-
-        Object.keys(params).forEach((k) => {
-            // @ts-ignore
-            const v = params[k];
-            if (!v) {
-                return;
-            }
-            urlParams.push(
-                typeof v === 'object'
-                    ? `${encodeURIComponent(k)}=${encodeURIComponent(JSON.stringify(v))}`
-                    : `${encodeURIComponent(k)}=${encodeURIComponent(v)}`,
-            );
-        });
-
-        return `${baseURL}?${urlParams.join('&')}`;
+        return {
+            uri: `${AppConfig.hooksExplainerURL}${Localize.getCurrentLocale()}`,
+            method: 'POST',
+            body: JSON.stringify(params),
+            'User-Agent': 'Xaman',
+            'Content-Type': 'application/json',
+        };
     };
 
     onMessage = (event: any) => {
@@ -98,8 +93,8 @@ class HooksExplainer extends Component<Props, State> {
                     containerHeight: layoutHeight,
                 });
             }
-        } catch (e) {
-            // something is not right
+        } catch {
+            // something is not right, just ignore ?
         }
     };
 
@@ -107,11 +102,7 @@ class HooksExplainer extends Component<Props, State> {
         const { containerHeight } = this.state;
 
         return (
-            <WebViewBrowser
-                source={{ uri: this.getURL() }}
-                onMessage={this.onMessage}
-                style={{ height: containerHeight }}
-            />
+            <WebViewBrowser source={this.getSource()} onMessage={this.onMessage} style={{ height: containerHeight }} />
         );
     }
 }
