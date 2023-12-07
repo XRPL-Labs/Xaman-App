@@ -1,6 +1,6 @@
 import has from 'lodash/has';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import BackendService, { RatesType } from '@services/BackendService';
 import NetworkService from '@services/NetworkService';
@@ -62,7 +62,7 @@ class NativeItem extends Component<Props, State> {
     }
 
     onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
-        const { fiatCurrency, showReservePanel } = this.state;
+        const { showFiatRate, fiatCurrency, showReservePanel } = this.state;
 
         // currency changed
         if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
@@ -80,6 +80,19 @@ class NativeItem extends Component<Props, State> {
                 fiatRate: undefined,
                 showReservePanel: coreSettings.showReservePanel,
             });
+        }
+
+        // default network changed
+        if (has(changes, 'network')) {
+            // clean up rate
+            this.setState({
+                fiatRate: undefined,
+            });
+
+            // if already show rate re-fetch the rate with new native asset
+            if (showFiatRate) {
+                InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+            }
         }
     };
 

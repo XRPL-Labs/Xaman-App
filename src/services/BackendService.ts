@@ -532,14 +532,20 @@ class BackendService {
      */
     getCurrencyRate = (currencyCode: string): Promise<RatesType> => {
         return new Promise((resolve, reject) => {
+            // get current network asset
+            const nativeAsset = NetworkService.getNativeAsset();
+
+            // get cache key
+            const cacheKey = `${currencyCode}-${nativeAsset}`;
+
             // check the cached version before requesting from backend
-            if (this.rates.has(currencyCode)) {
+            if (this.rates.has(cacheKey)) {
                 // calculate passed seconds from the latest sync
-                const passedSeconds = moment().diff(moment.unix(this.rates.get(currencyCode).lastSync), 'second');
+                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey).lastSync), 'second');
 
                 // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.rates.get(currencyCode));
+                    resolve(this.rates.get(cacheKey));
                     return;
                 }
             }
@@ -554,7 +560,7 @@ class BackendService {
                         symbol: get(response, '__meta.currency.symbol'),
                         lastSync: moment().unix(),
                     };
-                    this.rates.set(currencyCode, rate);
+                    this.rates.set(cacheKey, rate);
                     resolve(rate);
                 })
                 .catch(reject);
