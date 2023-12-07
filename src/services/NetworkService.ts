@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import { Platform } from 'react-native';
 
-import { XrplDefinitions } from 'xrpl-accountlib';
+import { XrplDefinitions, DefinitionsData } from 'xrpl-accountlib';
 import { DEFAULT_DEFINITIONS } from 'ripple-binary-codec/dist/enums';
 
 import { ServerInfoResponse, XrplClient } from 'xrpl-client';
@@ -246,7 +246,7 @@ class NetworkService extends EventEmitter {
      */
     getNetworkDefinitions = (): XrplDefinitions => {
         if (this.network && this.network.definitions) {
-            return new XrplDefinitions(this.network.definitions);
+            return new XrplDefinitions(<DefinitionsData>this.network.definitions);
         }
 
         return DEFAULT_DEFINITIONS;
