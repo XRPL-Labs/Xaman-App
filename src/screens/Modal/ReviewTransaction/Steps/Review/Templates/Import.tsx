@@ -5,12 +5,15 @@ import Localize from '@locale';
 
 import { Import } from '@common/libs/ledger/transactions';
 
+import { Icon, ReadMore, TouchableDebounce } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
-import styles from '../styles';
+import styles from './styles';
 
 import { TemplateProps } from './types';
+import { Clipboard } from '@common/helpers/clipboard';
+import { Toast } from '@common/helpers/interface';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
@@ -27,6 +30,13 @@ class ImportTemplate extends Component<Props, State> {
         this.state = {};
     }
 
+    copyBlob = () => {
+        const { transaction } = this.props;
+
+        Clipboard.setString(transaction.Blob);
+        Toast(Localize.t('payload.blobCopiedToClipboard'));
+    };
+
     render() {
         const { transaction } = this.props;
 
@@ -34,9 +44,19 @@ class ImportTemplate extends Component<Props, State> {
             <>
                 {transaction.Blob && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.blob')}</Text>
+                        <View style={AppStyles.row}>
+                            <Text style={styles.label}>{Localize.t('global.blob')}</Text>
+                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                                <TouchableDebounce style={styles.copyButton} onPress={this.copyBlob}>
+                                    <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
+                                    <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
+                                </TouchableDebounce>
+                            </View>
+                        </View>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.Blob}</Text>
+                            <ReadMore numberOfLines={3} textStyle={styles.value}>
+                                {transaction.Blob}
+                            </ReadMore>
                         </View>
                     </>
                 )}

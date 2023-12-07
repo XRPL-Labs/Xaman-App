@@ -94,27 +94,31 @@ class ReadMore extends Component<Props, State> {
         return {};
     };
 
-    renderViewMore = () => (
-        <TouchableOpacity
-            activeOpacity={0.8}
-            style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
-            onPress={this.onPressMore}
-        >
-            <Text style={[styles.viewMoreText]}>{Localize.t('global.readMore')}</Text>
-            <Icon name="IconChevronDown" style={AppStyles.imgColorGrey} size={21} />
-        </TouchableOpacity>
-    );
+    renderViewMore = () => {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
+                onPress={this.onPressMore}
+            >
+                <Text style={styles.viewMoreText}>{Localize.t('global.readMore')}</Text>
+                <Icon name="IconChevronDown" style={AppStyles.imgColorGrey} size={21} />
+            </TouchableOpacity>
+        );
+    };
 
-    renderViewLess = () => (
-        <TouchableOpacity
-            activeOpacity={0.8}
-            style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
-            onPress={this.onPressLess}
-        >
-            <Text style={[styles.viewMoreText]}>{Localize.t('global.readLess')}</Text>
-            <Icon name="IconChevronUp" style={AppStyles.imgColorGrey} size={21} />
-        </TouchableOpacity>
-    );
+    renderViewLess = () => {
+        return (
+            <TouchableOpacity
+                activeOpacity={0.8}
+                style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
+                onPress={this.onPressLess}
+            >
+                <Text style={styles.viewMoreText}>{Localize.t('global.readLess')}</Text>
+                <Icon name="IconChevronUp" style={AppStyles.imgColorGrey} size={21} />
+            </TouchableOpacity>
+        );
+    };
 
     renderFooter = () => {
         const { numberOfLines } = this.state;
@@ -135,7 +139,9 @@ class ReadMore extends Component<Props, State> {
         if (isFullTextShown) {
             return (
                 <View onLayout={this.onLayoutFullText} style={styles.fullTextWrapper}>
-                    <Text style={textStyle}>{children}</Text>
+                    <Text selectable style={textStyle}>
+                        {children}
+                    </Text>
                 </View>
             );
         }

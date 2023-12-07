@@ -141,6 +141,16 @@ const styles = StyleService.create({
         borderRadius: 10,
         overflow: 'hidden',
     },
+    copyText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: '$grey',
+        paddingRight: 5,
+    },
+    copyButton: {
+        flexDirection: 'row',
+        paddingHorizontal: AppSizes.paddingExtraSml,
+    },
 });
 
 export default styles;
