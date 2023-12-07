@@ -663,6 +663,7 @@
     "termsAndConditions": "AGB & Nutzungsbedingungen",
     "credits": "Credits",
     "nodeChangeWarning": "Sie wechseln von Variable%{from} zu Variable%{to}. Möglicherweise können Sie Ihren Account nicht nutzen oder Account Verlauf nicht sehen!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Node Liste",
     "addNode": "Node hinzufügen",
     "enterURL": "Bitte eine URL eingeben",

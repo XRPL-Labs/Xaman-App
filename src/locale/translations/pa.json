@@ -663,6 +663,7 @@
     "termsAndConditions": "ਨਿਯਮ & ਸ਼ਰਤਾਂ",
     "credits": "ਕ੍ਰੈਡਿਟ",
     "nodeChangeWarning": "ਤੁਸੀਂ ਬਦਲ ਰਹੇ ਹੋ %{from} ਨੂੰ %{to}. ਤੁਸੀਂ ਆਪਣੇ ਖਾਤੇ ਦੀ ਵਰਤੋਂ ਕਰਨ ਜਾਂ ਆਪਣੇ ਖਾਤੇ ਦੇ ਇਤਿਹਾਸ ਨੂੰ ਵੇਖਣ ਦੇ ਅਯੋਗ ਹੋ ਸਕਦੇ ਹੋ!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "ਨੋਡ ਲਿਸਟ",
     "addNode": "ਨੋਡ ਸ਼ਾਮਲ ਕਰੋ",
     "enterURL": "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ URL ਦਾਖਲ ਕਰੋ",

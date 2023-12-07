@@ -663,6 +663,7 @@
     "termsAndConditions": "Termes i Condicions",
     "credits": "Agraïments",
     "nodeChangeWarning": "Estàs canviant de %{from} a %{to}.  És possible que no puguis utilitzar el teu compte o veure'n l'historial!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Llista de nodes",
     "addNode": "Afegeix un node",
     "enterURL": "Si us plau, introdueix una URL",

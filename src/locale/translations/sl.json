@@ -663,6 +663,7 @@
     "termsAndConditions": "Določbe & pogoji",
     "credits": "Zasluge",
     "nodeChangeWarning": "Preklapljate iz %{from} na %{to}. Morda ne boste mogli uporabljati svojega računa ali si ogledati zgodovine računa!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Seznam vozlišč",
     "addNode": "Dodaj vozlišče",
     "enterURL": "Prosimo vnesite URL naslov",

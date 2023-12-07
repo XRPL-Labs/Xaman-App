@@ -663,6 +663,7 @@
     "termsAndConditions": "Käyttöehdot & määräykset",
     "credits": "Tunnustukset",
     "nodeChangeWarning": "Olet siirtymässä %{from} - %{to}. Et ehkä voi käyttää tiliä tai tarkastella tilihistoriaasi.",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Solmujen luettelo",
     "addNode": "Lisää noodi",
     "enterURL": "Anna URL-osoite",

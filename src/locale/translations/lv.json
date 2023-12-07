@@ -663,6 +663,7 @@
     "termsAndConditions": "Noteikumi un nosacījumi",
     "credits": "Kredīti",
     "nodeChangeWarning": "Jūs esat pārslēdzies no %{from} uz %{to}. Var nebūt iespējams izmantot savu kontu vai apskatīt savu konta vēsturi!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Mezgla saraksts",
     "addNode": "Pievienot mezglu",
     "enterURL": "Lūdzu ievadiet URL",

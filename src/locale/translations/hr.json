@@ -663,6 +663,7 @@
     "termsAndConditions": "Uvjeti korištenja",
     "credits": "Zasluge",
     "nodeChangeWarning": "Mijenjali ste se s %{from} na %{to}. Možda nećete moći koristiti svoj račun ili pregledati povijest računa!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Node lista",
     "addNode": "Dodaj Node",
     "enterURL": "Molimo vas unesite URL",

@@ -663,6 +663,7 @@
     "termsAndConditions": "Termeni şi condiţii",
     "credits": "Credite",
     "nodeChangeWarning": "Comutaţi de la %{from} la %{to}. S-ar putea să nu puteţi folosi contul sau să vizualizaţi istoricul contului !",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Listă de noduri",
     "addNode": "Adăugați nod.",
     "enterURL": "Vă rugăm să introduceți o adresă.",

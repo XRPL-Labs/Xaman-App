@@ -663,6 +663,7 @@
     "termsAndConditions": "Tingimused",
     "credits": "Autorid",
     "nodeChangeWarning": "Lülitate välja %{from} kuni %{to}. Te ei saa oma kontot kasutada ega oma konto ajalugu vaadata!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Sõlme nimekiri",
     "addNode": "Lisa sõlm",
     "enterURL": "Palun sisesta URL",

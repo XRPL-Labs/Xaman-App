@@ -663,6 +663,7 @@
     "termsAndConditions": "Baldintzak eta baldintzak",
     "credits": "Kredituak",
     "nodeChangeWarning": "batetik ari zara kommutazio %{from} ra %{to}. Agian ezin izango duzu zure kontua erabili edo kontuaren historia ikusi!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Nodo zerrenda",
     "addNode": "Gehitu nodoa",
     "enterURL": "Mesedez sartu URL bat",

@@ -663,6 +663,7 @@
     "termsAndConditions": "Vilkår og betingelser",
     "credits": "Tak til...",
     "nodeChangeWarning": "Du skifter fra %{from} til %{to}. Du kan muligvis ikke længere bruge din konto, eller se din kontohistorik!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Nodeliste",
     "addNode": "Tilføj node",
     "enterURL": "Angiv en URL",

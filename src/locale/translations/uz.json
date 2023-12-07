@@ -663,6 +663,7 @@
     "termsAndConditions": "Qoidalar va shartlar",
     "credits": "Kreditlar",
     "nodeChangeWarning": "Siz %{from} ga %{to} o'tmoqdasiz. Hisobingizdan foydalana olmaysiz yoki hisob qaydnomangiz tarixini ko'ra olmaysiz!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Tugunlar ro'yxati",
     "addNode": "Tugun qo'shish",
     "enterURL": "Iltimos, URL manzilini kiriting",

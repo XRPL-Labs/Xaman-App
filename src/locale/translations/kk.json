@@ -663,6 +663,7 @@
     "termsAndConditions": "Қағидалары мен Шарттары",
     "credits": "Несиелер",
     "nodeChangeWarning": "Сіз %{from} - дан %{to} - ға ауысасыз. Сіз өзіңіздің есептік жазбаңызды пайдалана алмауыңыз немесе есептік жазбаның тарихын көре алмауыңыз мүмкін!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Түйіндер тізімі",
     "addNode": "Түйін қосу",
     "enterURL": "URL мекенжайын енгізіңіз",

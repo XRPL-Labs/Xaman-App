@@ -663,6 +663,7 @@
     "termsAndConditions": "শর্তাবলী",
     "credits": "ক্রেডিট",
     "nodeChangeWarning": "আপনি থেকে স্যুইচ করছেন %{from} প্রতি %{to}. আপনি আপনার অ্যাকাউন্ট ব্যবহার করতে বা আপনার অ্যাকাউন্টের ইতিহাস দেখতে অক্ষম হতে পারেন!\r\n",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "নোড তালিকা",
     "addNode": "নোড যুক্ত করুন",
     "enterURL": "দয়া করে একটি URL লিখুন",

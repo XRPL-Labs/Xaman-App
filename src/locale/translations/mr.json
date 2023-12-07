@@ -663,6 +663,7 @@
     "termsAndConditions": "अटी & शर्ती",
     "credits": "जमा",
     "nodeChangeWarning": "आपण येथून स्विच करीत आहात %{from} करण्यासाठी %{to}. आपण आपले खाते वापरण्यात किंवा आपल्या खात्याचा इतिहास पाहण्यात अक्षम होऊ शकता!\r\n",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "नोड यादी",
     "addNode": "नोड यादी",
     "enterURL": "कृपया एक URL प्रविष्ट करा",

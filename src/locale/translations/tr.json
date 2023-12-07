@@ -663,6 +663,7 @@
     "termsAndConditions": "Şartlar ve Koşullar",
     "credits": "Katkıda Bulunanlar",
     "nodeChangeWarning": "%{from} hesabından %{to} hesabına geçiyorsunuz. Hesabınızı kullanamayabilir veya hesap geçmişinizi görüntüleyemeyebilirsiniz!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Düğüm Listesi",
     "addNode": "Düğüm Ekle",
     "enterURL": "Lütfen bir URL girin",

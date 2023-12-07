@@ -663,6 +663,7 @@
     "termsAndConditions": "నిబంధనలు & షరతులు\r\n",
     "credits": "క్రెడిట్స్",
     "nodeChangeWarning": "మీరు %{from} నుండి %{to}కు మారుతున్నారు. మీరు మీ ఖాతాను ఉపయోగించలేకపోవచ్చు లేదా మీ ఖాతా చరిత్రను చూడలేరు!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "నోడ్ జాబితా",
     "addNode": "నోడ్‌ను జోడించండి\r\n",
     "enterURL": "దయచేసి ఒక URL ను నమోదు చేయండి\r\n\r\n",

@@ -663,6 +663,7 @@
     "termsAndConditions": "البنود و الشروط",
     "credits": "الاعتمادات",
     "nodeChangeWarning": "أنت تقوم بالتبديل من %{from} إلى %{to} . قد لا تتمكن من استخدام حسابك أو عرض سجل حسابك!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "قائمة العقد",
     "addNode": "أضف عقدة",
     "enterURL": "الرجاء إدخال URL",

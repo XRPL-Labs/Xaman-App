@@ -663,6 +663,7 @@
     "termsAndConditions": "ഉപാധികളും നിബന്ധനകളും",
     "credits": "ക്രെഡിറ്റുകൾ",
     "nodeChangeWarning": "നിങ്ങൾ സ്വിച്ചുചെയ്യുന്നു %{from} ടു %{to}. നിങ്ങളുടെ അക്കൗണ്ട് ഉപയോഗിക്കാനോ അക്കൗണ്ട് ചരിത്രം കാണാനോ നിങ്ങൾക്ക് കഴിഞ്ഞേക്കില്ല!\r\n",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "നോഡ് പട്ടിക",
     "addNode": "നോഡ് ചേർക്കുക",
     "enterURL": "ദയവായി ഒരു URL നൽകുക",

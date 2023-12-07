@@ -663,6 +663,7 @@
     "termsAndConditions": "תנאים והגבלות",
     "credits": "תודות",
     "nodeChangeWarning": "אתה עובר מ- %{from} ל- %{to}. יתכן שלא תוכל להשתמש בחשבונך או להציג את היסטוריית חשבונך!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "רשימת צומת",
     "addNode": "הוסף צומת",
     "enterURL": "אנא הזן כתובת אתר",

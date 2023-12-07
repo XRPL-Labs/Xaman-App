@@ -663,6 +663,7 @@
     "termsAndConditions": "Termes et conditions",
     "credits": "Crédits",
     "nodeChangeWarning": "Vous venez de permuter de %{from} à %{to}. Vous ne serez plus en mesure d'utiliser votre compte ou voir votre historique de compte !",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Liste des nœuds",
     "addNode": "Ajouter un noeud",
     "enterURL": "Veuillez entrer une URL",

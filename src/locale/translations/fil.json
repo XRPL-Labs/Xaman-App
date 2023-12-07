@@ -663,6 +663,7 @@
     "termsAndConditions": "Mga Tuntunin at Kundisyon",
     "credits": "mga kredito",
     "nodeChangeWarning": "Lumilipat ka mula sa %{from} patungong %{to}. Maaaring hindi mo magamit ang iyong account o tingnan ang kasaysayan ng iyong account!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Listahan ng node",
     "addNode": "Idagdag ang node",
     "enterURL": "Mangyaring maglagay ng isang URL",

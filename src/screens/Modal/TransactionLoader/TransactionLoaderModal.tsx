@@ -14,8 +14,6 @@ import StyleService from '@services/StyleService';
 
 import { AppScreens } from '@common/constants';
 
-import { Prompt } from '@common/helpers/interface';
-
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -148,13 +146,22 @@ class TransactionLoaderModal extends Component<Props, State> {
             // build transaction instance
             const tx = TransactionFactory.fromLedger({ tx: resp, meta });
 
+            // switch to the right account if necessary
+            const coreSettings = CoreRepository.getSettings();
+
+            if (coreSettings.account.address !== account.address) {
+                CoreRepository.saveSettings({
+                    account,
+                });
+            }
+
             // close this modal and open the transaction details screen
             await Navigator.dismissModal();
 
             // redirect to details screen with a little-bit delay
             setTimeout(() => {
                 Navigator.showModal(AppScreens.Transaction.Details, { tx, account, asModal: true });
-            }, 300);
+            }, 500);
         } catch (error) {
             if (!this.mounted) {
                 return;
@@ -165,7 +172,7 @@ class TransactionLoaderModal extends Component<Props, State> {
         }
     };
 
-    switchNetwork = async () => {
+    onSwitchNetworkPress = async () => {
         const { requiredNetwork } = this.state;
 
         // switch to the desired network
@@ -173,29 +180,6 @@ class TransactionLoaderModal extends Component<Props, State> {
 
         // re-run the preFlight
         this.loadTransaction();
-    };
-
-    onSwitchNetworkPress = () => {
-        const { requiredNetwork } = this.state;
-
-        // get currently connected network
-        const connectedNetwork = NetworkService.getNetwork();
-
-        // ask user if they want to switch the network
-        Prompt(
-            Localize.t('global.switchNetwork'),
-            Localize.t('settings.nodeChangeWarning', {
-                from: `"${connectedNetwork.name}"`,
-                to: `"${requiredNetwork.name}`,
-            }),
-            [
-                { text: Localize.t('global.cancel') },
-                {
-                    text: Localize.t('global.switch'),
-                    onPress: this.switchNetwork,
-                },
-            ],
-        );
     };
 
     dismiss = () => {
@@ -213,15 +197,26 @@ class TransactionLoaderModal extends Component<Props, State> {
             ShouldShowSwitchButton = false;
         }
 
+        let switchNetworkWarning;
+
+        // only show switch warning text when we allow user to switch from this modal
+        if (ShouldShowSwitchButton) {
+            const connectedNetwork = NetworkService.getNetwork();
+            switchNetworkWarning = Localize.t('settings.networkChangeAccountDetailsWarning', {
+                from: `"${connectedNetwork.name}"`,
+                to: `"${requiredNetwork.name}`,
+            });
+        }
+
         return (
             <>
                 <Icon name="IconInfo" style={styles.infoIcon} size={80} />
                 <Spacer size={18} />
                 <InfoMessage
                     type="neutral"
-                    label={Localize.t('events.transactionDetailsDifferentNetworkError', {
+                    label={`${Localize.t('events.transactionDetailsDifferentNetworkError', {
                         network: `"${requiredNetwork.name}"`,
-                    })}
+                    })}\n\n${switchNetworkWarning}\n`}
                     hideActionButton={!ShouldShowSwitchButton}
                     actionButtonLabel={Localize.t('global.switchNetwork')}
                     actionButtonIcon="IconSwitchAccount"
@@ -288,7 +283,6 @@ class TransactionLoaderModal extends Component<Props, State> {
                 style={styles.container}
             >
                 <View style={styles.contentContainer}>{this.renderContent()}</View>
-
                 <Footer>
                     <Button
                         light

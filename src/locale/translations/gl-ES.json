@@ -663,6 +663,7 @@
     "termsAndConditions": "Termos e condicións",
     "credits": "Créditos",
     "nodeChangeWarning": "Está cambiando desde %{from} a %{to} . ¡Podería ser incapaz de usar a súa conta ou de ver a historia da súa conta!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Lista de Nodos",
     "addNode": "Engadir Nodo",
     "enterURL": "Por favor introduza a URL",

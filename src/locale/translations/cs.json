@@ -663,6 +663,7 @@
     "termsAndConditions": "Ustanovení a podmínky",
     "credits": "Poděkování",
     "nodeChangeWarning": "Přecházíte z %{from} na %{to}. Možná nebudete moct používat svůj účet nebo zobrazit jeho historii.",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Seznam uzlů",
     "addNode": "Přidat uzel",
     "enterURL": "Zadejte adresu URL",

@@ -663,6 +663,7 @@
     "termsAndConditions": "Terms & Conditions",
     "credits": "Credits",
     "nodeChangeWarning": "%{from} - >-> változatról a %{to}vált: %{to}. Nem tudja használni a fiókját vagy a fiókelőzményeit.",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Csomópontlista",
     "addNode": "Add Node",
     "enterURL": "Please enter an URL",

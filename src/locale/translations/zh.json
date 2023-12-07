@@ -663,6 +663,7 @@
     "termsAndConditions": "条款及细则",
     "credits": "鸣谢",
     "nodeChangeWarning": "您正在从%{from}切换至%{to}。您可能无法使用您的账户或查看您的账户历史记录！",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "节点列表",
     "addNode": "添加节点",
     "enterURL": "请输入网址",

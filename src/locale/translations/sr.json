@@ -663,6 +663,7 @@
     "termsAndConditions": "Услови и одредбе",
     "credits": "Кредити ",
     "nodeChangeWarning": "Прелазите са %{from} на %{to}. Можда нећете моћи да користите свој налог или да видите историју вашег налога!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Листа сервера",
     "addNode": "Додај сервер",
     "enterURL": "Унесите URL",

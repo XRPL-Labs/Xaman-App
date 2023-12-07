@@ -663,6 +663,7 @@
     "termsAndConditions": "Điều khoản và điều kiện",
     "credits": "Tín dụng",
     "nodeChangeWarning": "Bạn đang chuyển từ %{from} sang %{to}. Bạn có thể không thể sử dụng tài khoản hoặc xem lịch sử tài khoản của mình!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Danh sách nút",
     "addNode": "Thêm nút",
     "enterURL": "Vui lòng nhập một URL",

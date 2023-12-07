@@ -663,6 +663,7 @@
     "termsAndConditions": "tèm ak Kondisyon",
     "credits": "Kredi",
     "nodeChangeWarning": "Wap chanje de %{from} a %{to}. Ou ka pa kapab itilize kont ou oswa wè istwa kont ou!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "neu Lis",
     "addNode": "Ajoute ne",
     "enterURL": "Tanpri antre yon URL",

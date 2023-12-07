@@ -663,6 +663,7 @@
     "termsAndConditions": "Правила та умови",
     "credits": "Подяки",
     "nodeChangeWarning": "Ви перемикаєтеся з %{from} на %{to}. Можливо, ви не зможете користуватися або переглядати історію вашого акаунта !",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Список вузлів",
     "addNode": "Додати вузол",
     "enterURL": "Будь ласка, введіть адресу URL",

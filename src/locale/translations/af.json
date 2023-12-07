@@ -663,6 +663,7 @@
     "termsAndConditions": "Terme en Voorwaardes",
     "credits": "Krediete",
     "nodeChangeWarning": "U skakel oor van %{from} na %{to}. U kan dalk nie u rekening gebruik of u rekeninggeskiedenis sien nie!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Nodelys",
     "addNode": "Voeg node by",
     "enterURL": "Voer asseblief 'n URL in",

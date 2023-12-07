@@ -663,6 +663,7 @@
     "termsAndConditions": "წესები და პირობები",
     "credits": "კრედიტები",
     "nodeChangeWarning": "თქვენ გადადიხართ იდან %{from} ში %{to}. თქვენ ვერ შეძლებთ გამოიყენოთ თქვენი ანგარიში ან ნახოთ თქვენი ანგარიშის ისტორია!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "კვანძების სია",
     "addNode": "ქსელის დამატება ",
     "enterURL": "გთხოვთ შეიყვანოთ URL",

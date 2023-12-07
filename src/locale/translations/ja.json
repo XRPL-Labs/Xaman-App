@@ -663,6 +663,7 @@
     "termsAndConditions": "利用規約",
     "credits": "クレジット",
     "nodeChangeWarning": "%{from}から%{to}に切り替えています 。アカウントを使用したり、アカウントの履歴を表示したりできない場合があります。",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "ノードリスト",
     "addNode": "ノードの追加",
     "enterURL": "URLを入力してください",

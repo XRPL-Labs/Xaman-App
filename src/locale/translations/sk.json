@@ -663,6 +663,7 @@
     "termsAndConditions": "Podmienky",
     "credits": "Úvery",
     "nodeChangeWarning": "Prepínate z %{from} do %{to}. Možno nebudete môcť použiť svoj účet alebo zobraziť históriu vášho konta!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Zoznam uzlov",
     "addNode": "Pridať uzol",
     "enterURL": "Prosím zadajte URL",

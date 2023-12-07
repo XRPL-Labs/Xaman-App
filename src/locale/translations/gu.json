@@ -663,6 +663,7 @@
     "termsAndConditions": "નિયમો & શરતો",
     "credits": "ક્રેડિટ્સ",
     "nodeChangeWarning": "તમે સ્વિચ કરી રહ્યા છો %{from} પ્રતિ %{to}. તમે તમારા એકાઉન્ટનો ઉપયોગ કરવામાં અથવા તમારા એકાઉન્ટ ઇતિહાસને જોવા માટે અસમર્થ છો!\r\n",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "નોડ સૂચિ",
     "addNode": "નોડ ઉમેરો",
     "enterURL": "કૃપા કરીને એક URL દાખલ કરો",

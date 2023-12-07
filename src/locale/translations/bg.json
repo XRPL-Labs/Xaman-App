@@ -663,6 +663,7 @@
     "termsAndConditions": "Правила и условия",
     "credits": "Признание",
     "nodeChangeWarning": "Превключвате от %{from} на %{to}. Възможно е да не можете да използвате акаунта си или да преглеждате историята на акаунта си!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Node List",
     "addNode": "Добавяне на възел",
     "enterURL": "Въведете URL адрес",

@@ -663,6 +663,7 @@
     "termsAndConditions": "Algemene Voorwaarden",
     "credits": "Credits",
     "nodeChangeWarning": "Je wisselt van %{from} naar %{to}. Je kunt misschien je account niet gebruiken of je accountgeschiedenis niet zien!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Lijst met nodes",
     "addNode": "Node toevoegen",
     "enterURL": "Voer een URL in",

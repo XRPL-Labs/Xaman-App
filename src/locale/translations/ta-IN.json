@@ -663,6 +663,7 @@
     "termsAndConditions": "விதிமுறைகளும் நிபந்தனைகளும்",
     "credits": "வரவு",
     "nodeChangeWarning": "நீங்கள் மாறுகிறீர்கள் %{from} க்கு %{to}. உங்கள் கணக்கைப் பயன்படுத்தவோ அல்லது உங்கள் கணக்கு வரலாற்றைக் காணவோ முடியாமல் போகலாம்!\r\n",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "முனை பட்டியல்",
     "addNode": "முனை சேர்க்கவும்",
     "enterURL": "ஒரு URL ஐ உள்ளிடவும்",

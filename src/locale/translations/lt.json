@@ -663,6 +663,7 @@
     "termsAndConditions": "Sąlygos ir nuostatos",
     "credits": "Kreditai",
     "nodeChangeWarning": "Pereinate nuo %{from} į %{to}. Gali būti, kad negalėsite naudotis savo paskyra ar peržiūrėti paskyros istorijos!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "mazgas sąrašas",
     "addNode": "Pridėti Mazgą",
     "enterURL": "Prašome įvesti URL",

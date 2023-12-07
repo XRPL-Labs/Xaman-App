@@ -663,6 +663,7 @@
     "termsAndConditions": "Terms & Conditions",
     "credits": "Credits",
     "nodeChangeWarning": "You are switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Node List",
     "addNode": "Add Node",
     "enterURL": "Please enter an URL",

@@ -663,6 +663,7 @@
     "termsAndConditions": "ನಿಯಮ ಮತ್ತು ಶರತ್ತುಗಳು",
     "credits": "ಸಾಲಗಳು",
     "nodeChangeWarning": "ನೀವು ಬದಲಾಯಿಸುತ್ತಿದ್ದೀರಿ %{from} ಗೆ %{to}. ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಬಳಸಲು ಅಥವಾ ನಿಮ್ಮ ಖಾತೆಯ ಇತಿಹಾಸವನ್ನು ವೀಕ್ಷಿಸಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗದಿರಬಹುದು!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "ನೋಡ್ ಪಟ್ಟಿ",
     "addNode": "ನೋಡ್ ಸೇರಿಸಿ",
     "enterURL": "ದಯವಿಟ್ಟು URL ಅನ್ನು ನಮೂದಿಸಿ",

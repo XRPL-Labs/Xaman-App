@@ -663,6 +663,7 @@
     "termsAndConditions": "Syarat & Ketentuan",
     "credits": "Kredit",
     "nodeChangeWarning": "Anda beralih dari %{from} ke %{to}. Anda mungkin tidak dapat menggunakan akun Anda atau melihat riwayat akun Anda!",
+    "networkChangeAccountDetailsWarning": "Note: By switching from %{from} to %{to}. You may be unable to use your account or view your account history!",
     "nodeList": "Daftar Node",
     "addNode": "Tambahkan Node",
     "enterURL": "Harap masukkan URL",
