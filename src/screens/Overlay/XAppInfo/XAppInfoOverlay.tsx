@@ -25,6 +25,7 @@ type XAppInfo = {
     supportUrl: string;
     websiteUrl: string;
     donation: boolean;
+    donateAmountsInNativeAsset?: number[];
 };
 export interface Props {
     title: string;
@@ -124,26 +125,27 @@ class XAppInfoOverlay extends Component<Props, State> {
             return null;
         }
 
+        const donationAmounts = info?.donateAmountsInNativeAsset ?? [2, 5, 10];
+
         return (
             <View style={[AppStyles.paddingExtraSml, AppStyles.leftAligned]}>
                 <Text style={styles.headerText}>☕ &nbsp;{Localize.t('xapp.donateToTheCreator')}</Text>
                 <Spacer />
-                <View style={AppStyles.row}>
-                    <Button
-                        roundedMini
-                        secondary
-                        label={`5 ${NetworkService.getNativeAsset()}`}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onPress={this.onDonationPress.bind(null, 5)}
-                    />
-                    <Button
-                        roundedMini
-                        secondary
-                        label={`10 ${NetworkService.getNativeAsset()}`}
-                        // eslint-disable-next-line react/jsx-no-bind
-                        onPress={this.onDonationPress.bind(null, 10)}
-                        style={styles.donationButton}
-                    />
+                <ScrollView horizontal style={AppStyles.row} showsHorizontalScrollIndicator={false} bounces={false}>
+                    {donationAmounts.map((amount, index) => (
+                        <Button
+                            key={index}
+                            roundedMini
+                            secondary
+                            label={`${amount} ${NetworkService.getNativeAsset()}`}
+                            // eslint-disable-next-line react/jsx-no-bind
+                            onPress={this.onDonationPress.bind(null, amount)}
+                            style={styles.donationButton}
+                        />
+                    ))}
+                </ScrollView>
+                <Spacer />
+                <View>
                     <Button
                         roundedMini
                         contrast
