@@ -96,7 +96,10 @@ class AccountService extends EventEmitter {
             this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
 
             // get effected accounts
-            const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
+            const balanceChangesAccounts = keys(new Meta(meta).parseBalanceChanges());
+            const ownerCountChangesAccounts = map(new Meta(meta).parseOwnerCountChanges(), 'address');
+
+            const effectedAccounts = [...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts])];
 
             // update account details
             this.updateAccountsDetails(effectedAccounts);
