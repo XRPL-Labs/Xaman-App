@@ -35,14 +35,17 @@ describe('Invoke', () => {
                 const { tx, meta } = invokeTemplate;
                 const instance = new Invoke(tx, meta);
 
-                // TODO: add description tests
-                // const expectedDescription = Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', {
-                //     address: tx.Authorize,
-                // });
-                //
-                // expect(EscrowCancelInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `${Localize.t('events.invokeInitiatorExplain', {
+                    address: instance.Account.address,
+                })}\n${Localize.t('events.theTransactionHasADestination', {
+                    destination: instance.Destination.address,
+                })}\n${Localize.t('events.theTransactionHasADestinationTag', {
+                    tag: instance.Destination.tag,
+                })}\n${Localize.t('events.theTransactionHasAInvoiceId', {
+                    invoiceId: instance.InvoiceID,
+                })}`;
 
-                expect(instance).toBeDefined();
+                expect(InvokeInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 

@@ -24,7 +24,9 @@ describe('URITokenBurn tx', () => {
                 const { tx, meta } = uriTokenBurnTemplate;
                 const instance = new URITokenBurn(tx, meta);
 
-                const expectedDescription = `This is an ${instance.Type} transaction`;
+                const expectedDescription = `${Localize.t('events.uriTokenBurnExplain', {
+                    tokenID: instance.URITokenID,
+                })}`;
 
                 expect(URITokenBurnInfo.getDescription(instance)).toEqual(expectedDescription);
             });

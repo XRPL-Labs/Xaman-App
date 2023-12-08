@@ -24,7 +24,12 @@ describe('URITokenMint tx', () => {
                 const { tx, meta } = uriTokenMintTemplate;
                 const instance = new URITokenMint(tx, meta);
 
-                const expectedDescription = `This is an ${instance.Type} transaction`;
+                const expectedDescription = `${Localize.t('events.theURIForThisTokenIs', {
+                    uri: instance.URI,
+                })}\n${Localize.t('events.theTokenHasADigest', { digest: instance.Digest })}\n${Localize.t(
+                    'events.uriTokenMintAmount',
+                    { value: instance.Amount.value, currency: instance.Amount.currency },
+                )}\n${Localize.t('events.uriTokenDestinationExplain', { address: instance.Destination.address })}`;
 
                 expect(URITokenMintInfo.getDescription(instance)).toEqual(expectedDescription);
             });

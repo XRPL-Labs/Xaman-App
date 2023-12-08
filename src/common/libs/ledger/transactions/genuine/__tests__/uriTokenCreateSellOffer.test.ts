@@ -24,7 +24,14 @@ describe('URITokenCreateSellOffer tx', () => {
                 const { tx, meta } = uriTokenCreateSellOfferTemplate;
                 const instance = new URITokenCreateSellOffer(tx, meta);
 
-                const expectedDescription = `This is an ${instance.Type} transaction`;
+                const expectedDescription = `${Localize.t('events.uriTokenSellOfferExplain', {
+                    address: instance.Account.address,
+                    uriToken: instance.URITokenID,
+                    value: instance.Amount.value,
+                    currency: instance.Amount.currency,
+                })}\n${Localize.t('events.thisURITokenOfferMayOnlyBeAcceptedBy', {
+                    address: tx.Destination,
+                })}`;
 
                 expect(URITokenCreateSellOfferInfo.getDescription(instance)).toEqual(expectedDescription);
             });

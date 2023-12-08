@@ -5,7 +5,7 @@ import Localize from '@locale';
 
 import { URITokenCancelSellOffer, URITokenCancelSellOfferInfo } from '../URITokenCancelSellOffer';
 
-import uriTokenCancelSellOfferTemplate from './fixtures/NFTokenCancelOfferTx.json';
+import uriTokenCancelSellOfferTemplate from './fixtures/URITokenCancelSellOfferTx.json';
 
 jest.mock('@services/NetworkService');
 
@@ -24,7 +24,10 @@ describe('URITokenCancelSellOffer tx', () => {
                 const { tx, meta } = uriTokenCancelSellOfferTemplate;
                 const instance = new URITokenCancelSellOffer(tx, meta);
 
-                const expectedDescription = `This is an ${instance.Type} transaction`;
+                const expectedDescription = `${Localize.t('events.theTransactionWillCancelURITokenOffer', {
+                    address: tx.Account,
+                    tokenId: tx.URITokenID,
+                })}`;
 
                 expect(URITokenCancelSellOfferInfo.getDescription(instance)).toEqual(expectedDescription);
             });

@@ -24,7 +24,12 @@ describe('URITokenBuy tx', () => {
                 const { tx, meta } = uriTokenBuy;
                 const instance = new URITokenBuy(tx, meta);
 
-                const expectedDescription = `This is an ${instance.Type} transaction`;
+                const expectedDescription = `${Localize.t('events.uriTokenBuyExplain', {
+                    address: instance.Account.address,
+                    amount: instance.Amount.value,
+                    currency: instance.Amount.currency,
+                    tokenID: instance.URITokenID,
+                })}`;
 
                 expect(URITokenBuyInfo.getDescription(instance)).toEqual(expectedDescription);
             });
