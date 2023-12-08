@@ -506,6 +506,7 @@
     "acceptNFTOffer": "Aceitar oferta de NFT",
     "setHooks": "Set Hooks",
     "claimReward": "Claim Reward",
+    "claimRewardOptIn": "Claim Reward (Opt In)",
     "invoke": "Invoke",
     "import": "Import",
     "canNotFetchTransactions": "Não foi possível obter as transações da conta!",
@@ -631,7 +632,10 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}"
+    "theIssuerIs": "The issuer address set to ${issuer}",
+    "claimRewardExplain": "This is a claim reward transaction",
+    "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
+    "claimRewardExplainEmitted": "It claims the reward for account %{address}"
   },
   "xapp": {
     "popular": "Popular",

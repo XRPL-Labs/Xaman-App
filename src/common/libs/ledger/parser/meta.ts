@@ -5,7 +5,7 @@ import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapVa
 import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
-import { BalanceChangeType, OfferStatus, OwnerCountChangeType } from './types';
+import { BalanceChangeType, OfferStatus, OwnerCountChangeType, ClaimRewardStatus } from './types';
 
 /* Class ==================================================================== */
 class Meta {
@@ -258,6 +258,25 @@ class Meta {
         });
 
         return compact(values);
+    };
+
+    parseClaimRewardStatus = (): ClaimRewardStatus => {
+        // if there is an emitted transaction from "ADDRESS_ONE", it means the reward has been claimed
+        const ADDRESS_ONE = 'rrrrrrrrrrrrrrrrrrrrBZbvji';
+
+        const emittedTx = find(this.nodes, (node) => {
+            return (
+                node.entryType === 'EmittedTxn' &&
+                get(node, 'newFields.EmittedTxn.Account') === ADDRESS_ONE &&
+                get(node, 'newFields.EmittedTxn.TransactionType') === 'GenesisMint'
+            );
+        });
+
+        if (emittedTx) {
+            return ClaimRewardStatus.Emitted;
+        }
+
+        return ClaimRewardStatus.OptIn;
     };
 }
 

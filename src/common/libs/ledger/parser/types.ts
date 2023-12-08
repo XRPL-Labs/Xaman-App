@@ -10,6 +10,11 @@ export enum OfferStatus {
     UNKNOWN = 'UNKNOWN',
 }
 
+export enum ClaimRewardStatus {
+    OptIn = 'OptIn',
+    Emitted = 'Emitted',
+}
+
 export interface BalanceChangeType extends AmountType {
     action: 'DEC' | 'INC';
 }
