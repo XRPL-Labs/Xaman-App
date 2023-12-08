@@ -12,7 +12,7 @@ import {
     InteractionManager,
     Linking,
     NativeEventSubscription,
-    Share,
+    Share as RNShare,
     Text,
     View,
 } from 'react-native';
@@ -22,6 +22,7 @@ import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
+import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
@@ -48,7 +49,6 @@ import Localize from '@locale';
 // style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
-import { Images } from '@common/helpers/images';
 
 /* types ==================================================================== */
 export interface Props {
@@ -96,14 +96,26 @@ export enum XAppMethods {
     TxDetails = 'txDetails',
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     Share = 'share',
     Close = 'close',
     Ready = 'ready',
+    NetworkSwitch = 'networkSwitch',
 }
 
 export enum XAppSpecialPermissions {
     UrlLaunchNoConfirmation = 'URL_LAUNCH_NO_CONFIRMATION',
+    NetworkSwitchEventNoReload = 'NETWORK_SWITCH_EVENT_NO_RELOAD',
+}
+
+interface IEvent {
+    method: string;
+    reason?: string;
+    uuid?: string;
+    qrContents?: string;
+    destination?: Destination;
+    info?: AccountInfoType;
+    result?: any;
+    network?: string;
 }
 
 /* Component ==================================================================== */
@@ -139,7 +151,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 networks: undefined,
                 __ott: undefined,
             },
-            account: props.account || CoreRepository.getDefaultAccount(),
+            account: props.account ?? CoreRepository.getDefaultAccount(),
             network: coreSettings.network,
             error: undefined,
             isLaunchingApp: true,
@@ -200,14 +212,6 @@ class XAppBrowserModal extends Component<Props, State> {
         return true;
     };
 
-    sendEvent = (event: any) => {
-        setTimeout(() => {
-            if (this.webView.current) {
-                this.webView.current.postMessage(JSON.stringify(event));
-            }
-        }, 250);
-    };
-
     handleSignRequest = async (data: any) => {
         // get payload uuid from data
         const uuid = get(data, 'uuid', undefined);
@@ -234,6 +238,22 @@ class XAppBrowserModal extends Component<Props, State> {
         } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
         }
+    };
+
+    sendEvent = (event: IEvent) => {
+        setTimeout(() => {
+            if (this.webView.current) {
+                this.webView.current.postMessage(JSON.stringify(event));
+            }
+        }, 250);
+    };
+
+    onNetworkSwitch = (network: NetworkModel) => {
+        this.sendEvent({ method: XAppMethods.NetworkSwitch, network: network.key });
+    };
+
+    onKycResolve = (result: any) => {
+        this.sendEvent({ method: XAppMethods.KycVeriff, result });
     };
 
     onPayloadResolve = (transaction: any, payload: Payload) => {
@@ -298,15 +318,17 @@ class XAppBrowserModal extends Component<Props, State> {
         if (!sessionUrl) return;
 
         try {
-            const result = await VeriffSdk.launchVeriff({
+            VeriffSdk.launchVeriff({
                 branding: {
                     themeColor: AppColors.blue,
                     buttonCornerRadius: 28,
                 },
                 sessionUrl,
-            });
-            // pass the result to the xApp
-            this.sendEvent({ method: XAppMethods.KycVeriff, result });
+            })
+                .then(this.onKycResolve)
+                .catch(() => {
+                    // ignore
+                });
         } catch {
             // ignore
         }
@@ -417,7 +439,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         // show share dialog
-        Share.share({
+        RNShare.share({
             message: text,
         }).catch(() => {});
     };
@@ -660,16 +682,46 @@ class XAppBrowserModal extends Component<Props, State> {
         );
     };
 
-    onNetworkChange = (network: NetworkModel) => {
-        this.setState(
-            {
-                network,
-                isRequiredNetworkSwitch: false,
-            },
-            this.lunchApp,
-        );
+    /**
+     * Handles network change event.
+     * @param {NetworkModel} network - The network object representing the new network.
+     * @returns {void}
+     */
+    onNetworkChange = (network: NetworkModel): void => {
+        const { app } = this.state;
+
+        const networks = app?.networks;
+        const SpecialPermissions = app?.permissions?.special ?? [];
+
+        // if we are going to send event instead of re-lunching the xapp
+        // beforehand we need to make sure user on the right network
+        const isRequiredNetworkSwitch = !networks.includes(network.key);
+
+        this.setState({ network, isRequiredNetworkSwitch }, () => {
+            if (!isRequiredNetworkSwitch) {
+                const isRequiredNoConfirmURLlaunch = SpecialPermissions.includes(
+                    XAppSpecialPermissions.NetworkSwitchEventNoReload,
+                );
+
+                // do not re-lunch the app and send event instead send event to the xapp
+                if (isRequiredNoConfirmURLlaunch) {
+                    // send the network switch event
+                    this.onNetworkSwitch(network);
+                } else {
+                    InteractionManager.runAfterInteractions(this.lunchApp);
+                }
+            }
+        });
     };
 
+    /**
+     * Retrieves the source information for the xapp load.
+     *
+     * @returns {Object} - The source information.
+     * @property {string} uri - The URI for the xapp.
+     * @property {Object} headers - The headers for the xapp.
+     * @property {string} headers.X-OTT - The X-OTT header for authentication.
+     */
     getSource = () => {
         const { app, ott, coreSettings } = this.state;
 
@@ -683,7 +735,12 @@ class XAppBrowserModal extends Component<Props, State> {
         };
     };
 
-    getUserAgent = () => {
+    /**
+     * Retrieves the user agent string for the current application version and ott token.
+     *
+     * @returns {string} The user agent string in the format `xumm/xapp:{appVersionCode} (ott:{ott})`.
+     */
+    getUserAgent = (): string => {
         const { appVersionCode, ott } = this.state;
 
         // NOTE: we included the ott in the header for the server side xApps to be able to access the ott easier
@@ -691,7 +748,14 @@ class XAppBrowserModal extends Component<Props, State> {
         return `xumm/xapp:${appVersionCode} (ott:${ott})`;
     };
 
-    setAppReady = () => {
+    /**
+     * Set the application ready state.
+     * Clears the soft loading timeout if it exists and sets the isAppReady state to true.
+     *
+     * @function setAppReady
+     * @returns {void}
+     */
+    setAppReady = (): void => {
         if (this.softLoadingTimeout) {
             clearTimeout(this.softLoadingTimeout);
         }
@@ -701,12 +765,20 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    onSoftLoadingExpire = () => {
+    /**
+     * Called when the soft loading expires.
+     * Sets the 'isAppReadyTimeout' state to true.
+     * @return {void}
+     */
+    onSoftLoadingExpire = (): void => {
         this.setState({
             isAppReadyTimeout: true,
         });
     };
 
+    /**
+     * Opens developer support URL.
+     */
     openDeveloperSupport = () => {
         const { app } = this.state;
 
@@ -715,7 +787,13 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    openDonation = (amount?: number) => {
+    /**
+     * Opens the donation page with an optional amount.
+     *
+     * @param {number} [amount] - The amount to pre-fill in donation form.
+     * @returns {void}
+     */
+    openDonation = (amount?: number): void => {
         const { app } = this.state;
 
         this.navigateTo({
