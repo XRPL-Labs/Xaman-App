@@ -112,17 +112,21 @@ class VaultModal extends Component<Props, State> {
                     throw new Error(Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound'));
                 }
 
-                // Regular key exist but it's not imported as full access
-                if (regularKeyAccount.accessLevel !== AccessLevels.Full) {
-                    throw new Error(Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'));
-                }
+                if (regularKeyAccount) {
+                    // Regular key exist but it's not imported as full access
+                    if (regularKeyAccount.accessLevel !== AccessLevels.Full) {
+                        throw new Error(
+                            Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'),
+                        );
+                    }
 
-                // everything is find we can sign with the regular key beside the main account
-                signers.push(regularKeyAccount);
+                    // everything is find we can sign with the regular key beside the main account
+                    signers.push(regularKeyAccount);
 
-                // if Master key is disabled on the main account set the preferred Signer to regular key
-                if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
-                    preferredSigner = regularKeyAccount;
+                    // if Master key is disabled on the main account set the preferred Signer to regular key
+                    if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
+                        preferredSigner = regularKeyAccount;
+                    }
                 }
             }
 
