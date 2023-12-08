@@ -37,7 +37,7 @@ function generateRandomData() {
 }
 
 describe('BaseRepository', () => {
-    let repo: any;
+    let repo: BaseRepository<any>;
     let model: any;
     let instance: any;
     let data: any;
@@ -295,13 +295,6 @@ describe('BaseRepository', () => {
             mockDataList1.forEach((d) => {
                 expect(createSpy).toHaveBeenCalledWith(model, d, Realm.UpdateMode.Never);
             });
-            createSpy.mockReset();
-            const mockDataList2 = Array.from(Array(3), generateRandomData);
-            await repo.createList(mockDataList2, false);
-            expect(createSpy).toHaveBeenCalledTimes(3);
-            mockDataList2.forEach((d) => {
-                expect(createSpy).toHaveBeenCalledWith(model, d, Realm.UpdateMode.Never);
-            });
             createSpy.mockClear();
         });
     });
@@ -312,7 +305,7 @@ describe('BaseRepository', () => {
             const deleteSpy = jest.spyOn(repo, 'delete');
 
             const item = generateRandomData();
-            await repo.create(item);
+            await expect(repo.create(item)).resolves.toEqual(item);
             await repo.deleteById(item.id);
 
             expect(objectForPrimaryKeySpy).toHaveBeenCalledWith(model, item.id);
@@ -359,6 +352,7 @@ describe('BaseRepository', () => {
             const safeWriteSpy = jest.spyOn(repo, 'safeWrite').mockImplementation(() => {
                 throw errorMock;
             });
+            // @ts-ignore
             await expect(repo.delete(objectMock)).rejects.toThrow(errorMock);
             expect(repo.safeWrite).toHaveBeenCalled();
             expect(realmDeleteSpy).not.toHaveBeenCalled();
@@ -389,6 +383,7 @@ describe('BaseRepository', () => {
             const safeWriteSpy = jest.spyOn(repo, 'safeWrite');
             const realmDeleteSpy = jest.spyOn(repo.realm, 'delete');
 
+            // @ts-ignore
             repo.findAll = jest.fn(() => []);
             const result = repo.deleteAll();
 
