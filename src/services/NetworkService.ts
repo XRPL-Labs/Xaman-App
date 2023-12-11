@@ -7,7 +7,7 @@ import EventEmitter from 'events';
 import { Platform } from 'react-native';
 
 import { XrplDefinitions, DefinitionsData } from 'xrpl-accountlib';
-import { DEFAULT_DEFINITIONS } from 'ripple-binary-codec/dist/enums';
+import DEFAULT_DEFINITIONS from 'ripple-binary-codec/dist/enums/definitions.json';
 
 import { ServerInfoResponse, XrplClient } from 'xrpl-client';
 
@@ -249,7 +249,7 @@ class NetworkService extends EventEmitter {
             return new XrplDefinitions(<DefinitionsData>this.network.definitions);
         }
 
-        return DEFAULT_DEFINITIONS;
+        return new XrplDefinitions(DEFAULT_DEFINITIONS);
     };
 
     /**
