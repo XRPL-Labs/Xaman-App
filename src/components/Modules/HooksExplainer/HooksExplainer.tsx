@@ -7,6 +7,7 @@ import { AppConfig } from '@common/constants';
 import { Payload } from '@common/libs/payload';
 
 import NetworkService from '@services/NetworkService';
+import StyleService from '@services/StyleService';
 
 import { Transactions as TransactionsType } from '@common/libs/ledger/transactions/types';
 
@@ -43,6 +44,7 @@ class HooksExplainer extends Component<Props, State> {
 
         const params = {
             network: NetworkService.getNetwork().key,
+            style: StyleService.getCurrentTheme(),
         };
 
         if (payload) {
