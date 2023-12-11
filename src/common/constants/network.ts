@@ -18,7 +18,7 @@ export default {
     // list of network rails
     networks: [
         {
-            name: 'XRPL Mainnet',
+            name: 'XRP Ledger',
             key: 'MAINNET',
             networkId: 0,
             color: '#4CA1F8',
@@ -32,7 +32,7 @@ export default {
             },
         },
         {
-            name: 'Xahau Mainnet',
+            name: 'Xahau',
             key: 'XAHAU',
             networkId: 21337,
             color: '#0E0143',
