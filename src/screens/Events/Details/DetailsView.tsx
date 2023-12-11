@@ -879,7 +879,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     Object.assign(props, {
                         icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
                         color: incoming ? styles.incomingColor : styles.outgoingColor,
-                        prefix: incoming ? '' : '-',
+                        prefix: !incoming && !amount.value.startsWith('-') ? '-' : '',
                         value: amount.value,
                         currency: amount.currency,
                     });
@@ -946,7 +946,6 @@ class TransactionDetailsView extends Component<Props, State> {
             // all new transactions types
             case TransactionTypes.Import:
             case TransactionTypes.SetHook:
-            case TransactionTypes.ClaimReward:
             case TransactionTypes.GenesisMint:
             case TransactionTypes.EnableAmendment: {
                 const balanceChanges = tx.BalanceChange(account.address);
@@ -957,7 +956,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     Object.assign(props, {
                         icon: incoming ? 'IconCornerRightDown' : 'IconCornerRightUp',
                         color: incoming ? styles.incomingColor : styles.outgoingColor,
-                        prefix: incoming ? '' : '-',
+                        prefix: !incoming && !amount.value.startsWith('-') ? '-' : '',
                         value: amount.value,
                         currency: amount.currency,
                     });

@@ -416,7 +416,7 @@ class TransactionItem extends Component<Props, State> {
                     <AmountText
                         value={amount.value}
                         currency={amount.currency}
-                        prefix={!!balanceChanges.sent && '-'}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
@@ -469,6 +469,42 @@ class TransactionItem extends Component<Props, State> {
                         value={balanceChanges.received.value}
                         currency={balanceChanges.received.currency}
                         style={[styles.amount, styles.incomingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.Import) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.ClaimReward) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
                         truncateCurrency

@@ -30,6 +30,11 @@ class ClaimRewardTemplate extends Component<Props, State> {
     render() {
         const { transaction } = this.props;
 
+        // nothing to show
+        if (!transaction.Issuer) {
+            return null;
+        }
+
         return (
             <>
                 <View style={styles.label}>
