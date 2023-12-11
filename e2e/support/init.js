@@ -39,7 +39,6 @@ BeforeAll(async () => {
 });
 
 Before(async (context) => {
-    // await detox.device.reloadReactNative();
     await adapter.beforeEach(context);
 });
 

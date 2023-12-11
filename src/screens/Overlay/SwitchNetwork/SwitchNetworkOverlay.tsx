@@ -44,7 +44,7 @@ const ROW_ITEM_HEIGHT = AppSizes.scale(70);
 class SwitchNetworkOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchNetwork;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -67,6 +67,8 @@ class SwitchNetworkOverlay extends Component<Props, State> {
             contentHeight: 0,
             paddingBottom: 0,
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -121,7 +123,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         }
 
         // slide down the panel
-        this.actionPanel.slideDown();
+        this.actionPanelRef?.current.slideDown();
     };
 
     onPanelSlideDown = () => {
@@ -144,6 +146,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
 
         return (
             <TouchableDebounce
+                testID={`network-${network.key}`}
                 // eslint-disable-next-line react/jsx-no-bind
                 onPress={this.changeNetwork.bind(null, network)}
                 key={`${network.id}`}
@@ -176,9 +179,8 @@ class SwitchNetworkOverlay extends Component<Props, State> {
             <ActionPanel
                 height={contentHeight}
                 onSlideDown={this.onPanelSlideDown}
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
+                testID="switch-network-overlay"
             >
                 <View style={AppStyles.paddingBottomSml}>
                     <Text numberOfLines={1} style={AppStyles.h5}>

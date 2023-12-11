@@ -159,6 +159,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                         onPress: this.enableDeveloperMode,
                         type: 'continue',
                         light: true,
+                        testID: 'developer-mode-alert-continue-button',
                     },
                 ],
             });
@@ -226,7 +227,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                         {Localize.t('global.networks')}
                     </Text>
                     <TouchableDebounce
-                        testID="change-network-button"
+                        testID="network-settings-button"
                         style={styles.row}
                         onPress={() => {
                             Navigator.push(AppScreens.Settings.Network.List);
@@ -312,7 +313,11 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.developerMode} onChange={this.onDeveloperModeChangeRequest} />
+                            <Switch
+                                testID="developer-mode-switch"
+                                checked={coreSettings.developerMode}
+                                onChange={this.onDeveloperModeChangeRequest}
+                            />
                         </View>
                     </View>
                     <TouchableDebounce

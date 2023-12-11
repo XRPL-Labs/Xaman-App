@@ -31,6 +31,11 @@ Feature: Generate Account
         Given I should have 'home-tab-view'
         Given I should see same account address
 
+    Scenario: Change node to testnet
+        Then I tap 'network-switch-button'
+        Given I should have 'switch-network-overlay'
+        Then I tap 'network-XAHAUTESTNET'
+
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
