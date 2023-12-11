@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { Animated, Easing, InteractionManager, Text, View, ViewStyle, DimensionValue } from 'react-native';
 
@@ -59,7 +60,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
         // network service state change listener
         NetworkService.on('stateChange', this.onNetworkStateChange);
         // network switch events
-        NetworkService.on('networkChange', this.onNetworkChange);
+        NetworkService.on('networkChange', this.debouncedOnNetworkChange);
 
         // start the pulse animation if
         if (networkState === NetworkStateStatus.Connecting) {
@@ -115,12 +116,18 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
         });
     };
 
-    onNetworkChange = (network: NetworkModel) => {
+    onNetworkChange = (switchedNetwork: NetworkModel) => {
         const { onNetworkChange } = this.props;
+        const { network } = this.state;
+
+        // check if it's necessary to set the state
+        if (switchedNetwork.key === network.key) {
+            return;
+        }
 
         this.setState(
             {
-                network,
+                network: switchedNetwork,
             },
             () => {
                 if (typeof onNetworkChange === 'function') {
@@ -129,6 +136,11 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
             },
         );
     };
+
+    debouncedOnNetworkChange = debounce(this.onNetworkChange, 300, {
+        leading: true,
+        trailing: false,
+    });
 
     onSwitcherClose = () => {
         const { onSwitcherClose } = this.props;
@@ -148,7 +160,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
         });
 
         Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork, {
-            onChangeNetwork: this.onNetworkChange,
+            onChangeNetwork: this.debouncedOnNetworkChange,
             onClose: this.onSwitcherClose,
         });
     };
@@ -163,6 +175,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
 
         return (
             <TouchableDebounce
+                testID="network-switch-button"
                 accessibilityRole="button"
                 delayPressIn={0}
                 style={[styles.buttonContainer, containerStyle, { height: height || NetworkSwitchButton.ButtonHeight }]}
