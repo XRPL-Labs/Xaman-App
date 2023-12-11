@@ -56,6 +56,14 @@ const txFlags = {
         SellToken: 0x00000001,
         Approved: 0x00000002,
     },
+
+    URITokenMint: {
+        Burnable: 0x00000001,
+    },
+
+    ClaimReward: {
+        OptOut: 0x00000001,
+    },
 };
 
 // The following are integer (as opposed to bit) flags

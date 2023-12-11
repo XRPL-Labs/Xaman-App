@@ -49,6 +49,12 @@ class Flag {
             case 'NFTokenOffer':
                 flagsList = txFlags.NFTokenCreateOffer;
                 break;
+            case 'URITokenMint':
+                flagsList = txFlags.URITokenMint;
+                break;
+            case 'ClaimReward':
+                flagsList = txFlags.ClaimReward;
+                break;
             default:
                 break;
         }
