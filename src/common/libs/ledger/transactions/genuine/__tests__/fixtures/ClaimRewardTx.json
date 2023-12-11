@@ -3,7 +3,7 @@
     "tx": {
       "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
       "Fee": "8640",
-      "Flags": 0,
+      "Flags": 1,
       "Issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
       "LastLedgerSequence": 312,
       "NetworkID": 21337,

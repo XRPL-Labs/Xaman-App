@@ -19,12 +19,12 @@ describe('ClaimReward', () => {
             expect(instance.Type).toBe('ClaimReward');
         });
 
-        it('Should return right parsed values [Emitted]', () => {
+        it('Should return right parsed values [OptOut]', () => {
             const { tx, meta } = claimRewardTemplates.Emitted;
             const instance = new ClaimReward(tx, meta);
             expect(instance.TransactionType).toBe('ClaimReward');
             expect(instance.Issuer).toBe(claimRewardTemplates.Emitted.tx.Issuer);
-            expect(instance.ClaimStatus).toBe(ClaimRewardStatus.Emitted);
+            expect(instance.ClaimStatus).toBe(ClaimRewardStatus.OptOut);
         });
 
         it('Should return right parsed values [OptIn]', () => {
@@ -41,30 +41,27 @@ describe('ClaimReward', () => {
         const optInInstance = new ClaimReward(claimRewardTemplates.OptIn.tx, claimRewardTemplates.OptIn.meta);
 
         describe('getDescription()', () => {
-            it('should return the expected description [Emitted]', () => {
+            it('should return the expected description [OptOut]', () => {
                 const expectedDescription = `${Localize.t('events.claimRewardExplain')}\n${Localize.t(
-                    'events.claimRewardExplainEmitted',
+                    'events.claimRewardExplainOptOut',
                     { address: emittedInstance.Account.address },
                 )}`;
                 expect(ClaimRewardInfo.getDescription(emittedInstance)).toEqual(expectedDescription);
             });
 
             it('should return the expected description [OptIn]', () => {
-                const expectedDescription = `${Localize.t('events.claimRewardExplain')}\n${Localize.t(
-                    'events.claimRewardExplainOptIn',
-                    { address: optInInstance.Account.address },
-                )}`;
+                const expectedDescription = `${Localize.t('events.claimRewardExplain')}`;
                 expect(ClaimRewardInfo.getDescription(optInInstance)).toEqual(expectedDescription);
             });
         });
 
         describe('getLabel()', () => {
-            it('should return the expected label [Emitted]', () => {
-                expect(ClaimRewardInfo.getLabel(emittedInstance)).toEqual(Localize.t('events.claimReward'));
+            it('should return the expected label [OptOut]', () => {
+                expect(ClaimRewardInfo.getLabel(emittedInstance)).toEqual(Localize.t('events.claimRewardOptOut'));
             });
 
             it('should return the expected label [OptIn]', () => {
-                expect(ClaimRewardInfo.getLabel(optInInstance)).toEqual(Localize.t('events.claimRewardOptIn'));
+                expect(ClaimRewardInfo.getLabel(optInInstance)).toEqual(Localize.t('events.claimReward'));
             });
         });
     });

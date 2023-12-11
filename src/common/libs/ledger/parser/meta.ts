@@ -260,6 +260,7 @@ class Meta {
         return compact(values);
     };
 
+    // TODO: fix me
     parseClaimRewardStatus = (): ClaimRewardStatus => {
         // if there is an emitted transaction from "ADDRESS_ONE", it means the reward has been claimed
         const ADDRESS_ONE = 'rrrrrrrrrrrrrrrrrrrrBZbvji';
@@ -273,10 +274,10 @@ class Meta {
         });
 
         if (emittedTx) {
-            return ClaimRewardStatus.Emitted;
+            return ClaimRewardStatus.OptIn;
         }
 
-        return ClaimRewardStatus.OptIn;
+        return ClaimRewardStatus.OptOut;
     };
 }
 

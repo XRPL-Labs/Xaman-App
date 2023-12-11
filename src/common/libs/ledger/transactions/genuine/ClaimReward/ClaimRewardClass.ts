@@ -2,8 +2,6 @@ import { get, isUndefined } from 'lodash';
 
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
-import Meta from '@common/libs/ledger/parser/meta';
-
 /* Types ==================================================================== */
 import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 import { ClaimRewardStatus } from '@common/libs/ledger/parser/types';
@@ -36,10 +34,11 @@ class ClaimReward extends BaseTransaction {
      * @returns {ClaimRewardStatus} The claim status for the reward.
      */
     get ClaimStatus(): ClaimRewardStatus {
-        if (!this.cachedClaimStatus) {
-            this.cachedClaimStatus = new Meta(this.meta).parseClaimRewardStatus();
+        if (this.Flags?.OptOut) {
+            return ClaimRewardStatus.OptOut;
         }
-        return this.cachedClaimStatus;
+
+        return ClaimRewardStatus.OptIn;
     }
 }
 

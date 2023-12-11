@@ -12,7 +12,7 @@ export enum OfferStatus {
 
 export enum ClaimRewardStatus {
     OptIn = 'OptIn',
-    Emitted = 'Emitted',
+    OptOut = 'OptOut',
 }
 
 export interface BalanceChangeType extends AmountType {

@@ -506,7 +506,7 @@
     "acceptNFTOffer": "Accepter l'offre NFT",
     "setHooks": "Set Hooks",
     "claimReward": "Claim Reward",
-    "claimRewardOptIn": "Claim Reward (Opt In)",
+    "claimRewardOptOut": "Claim Reward (Opt Out)",
     "invoke": "Invoke",
     "import": "Import",
     "canNotFetchTransactions": "Impossible de récupérer les transactions du compte !",
@@ -635,7 +635,7 @@
     "theIssuerIs": "The issuer address set to ${issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainEmitted": "It claims the reward for account %{address}"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
   },
   "xapp": {
     "popular": "Popular",

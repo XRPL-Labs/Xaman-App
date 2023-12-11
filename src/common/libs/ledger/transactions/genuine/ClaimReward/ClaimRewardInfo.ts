@@ -9,10 +9,10 @@ import { ClaimRewardStatus } from '@common/libs/ledger/parser/types';
 const ClaimRewardInfo = {
     getLabel: (tx: ClaimReward): string => {
         switch (tx.ClaimStatus) {
-            case ClaimRewardStatus.Emitted:
-                return Localize.t('events.claimReward');
             case ClaimRewardStatus.OptIn:
-                return Localize.t('events.claimRewardOptIn');
+                return Localize.t('events.claimReward');
+            case ClaimRewardStatus.OptOut:
+                return Localize.t('events.claimRewardOptOut');
             default:
                 return Localize.t('events.claimReward');
         }
@@ -21,14 +21,9 @@ const ClaimRewardInfo = {
     getDescription: (tx: ClaimReward): string => {
         let content = Localize.t('events.claimRewardExplain');
 
-        if (tx.ClaimStatus === ClaimRewardStatus.OptIn) {
+        if (tx.ClaimStatus === ClaimRewardStatus.OptOut) {
             content += '\n';
-            content += Localize.t('events.claimRewardExplainOptIn', { address: tx.Account.address });
-        }
-
-        if (tx.ClaimStatus === ClaimRewardStatus.Emitted) {
-            content += '\n';
-            content += Localize.t('events.claimRewardExplainEmitted', { address: tx.Account.address });
+            content += Localize.t('events.claimRewardExplainOptOut', { address: tx.Account.address });
         }
 
         return content;
