@@ -78,6 +78,15 @@ class EscrowFinishTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+
+                {!isUndefined(transaction.EscrowID) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.escrowID')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.EscrowID}</Text>
+                        </View>
+                    </>
+                )}
             </>
         );
     }

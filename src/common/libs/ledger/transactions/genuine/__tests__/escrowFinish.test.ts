@@ -32,6 +32,7 @@ describe('EscrowFinish', () => {
 
             expect(instance.Fulfillment).toBe(tx.Fulfillment);
             expect(instance.Condition).toBe(tx.Condition);
+            expect(instance.EscrowID).toBe(tx.EscrowID);
 
             expect(instance.OfferSequence).toBe(tx.OfferSequence);
         });
@@ -46,7 +47,8 @@ describe('EscrowFinish', () => {
                 const expectedDescription =
                     'Completion was triggered by rrrrrrrrrrrrrrrrrrrrbzbvji\r\n' +
                     'The escrowed amount of 500000000 XRP was delivered to rrrrrrrrrrrrrrrrrrrrrholvtp\n' +
-                    'The escrow has a destination tag: 1337 \n' +
+                    'The escrow has a destination tag: 1337\n' +
+                    'The transaction escrow ID is: EF963D9313AA45E85610598797D1A65E\n' +
                     'The escrow was created by rrrrrrrrrrrrrrrrrrrrrholvtp';
 
                 expect(EscrowFinishInfo.getDescription(instance)).toEqual(expectedDescription);

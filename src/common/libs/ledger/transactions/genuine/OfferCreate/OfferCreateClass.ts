@@ -29,7 +29,7 @@ class OfferCreate extends BaseTransaction {
         }
 
         // concat keys
-        this.fields = this.fields.concat(['TakerPays', 'TakerGets', 'OfferSequence', 'Expiration']);
+        this.fields = this.fields.concat(['TakerPays', 'TakerGets', 'OfferSequence', 'Expiration', 'OfferID']);
 
         // memorize offer status
         this.offerStatus = undefined;
@@ -107,6 +107,16 @@ class OfferCreate extends BaseTransaction {
         rate = this.TakerGets.currency !== NetworkService.getNativeAsset() ? rate : 1 / rate;
 
         return new Amount(rate, false).toNumber();
+    }
+
+    get OfferID(): string {
+        const OfferID = get(this, ['tx', 'OfferID'], undefined);
+
+        if (isUndefined(OfferID)) {
+            return undefined;
+        }
+
+        return OfferID;
     }
 
     get OfferSequence(): number {

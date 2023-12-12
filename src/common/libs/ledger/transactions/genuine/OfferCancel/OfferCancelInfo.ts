@@ -1,3 +1,4 @@
+import { isUndefined } from 'lodash';
 import { AccountModel } from '@store/models';
 
 import Localize from '@locale';
@@ -11,10 +12,17 @@ const OfferCancelInfo = {
     },
 
     getDescription: (tx: OfferCancel): string => {
-        return Localize.t('events.theTransactionWillCancelOffer', {
+        let content = Localize.t('events.theTransactionWillCancelOffer', {
             address: tx.Account.address,
             offerSequence: tx.OfferSequence,
         });
+
+        if (!isUndefined(tx.OfferID)) {
+            content += '\n';
+            content += Localize.t('events.theTransactionHasAOfferId', { offerId: tx.OfferID });
+        }
+
+        return content;
     },
 
     getRecipient: (tx: OfferCancel, account: AccountModel): { address: string; tag?: number } => {

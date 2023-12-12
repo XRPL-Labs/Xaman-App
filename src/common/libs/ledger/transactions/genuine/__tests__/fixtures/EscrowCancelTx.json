@@ -3,7 +3,8 @@
     "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
     "TransactionType": "EscrowCancel",
     "Owner": "rrrrrrrrrrrrrrrrrrrrrholvtp",
-    "OfferSequence": 7
+    "OfferSequence": 7,
+    "EscrowID": "EF963D9313AA45E85610598797D1A65E"
   },
   "meta": {}
 }

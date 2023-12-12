@@ -29,6 +29,7 @@ describe('OfferCreate tx', () => {
             expect(instance.OfferSequence).toBe(94);
             expect(instance.Rate).toBe(0.000024271999999999997);
             expect(instance.Expiration).toBe(undefined);
+            expect(instance.OfferID).toBe(tx.OfferID);
 
             expect(instance.TakerPays).toStrictEqual({
                 currency: 'BTC',
@@ -206,9 +207,12 @@ describe('OfferCreate tx', () => {
                 })}\n${Localize.t('events.theTransactionIsAlsoCancelOffer', {
                     address: instance.Account.address,
                     offerSequence: instance.OfferSequence,
-                })}\n${Localize.t('events.theOfferExpiresAtUnlessCanceledOrConsumed', {
-                    expiration: moment(instance.Expiration).format('LLLL'),
-                })}`;
+                })}\n${Localize.t('events.theTransactionHasAOfferId', { offerId: tx.OfferID })}\n${Localize.t(
+                    'events.theOfferExpiresAtUnlessCanceledOrConsumed',
+                    {
+                        expiration: moment(instance.Expiration).format('LLLL'),
+                    },
+                )}`;
 
                 expect(OfferCreateInfo.getDescription(instance)).toEqual(expectedDescription);
             });

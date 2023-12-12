@@ -18,7 +18,7 @@ class EscrowCancel extends BaseTransaction {
             this.TransactionType = EscrowCancel.Type;
         }
 
-        this.fields = this.fields.concat(['OfferSequence', 'Owner']);
+        this.fields = this.fields.concat(['OfferSequence', 'Owner', 'EscrowID']);
     }
 
     set Owner(owner: string) {
@@ -35,6 +35,14 @@ class EscrowCancel extends BaseTransaction {
 
     get OfferSequence(): number {
         return get(this, ['tx', 'OfferSequence'], undefined);
+    }
+
+    set EscrowID(escrowID: string) {
+        set(this, ['tx', 'EscrowID'], escrowID);
+    }
+
+    get EscrowID(): number {
+        return get(this, ['tx', 'EscrowID'], undefined);
     }
 }
 

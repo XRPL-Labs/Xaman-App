@@ -1,3 +1,4 @@
+import { isUndefined } from 'lodash';
 import moment from 'moment-timezone';
 
 import NetworkService from '@services/NetworkService';
@@ -44,12 +45,17 @@ const OfferCreateInfo = {
                     : NormalizeCurrencyCode(tx.TakerGets.currency),
         });
 
-        if (typeof tx.OfferSequence === 'number') {
+        if (!isUndefined(tx.OfferSequence)) {
             content += '\n';
             content += Localize.t('events.theTransactionIsAlsoCancelOffer', {
                 address: tx.Account.address,
                 offerSequence: tx.OfferSequence,
             });
+        }
+
+        if (!isUndefined(tx.OfferID)) {
+            content += '\n';
+            content += Localize.t('events.theTransactionHasAOfferId', { offerId: tx.OfferID });
         }
 
         if (tx.Expiration) {

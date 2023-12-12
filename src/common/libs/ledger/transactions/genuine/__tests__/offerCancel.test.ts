@@ -21,6 +21,7 @@ describe('OfferCancel tx', () => {
             const instance = new OfferCancel(tx, meta);
 
             expect(instance.OfferSequence).toBe(6);
+            expect(instance.OfferID).toBe(tx.OfferID);
         });
     });
 
@@ -30,10 +31,10 @@ describe('OfferCancel tx', () => {
                 const { tx, meta } = offerCancelTemplates;
                 const instance = new OfferCancel(tx, meta);
 
-                const expectedDescription = Localize.t('events.theTransactionWillCancelOffer', {
+                const expectedDescription = `${Localize.t('events.theTransactionWillCancelOffer', {
                     address: instance.Account.address,
                     offerSequence: instance.OfferSequence,
-                });
+                })}\n${Localize.t('events.theTransactionHasAOfferId', { offerId: tx.OfferID })}`;
 
                 expect(OfferCancelInfo.getDescription(instance)).toEqual(expectedDescription);
             });

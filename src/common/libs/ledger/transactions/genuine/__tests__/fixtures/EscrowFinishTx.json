@@ -4,6 +4,7 @@
     "Account": "rrrrrrrrrrrrrrrrrrrrbzbvji",
     "Fulfillment": "A0028000",
     "Condition": "A0258020E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855810100",
+    "EscrowID": "EF963D9313AA45E85610598797D1A65E",
     "Fee": "12",
     "Flags": 2147483648,
     "LastLedgerSequence": 57885237,

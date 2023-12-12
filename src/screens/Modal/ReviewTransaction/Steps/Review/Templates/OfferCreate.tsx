@@ -165,6 +165,15 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </>
                 )}
 
+                {!isUndefined(transaction.OfferID) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.offerID')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.OfferID}</Text>
+                        </View>
+                    </>
+                )}
+
                 {!isUndefined(transaction.OfferSequence) && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.offerSequence')}</Text>

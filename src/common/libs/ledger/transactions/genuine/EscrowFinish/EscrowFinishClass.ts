@@ -23,7 +23,7 @@ class EscrowFinish extends BaseTransaction {
             this.TransactionType = EscrowFinish.Type;
         }
 
-        this.fields = this.fields.concat(['Owner', 'OfferSequence', 'Condition', 'Fulfillment']);
+        this.fields = this.fields.concat(['Owner', 'OfferSequence', 'Condition', 'Fulfillment', 'EscrowID']);
     }
 
     get Amount(): AmountType {
@@ -97,6 +97,14 @@ class EscrowFinish extends BaseTransaction {
 
     get OfferSequence(): number {
         return get(this, ['tx', 'OfferSequence']);
+    }
+
+    set EscrowID(escrowID: string) {
+        set(this, ['tx', 'EscrowID'], escrowID);
+    }
+
+    get EscrowID(): number {
+        return get(this, ['tx', 'EscrowID'], undefined);
     }
 }
 

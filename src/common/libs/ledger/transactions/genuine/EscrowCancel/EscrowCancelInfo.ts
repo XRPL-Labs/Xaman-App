@@ -1,8 +1,11 @@
+import { isUndefined } from 'lodash';
+
+import { AccountModel } from '@store/models';
+
 import Localize from '@locale';
 
 import EscrowCancel from './EscrowCancelClass';
 import EscrowCreate from '../EscrowCreate/EscrowCreateClass';
-import { AccountModel } from '@store/models';
 
 /* Descriptor ==================================================================== */
 const EscrowCancelInfo = {
@@ -12,7 +15,14 @@ const EscrowCancelInfo = {
 
     getDescription: (tx: EscrowCancel): string => {
         // TODO: add more description
-        return `This is an ${tx.Type} transaction`;
+        let content = `This is an ${tx.Type} transaction`;
+
+        if (!isUndefined(tx.EscrowID)) {
+            content += '\n';
+            content += Localize.t('events.theTransactionHasAEscrowId', { escrowId: tx.EscrowID });
+        }
+
+        return content;
     },
 
     getRecipient: (tx: EscrowCreate, account: AccountModel): { address: string; tag?: number } => {

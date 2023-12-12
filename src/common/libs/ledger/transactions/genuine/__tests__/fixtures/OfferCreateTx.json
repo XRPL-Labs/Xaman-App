@@ -423,6 +423,7 @@
       "Flags": 2148139008,
       "Sequence": 94,
       "SigningPubKey": "0350714189757DA0403CE1FF2025522337EA1B60D9796B11D5559EE914982D6AC3",
+      "OfferID": "EF963D9313AA45E85610598797D1A65E",
       "TakerGets": "500000000",
       "TakerPays": {
         "currency": "BTC",
@@ -1386,6 +1387,7 @@
         "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
         "value": "0.01257"
       },
+      "OfferID": "EF963D9313AA45E85610598797D1A65E",
       "TakerPays": "484553386",
       "Expiration": 685445908,
       "TransactionType": "OfferCreate",

@@ -1,3 +1,4 @@
+import { isUndefined } from 'lodash';
 import { AccountModel } from '@store/models';
 
 import Localize from '@locale';
@@ -18,10 +19,14 @@ const EscrowFinishInfo = {
             destination: tx.Destination.address,
         });
 
-        if (tx.Destination.tag) {
+        if (!isUndefined(tx.Destination.tag)) {
             content += '\n';
             content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
-            content += ' ';
+        }
+
+        if (!isUndefined(tx.EscrowID)) {
+            content += '\n';
+            content += Localize.t('events.theTransactionHasAEscrowId', { escrowId: tx.EscrowID });
         }
 
         content += '\n';

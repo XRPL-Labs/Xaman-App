@@ -20,6 +20,7 @@ describe('EscrowCancel tx', () => {
             const instance = new EscrowCancel(tx, meta);
 
             expect(instance.Owner).toBe('rrrrrrrrrrrrrrrrrrrrrholvtp');
+            expect(instance.EscrowID).toBe(tx.EscrowID);
 
             expect(instance.OfferSequence).toBe(7);
         });
@@ -32,13 +33,14 @@ describe('EscrowCancel tx', () => {
                 const instance = new EscrowCancel(tx, meta);
 
                 // TODO: add description tests
-                // const expectedDescription = Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', {
-                //     address: tx.Authorize,
-                // });
-                //
-                // expect(EscrowCancelInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `${`This is an ${instance.Type} transaction`}\n${Localize.t(
+                    'events.theTransactionHasAEscrowId',
+                    {
+                        escrowId: tx.EscrowID,
+                    },
+                )}`;
 
-                expect(instance).toBeDefined();
+                expect(EscrowCancelInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 

@@ -19,11 +19,21 @@ class OfferCancel extends BaseTransaction {
             this.TransactionType = OfferCancel.Type;
         }
 
-        this.fields = this.fields.concat(['OfferSequence']);
+        this.fields = this.fields.concat(['OfferSequence', 'OfferID']);
     }
 
     get OfferSequence(): number {
         return get(this, ['tx', 'OfferSequence']);
+    }
+
+    get OfferID(): string {
+        const OfferID = get(this, ['tx', 'OfferID'], undefined);
+
+        if (isUndefined(OfferID)) {
+            return undefined;
+        }
+
+        return OfferID;
     }
 }
 
