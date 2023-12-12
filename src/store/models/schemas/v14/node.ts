@@ -26,7 +26,7 @@ const NodeSchema = {
 
         for (let i = 0; i < networks.length; i++) {
             const network = networks[i];
-            const networkConfig = NetworkConfig.networks.find((net) => net.networkId === network.id);
+            const networkConfig = NetworkConfig.networks.find((net) => net.key === network.key);
             const createdNodes = [] as any[];
 
             for (let y = 0; y < networkConfig.nodes.length; y++) {

@@ -48,6 +48,7 @@ export default class Storage {
                 // NOTE: this method should be represented in onFirstOpen but as this method is causing in the current
                 // version of realm we do it manually
                 await this.populateDataStoreIfNeeded();
+
                 resolve();
             } catch (e) {
                 reject(e);
@@ -101,8 +102,8 @@ export default class Storage {
                 }
 
                 resolve(latest.schemaVersion);
-            } catch (e) {
-                reject(e);
+            } catch (error) {
+                reject(error);
             }
         });
     };
@@ -155,9 +156,9 @@ export default class Storage {
                     }
                 });
                 resolve();
-            } catch (e) {
-                this.logger.error('initRepositories Error:', e);
-                reject();
+            } catch (error) {
+                this.logger.error('initRepositories:', error);
+                reject(error);
             }
         });
     };
@@ -181,9 +182,9 @@ export default class Storage {
                 }
 
                 resolve();
-            } catch (e) {
-                this.logger.error('populateDataStoreIfNeeded Error:', e);
-                reject();
+            } catch (error) {
+                this.logger.error('populateDataStoreIfNeeded:', error);
+                reject(error);
             }
         });
     };
