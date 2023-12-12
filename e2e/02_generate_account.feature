@@ -40,7 +40,7 @@ Feature: Generate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
         Then I should wait 20 sec to see 'tokens-list-empty-view'
-        Given I should see '90' in 'account-native-balance'
+        Given I should see '99' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
@@ -52,8 +52,6 @@ Feature: Generate Account
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
         Then I slide right 'accept-button'
-        Given I should wait 10 sec to see 'new-trust-line-alert-overlay'
-        Then I tap 'continue-button'
         Then I type my passcode
         Given I should see 'submitting-view'
         Given I should wait 20 sec to see 'success-result-view'
@@ -102,7 +100,7 @@ Feature: Generate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
         Then I should wait 20 sec to see 'tokens-list-empty-view'
-        Given I should see '90' in 'account-native-balance'
+        Given I should see '99' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
@@ -114,8 +112,6 @@ Feature: Generate Account
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
         Then I slide right 'accept-button'
-        Given I should wait 10 sec to see 'new-trust-line-alert-overlay'
-        Then I tap 'continue-button'
         Then I enter my passphrase in 'passphrase-input'
         Then I tap 'sign-button'
         Given I should see 'submitting-view'
@@ -147,15 +143,13 @@ Feature: Generate Account
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
         Then I tap 'counterParty-Bitstamp'
-        Then I tap 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.BTC'
+        Then I tap 'currency-rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.EUR'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'
         Then I slide right 'accept-button'
-        Given I should wait 10 sec to see 'new-trust-line-alert-overlay'
-        Then I tap 'continue-button'
         Then I enter my new passphrase in 'passphrase-input'
         Then I tap 'sign-button'
         Given I should see 'submitting-view'

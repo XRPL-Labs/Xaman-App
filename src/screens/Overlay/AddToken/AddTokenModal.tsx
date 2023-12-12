@@ -220,7 +220,7 @@ class AddTokenModal extends Component<Props, State> {
 
             return (
                 <TouchableDebounce
-                    testID={`currency=${currency.id}`}
+                    testID={`currency-${currency.issuer}.${currency.currency}`}
                     key={index}
                     style={[styles.listItem, selected && styles.selectedRow]}
                     onPress={() => {
