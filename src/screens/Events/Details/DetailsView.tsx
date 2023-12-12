@@ -945,7 +945,6 @@ class TransactionDetailsView extends Component<Props, State> {
 
             // all new transactions types
             case TransactionTypes.Import:
-            case TransactionTypes.SetHook:
             case TransactionTypes.GenesisMint:
             case TransactionTypes.EnableAmendment: {
                 const balanceChanges = tx.BalanceChange(account.address);
