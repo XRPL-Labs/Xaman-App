@@ -4,6 +4,8 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
+import Realm from 'realm';
+
 import { Platform } from 'react-native';
 
 import { XrplDefinitions, DefinitionsData } from 'xrpl-accountlib';
@@ -47,7 +49,7 @@ class NetworkService extends EventEmitter {
     public connection: XrplClient;
     private status: NetworkStateStatus;
     private networkReserve: any;
-    private lastNetworkErrorId: number;
+    private lastNetworkErrorId: Realm.BSON.ObjectId;
 
     private logger: any;
 
@@ -230,7 +232,7 @@ class NetworkService extends EventEmitter {
      * @returns {number}
      */
     getNetworkId = (): number => {
-        return this.network.id;
+        return this.network.networkId;
     };
 
     /**
@@ -300,7 +302,7 @@ class NetworkService extends EventEmitter {
     getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: string } => {
         return {
             networkKey: this.network.key,
-            networkId: this.network.id,
+            networkId: this.network.networkId,
             node: this.network.defaultNode.endpoint,
             type: this.network.type,
         };
@@ -314,12 +316,12 @@ class NetworkService extends EventEmitter {
         return new Promise((resolve, reject) => {
             try {
                 // nothing has been changed
-                if (network.id === this.network.id && network.defaultNode === this.network.defaultNode) {
+                if (network.id.equals(this.network.id) && network.defaultNode === this.network.defaultNode) {
                     return;
                 }
 
                 this.logger.debug(
-                    `Switch network ${network.name} [id-${network.id}][node-${network.defaultNode.endpoint}]`,
+                    `Switch network ${network.name} [id-${network.networkId}][node-${network.defaultNode.endpoint}]`,
                 );
 
                 // change network
@@ -431,7 +433,7 @@ class NetworkService extends EventEmitter {
     send = async (payload: any): Promise<any> => {
         const payloadWithNetworkId = {
             ...payload,
-            id: `${payload.id || uuidv4()}.${this.network.id}`,
+            id: `${payload.id || uuidv4()}.${this.network?.id.toHexString()}`,
         };
 
         const res = await this.connection.send(payloadWithNetworkId, {
@@ -440,11 +442,11 @@ class NetworkService extends EventEmitter {
 
         const [resId, resNetworkId] = res.id?.split('.') || [];
 
-        if (resNetworkId !== this.network.id.toString()) {
+        if (resNetworkId !== this.network?.id.toHexString()) {
             throw new Error('Mismatched network ID in response.');
         }
 
-        return typeof res === 'object' ? { ...res, id: resId, networkId: this.network.id } : res;
+        return typeof res === 'object' ? { ...res, id: resId, networkId: this.network.networkId } : res;
     };
 
     /**
@@ -561,7 +563,7 @@ class NetworkService extends EventEmitter {
         this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
         // show error if necessary
-        if (this.lastNetworkErrorId !== this.network.id) {
+        if (!this.network?.id.equals(this.lastNetworkErrorId)) {
             this.showConnectionProblem();
             this.lastNetworkErrorId = this.network.id;
         }
@@ -598,7 +600,7 @@ class NetworkService extends EventEmitter {
         [this.updateNetworkReserve, this.updateNetworkDefinitions, this.updateNetworkFeatures].forEach((fn) => fn());
 
         // emit on connect event
-        this.emit('connect', this.network.id);
+        this.emit('connect', { network: this.network });
     };
 
     /**

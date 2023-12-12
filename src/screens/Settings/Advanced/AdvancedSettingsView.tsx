@@ -177,7 +177,7 @@ class AdvancedSettingsView extends Component<Props, State> {
         }
 
         // get default network object
-        const defaultNetwork = NetworkRepository.findOne({ id: NetworkConfig.defaultNetworkId });
+        const defaultNetwork = NetworkRepository.findOne({ networkId: NetworkConfig.defaultNetworkId });
 
         Navigator.showAlertModal({
             type: 'warning',

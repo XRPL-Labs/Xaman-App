@@ -1,5 +1,5 @@
 /**
- * Network Schema v14
+ * Network Schema v15
  */
 
 import Realm from 'realm';
@@ -13,8 +13,9 @@ const NetworkSchema = {
         name: 'Network',
         primaryKey: 'id',
         properties: {
-            id: { type: 'int' },
+            id: { type: 'objectId' },
             key: { type: 'string' },
+            networkId: { type: 'int' },
             name: { type: 'string' },
             color: { type: 'string' },
             type: { type: 'string' },
@@ -41,8 +42,9 @@ const NetworkSchema = {
         // create networks
         for (let i = 0; i < networks.length; i++) {
             realm.create(NetworkSchema.schema.name, {
-                id: networks[i].networkId,
+                id: new Realm.BSON.ObjectId(),
                 key: networks[i].key,
+                networkId: networks[i].networkId,
                 name: networks[i].name,
                 nativeAsset: networks[i].nativeAsset,
                 color: networks[i].color,
@@ -59,10 +61,18 @@ const NetworkSchema = {
 
     migration: (oldRealm: Realm, newRealm: Realm) => {
         /*  eslint-disable-next-line */
-        console.log('migrating Network schema to 14');
+        console.log('migrating Network schema to 15');
 
-        // populate networks
-        NetworkSchema.populate(newRealm);
+        // get network objects
+        const oldNetworks = oldRealm.objects('Network') as unknown as any[];
+        const newNetworks = newRealm.objects('Network') as unknown as any[];
+
+        // New field `networkId`
+        // Modified type field `id`
+        for (let i = 0; i < newNetworks.length; i++) {
+            newNetworks[i].id = new Realm.BSON.ObjectId();
+            newNetworks[i].networkId = oldNetworks.find((network) => network.key === newNetworks[i].key).id;
+        }
     },
 };
 

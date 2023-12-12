@@ -95,8 +95,10 @@ class NetworkSettingView extends Component<Props, State> {
             defaultNode: node,
         });
 
+        const connectedNetwork = NetworkService.getNetwork();
+
         // switch to the new default node if we already connected to the same network
-        if (network.id === NetworkService.getNetworkId()) {
+        if (network.id.equals(connectedNetwork.id)) {
             await NetworkService.switchNetwork(network);
         }
 

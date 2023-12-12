@@ -13,19 +13,19 @@ describe('Storage', () => {
             const sorted = sortBy(require('../../models/schemas').default, [(v) => v.schemaVersion]);
             const latest = sorted.slice(-1)[0];
 
-            const spy = jest.spyOn(latest, 'populate');
+            const populateSpy = jest.spyOn(latest, 'populate');
 
             // initialize the storage
             await storage.initialize();
 
             expect(storage.dataStore).toBeDefined();
-            // should have latest schema version
+            // should have the latest schema version
             expect(storage.dataStore.schemaVersion).toBe(latest.schemaVersion);
 
             // should have been called the populate method
-            expect(spy).toBeCalled();
+            expect(populateSpy).toBeCalled();
 
-            spy.mockRestore();
+            populateSpy.mockRestore();
         });
 
         afterAll(() => {

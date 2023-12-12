@@ -207,7 +207,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
                         ]}
                     />
                     <View
-                        key={network.id}
+                        key={`${network.id.toHexString()}`}
                         style={[
                             AppStyles.centerContent,
                             AppStyles.centerAligned,

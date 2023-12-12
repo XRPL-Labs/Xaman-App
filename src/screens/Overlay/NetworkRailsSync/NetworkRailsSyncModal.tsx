@@ -2,8 +2,7 @@
  * Network rails sync modal
  */
 
-import Realm from 'realm';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView, InteractionManager, Alert } from 'react-native';
@@ -11,9 +10,8 @@ import { View, Text, ScrollView, InteractionManager, Alert } from 'react-native'
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { NodeModel } from '@store/models';
-import { NetworkRailsChangesType, NetworkType } from '@store/types';
-import { CoreRepository, NetworkRepository, NodeRepository } from '@store/repositories';
+import { NetworkRailsChangesType } from '@store/types';
+import { NetworkRepository } from '@store/repositories';
 
 import BackendService from '@services/BackendService';
 import NetworkService from '@services/NetworkService';
@@ -77,14 +75,14 @@ class NetworkRailsSyncModal extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    onError = (error: any) => {
+    onError = (error: Error) => {
         const { onError } = this.props;
 
         // close overlay
         this.onDismissPress();
 
         // show error
-        Alert.alert(Localize.t('global.unexpectedErrorOccurred'), error?.toString());
+        Alert.alert(Localize.t('global.unexpectedErrorOccurred'), error?.message);
 
         // callback
         if (typeof onError === 'function') {
@@ -107,103 +105,11 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
     fetchChanges = async () => {
         try {
-            // get core settings
-            const coreSettings = CoreRepository.getSettings();
-
             // fetch network rails
             const rails = await BackendService.getNetworkRails();
 
-            // keep track of changes
-            const changes = {} as any;
-
-            // added || existing network
-            Object.keys(rails).forEach((networkKey) => {
-                // clean up networks from duplicated items
-                const foundNetworks = NetworkRepository.findBy('key', networkKey);
-                if (foundNetworks.length > 1) {
-                    for (const duplicatedNetwork of foundNetworks) {
-                        if (duplicatedNetwork.id !== coreSettings.network.id) {
-                            NetworkRepository.delete(duplicatedNetwork);
-                        }
-                    }
-                }
-
-                // default changes
-                changes[networkKey] = [];
-
-                const remoteNetwork = rails[networkKey];
-                const localeNetwork = NetworkRepository.findOne({ key: networkKey });
-
-                // new network is added
-                if (!localeNetwork) {
-                    changes[networkKey].push({
-                        type: NetworkRailsChangesType.AddedNetwork,
-                        value: remoteNetwork.name,
-                    });
-                    remoteNetwork.endpoints.forEach((node) => {
-                        changes[networkKey].push({
-                            type: NetworkRailsChangesType.AddedNode,
-                            value: node.url,
-                        });
-                    });
-                    return;
-                }
-
-                // added new node
-                remoteNetwork.endpoints.forEach((endpoint) => {
-                    if (!localeNetwork.nodes.find((node) => endpoint.url === node.endpoint)) {
-                        changes[networkKey].push({
-                            type: NetworkRailsChangesType.AddedNode,
-                            value: endpoint.url,
-                        });
-                    }
-                });
-
-                // removed node
-                localeNetwork.nodes.forEach((node) => {
-                    if (!remoteNetwork.endpoints.find((endpoint) => endpoint.url === node.endpoint)) {
-                        changes[networkKey].push({
-                            type: NetworkRailsChangesType.RemovedNode,
-                            value: node.endpoint,
-                        });
-                    }
-                });
-
-                // changed property
-                [
-                    { locale: 'name', remote: 'name' },
-                    { locale: 'color', remote: 'color' },
-                    { locale: 'nativeAsset.asset', remote: 'native_asset' },
-                    { locale: 'nativeAsset.icon', remote: 'icons.icon_asset' },
-                    { locale: 'nativeAsset.iconSquare', remote: 'icons.icon_square' },
-                ].forEach((property) => {
-                    if (get(remoteNetwork, property.remote) !== get(localeNetwork, property.locale)) {
-                        changes[networkKey].push({
-                            type: NetworkRailsChangesType.ChangedProperty,
-                            value: property.locale,
-                        });
-                    }
-                });
-            });
-
-            // removed networks
-            NetworkRepository.findAll().forEach((network) => {
-                if (!Object.keys(rails).includes(network.key)) {
-                    changes[network.key] = [
-                        {
-                            type: NetworkRailsChangesType.RemovedNetwork,
-                            value: network.name,
-                        },
-                    ];
-                }
-            });
-
-            // clean up
-            Object.keys(changes).forEach((key) => {
-                if (changes[key].length === 0) {
-                    delete changes[key];
-                }
-            });
+            // process the network changes from rails response
+            const changes = NetworkRepository.getNetworkChanges(rails);
 
             // user could have been already closed the modal
             if (this.mounted) {
@@ -236,23 +142,22 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 
         try {
             // get connect network details
-            const connectionDetails = NetworkService.getConnectionDetails();
+            const connectedNetwork = NetworkService.getNetwork();
 
-            // validate changes
+            // validate changes before running the sync and applying the changes
             for (const networkKey of Object.keys(changes)) {
                 for (const change of changes[networkKey]) {
-                    if (
-                        change.type === NetworkRailsChangesType.RemovedNetwork &&
-                        networkKey === connectionDetails.networkKey
-                    ) {
+                    if (change.type === NetworkRailsChangesType.RemovedNetwork && networkKey === connectedNetwork.key) {
                         throw new Error(
-                            Localize.t('settings.syncRailsRemoveNetworkWarning', { currentNetwork: change.value }),
+                            Localize.t('settings.syncRailsRemoveNetworkWarning', {
+                                currentNetwork: connectedNetwork.name,
+                            }),
                         );
                     }
 
                     if (
                         change.type === NetworkRailsChangesType.RemovedNode &&
-                        change.value === connectionDetails.node
+                        change.value === connectedNetwork.defaultNode.endpoint
                     ) {
                         throw new Error(
                             Localize.t('settings.syncRailsRemoveNodeWarning', { connectedNode: change.value }),
@@ -261,74 +166,8 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                 }
             }
 
-            for (const networkKey of Object.keys(rails)) {
-                if (!Object.keys(changes).includes(networkKey)) {
-                    // nothing changed for this network
-                    continue;
-                }
-
-                // apply network changes
-                const network = await NetworkRepository.update({
-                    id: rails[networkKey].chain_id,
-                    key: networkKey,
-                    name: rails[networkKey].name,
-                    type: rails[networkKey].is_livenet ? NetworkType.Main : NetworkType.Test,
-                    nativeAsset: {
-                        asset: rails[networkKey].native_asset,
-                        icon: rails[networkKey].icons.icon_asset,
-                        iconSquare: rails[networkKey].icons.icon_square,
-                    },
-                    color: rails[networkKey].color,
-                    updatedAt: new Date(),
-                });
-
-                const nodes = [] as unknown as Realm.List<NodeModel>;
-
-                // added node
-                for (const { url } of rails[networkKey].endpoints) {
-                    if (!network.nodes.find((node) => node.endpoint === url)) {
-                        nodes.push(
-                            await NodeRepository.create({
-                                id: new Realm.BSON.ObjectId(),
-                                endpoint: url,
-                                registerAt: new Date(),
-                                updatedAt: new Date(),
-                            }),
-                        );
-                    }
-                }
-
-                for (const node of network.nodes) {
-                    // remove node
-                    if (!rails[networkKey].endpoints.find((endpoint) => endpoint.url === node.endpoint)) {
-                        await NodeRepository.delete(node);
-                    } else {
-                        nodes.push(node);
-                    }
-                }
-
-                // apply new nodes list
-                await NetworkRepository.update({
-                    id: network.id,
-                    nodes,
-                });
-
-                // check if we removed the default node for this network
-                if (!network.defaultNode || !network.defaultNode.isValid()) {
-                    await NetworkRepository.update({
-                        id: rails[networkKey].chain_id,
-                        defaultNode: nodes[0],
-                    });
-                }
-            }
-
-            // removed networks
-            NetworkRepository.findAll().forEach((network) => {
-                if (!Object.keys(rails).includes(network.key)) {
-                    NetworkRepository.delete(network);
-                }
-            });
-
+            // apply network changes
+            await NetworkRepository.applyNetworkChanges(rails, changes);
             // success
             this.onSuccessSync();
         } catch (error: any) {

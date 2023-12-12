@@ -25,10 +25,12 @@ interface NativeAsset {
 class Network extends Realm.Object<Network> {
     static schema: Realm.ObjectSchema = NetworkSchema.schema;
 
-    /** Unique identifier representing this specific network. (ex: 1) */
-    public id: number;
+    /** Unique identifier representing this specific network */
+    public id: Realm.BSON.ObjectId;
     /** A unique key identifier for the network. (ex: TESTNET) */
     public key: string;
+    /** A number representing network/chain id */
+    public networkId: number;
     /** Descriptive name of the network. */
     public name: string;
     /** Hex Color associated with the network. */

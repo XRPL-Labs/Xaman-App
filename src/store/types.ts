@@ -45,4 +45,6 @@ export enum NetworkRailsChangesType {
     ChangedProperty = 'ChangedProperty',
 }
 
+export type NetworkRailsChanges = { [key: string]: { type: NetworkRailsChangesType; value: string }[] };
+
 export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

@@ -234,6 +234,16 @@ describe('Storage', () => {
             instance.close();
         });
 
+        it('should run v15 migrations successfully', async () => {
+            const instance = RealmTestUtils.getRealmInstanceWithVersion(15);
+            expect(instance.schemaVersion).toBe(15);
+
+            const network = RealmTestUtils.getFirstModelItem(instance, 'Network');
+            expect(network.networkId).toBe(0);
+
+            instance.close();
+        });
+
         afterAll(() => {
             RealmTestUtils.cleanup();
         });

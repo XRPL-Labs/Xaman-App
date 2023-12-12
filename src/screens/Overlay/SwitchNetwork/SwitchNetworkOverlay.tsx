@@ -113,7 +113,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         const { coreSettings } = this.state;
 
         // if network has been changed
-        if (network.id !== coreSettings.network.id) {
+        if (!network.id.equals(coreSettings.network.id)) {
             // switch network
             NetworkService.switchNetwork(network);
             // callback
@@ -142,14 +142,14 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         const { coreSettings } = this.state;
 
         // check if network is selected
-        const selected = network.id === coreSettings.network.id;
+        const selected = network.id.equals(coreSettings.network.id);
 
         return (
             <TouchableDebounce
                 testID={`network-${network.key}`}
                 // eslint-disable-next-line react/jsx-no-bind
                 onPress={this.changeNetwork.bind(null, network)}
-                key={`${network.id}`}
+                key={`${network.id.toHexString()}`}
                 style={[AppStyles.row, AppStyles.centerAligned, styles.networkRow, { height: ROW_ITEM_HEIGHT }]}
             >
                 <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>

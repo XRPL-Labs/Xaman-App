@@ -124,7 +124,7 @@ class Account extends Realm.Object<Account> {
      */
     private getDetails(): AccountDetails {
         const network = CoreRepository.getSelectedNetwork();
-        return this.details.find((d) => d.network?.id === network.id);
+        return this.details.find((details) => network?.id.equals(details.network?.id));
     }
 }
 
