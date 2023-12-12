@@ -76,8 +76,10 @@ class HooksExplainer extends Component<Props, State> {
             uri: `${AppConfig.hooksExplainerURL}${Localize.getCurrentLocale()}`,
             method: 'POST',
             body: JSON.stringify(params),
-            'User-Agent': 'Xaman',
-            'Content-Type': 'application/json',
+            headers: {
+                'User-Agent': 'Xaman',
+                'Content-Type': 'application/json',
+            },
         };
     };
 
