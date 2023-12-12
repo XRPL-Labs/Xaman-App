@@ -139,7 +139,7 @@ class ResultStep extends Component<Props, State> {
                     <Text
                         style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreen, AppStyles.textCenterAligned]}
                     >
-                        {Localize.t('send.transferredSuccessfully')}
+                        {Localize.t('send.transferredSuccessfully', { network: NetworkService.getNetwork().name })}
                     </Text>
                 </View>
 

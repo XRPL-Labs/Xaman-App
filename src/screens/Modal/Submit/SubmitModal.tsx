@@ -21,7 +21,7 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { LedgerService, StyleService } from '@services';
+import { LedgerService, StyleService, NetworkService } from '@services';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 // components
@@ -142,7 +142,7 @@ class SubmitModal extends Component<Props, State> {
                         <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                            {Localize.t('send.submittingToLedger')}
+                            {Localize.t('send.submittingToLedger', { network: NetworkService.getNetwork().name })}
                         </Text>
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                             {Localize.t('global.thisMayTakeFewSeconds')}
