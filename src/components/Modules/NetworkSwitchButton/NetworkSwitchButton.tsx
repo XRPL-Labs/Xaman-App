@@ -131,7 +131,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
             },
             () => {
                 if (typeof onNetworkChange === 'function') {
-                    onNetworkChange(network);
+                    onNetworkChange(switchedNetwork);
                 }
             },
         );
