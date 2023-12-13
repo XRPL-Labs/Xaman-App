@@ -42,7 +42,7 @@ class NetworkRepository extends BaseRepository<NetworkModel> {
     };
 
     getNetworkChanges = (rails: XamanBackend.NetworkRailsResponse): NetworkRailsChanges => {
-        // check for duplicate keys in the response
+        // check for duplicate keys in the response, should never happens
         const railsNetworkKeys = Object.keys(rails);
         if (railsNetworkKeys.length !== new Set(railsNetworkKeys).size) {
             throw new Error('Duplicate keys found in the rails response');
@@ -142,6 +142,7 @@ class NetworkRepository extends BaseRepository<NetworkModel> {
 
             // craft the new network object
             const networkObject: Partial<NetworkModel> = {
+                key: networkKey,
                 name: rails[networkKey].name,
                 networkId: rails[networkKey].chain_id,
                 type: rails[networkKey].is_livenet ? NetworkType.Main : NetworkType.Test,
