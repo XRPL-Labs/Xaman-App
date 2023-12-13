@@ -4,7 +4,7 @@
 /* eslint-disable max-classes-per-file */
 import { filter, find, first, isEmpty } from 'lodash';
 import React, { Component } from 'react';
-import { InteractionManager, Text, View } from 'react-native';
+import { Image, InteractionManager, Text, View } from 'react-native';
 
 import { NetworkService } from '@services';
 
@@ -13,7 +13,7 @@ import { NetworkType } from '@store/types';
 import { AccountModel } from '@store/models';
 
 // components
-import { Icon, InfoMessage, Spacer } from '@components/General';
+import { Button, Icon, InfoMessage, Spacer } from '@components/General';
 import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
 
 import { AppScreens } from '@common/constants';
@@ -29,6 +29,7 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+import { Images } from '@common/helpers/images';
 
 /* types ==================================================================== */
 enum RequiredActionsType {
@@ -378,22 +379,27 @@ class PreflightStep extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.contentContainer}>
-                <Icon name="IconInfo" style={styles.infoIcon} size={80} />
+            <View style={styles.errorContainer}>
+                <Image source={Images.ImageArrowUp} style={styles.arrowUpImage} />
                 <Spacer size={18} />
-                <InfoMessage
-                    type="neutral"
-                    labelStyle={styles.actionDescription}
-                    label={Localize.t('payload.payloadForceNetworkError', {
-                        network: `"${requiredActionData.network.name}"`,
+                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                    {Localize.t('payload.payloadForceNetworkError')}
+                </Text>
+                <Spacer size={18} />
+                <Text style={styles.networkSwitchSubtext}>
+                    {Localize.t('payload.pleaseSwitchToNetworkAndTryAgain', {
+                        network: requiredActionData.network.name,
                     })}
-                    containerStyle={styles.actionContainer}
-                    hideActionButton={!ShouldShowSwitchButton}
-                    actionButtonLabel={Localize.t('global.switchNetwork')}
-                    actionButtonIcon="IconSwitchAccount"
-                    actionButtonIconSize={17}
-                    onActionButtonPress={this.onSwitchNetworkPress}
-                />
+                </Text>
+                <Spacer size={30} />
+                {ShouldShowSwitchButton && (
+                    <Button
+                        secondary
+                        roundedMini
+                        label={Localize.t('global.switchNetwork')}
+                        onPress={this.onSwitchNetworkPress}
+                    />
+                )}
             </View>
         );
     };

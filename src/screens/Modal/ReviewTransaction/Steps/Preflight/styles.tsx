@@ -28,6 +28,26 @@ const styles = StyleService.create({
     infoIcon: {
         tintColor: '$red',
     },
+    errorContainer: {
+        flex: 1,
+        paddingHorizontal: AppSizes.paddingSml,
+    },
+    arrowUpImage: {
+        resizeMode: 'contain',
+        alignSelf: 'flex-start',
+        tintColor: '$silver',
+        marginTop: AppSizes.paddingSml,
+        marginLeft: AppSizes.moderateScale(30),
+        width: AppSizes.moderateScale(25),
+        height: AppSizes.moderateScale(55),
+        transform: [{ rotateY: '180deg' }],
+    },
+    networkSwitchSubtext: {
+        fontFamily: AppFonts.subtext.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        textAlign: 'center',
+    },
 });
 
 export default styles;
