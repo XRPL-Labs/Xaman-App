@@ -955,14 +955,16 @@ class XAppBrowserModal extends Component<Props, State> {
             <View style={styles.errorContainer}>
                 <Image source={Images.ImageArrowUp} style={styles.arrowUpImage} />
                 <Spacer size={18} />
-                <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
+                <Text style={[AppStyles.baseText, AppStyles.bold, AppStyles.textCenterAligned]}>
                     {Localize.t('xapp.xAppSupportNetworkError')}
                 </Text>
                 <Spacer size={18} />
                 <Text style={styles.networkSwitchSubtext}>{Localize.t('xapp.switchToSupportedNetworks')}</Text>
                 <Spacer size={18} />
-                {supportedNetworks.map((n) => (
-                    <Text style={styles.supportedNetworkName}>{n.name}</Text>
+                {supportedNetworks.map((network) => (
+                    <Text key={`${network.id}`} style={styles.supportedNetworkName}>
+                        {network.name}
+                    </Text>
                 ))}
             </View>
         );

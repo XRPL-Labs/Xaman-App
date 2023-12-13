@@ -41,12 +41,11 @@ const styles = StyleService.create({
         color: '$textSecondary',
         textAlign: 'center',
         paddingTop: AppSizes.paddingExtraSml,
-        textDecorationLine: 'underline',
     },
     arrowUpImage: {
         resizeMode: 'contain',
         alignSelf: 'flex-end',
-        tintColor: '$tint',
+        tintColor: '$silver',
         marginTop: AppSizes.paddingSml,
         marginRight: AppSizes.moderateScale(70),
         width: AppSizes.moderateScale(30),
