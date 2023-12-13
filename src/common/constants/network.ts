@@ -21,7 +21,7 @@ export default {
             name: 'XRP Ledger',
             key: 'MAINNET',
             networkId: 0,
-            color: '#4CA1F8',
+            color: '#6F21F5',
             type: NetworkType.Main,
             nodes: ['wss://xrplcluster.com', 'wss://s2.ripple.com', 'wss://xrpl.link'],
             nativeAsset: {
@@ -35,7 +35,7 @@ export default {
             name: 'Xahau',
             key: 'XAHAU',
             networkId: 21337,
-            color: '#0E0143',
+            color: '#0C0240',
             type: NetworkType.Main,
             nodes: ['wss://xahau.network'],
             nativeAsset: {
@@ -49,7 +49,7 @@ export default {
             name: 'Xahau Testnet',
             key: 'XAHAUTESTNET',
             networkId: 21338,
-            color: '#C0E12B',
+            color: '#FFFD74',
             type: NetworkType.Test,
             nodes: ['wss://xahau-test.net'],
             nativeAsset: {
