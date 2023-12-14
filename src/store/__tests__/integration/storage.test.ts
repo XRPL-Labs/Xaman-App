@@ -13,7 +13,7 @@ describe('Storage', () => {
             const sorted = sortBy(require('../../models/schemas').default, [(v) => v.schemaVersion]);
             const latest = sorted.slice(-1)[0];
 
-            const populateSpy = jest.spyOn(latest, 'populate');
+            const populateSpy = jest.spyOn(require('../../models/schemas/populate'), 'populateDataStore');
 
             // initialize the storage
             await storage.initialize();

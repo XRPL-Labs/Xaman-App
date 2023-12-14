@@ -23,13 +23,6 @@ export const migration = (oldRealm: Realm, newRealm: Realm) => {
     AccountSchema.migration(oldRealm, newRealm);
     TrustLineSchema.migration(oldRealm, newRealm);
 };
-export const populate = (realm: Realm) => {
-    [NetworkSchema, NodeSchema, CoreSchema].forEach((schema) => {
-        realm.write(() => {
-            schema.populate(realm);
-        });
-    });
-};
 export const schemas = {
     ContactSchema,
     CounterPartySchema,

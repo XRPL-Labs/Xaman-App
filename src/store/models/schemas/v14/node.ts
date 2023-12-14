@@ -21,8 +21,11 @@ const NodeSchema = {
         },
     },
 
-    populate: (realm: Realm) => {
-        const networks = realm.objects('Network') as any;
+    migration: (oldRealm: Realm, newRealm: Realm) => {
+        /*  eslint-disable-next-line */
+        console.log('migrating Node schema to v14');
+
+        const networks = newRealm.objects('Network') as any;
 
         for (let i = 0; i < networks.length; i++) {
             const network = networks[i];
@@ -31,8 +34,7 @@ const NodeSchema = {
 
             for (let y = 0; y < networkConfig.nodes.length; y++) {
                 createdNodes.push(
-                    // @ts-ignore
-                    realm.create(NodeSchema.schema.name, {
+                    newRealm.create(NodeSchema.schema.name, {
                         id: new Realm.BSON.ObjectId(),
                         endpoint: networkConfig.nodes[y],
                         registerAt: new Date(),
@@ -46,14 +48,6 @@ const NodeSchema = {
             // eslint-disable-next-line prefer-destructuring
             network.defaultNode = createdNodes[0];
         }
-    },
-
-    migration: (oldRealm: Realm, newRealm: Realm) => {
-        /*  eslint-disable-next-line */
-        console.log('migrating Node schema to v14');
-
-        // populate nodes
-        NodeSchema.populate(newRealm);
     },
 };
 

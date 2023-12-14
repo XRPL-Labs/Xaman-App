@@ -175,11 +175,10 @@ export default class Storage {
                     return;
                 }
 
-                const { populate } = require('./models/schemas/latest');
+                const { populateDataStore } = require('./models/schemas/populate');
 
-                if (typeof populate === 'function') {
-                    populate(this.dataStore);
-                }
+                // populate data store
+                populateDataStore(this.dataStore);
 
                 resolve();
             } catch (error) {

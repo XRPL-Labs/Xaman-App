@@ -5,7 +5,7 @@ import { values } from 'lodash';
 import NetworksConfig from '@constants/network';
 
 import * as models from '../../models';
-import { populate as populateDataStore } from '../../models/schemas/latest';
+import { populateDataStore } from '../../models/schemas/populate';
 
 import { NetworkRepository } from '../../repositories';
 import { NetworkRailsChangesType, NetworkType } from '../../types';

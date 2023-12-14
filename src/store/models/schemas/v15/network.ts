@@ -31,34 +31,6 @@ const NetworkSchema = {
         },
     },
 
-    /*
-    Populate networks to the data store
-    Note: this is necessary in the process of migration and also fresh install
-    */
-    populate: (realm: Realm) => {
-        // default supported networks list
-        const { networks } = NetworkConfig;
-
-        // create networks
-        for (let i = 0; i < networks.length; i++) {
-            realm.create(NetworkSchema.schema.name, {
-                id: new Realm.BSON.ObjectId(),
-                key: networks[i].key,
-                networkId: networks[i].networkId,
-                name: networks[i].name,
-                nativeAsset: networks[i].nativeAsset,
-                color: networks[i].color,
-                type: networks[i].type,
-                baseReserve: NetworkConfig.baseReserve,
-                ownerReserve: NetworkConfig.ownerReserve,
-                amendments: [],
-                definitionsString: '',
-                registerAt: new Date(),
-                updatedAt: new Date(),
-            });
-        }
-    },
-
     migration: (oldRealm: Realm, newRealm: Realm) => {
         /*  eslint-disable-next-line */
         console.log('migrating Network schema to 15');
