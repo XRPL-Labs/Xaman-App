@@ -3,21 +3,22 @@
  * Subscribe to account changes and transactions
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
+
 import EventEmitter from 'events';
 import { map, isEmpty, flatMap, forEach, has, get, keys } from 'lodash';
 
-import { TrustLineSchema } from '@store/schemas/latest';
-import AccountRepository from '@store/repositories/account';
-import CurrencyRepository from '@store/repositories/currency';
+import { TrustLineModel } from '@store/models';
+import { AccountRepository, CurrencyRepository } from '@store/repositories';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import { Amount } from '@common/libs/ledger/parser/common';
 
 import { LedgerTransactionType } from '@common/libs/ledger/types';
 
-import SocketService from '@services/SocketService';
+import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+import { AccountTypes } from '@store/types';
 
 /* events  ==================================================================== */
 declare interface AccountService {
@@ -51,8 +52,8 @@ class AccountService extends EventEmitter {
                 AccountRepository.on('accountCreate', this.onAccountsChange);
                 AccountRepository.on('accountRemove', this.onAccountsChange);
 
-                // on socket service connect
-                SocketService.on('connect', this.onSocketConnect);
+                // on network service connect
+                NetworkService.on('connect', this.onNetworkConnect);
 
                 resolve();
             } catch (e) {
@@ -62,9 +63,9 @@ class AccountService extends EventEmitter {
     };
 
     /**
-     * Update the details when connect to the socket
+     * Update the details when connect to the network
      */
-    onSocketConnect = () => {
+    onNetworkConnect = () => {
         // update account details
         this.updateAccountsDetails();
         // subscribe accounts for transactions stream
@@ -79,10 +80,10 @@ class AccountService extends EventEmitter {
     setTransactionListener = () => {
         // if already any listener remove it
         if (this.transactionListener) {
-            SocketService.offEvent('transaction', this.transactionHandler);
+            NetworkService.offEvent('transaction', this.transactionHandler);
         }
         // create the new listener
-        this.transactionListener = SocketService.onEvent('transaction', this.transactionHandler);
+        this.transactionListener = NetworkService.onEvent('transaction', this.transactionHandler);
     };
 
     /**
@@ -95,7 +96,10 @@ class AccountService extends EventEmitter {
             this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
 
             // get effected accounts
-            const effectedAccounts = keys(new Meta(meta).parseBalanceChanges());
+            const balanceChangesAccounts = keys(new Meta(meta).parseBalanceChanges());
+            const ownerCountChangesAccounts = map(new Meta(meta).parseOwnerCountChanges(), 'address');
+
+            const effectedAccounts = [...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts])];
 
             // update account details
             this.updateAccountsDetails(effectedAccounts);
@@ -111,7 +115,7 @@ class AccountService extends EventEmitter {
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts();
 
-        // no account is present in XUMM
+        // no account is present in the app
         if (accounts.length === 0) {
             this.accounts = [];
             return;
@@ -120,7 +124,10 @@ class AccountService extends EventEmitter {
         // log the existent accounts in the session log
         this.logger.debug(
             `Presented accounts: ${accounts.reduce(
-                (acc, obj) => `${acc}\n${obj.address}-${obj.accessLevel}/${obj.type} `,
+                (account, item) =>
+                    `${account}\n${item.address}-${item.accessLevel} ${
+                        item.flags?.disableMasterKey ? '[MasterDisabled]' : ''
+                    } ${item.type !== AccountTypes.Regular ? `[${item.type}]` : ''}`,
                 '',
             )}`,
         );
@@ -140,14 +147,18 @@ class AccountService extends EventEmitter {
             if (!accountInfo || has(accountInfo, 'error')) {
                 // account not found reset account to default state
                 if (get(accountInfo, 'error') === 'actNotFound') {
-                    // reset account , this is necessary for when changing node chain
-                    await AccountRepository.update({
-                        address: account,
+                    // reset account details to default
+                    await AccountRepository.updateDetails(account, {
+                        id: `${account}.${NetworkService.getNetworkId()}`,
+                        network: NetworkService.getNetwork(),
                         ownerCount: 0,
                         sequence: 0,
                         balance: 0,
-                        flags: 0,
+                        flagsString: JSON.stringify({}),
                         regularKey: '',
+                        domain: '',
+                        emailHash: '',
+                        messageKey: '',
                         lines: [],
                     });
                 }
@@ -158,19 +169,23 @@ class AccountService extends EventEmitter {
             }
 
             // fetch the normalized account lines
-            const normalizedAccountLines = await this.getNormalizedAccountLines(account);
+            const normalizedAccountLines = (await this.getNormalizedAccountLines(account)) as TrustLineModel[];
 
             // if account FOUND and no error
-            const { account_data } = accountInfo;
+            const { account_data, account_flags } = accountInfo;
 
             // update account info
-            await AccountRepository.update({
-                address: account,
+            await AccountRepository.updateDetails(account, {
+                id: `${account}.${NetworkService.getNetworkId()}`,
+                network: NetworkService.getNetwork(),
                 ownerCount: account_data.OwnerCount,
                 sequence: account_data.Sequence,
-                balance: new Amount(account_data.Balance).dropsToXrp(true),
-                flags: account_data.Flags,
-                regularKey: account_data.RegularKey || '',
+                balance: new Amount(account_data.Balance).dropsToNative(true),
+                flagsString: JSON.stringify(account_flags),
+                regularKey: get(account_data, 'RegularKey', ''),
+                domain: get(account_data, 'Domain', ''),
+                emailHash: get(account_data, 'EmailHash', ''),
+                messageKey: get(account_data, 'MessageKey', ''),
                 lines: normalizedAccountLines,
             });
         } catch (e: any) {
@@ -181,7 +196,7 @@ class AccountService extends EventEmitter {
     /**
      * Get normalized account lines
      */
-    getNormalizedAccountLines = async (account: string): Promise<Partial<TrustLineSchema>[]> => {
+    getNormalizedAccountLines = async (account: string): Promise<Partial<TrustLineModel>[]> => {
         try {
             // fetch filtered account lines from ledger
             let accountLines = await LedgerService.getFilteredAccountLines(account);
@@ -194,8 +209,8 @@ class AccountService extends EventEmitter {
                 accountLines = accountLines.concat(accountObligations);
             }
 
-            // create empty list base on TrustLineSchema
-            const normalizedList = [] as Partial<TrustLineSchema>[];
+            // create empty list base on TrustLineModel
+            const normalizedList = [] as Partial<TrustLineModel>[];
 
             // process every line exist in the accountLines
             await Promise.all(
@@ -209,19 +224,20 @@ class AccountService extends EventEmitter {
 
                     // convert trust line to the normalized format
                     normalizedList.push({
-                        id: `${account}.${currency.id}`,
+                        // id: `${account}.${currency.id}.${NetworkService.getNetworkId()}`,
+                        id: `${account}.${currency.id}}`,
                         currency,
-                        balance: new Amount(line.balance, false).toNumber(),
-                        no_ripple: line.no_ripple || false,
-                        no_ripple_peer: line.no_ripple_peer || false,
-                        limit: new Amount(line.limit, false).toNumber(),
-                        limit_peer: new Amount(line.limit_peer, false).toNumber(),
-                        quality_in: line.quality_in || 0,
-                        quality_out: line.quality_out || 0,
-                        authorized: line.authorized || false,
-                        peer_authorized: line.peer_authorized || false,
-                        freeze: line.freeze || false,
-                        obligation: line.obligation || false,
+                        balance: line.balance,
+                        no_ripple: get(line, 'no_ripple', false),
+                        no_ripple_peer: get(line, 'no_ripple_peer', false),
+                        limit: line.limit,
+                        limit_peer: line.limit_peer,
+                        quality_in: get(line, 'quality_in', 0),
+                        quality_out: get(line, 'quality_out', 0),
+                        authorized: get(line, 'authorized', false),
+                        peer_authorized: get(line, 'peer_authorized', false),
+                        freeze: get(line, 'freeze', false),
+                        obligation: get(line, 'obligation', false),
                     });
                 }),
             );
@@ -273,7 +289,7 @@ class AccountService extends EventEmitter {
     unsubscribe() {
         this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
 
-        SocketService.send({
+        NetworkService.send({
             command: 'unsubscribe',
             accounts: this.accounts,
         }).catch((e: any) => {
@@ -287,7 +303,7 @@ class AccountService extends EventEmitter {
     subscribe() {
         this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
-        SocketService.send({
+        NetworkService.send({
             command: 'subscribe',
             accounts: this.accounts,
         }).catch((e: any) => {

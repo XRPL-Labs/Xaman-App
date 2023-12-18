@@ -1,9 +1,11 @@
+import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 
-import { TouchableDebounce } from '@components/General';
+import { Spacer, TouchableDebounce } from '@components/General';
 
 import styles from './styles';
+
 /* types ==================================================================== */
 export type AppType = {
     icon: string;
@@ -97,6 +99,7 @@ class XAppItem extends Component<Props> {
                 >
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </Animated.Text>
+                <Spacer size={2} />
                 <Animated.Text
                     numberOfLines={1}
                     style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}
@@ -110,7 +113,7 @@ class XAppItem extends Component<Props> {
     render() {
         const { app } = this.props;
 
-        if (!app) {
+        if (isEmpty(app)) {
             return this.renderPlaceholder();
         }
 

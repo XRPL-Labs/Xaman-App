@@ -1,0 +1,103 @@
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/react/NavigationModule.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/react/NavigationModule.java
+index a34598c..9703957 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/react/NavigationModule.java
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/react/NavigationModule.java
+@@ -59,20 +59,30 @@ public class NavigationModule extends ReactContextBaseJavaModule {
+             @Override
+             public void onHostPause() {
+                 super.onHostPause();
+-                UiUtils.runOnMainThread(() -> navigator().onHostPause());
++                UiUtils.runOnMainThread(() -> {
++                    if (getCurrentActivity() != null) {
++                        navigator().onHostPause();
++                    }
++                });
+             }
+
+             @Override
+             public void onHostResume() {
+-                eventEmitter = new EventEmitter(reactContext);
+-                navigator().setEventEmitter(eventEmitter);
+-                layoutFactory.init(
+-                        activity(),
+-                        eventEmitter,
+-                        navigator().getChildRegistry(),
+-                        ((NavigationApplication) activity().getApplication()).getExternalComponents()
+-                );
+-                UiUtils.runOnMainThread(() -> navigator().onHostResume());
++                if (getCurrentActivity() != null) {
++                    eventEmitter = new EventEmitter(reactContext);
++                    navigator().setEventEmitter(eventEmitter);
++                    layoutFactory.init(
++                            activity(),
++                            eventEmitter,
++                            navigator().getChildRegistry(),
++                            ((NavigationApplication) activity().getApplication()).getExternalComponents()
++                    );
++                }
++                UiUtils.runOnMainThread(() -> {
++                    if (getCurrentActivity() != null) {
++                        navigator().onHostResume();
++                    }
++                });
+             }
+         });
+     }
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
+index 89665d1..03eb03f 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
+@@ -25,7 +25,7 @@ object SystemUiUtils {
+
+     @JvmStatic
+     fun getStatusBarHeight(activity: Activity?): Int {
+-        val res = if (statusBarHeight > 0) {
++        val res = if (statusBarHeight > -1) {
+             statusBarHeight
+         } else {
+             statusBarHeight = activity?.let {
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
+index a9e2c53..7a8096b 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/viewcontrollers/component/ComponentViewController.java
+@@ -4,7 +4,6 @@ import android.app.Activity;
+ import android.content.res.Configuration;
+ import android.view.View;
+
+-import com.reactnativenavigation.utils.LogKt;
+ import com.reactnativenavigation.viewcontrollers.viewcontroller.ScrollEventListener;
+ import com.reactnativenavigation.options.Options;
+ import com.reactnativenavigation.viewcontrollers.viewcontroller.Presenter;
+@@ -12,7 +11,6 @@ import com.reactnativenavigation.utils.SystemUiUtils;
+ import com.reactnativenavigation.viewcontrollers.viewcontroller.ReactViewCreator;
+ import com.reactnativenavigation.viewcontrollers.child.ChildController;
+ import com.reactnativenavigation.viewcontrollers.child.ChildControllersRegistry;
+-import com.reactnativenavigation.viewcontrollers.viewcontroller.ViewController;
+ import com.reactnativenavigation.views.component.ComponentLayout;
+
+ import androidx.annotation.NonNull;
+@@ -143,6 +141,7 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
+     public int getTopInset() {
+         int statusBarInset = resolveCurrentOptions(presenter.defaultOptions).statusBar.isHiddenOrDrawBehind() ? 0
+                 : SystemUiUtils.getStatusBarHeight(getActivity());
++
+         final Integer perform = perform(getParentController(), 0, p -> p.getTopInset(this));
+         return statusBarInset + perform;
+     }
+@@ -155,12 +154,14 @@ public class ComponentViewController extends ChildController<ComponentLayout> {
+
+     @Override
+     protected WindowInsetsCompat onApplyWindowInsets(View view, WindowInsetsCompat insets) {
++        SystemUiUtils.saveStatusBarHeight(insets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars()).top);
+         final Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+         int systemWindowInsetTop = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top +
+                 insets.getInsets(WindowInsetsCompat.Type.navigationBars()).top -
+                 systemBarsInsets.top;
+-        int systemWindowInsetBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom +
+-                insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom -
++
++        int systemWindowInsetBottom = insets.getInsets(
++                WindowInsetsCompat.Type.navigationBars()).bottom -
+                 systemBarsInsets.bottom;
+
+         WindowInsetsCompat finalInsets = new WindowInsetsCompat.Builder()

@@ -22,7 +22,7 @@ ReactNative.NativeModules.UtilsModule = {
     hapticFeedback: jest.fn((type: any) => true),
     restartBundle: jest.fn(() => true),
     timeoutEvent: jest.fn((event: string, timeout: number) => true),
-    getElapsedRealtime: jest.fn(() => Promise.resolve(123)),
+    getElapsedRealtime: jest.fn(() => Promise.resolve('1337')),
     exitApp: jest.fn(() => true),
 };
 
@@ -81,6 +81,7 @@ ReactNative.NativeModules.HapticFeedbackModule = {
 };
 
 ReactNative.NativeModules.VaultManagerModule = {
+    latestCipherVersion: 2,
     getStorageEncryptionKey: jest.fn(() =>
         Promise.resolve(
             '1567F58A794600717029077C34A8FAAB9B16B9FFAB174248DD296DA82084EE7921E51DC5757CA655271AF4928263FEC4A36D2139AD02F9CB1BC70F8FD7D38796',
@@ -91,6 +92,17 @@ ReactNative.NativeModules.VaultManagerModule = {
     openVault: jest.fn((vaultName: string, key: string) => Promise.resolve('clearText')),
     vaultExist: jest.fn((vaultName: string) => Promise.resolve(true)),
     purgeVault: jest.fn((vaultName: string) => Promise.resolve(true)),
+    reKeyVault: jest.fn((vaultName: string, oldKey: string, newKey: string) => Promise.resolve(true)),
+    reKeyBatchVaults: jest.fn((vaultNames: string[], oldKey: string, newKey: string) => Promise.resolve(true)),
+    clearStorage: jest.fn(() => Promise.resolve(true)),
+    isMigrationRequired: jest.fn((vaultName: string) =>
+        Promise.resolve({
+            vault: vaultName,
+            current_cipher_version: 2,
+            latest_cipher_version: 2,
+            migration_required: false,
+        }),
+    ),
 };
 
 module.exports = ReactNative;

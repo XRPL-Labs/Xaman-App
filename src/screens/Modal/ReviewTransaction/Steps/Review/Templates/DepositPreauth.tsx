@@ -1,14 +1,11 @@
-import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { DepositPreauth } from '@common/libs/ledger/transactions';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
-
-import { RecipientElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -19,49 +16,19 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: DepositPreauth;
 }
 
-export interface State {
-    isLoading: boolean;
-    addressDetails: AccountNameType;
-}
+export interface State {}
 
 /* Component ==================================================================== */
 class DepositPreauthTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            isLoading: true,
-            addressDetails: undefined,
-        };
-    }
-    componentDidMount() {
-        const { transaction } = this.props;
-
-        const address = transaction.Authorize || transaction.Unauthorize;
-
-        if (!address) return;
-
-        getAccountName(address)
-            .then((res: any) => {
-                if (!isEmpty(res) && !res.error) {
-                    this.setState({
-                        addressDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
-            });
+        this.state = {};
     }
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, addressDetails } = this.state;
+
         return (
             <>
                 {transaction.Authorize && (
@@ -72,13 +39,9 @@ class DepositPreauthTemplate extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <RecipientElement
+                        <AccountElement
+                            address={transaction.Authorize}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoading}
-                            recipient={{
-                                address: transaction.Authorize,
-                                ...addressDetails,
-                            }}
                         />
                     </>
                 )}
@@ -91,13 +54,9 @@ class DepositPreauthTemplate extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <RecipientElement
+                        <AccountElement
+                            address={transaction.Unauthorize}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
-                            isLoading={isLoading}
-                            recipient={{
-                                address: transaction.Unauthorize,
-                                ...addressDetails,
-                            }}
                         />
                     </>
                 )}

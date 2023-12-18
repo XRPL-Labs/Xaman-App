@@ -2,11 +2,11 @@
    synchronous path_finding
 */
 
+import EventEmitter from 'events';
 import { flatMap } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
-import EventEmitter from 'events';
 
-import { SocketService } from '@services';
+import { NetworkService } from '@services';
 
 import { PathOption, RipplePathFindResponse } from '@common/libs/ledger/types';
 import { LedgerAmount } from '@common/libs/ledger/parser/types';
@@ -14,6 +14,7 @@ import { LedgerAmount } from '@common/libs/ledger/parser/types';
 /* Types ==================================================================== */
 declare interface LedgerPathFinding {
     on(event: 'expire', listener: () => void): this;
+
     on(event: string, listener: Function): this;
 }
 
@@ -68,12 +69,12 @@ class LedgerPathFinding extends EventEmitter {
 
     // listen for ledger close events
     private subscribePathFind = () => {
-        SocketService.onEvent('path', this.handlePathFindEvent);
+        NetworkService.onEvent('path', this.handlePathFindEvent);
     };
 
     // listen for ledger close events
     private unsubscribePathFind = () => {
-        SocketService.offEvent('path', this.handlePathFindEvent);
+        NetworkService.offEvent('path', this.handlePathFindEvent);
     };
 
     private handlePathOptions = (options: PathOption[], shouldResolve?: boolean) => {
@@ -81,7 +82,7 @@ class LedgerPathFinding extends EventEmitter {
             const { source_amount } = option;
 
             if (typeof source_amount === 'string') {
-                this.paymentOptions.XRP = option;
+                this.paymentOptions[NetworkService.getNativeAsset()] = option;
             } else if (typeof source_amount === 'object') {
                 this.paymentOptions[`${source_amount.issuer}:${source_amount.currency}`] = option;
             }
@@ -140,7 +141,7 @@ class LedgerPathFinding extends EventEmitter {
             this.requestId = uuidv4();
 
             // send socket request
-            SocketService.send({
+            NetworkService.send({
                 id: this.requestId,
                 command: 'path_find',
                 subcommand: 'create',
@@ -153,7 +154,7 @@ class LedgerPathFinding extends EventEmitter {
 
                     // request is canceled
                     if (id !== this.requestId) {
-                        reject(new Error('CANCELED'));
+                        reject(new Error('Request has been canceled and invalidated'));
                         return;
                     }
 
@@ -207,7 +208,7 @@ class LedgerPathFinding extends EventEmitter {
         this.unsubscribePathFind();
 
         // close the request
-        SocketService.send({
+        NetworkService.send({
             id: this.requestId,
             command: 'path_find',
             subcommand: 'close',

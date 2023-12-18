@@ -3,8 +3,11 @@
  */
 
 import AppConfig from './config';
-import ErrorMessages from './errors';
 import AppScreens from './screens';
-import APIConfig from './api';
+import ApiConfig from './api';
+import NetworkConfig from './network';
 
-export { AppConfig, AppScreens, ErrorMessages, APIConfig };
+import Amendments from './amendments';
+import ErrorMessages from './errors';
+
+export { AppConfig, AppScreens, ApiConfig, NetworkConfig, Amendments, ErrorMessages };

@@ -1,14 +1,13 @@
 import { has, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
-
 import { Navigator } from '@common/helpers/navigator';
+import { FormatTime } from '@common/utils/date';
 
 import { AppScreens } from '@common/constants';
 
@@ -18,13 +17,17 @@ import Localize from '@locale';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     item: Payload;
 }
 
-export interface State {}
+export interface State {
+    transactionLabel: string;
+    description: string;
+}
 
 export enum RequestType {
     SignRequest = 'SignRequest',
@@ -34,6 +37,19 @@ export enum RequestType {
 /* Component ==================================================================== */
 class RequestItem extends Component<Props, State> {
     static Height = AppSizes.heightPercentageToDP(7.5);
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            transactionLabel: undefined,
+            description: undefined,
+        };
+    }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.setDetails);
+    }
 
     openXApp = () => {
         const { item } = this.props;
@@ -69,9 +85,7 @@ class RequestItem extends Component<Props, State> {
 
         Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
-            {
-                payload: item,
-            },
+            { payload: item },
             { modalPresentationStyle: 'fullScreen' },
         );
     };
@@ -89,67 +103,34 @@ class RequestItem extends Component<Props, State> {
         }
     };
 
-    getTransactionLabel = () => {
+    setDetails = () => {
         const { item } = this.props;
 
+        let transactionLabel;
+        let description;
+
         if (this.getType() === RequestType.OpenXApp) {
-            return Localize.t('global.xapp');
+            transactionLabel = Localize.t('global.xapp');
+        } else {
+            transactionLabel = item.getTransactionType();
         }
 
-        switch (item.getTransactionType()) {
-            case TransactionTypes.AccountSet:
-                return Localize.t('events.updateAccountSettings');
-            case TransactionTypes.AccountDelete:
-                return Localize.t('events.deleteAccount');
-            case TransactionTypes.EscrowFinish:
-                return Localize.t('events.finishEscrow');
-            case TransactionTypes.EscrowCancel:
-                return Localize.t('events.cancelEscrow');
-            case TransactionTypes.EscrowCreate:
-                return Localize.t('events.createEscrow');
-            case TransactionTypes.SetRegularKey:
-                return Localize.t('events.setARegularKey');
-            case TransactionTypes.SignerListSet:
-                return Localize.t('events.setSignerList');
-            case TransactionTypes.TrustSet:
-                return Localize.t('events.updateAccountAssets');
-            case TransactionTypes.OfferCreate:
-                return Localize.t('events.createOffer');
-            case TransactionTypes.OfferCancel:
-                return Localize.t('events.cancelOffer');
-            case TransactionTypes.DepositPreauth:
-                return Localize.t('events.depositPreauth');
-            case TransactionTypes.CheckCreate:
-                return Localize.t('events.createCheck');
-            case TransactionTypes.CheckCash:
-                return Localize.t('events.cashCheck');
-            case TransactionTypes.CheckCancel:
-                return Localize.t('events.cancelCheck');
-            case TransactionTypes.TicketCreate:
-                return Localize.t('events.createTicket');
-            case TransactionTypes.PaymentChannelCreate:
-                return Localize.t('events.createPaymentChannel');
-            case TransactionTypes.PaymentChannelFund:
-                return Localize.t('events.fundPaymentChannel');
-            case TransactionTypes.PaymentChannelClaim:
-                return Localize.t('events.claimPaymentChannel');
-            case TransactionTypes.NFTokenMint:
-                return Localize.t('events.mintNFT');
-            case TransactionTypes.NFTokenBurn:
-                return Localize.t('events.burnNFT');
-            case TransactionTypes.NFTokenCreateOffer:
-                return Localize.t('events.createNFTOffer');
-            case TransactionTypes.NFTokenCancelOffer:
-                return Localize.t('events.cancelNFTOffer');
-            case TransactionTypes.NFTokenAcceptOffer:
-                return Localize.t('events.acceptNFTOffer');
-            case PseudoTransactionTypes.SignIn:
-                return Localize.t('global.signIn');
-            case PseudoTransactionTypes.PaymentChannelAuthorize:
-                return Localize.t('global.paymentChannelAuthorize');
+        switch (this.getType()) {
+            case RequestType.OpenXApp:
+                description = get(item, 'payload.request_json.xappTitle', Localize.t('global.openForDetails'));
+                break;
+            case RequestType.SignRequest:
+                description = Localize.t('global.signRequest');
+                break;
             default:
-                return item.getTransactionType();
+                description = Localize.t('global.signRequest');
+                break;
         }
+
+        this.setState({
+            transactionLabel,
+            description,
+        });
     };
 
     getType = (): RequestType => {
@@ -162,21 +143,15 @@ class RequestItem extends Component<Props, State> {
         return RequestType.SignRequest;
     };
 
-    getDescription = () => {
+    getRequestTime = () => {
         const { item } = this.props;
 
-        switch (this.getType()) {
-            case RequestType.OpenXApp:
-                return get(item, 'payload.request_json.xappTitle', Localize.t('global.openForDetails'));
-            case RequestType.SignRequest:
-                return Localize.t('global.signRequest');
-            default:
-                return Localize.t('global.signRequest');
-        }
+        return FormatTime(item.getRequestTime());
     };
 
     render() {
         const { item } = this.props;
+        const { transactionLabel, description } = this.state;
 
         return (
             <TouchableDebounce
@@ -187,12 +162,15 @@ class RequestItem extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Avatar border source={{ uri: item.getApplicationIcon() }} />
                 </View>
-                <View style={[AppStyles.flex5, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={styles.label}>{item.getApplicationName()}</Text>
                     <Text style={styles.description}>
-                        <Text style={styles.transactionLabel}>{this.getTransactionLabel()}</Text>&nbsp; - &nbsp;
-                        {this.getDescription()}
+                        <Text style={styles.transactionLabel}>{transactionLabel}</Text>&nbsp; - &nbsp;
+                        {description}
                     </Text>
+                </View>
+                <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
+                    <Text style={styles.requestTimeText}>{this.getRequestTime()}</Text>
                 </View>
             </TouchableDebounce>
         );

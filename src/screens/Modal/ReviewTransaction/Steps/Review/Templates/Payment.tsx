@@ -1,23 +1,19 @@
-import BigNumber from 'bignumber.js';
-import { isEmpty, isEqual, get } from 'lodash';
 import React, { Component } from 'react';
-import { View, Alert, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
-import { BackendService, LedgerService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
+import { RatesType } from '@services/BackendService';
 
 import { CoreRepository } from '@store/repositories';
 
-import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { Payment } from '@common/libs/ledger/transactions';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { PathOption } from '@common/libs/ledger/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
-import { AmountInput, AmountText, Button, InfoMessage, Spacer } from '@components/General';
+import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
-import { RecipientElement, PaymentOptionsPicker } from '@components/Modules';
+import { AccountElement, PaymentOptionsPicker } from '@components/Modules';
 
 import { Toast } from '@common/helpers/interface';
 
@@ -35,16 +31,10 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 
 export interface State {
     account: string;
-    isLoading: boolean;
     amount: string;
     currencyName: string;
     editableAmount: boolean;
-    destinationDetails: AccountNameType;
-    isPartialPayment: boolean;
-    shouldCheckForConversation: boolean;
-    exchangeRate: number;
-    xrpRoundedUp: string;
-    currencyRate: any;
+    currencyRate: RatesType;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
@@ -63,16 +53,11 @@ class PaymentTemplate extends Component<Props, State> {
 
         this.state = {
             account: undefined,
-            isLoading: false,
             editableAmount: !transaction.Amount?.value,
             amount: transaction.Amount?.value,
-            currencyName: transaction.Amount?.currency ? NormalizeCurrencyCode(transaction.Amount.currency) : 'XRP',
-            destinationDetails: undefined,
-            isPartialPayment: false,
-            shouldCheckForConversation:
-                !transaction.SendMax && !props.payload.isMultiSign() && !props.payload.isPathFinding(),
-            exchangeRate: undefined,
-            xrpRoundedUp: undefined,
+            currencyName: transaction.Amount?.currency
+                ? NormalizeCurrencyCode(transaction.Amount.currency)
+                : NetworkService.getNativeAsset(),
             currencyRate: undefined,
             isLoadingRate: false,
             shouldShowIssuerFee: false,
@@ -85,20 +70,16 @@ class PaymentTemplate extends Component<Props, State> {
     }
 
     componentDidMount() {
-        // fetch the destination name e
-        this.fetchDestinationInfo();
+        InteractionManager.runAfterInteractions(() => {
+            // if native currency then show equal amount in selected currency
+            this.fetchCurrencyRate();
 
-        // Payload payment request in IOU amount: handle conversion if required:
-        this.checkForPartialPaymentRequired();
+            // check issuer fee if IOU payment
+            this.fetchIssuerFee();
 
-        // if XRP then show equal amount in selected currency
-        this.fetchCurrencyRate();
-
-        // check issuer fee if IOU payment
-        this.fetchIssuerFee();
-
-        // set isReady to false if payment options are required
-        this.setIsReady();
+            // set isReady to false if payment options are required
+            this.setIsReady();
+        });
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
@@ -106,14 +87,6 @@ class PaymentTemplate extends Component<Props, State> {
             return { account: nextProps.source?.address };
         }
         return null;
-    }
-
-    componentDidUpdate(prevProps: Props, prevState: State) {
-        const { account } = this.state;
-
-        if (!isEqual(prevState.account, account)) {
-            InteractionManager.runAfterInteractions(this.checkForPartialPaymentRequired);
-        }
     }
 
     setIsReady = () => {
@@ -162,8 +135,8 @@ class PaymentTemplate extends Component<Props, State> {
     fetchCurrencyRate = () => {
         const { transaction } = this.props;
 
-        // only for XRP payments
-        if (transaction.Amount && transaction.Amount.currency !== 'XRP') {
+        // only for native payments
+        if (transaction.Amount && transaction.Amount.currency !== NetworkService.getNativeAsset()) {
             return;
         }
 
@@ -188,134 +161,6 @@ class PaymentTemplate extends Component<Props, State> {
             });
     };
 
-    checkForPartialPaymentRequired = async () => {
-        const { transaction, forceRender } = this.props;
-        const { account, shouldCheckForConversation } = this.state;
-
-        // only check if IOU
-        if (!account || !transaction.Amount || transaction.Amount?.currency === 'XRP' || !shouldCheckForConversation) {
-            return;
-        }
-
-        try {
-            // get source trust lines
-            const sourceLine = await LedgerService.getFilteredAccountLine(
-                transaction.Account.address,
-                transaction.Amount,
-            );
-
-            // if this condition applies we try to pay the requested amount with XRP
-            // 1) the source account doesn't have the trustline or proper trustline
-            // 2) the source account balance doesn't cover the entire requested amount
-            // 3) the sender is not issuer
-            const shouldPayWithXRP =
-                (!sourceLine ||
-                    (Number(sourceLine.limit) === 0 && Number(sourceLine.balance) === 0) ||
-                    Number(sourceLine.balance) < Number(transaction.Amount.value)) &&
-                account !== transaction.Amount.issuer;
-
-            // if not have the same trust line or the balance is not covering requested value
-            // Pay with XRP instead
-            if (shouldPayWithXRP) {
-                const PAIR = { issuer: transaction.Amount.issuer, currency: transaction.Amount.currency };
-
-                const ledgerExchange = new LedgerExchange(PAIR);
-                // sync with latest order book
-                await ledgerExchange.initialize(MarketDirection.BUY);
-
-                // get liquidity grade
-                const liquidity = await ledgerExchange.getLiquidity(
-                    MarketDirection.BUY,
-                    Number(transaction.Amount.value),
-                );
-
-                // not enough liquidity
-                if (!liquidity || !liquidity.safe || liquidity.errors.length > 0) {
-                    this.setState({
-                        isPartialPayment: true,
-                        exchangeRate: 0,
-                    });
-                    return;
-                }
-
-                const sendMaxXRP = new BigNumber(transaction.Amount.value)
-                    .multipliedBy(liquidity.rate)
-                    .multipliedBy(1.04)
-                    .decimalPlaces(8)
-                    .toString(10);
-
-                // @ts-ignore
-                transaction.SendMax = sendMaxXRP;
-
-                if (get(transaction.Flags, 'PartialPayment', false) === false) {
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-                    // force re-render the parent
-                    forceRender();
-                }
-
-                this.setState({
-                    isPartialPayment: true,
-                    exchangeRate: new BigNumber(1).dividedBy(liquidity.rate).decimalPlaces(8).toNumber(),
-                    xrpRoundedUp: sendMaxXRP,
-                });
-            } else {
-                // check for transfer fee
-                // if issuer have transfer fee add PartialPayment if not present
-                // TODO: this is developer responsibility to add this flag in the first place
-                const issuerFee = await LedgerService.getAccountTransferRate(transaction.Amount.issuer);
-
-                // if issuer have fee and Source/Destination is not issuer set Partial Payment flag
-                if (
-                    issuerFee &&
-                    transaction.Account.address !== transaction.Amount.issuer &&
-                    transaction.Destination.address !== transaction.Amount.issuer &&
-                    get(transaction.Flags, 'PartialPayment', false) === false
-                ) {
-                    transaction.Flags = [txFlags.Payment.PartialPayment];
-                    // force re-render the parent
-                    forceRender();
-                }
-
-                // if we already set the SendMax remove it
-                if (transaction.SendMax) {
-                    transaction.SendMax = undefined;
-                }
-
-                this.setState({
-                    isPartialPayment: false,
-                });
-            }
-        } catch (e) {
-            Alert.alert(Localize.t('global.error'), Localize.t('payload.unableToCheckAssetConversion'));
-        }
-    };
-
-    fetchDestinationInfo = () => {
-        const { transaction } = this.props;
-
-        this.setState({
-            isLoading: true,
-        });
-
-        // fetch destination details
-        getAccountName(transaction.Destination.address, transaction.Destination.tag)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        destinationDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
-            });
-    };
-
     onAmountChange = (amount: string) => {
         const { transaction } = this.props;
 
@@ -324,7 +169,7 @@ class PaymentTemplate extends Component<Props, State> {
         });
 
         if (amount) {
-            if (!transaction.Amount || transaction.Amount.currency === 'XRP') {
+            if (!transaction.Amount || transaction.Amount.currency === NetworkService.getNativeAsset()) {
                 // @ts-ignore
                 transaction.Amount = amount;
             } else {
@@ -341,8 +186,11 @@ class PaymentTemplate extends Component<Props, State> {
         if (path) {
             transaction.SendMax = path.source_amount;
 
-            // SendMax is not allowed for XRP to XRP
-            if (transaction.SendMax.currency === 'XRP' && transaction.Amount.currency === 'XRP') {
+            // SendMax is not allowed for native to native
+            if (
+                transaction.SendMax.currency === NetworkService.getNativeAsset() &&
+                transaction.Amount.currency === NetworkService.getNativeAsset()
+            ) {
                 transaction.SendMax = undefined;
             }
 
@@ -374,18 +222,18 @@ class PaymentTemplate extends Component<Props, State> {
 
         if (isLoadingRate) {
             return (
-                <View style={[styles.rateContainer]}>
+                <View style={styles.rateContainer}>
                     <Text style={styles.rateText}>Loading ...</Text>
                 </View>
             );
         }
 
-        // only show rate for XRP
+        // only show rate for native asset
         if (currencyRate && amount) {
-            const rate = Number(amount) * currencyRate.lastRate;
+            const rate = Number(amount) * currencyRate.rate;
             if (rate > 0) {
                 return (
-                    <View style={[styles.rateContainer]}>
+                    <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
                             ~{currencyRate.code} {Localize.formatNumber(rate)}
                         </Text>
@@ -401,14 +249,9 @@ class PaymentTemplate extends Component<Props, State> {
         const { transaction, payload } = this.props;
         const {
             account,
-            isLoading,
-            isPartialPayment,
-            exchangeRate,
-            xrpRoundedUp,
             editableAmount,
             amount,
             currencyName,
-            destinationDetails,
             shouldShowIssuerFee,
             isLoadingIssuerFee,
             issuerFee,
@@ -423,14 +266,10 @@ class PaymentTemplate extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Destination.address}
+                    tag={transaction.Destination.tag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    recipient={{
-                        address: transaction.Destination.address,
-                        tag: transaction.Destination.tag,
-                        ...destinationDetails,
-                    }}
                 />
 
                 {/* Amount */}
@@ -439,7 +278,7 @@ class PaymentTemplate extends Component<Props, State> {
                     <View style={styles.contentBox}>
                         <TouchableOpacity
                             activeOpacity={1}
-                            style={[AppStyles.row]}
+                            style={AppStyles.row}
                             onPress={() => {
                                 if (editableAmount) {
                                     this.amountInput.current?.focus();
@@ -452,7 +291,9 @@ class PaymentTemplate extends Component<Props, State> {
                                         <AmountInput
                                             ref={this.amountInput}
                                             valueType={
-                                                currencyName === 'XRP' ? AmountValueType.XRP : AmountValueType.IOU
+                                                currencyName === NetworkService.getNativeAsset()
+                                                    ? AmountValueType.Native
+                                                    : AmountValueType.IOU
                                             }
                                             onChange={this.onAmountChange}
                                             style={styles.amountInput}
@@ -482,33 +323,11 @@ class PaymentTemplate extends Component<Props, State> {
                                 />
                             )}
                         </TouchableOpacity>
-                        {isPartialPayment &&
-                            (exchangeRate ? (
-                                <>
-                                    <Spacer size={15} />
-                                    <InfoMessage
-                                        label={Localize.t('payload.payingWithXRPExchangeRate', {
-                                            xrpRoundedUp,
-                                            exchangeRate,
-                                        })}
-                                        type="info"
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <Spacer size={15} />
-                                    <InfoMessage
-                                        label={Localize.t('payload.notEnoughLiquidityToSendThisPayment')}
-                                        type="error"
-                                    />
-                                </>
-                            ))}
-
                         {this.renderAmountRate()}
                     </View>
                 </>
 
-                {transaction.SendMax && !isPartialPayment && !selectedPath && (
+                {transaction.SendMax && !selectedPath && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.sendMax')}</Text>
                         <View style={styles.contentBox}>

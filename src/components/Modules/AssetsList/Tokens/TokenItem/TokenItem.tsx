@@ -1,12 +1,13 @@
-import { isEqual } from 'lodash';
-import React, { PureComponent } from 'react';
-import { View, Text, Image } from 'react-native';
+import isEqual from 'lodash/isEqual';
 
-import { Button, AmountText, Icon, TokenAvatar } from '@components/General';
+import React, { PureComponent } from 'react';
+import { View, Text } from 'react-native';
+
+import { Button, AmountText, Icon, TokenAvatar, TokenIcon } from '@components/General';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import { TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineModel } from '@store/models';
 
 import Localize from '@locale';
 
@@ -15,20 +16,20 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    token: TrustLineSchema;
+    token: TrustLineModel;
     index: number;
     selfIssued: boolean;
     reorderEnabled: boolean;
     discreetMode: boolean;
-    onPress: (token: TrustLineSchema, index: number) => void;
-    onMoveTopPress: (token: TrustLineSchema, index: number) => void;
+    onPress: (token: TrustLineModel, index: number) => void;
+    onMoveTopPress: (token: TrustLineModel, index: number) => void;
 }
 
 interface State {
-    balance: number;
+    balance: string;
     favorite: boolean;
     no_ripple: boolean;
-    limit: number;
+    limit: string;
 }
 
 /* Component ==================================================================== */
@@ -101,7 +102,7 @@ class TokenItem extends PureComponent<Props, State> {
         return NormalizeCurrencyCode(token.currency.currency);
     };
 
-    getAvatar = () => {
+    getTokenAvatar = () => {
         const { token } = this.props;
         const { favorite, no_ripple, limit } = this.state;
 
@@ -116,7 +117,7 @@ class TokenItem extends PureComponent<Props, State> {
         }
 
         // show alert on top of avatar if rippling set
-        if ((no_ripple === false || limit === 0) && !token.obligation) {
+        if ((no_ripple === false || Number(limit) === 0) && !token.obligation) {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 
@@ -159,20 +160,13 @@ class TokenItem extends PureComponent<Props, State> {
 
         return (
             <AmountText
-                // eslint-disable-next-line react/no-unstable-nested-components
-                prefix={() => {
-                    if (token.currency.avatar) {
-                        return (
-                            <View style={styles.currencyAvatarContainer}>
-                                <Image
-                                    style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
-                                    source={{ uri: token.currency.avatar }}
-                                />
-                            </View>
-                        );
-                    }
-                    return undefined;
-                }}
+                prefix={
+                    <TokenIcon
+                        token={token}
+                        containerStyle={styles.tokenIconContainer}
+                        style={discreetMode && AppStyles.imgColorGrey}
+                    />
+                }
                 value={balance}
                 style={[AppStyles.pbold, AppStyles.monoBold]}
                 discreet={discreetMode}
@@ -187,7 +181,7 @@ class TokenItem extends PureComponent<Props, State> {
         return (
             <View testID={`${token.currency.id}`} style={[styles.currencyItem, { height: TokenItem.Height }]}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
+                    <View style={styles.tokenAvatarContainer}>{this.getTokenAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyLabel}>
                             {this.getCurrencyName()}

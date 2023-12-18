@@ -2,8 +2,9 @@ import { isEqual, find, flatMap } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
 
+import { NetworkService, StyleService } from '@services';
+
 import { Images } from '@common/helpers/images';
-import { StyleService } from '@services';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CurrencyRepository } from '@store/repositories';
@@ -106,7 +107,7 @@ class PaymentOptionItem extends Component<Props> {
         }
     };
 
-    renderXRP = (item: PathOption) => {
+    renderNative = (item: PathOption) => {
         const { source_amount } = item;
 
         if (typeof source_amount !== 'string') {
@@ -117,10 +118,10 @@ class PaymentOptionItem extends Component<Props> {
             <>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
-                        <TokenAvatar token="XRP" border size={35} />
+                        <TokenAvatar token="Native" border size={35} />
                     </View>
                     <View style={AppStyles.centerContent}>
-                        <Text style={styles.currencyItemLabel}>XRP</Text>
+                        <Text style={styles.currencyItemLabel}>{NetworkService.getNativeAsset()}</Text>
                     </View>
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
@@ -145,12 +146,12 @@ class PaymentOptionItem extends Component<Props> {
         if (Array.isArray(paths_computed) && paths_computed.length === 0 && typeof amount === 'object') {
             issuer = amount.issuer;
         } else {
-            issuer = find(flatMap(paths_computed), (o) => {
+            const typeOneStep = find(flatMap(paths_computed), (o) => {
                 return o.type === 1;
             });
 
-            if (issuer) {
-                issuer = issuer.account;
+            if (typeOneStep) {
+                issuer = typeOneStep.account;
             }
         }
 
@@ -238,7 +239,7 @@ class PaymentOptionItem extends Component<Props> {
         const { source_amount } = item;
 
         if (typeof source_amount === 'string') {
-            return this.renderXRP(item);
+            return this.renderNative(item);
         }
         if (typeof source_amount === 'object') {
             return this.renderIOU(item);

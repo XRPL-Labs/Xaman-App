@@ -263,7 +263,7 @@ class PasscodeSetupView extends Component<Props, State> {
     renderHeader = () => {
         return (
             <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
             </View>
         );
     };

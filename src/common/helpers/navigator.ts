@@ -294,14 +294,6 @@ const Navigator = {
         });
     },
 
-    changeSelectedTabIndex(index: number) {
-        Navigation.mergeOptions(RootType.DefaultRoot, {
-            bottomTabs: {
-                currentTabIndex: index,
-            },
-        });
-    },
-
     showAlertModal(props: {
         testID?: string;
         type: 'success' | 'info' | 'warning' | 'error';

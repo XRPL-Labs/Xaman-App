@@ -1,7 +1,7 @@
 import React from 'react';
 // Note: test renderer must be required after react-native.
 
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
 import { SearchBar } from '..';
 
@@ -16,11 +16,16 @@ describe('[SearchBar]', () => {
     it('should show clear button on text enter', () => {
         const tree = renderer.create(<SearchBar />);
         const { instance } = tree.root;
-        instance.onChangeText('searched text');
+
+        act(() => {
+            instance.onChangeText('searched text');
+        });
 
         expect(instance.state.value).toBe('searched text');
 
-        jest.advanceTimersByTime(1000);
+        act(() => {
+            jest.advanceTimersByTime(1000);
+        });
 
         expect(tree.toJSON()).toMatchSnapshot();
     });
@@ -29,9 +34,10 @@ describe('[SearchBar]', () => {
         const tree = renderer.create(<SearchBar />);
         const { instance } = tree.root;
 
-        instance.onClearPress();
-
-        jest.advanceTimersByTime(1000);
+        act(() => {
+            instance.onClearPress();
+            jest.advanceTimersByTime(1000);
+        });
 
         expect(instance.state.value).toBe('');
         expect(tree.toJSON()).toMatchSnapshot();

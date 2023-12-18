@@ -11,7 +11,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 // components
 import { TouchableDebounce, Button, ActionPanel, SearchBar, InfoMessage } from '@components/General';
@@ -25,15 +25,15 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
-    currencies: Array<TrustLineSchema | string>;
-    selectedItem?: TrustLineSchema | string;
-    onSelect: (currency: TrustLineSchema | string) => void;
+    account: AccountModel;
+    currencies: Array<TrustLineModel | string>;
+    selectedItem?: TrustLineModel | string;
+    onSelect: (currency: TrustLineModel | string) => void;
     onClose: () => void;
 }
 
 export interface State {
-    dataSource: Array<TrustLineSchema | string>;
+    dataSource: Array<TrustLineModel | string>;
 }
 
 /* Component ==================================================================== */
@@ -63,7 +63,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
         };
     }
 
-    onSelect = (currency: TrustLineSchema | string) => {
+    onSelect = (currency: TrustLineModel | string) => {
         const { onSelect } = this.props;
 
         if (typeof onSelect === 'function') {
@@ -119,7 +119,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
         }
     };
 
-    renderItem = ({ item, index }: { item: TrustLineSchema | string; index: number }) => {
+    renderItem = ({ item, index }: { item: TrustLineModel | string; index: number }) => {
         const { account, selectedItem } = this.props;
 
         const isSelected =

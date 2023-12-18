@@ -46,7 +46,7 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.openVault(name, key)
                 .then((clearText: string) => {
-                    // this should never happen
+                    // this should never happen, just double-checking
                     if (!clearText) {
                         reject(new Error('Vault open clear text is not defined!'));
                         return;
@@ -66,9 +66,7 @@ const Vault = {
     exist: async (name: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.vaultExist(name)
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault vaultExist error', error);
                     reject(error);
@@ -82,9 +80,7 @@ const Vault = {
     isStorageEncryptionKeyExist: (): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.isStorageEncryptionKeyExist()
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault isStorageEncryptionKeyExist error', error);
                     reject(error);
@@ -124,12 +120,17 @@ const Vault = {
     /**
      *  check if vault needs migration
      */
-    isMigrationRequired: (name: string): Promise<any> => {
+    isMigrationRequired: (
+        name: string,
+    ): Promise<{
+        vault: string;
+        current_cipher_version: number;
+        latest_cipher_version: number;
+        migration_required: boolean;
+    }> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.isMigrationRequired(name)
-                .then((result: any) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault isMigrationRequired error', error);
                     reject(error);
@@ -143,9 +144,7 @@ const Vault = {
     reKey: async (name: string, oldKey: string, newKey: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.reKeyVault(name, oldKey, newKey)
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault reKey error', error);
                     reject(error);
@@ -159,9 +158,7 @@ const Vault = {
     reKeyBatch: async (names: string[], oldKey: string, newKey: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.reKeyBatchVaults(names, oldKey, newKey)
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault batch reKey error', error);
                     reject(error);
@@ -173,9 +170,7 @@ const Vault = {
     purge: (name: string): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.purgeVault(name)
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault purge error', error);
                     reject(error);
@@ -187,9 +182,7 @@ const Vault = {
     clearStorage: (): Promise<boolean> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.clearStorage()
-                .then((result: boolean) => {
-                    resolve(result);
-                })
+                .then(resolve)
                 .catch((error: any) => {
                     logger.error('Vault clear storage error', error);
                     reject(error);

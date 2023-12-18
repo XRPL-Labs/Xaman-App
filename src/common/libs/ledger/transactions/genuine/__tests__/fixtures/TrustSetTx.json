@@ -1,0 +1,18 @@
+{
+  "tx": {
+    "TransactionType": "TrustSet",
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Fee": "12",
+    "Flags": 262144,
+    "LastLedgerSequence": 8007750,
+    "LimitAmount": {
+      "currency": "USD",
+      "issuer": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+      "value": "100"
+    },
+    "QualityIn": 1,
+    "QualityOut": 1,
+    "Sequence": 12
+  },
+  "meta": {}
+}

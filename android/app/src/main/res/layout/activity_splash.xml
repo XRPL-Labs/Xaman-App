@@ -6,20 +6,19 @@
     android:orientation="vertical"
     android:background="@color/splash_screen_background"
     >
-
   <ImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:alpha="0.5"
+      android:alpha="1"
       android:contentDescription="@string/splash_screen_background"
       android:scaleType="centerCrop"
-      android:src="@drawable/splash_screen_background" />
+      android:src="@drawable/splash_screen_patterns" />
 
   <ImageView
-      android:layout_width="120dp"
-      android:layout_height="120dp"
+      android:layout_width="200dp"
+      android:layout_height="200dp"
       android:layout_centerInParent="true"
       android:contentDescription="@string/splash_screen_foreground"
-      android:scaleType="centerInside"
-      android:src="@drawable/xumm_icon_white" />
+      android:scaleType="fitCenter"
+      android:src="@drawable/formerly_logo" />
 </RelativeLayout>

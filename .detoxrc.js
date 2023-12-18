@@ -2,13 +2,13 @@ module.exports = {
     apps: {
         'ios.debug': {
             type: 'ios.app',
-            binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/XUMM.app',
-            build: 'xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+            binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/Xaman.app',
+            build: 'xcodebuild -workspace ios/Xaman.xcworkspace -scheme Xaman -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'ios.release': {
             type: 'ios.app',
-            binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/XUMM.app',
-            build: 'xcodebuild -workspace ios/XUMM.xcworkspace -scheme XUMM -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
+            binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/Xaman.app',
+            build: 'xcodebuild -workspace ios/Xaman.xcworkspace -scheme Xaman -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'android.debug': {
             type: 'android.apk',
@@ -24,7 +24,7 @@ module.exports = {
     devices: {
         'ios.simulator': {
             type: 'ios.simulator',
-            device: { type: 'iPhone 14 Pro Max' },
+            device: { type: 'iPhone 15 Pro' },
         },
         'android.emulator': {
             type: 'android.apk',
@@ -35,6 +35,10 @@ module.exports = {
         'ios.sim.debug': {
             device: 'ios.simulator',
             app: 'ios.debug',
+        },
+        'ios.sim.release': {
+            device: 'ios.simulator',
+            app: 'ios.release',
         },
         'android.emu.debug': {
             device: 'android.emulator',

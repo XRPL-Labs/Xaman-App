@@ -7,7 +7,7 @@ Execution failed for task ':app:packageAllDebugClassesForMultiDex'.
 ```
 
 ##### Solution
-Clean the Android part of the XUMM project. Issue the following commands:
+Clean the Android part of the Xaman project. Issue the following commands:
 
 1. ``cd android``
 2. ``./gradlew clean``
@@ -19,7 +19,7 @@ Execution failed for task ':app:installDebug'.
 ```
 
 ##### Solution
-The development version of the XUMM app cannot be installed alongside a release version. Open ``android/app/build.gradle`` and change the applicationId to a unique string for your app.
+The development version of the Xaman app cannot be installed alongside a release version. Open ``android/app/build.gradle`` and change the applicationId to a unique string for your app.
 
 #### Errors When Running 'make run-ios'
 

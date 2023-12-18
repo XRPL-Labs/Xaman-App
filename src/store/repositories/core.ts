@@ -1,37 +1,41 @@
 import { assign } from 'lodash';
+import Realm from 'realm';
+
 import { Platform } from 'react-native';
-import Realm, { ObjectSchema, Results } from 'realm';
 
 import { AppConfig } from '@common/constants';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA512, HMAC256 } from '@common/libs/crypto';
 import { UUIDEncoding } from '@common/utils/string';
 
-import { CoreSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
+import CoreModel from '@store/models/objects/core';
+import NetworkModel from '@store/models/objects/network';
 
 import BaseRepository from './base';
 
-/* types  ==================================================================== */
-
-// events
+/* Events  ==================================================================== */
 declare interface CoreRepository {
-    on(event: 'updateSettings', listener: (settings: CoreSchema, changes: Partial<CoreSchema>) => void): this;
+    on(event: 'updateSettings', listener: (settings: CoreModel, changes: Partial<CoreModel>) => void): this;
     on(event: string, listener: Function): this;
 }
 
-/* repository  ==================================================================== */
-class CoreRepository extends BaseRepository {
-    realm: Realm;
-    schema: ObjectSchema;
-
+/* Repository  ==================================================================== */
+class CoreRepository extends BaseRepository<CoreModel> {
+    /**
+     * Initialize the CoreRepository with the Realm instance.
+     * @param realm - The Realm database instance.
+     */
     initialize(realm: Realm) {
         this.realm = realm;
-        this.schema = CoreSchema.schema;
+        this.model = CoreModel;
     }
 
-    saveSettings = (settings: Partial<CoreSchema>) => {
-        const current = this.getSettings(true);
+    /**
+     * Save the application settings.
+     * @param settings - The settings changes to be saved.
+     */
+    saveSettings = (settings: Partial<CoreModel>) => {
+        const current = this.getSettings();
 
         if (current) {
             this.safeWrite(() => {
@@ -44,23 +48,10 @@ class CoreRepository extends BaseRepository {
         }
     };
 
-    getChainFromNode = (node: string) => {
-        let chain = NodeChain.Main;
-
-        // it is a verified type
-        if (AppConfig.nodes.main.indexOf(node) > -1) {
-            chain = NodeChain.Main;
-        } else if (AppConfig.nodes.test.indexOf(node) > -1) {
-            chain = NodeChain.Test;
-        } else if (AppConfig.nodes.dev.indexOf(node) > -1) {
-            chain = NodeChain.Dev;
-        } else {
-            chain = NodeChain.Custom;
-        }
-
-        return chain;
-    };
-
+    /**
+     * Get the app currency from settings.
+     * @returns {string} - The app currency.
+     */
     getAppCurrency = (): string => {
         const settings = this.getSettings();
 
@@ -71,53 +62,74 @@ class CoreRepository extends BaseRepository {
         return AppConfig.defaultCurrency;
     };
 
-    getDefaultNode = () => {
-        let defaultNode = AppConfig.nodes.main[0];
-
+    /**
+     * Get the selected network from settings.
+     * @returns {NetworkModel | undefined} - The selected network.
+     */
+    getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
-        if (settings && settings.defaultNode) {
-            defaultNode = settings.defaultNode;
-        }
-
-        const chain = this.getChainFromNode(defaultNode);
-
-        return {
-            node: defaultNode,
-            chain,
-        };
-    };
-
-    setDefaultNode = (node: string, chain?: NodeChain) => {
-        if (!chain) {
-            chain = this.getChainFromNode(node);
-        }
-
-        this.saveSettings({
-            defaultNode: node,
-        });
-
-        return {
-            node,
-            chain,
-        };
-    };
-
-    getSettings = (plain?: boolean): CoreSchema => {
-        const result = this.findAll() as Results<CoreSchema>;
-
-        // settings exist
-        if (!result.isEmpty()) {
-            if (plain) {
-                return result[0];
-            }
-            // @ts-ignore
-            return result[0].toJSON();
+        if (settings && settings.network) {
+            return settings.network;
         }
 
         return undefined;
     };
 
+    /**
+     * Get the default account from settings.
+     * @returns {any | undefined} - The default account.
+     */
+    getDefaultAccount = (): any => {
+        const settings = this.getSettings();
+
+        if (settings && settings.account) {
+            return settings.account;
+        }
+
+        return undefined;
+    };
+
+    /**
+     * Set the default account in settings.
+     * @param account - The default account to set.
+     */
+    setDefaultAccount = (account: any) => {
+        this.saveSettings({
+            account,
+        });
+    };
+
+    /**
+     * Set the default network in settings.
+     * @param network - The default network to set.
+     */
+    setDefaultNetwork = (network: NetworkModel) => {
+        this.saveSettings({
+            network,
+        });
+    };
+
+    /**
+     * Get the app settings.
+     * @returns {CoreModel | undefined} - The application settings.
+     */
+    getSettings = (): CoreModel => {
+        const result = this.findAll();
+
+        // settings exist
+        if (!result.isEmpty()) {
+            return result[0];
+        }
+
+        return undefined;
+    };
+
+    /**
+     * Hash the passcode
+     * @param passcode - The passcode to hash.
+     * @returns {Promise<string>} - A promise that resolves to the hashed passcode.
+     */
     hashPasscode = async (passcode: string): Promise<string> => {
         try {
             // for better security we mix passcode with device unique id
@@ -150,6 +162,11 @@ class CoreRepository extends BaseRepository {
         }
     };
 
+    /**
+     * Set the passcode for the app.
+     * @param passcode - The passcode to set.
+     * @returns {Promise<string>} - A promise that resolves to the hashed passcode.
+     */
     setPasscode = async (passcode: string): Promise<string> => {
         try {
             const hashedPasscode = await this.hashPasscode(passcode);
@@ -169,7 +186,7 @@ class CoreRepository extends BaseRepository {
     };
 
     /**
-     * Purge everything
+     * Purge all data from the Realm database.
      * WARNING: This will delete all objects in the Realm!
      */
     purge = (): void => {

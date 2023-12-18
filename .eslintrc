@@ -46,12 +46,12 @@
       "__generate.js"
     ],
     "rules": {
-      "prettier/prettier": [0, {	
-        "printWidth": 120,	
-        "tabWidth": 4,	
-        "parser": "flow",	
-        "singleQuote": true,	
-        "trailingComma": "all"	
+      "prettier/prettier": [0, {
+        "printWidth": 120,
+        "tabWidth": 4,
+        "parser": "flow",
+        "singleQuote": true,
+        "trailingComma": "all"
       }],
       "no-useless-constructor": 0,
       "arrow-body-style": 0,
@@ -80,7 +80,7 @@
       "no-param-reassign": 0,
       "no-nested-ternary": 0,
       "no-restricted-syntax": 0,
-      
+      "no-underscore-dangle": 0,
       "no-unused-vars": "off",
       "no-unused-expressions": ["error" , {"allowShortCircuit": true} ],
       "@typescript-eslint/no-unused-vars": "error",
@@ -124,6 +124,7 @@
       "import/no-unresolved": "error",
       "import/extensions": ["error", "never", { "json": "always" }],
       "import/no-extraneous-dependencies": 0,
+      "import/order": 0,
       "react-native/no-unused-styles": 2,
       "react-native/split-platform-components": 0,
       "react-native/no-inline-styles": 2,
@@ -151,7 +152,8 @@
           "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
           "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
           "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA", "Misconfiguration", "kyc", "debounce", "debounced",
-          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype"
+          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype", "Xaman", "xls20", "livenet", "feeunits", "Preflight", "ctid",
+          "explainer", "Cancelled", "nftoken", "Remint"
         ],
         "skipIfMatch": [
           "http://[^s]*",

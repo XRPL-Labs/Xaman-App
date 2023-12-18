@@ -108,8 +108,8 @@ class DisclaimersView extends Component<Props, State> {
         switch (currentStep) {
             case 0:
                 return {
-                    title: Localize.t('setupTermOfService.XUMMIsNonCustodial'),
-                    content: Localize.t('setupTermOfService.XUMMNotCustodialExplain'),
+                    title: Localize.t('setupTermOfService.XamanIsNonCustodial'),
+                    content: Localize.t('setupTermOfService.XamanNotCustodialExplain'),
                     button: undefined,
                 };
             case 1:
@@ -146,7 +146,7 @@ class DisclaimersView extends Component<Props, State> {
                 return {
                     title: Localize.t('setupTermOfService.questionsAndSupport'),
                     content: Localize.t('setupTermOfService.questionsAndSupportExplain'),
-                    button: Localize.t('setupTermOfService.IOnlyTrustAnswersFromXUMMSupportTeam'),
+                    button: Localize.t('setupTermOfService.IOnlyTrustAnswersFromXamanSupportTeam'),
                 };
             default:
                 return {};
@@ -161,7 +161,7 @@ class DisclaimersView extends Component<Props, State> {
         return (
             <SafeAreaView testID="disclaimers-setup-screen" style={[styles.container]}>
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
 
                 <Spacer size={20} />

@@ -1,51 +1,59 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { InteractionManager, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
+
+import { AccountModel } from '@store/models';
+
+import { AppScreens } from '@common/constants';
 
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { LedgerObjectTypes } from '@common/libs/ledger/types';
-import { AccountSchema } from '@store/schemas/latest';
+import { ExplainerFactory } from '@common/libs/ledger/factory';
 
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountName } from '@common/helpers/resolver';
+
 import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
-import { AppScreens } from '@common/constants';
+import { Truncate } from '@common/utils/string';
+
+import { AmountText, Avatar, TextPlaceholder, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
-
-import { AmountText, Avatar, Icon, TouchableDebounce } from '@components/General';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     item: LedgerObjects;
     timestamp?: number;
 }
 
 export interface State {
-    name: string;
-    address: string;
-    tag: number;
+    isLoading: boolean;
+    recipientDetails: {
+        address: string;
+        tag?: number;
+        name?: string;
+        kycApproved?: boolean;
+    };
+    label: string;
 }
 
 /* Component ==================================================================== */
 class LedgerObjectItem extends Component<Props, State> {
     static Height = AppSizes.heightPercentageToDP(7.5);
 
-    private mounted: boolean;
+    private mounted = false;
 
     constructor(props: Props) {
         super(props);
 
-        const recipientDetails = this.getRecipientDetails();
-
         this.state = {
-            name: recipientDetails.name,
-            address: recipientDetails.address,
-            tag: recipientDetails.tag,
+            isLoading: true,
+            recipientDetails: undefined,
+            label: undefined,
         };
     }
 
@@ -55,13 +63,11 @@ class LedgerObjectItem extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { name } = this.state;
-
+        // track mounted
         this.mounted = true;
 
-        if (!name) {
-            this.lookUpRecipientName();
-        }
+        // fetch recipient details
+        InteractionManager.runAfterInteractions(this.setDetails);
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -69,7 +75,7 @@ class LedgerObjectItem extends Component<Props, State> {
 
         // force the lookup if timestamp changed
         if (timestamp !== prevProps.timestamp) {
-            this.lookUpRecipientName();
+            InteractionManager.runAfterInteractions(this.setDetails);
         }
     }
 
@@ -77,64 +83,56 @@ class LedgerObjectItem extends Component<Props, State> {
         this.mounted = false;
     }
 
-    getRecipientDetails = () => {
+    setDetails = async () => {
+        const { isLoading } = this.state;
         const { item, account } = this.props;
 
-        switch (item.Type) {
-            case LedgerObjectTypes.Check:
-            case LedgerObjectTypes.Escrow:
-                return {
-                    address: item.Destination.address,
-                    tag: item.Destination.tag,
-                };
-
-            case LedgerObjectTypes.PayChannel:
-                if (item.Account.address !== account.address) {
-                    return {
-                        address: item.Account.address,
-                        tag: item.Account.tag,
-                    };
-                }
-
-                return {
-                    address: item.Destination.address,
-                    tag: item.Destination.tag,
-                };
-
-            case LedgerObjectTypes.NFTokenOffer:
-                return {
-                    address: item.Owner,
-                };
-            case LedgerObjectTypes.Offer:
-            case LedgerObjectTypes.Ticket:
-                return {
-                    address: account.address,
-                    name: account.label,
-                };
-
-            default:
-                return {};
-        }
-    };
-
-    lookUpRecipientName = () => {
-        const { address, tag } = this.state;
-
-        if (!address) {
-            return;
+        // set is loading flag if not true
+        if (!isLoading) {
+            this.setState({
+                isLoading: true,
+            });
         }
 
-        getAccountName(address, tag)
-            .then((res: any) => {
-                if (!isEmpty(res) && res.name) {
-                    if (this.mounted) {
-                        this.setState({
-                            name: res.name,
-                        });
-                    }
-                }
-            })
-            .catch(() => {});
+        // fetch explainer
+        const objectExplainer = ExplainerFactory.fromType(item.Type);
+
+        // get label
+        const objectLabel = objectExplainer.getLabel(item, account);
+
+        // get recipient
+        let recipient = objectExplainer.getRecipient(item, account);
+
+        // if there is no recipient then load account address
+        if (isEmpty(recipient)) {
+            recipient = {
+                address: account.address,
+            };
+        }
+
+        try {
+            // getRecipient
+            const resp = await getAccountName(recipient.address, recipient.tag);
+            if (!isEmpty(resp) && this.mounted) {
+                this.setState({
+                    label: objectLabel,
+                    recipientDetails: {
+                        ...recipient,
+                        name: resp.name,
+                        kycApproved: resp.kycApproved,
+                    },
+                    isLoading: false,
+                });
+            }
+        } catch (error) {
+            if (this.mounted) {
+                this.setState({
+                    label: objectLabel,
+                    recipientDetails: { ...recipient },
+                    isLoading: false,
+                });
+            }
+        }
     };
 
     onPress = () => {
@@ -143,33 +141,22 @@ class LedgerObjectItem extends Component<Props, State> {
     };
 
     getIcon = () => {
-        const { item } = this.props;
-        const { address } = this.state;
-
-        let iconName = '' as any;
-
-        if (address) {
-            return <Avatar size={40} border source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} />;
-        }
-
-        switch (item.Type) {
-            case LedgerObjectTypes.Offer:
-                iconName = 'IconSwitchAccount';
-                break;
-            default:
-                iconName = 'IconAccount';
-                break;
-        }
+        const { recipientDetails, isLoading } = this.state;
 
         return (
             <View style={styles.iconContainer}>
-                <Icon size={20} style={styles.icon} name={iconName} />
+                <Avatar
+                    badge={recipientDetails?.kycApproved ? 'IconCheckXaman' : undefined}
+                    border
+                    source={{ uri: `https://xumm.app/avatar/${recipientDetails?.address}_180_50.png` }}
+                    isLoading={isLoading}
+                />
             </View>
         );
     };
 
-    getLabel = () => {
-        const { name, address } = this.state;
+    getDescription = () => {
+        const { recipientDetails } = this.state;
         const { item } = this.props;
 
         if (item.Type === LedgerObjectTypes.Offer) {
@@ -182,49 +169,10 @@ class LedgerObjectItem extends Component<Props, State> {
             return item.NFTokenID;
         }
 
-        // if (item.Type === LedgerObjectTypes.PayChannel) {
-        //     return `${Localize.formatNumber(NormalizeAmount(item.Amount.value))} ${NormalizeCurrencyCode(
-        //         item.Amount.currency,
-        //     )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
-        // }
-
-        if (name) return name;
-        if (address) return address;
+        if (recipientDetails?.name) return recipientDetails.name;
+        if (recipientDetails?.address) return Truncate(recipientDetails.address, 16);
 
         return Localize.t('global.unknown');
-    };
-
-    getDescription = () => {
-        const { item, account } = this.props;
-
-        switch (item.Type) {
-            case LedgerObjectTypes.Escrow:
-                return Localize.t('global.escrow');
-            case LedgerObjectTypes.Offer:
-                return Localize.t('global.offer');
-            case LedgerObjectTypes.NFTokenOffer:
-                // incoming offers
-                if (item.Owner !== account.address) {
-                    if (item.Flags.SellToken) {
-                        return Localize.t('events.nftOfferedToYou');
-                    }
-                    return Localize.t('events.offerOnYouNFT');
-                }
-                // outgoing offers
-                if (item.Flags.SellToken) {
-                    return Localize.t('events.sellNFToken');
-                }
-                return Localize.t('events.buyNFToken');
-            case LedgerObjectTypes.Check:
-                return Localize.t('global.check');
-            case LedgerObjectTypes.Ticket:
-                return `${Localize.t('global.ticket')} #${item.TicketSequence}`;
-            case LedgerObjectTypes.PayChannel:
-                return Localize.t('events.paymentChannel');
-            default:
-                // @ts-ignore
-                return item.Type;
-        }
     };
 
     renderRightPanel = () => {
@@ -288,6 +236,8 @@ class LedgerObjectItem extends Component<Props, State> {
     };
 
     render() {
+        const { label, isLoading } = this.state;
+
         return (
             <TouchableDebounce
                 onPress={this.onPress}
@@ -296,13 +246,14 @@ class LedgerObjectItem extends Component<Props, State> {
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                    <Text style={[styles.label]} numberOfLines={1}>
-                        {this.getLabel()}
-                    </Text>
+                    <TextPlaceholder style={styles.label} numberOfLines={1} isLoading={isLoading}>
+                        {this.getDescription()}
+                    </TextPlaceholder>
+
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <Text style={[styles.description]} numberOfLines={1}>
-                            {this.getDescription()}
-                        </Text>
+                        <TextPlaceholder style={styles.description} numberOfLines={1} isLoading={isLoading}>
+                            {label}
+                        </TextPlaceholder>
                     </View>
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>

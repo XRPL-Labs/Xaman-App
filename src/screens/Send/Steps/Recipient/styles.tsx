@@ -38,6 +38,14 @@ const styles = StyleService.create({
         paddingLeft: 1,
         paddingRight: 0,
     },
+    accountElementSelected: {
+        borderColor: '$blue',
+        borderWidth: 2,
+        backgroundColor: '$lightBlue',
+    },
+    accountElementSelectedText: {
+        color: '$blue',
+    },
 });
 
 export default styles;

@@ -1,0 +1,24 @@
+{
+  "tx": {
+    "TransactionType": "TicketCreate",
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Fee": "10",
+    "Sequence": 381,
+    "TicketCount": 10
+  },
+  "meta": {
+    "AffectedNodes": [
+      {
+        "CreatedNode": {
+          "LedgerEntryType": "Ticket",
+          "LedgerIndex": "33494104C387C6FC868EE5D354B99C9FB9F31441DF7882C10EAD08EC8DA4551D",
+          "NewFields": {
+            "Account": "rJ7vWZ7esxmH3wP3p17zxPdHZbA15EEkzB",
+            "OwnerNode": "3",
+            "TicketSequence": 70035199
+          }
+        }
+      }
+    ]
+  }
+}

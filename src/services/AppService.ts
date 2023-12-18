@@ -2,10 +2,9 @@
  * App Service
  * Used for detect App State and Net info and inactivity status
  */
+
 import EventEmitter from 'events';
-
 import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter } from 'react-native';
-
 import NetInfo from '@react-native-community/netinfo';
 
 import Localize from '@locale';

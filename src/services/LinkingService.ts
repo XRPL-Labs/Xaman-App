@@ -162,7 +162,7 @@ class LinkingService {
 
         const { to, tag } = NormalizeDestination(destination);
 
-        // if amount present as XRP and valid amount
+        // if amount present as native currency and valid amount
         if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
             amount = destination.amount;
         }
@@ -230,7 +230,7 @@ class LinkingService {
         }
     };
 
-    handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
+    handleXamanFeature = (parsed: { feature: string; type: string; params?: Record<string, unknown> }) => {
         const { feature, type } = parsed;
 
         // Feature: allow import of Secret Numbers without Checksum
@@ -285,7 +285,7 @@ class LinkingService {
                 this.handleAlternativeSeedCodec(parsed);
                 break;
             case StringType.XummFeature:
-                this.handleXummFeature(parsed);
+                this.handleXamanFeature(parsed);
                 break;
             default:
                 break;

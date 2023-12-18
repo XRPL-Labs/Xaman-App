@@ -1,10 +1,11 @@
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
 import { Transactions, PseudoTransactions } from '@common/libs/ledger/transactions/types';
 
 export enum Steps {
+    Preflight = 'Preflight',
     Review = 'Review',
     Submitting = 'Submitting',
     Verifying = 'Verifying',
@@ -20,24 +21,27 @@ export interface Props {
 
 export interface State {
     payload: Payload;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     currentStep: Steps;
     transaction: Transactions | PseudoTransactions;
-    source: AccountSchema;
+    accounts: AccountModel[];
+    source: AccountModel;
     submitResult: SubmitResultType;
     hasError: boolean;
-    softErrorMessage: string;
-    hardErrorMessage: string;
+    errorMessage: string;
     isLoading: boolean;
     isReady: boolean;
     isValidPayload: boolean;
 }
 
 export interface ContextProps extends State {
-    setSource: (source: AccountSchema) => void;
-    setError: (message: string) => void;
+    setTransaction: (tx: Transactions | PseudoTransactions) => void;
+    setAccounts: (accounts: AccountModel[]) => void;
+    setSource: (source: AccountModel) => void;
     setLoading: (loading: boolean) => void;
     setReady: (ready: boolean) => void;
+    setError: (error: Error) => void;
+    onPreflightPass: () => void;
     onClose: () => void;
     onAccept: () => void;
     onFinish: () => void;

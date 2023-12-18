@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
-import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 import { AccountTypes } from '@store/types';
 // components
@@ -44,7 +44,7 @@ class ExplainActivationStep extends Component<Props, State> {
         const { goBack } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-explain-activation-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-explain-activation-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
                     <Image style={[styles.headerImage]} source={Images.ImageCoinWallet} />
                 </View>
@@ -52,7 +52,8 @@ class ExplainActivationStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
                     <Text style={[AppStyles.baseText, AppStyles.bold, AppStyles.textCenterAligned]}>
                         {Localize.t('account.accountImportActivationExplain', {
-                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                            baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                            nativeAsset: NetworkService.getNativeAsset(),
                         })}
                     </Text>
 
@@ -60,14 +61,17 @@ class ExplainActivationStep extends Component<Props, State> {
 
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                         {Localize.t('account.accountActivateReserveExplain', {
-                            baseReserve: LedgerService.getNetworkReserve().BaseReserve,
+                            baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                            nativeAsset: NetworkService.getNativeAsset(),
                         })}
                     </Text>
 
                     <Spacer size={20} />
 
                     <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.accountReserveNotShownExplain')}
+                        {Localize.t('account.accountReserveNotShownExplain', {
+                            nativeAsset: NetworkService.getNativeAsset(),
+                        })}
                     </Text>
 
                     <Spacer size={20} />
@@ -83,7 +87,7 @@ class ExplainActivationStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}

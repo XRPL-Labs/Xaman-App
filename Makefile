@@ -10,22 +10,22 @@ OS := $(shell sh -c 'uname -s 2>/dev/null')
 SIMULATOR = iPhone 11 Pro Max
 
 node_modules: package.json
-	@if ! [ $(shell which yarn 2> /dev/null) ]; then \
-		echo "yarn is not installed https://yarnpkg.com"; \
+	@if ! [ $(shell which npm 2> /dev/null) ]; then \
+		echo "npm is not installed https://docs.npmjs.com/downloading-and-installing-node-js-and-npm"; \
 		exit 1; \
 	fi
 
 	@echo Getting Javascript dependencies
-	@yarn install
+	@npm install
 
-yarn-ci: package.json
-	@if ! [ $(shell which yarn 2> /dev/null) ]; then \
-		echo "yarn is not installed https://yarnpkg.com"; \
+npm-ci: package.json
+	@if ! [ $(shell which npm 2> /dev/null) ]; then \
+		echo "npm is not installed https://docs.npmjs.com/downloading-and-installing-node-js-and-npm"; \
 		exit 1; \
 	fi
 
 	@echo Getting Javascript dependencies
-	@yarn install --frozen-lockfile
+	@npm install --frozen-lockfile
 
 .podinstall:
 ifeq ($(OS), Darwin)
@@ -43,11 +43,11 @@ build-env:
 
 pre-run: | node_modules .podinstall build-env ## Installs dependencies
 
-pre-build: | yarn-ci .podinstall build-env ## Install dependencies before building
+pre-build: | npm-ci .podinstall build-env ## Install dependencies before building
 
 validate-style: node_modules ## Runs eslint
 	@echo Checking for style guide compliance
-	@yarn run validate
+	@npm run validate
 
 clean: ## Cleans dependencies, previous builds and temp files
 	@echo Cleaning started
@@ -103,7 +103,7 @@ run: run-ios ## alias for run-ios
 run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		yarn start & echo Running iOS app in development; \
+		npm start & echo Running iOS app in development; \
 		if [ ! -z "${SIMULATOR}" ]; then \
 			react-native run-ios --simulator="${SIMULATOR}"; \
 		else \
@@ -122,7 +122,7 @@ run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 run-android: | check-device-android pre-run ## Runs the app on an Android emulator or dev device
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
         echo Starting React Native packager server; \
-    	yarn start & echo Running Android app in development; \
+    	npm start & echo Running Android app in development; \
 	if [ ! -z ${VARIANT} ]; then \
     		react-native run-android --no-packager --variant=${VARIANT}; \
     	else \
@@ -142,7 +142,7 @@ build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)
 	@echo "Building iOS app"
 	@cd ios
-	@xcodebuild -scheme XUMM archivexcodebuild -scheme XUMM archive
+	@xcodebuild -scheme Xaman archivexcodebuild -scheme Xaman archive
 	$(call stop_packager)
 
 build-android: | stop pre-build validate-style ## Build the Android app
@@ -153,18 +153,15 @@ build-android: | stop pre-build validate-style ## Build the Android app
 	$(call stop_packager)
 
 pre-e2e: | pre-build  ## build for e2e test
-	@yarn detox build e2e --configuration ios.sim.debug
+	@npx detox build e2e --configuration ios.sim.release
 
 test: | pre-run validate-style ## Runs tests
-	@yarn test
+	@npm run test
 
 test-e2e: ## Runs e2e tests
-	@yarn detox clean-framework-cache
-	@yarn detox build-framework-cache
-	@yarn cucumber-js ./e2e --configuration ios.sim.debug
-
-generate-locales: ## Generates app locales
-	@node scripts/generate-locales.js
+	@npx detox clean-framework-cache
+	@npx detox build-framework-cache
+	@npx cucumber-js ./e2e --configuration ios.sim.release
 
 ## Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
@@ -173,7 +170,7 @@ help:
 define start_packager
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		yarn start & echo; \
+		npm start & echo; \
 	else \
 		echo React Native packager server already running; \
 	fi

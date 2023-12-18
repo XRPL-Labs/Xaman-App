@@ -35,7 +35,7 @@ The set of commands for building the app are used in conjunction with [Fastlane]
 - **make build**: Builds the app for both platforms Android and iOS in sequence and generates the apk and ipa files in the project's root directory to be distributed.
 - **make build-ios**: Builds the iOS app and generates the ipa file in the project's root directory to be distributed.
 - **make build-android**: Builds the Android app and generates the apk file in the project's root directory to be distributed.
-- **make unsigned-ios**: Builds the iOS app and generates an unsigned XUMM-unsigned.ipa file in the project's root directory.
-- **make unsigned-android**: Builds the Android app and generates an unsigned XUMM-unsigned.apk file in the project's root directory.
+- **make unsigned-ios**: Builds the iOS app and generates an unsigned Xaman-unsigned.ipa file in the project's root directory.
+- **make unsigned-android**: Builds the Android app and generates an unsigned Xaman-unsigned.apk file in the project's root directory.
 
 If you plan to use the make build-\* commands be sure to set your environment variables for use in conjunction with Fastlane to suit your needs.

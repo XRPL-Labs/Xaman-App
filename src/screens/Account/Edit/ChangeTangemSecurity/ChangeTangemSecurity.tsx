@@ -15,7 +15,7 @@ import { Prompt } from '@common/helpers/interface';
 import { GetCardEnforcedSecurity, GetCardSecurityOptions, TangemSecurity } from '@common/utils/tangem';
 
 import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import LoggerService from '@services/LoggerService';
 
@@ -28,7 +28,7 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
 }
 
 export interface State {

@@ -48,7 +48,7 @@ class Application {
 
     constructor() {
         this.storage = new DataStorage();
-        this.logger = services.LoggerService.createLogger('Application');
+        this.logger = services.LoggerService.createLogger('App');
         this.initialized = false;
     }
 
@@ -57,7 +57,7 @@ class Application {
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
             this.logger.debug(
-                `XUMM version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
+                `Xaman version ${GetAppVersionCode()}_${GetAppBuildNumber()}_${IsDebugBuild() ? 'D' : 'R'}`,
             );
             this.logger.debug(`Device ${GetDeviceBrand()} - OS Version ${GetDeviceOSVersion()}`);
 
@@ -67,13 +67,12 @@ class Application {
             // if already initialized then soft boot
             // NOTE: this can happen if Activity is destroyed and re-initiated
             if (this.initialized) {
-                tasks = [this.configure, this.loadAppLocale, this.reinstateServices];
+                tasks = [this.configure, this.reinstateServices];
             } else {
                 tasks = [
                     this.checkup,
-                    this.configure,
                     this.initializeStorage,
-                    this.loadAppLocale,
+                    this.configure,
                     this.initializeServices,
                     this.registerScreens,
                 ];
@@ -108,7 +107,7 @@ class Application {
                         text: 'Try again later',
                         onPress: ExitApp,
                     },
-                    { text: 'WIPE XUMM', style: 'destructive', onPress: this.wipeStorage },
+                    { text: 'Wipe Xaman', style: 'destructive', onPress: this.wipeStorage },
                 ]);
             } else if (message.indexOf('Encrypted interprocess sharing is currently unsupported') > -1) {
                 Alert.alert('Error', ErrorMessages.appAlreadyRunningInDifferentProcess, [
@@ -133,7 +132,7 @@ class Application {
     wipeStorage = () => {
         Prompt(
             'WARNING',
-            'You are wiping XUMM, This action cannot be undone. Are you sure?',
+            'You are wiping Xaman, This action cannot be undone. Are you sure?',
             [
                 {
                     text: 'No',
@@ -198,6 +197,7 @@ class Application {
                         reject(e);
                     });
             } catch (e) {
+                reject(e);
                 this.logger.error('initializeServices Error:', e);
             }
         });
@@ -217,34 +217,6 @@ class Application {
                 resolve();
             } catch (e: any) {
                 this.logger.error('reinstate Services Error:', e);
-                reject(e);
-            }
-        });
-    };
-
-    // load app locals and settings
-    loadAppLocale = () => {
-        // eslint-disable-next-line no-async-promise-executor
-        return new Promise<void>(async (resolve, reject) => {
-            try {
-                const Localize = require('@locale').default;
-
-                const core = CoreRepository.getSettings();
-
-                const localeSettings = await GetDeviceLocaleSettings();
-
-                // app is not initialized yet, set to default device locale
-                if (!core) {
-                    this.logger.debug('Locale is not initialized, setting base on device languageCode');
-                    const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
-                    CoreRepository.saveSettings({ language: locale });
-                } else {
-                    // use locale set in settings
-                    this.logger.debug(`Locale set to: ${core.language.toUpperCase()}`);
-                    Localize.setLocale(core.language, core.useSystemSeparators ? localeSettings : undefined);
-                }
-                resolve();
-            } catch (e) {
                 reject(e);
             }
         });
@@ -314,9 +286,48 @@ class Application {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             try {
+                // get core settings
+                const coreSettings = CoreRepository.getSettings();
+
+                /* ======================== TIMEZONE ==================================== */
+                await GetDeviceTimeZone()
+                    .then((tz: string) => {
+                        this.logger.debug(`Timezone set to ${tz}`);
+                        moment.tz.setDefault(tz);
+                    })
+                    .catch(() => {
+                        this.logger.warn('Unable to get device timezone, fallback to default timezone');
+                        // ignore in case of error
+                    });
+
+                /* ======================== LOCALE ==================================== */
+                const Localize = require('@locale').default;
+
+                // get device local settings
+                const localeSettings = await GetDeviceLocaleSettings();
+
+                // if there is a language set in the settings load the setting base on the settings
+                if (coreSettings?.language) {
+                    this.logger.debug(
+                        `Settings [Locale]/[Currency]: ${coreSettings.language.toUpperCase()}/${coreSettings.currency}`,
+                    );
+                    Localize.setLocale(
+                        coreSettings.language,
+                        coreSettings.useSystemSeparators ? localeSettings : undefined,
+                    );
+                } else {
+                    // app is not initialized yet, set to default device locale
+                    this.logger.debug('Locale is not initialized, setting base on device settings');
+                    const locale = Localize.setLocale(localeSettings.languageCode, localeSettings);
+                    CoreRepository.saveSettings({ language: locale });
+                }
+
+                /* ======================== FlagSecure & LayoutAnimationExperimental =============================== */
                 if (Platform.OS === 'android') {
-                    // set secure flag for the app by default
-                    SetFlagSecure(true);
+                    // Enable Flag Secure if developer mode is not active
+                    if (!coreSettings?.developerMode) {
+                        SetFlagSecure(true);
+                    }
 
                     // enable layout animation
                     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -324,20 +335,9 @@ class Application {
                     }
                 }
 
+                /* ======================== RTL & FONTS ==================================== */
                 // disable RTL as we don't support it right now
                 I18nManager.allowRTL(false);
-
-                // set timezone
-                await GetDeviceTimeZone()
-                    .then((tz: string) => {
-                        this.logger.debug(`Timezone set to ${tz}`);
-                        moment.tz.setDefault(tz);
-                    })
-                    .catch(() => {
-                        this.logger.war('Unable to get device timezone, fallback to default timezone');
-                        // ignore in case of error
-                    });
-
                 // Disable accessibility fonts
                 // @ts-ignore
                 Text.defaultProps = {};

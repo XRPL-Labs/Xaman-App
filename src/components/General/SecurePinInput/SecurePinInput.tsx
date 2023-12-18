@@ -41,12 +41,13 @@ interface State {
     digits: string;
 }
 
-const BUTTONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'Y', 0, 'X'];
+const BUTTONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Y', '0', 'X'];
 /* Component ==================================================================== */
 class SecurePinInput extends Component<Props, State> {
     currentIndex: number;
     inputRef: React.RefObject<TextInput>;
     private clearInputTimeout: any;
+    private lastKeyEventTimestamp: number;
 
     public static defaultProps = {
         virtualKeyboard: false,
@@ -98,83 +99,69 @@ class SecurePinInput extends Component<Props, State> {
         }
     };
 
-    onDigitInput = (digit: any) => {
-        const { digits } = this.state;
-        const { length, enableHapticFeedback } = this.props;
-
-        if (enableHapticFeedback) {
-            VibrateHapticFeedback('impactLight');
-        }
-
-        if (digit === 'Backspace') {
-            const arrayCode = digits.split('');
-            arrayCode.pop();
-            this.setState({
-                digits: arrayCode.join(''),
-            });
-        } else {
-            const newDigits = digits + digit;
-
-            if (newDigits.length <= length) {
-                this.setState({
-                    digits: newDigits,
-                });
-            }
-            // User filling the last pin ?
-            if (newDigits.length === length) {
-                this.onFinish(newDigits);
-            }
-        }
-    };
-
-    handleEdit = (code: string) => {
-        const { length } = this.props;
-
-        // remove any non digits
-        const cleanCode = code.replace(/[^0-9]/g, '');
-
-        if (cleanCode) {
-            // limit the input for not more than the requested code length
-            if (cleanCode.length <= length) {
-                this.setState({
-                    digits: cleanCode,
-                });
-            }
-            // User filling the last pin ?
-            if (cleanCode.length === length) {
-                this.onFinish(cleanCode);
-            }
-        } else {
-            this.setState({
-                digits: '',
-            });
-        }
-    };
-
-    onKeyPress = (e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
-        const { digits } = this.state;
-        if (e.nativeEvent.key === 'Backspace' && Platform.OS === 'android') {
-            const arrayCode = digits.split('');
-            arrayCode.pop();
-            this.setState({
-                digits: arrayCode.join(''),
-            });
-        }
-    };
-
     onFinish = (digits: string) => {
         const { clearOnFinish, onInputFinish } = this.props;
 
         // blur the input
         this.blur();
 
+        // callback
         if (onInputFinish) {
             onInputFinish(digits);
         }
 
+        // clear the input if necessary
         if (clearOnFinish) {
             this.clearInputTimeout = setTimeout(() => this.clearInput(), 1000);
         }
+    };
+
+    onInput = (key: string) => {
+        const { enableHapticFeedback, length } = this.props;
+        const { digits } = this.state;
+
+        if (enableHapticFeedback) {
+            VibrateHapticFeedback('impactLight');
+        }
+
+        // BackSpace
+        if (key === 'Backspace') {
+            this.setState({
+                digits: digits.slice(0, -1),
+            });
+            return;
+        }
+
+        const newDigits = `${digits}${key}`;
+
+        // not finished yet
+        if (newDigits.length <= length) {
+            this.setState({
+                digits: newDigits,
+            });
+        }
+
+        // User filling the last pin ?
+        if (newDigits.length === length) {
+            this.onFinish(newDigits);
+        }
+    };
+
+    onKeyPress = (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+        // debounce
+        if (Math.abs(this.lastKeyEventTimestamp - event.timeStamp) < 20) {
+            return;
+        }
+
+        this.lastKeyEventTimestamp = event.timeStamp;
+
+        // filter keys
+        if (!event.nativeEvent.key.match(/^([0-9]+|Backspace)$/i)) {
+            return;
+        }
+
+        // trigger onChange
+        this.onInput(event.nativeEvent.key);
     };
 
     clearInput = () => {
@@ -195,7 +182,7 @@ class SecurePinInput extends Component<Props, State> {
                         style={styles.line}
                         key="x-key"
                         onPress={() => {
-                            this.onDigitInput('Backspace');
+                            this.onInput('Backspace');
                         }}
                         onLongPress={this.clearInput}
                     >
@@ -225,18 +212,18 @@ class SecurePinInput extends Component<Props, State> {
                 return <View key={`${index}-line`} style={styles.line} />;
             }
 
-            const alpha = (n: string | number): string => {
+            const alpha = (n: string): string => {
                 const alphabet = 'ABC.DEF.GHI.JKL.MNO.PQRS.TUV.WXYZ';
                 switch (n) {
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                    case 9:
-                        return alphabet.split('.')[n - 2];
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        return alphabet.split('.')[Number(n) - 2];
                     default:
                         return '';
                 }
@@ -250,7 +237,7 @@ class SecurePinInput extends Component<Props, State> {
                     activeOpacity={0.7}
                     key={`${item}-key`}
                     onPress={() => {
-                        this.onDigitInput(item);
+                        this.onInput(item);
                     }}
                 >
                     <>
@@ -297,7 +284,7 @@ class SecurePinInput extends Component<Props, State> {
     };
 
     render() {
-        const { virtualKeyboard, isLoading } = this.props;
+        const { virtualKeyboard, length, isLoading } = this.props;
         const { digits } = this.state;
 
         let props = {};
@@ -320,13 +307,13 @@ class SecurePinInput extends Component<Props, State> {
                             returnKeyType="done"
                             keyboardType="number-pad"
                             onKeyPress={this.onKeyPress}
-                            onChangeText={this.handleEdit}
                             autoCorrect={false}
                             spellCheck={false}
                             disableFullscreenUI
                             secureTextEntry
                             caretHidden
                             value={digits}
+                            maxLength={length}
                             // eslint-disable-next-line
                             {...props}
                         />

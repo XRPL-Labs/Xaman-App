@@ -1,38 +1,42 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import NetworkService from '@services/NetworkService';
 
-import Localize from '@locale';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import { AmountText, TokenAvatar } from '@components/General';
 
+import Localize from '@locale';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
-    item: TrustLineSchema | string;
+    account: AccountModel;
+    item: TrustLineModel | string;
     selected?: boolean;
 }
 
 /* Component ==================================================================== */
 class CurrencyItem extends Component<Props> {
-    renderXRP = () => {
+    renderNative = () => {
         const { account, selected } = this.props;
 
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                <View style={[styles.currencyImageContainer]}>
-                    <TokenAvatar token="XRP" border size={35} />
+                <View style={styles.currencyImageContainer}>
+                    <TokenAvatar token="Native" border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                    <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>XRP</Text>
-                    <Text style={[styles.currencyBalance]}>
+                    <Text style={[styles.currencyItemLabel, selected && AppStyles.colorBlue]}>
+                        {NetworkService.getNativeAsset()}
+                    </Text>
+                    <Text style={styles.currencyBalance}>
                         {Localize.t('global.available')}: {Localize.formatNumber(CalculateAvailableBalance(account))}
                     </Text>
                 </View>
@@ -40,12 +44,12 @@ class CurrencyItem extends Component<Props> {
         );
     };
 
-    renderIOU = (item: TrustLineSchema) => {
+    renderIOU = (item: TrustLineModel) => {
         const { selected } = this.props;
 
         return (
             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                <View style={[styles.currencyImageContainer]}>
+                <View style={styles.currencyImageContainer}>
                     <TokenAvatar token={item} border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
@@ -71,9 +75,9 @@ class CurrencyItem extends Component<Props> {
 
     render() {
         const { item } = this.props;
-        // XRP
+        // native
         if (typeof item === 'string') {
-            return this.renderXRP();
+            return this.renderNative();
         }
         // IOU
         // @ts-ignore

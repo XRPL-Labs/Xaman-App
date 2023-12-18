@@ -24,7 +24,7 @@ export default StyleService.create({
     currencyItemLabel: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: StyleService.isDarkMode() ? '$white' : '$blue',
+        color: StyleService.select({ light: '$blue', dark: '$white' }),
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 10,
@@ -32,22 +32,18 @@ export default StyleService.create({
     balanceText: {
         fontSize: AppFonts.h5.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: StyleService.isDarkMode() ? '$white' : '$blue',
+        color: StyleService.select({ light: '$blue', dark: '$white' }),
         alignItems: 'flex-start',
         justifyContent: 'center',
         marginRight: 5,
     },
-    brandAvatarContainer: {
+    tokenAvatarContainer: {
         marginRight: 10,
     },
-    brandAvatar: {
-        backgroundColor: '$blue',
-        borderColor: '$blue',
+    tokenIcon: {
+        tintColor: StyleService.select({ light: '$blue', dark: '$white' }),
     },
-    currencyAvatar: {
-        tintColor: StyleService.isDarkMode() ? '$white' : '$blue',
-    },
-    currencyAvatarContainer: {
+    tokenIconContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         paddingRight: 10,
@@ -80,7 +76,7 @@ export default StyleService.create({
     fiatAmountText: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: StyleService.isDarkMode() ? '$white' : '$blue',
+        color: StyleService.select({ light: '$blue', dark: '$white' }),
         marginRight: 5,
     },
     rightContainer: {

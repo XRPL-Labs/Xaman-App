@@ -1,19 +1,47 @@
-import { StyleSheet, ViewStyle } from 'react-native';
+import StyleService from '@services/StyleService';
 
-interface Styles {
-    container: ViewStyle;
-    webView: ViewStyle;
-}
+import { AppFonts, AppSizes } from '@theme';
 
-const styles = StyleSheet.create<Styles>({
+export default StyleService.create({
     container: {
         flex: 1,
         overflow: 'hidden',
     },
-    // eslint-disable-next-line react-native/no-color-literals
     webView: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '$background',
+    },
+    loadingStyle: {
+        zIndex: 999999,
+        backgroundColor: '$background',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    contentContainer: {
+        flex: 1,
+        backgroundColor: '$background',
+        overflow: 'hidden',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: AppSizes.paddingExtraSml,
+    },
+    errorTitle: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.base.size,
+        color: '$textPrimary',
+        textAlign: 'center',
+    },
+    errorText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size,
+        color: '$silver',
+        textAlign: 'center',
     },
 });
-
-export default styles;

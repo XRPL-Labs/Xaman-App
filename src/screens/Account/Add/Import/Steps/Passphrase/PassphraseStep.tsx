@@ -21,7 +21,7 @@ export interface State {
         value: string;
         isValid: boolean;
     };
-    passphrase_confirmation: string;
+    passphraseConfirmation: string;
 }
 
 /* Component ==================================================================== */
@@ -37,12 +37,12 @@ class PassphraseStep extends Component<Props, State> {
                 value: '',
                 isValid: false,
             },
-            passphrase_confirmation: '',
+            passphraseConfirmation: '',
         };
     }
 
     goNext = () => {
-        const { passphrase, passphrase_confirmation } = this.state;
+        const { passphrase, passphraseConfirmation } = this.state;
         const { goNext, setPassphrase } = this.context;
 
         if (!passphrase.isValid) {
@@ -50,7 +50,7 @@ class PassphraseStep extends Component<Props, State> {
             return;
         }
 
-        if (passphrase.value !== passphrase_confirmation) {
+        if (passphrase.value !== passphraseConfirmation) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.passwordConfirmNotMatch'));
             return;
         }
@@ -70,8 +70,8 @@ class PassphraseStep extends Component<Props, State> {
         this.setState({ passphrase: { value, isValid } });
     };
 
-    onPassphraseConfirmChange = (passphrase_confirmation: string) => {
-        this.setState({ passphrase_confirmation });
+    onPassphraseConfirmChange = (passphraseConfirmation: string) => {
+        this.setState({ passphraseConfirmation });
     };
 
     render() {
@@ -79,10 +79,10 @@ class PassphraseStep extends Component<Props, State> {
         const { passphrase } = this.state;
 
         return (
-            <SafeAreaView testID="account-import-passphrase-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-passphrase-view" style={AppStyles.container}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.paddingHorizontal]}
-                    contentContainerStyle={[AppStyles.flex1]}
+                    contentContainerStyle={AppStyles.flex1}
                 >
                     <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
                         {Localize.t('account.pleaseEnterSafePassword')}
@@ -119,7 +119,7 @@ class PassphraseStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!passphrase.isValid}

@@ -10,9 +10,8 @@ const styles = StyleService.create({
         height: AppSizes.heightPercentageToDP(7.5),
     },
     appTitle: {
-        lineHeight: AppFonts.subtext.size * 0.9,
+        fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.9,
         color: '$textPrimary',
     },
     appTitlePlaceholder: {
@@ -27,12 +26,15 @@ const styles = StyleService.create({
     appIconPlaceholder: {
         backgroundColor: '$silver',
     },
-    rightPanelContainer: {
+    titleContainer: {
+        flex: 1,
         marginTop: 5,
         marginLeft: AppSizes.paddingExtraSml,
     },
+    rightPanelContainer: {
+        alignItems: 'flex-end',
+    },
     categoryContainer: {
-        marginTop: 3,
         backgroundColor: '$tint',
         paddingHorizontal: 3,
         paddingVertical: 1,
@@ -41,7 +43,7 @@ const styles = StyleService.create({
     },
     categoryLabel: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.small.size * 0.7,
+        fontSize: AppFonts.small.size * 0.9,
         color: '$textPrimary',
     },
 });

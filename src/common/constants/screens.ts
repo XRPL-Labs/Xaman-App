@@ -42,14 +42,15 @@ const screens = {
         MigrationExplain: 'modal.MigrationExplain',
         XAppBrowser: 'modal.XAppBrowser',
         DestinationPicker: 'modal.DestinationPicker',
+        TransactionLoader: 'modal.TransactionLoader',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
-        AddCurrency: 'overlay.AddCurrency',
+        AddToken: 'overlay.AddToken',
+        TokenSettings: 'overlay.TokenSettings',
         Vault: 'overlay.Vault',
         Auth: 'overlay.Auth',
         Lock: 'overlay.lock',
-        CurrencySettings: 'overlay.CurrencySettings',
         Alert: 'overlay.Alert',
         FlaggedDestination: 'overlay.FlaggedDestination',
         ShareAccount: 'overlay.ShareAccount',
@@ -67,6 +68,9 @@ const screens = {
         CriticalProcessing: 'overlay.CriticalProcessing',
         PassphraseAuthentication: 'overlay.PassphraseAuthentication',
         SwitchAssetCategory: 'overlay.SwitchAssetCategory',
+        SwitchNetwork: 'overlay.SwitchNetwork',
+        XAppInfo: 'overlay.XAppInfo',
+        NetworkRailsSync: 'overlay.NetworkRailsSync',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
@@ -80,8 +84,8 @@ const screens = {
             Add: 'app.Settings.AddressBook.Add',
             Edit: 'app.Settings.AddressBook.Edit',
         },
-        Node: {
-            List: 'app.Settings.Node.List',
+        Network: {
+            List: 'app.Settings.Network.List',
         },
         ThirdPartyApps: {
             List: 'app.Settings.ThirdPartyApps.List',

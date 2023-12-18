@@ -11,9 +11,9 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository, CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
-import { WebView, Header, Footer, Spacer, Button, LoadingIndicator } from '@components/General';
+import { WebViewBrowser, Header, Footer, Spacer, Button } from '@components/General';
 
 import Localize from '@locale';
 
@@ -30,7 +30,7 @@ export interface State {
     TOSVersion: number;
     isTOSLoaded: boolean;
     shouldShowAgreement: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */
@@ -109,7 +109,7 @@ class TermOfUseView extends Component<Props, State> {
 
         if (coreSettings) {
             return {
-                'X-XUMM-Style': coreSettings.theme,
+                'X-Xaman-Style': coreSettings.theme,
             };
         }
         return {};
@@ -119,6 +119,12 @@ class TermOfUseView extends Component<Props, State> {
         return `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
     };
 
+    onTOSLoaded = () => {
+        this.setState({
+            isTOSLoaded: true,
+        });
+    };
+
     render() {
         const { asModal } = this.props;
         const { isTOSLoaded, shouldShowAgreement } = this.state;
@@ -126,7 +132,7 @@ class TermOfUseView extends Component<Props, State> {
         const paddingBottom = HasBottomNotch() && !shouldShowAgreement ? 20 : 0;
 
         return (
-            <View testID="term-of-use-view" style={[styles.container]}>
+            <View testID="term-of-use-view" style={styles.container}>
                 {asModal ? (
                     <View style={[AppStyles.centerAligned, { paddingTop: AppSizes.statusBarHeight }]}>
                         <Text style={AppStyles.h5}>{Localize.t('settings.termsAndConditions')}</Text>
@@ -136,24 +142,18 @@ class TermOfUseView extends Component<Props, State> {
                         centerComponent={{ text: Localize.t('settings.termsAndConditions') }}
                         leftComponent={{
                             icon: 'IconChevronLeft',
-                            onPress: () => {
-                                Navigator.pop();
-                            },
+                            onPress: Navigator.pop,
                         }}
                     />
                 )}
 
-                <WebView
-                    containerStyle={[AppStyles.flex1, { paddingBottom }]}
+                <WebViewBrowser
                     startInLoadingState
+                    containerStyle={{ paddingBottom }}
                     onMessage={this.fetchTOSVersion}
-                    onLoadEnd={() => {
-                        this.setState({
-                            isTOSLoaded: true,
-                        });
-                    }}
-                    renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
+                    onLoadEnd={this.onTOSLoaded}
                     source={{ uri: this.getURI(), headers: this.getHeaders() }}
+                    errorMessage={Localize.t('errors.unableToLoadTermOfService')}
                 />
 
                 {shouldShowAgreement && (

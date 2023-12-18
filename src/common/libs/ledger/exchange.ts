@@ -12,9 +12,11 @@ import {
 
 import Localize from '@locale';
 
-import { ApiService, SocketService } from '@services';
+import NetworkService from '@services/NetworkService';
+import BackendService from '@services/BackendService';
 
 import { ValueToIOU } from '@common/utils/amount';
+
 /* types ==================================================================== */
 export enum MarketDirection {
     SELL = 'SELL',
@@ -27,7 +29,7 @@ export type ExchangePair = {
 };
 
 /* Constants ==================================================================== */
-const MAX_XRP_DECIMAL_PLACES = 6;
+const MAX_NATIVE_DECIMAL_PLACES = 6;
 const MAX_IOU_DECIMAL_PLACES = 8;
 
 /* Class ==================================================================== */
@@ -58,14 +60,10 @@ class LedgerExchange {
         };
     }
 
-    initialize = (direction: MarketDirection) => {
+    initialize = async (direction: MarketDirection) => {
         // fetch liquidity boundaries
-        return ApiService.liquidityBoundaries
-            .get({
-                issuer: this.pair.issuer,
-                currency: this.pair.currency,
-            })
-            .then((res: any) => {
+        return BackendService.getLiquidityBoundaries(this.pair.issuer, this.pair.currency)
+            .then((res) => {
                 if (res && has(res, 'options')) {
                     this.boundaryOptions = res.options;
                 }
@@ -88,7 +86,7 @@ class LedgerExchange {
             };
         }
 
-        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_XRP_DECIMAL_PLACES;
+        const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_NATIVE_DECIMAL_PLACES;
 
         const { maxSlippagePercentage } = this.boundaryOptions;
         const amount = new BigNumber(value);
@@ -127,8 +125,8 @@ class LedgerExchange {
             issuer: this.pair.issuer,
         };
 
-        const from = direction === MarketDirection.SELL ? { currency: 'XRP' } : pair;
-        const to = direction === MarketDirection.SELL ? pair : { currency: 'XRP' };
+        const from = direction === MarketDirection.SELL ? { currency: NetworkService.getNativeAsset() } : pair;
+        const to = direction === MarketDirection.SELL ? pair : { currency: NetworkService.getNativeAsset() };
 
         return {
             trade: {
@@ -137,7 +135,7 @@ class LedgerExchange {
                 amount,
             },
             options: this.boundaryOptions,
-            method: SocketService.send,
+            method: NetworkService.send,
         };
     };
 

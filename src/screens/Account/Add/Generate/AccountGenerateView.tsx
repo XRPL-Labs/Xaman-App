@@ -17,6 +17,7 @@ import { SHA256 } from '@common/libs/crypto';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import backendService from '@services/BackendService';
@@ -84,24 +85,36 @@ class AccountGenerateView extends Component<Props, State> {
             accessLevel: AccessLevels.Full,
             encryptionVersion: Vault.getLatestCipherVersion(),
             address: generatedAccount.address,
-            default: true,
-        };
+        } as Partial<AccountModel>;
 
         this.setState({ generatedAccount, account });
     };
 
-    setEncryptionLevel = (encryptionLevel: EncryptionLevels) => {
+    setEncryptionLevel = (encryptionLevel: EncryptionLevels, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, { encryptionLevel }) });
+
+        this.setState({ account: Object.assign(account, { encryptionLevel }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
-    setLabel = (label: string) => {
+    setLabel = (label: string, callback?: any) => {
         const { account } = this.state;
-        this.setState({ account: Object.assign(account, { label }) });
+        this.setState({ account: Object.assign(account, { label }) }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
-    setPassphrase = (passphrase: string) => {
-        this.setState({ passphrase });
+    setPassphrase = (passphrase: string, callback?: any) => {
+        this.setState({ passphrase }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
     };
 
     saveAccount = async () => {
@@ -134,7 +147,16 @@ class AccountGenerateView extends Component<Props, State> {
             }
 
             // add account to store
-            await AccountRepository.add(account, generatedAccount.keypair.privateKey, encryptionKey);
+            const createdAccount = await AccountRepository.add(
+                account,
+                generatedAccount.keypair.privateKey,
+                encryptionKey,
+            );
+
+            // set the newly created account as default account
+            CoreRepository.saveSettings({
+                account: createdAccount,
+            });
 
             // update catch for this account
             getAccountName.cache.set(
@@ -259,10 +281,10 @@ class AccountGenerateView extends Component<Props, State> {
     render() {
         return (
             <View
-                onResponderRelease={() => Keyboard.dismiss()}
+                onResponderRelease={Keyboard.dismiss}
                 onStartShouldSetResponder={() => true}
                 testID="account-generate-view"
-                style={[AppStyles.flex1]}
+                style={AppStyles.flex1}
             >
                 {this.renderHeader()}
                 {this.renderStep()}

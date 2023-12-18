@@ -21,6 +21,11 @@ const styles = StyleService.create({
     },
     textInput: {
         textAlign: 'center',
+        fontSize: AppFonts.h4.size,
+    },
+    textInputPlaceholder: {
+        textAlign: 'center',
+        fontSize: AppFonts.base.size,
     },
     avatarContainer: {
         height: AppSizes.scale(45),

@@ -3,9 +3,9 @@ import { View, Text, Animated } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
+import { AppStyles } from '@theme';
 import { TouchableDebounce, Avatar } from '@components/General';
 
-import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -129,10 +129,12 @@ class AppItem extends Component<Props> {
                         badge={item.development ? 'IconSmartPhone' : undefined}
                         badgeColor={StyleService.value('$orange')}
                     />
-                    <View style={styles.rightPanelContainer}>
+                    <View style={styles.titleContainer}>
                         <Text numberOfLines={1} style={styles.appTitle}>
                             {item.title}
                         </Text>
+                    </View>
+                    <View style={styles.rightPanelContainer}>
                         <View style={styles.categoryContainer}>
                             <Text numberOfLines={1} style={styles.categoryLabel}>
                                 {item.category}

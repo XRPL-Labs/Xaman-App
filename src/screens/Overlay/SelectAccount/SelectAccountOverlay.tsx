@@ -6,7 +6,7 @@ import { sortBy } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -23,9 +23,9 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
-    accounts: Array<AccountSchema>;
-    selected: AccountSchema;
-    onSelect: (account: AccountSchema) => void;
+    accounts: Array<AccountModel>;
+    selected: AccountModel;
+    onSelect: (account: AccountModel) => void;
     onClose: () => void;
 }
 
@@ -86,7 +86,7 @@ class SelectAccountOverlay extends Component<Props, State> {
         });
     }
 
-    onSelect = (account: AccountSchema) => {
+    onSelect = (account: AccountModel) => {
         const { onSelect } = this.props;
 
         if (typeof onSelect === 'function') {
@@ -108,7 +108,7 @@ class SelectAccountOverlay extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    renderRow = (account: AccountSchema) => {
+    renderRow = (account: AccountModel) => {
         const { selected } = this.props;
 
         const isSelected = account.address === selected.address;

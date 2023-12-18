@@ -1,101 +1,12 @@
 /* eslint-disable spellcheck/spell-checker */
-import { NormalizeAmount, NormalizeCurrencyCode, XRPLValueToNFT, NFTValueToXRPL, ValueToIOU } from '../amount';
+import { NormalizeAmount, NormalizeCurrencyCode, ValueToIOU } from '../amount';
+
+jest.mock('@services/NetworkService');
 
 describe('Utils.Amount', () => {
-    describe('XRPLValueToNFT', () => {
-        it('should return right values', () => {
-            const tests = [
-                {
-                    value: 4.65661287307739e-10,
-                    output: false,
-                },
-                {
-                    value: 12.123,
-                    output: false,
-                },
-                {
-                    value: 0.000000000000000000000001,
-                    output: false,
-                },
-                {
-                    value: 0.0000000000000000000000000000000000000000000000000000000000000000000001,
-                    output: false,
-                },
-                {
-                    value: 7.5128000168e-78,
-                    output: false,
-                },
-                {
-                    value: 0.000000000000000000000000000000000000000000000000000000000000000000000000000000001,
-                    output: 1,
-                },
-                {
-                    value: 1e-81,
-                    output: 1,
-                },
-                {
-                    value: 10e-82,
-                    output: 1,
-                },
-                {
-                    value: 0.0000000000000000000000000000000000000000000000000000000000000000000000000000001,
-                    output: 100,
-                },
-                {
-                    value: 1000000000000000e-94,
-                    output: 100,
-                },
-                {
-                    value: 0.000000000000000000000000000000000000000000000000000000000000000000000000000000031,
-                    output: 31,
-                },
-                {
-                    value: 3100000000000000e-95,
-                    output: 31,
-                },
-            ];
-
-            tests.forEach((v) => {
-                expect(XRPLValueToNFT(v.value)).toBe(v.output);
-            });
-        });
-    });
-
-    describe('NFTValueToXRPL', () => {
-        it('should return right values', () => {
-            const balance = 3100000000000000e-95;
-
-            const tests = [
-                {
-                    balance,
-                    value: '31',
-                    output: '0.000000000000000000000000000000000000000000000000000000000000000000000000000000031',
-                },
-                {
-                    balance,
-                    value: '-31',
-                    output: '-0.000000000000000000000000000000000000000000000000000000000000000000000000000000031',
-                },
-                {
-                    balance: undefined,
-                    value: '5',
-                    output: '0.000000000000000000000000000000000000000000000000000000000000000000000000000000005',
-                },
-            ];
-
-            tests.forEach((v) => {
-                expect(NFTValueToXRPL(v.value, v.balance)).toBe(v.output);
-            });
-        });
-    });
-
     describe('NormalizeAmount', () => {
         it('should return right values', () => {
             const tests = [
-                {
-                    value: 10e-82,
-                    output: 1,
-                },
                 {
                     value: 999.0123456789,
                     output: 999.01234568,

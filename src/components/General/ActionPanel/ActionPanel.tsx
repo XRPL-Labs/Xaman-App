@@ -11,8 +11,7 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-interface Props {
-    children: React.ReactNode;
+interface Props extends React.PropsWithChildren {
     height: number;
     offset?: number;
     extraBottomInset?: boolean;

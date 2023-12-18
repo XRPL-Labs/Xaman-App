@@ -9,14 +9,15 @@
 import merge from 'lodash/merge';
 
 import { ProfileRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
 import { SHA256 } from '@common/libs/crypto';
-import { AppConfig, ErrorMessages, APIConfig } from '@common/constants';
+import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
 import LoggerService from '@services/LoggerService';
+import NetworkService from '@services/NetworkService';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -50,9 +51,9 @@ class ApiService {
 
     constructor() {
         // Config
-        this.apiUrl = APIConfig.apiUrl;
+        this.apiUrl = ApiConfig.apiUrl;
         this.userAgent = `${AppConfig.appName}`;
-        this.endpoints = APIConfig.endpoints;
+        this.endpoints = ApiConfig.endpoints;
 
         // After 100 seconds, let's call it a day!
         this.timeoutSec = 100 * 1000;
@@ -86,7 +87,7 @@ class ApiService {
         });
     }
 
-    public initialize(coreSettings: CoreSchema) {
+    public initialize(coreSettings: CoreModel) {
         return new Promise<void>((resolve, reject) => {
             try {
                 // if the app is initialized and the access token set
@@ -324,6 +325,7 @@ class ApiService {
                 headers: {
                     'User-Agent': this.userAgent,
                     'Content-Type': 'application/json',
+                    'X-Xaman-Net': NetworkService.getNetwork()?.key,
                 },
                 body: '',
             };
@@ -347,8 +349,8 @@ class ApiService {
                 if (typeof paramsClone === 'object') {
                     // Replace matching params in API routes eg. /recipes/{param}/foo
                     for (const param in paramsClone) {
-                        if (endpoint.includes(`{${param}}`)) {
-                            urlEndpoint = endpoint.split(`{${param}}`).join(paramsClone[param]);
+                        if (urlEndpoint.includes(`{${param}}`)) {
+                            urlEndpoint = urlEndpoint.split(`{${param}}`).join(paramsClone[param]);
                             delete paramsClone[param];
                         }
                     }

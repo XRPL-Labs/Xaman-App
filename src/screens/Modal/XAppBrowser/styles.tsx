@@ -1,7 +1,5 @@
-import { Platform } from 'react-native';
-
-import { AppSizes } from '@theme';
 import StyleService from '@services/StyleService';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
@@ -27,22 +25,31 @@ const styles = StyleService.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    headerContainer: {
-        flexDirection: 'row',
-        backgroundColor: '$background',
-        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight + 5 : 10,
-        paddingBottom: 10,
-    },
-    headerTitle: {
+    errorContainer: {
         flex: 1,
-        paddingLeft: AppSizes.paddingSml,
-        paddingRight: AppSizes.paddingSml,
-        justifyContent: 'center',
+        paddingHorizontal: AppSizes.paddingSml,
     },
-    headerButton: {
-        alignItems: 'flex-end',
-        paddingRight: AppSizes.paddingSml,
-        justifyContent: 'center',
+    networkSwitchSubtext: {
+        fontFamily: AppFonts.subtext.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        textAlign: 'center',
+    },
+    supportedNetworkName: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        textAlign: 'center',
+        paddingTop: AppSizes.paddingExtraSml,
+    },
+    arrowUpImage: {
+        resizeMode: 'contain',
+        alignSelf: 'flex-end',
+        tintColor: '$silver',
+        marginTop: AppSizes.paddingSml,
+        marginRight: AppSizes.moderateScale(70),
+        width: AppSizes.moderateScale(30),
+        height: AppSizes.moderateScale(60),
     },
 });
 

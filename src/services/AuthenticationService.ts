@@ -22,20 +22,28 @@ import LinkingService from '@services/LinkingService';
 import PushNotificationsService from '@services/PushNotificationsService';
 
 import Localize from '@locale';
+import EventEmitter from 'events';
 
-/* Service  ==================================================================== */
+/* Types  ==================================================================== */
 export enum LockStatus {
     LOCKED = 'LOCKED',
     UNLOCKED = 'UNLOCKED',
 }
 
+/* Events  ==================================================================== */
+declare interface AuthenticationService {
+    on(event: 'lockStateChange', listener: (state: LockStatus) => void): this;
+}
+
 /* Service  ==================================================================== */
-class AuthenticationService {
+class AuthenticationService extends EventEmitter {
     private lockStatus: LockStatus;
     private postSuccess: Array<() => void>;
     private logger: any;
 
     constructor() {
+        super();
+
         this.logger = LoggerService.createLogger('Authentication');
 
         // track the status of app is locked
@@ -138,6 +146,9 @@ class AuthenticationService {
      */
     private setLockStatus = (status: LockStatus) => {
         this.lockStatus = status;
+
+        // emit the event
+        this.emit('lockStateChange', status);
     };
 
     /**

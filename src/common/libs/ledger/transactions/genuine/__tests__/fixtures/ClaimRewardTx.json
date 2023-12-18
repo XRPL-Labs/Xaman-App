@@ -1,0 +1,183 @@
+{
+  "Emitted": {
+    "tx": {
+      "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
+      "Fee": "8640",
+      "Flags": 1,
+      "Issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+      "LastLedgerSequence": 312,
+      "NetworkID": 21337,
+      "Sequence": 13,
+      "SigningPubKey": "0388935426E0D08083314842EDFBB2D517BD47699F9A4527318A8E10468C97C052",
+      "TransactionType": "ClaimReward",
+      "TxnSignature": "3045022100CA4FC90EBC4BEE7E78CDA43EE7D57E5C5A5685585F72FC3BED0152AD2E852C1902204E44EC1AC0E90C524BDC0B40E8A9280EE7E4B7D9D9EB2E6612601E263B4763E9",
+      "ctid": "C000012500005359",
+      "date": 749750432,
+      "hash": "6FB583E69711E84F5CD847B3C77614FDB473F8F8711095EFC2EFE069C7083AFE",
+      "inLedger": 293,
+      "ledger_index": 293,
+      "validated": true
+    },
+    "meta": {
+      "AffectedNodes": [
+        {
+          "CreatedNode": {
+            "LedgerEntryType": "EmittedTxn",
+            "LedgerIndex": "279388F00ECE38E6DB479C6759E0677392BFE475A282479C432E4D2DA2F27351",
+            "NewFields": {
+              "EmittedTxn": {
+                "Account": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+                "EmitDetails": {
+                  "EmitBurden": "1",
+                  "EmitGeneration": 1,
+                  "EmitHookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864",
+                  "EmitNonce": "B397D9F5C8BB29D21BC9994D5C095B58168331A56F7101DE24CB832953F990D1",
+                  "EmitParentTxnID": "6FB583E69711E84F5CD847B3C77614FDB473F8F8711095EFC2EFE069C7083AFE"
+                },
+                "Fee": "10",
+                "FirstLedgerSequence": 294,
+                "Flags": 2147483648,
+                "GenesisMints": [
+                  {
+                    "GenesisMint": {
+                      "Amount": "66671973",
+                      "Destination": "rrrrrrrrrrrrrrrrrrrrrhoLvTp"
+                    }
+                  }
+                ],
+                "LastLedgerSequence": 298,
+                "Sequence": 0,
+                "SigningPubKey": "000000000000000000000000000000000000000000000000000000000000000000",
+                "TransactionType": "GenesisMint"
+              }
+            }
+          }
+        },
+        {
+          "ModifiedNode": {
+            "FinalFields": {
+              "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
+              "AccountIndex": "1",
+              "Balance": "19999982708",
+              "Flags": 0,
+              "OwnerCount": 1,
+              "RewardAccumulator": "0",
+              "RewardLgrFirst": 293,
+              "RewardLgrLast": 293,
+              "RewardTime": 749750430,
+              "Sequence": 14
+            },
+            "LedgerEntryType": "AccountRoot",
+            "LedgerIndex": "92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F",
+            "PreviousFields": {
+              "Balance": "19999991348",
+              "RewardLgrFirst": 41,
+              "RewardLgrLast": 41,
+              "RewardTime": 749750178,
+              "Sequence": 13
+            }
+          }
+        },
+        {
+          "CreatedNode": {
+            "LedgerEntryType": "DirectoryNode",
+            "LedgerIndex": "B4DE823055D00BC12CD78FE1AAF74EE6062195B2629F49A25915A39C64BE1900",
+            "NewFields": {
+              "Flags": 4,
+              "RootIndex": "B4DE823055D00BC12CD78FE1AAF74EE6062195B2629F49A25915A39C64BE1900"
+            }
+          }
+        }
+      ],
+      "HookEmissions": [
+        {
+          "HookEmission": {
+            "EmittedTxnID": "AB3AA9197E79412BE261C472EBB3100F0949A3E9AEA6F19A4AF30133EE2AB9A3",
+            "HookAccount": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+            "HookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864"
+          }
+        }
+      ],
+      "HookExecutions": [
+        {
+          "HookExecution": {
+            "HookAccount": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+            "HookEmitCount": 1,
+            "HookExecutionIndex": 0,
+            "HookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864",
+            "HookInstructionCount": "248",
+            "HookResult": 3,
+            "HookReturnCode": "15b",
+            "HookReturnString": "5265776172643A20456D6974746564207265776172642074786E207375636365737366756C6C792E00",
+            "HookStateChangeCount": 1
+          }
+        }
+      ],
+      "TransactionIndex": 0,
+      "TransactionResult": "tesSUCCESS"
+    }
+  },
+  "OptIn": {
+    "tx": {
+      "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
+      "Fee": "8640",
+      "Flags": 0,
+      "Issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+      "LastLedgerSequence": 60,
+      "NetworkID": 21337,
+      "Sequence": 12,
+      "SigningPubKey": "0388935426E0D08083314842EDFBB2D517BD47699F9A4527318A8E10468C97C052",
+      "TransactionType": "ClaimReward",
+      "TxnSignature": "3045022100B0B053784266CBF5F91A3DE885307F0D1D9DFBB2B290CE4CF198873BB6DAB12C022008A14A9FCD4C4354472C5188E4E20F6EC054C9A092B5D81641B3D25117BFBD7D",
+      "ctid": "C000002900005359",
+      "date": 749750489,
+      "hash": "9930FCE45EE47A6E94CB5F8E42F98421F5D36DFB7B3E63C1E9CEB87F18A2F459",
+      "inLedger": 41,
+      "ledger_index": 41,
+      "validated": true
+    },
+    "meta": {
+      "AffectedNodes": [
+        {
+          "ModifiedNode": {
+            "FinalFields": {
+              "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
+              "AccountIndex": "1",
+              "Balance": "19999991348",
+              "Flags": 0,
+              "OwnerCount": 1,
+              "RewardAccumulator": "0",
+              "RewardLgrFirst": 41,
+              "RewardLgrLast": 41,
+              "RewardTime": 749750487,
+              "Sequence": 13
+            },
+            "LedgerEntryType": "AccountRoot",
+            "LedgerIndex": "92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F",
+            "PreviousFields": {
+              "Balance": "19999999988",
+              "Sequence": 12
+            }
+          }
+        }
+      ],
+      "HookExecutions": [
+        {
+          "HookExecution": {
+            "HookAccount": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+            "HookEmitCount": 0,
+            "HookExecutionIndex": 0,
+            "HookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864",
+            "HookInstructionCount": "98",
+            "HookResult": 3,
+            "HookReturnCode": "94",
+            "HookReturnString": "5265776172643A2050617373696E67207265776172642073657475702074786E00",
+            "HookStateChangeCount": 1
+          }
+        }
+      ],
+      "TransactionIndex": 0,
+      "TransactionResult": "tesSUCCESS"
+    }
+  }
+}

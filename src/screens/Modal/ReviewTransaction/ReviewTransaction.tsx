@@ -3,16 +3,19 @@
  */
 
 import React, { Component } from 'react';
-import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription, Text, View } from 'react-native';
+import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { LedgerService, PushNotificationsService, SocketService, StyleService } from '@services';
+import { NetworkService, PushNotificationsService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import ValidationFactory from '@common/libs/ledger/factory/validation';
+
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 
 import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
@@ -21,13 +24,11 @@ import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { getAccountInfo } from '@common/helpers/resolver';
 
-import { Button, Icon, InfoMessage, Spacer } from '@components/General';
-
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
+import { PreflightStep, ResultStep, ReviewStep, SubmittingStep } from './Steps';
+import ErrorView from './Shared/ErrorView';
 
-import { ResultStep, ReviewStep, SubmittingStep } from './Steps';
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
 
@@ -36,7 +37,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
     private backHandler: NativeEventSubscription;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -52,44 +53,30 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.state = {
             payload: props.payload,
             transaction: undefined,
+            accounts: undefined,
             source: undefined,
-            currentStep: Steps.Review,
+            currentStep: Steps.Preflight,
             submitResult: undefined,
             isLoading: false,
             isReady: true,
             isValidPayload: true,
             hasError: false,
-            softErrorMessage: '',
-            hardErrorMessage: '',
+            errorMessage: undefined,
             coreSettings: CoreRepository.getSettings(),
         };
     }
 
-    static getDerivedStateFromError(error: any) {
+    static getDerivedStateFromError(error: any): Partial<State> {
         // Update state so the next render will show the fallback UI.
-        return { hasError: true, hardErrorMessage: error.message };
+        return { hasError: true, errorMessage: error?.message };
     }
 
     componentDidMount() {
-        const { payload } = this.state;
-
         // track if component is mounted
         this.mounted = true;
 
         // back handler listener on android
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onHardwareBackPress);
-
-        // check if any forced network applied
-        const forcedNetwork = payload.getForcedNetwork();
-        if (forcedNetwork && SocketService.chain?.toUpperCase() !== forcedNetwork) {
-            this.setError(Localize.t('payload.payloadForceNetworkError', { network: forcedNetwork }));
-            return;
-        }
-
-        // set transaction
-        this.setState({
-            transaction: payload.getTransaction(),
-        });
     }
 
     componentWillUnmount() {
@@ -204,11 +191,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         await transaction
             .sign(source, payload.isMultiSign())
             .then(this.submit)
-            .catch((e) => {
+            .catch((error: Error) => {
                 if (this.mounted) {
-                    if (e) {
-                        if (typeof e.toString === 'function') {
-                            Alert.alert(Localize.t('global.error'), e.toString());
+                    if (error) {
+                        if (typeof error.message === 'string') {
+                            Alert.alert(Localize.t('global.error'), error.message);
                         } else {
                             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                         }
@@ -224,10 +211,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     onDecline = () => {
         const { onDecline, payload } = this.props;
-        const { hardErrorMessage, softErrorMessage } = this.state;
+        const { hasError, errorMessage } = this.state;
 
         // reject the payload
-        payload.reject(hardErrorMessage ? 'XUMM' : 'USER', hardErrorMessage || softErrorMessage);
+        payload.reject(hasError ? 'APP' : 'USER', errorMessage);
 
         // emit sign requests update
         setTimeout(() => {
@@ -264,7 +251,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // dismiss keyboard if it's present
         Keyboard.dismiss();
 
-        // if payload generated by xumm or payload is not valid close it immediately
+        // if payload generated by Xaman or payload is not valid close it immediately
         if (payload.isGenerated() || !isValidPayload) {
             this.closeReviewModal();
             // if the payload origin is xApp or payload is a Pseudo transaction then directly decline the request
@@ -316,18 +303,19 @@ class ReviewTransactionModal extends Component<Props, State> {
             try {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
+                const validation = ValidationFactory.fromType(transaction.Type);
                 if (
                     transaction instanceof BaseTransaction &&
-                    typeof transaction.validate === 'function' &&
+                    typeof validation === 'function' &&
                     !payload.isMultiSign()
                 ) {
-                    await transaction.validate();
+                    await validation(transaction, source);
                 }
-            } catch (e: any) {
+            } catch (validationError: any) {
                 if (this.mounted) {
                     Navigator.showAlertModal({
                         type: 'error',
-                        text: e.message,
+                        text: validationError.message,
                         buttons: [
                             {
                                 text: Localize.t('global.ok'),
@@ -346,7 +334,14 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // account is not activated and want to sign a tx
-            if (!payload.isPseudoTransaction() && !payload.isMultiSign() && source.balance === 0) {
+            // ignore for "Import" transaction as it can be submitted even if account is not activated
+            if (
+                !payload.isPseudoTransaction() &&
+                // @ts-ignore
+                ![TransactionTypes.Import].includes(transaction.Type) &&
+                !payload.isMultiSign() &&
+                source.balance === 0
+            ) {
                 Navigator.showAlertModal({
                     type: 'error',
                     text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
@@ -366,7 +361,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                     type: 'error',
                     title: Localize.t('global.danger'),
                     text: Localize.t('account.deleteAccountWarning', {
-                        ownerReserve: LedgerService.getNetworkReserve().OwnerReserve,
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
                     }),
                     buttons: [
                         {
@@ -428,7 +424,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 const takerPays = transaction.TakerPays;
 
-                if (takerPays.currency !== 'XRP') {
+                if (takerPays.currency !== NetworkService.getNativeAsset()) {
                     if (
                         !CurrencyRepository.isVettedCurrency({
                             issuer: takerPays.issuer,
@@ -507,14 +503,17 @@ class ReviewTransactionModal extends Component<Props, State> {
                         return;
                     }
 
-                    // if sending XRP and destination
+                    // if sending native currency and destination
                     if (
-                        (transaction.DeliverMin?.currency === 'XRP' || transaction.Amount.currency === 'XRP') &&
+                        (transaction.DeliverMin?.currency === NetworkService.getNativeAsset() ||
+                            transaction.Amount.currency === NetworkService.getNativeAsset()) &&
                         destinationInfo.disallowIncomingXRP
                     ) {
                         Navigator.showAlertModal({
                             type: 'warning',
-                            text: Localize.t('payload.paymentToDisallowedXRPWarning'),
+                            text: Localize.t('payload.paymentToDisallowedNativeAssetWarning', {
+                                nativeAsset: NetworkService.getNativeAsset(),
+                            }),
                             buttons: [
                                 {
                                     text: Localize.t('global.cancel'),
@@ -547,20 +546,49 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
     };
 
-    setError = (message: string) => {
+    setError = (error: Error) => {
         this.setState({
             hasError: true,
-            softErrorMessage: message,
+            errorMessage: error?.message,
         });
     };
 
-    setSource = (account: AccountSchema) => {
+    setTransaction = (tx: Transactions | PseudoTransactions) => {
+        const { transaction } = this.state;
+
+        // we shouldn't override already set transaction
+        if (transaction) {
+            throw new Error('Transaction is already set and cannot be overwrite!');
+        }
+
+        this.setState({
+            transaction: tx,
+        });
+    };
+
+    /*
+    Set available accounts for signing
+    */
+    setAccounts = (accounts: AccountModel[]) => {
+        this.setState({
+            accounts,
+        });
+    };
+
+    /*
+    Set selected account to the transaction
+    */
+    setSource = (account: AccountModel) => {
         const { payload } = this.props;
         const { transaction } = this.state;
 
-        // set the source account to transaction
-        // ignore if the payload is multiSign
-        if (!payload.isMultiSign()) {
+        // assign the source account address to transaction Account field
+        // ignore if the payload is multiSign || Import transaction
+
+        // NOTE: in some specific case the Import transaction can only be signed with regularKey account
+        // As the Master account is imported as readonly and transaction can only be signed by regular key
+        // we should not override the Account field, we should show the actual account
+        if (!payload.isMultiSign() && transaction.Type !== TransactionTypes.Import) {
             transaction.Account = { address: account.address };
         }
 
@@ -594,6 +622,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
+            const { node, networkKey } = NetworkService.getConnectionDetails();
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,
@@ -602,21 +631,21 @@ class ReviewTransactionModal extends Component<Props, State> {
                 signpubkey: transaction.SignerPubKey,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
                 environment: {
-                    nodeuri: SocketService.node,
-                    nodetype: SocketService.chain,
+                    nodeuri: node,
+                    nodetype: networkKey,
                 },
             } as PatchSuccessType;
 
             // patch the payload, before submitting (if necessary)
             payload.patch(payloadPatch);
 
-            // check if we need to submit the payload to the XRP Ledger
+            // check if we need to submit the payload to the Ledger
             if (payload.shouldSubmit()) {
                 this.setState({
                     currentStep: Steps.Submitting,
                 });
 
-                // submit the transaction to the xrp ledger
+                // submit the transaction to the Ledger
                 const submitResult = await transaction.submit();
 
                 // if submitted then verify
@@ -649,8 +678,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // patch the payload again with submit result
                 payload.patch({
                     dispatched: {
-                        to: submitResult.node,
-                        nodetype: submitResult.nodeType,
+                        to: submitResult.network.node,
+                        nodetype: submitResult.network.key,
                         result: submitResult.engineResult,
                     },
                 });
@@ -668,13 +697,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.setState({
                 currentStep: Steps.Result,
             });
-        } catch (e) {
+        } catch (error: any) {
             if (this.mounted) {
                 this.setState({
                     currentStep: Steps.Review,
                 });
-                if (typeof e.toString === 'function') {
-                    Alert.alert(Localize.t('global.error'), e.toString());
+                if (typeof error?.message === 'string') {
+                    Alert.alert(Localize.t('global.error'), error.message);
                 } else {
                     Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                 }
@@ -700,58 +729,28 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    onErrorBackPress = () => {
-        const { hardErrorMessage } = this.state;
-
-        // in case of hard error decline the payload
-        if (hardErrorMessage) {
-            this.onDecline();
-        } else {
-            this.onClose();
-        }
-    };
-
-    renderError = () => {
-        const { softErrorMessage } = this.state;
-
-        return (
-            <View
-                testID="review-error-view"
-                style={[
-                    AppStyles.container,
-                    AppStyles.paddingSml,
-                    { backgroundColor: StyleService.value('$lightBlue') },
-                ]}
-            >
-                <Icon name="IconInfo" style={{ tintColor: StyleService.value('$orange') }} size={70} />
-                <Text style={[AppStyles.h5, { color: StyleService.value('$orange') }]}>
-                    {Localize.t('global.error')}
-                </Text>
-                <Spacer size={20} />
-                <InfoMessage
-                    type="neutral"
-                    labelStyle={[AppStyles.p, AppStyles.bold]}
-                    label={softErrorMessage || Localize.t('payload.unexpectedPayloadErrorOccurred')}
-                />
-                <Spacer size={40} />
-                <Button testID="back-button" label={Localize.t('global.back')} onPress={this.onErrorBackPress} />
-            </View>
-        );
+    onPreflightPass = () => {
+        this.setState({
+            currentStep: Steps.Review,
+            isLoading: false,
+        });
     };
 
     render() {
-        const { transaction, currentStep, hasError } = this.state;
+        const { currentStep, hasError, errorMessage } = this.state;
 
         // don't render if any error happened
-        // this can happen if there is a missing field in the payload
-        if (hasError) return this.renderError();
-
-        // wait for transaction to be set
-        if (!transaction) return null;
+        // this can happen if there is a missing field in the payload or any unexpected error
+        if (hasError) {
+            return <ErrorView onBackPress={this.onDecline} errorMessage={errorMessage} />;
+        }
 
         let Step = null;
 
         switch (currentStep) {
+            case Steps.Preflight:
+                Step = PreflightStep;
+                break;
             case Steps.Review:
                 Step = ReviewStep;
                 break;
@@ -770,10 +769,13 @@ class ReviewTransactionModal extends Component<Props, State> {
             <StepsContext.Provider
                 value={{
                     ...this.state,
+                    setTransaction: this.setTransaction,
+                    setAccounts: this.setAccounts,
+                    setSource: this.setSource,
                     setError: this.setError,
                     setLoading: this.setLoading,
                     setReady: this.setReady,
-                    setSource: this.setSource,
+                    onPreflightPass: this.onPreflightPass,
                     onClose: this.onClose,
                     onAccept: this.onAccept,
                     onFinish: this.onFinish,

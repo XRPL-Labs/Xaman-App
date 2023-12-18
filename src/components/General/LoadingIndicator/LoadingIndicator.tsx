@@ -14,13 +14,14 @@ interface Props {
     color?: 'dark' | 'light' | 'default';
     size?: number | 'small' | 'large';
     style?: ViewStyle | ViewStyle[];
+    animating?: boolean;
 }
 
 /* Component ==================================================================== */
-const LoadingIndicator: React.FC<Props> = ({ color = 'default', size = 'small', style }) => (
+const LoadingIndicator: React.FC<Props> = ({ color = 'default', size = 'small', style, animating = true }) => (
     <ActivityIndicator
         size={size}
-        animating
+        animating={animating}
         color={(() => {
             switch (color) {
                 case 'light':

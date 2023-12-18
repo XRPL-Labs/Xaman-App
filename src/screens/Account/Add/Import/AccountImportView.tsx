@@ -25,7 +25,7 @@ import backendService from '@services/BackendService';
 import LedgerService from '@services/LedgerService';
 
 import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
 import { Header } from '@components/General';
@@ -130,10 +130,8 @@ class AccountImportView extends Component<Props, State> {
                 type: AccountTypes.Tangem,
                 publicKey: account.keypair.publicKey,
                 address: account.address,
-                default: true,
                 encryptionLevel: EncryptionLevels.Physical,
                 accessLevel: AccessLevels.Full,
-                accountType: AccountTypes.Tangem,
                 additionalInfoString: JSON.stringify(tangemCard),
             },
         });
@@ -226,7 +224,6 @@ class AccountImportView extends Component<Props, State> {
                 account: Object.assign(account, {
                     publicKey: importedAccount.keypair.publicKey,
                     address: importedAccount.address,
-                    default: true,
                 }),
             },
             () => {
@@ -275,7 +272,10 @@ class AccountImportView extends Component<Props, State> {
                         return;
                     }
 
-                    Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                    Alert.alert(
+                        Localize.t('global.error'),
+                        Localize.t('account.accountAlreadyExist', { address: importedAccount.address }),
+                    );
                     return;
                 }
 
@@ -359,7 +359,7 @@ class AccountImportView extends Component<Props, State> {
 
         try {
             let encryptionKey;
-            let createdAccount = undefined as AccountSchema;
+            let createdAccount = undefined as AccountModel;
 
             // if account is imported as full access report to the backend for security checks
             if (account.accessLevel === AccessLevels.Full) {
@@ -411,6 +411,11 @@ class AccountImportView extends Component<Props, State> {
                 // import account as readonly or tangem card
                 createdAccount = await AccountRepository.add(account);
             }
+
+            // set the newly created account as default account
+            CoreRepository.saveSettings({
+                account: createdAccount,
+            });
 
             // update catch for this account
             getAccountName.cache.set(

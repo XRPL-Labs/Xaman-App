@@ -86,6 +86,19 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+def getPassword(String keyChain) {
+   def stdout = new ByteArrayOutputStream()
+   def stderr = new ByteArrayOutputStream()
+   exec {
+       commandLine 'security', '-q', 'find-generic-password', '-a', System.getenv("USER"), '-s', keyChain, '-w'
+       standardOutput = stdout
+       errorOutput = stderr
+       ignoreExitValue true
+   }
+   //noinspection GroovyAssignabilityCheck
+  stdout.toString().trim()
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -119,11 +132,11 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('XUMM_RELEASE_STORE_FILE')) {
-                storeFile file(XUMM_RELEASE_STORE_FILE)
-                storePassword XUMM_RELEASE_STORE_PASSWORD
-                keyAlias XUMM_RELEASE_KEY_ALIAS
-                keyPassword XUMM_RELEASE_KEY_PASSWORD
+            if (project.hasProperty('XAMAN_RELEASE_STORE_FILE')) {
+                storeFile file(XAMAN_RELEASE_STORE_FILE)
+                storePassword getPassword('XAMAN_RELEASE_STORE_PASSWORD')
+                keyAlias XAMAN_RELEASE_KEY_ALIAS
+                keyPassword getPassword('XAMAN_RELEASE_KEY_PASSWORD')
             }
         }
     }
@@ -174,7 +187,6 @@ dependencies {
   // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
 
@@ -184,9 +196,8 @@ dependencies {
         implementation jscFlavor
     }
 
-    // firebase
+    // firebase + messaging
     implementation 'com.google.firebase:firebase-messaging:+'
-    implementation 'me.leolin:ShortcutBadger:1.1.22@aar'
     // biometric authentication
     implementation "androidx.biometric:biometric:1.1.0"
     // qrcode generate

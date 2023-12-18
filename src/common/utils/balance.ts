@@ -1,19 +1,19 @@
 import BigNumber from 'bignumber.js';
 
-import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 /**
  * calculate account available balance base on base/owner reserve
  */
-const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false): number => {
+const CalculateAvailableBalance = (account: AccountModel, allowNegative = false): number => {
     // account is not activated
     if (account.balance === 0) {
         return 0;
     }
 
-    const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
+    const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
 
     // calculate the spendable amount
     const spendable = account.balance - BaseReserve - account.ownerCount * OwnerReserve;
@@ -28,15 +28,15 @@ const CalculateAvailableBalance = (account: AccountSchema, allowNegative = false
 };
 
 /**
- * get account total reserve in XRP
+ * get account total reserve in native currency
  */
-const CalculateTotalReserve = (account: AccountSchema): number => {
+const CalculateTotalReserve = (account: AccountModel): number => {
     // account is not activated
     if (account.balance === 0) {
         return 0;
     }
 
-    const { BaseReserve, OwnerReserve } = LedgerService.getNetworkReserve();
+    const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
     // calculate the spendable amount
     return account.ownerCount * OwnerReserve + BaseReserve;
 };

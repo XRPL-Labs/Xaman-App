@@ -67,9 +67,12 @@ export interface ResponseType {
 export interface PatchSuccessType {
     signed_blob: string;
     tx_id: string;
+    signmethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
+    signpubkey: string;
     multisigned: string;
     permission?: Permission;
     origintype?: PayloadOrigin;
+    environment: Environment;
 }
 
 export interface PatchSubmitType {
@@ -78,6 +81,11 @@ export interface PatchSubmitType {
 
 export interface PatchRejectType {
     reject: boolean;
+}
+
+export interface Environment {
+    nodeuri: string;
+    nodetype: string;
 }
 
 export interface Dispatched {

@@ -1,8 +1,5 @@
 import { AmountType, LedgerAmount } from './parser/types';
 
-export enum TransactionBaseTypes {
-    Transaction = 'Transaction',
-}
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -28,6 +25,17 @@ export enum TransactionTypes {
     NFTokenCreateOffer = 'NFTokenCreateOffer',
     NFTokenAcceptOffer = 'NFTokenAcceptOffer',
     NFTokenCancelOffer = 'NFTokenCancelOffer',
+    SetHook = 'SetHook',
+    ClaimReward = 'ClaimReward',
+    Invoke = 'Invoke',
+    Import = 'Import',
+    URITokenMint = 'URITokenMint',
+    URITokenBurn = 'URITokenBurn',
+    URITokenBuy = 'URITokenBuy',
+    URITokenCreateSellOffer = 'URITokenCreateSellOffer',
+    URITokenCancelSellOffer = 'URITokenCancelSellOffer',
+    GenesisMint = 'GenesisMint',
+    EnableAmendment = 'EnableAmendment',
 }
 
 export enum PseudoTransactionTypes {
@@ -41,7 +49,6 @@ export enum LedgerObjectTypes {
     NFTokenOffer = 'NFTokenOffer',
     Offer = 'Offer',
     Ticket = 'Ticket',
-
     PayChannel = 'PayChannel',
 }
 
@@ -70,6 +77,7 @@ export interface LedgerTransactionType {
     status?: string;
     tx?: TransactionJSONType;
     meta?: any;
+
     [key: string]: any;
 }
 
@@ -94,8 +102,12 @@ export type SubmitResultType = {
     engineResult: string;
     message: string;
     hash?: string;
-    node: string;
-    nodeType: string;
+    network: {
+        id: number;
+        node: string;
+        type: string;
+        key: string;
+    };
 };
 
 /**
@@ -106,16 +118,25 @@ export type VerifyResultType = {
     transaction?: any;
 };
 
+/**
+ * Ledger marker
+ */
 export type LedgerMarker = {
     ledger: number;
     seq: number;
 };
 
+/**
+ * Ledger balance
+ */
 export interface Balance {
     currency: string;
     value: string;
 }
 
+/**
+ * Ledger account root
+ */
 export interface AccountRoot {
     Account: string;
     Balance: string;
@@ -133,18 +154,6 @@ export interface AccountRoot {
     TickSize?: number;
     TransferRate?: number;
 }
-
-/**
- * Ledger Account tx ledger response
- */
-export type AccountTxResponse = {
-    account: string;
-    ledger_index_max: number;
-    ledger_index_min: number;
-    limit: number;
-    marker: LedgerMarker;
-    transactions: Array<LedgerTransactionType>;
-};
 
 /**
  * Ledger trustline type
@@ -180,18 +189,37 @@ export interface LedgerNFToken {
 }
 
 /**
+ * Extra info for network responses
+ */
+export interface BaseResponse {
+    networkId: number;
+}
+
+/**
+ * Ledger Account tx ledger response
+ */
+export interface AccountTxResponse extends BaseResponse {
+    account: string;
+    ledger_index_max: number;
+    ledger_index_min: number;
+    limit: number;
+    marker: LedgerMarker;
+    transactions: Array<LedgerTransactionType>;
+}
+
+/**
  * Ledger account_lines response
  */
-export type AccountLinesResponse = {
+export interface AccountLinesResponse extends BaseResponse {
     account: string;
     lines: LedgerTrustline[];
     ledger_current_index?: number;
     ledger_index?: number;
     ledger_hash?: string;
     marker?: string;
-};
+}
 
-export interface AccountNFTsResponse {
+export interface AccountNFTsResponse extends BaseResponse {
     account: string;
     account_nfts: LedgerNFToken[];
     ledger_hash?: string;
@@ -202,7 +230,7 @@ export interface AccountNFTsResponse {
 /**
  * Ledger gateway_balances response
  */
-export interface GatewayBalancesResponse {
+export interface GatewayBalancesResponse extends BaseResponse {
     account: string;
     obligations?: { [currency: string]: string };
     balances?: { [address: string]: Balance[] };
@@ -215,8 +243,9 @@ export interface GatewayBalancesResponse {
 /**
  * Ledger account_info response
  */
-export interface AccountInfoResponse {
+export interface AccountInfoResponse extends BaseResponse {
     account_data: AccountRoot;
+    account_flags?: { [key: string]: boolean };
     signer_lists?: any;
     ledger_current_index?: number;
     ledger_index?: number;
@@ -227,7 +256,7 @@ export interface AccountInfoResponse {
 /**
  * Ledger account_objects response
  */
-export interface AccountObjectsResponse {
+export interface AccountObjectsResponse extends BaseResponse {
     account: string;
     account_objects: LedgerEntriesTypes[];
     ledger_hash?: string;
@@ -247,6 +276,7 @@ interface FeeResponseDrops {
     median_fee: string;
     open_ledger_fee: string;
 }
+
 export interface FeeResponse {
     current_queue_size: string;
     max_queue_size: string;
@@ -256,7 +286,7 @@ export interface FeeResponse {
 /**
  * Ledger ledger_entry command response
  */
-export interface LedgerEntryResponse {
+export interface LedgerEntryResponse extends BaseResponse {
     index: string;
     ledger_current_index: number;
     node?: LedgerEntriesTypes;
@@ -288,6 +318,9 @@ export interface OfferLedgerEntry {
     Expiration?: number;
 }
 
+/**
+ * Escrow leger entry
+ */
 export interface EscrowLedgerEntry {
     LedgerEntryType: 'Escrow';
     Account: string;
@@ -305,6 +338,9 @@ export interface EscrowLedgerEntry {
     PreviousTxnLgrSeq: number;
 }
 
+/**
+ * Check leger entry
+ */
 export interface CheckLedgerEntry {
     LedgerEntryType: 'Check';
     Account: string;
@@ -322,6 +358,9 @@ export interface CheckLedgerEntry {
     SourceTag: number;
 }
 
+/**
+ * Ripple state leger entry
+ */
 export interface RippleStateLedgerEntry {
     LedgerEntryType: 'RippleState';
     Flags: number;
@@ -338,6 +377,9 @@ export interface RippleStateLedgerEntry {
     HighQualityOut?: number;
 }
 
+/**
+ * NFTokenOffer leger entry
+ */
 export interface NFTokenOfferLedgerEntry {
     LedgerEntryType: 'NFTokenOffer';
     Owner: string;
@@ -352,6 +394,9 @@ export interface NFTokenOfferLedgerEntry {
     PreviousTxnLgrSeq: number;
 }
 
+/**
+ * Path finding
+ */
 interface PathStep {
     account?: string;
     currency?: string;
@@ -366,7 +411,7 @@ export interface PathOption {
     source_amount: LedgerAmount;
 }
 
-export interface RipplePathFindResponse {
+export interface RipplePathFindResponse extends BaseResponse {
     id?: any;
     error?: string;
     result: {
@@ -381,3 +426,14 @@ export interface RipplePathFindResponse {
         validated: boolean;
     };
 }
+
+/**
+ * GenesisMints type
+ */
+export interface GenesisMintsType
+    extends Array<{
+        GenesisMint: {
+            Amount: string;
+            Destination: string;
+        };
+    }> {}

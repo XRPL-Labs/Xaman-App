@@ -4,35 +4,41 @@ import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    row: {
-        width: AppSizes.screen.width,
-        paddingHorizontal: AppSizes.paddingSml,
-        paddingBottom: AppSizes.padding,
+    container: {
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingVertical: AppSizes.paddingExtraSml,
+        marginHorizontal: AppSizes.paddingExtraSml,
+        marginVertical: AppSizes.paddingExtraSml,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: '$background',
     },
+    selected: {
+        backgroundColor: '$lightBlue',
+        borderRadius: AppSizes.borderRadius,
+    },
     url: {
+        fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
     },
-    checkIcon: {
-        tintColor: '$blue',
+    urlSelected: {
+        color: StyleService.select({ light: '$blue', dark: '$light' }),
     },
-    removeContainer: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-    },
-    removeHolder: {
-        position: 'absolute',
-        top: 0,
-        left: AppSizes.screen.width - 125,
-        width: AppSizes.screen.width,
-        height: AppSizes.screen.width * 0.14,
-        paddingLeft: 20,
-        backgroundColor: '$red',
+    dot: {
+        height: 20,
+        width: 20,
+        borderRadius: 12,
+        borderWidth: 1.3,
+        borderColor: '$silver',
+        marginTop: 4,
+        alignItems: 'center',
         justifyContent: 'center',
+    },
+    dotSelected: {
+        borderColor: '$blue',
+        borderWidth: 3,
     },
 });
 

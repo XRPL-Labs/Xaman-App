@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image } from 'react-native';
 
+import NetworkService from '@services/NetworkService';
+
 import { Spacer, Icon, LoadingIndicator } from '@components/General';
 
 import { Images } from '@common/helpers/images';
@@ -66,7 +68,7 @@ class SubmittingStep extends Component<Props, State> {
                         <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
-                            {Localize.t('send.submittingToLedger')}
+                            {Localize.t('send.submittingToLedger', { network: NetworkService.getNetwork().name })}
                         </Text>
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                             {Localize.t('global.thisMayTakeFewSeconds')}

@@ -39,6 +39,7 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
+        paddingRight: AppSizes.padding,
     },
     destructionLabel: {
         fontFamily: AppFonts.base.family,
@@ -47,12 +48,14 @@ const styles = StyleService.create({
         textAlign: 'center',
     },
     value: {
+        flex: 1,
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         textAlign: 'right',
         color: '$grey',
     },
     address: {
+        flex: 1,
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.small.size,
         textAlign: 'right',

@@ -72,7 +72,7 @@ class Localize {
 
             // none EN locale found
             if (resolvedLocale !== '' && resolvedLocale !== 'en') {
-                const generateLocals = require('./generated').default;
+                const generateLocals = require('./translations').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
                 this.instance.locale = resolvedLocale;
                 this.moment.locale(resolvedLocale, generateLocals[resolvedLocale].moment);

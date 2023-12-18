@@ -9,8 +9,7 @@ export default StyleService.create({
         backgroundColor: '$background',
     },
     sectionListContainer: {
-        paddingLeft: AppSizes.padding,
-        paddingRight: AppSizes.padding,
+        paddingHorizontal: AppSizes.paddingList,
         paddingBottom: AppSizes.paddingSml,
     },
     sectionHeader: {

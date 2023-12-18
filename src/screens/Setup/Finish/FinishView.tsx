@@ -16,7 +16,7 @@ import { BackendService, AuthenticationService, StyleService } from '@services';
 import Localize from '@locale';
 
 // component
-import { WebView, Button, Footer, LoadingIndicator } from '@components/General';
+import { WebViewBrowser, Button, Footer } from '@components/General';
 
 // style
 import { AppStyles } from '@theme';
@@ -62,10 +62,10 @@ class FinishView extends Component<Props, State> {
         });
 
         try {
-            // init user in the xumm
+            // initiate user in the Xaman backend
             const { user, device } = await BackendService.initUser();
 
-            // register the device in xumm
+            // register the device in Xaman backend
             const accessToken = await BackendService.activateDevice(user, device);
 
             // create empty profile and store access token
@@ -117,7 +117,7 @@ class FinishView extends Component<Props, State> {
 
     getHeaders = () => {
         return {
-            'X-XUMM-Style': StyleService.getCurrentTheme(),
+            'X-Xaman-Style': StyleService.getCurrentTheme(),
         };
     };
 
@@ -127,23 +127,21 @@ class FinishView extends Component<Props, State> {
 
     render() {
         const { isLoading, isTOSLoaded, TOSVersion } = this.state;
-        return (
-            <SafeAreaView testID="agreement-setup-screen" style={[styles.container]}>
-                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
-                </View>
 
-                <View style={[AppStyles.flex8, AppStyles.centerContent, styles.contentArea]}>
-                    <WebView
+        return (
+            <SafeAreaView testID="agreement-setup-screen" style={styles.container}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
+                </View>
+                <View style={AppStyles.flex8}>
+                    <WebViewBrowser
                         startInLoadingState
                         onMessage={this.fetchTOSVersion}
                         onLoadEnd={this.onTOSLoaded}
-                        renderLoading={() => <LoadingIndicator style={styles.loadingStyle} size="large" />}
                         source={{ uri: this.getURI(), headers: this.getHeaders() }}
-                        style={styles.webView}
+                        errorMessage={Localize.t('errors.unableToLoadTermOfService')}
                     />
                 </View>
-
                 <Footer>
                     <Button
                         numberOfLines={1}

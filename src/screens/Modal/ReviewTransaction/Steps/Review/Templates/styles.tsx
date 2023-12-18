@@ -125,11 +125,6 @@ const styles = StyleService.create({
         paddingVertical: 10,
         paddingHorizontal: 5,
     },
-    signerEntryRecipientElement: {
-        marginBottom: 0,
-        borderBottomRightRadius: 0,
-        borderBottomLeftRadius: 0,
-    },
     signerEntryDetailsContainer: {
         paddingVertical: 10,
         paddingHorizontal: 8,
@@ -140,6 +135,21 @@ const styles = StyleService.create({
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
         borderTopColor: '$lightGrey',
+    },
+    hookParamText: {
+        backgroundColor: '$tint',
+        borderRadius: 10,
+        overflow: 'hidden',
+    },
+    copyText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: '$grey',
+        paddingRight: 5,
+    },
+    copyButton: {
+        flexDirection: 'row',
+        paddingHorizontal: AppSizes.paddingExtraSml,
     },
 });
 

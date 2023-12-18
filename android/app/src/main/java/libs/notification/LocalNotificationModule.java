@@ -4,27 +4,29 @@ import com.xrpllabs.xumm.R;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.os.Build;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.app.PendingIntent;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.service.notification.StatusBarNotification;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.bridge.Arguments;
 
 import com.google.firebase.messaging.RemoteMessage;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-
-import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class LocalNotificationModule extends ReactContextBaseJavaModule {
     private static final String BADGE_FILE = "BadgeCountFile";
@@ -59,9 +61,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
             RemoteMessage.Notification notification = remoteMessage.getNotification();
 
             if (show && notification != null) {
-                String channelId = "notifications";
                 int notificationId = (int) SystemClock.uptimeMillis();
-
 
                 Intent intent = new Intent(this.context, NotificationActionReceiver.class);
                 intent.setAction(this.context.getPackageName() + ".ACTION_NOTIFICATION_OPENED");
@@ -77,8 +77,11 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
                         PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this.context, channelId)
-                        .setSmallIcon(R.drawable.ic_stat_icon_xumm_android_notification)
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                        this.context,
+                        this.context.getString(R.string.default_notification_channel_id)
+                )
+                        .setSmallIcon(R.drawable.ic_stat_icon_xaman_android_notification)
                         .setContentTitle(notification.getTitle())
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -90,12 +93,18 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
                 builder.setCategory(NotificationCompat.CATEGORY_CALL);
                 builder.setColor(ContextCompat.getColor(this.context, R.color.push_notification));
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel(channelId, "Notification channel", NotificationManager.IMPORTANCE_DEFAULT);
-                    manager.createNotificationChannel(channel);
-                }
+                NotificationChannel channel = new NotificationChannel(
+                        this.context.getString(R.string.default_notification_channel_id),
+                        "All Notifications",
+                        NotificationManager.IMPORTANCE_DEFAULT
+                );
+                manager.createNotificationChannel(channel);
 
-                manager.notify(remoteMessage.getCollapseKey(), notificationId, builder.build());
+                manager.notify(
+                        "FCM-Notification:" + notificationId,
+                        0,
+                        builder.build()
+                );
             }
 
             // remove the notification
@@ -104,23 +113,50 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void getDeliveredNotifications(final Promise promise) {
+        NotificationManager notificationManager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        StatusBarNotification[] statusBarNotifications = notificationManager.getActiveNotifications();
+        WritableArray result = Arguments.createArray();
+        for (StatusBarNotification sbn:statusBarNotifications) {
+            WritableMap map = Arguments.createMap();
+            Notification notification = sbn.getNotification();
+
+            map.putInt("identifier", sbn.getId());
+            map.putString("channel_id", notification.getChannelId());
+            map.putString("shortcut_id", notification.getShortcutId());
+            map.putString("group", notification.getGroup());
+            map.putString("key", sbn.getKey());
+            map.putString("tag", sbn.getTag());
+            result.pushMap(map);
+        }
+        promise.resolve(result);
+    }
+
+
+
+    @ReactMethod
     public void getBadge(Promise promise) {
+        // get current badge count from shared preferences
         int badge = sharedPreferences.getInt(BADGE_KEY, 0);
         promise.resolve(badge);
     }
 
     @ReactMethod
-    public void setBadge(int badge, Promise promise) {
+    public void setBadge(int badgeCount, Promise promise) {
+        // persist the badge count in shared preferences
         sharedPreferences
                 .edit()
-                .putInt(BADGE_KEY, badge)
+                .putInt(BADGE_KEY, badgeCount)
                 .apply();
-        if (badge == 0) {
-            ShortcutBadger.removeCount(this.getReactApplicationContext());
-        } else {
-            ShortcutBadger.applyCount(this.getReactApplicationContext(), badge);
+
+        // set the badge count
+        try {
+            boolean result = NotificationBadge.applyCount(badgeCount);
+            promise.resolve(result);
+        } catch (Exception e) {
+            promise.reject(e);
         }
-        promise.resolve(null);
     }
 
 }

@@ -11,7 +11,7 @@ import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
 import BigNumber from 'bignumber.js';
 
-import { NormalizeCurrencyCode, XRPLValueToNFT } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
@@ -21,7 +21,7 @@ import styles from './styles';
 interface Props {
     testID?: string;
     isLoading?: boolean;
-    prefix?: string | (() => React.ReactNode);
+    prefix?: string | (() => React.ReactNode) | React.ReactNode;
     value: number | string;
     currency?: string;
     truncateCurrency?: boolean;
@@ -126,19 +126,6 @@ class AmountText extends Component<Props, State> {
             return {
                 originalValue: String(value),
                 value: String(value),
-                currency: normalizedCurrency,
-                localSettings: newLocalSettings,
-            };
-        }
-
-        // check if value is NFT
-        const NFT = XRPLValueToNFT(value);
-
-        // just show value as NFT
-        if (NFT) {
-            return {
-                originalValue: String(value),
-                value: NFT,
                 currency: normalizedCurrency,
                 localSettings: newLocalSettings,
             };
@@ -281,6 +268,7 @@ class AmountText extends Component<Props, State> {
         return (
             <View style={[styles.container, valueContainerStyle]}>
                 {typeof prefix === 'function' && prefix()}
+                {typeof prefix === 'object' && prefix}
                 <Text testID={testID} numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}

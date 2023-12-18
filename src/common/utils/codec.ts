@@ -46,7 +46,15 @@ const EncodeNFTokenID = (
     tokenTaxon: number,
 ): string => {
     const issuer = decodeAccountID(account);
-    const cipheredTaxon = tokenTaxon ^ (384160001 * tokenSequence + 2459);
+
+    const unscrambleTaxon = new BigNumber(384160001)
+        .multipliedBy(tokenSequence)
+        .modulo(4294967296)
+        .plus(2459)
+        .modulo(4294967296)
+        .toNumber();
+
+    const cipheredTaxon = (tokenTaxon ^ unscrambleTaxon) >>> 0;
 
     const tokenID = Buffer.concat([
         Buffer.from([(flags >> 8) & 0xff, flags & 0xff]),
@@ -86,7 +94,11 @@ const DecodeNFTokenID = (nfTokenID: string) => {
 
     const scrambledTaxon = new BigNumber(nfTokenID.substring(48, 56), 16).toNumber();
     const sequence = new BigNumber(nfTokenID.substring(56, 64), 16).toNumber();
-    const taxon = (scrambledTaxon ^ (384160001 * sequence + 2459)) % 4294967296;
+    const unscrambleTaxon = new BigNumber(384160001).multipliedBy(sequence).modulo(4294967296).plus(2459).toNumber();
+
+    const cipheredTaxon = (scrambledTaxon ^ unscrambleTaxon) >>> 0;
+
+    const taxon = new BigNumber(cipheredTaxon).modulo(4294967296).toNumber();
 
     return {
         NFTokenID: nfTokenID,
@@ -96,6 +108,41 @@ const DecodeNFTokenID = (nfTokenID: string) => {
         Taxon: taxon,
         Sequence: sequence,
     };
+};
+
+/**
+ * Encode CTID
+ * @param ledgerSeq number
+ * @param txnIndex number
+ * @param networkId number
+ * @returns encoded CTID
+ */
+const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): string => {
+    if (typeof ledgerSeq !== 'number') {
+        throw new Error('ledgerSeq must be a number.');
+    }
+    if (ledgerSeq > 0xfffffff || ledgerSeq < 0) {
+        throw new Error('ledgerSeq must not be greater than 268435455 or less than 0.');
+    }
+
+    if (typeof txnIndex !== 'number') {
+        throw new Error('txnIndex must be a number.');
+    }
+    if (txnIndex > 0xffff || txnIndex < 0) {
+        throw new Error('txnIndex must not be greater than 65535 or less than 0.');
+    }
+
+    if (typeof networkId !== 'number') {
+        throw new Error('networkId must be a number.');
+    }
+    if (networkId > 0xffff || networkId < 0) {
+        throw new Error('networkId must not be greater than 65535 or less than 0.');
+    }
+
+    // @ts-ignore
+    return (((BigInt(0xc0000000) + BigInt(ledgerSeq)) << 32n) + (BigInt(txnIndex) << 16n) + BigInt(networkId))
+        .toString(16)
+        .toUpperCase();
 };
 
 /**
@@ -158,4 +205,5 @@ export {
     EncodeNFTokenID,
     DecodeNFTokenID,
     DecodeAccountId,
+    EncodeCTID,
 };

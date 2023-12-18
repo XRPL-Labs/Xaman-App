@@ -23,12 +23,23 @@ import {
     NFTokenCancelOffer,
     NFTokenCreateOffer,
     NFTokenMint,
+    SetHook,
+    ClaimReward,
+    Invoke,
+    Import,
+    URITokenMint,
+    URITokenBurn,
+    URITokenBuy,
+    URITokenCreateSellOffer,
+    URITokenCancelSellOffer,
+    GenesisMint,
+    EnableAmendment,
 } from '.';
 
 import { SignIn, PaymentChannelAuthorize } from './pseudo';
 
 /**
- * All Transactions types
+ * Genuine Transactions types
  */
 export type Transactions =
     | Payment
@@ -54,7 +65,18 @@ export type Transactions =
     | NFTokenBurn
     | NFTokenCreateOffer
     | NFTokenAcceptOffer
-    | NFTokenCancelOffer;
+    | NFTokenCancelOffer
+    | SetHook
+    | ClaimReward
+    | Invoke
+    | Import
+    | URITokenMint
+    | URITokenBurn
+    | URITokenBuy
+    | URITokenCreateSellOffer
+    | URITokenCancelSellOffer
+    | GenesisMint
+    | EnableAmendment;
 
 /**
  * Pseudo Transactions types

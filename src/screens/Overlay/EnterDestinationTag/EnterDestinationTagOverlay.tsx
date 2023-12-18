@@ -10,6 +10,8 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 import Keyboard from '@common/helpers/keyboard';
 
+import { StringTypeCheck } from '@common/utils/string';
+
 import { AppScreens } from '@common/constants';
 
 // components
@@ -42,9 +44,8 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
     private textInputView: React.RefObject<View>;
     private setListenerTimeout: any;
-    private textInput: TextInput;
     private keyboardShow: boolean;
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -67,6 +68,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         };
 
         this.textInputView = createRef<View>();
+        this.actionPanelRef = createRef<ActionPanel>();
 
         this.keyboardShow = false;
     }
@@ -91,30 +93,28 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.keyboardShow = true;
 
-        if (this.textInputView && this.textInputView.current) {
-            this.textInputView.current.measure((x, y, width, height, pageX, pageY) => {
-                if (!pageY) return;
+        this.textInputView?.current?.measure((x, y, width, height, pageX, pageY) => {
+            if (!pageY) return;
 
-                const bottomView = AppSizes.screen.height - height - pageY;
-                const KeyboardHeight = e.endCoordinates.height;
+            const bottomView = AppSizes.screen.height - height - pageY;
+            const KeyboardHeight = e.endCoordinates.height;
 
-                let offset = KeyboardHeight - bottomView;
+            let offset = KeyboardHeight - bottomView;
 
-                if (Platform.OS === 'android') {
-                    offset += AppSizes.safeAreaBottomInset;
-                }
+            if (Platform.OS === 'android') {
+                offset += AppSizes.safeAreaBottomInset;
+            }
 
-                if (offset >= 0) {
-                    this.setState({ offsetBottom: offset }, () => {
-                        setTimeout(() => {
-                            if (this.actionPanel) {
-                                this.actionPanel.snapTo(2);
-                            }
-                        }, 0);
-                    });
-                }
-            });
-        }
+            if (offset >= 0) {
+                this.setState({ offsetBottom: offset }, () => {
+                    setTimeout(() => {
+                        if (this.actionPanelRef?.current) {
+                            this.actionPanelRef?.current.snapTo(2);
+                        }
+                    }, 10);
+                });
+            }
+        });
     };
 
     onKeyboardHide = () => {
@@ -124,10 +124,10 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.setState({ offsetBottom: 0 }, () => {
             setTimeout(() => {
-                if (this.actionPanel) {
-                    this.actionPanel.snapTo(1);
+                if (this.actionPanelRef?.current) {
+                    this.actionPanelRef?.current.snapTo(1);
                 }
-            }, 0);
+            }, 10);
         });
     };
 
@@ -146,7 +146,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         const { onFinish } = this.props;
 
         // close overlay
-        Navigator.dismissOverlay();
+        await Navigator.dismissOverlay();
 
         if (typeof onFinish === 'function') {
             onFinish(destinationTag);
@@ -172,19 +172,23 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         }
     };
 
+    slideDownPanel = () => {
+        if (this.actionPanelRef?.current) {
+            this.actionPanelRef.current.slideDown();
+        }
+    };
+
     render() {
         const { onScannerRead, onScannerClose, destination, buttonType } = this.props;
         const { offsetBottom, destinationTag } = this.state;
 
         return (
             <ActionPanel
+                ref={this.actionPanelRef}
                 height={AppSizes.moderateScale(430)}
                 offset={offsetBottom}
                 onSlideDown={this.onClose}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -197,11 +201,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                if (this.actionPanel) {
-                                    this.actionPanel.slideDown();
-                                }
-                            }}
+                            onPress={this.slideDownPanel}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />
@@ -216,58 +216,49 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </View>
 
                 <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
-                    <View style={[styles.itemRow]}>
+                    <View style={styles.itemRow}>
                         <View style={styles.avatarContainer}>
                             <Image source={Images.IconInfo} style={styles.avatarImage} />
                         </View>
                         <View>
                             <View style={AppStyles.row}>
-                                <Text style={[styles.title]}>
-                                    {destination.name || Localize.t('global.noNameFound')}
-                                </Text>
+                                <Text style={styles.title}>{destination.name || Localize.t('global.noNameFound')}</Text>
                             </View>
-                            <Text style={[styles.subtitle]}>{destination.address}</Text>
+                            <Text style={styles.subtitle}>{destination.address}</Text>
                         </View>
                     </View>
                 </View>
 
                 <View
                     ref={this.textInputView}
-                    onLayout={() => {}}
                     style={[
                         AppStyles.paddingHorizontalSml,
                         AppStyles.paddingVertical,
                         AppStyles.centerContent,
                         AppStyles.centerAligned,
                     ]}
+                    collapsable={false}
                 >
                     <TextInput
-                        ref={(r) => {
-                            this.textInput = r;
-                        }}
-                        value={String(destinationTag)}
-                        onChangeText={this.onDestinationTagChange}
+                        value={destinationTag}
                         keyboardType="number-pad"
                         returnKeyType="done"
-                        placeholder={Localize.t('send.enterDestinationTag')}
                         numberOfLines={1}
-                        inputStyle={styles.textInput}
+                        inputStyle={destinationTag ? styles.textInput : styles.textInputPlaceholder}
+                        placeholder={Localize.t('send.enterDestinationTag')}
                         showScanner
+                        onChangeText={this.onDestinationTagChange}
                         scannerType={StringType.XrplDestinationTag}
                         onScannerRead={onScannerRead}
                         onScannerClose={onScannerClose}
-                        onScannerOpen={() => {
-                            if (this.actionPanel) {
-                                this.actionPanel.slideDown();
-                            }
-                        }}
+                        onScannerOpen={this.slideDownPanel}
                     />
                 </View>
 
                 <View style={[AppStyles.centerContent, AppStyles.paddingHorizontalSml, AppStyles.paddingVertical]}>
                     <Button
                         numberOfLines={1}
-                        isDisabled={Number(destinationTag) > 2 ** 32 || Number(destinationTag) <= 0}
+                        isDisabled={!StringTypeCheck.isValidDestinationTag(destinationTag) && destinationTag !== ''}
                         onPress={this.onFinish}
                         style={styles.nextButton}
                         label={buttonType === 'next' ? Localize.t('global.next') : Localize.t('global.apply')}

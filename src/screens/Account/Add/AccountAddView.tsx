@@ -115,7 +115,7 @@ class AccountAddView extends Component<Props, State> {
             // check if account exist
             const exist = AccountRepository.findOne({ address });
             if (exist) {
-                Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist'));
+                Alert.alert(Localize.t('global.error'), Localize.t('account.accountAlreadyExist', { address }));
                 return;
             }
 

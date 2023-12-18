@@ -3,12 +3,27 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import { filter, flatMap, get, groupBy, isEmpty, isEqual, isUndefined, map, orderBy, uniqBy, without } from 'lodash';
+import {
+    has,
+    filter,
+    flatMap,
+    get,
+    groupBy,
+    isEmpty,
+    isEqual,
+    isUndefined,
+    map,
+    orderBy,
+    uniqBy,
+    without,
+} from 'lodash';
 import React, { Component } from 'react';
 import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { Navigation, EventSubscription } from 'react-native-navigation';
+
+import { CoreRepository } from '@store/repositories';
+import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
 import { AppScreens } from '@common/constants';
@@ -61,7 +76,7 @@ export interface State {
     searchText: string;
     sectionIndex: number;
     lastMarker: LedgerMarker;
-    account: AccountSchema;
+    account: AccountModel;
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
@@ -77,7 +92,9 @@ enum DataSourceType {
 /* Component ==================================================================== */
 class EventsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Events;
-    static whyDidYouRender = true;
+
+    private forceReload: boolean;
+    private navigationListener: EventSubscription;
 
     static options() {
         return {
@@ -98,12 +115,14 @@ class EventsView extends Component<Props, State> {
             filters: undefined,
             sectionIndex: 0,
             lastMarker: undefined,
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
             dataSource: [],
         };
+
+        this.forceReload = false;
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
@@ -120,11 +139,34 @@ class EventsView extends Component<Props, State> {
         );
     }
 
+    componentDidAppear() {
+        if (this.forceReload) {
+            // set the flag to false
+            this.forceReload = false;
+
+            // reset everything and load transaction
+            this.setState(
+                {
+                    account: CoreRepository.getDefaultAccount(),
+                    dataSource: [],
+                    transactions: [],
+                    plannedTransactions: [],
+                    lastMarker: undefined,
+                    canLoadMore: true,
+                },
+                this.updateDataSource,
+            );
+        }
+    }
+
     componentDidMount() {
         const { account } = this.state;
 
+        // componentDidDisappear event
+        this.navigationListener = Navigation.events().bindComponent(this);
+
         // add listener for default account change
-        AccountRepository.on('changeDefaultAccount', this.onDefaultAccountChange);
+        CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
         // update list on transaction received
         AccountService.on('transaction', this.onTransactionReceived);
         // update list on sign request received
@@ -142,25 +184,21 @@ class EventsView extends Component<Props, State> {
 
     componentWillUnmount() {
         // remove listeners
-        AccountRepository.off('changeDefaultAccount', this.onDefaultAccountChange);
+        CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
         AccountService.off('transaction', this.onTransactionReceived);
         PushNotificationsService.off('signRequestUpdate', this.onSignRequestReceived);
         AppService.off('appStateChange', this.onAppStateChange);
+
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
     }
 
-    onDefaultAccountChange = (account: AccountSchema) => {
-        // reset everything and load transaction
-        this.setState(
-            {
-                account,
-                dataSource: [],
-                transactions: [],
-                plannedTransactions: [],
-                lastMarker: undefined,
-                canLoadMore: true,
-            },
-            this.updateDataSource,
-        );
+    onCoreSettingsUpdate = (_coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        // force reload if network or default account changed
+        if (has(changes, 'network') || has(changes, 'account')) {
+            this.forceReload = true;
+        }
     };
 
     onSignRequestReceived = () => {
@@ -171,7 +209,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
+    onTransactionReceived = (_transaction: any, effectedAccounts: Array<string>) => {
         const { account } = this.state;
 
         if (account?.isValid()) {
@@ -190,7 +228,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    fetchPlannedObjects = (
+    fetchPlannedObjects = async (
         account: string,
         type: string,
         marker?: string,
@@ -225,8 +263,8 @@ class EventsView extends Component<Props, State> {
             let objects = [] as LedgerEntriesTypes[];
 
             objectTypes
-                .reduce((accumulator, type) => {
-                    return accumulator.then(() => {
+                .reduce(async (accumulator, type) => {
+                    return accumulator.then(async () => {
                         return this.fetchPlannedObjects(account.address, type).then((res) => {
                             if (res) {
                                 objects = [...objects, ...res];
@@ -293,7 +331,7 @@ class EventsView extends Component<Props, State> {
                     }
 
                     let parsedList = filter(flatMap(txResp, TransactionFactory.fromLedger), (t) => {
-                        return t.TransactionResult.success;
+                        return t?.TransactionResult?.success;
                     });
 
                     if (loadMore) {
@@ -813,7 +851,7 @@ class EventsView extends Component<Props, State> {
                 />
                 <SegmentButton
                     selectedIndex={sectionIndex}
-                    containerStyle={AppStyles.paddingHorizontalSml}
+                    containerStyle={[AppStyles.paddingHorizontalSml, AppStyles.leftSelf]}
                     buttons={[
                         Localize.t('events.eventTypeAll'),
                         Localize.t('events.eventTypePlanned'),

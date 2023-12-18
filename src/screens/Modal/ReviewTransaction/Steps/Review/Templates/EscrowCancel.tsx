@@ -1,16 +1,15 @@
-import { isEmpty, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
-import { LedgerService } from '@services';
+import LedgerService from '@services/LedgerService';
 
 import { EscrowCancel } from '@common/libs/ledger/transactions';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+
+import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
-
-import { RecipientElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -22,8 +21,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    isLoading: boolean;
-    ownerDetails: AccountNameType;
+    offerSequence: number;
 }
 
 /* Component ==================================================================== */
@@ -32,10 +30,10 @@ class EscrowCancelTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoading: true,
-            ownerDetails: undefined,
+            offerSequence: undefined,
         };
     }
+
     async componentDidMount() {
         const { transaction } = this.props;
 
@@ -45,32 +43,23 @@ class EscrowCancelTemplate extends Component<Props, State> {
             await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
                 const { Sequence } = tx;
                 if (Sequence) {
-                    transaction.OfferSequence = Sequence;
+                    this.setState(
+                        {
+                            offerSequence: Sequence,
+                        },
+                        () => {
+                            transaction.OfferSequence = Sequence;
+                        },
+                    );
                 }
             });
         }
-
-        getAccountName(transaction.Owner)
-            .then((res: any) => {
-                if (!isEmpty(res) && !res.error) {
-                    this.setState({
-                        ownerDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
-            });
     }
 
     render() {
         const { transaction } = this.props;
-        const { isLoading, ownerDetails } = this.state;
+        const { offerSequence } = this.state;
+
         return (
             <>
                 <View style={styles.label}>
@@ -78,21 +67,25 @@ class EscrowCancelTemplate extends Component<Props, State> {
                         {Localize.t('global.owner')}
                     </Text>
                 </View>
-
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Owner}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoading}
-                    recipient={{
-                        address: transaction.Owner,
-                        ...ownerDetails,
-                    }}
                 />
 
-                {!isUndefined(transaction.OfferSequence) && (
+                {!isUndefined(offerSequence) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={styles.value}>{transaction.OfferSequence}</Text>
+                        <Text style={styles.label}>{Localize.t('global.offerSequence')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{offerSequence}</Text>
+                        </View>
+                    </>
+                )}
+
+                {!isUndefined(transaction.EscrowID) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.escrowID')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.EscrowID}</Text>
                         </View>
                     </>
                 )}

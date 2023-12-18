@@ -31,6 +31,11 @@ declare class WebView<P = {}> extends Component<WebViewProps & P> {
     requestFocus: () => void;
 
     /**
+     * End editing, dismiss keyboard
+     */
+    endEditing: () => void;
+
+    /**
      * Posts a message to WebView.
      */
     postMessage: (message: string) => void;
@@ -54,5 +59,4 @@ declare class WebView<P = {}> extends Component<WebViewProps & P> {
     clearHistory?: () => void;
 }
 
-export { WebView };
 export default WebView;

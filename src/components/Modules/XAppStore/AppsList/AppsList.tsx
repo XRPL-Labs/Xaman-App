@@ -3,11 +3,11 @@ import { FlatList, RefreshControl, Text, View, ViewStyle } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
-import { AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
 
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
+import { AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
 import styles from './styles';
 /* Types ==================================================================== */
 interface Props {
@@ -46,10 +46,6 @@ class AppsList extends Component<Props, State> {
         }
     };
 
-    renderSeparator = () => {
-        return <View style={styles.hr} />;
-    };
-
     renderEmpty = () => {
         const { searching } = this.props;
 
@@ -77,7 +73,6 @@ class AppsList extends Component<Props, State> {
                 contentContainerStyle={containerStyle}
                 data={dataSource}
                 renderItem={this.renderItem}
-                ItemSeparatorComponent={this.renderSeparator}
                 ListEmptyComponent={this.renderEmpty}
                 style={styles.sectionList}
                 refreshControl={

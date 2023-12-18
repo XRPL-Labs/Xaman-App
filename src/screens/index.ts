@@ -32,15 +32,16 @@ import MigrationExplain from './Modal/MigrationExplain';
 import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
+import TransactionLoader from './Modal/TransactionLoader';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
 import ShareAccount from './Overlay/ShareAccount';
-import AddCurrency from './Overlay/AddCurrency';
+import AddToken from './Overlay/AddToken';
 import Vault from './Overlay/Vault';
 import Auth from './Overlay/Authenticate';
 import Lock from './Overlay/Lock';
-import CurrencySettings from './Overlay/CurrencySettings';
+import TokenSettings from './Overlay/TokenSettings';
 import Alert from './Overlay/Alert';
 import CriticalProcessing from './Overlay/CriticalProcessing';
 import FlaggedDestination from './Overlay/FlaggedDestination';
@@ -57,6 +58,9 @@ import SelectFee from './Overlay/SelectFee';
 import HomeActions from './Overlay/HomeActions';
 import PassphraseAuthentication from './Overlay/PassphraseAuthentication';
 import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
+import SwitchNetwork from './Overlay/SwitchNetwork';
+import XAppInfo from './Overlay/XAppInfo';
+import NetworkRailsSync from './Overlay/NetworkRailsSync';
 
 // Transaction
 import Send from './Send';
@@ -69,8 +73,8 @@ import AddressBook from './Settings/AddressBook';
 import AddContact from './Settings/AddressBook/Add';
 import EditContact from './Settings/AddressBook/Edit';
 
-// node
-import NodeList from './Settings/Advanced/Node';
+// network
+import NetworkList from './Settings/Advanced/Network';
 
 // third party apps
 import ThirdPartyAppsList from './Settings/ThirdPartyApps';
@@ -126,14 +130,15 @@ export {
     XAppBrowser,
     CurrencyPicker,
     DestinationPicker,
+    TransactionLoader,
     // overlay
     SwitchAccount,
     ShareAccount,
-    AddCurrency,
+    AddToken,
+    TokenSettings,
     Vault,
     Auth,
     Lock,
-    CurrencySettings,
     Alert,
     CriticalProcessing,
     FlaggedDestination,
@@ -150,6 +155,9 @@ export {
     HomeActions,
     PassphraseAuthentication,
     SwitchAssetCategory,
+    SwitchNetwork,
+    XAppInfo,
+    NetworkRailsSync,
     // transaction
     Send,
     Request,
@@ -170,8 +178,8 @@ export {
     // third party apps
     ThirdPartyAppsList,
     EditThirdPartyApp,
-    // nodes
-    NodeList,
+    // networks
+    NetworkList,
     // session logs
     SessionLog,
     // global

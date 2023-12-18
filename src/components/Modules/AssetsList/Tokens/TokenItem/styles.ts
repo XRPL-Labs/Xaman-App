@@ -7,7 +7,7 @@ export default StyleService.create({
         width: AppSizes.screen.width,
         flexDirection: 'row',
         backgroundColor: '$background',
-        paddingHorizontal: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingList,
     },
     currencyLabel: {
         fontSize: AppFonts.subtext.size,
@@ -28,20 +28,12 @@ export default StyleService.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingRight: 5,
     },
-    brandAvatarContainer: {
+    tokenAvatarContainer: {
         marginRight: 10,
-        paddingLeft: 5,
     },
-
-    currencyAvatarContainer: {
+    tokenIconContainer: {
         paddingRight: 5,
-    },
-    currencyAvatar: {
-        width: AppSizes.scale(12),
-        height: AppSizes.scale(12),
-        resizeMode: 'contain',
     },
     reorderButtonContainer: {
         flexDirection: 'row',

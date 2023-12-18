@@ -4,7 +4,7 @@
 import { toString } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Share, Linking, Alert } from 'react-native';
+import { View, Share, Linking, Alert, InteractionManager } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -14,31 +14,25 @@ import { ContactRepository } from '@store/repositories';
 
 // components
 import { Button, Spacer, ActionPanel } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
-import { GetAccountLink, GetExplorer, ExplorerDetails } from '@common/utils/explorer';
+import { GetAccountLink } from '@common/utils/explorer';
 
 import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes } from '@theme';
-
+import { AccountNameType } from '@common/helpers/resolver';
 /* types ==================================================================== */
-export type RecipientType = {
-    id?: string;
-    address: string;
-    tag?: number;
-    name: string;
-    source?: string;
-};
 
 export interface Props {
-    recipient: RecipientType;
+    address: string;
+    tag?: number;
     onClose: () => void;
 }
 
 export interface State {
-    explorer: ExplorerDetails;
+    recipientName: string;
     contactExist: boolean;
 }
 
@@ -46,7 +40,7 @@ export interface State {
 class RecipientMenuOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.RecipientMenu;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -64,10 +58,24 @@ class RecipientMenuOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            contactExist: ContactRepository.exist(props.recipient.address, toString(props.recipient.tag)),
-            explorer: GetExplorer(),
+            recipientName: undefined,
+            contactExist: false,
         };
+
+        this.actionPanelRef = React.createRef();
     }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.checkContactExist);
+    }
+
+    checkContactExist = () => {
+        const { address, tag } = this.props;
+
+        this.setState({
+            contactExist: ContactRepository.exist(address, toString(tag)),
+        });
+    };
 
     onClose = () => {
         const { onClose } = this.props;
@@ -79,46 +87,46 @@ class RecipientMenuOverlay extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    getAccountLink = () => {
-        const { explorer } = this.state;
-        const { recipient } = this.props;
-
-        return GetAccountLink(recipient.address, explorer);
+    onRecipientInfoUpdate = (info: AccountNameType) => {
+        if (info?.name) {
+            this.setState({
+                recipientName: info.name,
+            });
+        }
     };
 
     addContact = () => {
-        const { recipient } = this.props;
+        const { address, tag } = this.props;
+        const { recipientName } = this.state;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Settings.AddressBook.Add, recipient);
+            Navigator.push(AppScreens.Settings.AddressBook.Add, { address, tag, name: recipientName });
         }, 500);
     };
 
     shareAddress = () => {
-        const { recipient } = this.props;
+        const { address } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
+
         setTimeout(() => {
             Share.share({
                 title: Localize.t('home.shareAccount'),
-                message: recipient.address,
+                message: address,
                 url: undefined,
             }).catch(() => {});
         }, 1000);
     };
 
     openAccountLink = () => {
-        const url = this.getAccountLink();
+        const { address } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        const url = GetAccountLink(address);
+
+        this.actionPanelRef?.current?.slideDown();
+
         setTimeout(() => {
             Linking.openURL(url).catch(() => {
                 Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
@@ -127,20 +135,23 @@ class RecipientMenuOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { recipient } = this.props;
-        const { contactExist, explorer } = this.state;
+        const { address, tag } = this.props;
+        const { contactExist } = this.state;
 
         return (
             <ActionPanel
                 height={AppSizes.moderateScale(50) * (!contactExist ? 7 : 6)}
                 onSlideDown={this.onClose}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.paddingHorizontalSml, AppStyles.centerContent]}>
-                    <RecipientElement showTag={false} recipient={recipient} />
+                    <AccountElement
+                        address={address}
+                        tag={tag}
+                        visibleElements={{ avatar: true, tag: false, button: false, source: false }}
+                        onInfoUpdate={this.onRecipientInfoUpdate}
+                    />
 
                     <Spacer size={20} />
 
@@ -173,7 +184,7 @@ class RecipientMenuOverlay extends Component<Props, State> {
                         numberOfLines={1}
                         onPress={this.openAccountLink}
                         icon="IconLink"
-                        label={Localize.t('events.openWithExplorer', { explorer: explorer.title })}
+                        label={Localize.t('events.openInExplorer')}
                         iconStyle={AppStyles.imgColorWhite}
                     />
                 </View>

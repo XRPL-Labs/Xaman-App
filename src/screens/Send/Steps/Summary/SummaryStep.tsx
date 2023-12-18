@@ -6,24 +6,21 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, InteractionManager } from 'react-native';
 
-import { BackendService, SocketService, StyleService } from '@services';
+import NetworkService from '@services/NetworkService';
+import BackendService, { RatesType } from '@services/BackendService';
 
 import { AppScreens } from '@common/constants';
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import Preferences from '@common/libs/preferences';
-import { Amount } from '@common/libs/ledger/parser/common';
 
-import { Capitalize } from '@common/utils/string';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
 import {
-    TouchableDebounce,
     AmountText,
-    Badge,
     Button,
     Footer,
     Spacer,
@@ -32,14 +29,14 @@ import {
     KeyboardAwareScrollView,
     TokenAvatar,
 } from '@components/General';
-import { AccountPicker } from '@components/Modules';
+
+import { AccountPicker, FeePicker } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
 
 // style
 import { AppStyles, AppColors } from '@theme';
-import { ChainColors } from '@theme/colors';
 
 import styles from './styles';
 
@@ -51,7 +48,7 @@ export interface Props {}
 export interface State {
     confirmedDestinationTag: number;
     destinationTagInputVisible: boolean;
-    currencyRate: any;
+    currencyRate: RatesType;
     canScroll: boolean;
 }
 
@@ -81,9 +78,9 @@ class SummaryStep extends Component<Props, State> {
         const { currency } = coreSettings;
 
         BackendService.getCurrencyRate(currency)
-            .then((r) => {
+            .then((resp) => {
                 this.setState({
-                    currencyRate: r,
+                    currencyRate: resp,
                 });
             })
             .catch(() => {
@@ -226,8 +223,8 @@ class SummaryStep extends Component<Props, State> {
     getSwipeButtonColor = (): string => {
         const { coreSettings } = this.context;
 
-        if (coreSettings.developerMode) {
-            return ChainColors[SocketService.chain];
+        if (coreSettings?.developerMode && coreSettings?.network) {
+            return coreSettings.network.color;
         }
 
         return undefined;
@@ -241,46 +238,20 @@ class SummaryStep extends Component<Props, State> {
         });
     };
 
-    getFeeColor = () => {
-        const { selectedFee } = this.context;
-
-        switch (selectedFee.type) {
-            case 'low':
-                return StyleService.value('$green');
-            case 'medium':
-                return StyleService.value('$orange');
-            case 'high':
-                return StyleService.value('$red');
-            default:
-                return StyleService.value('$textPrimary');
-        }
-    };
-
-    showFeeSelectOverlay = () => {
-        const { setFee, availableFees, selectedFee } = this.context;
-
-        Navigator.showOverlay(AppScreens.Overlay.SelectFee, { availableFees, selectedFee, onSelect: setFee });
-    };
-
-    getNormalizedFee = () => {
-        const { selectedFee } = this.context;
-        return new Amount(selectedFee.value).dropsToXrp();
-    };
-
     renderCurrencyItem = (item: any) => {
         const { source } = this.context;
 
-        // XRP
+        // Native asset
         if (typeof item === 'string') {
             return (
-                <View style={[styles.pickerItem]}>
+                <View style={styles.pickerItem}>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[styles.currencyImageContainer]}>
-                            <TokenAvatar token="XRP" border size={35} />
+                        <View style={styles.currencyImageContainer}>
+                            <TokenAvatar token="Native" border size={35} />
                         </View>
                         <View style={[AppStyles.column, AppStyles.centerContent]}>
-                            <Text style={[styles.currencyItemLabel]}>XRP</Text>
-                            <Text style={[styles.currencyBalance]}>
+                            <Text style={styles.currencyItemLabel}>{NetworkService.getNativeAsset()}</Text>
+                            <Text style={styles.currencyBalance}>
                                 {Localize.t('global.available')}:{' '}
                                 {Localize.formatNumber(CalculateAvailableBalance(source))}
                             </Text>
@@ -291,20 +262,20 @@ class SummaryStep extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.pickerItem]}>
+            <View style={styles.pickerItem}>
                 <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[styles.currencyImageContainer]}>
+                    <View style={styles.currencyImageContainer}>
                         <TokenAvatar token={item} border size={35} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={[styles.currencyItemLabel]}>
+                        <Text style={styles.currencyItemLabel}>
                             {NormalizeCurrencyCode(item.currency.currency)}
 
-                            {item.currency.name && <Text style={[AppStyles.subtext]}> - {item.currency.name}</Text>}
+                            {item.currency.name && <Text style={AppStyles.subtext}> - {item.currency.name}</Text>}
                         </Text>
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
-                            style={[styles.currencyBalance]}
+                            style={styles.currencyBalance}
                             value={item.balance}
                         />
                     </View>
@@ -318,12 +289,12 @@ class SummaryStep extends Component<Props, State> {
 
         const { currency, amount } = this.context;
 
-        // only show rate for XRP
+        // only show rate for native currency
         if (typeof currency === 'string' && currencyRate && amount) {
-            const rate = Number(amount) * currencyRate.lastRate;
+            const rate = Number(amount) * currencyRate.rate;
             if (rate > 0) {
                 return (
-                    <View style={[styles.rateContainer]}>
+                    <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
                             ~{currencyRate.code} {Localize.formatNumber(rate)}
                         </Text>
@@ -336,18 +307,28 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, amount, destination, currency, selectedFee, issuerFee, isLoading } = this.context;
+        const {
+            source,
+            amount,
+            destination,
+            currency,
+            issuerFee,
+            isLoading,
+            selectedFee,
+            setFee,
+            getPaymentJsonForFee,
+        } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
-            <View testID="send-summary-view" style={[styles.container]}>
+            <View testID="send-summary-view" style={styles.container}>
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     enabled={!destinationTagInputVisible}
                     scrollEnabled={canScroll}
                 >
                     <View style={[styles.rowItem, styles.rowItemGrey]}>
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text
                                 style={[
                                     AppStyles.subtext,
@@ -364,16 +345,16 @@ class SummaryStep extends Component<Props, State> {
 
                         <Spacer size={20} />
 
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.to')}
                             </Text>
                         </View>
                         <Spacer size={15} />
 
-                        <View style={[styles.rowTitle]}>
-                            <View style={[styles.pickerItem]}>
-                                <Text style={[styles.pickerItemTitle]}>
+                        <View style={styles.rowTitle}>
+                            <View style={styles.pickerItem}>
+                                <Text numberOfLines={1} style={styles.pickerItemTitle}>
                                     {destination?.name || Localize.t('global.noNameFound')}
                                 </Text>
                                 <Text
@@ -390,7 +371,7 @@ class SummaryStep extends Component<Props, State> {
 
                         <View style={AppStyles.row}>
                             <View style={AppStyles.flex1}>
-                                <View style={[styles.rowTitle]}>
+                                <View style={styles.rowTitle}>
                                     <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                         {destination.tag && `${Localize.t('global.destinationTag')}: `}
                                         <Text style={AppStyles.colorBlue}>
@@ -411,72 +392,60 @@ class SummaryStep extends Component<Props, State> {
                     </View>
 
                     {/* Currency */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.asset')}
                             </Text>
                         </View>
                         <Spacer size={15} />
-                        <View style={[styles.rowTitle]}>{this.renderCurrencyItem(currency)}</View>
+                        <View style={styles.rowTitle}>{this.renderCurrencyItem(currency)}</View>
                     </View>
 
                     {/* Amount */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.amount')}
                             </Text>
                         </View>
                         <Spacer size={15} />
 
-                        <AmountText value={amount} style={[styles.amountInput]} immutable />
+                        <AmountText value={amount} style={styles.amountInput} immutable />
 
                         {this.renderAmountRate()}
                     </View>
 
                     {issuerFee && (
-                        <View style={[styles.rowItem]}>
-                            <View style={[styles.rowTitle]}>
+                        <View style={styles.rowItem}>
+                            <View style={styles.rowTitle}>
                                 <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                     {Localize.t('global.issuerFee')}
                                 </Text>
                             </View>
                             <View style={styles.feeContainer}>
-                                <Text style={[styles.feeText]}>{issuerFee} %</Text>
+                                <Text style={styles.feeText}>{issuerFee} %</Text>
                             </View>
                         </View>
                     )}
 
                     <View style={[styles.rowItem, AppStyles.centerContent]}>
-                        <View style={[styles.rowTitle]}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.fee')}
                             </Text>
                         </View>
-                        <TouchableDebounce
-                            activeOpacity={0.8}
-                            style={[styles.feeContainer, AppStyles.row]}
-                            onPress={this.showFeeSelectOverlay}
-                        >
-                            <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                                <Text style={[styles.feeText]}>{this.getNormalizedFee()} XRP</Text>
-                                <Badge label={Capitalize(selectedFee.type)} size="medium" color={this.getFeeColor()} />
-                            </View>
-                            <Button
-                                onPress={this.showFeeSelectOverlay}
-                                style={styles.editButton}
-                                roundedSmall
-                                iconSize={13}
-                                light
-                                icon="IconEdit"
-                            />
-                        </TouchableDebounce>
+                        <FeePicker
+                            txJson={getPaymentJsonForFee()}
+                            containerStyle={styles.feePickerContainer}
+                            textStyle={styles.feeText}
+                            onSelect={setFee}
+                        />
                     </View>
 
                     {/* Memo */}
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
                                 {Localize.t('global.memo')}
                             </Text>
@@ -501,6 +470,7 @@ class SummaryStep extends Component<Props, State> {
                             accessibilityLabel={Localize.t('global.send')}
                             onSwipeSuccess={this.goNext}
                             isLoading={isLoading}
+                            isDisabled={!selectedFee}
                             shouldResetAfterSuccess
                             onPanResponderGrant={this.toggleCanScroll}
                             onPanResponderRelease={this.toggleCanScroll}

@@ -1,13 +1,13 @@
 import StyleService from '@services/StyleService';
 
-import { AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
     content: {
         width: '100%',
         borderRadius: 20,
-        padding: 20,
+        padding: AppSizes.paddingSml,
         left: 0,
         right: 0,
         flexDirection: 'row',

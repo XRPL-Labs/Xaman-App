@@ -30,7 +30,7 @@ class Amount {
         this.amount = new BigNumber(newAmount);
     }
 
-    dropsToXrp(toNumber = false): any {
+    dropsToNative(toNumber = false): any {
         const xrp = this.amount.dividedBy(1000000.0);
 
         if (toNumber) {
@@ -40,7 +40,7 @@ class Amount {
         return xrp.toString(10);
     }
 
-    xrpToDrops(toNumber = false): any {
+    nativeToDrops(toNumber = false): any {
         const drops = this.amount.times(1000000.0).decimalPlaces(0);
 
         if (toNumber) {

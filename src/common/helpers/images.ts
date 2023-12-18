@@ -54,13 +54,10 @@ export const Images = {
     ImageEncryptionMigration: buildImageSource('ImageEncryptionMigration', 'image_encryption_migration'),
     ImageBlankNFT: buildImageSource('ImageBlankNFT', 'image_blank_nft'),
     ImageBlankNFTLight: buildImageSource('ImageBlankNFTLight', 'image_blank_nft_light'),
-    // Xumm
-    XummLogo: buildImageSource('XummLogo', 'xumm_logo'),
-    XummLogoLight: buildImageSource('XummLogoLight', 'xumm_logo_light'),
-    XummIcon: buildImageSource('XummIcon', 'xumm_icon'),
-    XummIconLight: buildImageSource('XummIconLight', 'xumm_icon_light'),
-    XummIconWhite: buildImageSource('XummIconWhite', 'xumm_icon_white'),
-    SideGradient: buildImageSource('SideGradient', 'side_gradient'),
+    ImageArrowUp: buildImageSource('ImageArrowUp', 'image_arrow_up'),
+    // Xaman
+    XamanLogo: buildImageSource('XamanLogo', 'xaman_logo'),
+    XamanLogoLight: buildImageSource('XamanLogoLight', 'xaman_logo_light'),
     // Icons
     IconTabBarScan: buildImageSource('IconTabBarScan', 'icon_tabbar_scan'),
     IconTabBarHome: buildImageSource('IconTabBarHome', 'icon_tabbar_home'),
@@ -143,7 +140,7 @@ export const Images = {
     IconFileText: buildImageSource('IconFileText', 'icon_file_text'),
     IconQR: buildImageSource('IconQR', 'icon_qr'),
     IconArrowRightLong: buildImageSource('IconArrowRightLong', 'icon_arrow_right_long'),
-    IconCheckXumm: buildImageSource('IconCheckXumm', 'icon_check_xumm'),
+    IconCheckXaman: buildImageSource('IconCheckXaman', 'icon_check_xaman'),
     IconApps: buildImageSource('IconApps', 'icon_apps'),
     IconReorder: buildImageSource('IconReorder', 'icon_reorder'),
     IconReorderHandle: buildImageSource('IconReorderHandle', 'icon_reorder_handle'),
@@ -160,4 +157,5 @@ export const Images = {
     IconWallet: buildImageSource('IconWallet', 'icon_wallet'),
     IconToggleRight: buildImageSource('IconToggleRight', 'icon_toggle_right'),
     IconCopy: buildImageSource('IconCopy', 'icon_copy'),
+    IconRadio: buildImageSource('IconRadio', 'icon_radio'),
 };

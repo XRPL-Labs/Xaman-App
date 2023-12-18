@@ -1,24 +1,18 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-
-import { isEmpty } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
-import { TrustLineSchema } from '@store/schemas/latest';
+import { TrustLineModel } from '@store/models';
 
-import Flag from '@common/libs/ledger/parser/common/flag';
 import { TrustSet } from '@common/libs/ledger/transactions';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import Localize from '@locale';
-
 import { AmountText } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
+
+import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -30,9 +24,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    isLoadingIssuerDetails: boolean;
     isLoadingIssuerFee: boolean;
-    issuerDetails: AccountNameType;
     issuerFee: number;
     isSetDefaultState: boolean;
 }
@@ -43,9 +35,7 @@ class TrustSetTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: undefined,
             issuerFee: 0,
             isSetDefaultState: false,
         };
@@ -55,7 +45,6 @@ class TrustSetTemplate extends Component<Props, State> {
         InteractionManager.runAfterInteractions(() => {
             this.setTokenDefaultState();
             this.setIssuerTransferFee();
-            this.setIssuerDetails();
         });
     }
 
@@ -63,10 +52,8 @@ class TrustSetTemplate extends Component<Props, State> {
         const { transaction, source } = this.props;
 
         // check if trustLine is setting to the default state
-        // parse account flags
-        const accountFlags = new Flag('Account', source.flags).parse();
         const line = source.lines.find(
-            (token: TrustLineSchema) =>
+            (token: TrustLineModel) =>
                 token.currency.issuer === transaction.Issuer && token.currency.currency === transaction.Currency,
         );
 
@@ -75,8 +62,8 @@ class TrustSetTemplate extends Component<Props, State> {
         }
 
         if (
-            ((accountFlags.defaultRipple && transaction.Flags?.ClearNoRipple) ||
-                (!accountFlags.defaultRipple && transaction.Flags?.SetNoRipple)) &&
+            ((source.flags?.defaultRipple && transaction.Flags?.ClearNoRipple) ||
+                (!source.flags?.defaultRipple && transaction.Flags?.SetNoRipple)) &&
             (!line.freeze || (line.freeze && transaction.Flags?.ClearFreeze)) &&
             transaction.Limit === 0
         ) {
@@ -84,27 +71,6 @@ class TrustSetTemplate extends Component<Props, State> {
                 isSetDefaultState: true,
             });
         }
-    };
-
-    setIssuerDetails = () => {
-        const { transaction } = this.props;
-        // set issuer details
-        getAccountName(transaction.Issuer)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        issuerDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoadingIssuerDetails: false,
-                });
-            });
     };
 
     setIssuerTransferFee = () => {
@@ -130,7 +96,7 @@ class TrustSetTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee, isSetDefaultState } = this.state;
+        const { isLoadingIssuerFee, issuerFee, isSetDefaultState } = this.state;
 
         return (
             <>
@@ -139,30 +105,27 @@ class TrustSetTemplate extends Component<Props, State> {
                         {Localize.t('global.issuer')}
                     </Text>
                 </View>
-                <RecipientElement
+                <AccountElement
+                    address={transaction.Issuer}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoadingIssuerDetails}
-                    recipient={{
-                        address: transaction.Issuer,
-                        ...issuerDetails,
-                    }}
                 />
-                <Text style={[styles.label]}>{Localize.t('global.asset')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
+
+                <Text style={styles.label}>{Localize.t('global.asset')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{NormalizeCurrencyCode(transaction.Currency)}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                <Text style={styles.label}>{Localize.t('global.issuerFee')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.balanceLimit')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.balanceLimit')}</Text>
+                <View style={styles.contentBox}>
                     {isSetDefaultState ? (
                         <Text style={[styles.value, AppStyles.colorRed]}>{Localize.t('asset.removeAsset')}</Text>
                     ) : (
-                        <AmountText style={[styles.value]} value={transaction.Limit} immutable />
+                        <AmountText style={styles.value} value={transaction.Limit} immutable />
                     )}
                 </View>
             </>

@@ -2,29 +2,30 @@
  * Send Screen
  */
 
-import { find } from 'lodash';
+import { find, first } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Keyboard } from 'react-native';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-
 import { AppScreens } from '@common/constants';
+
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountModel, TrustLineModel } from '@store/models';
+
+import NetworkService from '@services/NetworkService';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { Amount } from '@common/libs/ledger/parser/common';
-import { Payment } from '@common/libs/ledger/transactions';
+import { Payment, PaymentValidation } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
-import { NFTValueToXRPL, XRPLValueToNFT } from '@common/utils/amount';
-
 // components
 import { Header } from '@components/General';
+import { NetworkLabel } from '@components/Modules';
 
 // local
 import Localize from '@locale';
@@ -57,28 +58,26 @@ class SendView extends Component<Props, State> {
         super(props);
 
         // default values
-        const accounts = AccountRepository.getSpendableAccounts();
-        const source = find(accounts, { default: true }) || accounts[0];
-        const currency = props.currency || 'XRP';
-        const sendingNFT = typeof currency !== 'string' && currency.isNFT;
-        const amount = props.amount ? (sendingNFT ? String(XRPLValueToNFT(Number(props.amount))) : props.amount) : '';
+        const coreSettings = CoreRepository.getSettings();
+        const spendableAccounts = AccountRepository.getSpendableAccounts();
+        const source = find(spendableAccounts, { address: coreSettings.account.address }) || first(spendableAccounts);
+        const currency = props.currency || NetworkService.getNativeAsset();
+        const amount = props.amount || '';
 
         this.state = {
             currentStep: Steps.Details,
-            accounts,
+            accounts: spendableAccounts,
             source,
             currency,
-            sendingNFT,
             amount,
             memo: undefined,
-            availableFees: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
             destination: undefined,
             destinationInfo: undefined,
             payment: new Payment(),
             scanResult: props.scanResult || undefined,
-            coreSettings: CoreRepository.getSettings(),
+            coreSettings,
             isLoading: false,
         };
     }
@@ -106,23 +105,18 @@ class SendView extends Component<Props, State> {
         }
     }
 
-    setSource = (source: AccountSchema) => {
+    setSource = (source: AccountModel) => {
         this.setState({ source });
     };
 
-    setCurrency = (currency: TrustLineSchema | string) => {
+    setCurrency = (currency: TrustLineModel | string) => {
         this.setState({
             currency,
-            sendingNFT: typeof currency !== 'string' && currency.isNFT,
         });
     };
 
     setAmount = (amount: string) => {
         this.setState({ amount });
-    };
-
-    setAvailableFees = (availableFees: FeeItem[]) => {
-        this.setState({ availableFees });
     };
 
     setFee = (selectedFee: FeeItem) => {
@@ -151,6 +145,50 @@ class SendView extends Component<Props, State> {
 
     setScanResult = (result: any) => {
         this.setState({ scanResult: result });
+    };
+
+    getPaymentJsonForFee = () => {
+        const { currency, amount, destination, source, memo } = this.state;
+
+        const txJson = {
+            TransactionType: 'Payment',
+            Account: source.address,
+            Destination: destination.address,
+            Sequence: 0,
+        };
+
+        if (destination.tag) {
+            Object.assign(txJson, {
+                DestinationTag: Number(destination.tag),
+            });
+        }
+
+        // set the amount
+        if (typeof currency === 'string') {
+            Object.assign(txJson, {
+                Amount: new Amount(amount, false).nativeToDrops(),
+            });
+        } else {
+            Object.assign(txJson, {
+                Amount: {
+                    currency: currency.currency.currency,
+                    issuer: currency.currency.issuer,
+                    value: amount,
+                },
+            });
+        }
+
+        if (memo) {
+            Object.assign(txJson, {
+                Memos: [
+                    {
+                        Memo: Memo.Encode(memo),
+                    },
+                ],
+            });
+        }
+
+        return txJson;
     };
 
     changeStep = (step: Steps) => {
@@ -206,7 +244,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, selectedFee, issuerFee, destination, source, payment, sendingNFT, memo } = this.state;
+        const { currency, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
 
         this.setState({
             isLoading: true,
@@ -228,7 +266,7 @@ class SendView extends Component<Props, State> {
 
             // set the amount
             if (typeof currency === 'string') {
-                // XRP
+                // native currency
                 payment.Amount = amount;
             } else {
                 // IOU
@@ -245,12 +283,12 @@ class SendView extends Component<Props, State> {
                 payment.Amount = {
                     currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
-                    value: sendingNFT ? NFTValueToXRPL(amount) : amount,
+                    value: amount,
                 };
             }
 
             // set the calculated and selected fee
-            payment.Fee = new Amount(selectedFee.value).dropsToXrp();
+            payment.Fee = new Amount(selectedFee.value).dropsToNative();
 
             // set memo if any
             if (memo) {
@@ -260,7 +298,7 @@ class SendView extends Component<Props, State> {
             }
 
             // validate payment for all possible mistakes
-            await payment.validate();
+            await PaymentValidation(payment);
 
             // sign the transaction and then submit
             await payment.sign(source).then(this.submit);
@@ -361,12 +399,12 @@ class SendView extends Component<Props, State> {
                     setCurrency: this.setCurrency,
                     setFee: this.setFee,
                     setMemo: this.setMemo,
-                    setAvailableFees: this.setAvailableFees,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,
                     setScanResult: this.setScanResult,
+                    getPaymentJsonForFee: this.getPaymentJsonForFee,
                 }}
             >
                 <Step />
@@ -376,9 +414,7 @@ class SendView extends Component<Props, State> {
 
     onHeaderBackPress = () => {
         Keyboard.dismiss();
-        setTimeout(() => {
-            Navigator.pop();
-        }, 10);
+        setTimeout(Navigator.pop, 10);
     };
 
     renderHeader = () => {
@@ -399,7 +435,7 @@ class SendView extends Component<Props, State> {
                     icon: 'IconChevronLeft',
                     onPress: this.onHeaderBackPress,
                 }}
-                centerComponent={{ text: title }}
+                centerComponent={{ text: title, extraComponent: <NetworkLabel type="both" /> }}
             />
         );
     };

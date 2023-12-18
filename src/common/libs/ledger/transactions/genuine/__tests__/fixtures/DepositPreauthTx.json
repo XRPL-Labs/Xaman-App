@@ -1,0 +1,12 @@
+{
+  "tx": {
+    "TransactionType": "DepositPreauth",
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Authorize": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "Unauthorize": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "Fee": "10",
+    "Flags": 2147483648,
+    "Sequence": 2
+  },
+  "meta": {}
+}

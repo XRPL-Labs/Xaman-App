@@ -8,6 +8,9 @@ export default StyleService.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    placeholder: {
+        backgroundColor: '$grey',
+    },
     image: {
         borderRadius: 10,
     },

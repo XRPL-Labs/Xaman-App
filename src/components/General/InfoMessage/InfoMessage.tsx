@@ -12,8 +12,6 @@ import { Images } from '@common/helpers/images';
 import { Button } from '@components/General/Button';
 import { Icon } from '@components/General/Icon';
 
-import Localize from '@locale';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -28,10 +26,12 @@ interface Props {
     label?: string;
     type: 'info' | 'warning' | 'error' | 'success' | 'neutral';
     flat?: boolean;
-    moreButtonLabel?: string;
-    moreButtonIcon?: Extract<keyof typeof Images, string>;
-    onMoreButtonPress?: () => void;
-    isMoreButtonLoading?: boolean;
+    hideActionButton?: boolean;
+    actionButtonLabel?: string;
+    actionButtonIcon?: Extract<keyof typeof Images, string>;
+    actionButtonIconSize?: number;
+    onActionButtonPress?: () => void;
+    isActionButtonLoading?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -40,25 +40,39 @@ class InfoMessage extends PureComponent<Props> {
         iconSize: 20,
     };
 
+    onActionButtonPress = () => {
+        const { onActionButtonPress } = this.props;
+
+        if (typeof onActionButtonPress === 'function') {
+            onActionButtonPress();
+        }
+    };
+
     getContainerStyle = () => {
         const { type, containerStyle } = this.props;
 
-        if (containerStyle) return containerStyle;
+        let baseStyle = null;
 
         switch (type) {
             case 'info':
-                return styles.info;
+                baseStyle = styles.info;
+                break;
             case 'warning':
-                return styles.warning;
+                baseStyle = styles.warning;
+                break;
             case 'error':
-                return styles.error;
+                baseStyle = styles.error;
+                break;
             case 'success':
-                return styles.success;
+                baseStyle = styles.success;
+                break;
             case 'neutral':
-                return styles.neutral;
+                baseStyle = styles.neutral;
+                break;
             default:
-                return null;
+                return containerStyle;
         }
+        return { ...baseStyle, ...containerStyle };
     };
 
     renderIcon = () => {
@@ -133,23 +147,25 @@ class InfoMessage extends PureComponent<Props> {
         style.push({ textAlign: icon ? 'left' : 'center' });
 
         return (
-            <View style={[styles.labelContainer]}>
-                <Text style={[style]}>{label}</Text>
+            <View style={styles.labelContainer}>
+                <Text style={style}>{label}</Text>
             </View>
         );
     };
 
     renderFooter = () => {
-        const { onMoreButtonPress, moreButtonLabel, moreButtonIcon, isMoreButtonLoading } = this.props;
+        const { hideActionButton, actionButtonLabel, actionButtonIcon, actionButtonIconSize, isActionButtonLoading } =
+            this.props;
 
-        if (typeof onMoreButtonPress === 'function') {
+        if (typeof actionButtonLabel === 'string' && !hideActionButton) {
             return (
                 <Button
-                    onPress={onMoreButtonPress}
+                    onPress={this.onActionButtonPress}
                     style={styles.moreInfoButton}
-                    icon={moreButtonIcon || 'IconInfo'}
-                    label={moreButtonLabel || Localize.t('global.moreInfo')}
-                    isLoading={isMoreButtonLoading}
+                    icon={actionButtonIcon}
+                    iconSize={actionButtonIconSize}
+                    label={actionButtonLabel}
+                    isLoading={isActionButtonLoading}
                     light
                     roundedSmallBlock
                 />

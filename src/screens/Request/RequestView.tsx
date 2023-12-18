@@ -2,20 +2,21 @@
  * Request Screen
  */
 
-import { find } from 'lodash';
+import { find, first } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
 import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
 
-import { BackendService } from '@services';
+import BackendService, { RatesType } from '@services/BackendService';
+
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 // components
 import {
@@ -27,6 +28,7 @@ import {
     HorizontalLine,
     KeyboardAwareScrollView,
 } from '@components/General';
+
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
@@ -41,12 +43,12 @@ import styles from './styles';
 interface Props {}
 
 interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     accounts: any;
-    source: AccountSchema;
+    source: AccountModel;
     amount: string;
     amountRate: string;
-    currencyRate: any;
+    currencyRate: RatesType;
     withAmount: boolean;
 }
 
@@ -66,12 +68,13 @@ class RequestView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const defaultAccount = CoreRepository.getDefaultAccount();
         const accounts = AccountRepository.getAccounts();
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             accounts,
-            source: find(accounts, { default: true }) || accounts[0],
+            source: find(accounts, { address: defaultAccount.address }) || first(accounts),
             amount: '',
             currencyRate: undefined,
             amountRate: '',
@@ -109,14 +112,14 @@ class RequestView extends Component<Props, State> {
         const { amount, currencyRate } = this.state;
 
         if (amount && currencyRate) {
-            const inRate = Number(amount) * currencyRate.lastRate;
+            const inRate = Number(amount) * currencyRate.rate;
             this.setState({
                 amountRate: String(inRate),
             });
         }
     };
 
-    onAccountChange = (item: AccountSchema) => {
+    onAccountChange = (item: AccountModel) => {
         this.setState({
             source: item,
         });
@@ -138,7 +141,7 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inRate = new BigNumber(amount).multipliedBy(currencyRate.lastRate).decimalPlaces(8).toFixed();
+            const inRate = new BigNumber(amount).multipliedBy(currencyRate.rate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: String(inRate),
             });
@@ -160,7 +163,7 @@ class RequestView extends Component<Props, State> {
         }
 
         if (currencyRate) {
-            const inXRP = new BigNumber(amount).dividedBy(currencyRate.lastRate).decimalPlaces(6).toFixed();
+            const inXRP = new BigNumber(amount).dividedBy(currencyRate.rate).decimalPlaces(6).toFixed();
             this.setState({
                 amount: inXRP,
             });
@@ -215,24 +218,24 @@ class RequestView extends Component<Props, State> {
 
         return (
             <>
-                <View style={[styles.amountContainer]}>
+                <View style={styles.amountContainer}>
                     <View style={AppStyles.flex1}>
                         <AmountInput
                             ref={this.amountInput}
                             testID="amount-input"
                             value={amount}
-                            valueType={AmountValueType.XRP}
+                            valueType={AmountValueType.Native}
                             onChange={this.onAmountChange}
-                            style={[styles.amountInput]}
+                            style={styles.amountInput}
                             placeholderTextColor={AppColors.grey}
                             returnKeyType="done"
                         />
                     </View>
                 </View>
 
-                <View style={[styles.amountRateContainer]}>
+                <View style={styles.amountRateContainer}>
                     <View style={AppStyles.centerContent}>
-                        <Text style={[styles.amountRateInput]}>~ </Text>
+                        <Text style={styles.amountRateInput}>~ </Text>
                     </View>
                     <View style={AppStyles.flex1}>
                         <AmountInput
@@ -248,7 +251,7 @@ class RequestView extends Component<Props, State> {
                         />
                     </View>
                     <View style={styles.currencySymbolTextContainer}>
-                        <Text style={[styles.currencySymbolText]}>{coreSettings.currency}</Text>
+                        <Text style={styles.currencySymbolText}>{coreSettings.currency}</Text>
                     </View>
                 </View>
             </>
@@ -259,7 +262,7 @@ class RequestView extends Component<Props, State> {
         const { accounts, source, withAmount } = this.state;
 
         return (
-            <View testID="request-screen" style={[styles.container]}>
+            <View testID="request-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
@@ -285,8 +288,8 @@ class RequestView extends Component<Props, State> {
 
                     <HorizontalLine />
 
-                    <View style={[styles.rowItem]}>
-                        <View style={[styles.rowTitle]}>
+                    <View style={styles.rowItem}>
+                        <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                 {Localize.t('global.to')}
                             </Text>
@@ -297,7 +300,7 @@ class RequestView extends Component<Props, State> {
                     </View>
 
                     {/* Amount */}
-                    <View style={[styles.rowItem]}>
+                    <View style={styles.rowItem}>
                         <TouchableDebounce
                             activeOpacity={0.8}
                             style={[AppStyles.row, styles.rowTitle]}

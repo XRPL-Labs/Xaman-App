@@ -43,7 +43,7 @@ class CheckBox extends PureComponent<Props> {
             >
                 <View style={AppStyles.flex1}>
                     <View style={[styles.box, checked ? styles.boxSelected : null]}>
-                        {checked && <Icon name="IconCheckXumm" style={AppStyles.imgColorWhite} size={12} />}
+                        {checked && <Icon name="IconCheckXaman" style={AppStyles.imgColorWhite} size={12} />}
                     </View>
                 </View>
                 <View style={AppStyles.flex6}>

@@ -89,6 +89,7 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidURL({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidURL(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidURL(null)).toBe(false);
             expect(StringTypeCheck.isValidURL('')).toBe(false);
 
             for (let i = 0; i < validUrls.length; i++) {
@@ -107,6 +108,7 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidAmount({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidAmount(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidAmount(null)).toBe(false);
             expect(StringTypeCheck.isValidAmount('')).toBe(false);
 
             for (let i = 0; i < validAmounts.length; i++) {
@@ -122,6 +124,8 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidHash({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidHash(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidHash(null)).toBe(false);
+            expect(StringTypeCheck.isValidHash('')).toBe(false);
             expect(
                 StringTypeCheck.isValidHash('1CE80FF3298223CDF8BE80BF007A857F24C09843FCA24359DFA3E035D5C021889'),
             ).toBe(false);
@@ -137,9 +141,23 @@ describe('Utils.String', () => {
             // @ts-ignore
             expect(StringTypeCheck.isValidXAppIdentifier({ someting: true })).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier(undefined)).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier(null)).toBe(false);
+            expect(StringTypeCheck.isValidXAppIdentifier('')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('something.@test')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('somethings_.test/')).toBe(false);
             expect(StringTypeCheck.isValidXAppIdentifier('xumm.app_TEST28-z_identifier')).toBe(true);
+        });
+
+        it('should check if string is valid destination tag', () => {
+            expect(StringTypeCheck.isValidDestinationTag('42')).toBe(true);
+            expect(StringTypeCheck.isValidDestinationTag('0')).toBe(true);
+            expect(StringTypeCheck.isValidDestinationTag('4294967297')).toBe(false); // 2^32 + 1
+            expect(StringTypeCheck.isValidDestinationTag('4294967296')).toBe(true); // 2^32
+            expect(StringTypeCheck.isValidDestinationTag('')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('-5')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('3.14')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag(' 42 ')).toBe(false);
+            expect(StringTypeCheck.isValidDestinationTag('4 2')).toBe(false);
         });
     });
 });

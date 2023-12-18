@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
@@ -45,7 +45,7 @@ export interface Props {
 }
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     isBiometricAvailable: boolean;
     offsetBottom: number;
 }

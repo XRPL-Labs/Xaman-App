@@ -1,0 +1,100 @@
+{
+    "tx": {
+        "Account": "rPMh7Pi9ct699iZUTWaytJUoHcJ7cgyziK",
+        "Amount": "10000000",
+        "Fee": "20",
+        "Flags": 0,
+        "LastLedgerSequence": 74,
+        "NetworkID": 21337,
+        "Sequence": 15,
+        "SigningPubKey": "02691AC5AE1C4C333AE5DF8A93BDC495F0EEBFC6DB0DA7EB6EF808F3AFC006E3FE",
+        "TransactionType": "URITokenBuy",
+        "TxnSignature": "3045022100BF40341A3E2E434F2669553DB2CB462AF77C20AA75E00107E007296D3E073253022005C64CCFAF26D495EF1DB48DCD75F90849BE7423129DBF76D3581F93664810BE",
+        "URITokenID": "716E5990589AA8FA4247E0FEABE8B605CFFBBA5CA519A70BCA37C8CC173F3244",
+        "ctid": "C000003700005359",
+        "date": 749731275,
+        "hash": "DA93B74D1A5EAAEEA575D225D9117989F4C2F2FCFFF1A0246E39783B127A09AD",
+        "inLedger": 55,
+        "ledger_index": 55,
+        "validated": true
+    },
+    "meta": {
+        "AffectedNodes": [
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Flags": 0,
+                        "Issuer": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "Owner": "rPMh7Pi9ct699iZUTWaytJUoHcJ7cgyziK",
+                        "OwnerNode": "0",
+                        "URI": "697066733A2F2F434944425559"
+                    },
+                    "LedgerEntryType": "URIToken",
+                    "LedgerIndex": "716E5990589AA8FA4247E0FEABE8B605CFFBBA5CA519A70BCA37C8CC173F3244",
+                    "PreviousFields": {
+                        "Amount": "10000000",
+                        "Owner": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn"
+                    }
+                }
+            },
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Account": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "Balance": "20019999868",
+                        "Flags": 0,
+                        "OwnerCount": 3,
+                        "Sequence": 18
+                    },
+                    "LedgerEntryType": "AccountRoot",
+                    "LedgerIndex": "92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F",
+                    "PreviousFields": {
+                        "Balance": "20009999868"
+                    }
+                }
+            },
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Flags": 0,
+                        "Owner": "rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn",
+                        "RootIndex": "A33EC6BB85FB5674074C4A3A43373BB17645308F3EAE1933E3E35252162B217D"
+                    },
+                    "LedgerEntryType": "DirectoryNode",
+                    "LedgerIndex": "A33EC6BB85FB5674074C4A3A43373BB17645308F3EAE1933E3E35252162B217D"
+                }
+            },
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Flags": 0,
+                        "Owner": "rPMh7Pi9ct699iZUTWaytJUoHcJ7cgyziK",
+                        "RootIndex": "A4292EBEDCFFA7D6FEFFF14509C960E169FD03FECDB3880A390F3CA12C32A79C"
+                    },
+                    "LedgerEntryType": "DirectoryNode",
+                    "LedgerIndex": "A4292EBEDCFFA7D6FEFFF14509C960E169FD03FECDB3880A390F3CA12C32A79C"
+                }
+            },
+            {
+                "ModifiedNode": {
+                    "FinalFields": {
+                        "Account": "rPMh7Pi9ct699iZUTWaytJUoHcJ7cgyziK",
+                        "Balance": "19979999948",
+                        "Flags": 0,
+                        "OwnerCount": 3,
+                        "Sequence": 16
+                    },
+                    "LedgerEntryType": "AccountRoot",
+                    "LedgerIndex": "DE3BE7FDF6864FB024807B36BFCB4607E7CDA7D4C155C7AFB4B0973D638938BF",
+                    "PreviousFields": {
+                        "Balance": "19989999968",
+                        "OwnerCount": 2,
+                        "Sequence": 15
+                    }
+                }
+            }
+        ],
+        "TransactionIndex": 0,
+        "TransactionResult": "tesSUCCESS"
+    }
+}

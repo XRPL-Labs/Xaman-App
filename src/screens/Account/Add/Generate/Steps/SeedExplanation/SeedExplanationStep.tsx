@@ -33,7 +33,7 @@ class SeedExplanationStep extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="account-generate-explanation-private-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-generate-explanation-private-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginBottomSml]}>
                     <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageSecretWarning')} />
                 </View>
@@ -55,8 +55,8 @@ class SeedExplanationStep extends Component<Props, State> {
                     <Spacer size={20} />
                 </View>
 
-                <Footer style={[AppStyles.row]}>
-                    <View style={[AppStyles.flex5]}>
+                <Footer style={AppStyles.row}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

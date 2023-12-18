@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">XUMM</string>
-    <string name="default_notification_channel_id">notifications</string>
-    <string name="splash_screen_foreground">XUMM Logo splash</string>
+    <string name="app_name">Xaman</string>
+    <string name="splash_screen_foreground">Xaman Logo splash</string>
     <string name="splash_screen_background">Splash screen background pattern</string>
+
+    <string name="default_notification_channel_id">fcm_fallback_notification_channel</string>
 </resources>

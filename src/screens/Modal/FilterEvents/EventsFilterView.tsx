@@ -6,8 +6,10 @@ import { uniqBy, flatMap, map } from 'lodash';
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, ScrollView, BackHandler, NativeEventSubscription } from 'react-native';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { NetworkService } from '@services';
+
+import { CoreRepository } from '@store/repositories';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -48,7 +50,7 @@ export interface Props {
 }
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
     filters: FilterProps;
 }
 
@@ -81,7 +83,7 @@ class EventsFilterView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             filters: props.currentFilters,
         };
     }
@@ -149,7 +151,7 @@ class EventsFilterView extends Component<Props, State> {
 
         const currencies = flatMap(
             uniqBy(account.lines, 'currency.currency'),
-            (l: TrustLineSchema) => l.currency.currency,
+            (l: TrustLineModel) => l.currency.currency,
         );
 
         return map(currencies, (value: string) => {
@@ -248,7 +250,7 @@ class EventsFilterView extends Component<Props, State> {
                             {Localize.t('global.asset')}
                         </Text>
                         <View style={[styles.row]}>
-                            {this.renderButton('Currency', 'XRP')}
+                            {this.renderButton('Currency', NetworkService.getNativeAsset())}
                             {account.lines && this.renderAccountCurrencies()}
                         </View>
 

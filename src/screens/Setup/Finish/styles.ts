@@ -2,7 +2,7 @@ import StyleService from '@services/StyleService';
 
 import { AppSizes, AppStyles } from '@theme';
 
-const styles = StyleService.create({
+export default StyleService.create({
     container: {
         flex: 1,
         backgroundColor: '$background',
@@ -12,19 +12,6 @@ const styles = StyleService.create({
         height: AppSizes.screen.height * 0.1,
         resizeMode: 'contain',
     },
-    loadingStyle: {
-        backgroundColor: '$background',
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    webView: {
-        borderRadius: AppStyles.borderRadius.borderRadius,
-    },
     contentArea: {
         paddingHorizontal: AppStyles.paddingHorizontalSml.paddingHorizontal,
         borderTopWidth: 2,
@@ -32,5 +19,3 @@ const styles = StyleService.create({
         borderColor: '$lightBlue',
     },
 });
-
-export default styles;

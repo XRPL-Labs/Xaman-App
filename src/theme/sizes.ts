@@ -73,6 +73,8 @@ const Sizes = {
     paddingSml: 20,
     paddingExtraSml: 10,
 
+    paddingList: 25,
+
     borderRadius: 8,
 
     extraKeyBoardPadding: 20,

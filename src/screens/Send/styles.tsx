@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-color-literals */
-// FIXME: organize colors
 import { StyleSheet } from 'react-native';
 
 /* Styles ==================================================================== */

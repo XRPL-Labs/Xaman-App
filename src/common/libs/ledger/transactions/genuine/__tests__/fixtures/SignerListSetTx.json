@@ -1,0 +1,31 @@
+{
+  "tx": {
+    "TransactionType": "SignerListSet",
+    "Account": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+    "Fee": "12",
+    "Flags": 0,
+    "SignerQuorum": 3,
+    "SignerEntries": [
+      {
+        "SignerEntry": {
+          "Account": "rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW",
+          "SignerWeight": 2,
+          "WalletLocator": "03075F65D8353E3A5DA3193FF976BC17A2D0B9376BE7DA942349B6526E5A2BBF54"
+        }
+      },
+      {
+        "SignerEntry": {
+          "Account": "rUpy3eEg8rqjqfUoLeBnZkscbKbFsKXC3v",
+          "SignerWeight": 1
+        }
+      },
+      {
+        "SignerEntry": {
+          "Account": "raKEEVSGnKSD9Zyvxu4z6Pqpm4ABH8FS6n",
+          "SignerWeight": 1
+        }
+      }
+    ]
+  },
+  "meta": {}
+}

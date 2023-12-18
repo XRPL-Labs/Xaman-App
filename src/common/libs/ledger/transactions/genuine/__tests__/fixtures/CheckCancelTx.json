@@ -1,0 +1,9 @@
+{
+  "tx": {
+    "TransactionType": "CheckCancel",
+    "Account": "rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "CheckID": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "Fee": "12"
+  },
+  "meta": {}
+}

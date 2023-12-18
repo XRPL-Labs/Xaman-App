@@ -10,8 +10,4 @@ export default StyleService.create({
         alignItems: 'center',
         padding: 20,
     },
-    hr: {
-        borderBottomColor: '$tint',
-        borderBottomWidth: 2,
-    },
 });

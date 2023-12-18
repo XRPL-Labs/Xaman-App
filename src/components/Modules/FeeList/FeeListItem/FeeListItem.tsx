@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { StyleService } from '@services';
+import { NetworkService, StyleService } from '@services';
 import { TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
@@ -36,11 +36,11 @@ class FeeItemList extends PureComponent<Props, State> {
         const { item } = this.props;
 
         switch (item.type) {
-            case 'low':
+            case 'LOW':
                 return StyleService.value('$green');
-            case 'medium':
+            case 'MEDIUM':
                 return StyleService.value('$orange');
-            case 'high':
+            case 'HIGH':
                 return StyleService.value('$red');
             default:
                 return StyleService.value('$red');
@@ -51,11 +51,11 @@ class FeeItemList extends PureComponent<Props, State> {
         const { item } = this.props;
 
         switch (item.type) {
-            case 'low':
+            case 'LOW':
                 return Localize.t('global.low');
-            case 'medium':
+            case 'MEDIUM':
                 return Localize.t('global.medium');
-            case 'high':
+            case 'HIGH':
                 return Localize.t('global.high');
             default:
                 return '';
@@ -69,7 +69,7 @@ class FeeItemList extends PureComponent<Props, State> {
 
         const color = this.getColor();
         const label = this.getLabel();
-        const normalizedValue = new Amount(value).dropsToXrp();
+        const normalizedValue = new Amount(value).dropsToNative();
 
         return (
             <TouchableDebounce
@@ -90,7 +90,9 @@ class FeeItemList extends PureComponent<Props, State> {
                     )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.rightAligned]}>
-                    <Text style={[styles.value, selected && { color }]}>{normalizedValue} XRP</Text>
+                    <Text style={[styles.value, selected && { color }]}>
+                        {normalizedValue} {NetworkService.getNativeAsset()}
+                    </Text>
                 </View>
             </TouchableDebounce>
         );

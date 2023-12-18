@@ -20,6 +20,8 @@ import { Icon } from '../Icon';
 
 // Styles
 import styles from './styles';
+import StyleService from '@services/StyleService';
+import { TextContrast } from '@common/utils/color';
 
 /* Constants ==================================================================== */
 const DEFAULT_ANIMATION_DURATION = 400;
@@ -44,6 +46,8 @@ interface Props {
 
 interface State {
     screenReaderEnabled: boolean;
+    labelColor: string;
+    iconColor: string;
 }
 /* Component ==================================================================== */
 class SwipeButton extends Component<Props, State> {
@@ -62,6 +66,8 @@ class SwipeButton extends Component<Props, State> {
 
         this.state = {
             screenReaderEnabled: false,
+            labelColor: undefined,
+            iconColor: undefined,
         };
 
         this.defaultContainerWidth = AppSizes.scale(45);
@@ -92,6 +98,24 @@ class SwipeButton extends Component<Props, State> {
 
     componentWillUnmount() {
         if (this.resetDelayTimeout) clearTimeout(this.resetDelayTimeout);
+    }
+
+    static getDerivedStateFromProps(nextProps: Props) {
+        const { color, secondary } = nextProps;
+
+        if (color) {
+            const colorContrast = TextContrast(color);
+            return {
+                labelColor: colorContrast === 'light' ? StyleService.value('$white') : StyleService.value('$darkGrey'),
+                iconColor: secondary
+                    ? StyleService.value('$lightGreen')
+                    : colorContrast === 'light'
+                    ? StyleService.value('$transparentWhite')
+                    : StyleService.value('$darkGrey'),
+            };
+        }
+
+        return null;
     }
 
     onScreenReaderChange = (enabled: boolean) => {
@@ -219,9 +243,9 @@ class SwipeButton extends Component<Props, State> {
     };
 
     render() {
-        const { screenReaderEnabled } = this.state;
         const { label, accessibilityLabel, isDisabled, isLoading, secondary, testID, style, color, onSwipeSuccess } =
             this.props;
+        const { screenReaderEnabled, labelColor, iconColor } = this.state;
 
         if (isLoading) {
             return (
@@ -268,14 +292,20 @@ class SwipeButton extends Component<Props, State> {
                 ]}
                 onLayout={this.onLayoutChange}
             >
-                <Text style={styles.label}>{label}</Text>
+                <Text style={[styles.label, labelColor && { color: labelColor }]}>{label}</Text>
                 <Animated.View
                     testID={testID}
                     style={[styles.thumpContainer, { width: this.animatedWidth }]}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...this.panResponder.panHandlers}
                 >
-                    <View style={[styles.iconContainer, secondary && styles.iconContainerSecondary]}>
+                    <View
+                        style={[
+                            styles.iconContainer,
+                            secondary && styles.iconContainerSecondary,
+                            iconColor && { backgroundColor: iconColor },
+                        ]}
+                    >
                         <Icon size={30} name="IconArrowRightLong" />
                     </View>
                 </Animated.View>

@@ -1,6 +1,6 @@
 import { XRPL_Account } from 'xrpl-accountlib';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
 
 export type GenerateSteps =
     | 'SeedExplanation'
@@ -18,7 +18,7 @@ export interface Props {}
 export interface State {
     currentStep: GenerateSteps;
     prevSteps: Array<GenerateSteps>;
-    account: Partial<AccountSchema>;
+    account: Partial<AccountModel>;
     generatedAccount: XRPL_Account;
     passphrase?: string;
 }

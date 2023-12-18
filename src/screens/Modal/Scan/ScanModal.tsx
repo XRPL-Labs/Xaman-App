@@ -2,7 +2,7 @@
  * Scan Modal
  */
 
-import { first, upperFirst } from 'lodash';
+import { first } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
@@ -11,17 +11,15 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, SocketService } from '@services';
+import { StyleService, BackendService, NetworkService } from '@services';
 
-import { AccountRepository, CoreRepository, CustomNodeRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
-import { NodeChain } from '@store/types';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { CoreModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import { NormalizeDestination } from '@common/utils/codec';
@@ -49,7 +47,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */
@@ -157,59 +155,6 @@ class ScanView extends Component<Props, State> {
                 );
             })
             .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
-            });
-    };
-
-    addCustomNode = (hash: string) => {
-        this.setState({
-            isLoading: true,
-        });
-
-        BackendService.getEndpointDetails(hash)
-            .then((res: any) => {
-                const { endpoint } = res;
-                const { explorer, name, node } = endpoint;
-
-                // create endpoint base on backend response
-                const customNode = {
-                    name,
-                    endpoint: node,
-                    explorerTx: explorer.tx,
-                    explorerAccount: explorer.account,
-                };
-
-                // add to the store
-                CustomNodeRepository.add(customNode);
-
-                // close scan modal
-                Navigator.dismissModal();
-
-                Prompt(
-                    Localize.t('global.success'),
-                    Localize.t('global.customNodeSuccessfullyAddedToXUMM'),
-                    [
-                        {
-                            text: Localize.t('global.cancel'),
-                        },
-                        {
-                            text: upperFirst(Localize.t('global.switch')),
-                            style: 'destructive',
-                            onPress: () => SocketService.switchNode(node, NodeChain.Custom),
-                        },
-                    ],
-                    { cancelable: false, type: 'default' },
-                );
-            })
-            .catch(() => {
-                Prompt(
-                    Localize.t('global.error'),
-                    Localize.t('global.unableToLoadCustomEndpointDetails'),
-                    [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
-                    { cancelable: true, type: 'default' },
-                );
                 this.setState({
                     isLoading: false,
                 });
@@ -340,11 +285,11 @@ class ScanView extends Component<Props, State> {
 
             let amount;
 
-            // normal XRP address scanned
+            // normal address scanned
             // try to decode X Address
             const { to, tag } = NormalizeDestination(destination);
 
-            // unable to parse the address, probably not xrp address
+            // unable to parse the address, probably not a valid address
             if (!to) {
                 Prompt(
                     Localize.t('global.warning'),
@@ -358,7 +303,7 @@ class ScanView extends Component<Props, State> {
                 return;
             }
 
-            // if amount present as XRP pass the amount
+            // if amount present as native pass the amount
             if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }
@@ -421,7 +366,7 @@ class ScanView extends Component<Props, State> {
     };
 
     handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, string> }) => {
-        const { feature, type, params } = parsed;
+        const { feature, type } = parsed;
 
         // Feature: allow import of Secret Numbers without Checksum
         if (feature === 'secret' && type === 'offline-secret-numbers') {
@@ -444,28 +389,6 @@ class ScanView extends Component<Props, State> {
                                 },
                                 {},
                             );
-                        },
-                    },
-                ],
-                { type: 'default' },
-            );
-        }
-
-        // Allow add custom node to XUMM
-        if (feature === 'network-endpoint' && type === 'custom-endpoint' && params?.hash) {
-            Prompt(
-                Localize.t('global.warning'),
-                Localize.t('global.addingCustomNodeWarning'),
-                [
-                    {
-                        text: Localize.t('global.cancel'),
-                        onPress: () => this.setShouldRead(true),
-                    },
-                    {
-                        text: Localize.t('global.continue'),
-                        style: 'destructive',
-                        onPress: () => {
-                            this.addCustomNode(params.hash);
                         },
                     },
                 ],
@@ -545,14 +468,18 @@ class ScanView extends Component<Props, State> {
             switch (type) {
                 case StringType.XrplDestination:
                     message = clipboard
-                        ? Localize.t('scan.theClipboardDataIsNotContainXummPayload')
-                        : Localize.t('scan.scannedQRIsNotXRPAddress');
+                        ? Localize.t('scan.theClipboardDataIsNotContainXamanPayload')
+                        : Localize.t('scan.scannedQRIsNotAccountAddress', {
+                              nativeAsset: NetworkService.getNativeAsset(),
+                          });
                     break;
                 // @ts-ignore
                 case StringType.XummPayloadReference:
                     message = clipboard
-                        ? Localize.t('scan.theClipboardDataIsNotContainXRPAddress')
-                        : Localize.t('scan.scannedQRIsNotXummPayload');
+                        ? Localize.t('scan.theClipboardDataIsNotContainAccountAddress', {
+                              nativeAsset: NetworkService.getNativeAsset(),
+                          })
+                        : Localize.t('scan.scannedQRIsNotXamanPayload');
                     break;
                 default:
                     message = clipboard
@@ -669,7 +596,10 @@ class ScanView extends Component<Props, State> {
 
     renderNotAuthorizedView = () => {
         return (
-            <ImageBackground source={Images.BackgroundShapes} style={[AppStyles.container, AppStyles.paddingSml]}>
+            <ImageBackground
+                source={StyleService.getImage('BackgroundShapes')}
+                style={[AppStyles.container, AppStyles.paddingSml]}
+            >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Icon name="IconCamera" size={150} style={styles.scanIconTransparent} />
                 </View>
@@ -702,7 +632,9 @@ class ScanView extends Component<Props, State> {
 
         switch (type) {
             case StringType.XrplDestination:
-                description = Localize.t('scan.pleaseScanXRPAddress');
+                description = Localize.t('scan.pleaseScanAccountAddress', {
+                    nativeAsset: NetworkService.getNativeAsset(),
+                });
                 break;
             default:
                 description = Localize.t('scan.aimAtTheCode');

@@ -122,7 +122,7 @@ class PassphraseMethod extends Component<Props, State> {
     };
 
     render() {
-        const { dismiss, signer, isSigning } = this.context;
+        const { dismiss, preferredSigner, isSigning } = this.context;
         const { offsetBottom, passphrase } = this.state;
 
         const interpolateColor = this.animatedColor.interpolate({
@@ -163,7 +163,7 @@ class PassphraseMethod extends Component<Props, State> {
                                 ]}
                             >
                                 {Localize.t('account.PleaseEnterYourPasswordForAccount')}
-                                <Text style={AppStyles.colorBlue}> &#34;{signer.label}&#34;</Text>
+                                <Text style={AppStyles.colorBlue}> &#34;{preferredSigner.label}&#34;</Text>
                             </Text>
 
                             <Spacer size={40} />

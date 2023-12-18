@@ -53,7 +53,7 @@ class SecretTypeStep extends Component<Props, State> {
         const { goBack, secretType } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-secret-type-view" style={[AppStyles.contentContainer]}>
+            <SafeAreaView testID="account-import-secret-type-view" style={AppStyles.contentContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingHorizontal]}>
                     {Localize.t('account.pleaseSelectAccountSecretType')}
                 </Text>
@@ -97,7 +97,7 @@ class SecretTypeStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

@@ -3,7 +3,7 @@
  */
 
 import { find } from 'lodash';
-import { Results } from 'realm';
+import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager } from 'react-native';
@@ -19,9 +19,10 @@ import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
 
 // store
-import { AccessLevels, EncryptionLevels } from '@store/types';
+
 import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { AccountModel } from '@store/models';
+import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import StyleService from '@services/StyleService';
 
@@ -37,9 +38,9 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    accounts: Results<AccountSchema>;
+    accounts: Realm.Results<AccountModel>;
     dataSource: any;
-    signableAccount: Array<AccountSchema>;
+    signableAccount: Array<AccountModel>;
     reorderEnabled: boolean;
     isMigrationRequired: boolean;
 }
@@ -123,7 +124,7 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    onItemPress = (account: AccountSchema) => {
+    onItemPress = (account: AccountModel) => {
         const { reorderEnabled } = this.state;
 
         if (!reorderEnabled) {
@@ -131,7 +132,7 @@ class AccountListView extends Component<Props, State> {
         }
     };
 
-    isRegularKey = (account: AccountSchema) => {
+    isRegularKey = (account: AccountModel) => {
         const { accounts } = this.state;
 
         const found = find(accounts, { regularKey: account.address });
@@ -143,7 +144,7 @@ class AccountListView extends Component<Props, State> {
         return false;
     };
 
-    onAccountReorder = (data: Array<AccountSchema>) => {
+    onAccountReorder = (data: Array<AccountModel>) => {
         this.setState({
             dataSource: data,
         });
@@ -165,7 +166,11 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    renderItem = ({ item }: { item: AccountSchema }) => {
+    itemKeyExtractor = (item: AccountModel) => {
+        return `account-${item.address}`;
+    };
+
+    renderItem = ({ item }: { item: AccountModel }) => {
         const { signableAccount, reorderEnabled } = this.state;
 
         if (!item?.isValid()) return null;
@@ -177,7 +182,13 @@ class AccountListView extends Component<Props, State> {
         const signable = find(signableAccount, { address: item.address });
 
         if (!signable) {
-            accessLevelLabel = Localize.t('account.readOnly');
+            // if master key is disabled then show it in the label
+            if (item.flags?.disableMasterKey) {
+                accessLevelLabel = `${Localize.t('account.readOnly')} (${Localize.t('account.masterKeyDisabled')}) `;
+            } else {
+                accessLevelLabel = Localize.t('account.readOnly');
+            }
+
             accessLevelIcon = 'IconLock';
         }
 
@@ -196,11 +207,15 @@ class AccountListView extends Component<Props, State> {
         return (
             <View style={styles.rowContainer}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
-                    <View style={[AppStyles.flex6]}>
-                        <Text style={[styles.accountLabel]}>{item.label}</Text>
-                        <View style={[styles.accessLevelContainer]}>
+                    <View style={AppStyles.flex6}>
+                        <Text numberOfLines={1} style={styles.accountLabel}>
+                            {item.label}
+                        </Text>
+                        <View style={styles.accessLevelContainer}>
                             <Icon size={13} name={accessLevelIcon} style={AppStyles.imgColorGrey} />
-                            <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
+                            <Text numberOfLines={1} style={styles.accessLevelLabel}>
+                                {accessLevelLabel}
+                            </Text>
                             {item.hidden && (
                                 <>
                                     <Text style={styles.accessLevelLabel}> </Text>
@@ -232,7 +247,7 @@ class AccountListView extends Component<Props, State> {
                     </View>
                 </View>
                 <View style={[AppStyles.row, styles.subRow]}>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Text style={[AppStyles.monoBold, AppStyles.colorGrey, styles.subLabel]}>
                             {Localize.t('global.address')}:
                         </Text>
@@ -346,7 +361,7 @@ class AccountListView extends Component<Props, State> {
                             itemHeight={styles.rowContainer.height}
                             separatorHeight={10}
                             dataSource={dataSource}
-                            keyExtractor={(item) => `account-${item.address}`}
+                            keyExtractor={this.itemKeyExtractor}
                             renderItem={this.renderItem}
                             onDataChange={this.onAccountReorder}
                             onItemPress={this.onItemPress}

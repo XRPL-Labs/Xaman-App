@@ -8,8 +8,8 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { AccountRepository } from '@store/repositories';
-import { AccountSchema } from '@store/schemas/latest';
+import { CoreRepository } from '@store/repositories';
+import { AccountModel } from '@store/models';
 
 import { BackendService } from '@services';
 
@@ -31,7 +31,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    account: AccountSchema;
+    account: AccountModel;
     apps: any;
     featured: any;
 }
@@ -41,7 +41,7 @@ class HomeActionsOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.HomeActions;
 
     private actionPanel: React.RefObject<ActionPanel>;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -59,7 +59,7 @@ class HomeActionsOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            account: AccountRepository.getDefaultAccount(),
+            account: CoreRepository.getDefaultAccount(),
             apps: undefined,
             featured: undefined,
         };
@@ -81,18 +81,22 @@ class HomeActionsOverlay extends Component<Props, State> {
     }
 
     fetchApps = () => {
-        BackendService.getXAppShortList().then((resp: any) => {
-            const { apps, featured } = resp;
+        BackendService.getXAppShortList()
+            .then((resp: any) => {
+                const { apps, featured } = resp;
 
-            if (!this.mounted) {
-                return;
-            }
+                if (!this.mounted) {
+                    return;
+                }
 
-            this.setState({
-                apps,
-                featured,
+                this.setState({
+                    apps,
+                    featured,
+                });
+            })
+            .catch(() => {
+                // ignore
             });
-        });
     };
 
     onScanButtonPress = () => {

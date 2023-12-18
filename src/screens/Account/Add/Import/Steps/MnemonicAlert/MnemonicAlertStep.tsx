@@ -44,9 +44,9 @@ class MnemonicAlertStep extends Component<Props, State> {
         const { goBack } = this.context;
 
         return (
-            <SafeAreaView testID="account-import-mnemonic-alert-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="account-import-mnemonic-alert-view" style={AppStyles.container}>
                 <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.padding]}>
-                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageWarningShield')} />
+                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageWarningShield')} />
 
                     <Spacer />
                     {/* eslint-disable-next-line */}
@@ -82,7 +82,7 @@ class MnemonicAlertStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             textStyle={AppStyles.strong}

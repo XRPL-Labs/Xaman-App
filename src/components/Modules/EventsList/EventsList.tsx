@@ -3,13 +3,13 @@ import moment from 'moment-timezone';
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList, RefreshControl } from 'react-native';
 
-import { Payload } from '@common/libs/payload';
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-import { BaseLedgerObject } from '@common/libs/ledger/objects';
+import { AccountModel } from '@store/models';
 
 import StyleService from '@services/StyleService';
 
-import { AccountSchema } from '@store/schemas/latest';
+import { Payload } from '@common/libs/payload';
+import { BaseTransaction } from '@common/libs/ledger/transactions';
+import { BaseLedgerObject } from '@common/libs/ledger/objects';
 
 import { LoadingIndicator } from '@components/General';
 
@@ -21,7 +21,7 @@ import styles from './styles';
 import * as EventListItems from './EventListItems';
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     isLoading?: boolean;
     isLoadingMore?: boolean;
     dataSource: any;
@@ -65,7 +65,7 @@ class EventsList extends PureComponent<Props> {
 
         return (
             <View style={styles.listEmptyContainer}>
-                <Text style={[AppStyles.pbold]}>{Localize.t('global.noInformationToShow')}</Text>
+                <Text style={AppStyles.pbold}>{Localize.t('global.noInformationToShow')}</Text>
             </View>
         );
     };
@@ -98,7 +98,7 @@ class EventsList extends PureComponent<Props> {
 
     renderSectionHeader = ({ section: { title, type } }: any) => {
         return (
-            <View style={[styles.sectionHeader]}>
+            <View style={styles.sectionHeader}>
                 <Text style={[styles.sectionHeaderText, type === 'date' && styles.sectionHeaderDateText]}>
                     {type === 'date' ? this.formatDate(title) : title}
                 </Text>

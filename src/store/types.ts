@@ -1,4 +1,11 @@
-/* Global ==================================================================== */
+import Realm from 'realm';
+
+export type ExtendedSchemaType = {
+    schema: Realm.ObjectSchema;
+    populate?: (realm: Realm) => void;
+    migration?: (oldRealm: Realm, newRealm: Realm) => void;
+};
+
 export enum AccountTypes {
     Regular = 'Regular', // XRPL Regular account
     Tangem = 'Tangem', // Tangem Card account
@@ -23,11 +30,21 @@ export enum BiometryType {
     None = 'None',
 }
 
-export enum NodeChain {
+export enum NetworkType {
     Main = 'Mainnet',
     Test = 'Testnet',
     Dev = 'Devnet',
     Custom = 'Custom',
 }
+
+export enum NetworkRailsChangesType {
+    AddedNetwork = 'AddedNetwork',
+    RemovedNetwork = 'RemovedNetwork',
+    AddedNode = 'AddedNode',
+    RemovedNode = 'RemovedNode',
+    ChangedProperty = 'ChangedProperty',
+}
+
+export type NetworkRailsChanges = { [key: string]: { type: NetworkRailsChangesType; value: string }[] };
 
 export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

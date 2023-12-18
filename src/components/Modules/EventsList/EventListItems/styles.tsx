@@ -8,10 +8,6 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 10,
-        paddingLeft: 5,
-        paddingRight: 5,
-        marginLeft: -5,
-        marginRight: -5,
     },
     iconContainer: {
         borderColor: '$lightGrey',
@@ -75,6 +71,11 @@ const styles = StyleService.create({
         color: '$orange',
     },
     naturalColor: {
+        color: '$grey',
+    },
+    requestTimeText: {
+        fontFamily: AppFonts.small.family,
+        fontSize: AppFonts.small.size,
         color: '$grey',
     },
 });

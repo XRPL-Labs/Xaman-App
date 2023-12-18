@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { View, Text, SectionList } from 'react-native';
 
-import { NodeChain } from '@store/types';
+import StyleService from '@services/StyleService';
+
+import { NodeModel } from '@store/models';
 
 import styles from './styles';
 
@@ -11,30 +13,20 @@ import { NodeListItem } from './NodeListItem';
 /* Types ==================================================================== */
 interface Props {
     dataSource: any;
-    selectedNode: string;
-    onItemPress: (item: any) => void;
-    onItemRemovePress: (item: any) => void;
+    onItemPress: (item: NodeModel) => void;
 }
 
+interface State {}
+
 /* Component ==================================================================== */
-class NodeList extends PureComponent<Props> {
-    renderItem = ({ item }: { item: any }): React.ReactElement => {
-        const { selectedNode, onItemPress, onItemRemovePress } = this.props;
+class NodeList extends PureComponent<Props, State> {
+    renderItem = ({ item, section }: { item: any; section: any }): React.ReactElement => {
+        const { onItemPress } = this.props;
 
-        const selected = item.url === selectedNode;
+        const { defaultNode, data } = section;
+        const isDefault = item.endpoint === defaultNode.endpoint;
 
-        // only custom nodes can be remove
-        const canRemove = !selected && item.chain === NodeChain.Custom;
-
-        return (
-            <NodeListItem
-                onPress={onItemPress}
-                item={item}
-                selected={selected}
-                onRemovePress={onItemRemovePress}
-                canRemove={canRemove}
-            />
-        );
+        return <NodeListItem onPress={onItemPress} item={item} selectable={data.length > 1} isDefault={isDefault} />;
     };
 
     renderSectionHeader = ({ section: { title, color } }: any) => {
@@ -58,7 +50,8 @@ class NodeList extends PureComponent<Props> {
                 renderSectionHeader={this.renderSectionHeader}
                 initialNumToRender={50}
                 maxToRenderPerBatch={50}
-                keyExtractor={(item, index) => item.url + index}
+                keyExtractor={(item, index) => item.endpoint + index}
+                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );
     }

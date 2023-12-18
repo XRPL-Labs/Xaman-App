@@ -30,8 +30,31 @@ const HexToRgbA = (hex: string, opacity: number) => {
         // @ts-ignore
         return `rgba(${[(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',')},${opacity})`;
     }
-    throw new Error('Bad Hex');
+    throw new Error(`HexToRgbA: ${hex} is not a valid hex value!`);
+};
+
+const TextContrast = (hex: string): string => {
+    if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+        const hexColor = hex.replace('#', '');
+        // convert hex to rgb
+        const rgb = [] as number[];
+        const bigint = parseInt(hexColor, 16);
+        rgb[0] = (bigint >> 16) & 255;
+        rgb[1] = (bigint >> 8) & 255;
+        rgb[2] = bigint & 255;
+
+        const brightness = Math.round(
+            (parseInt(String(rgb[0]), 10) * 299 +
+                parseInt(String(rgb[1]), 10) * 587 +
+                parseInt(String(rgb[2]), 10) * 114) /
+                1000,
+        );
+
+        return brightness > 125 ? 'dark' : 'light';
+    }
+
+    throw new Error(`TextContrast: ${hex} is not a valid hex value!`);
 };
 
 /* Export ==================================================================== */
-export { ColorLuminance, HexToRgbA };
+export { ColorLuminance, HexToRgbA, TextContrast };

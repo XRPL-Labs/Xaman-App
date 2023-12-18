@@ -60,22 +60,22 @@ const HexEncoding = {
 /**
  * Truncate string
  * @param fullString string
- * @param string_length number expected output length
+ * @param stringLength number expected output length
  * @returns stringTruncate text ABC...EFG
  */
-const Truncate = (fullString: string, string_length: number): string => {
-    if (fullString.length <= string_length) {
+const Truncate = (fullString: string, stringLength: number): string => {
+    if (fullString.length <= stringLength) {
         return fullString;
     }
 
     const separator = '...';
 
-    const separator_length = separator.length;
-    const charsToShow = string_length - separator_length;
+    const separatorLength = separator.length;
+    const charsToShow = stringLength - separatorLength;
     const frontChars = Math.ceil(charsToShow / 2);
     const backChars = Math.floor(charsToShow / 2);
 
-    return fullString.substr(0, frontChars) + separator + fullString.substr(fullString.length - backChars);
+    return fullString.substring(0, frontChars) + separator + fullString.substring(fullString.length - backChars);
 };
 
 /**
@@ -146,6 +146,20 @@ const StringTypeCheck = {
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const identifier = new RegExp('^[A-Z0-9._-]+$', 'i');
         return identifier.test(input);
+    },
+
+    isValidDestinationTag: (input: string): boolean => {
+        if (typeof input !== 'string') {
+            return false;
+        }
+
+        // not a valid number
+        if (!input.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
+            return false;
+        }
+
+        // valid positive 32 bits integer integer
+        return !(input === '' || Number(input) > 2 ** 32 || Number(input) < 0 || input.includes('.'));
     },
 };
 

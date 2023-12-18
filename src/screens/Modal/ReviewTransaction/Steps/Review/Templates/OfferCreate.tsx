@@ -1,17 +1,17 @@
-import { isEmpty, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { OfferCreate } from '@common/libs/ledger/transactions';
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { AmountText, InfoMessage } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
@@ -26,13 +26,11 @@ import { TemplateProps } from './types';
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: OfferCreate;
-    source: AccountSchema;
+    source: AccountModel;
 }
 
 export interface State {
-    isLoadingIssuerDetails: boolean;
     isLoadingIssuerFee: boolean;
-    issuerDetails: AccountNameType;
     issuerFee: number;
     warnings: string;
 }
@@ -43,18 +41,17 @@ class OfferCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isLoadingIssuerDetails: true,
             isLoadingIssuerFee: true,
-            issuerDetails: undefined,
             issuerFee: 0,
             warnings: undefined,
         };
     }
 
     componentDidMount() {
-        this.setIssuerTransferFee();
-        this.setIssuerDetails();
-        this.setWarnings();
+        InteractionManager.runAfterInteractions(() => {
+            this.setIssuerTransferFee();
+            this.setWarnings();
+        });
     }
 
     setIssuerTransferFee = () => {
@@ -81,29 +78,6 @@ class OfferCreateTemplate extends Component<Props, State> {
             });
     };
 
-    setIssuerDetails = () => {
-        const { transaction } = this.props;
-
-        const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
-
-        getAccountName(issuerAddress)
-            .then((res: any) => {
-                if (!isEmpty(res)) {
-                    this.setState({
-                        issuerDetails: res,
-                    });
-                }
-            })
-            .catch(() => {
-                // ignore
-            })
-            .finally(() => {
-                this.setState({
-                    isLoadingIssuerDetails: false,
-                });
-            });
-    };
-
     setWarnings = () => {
         const { transaction, source } = this.props;
 
@@ -112,17 +86,16 @@ class OfferCreateTemplate extends Component<Props, State> {
         // Warn users if they are about to trade their entire token worth
         const { issuer, currency, value } = transaction.TakerGets;
 
-        if (currency === 'XRP') {
-            // selling XRP
+        if (currency === NetworkService.getNativeAsset()) {
+            // selling native currency
             showFullBalanceLiquidWarning = Number(value) >= CalculateAvailableBalance(source);
         } else {
             // sell IOU
             const line = source.lines.find(
-                (l: TrustLineSchema) => l.currency.issuer === issuer && l.currency.currency === currency,
+                (l: TrustLineModel) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
 
-            // only if not XLS14
-            if (line && !line.isNFT) {
+            if (line) {
                 showFullBalanceLiquidWarning = Number(value) >= Number(line.balance);
             }
         }
@@ -138,18 +111,14 @@ class OfferCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerDetails, issuerDetails, isLoadingIssuerFee, issuerFee, warnings } = this.state;
+        const { isLoadingIssuerFee, issuerFee, warnings } = this.state;
 
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.issuer')}</Text>
-                <RecipientElement
+                <Text style={styles.label}>{Localize.t('global.issuer')}</Text>
+                <AccountElement
+                    address={transaction.TakerGets.issuer || transaction.TakerPays.issuer}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
-                    isLoading={isLoadingIssuerDetails}
-                    recipient={{
-                        address: transaction.TakerGets.issuer || transaction.TakerPays.issuer,
-                        ...issuerDetails,
-                    }}
                 />
 
                 {warnings && (
@@ -158,8 +127,8 @@ class OfferCreateTemplate extends Component<Props, State> {
                     </View>
                 )}
 
-                <Text style={[styles.label]}>{Localize.t('global.selling')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.selling')}</Text>
+                <View style={styles.contentBox}>
                     <AmountText
                         value={transaction.TakerGets.value}
                         currency={transaction.TakerGets.currency}
@@ -168,12 +137,12 @@ class OfferCreateTemplate extends Component<Props, State> {
                     />
                 </View>
 
-                <Text style={[styles.label]}>
+                <Text style={styles.label}>
                     {transaction.Flags.Sell
                         ? Localize.t('global.inExchangeForAtLeastReceive')
                         : Localize.t('global.inExchangeForReceive')}
                 </Text>
-                <View style={[styles.contentBox]}>
+                <View style={styles.contentBox}>
                     <AmountText
                         value={transaction.TakerPays.value}
                         currency={transaction.TakerPays.currency}
@@ -182,24 +151,33 @@ class OfferCreateTemplate extends Component<Props, State> {
                     />
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.issuerFee')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
+                <Text style={styles.label}>{Localize.t('global.issuerFee')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{isLoadingIssuerFee ? 'Loading...' : `${issuerFee}%`}</Text>
                 </View>
 
                 {!isUndefined(transaction.Expiration) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{FormatDate(transaction.Expiration)}</Text>
+                        <Text style={styles.label}>{Localize.t('global.expireAfter')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{FormatDate(transaction.Expiration)}</Text>
+                        </View>
+                    </>
+                )}
+
+                {!isUndefined(transaction.OfferID) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.offerID')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.OfferID}</Text>
                         </View>
                     </>
                 )}
 
                 {!isUndefined(transaction.OfferSequence) && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.offerSequence')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.offerSequence')}</Text>
+                        <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.OfferSequence}</Text>
                         </View>
                     </>

@@ -8,7 +8,7 @@ import { Text, ScrollView, View, Alert, Platform } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { BiometryType } from '@store/types';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
@@ -30,7 +30,7 @@ export interface State {
     biometricEnabled: boolean;
     biometricAvailable: boolean;
     isFlagSecure: boolean;
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     timeItems: Array<any>;
 }
 
@@ -94,7 +94,7 @@ class SecuritySettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-    updateUI = (coreSettings: CoreSchema) => {
+    updateUI = (coreSettings: CoreModel) => {
         this.setState({ coreSettings });
     };
 
@@ -213,7 +213,7 @@ class SecuritySettingsView extends Component<Props, State> {
         const { biometricAvailable, biometricEnabled, coreSettings, isFlagSecure, timeItems } = this.state;
 
         return (
-            <View testID="security-settings-screen" style={[styles.container]}>
+            <View testID="security-settings-screen" style={styles.container}>
                 <Header
                     leftComponent={{
                         testID: 'back-button',
@@ -230,7 +230,7 @@ class SecuritySettingsView extends Component<Props, State> {
                         style={styles.row}
                         onPress={this.onChangePasscodePress}
                     >
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.changePasscode')}
                             </Text>
@@ -241,27 +241,23 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                     </TouchableDebounce>
 
-                    <TouchableDebounce
-                        testID="auto-lock-button"
-                        style={[styles.row]}
-                        onPress={this.showLogoutTimePicker}
-                    >
-                        <View style={[AppStyles.flex3]}>
+                    <TouchableDebounce testID="auto-lock-button" style={styles.row} onPress={this.showLogoutTimePicker}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.autoLock')}
                             </Text>
                         </View>
 
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text numberOfLines={1} style={[styles.value]}>
+                            <Text numberOfLines={1} style={styles.value}>
                                 {find(timeItems, { value: coreSettings.minutesAutoLock }).title}
                             </Text>
-                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                            <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
                     </TouchableDebounce>
 
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.biometricAuthentication')}
                             </Text>
@@ -286,7 +282,7 @@ class SecuritySettingsView extends Component<Props, State> {
                         {Localize.t('settings.additionalSecurity')}
                     </Text>
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.eraseData')}
                             </Text>
@@ -301,7 +297,7 @@ class SecuritySettingsView extends Component<Props, State> {
                         {Localize.t('global.other')}
                     </Text>
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.hideBalanceByDefault')}
                             </Text>
@@ -312,16 +308,30 @@ class SecuritySettingsView extends Component<Props, State> {
                     </View>
 
                     {Platform.OS === 'android' && (
-                        <View style={styles.row}>
-                            <View style={[AppStyles.flex3]}>
-                                <Text numberOfLines={1} style={styles.label}>
-                                    {Localize.t('settings.blockTakingScreenshots')}
-                                </Text>
+                        <>
+                            <View style={styles.row}>
+                                <View style={AppStyles.flex3}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('settings.blockTakingScreenshots')}
+                                    </Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                    <Switch
+                                        isDisabled={coreSettings.developerMode}
+                                        checked={isFlagSecure}
+                                        onChange={this.onFlagSecureToggle}
+                                    />
+                                </View>
                             </View>
-                            <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                                <Switch checked={isFlagSecure} onChange={this.onFlagSecureToggle} />
-                            </View>
-                        </View>
+
+                            {coreSettings.developerMode && (
+                                <InfoMessage
+                                    flat
+                                    label={Localize.t('settings.blockingTakingScreenShotsIsDisabled')}
+                                    type="error"
+                                />
+                            )}
+                        </>
                     )}
                 </ScrollView>
             </View>

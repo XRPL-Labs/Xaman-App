@@ -32,16 +32,15 @@ const generateSecretNumbers = () => {
 
 // get funded testnet account
 const generateTestnetAccount = async () => {
-    const resp = await fetch('https://faucet.altnet.rippletest.net/accounts', { method: 'POST' });
+    const resp = await fetch('https://xahau-test.net/newcreds', { method: 'POST' });
     const json = await resp.json();
 
     return {
-        address: json.account.address,
-        secret: json.account.secret,
+        address: json.address,
+        secret: json.secret,
     };
 };
 
-// activate account by sending payment
 const activateAccount = async (address) => {
     const fundedAccount = await generateTestnetAccount();
 
@@ -55,9 +54,10 @@ const activateAccount = async (address) => {
         Destination: address,
         Amount: '100000000',
         Fee: '1000',
+        NetworkID: 21338,
     };
 
-    const Connection = new XrplClient('wss://s.altnet.rippletest.net:51233');
+    const Connection = new XrplClient('wss://xahau-test.net');
 
     await Connection.ready();
 

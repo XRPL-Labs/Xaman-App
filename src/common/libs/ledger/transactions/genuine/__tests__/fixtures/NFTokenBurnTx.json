@@ -1,0 +1,10 @@
+{
+  "tx": {
+    "TransactionType": "NFTokenBurn",
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Owner": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "Fee": "10",
+    "NFTokenID": "000B013A95F14B0044F78A264E41713C64B5F89242540EE208C3098E00000D65"
+  },
+  "meta": {}
+}

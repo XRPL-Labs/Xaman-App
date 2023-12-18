@@ -15,6 +15,9 @@ describe('AppService', () => {
 
         expect(spy1).toBeCalled();
         expect(spy2).toBeCalled();
+
+        spy1.mockRestore();
+        spy2.mockRestore();
     });
 
     it('should set NetState', async () => {
@@ -48,6 +51,9 @@ describe('AppService', () => {
         appService.handleAppStateChange('inactive');
         expect(appService.prevAppState).toBe(AppStateStatus.Inactive);
         expect(appService.currentAppState).toBe(AppStateStatus.Active);
+
+        spy1.mockRestore();
+        spy2.mockRestore();
     });
 
     it('should show change log and update version code', async () => {

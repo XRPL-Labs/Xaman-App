@@ -1,6 +1,6 @@
 import { Card } from 'tangem-sdk-react-native';
 
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import { SignedObjectType } from '@common/libs/ledger/types';
@@ -18,8 +18,13 @@ export interface SignOptions {
     tangemCard?: Card;
 }
 
+export enum Steps {
+    SelectSigner = 'SelectSigner',
+    Authentication = 'Authentication',
+}
+
 export interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     transaction: Transactions | PseudoTransactions;
     multiSign?: boolean;
     onDismissed: () => void;
@@ -27,14 +32,16 @@ export interface Props {
 }
 
 export interface State {
-    signer: AccountSchema;
-    alternativeSigner: AccountSchema;
-    coreSettings: CoreSchema;
+    step: Steps;
+    signers: AccountModel[];
+    preferredSigner: AccountModel;
+    coreSettings: CoreModel;
     isSigning: boolean;
 }
 
 export interface ContextProps extends State {
     sign: (method: AuthMethods, options: SignOptions) => void;
+    onPreferredSignerSelect: (signer: AccountModel) => void;
     onInvalidAuth: (method: AuthMethods) => void;
     dismiss: () => void;
 }

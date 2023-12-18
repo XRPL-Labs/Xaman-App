@@ -2,8 +2,10 @@
 import BigNumber from 'bignumber.js';
 import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues } from 'lodash';
 
+import NetworkService from '@services/NetworkService';
+
 /* Types ==================================================================== */
-import { BalanceChangeType, OfferStatus } from './types';
+import { BalanceChangeType, OfferStatus, OwnerCountChangeType, ClaimRewardStatus } from './types';
 
 /* Class ==================================================================== */
 class Meta {
@@ -13,7 +15,7 @@ class Meta {
         if (!meta.AffectedNodes) {
             this.nodes = [];
         }
-        this.nodes = meta.AffectedNodes.map(this.normalizeNode);
+        this.nodes = meta.AffectedNodes?.map(this.normalizeNode) || [];
     }
 
     private normalizeNode = (affectedNode: any) => {
@@ -106,7 +108,7 @@ class Meta {
         };
     };
 
-    private parseXRPQuantity = (node: any, valueParser: any) => {
+    private parseNativeQuantity = (node: any, valueParser: any) => {
         const value = valueParser(node);
 
         if (value === null) {
@@ -118,7 +120,7 @@ class Meta {
         return {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
-                currency: 'XRP',
+                currency: NetworkService.getNativeAsset(),
                 value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
                 action: valueNumber.isNegative() ? 'DEC' : 'INC',
             },
@@ -224,7 +226,7 @@ class Meta {
     parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {
         const values = this.nodes.map((node) => {
             if (node.entryType === 'AccountRoot') {
-                return [this.parseXRPQuantity(node, this.computeBalanceChange)];
+                return [this.parseNativeQuantity(node, this.computeBalanceChange)];
             }
             if (node.entryType === 'RippleState') {
                 return this.parseTrustlineQuantity(node, this.computeBalanceChange);
@@ -236,7 +238,7 @@ class Meta {
         return this.groupByAddress(compact(flatten(values)));
     };
 
-    parseOwnerCountChanges = () => {
+    parseOwnerCountChanges = (): OwnerCountChangeType[] => {
         const values = this.nodes.map((node) => {
             if (node.entryType === 'AccountRoot') {
                 return this.parseOwnerCountQuantity(node, this.computeOwnerCountChange);
@@ -256,6 +258,26 @@ class Meta {
         });
 
         return compact(values);
+    };
+
+    // TODO: fix me
+    parseClaimRewardStatus = (): ClaimRewardStatus => {
+        // if there is an emitted transaction from "ADDRESS_ONE", it means the reward has been claimed
+        const ADDRESS_ONE = 'rrrrrrrrrrrrrrrrrrrrBZbvji';
+
+        const emittedTx = find(this.nodes, (node) => {
+            return (
+                node.entryType === 'EmittedTxn' &&
+                get(node, 'newFields.EmittedTxn.Account') === ADDRESS_ONE &&
+                get(node, 'newFields.EmittedTxn.TransactionType') === 'GenesisMint'
+            );
+        });
+
+        if (emittedTx) {
+            return ClaimRewardStatus.OptIn;
+        }
+
+        return ClaimRewardStatus.OptOut;
     };
 }
 

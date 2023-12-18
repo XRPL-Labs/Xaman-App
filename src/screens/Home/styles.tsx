@@ -11,90 +11,11 @@ const styles = StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: Sizes.moderateScale(60),
-        paddingRight: Sizes.padding,
+        paddingRight: Sizes.paddingSml,
         paddingLeft: Sizes.paddingSml,
-    },
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    actionButtonsContainer: {
-        backgroundColor: '$tint',
-        marginBottom: 20,
-        padding: 16,
-        borderRadius: 16,
-    },
-    accountLabelText: {
-        fontFamily: AppFonts.base.familyExtraBold,
-        fontSize: AppFonts.p.size,
-        color: '$textPrimary',
-    },
-    accountAddressText: {
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.small.size,
-        color: '$textSecondary',
-    },
-    iconSettings: {
-        tintColor: '$grey',
-        marginTop: 8,
-        marginRight: 6,
-    },
-    iconEye: {
-        tintColor: '$grey',
-        marginTop: 12,
-        marginRight: 3,
-    },
-    cardAddress: {
-        backgroundColor: '$white',
-        color: '$blue',
-        marginVertical: 15,
-        borderRadius: 5,
-        overflow: 'hidden',
-        textAlign: 'left',
-        justifyContent: 'center',
-    },
-    shareIconContainer: {
-        padding: 8,
-        borderLeftWidth: 1,
-        borderLeftColor: '$grey',
-    },
-    shareIcon: {
-        tintColor: '$blue',
     },
     tokenListContainer: {
         flex: 6,
-        // backgroundColor: '$red',
-    },
-    balanceContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        paddingVertical: 10,
-        marginTop: 10,
-        backgroundColor: '$lightGrey',
-        borderRadius: 8,
-    },
-    balanceText: {
-        fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.h4.size,
-        color: '$textPrimary',
-        paddingRight: 8,
-    },
-    xrpAvatarContainer: {
-        padding: 10,
-        marginRight: 10,
-        backgroundColor: '$white',
-        borderWidth: 1,
-        borderColor: '$grey',
-        borderRadius: 8,
-        justifyContent: 'center',
-    },
-    trustLineInfoIcon: {
-        tintColor: '$grey',
-        marginRight: 5,
-    },
-    xrpAvatar: {
-        resizeMode: 'contain',
     },
     logo: {
         width: AppSizes.scale(120),
@@ -125,37 +46,29 @@ const styles = StyleService.create({
 
     QRButtonText: { fontSize: AppFonts.base.size },
 
-    accountRow: {
-        paddingRight: 20,
-        paddingLeft: 20,
-        paddingTop: 6,
-        paddingBottom: 6,
-        height: AppSizes.scale(60),
-        borderRadius: AppSizes.scale(60) / 4,
-        borderWidth: 1,
-        borderColor: '$lightBlue',
-        backgroundColor: '$tint',
-    },
-    iconAccount: {
-        marginRight: 15,
-        tintColor: '$contrast',
-    },
-    switchAccountButton: {
-        backgroundColor: '$tint',
-        paddingHorizontal: 10,
-        alignSelf: 'flex-end',
-        marginRight: -10,
-    },
-    accountCountBadgeContainer: {
-        height: AppSizes.scale(17),
-        width: AppSizes.scale(17),
-        marginLeft: 0,
-        justifyContent: 'center',
+    networkDetailsContainer: {
+        flexDirection: 'row',
+        alignContent: 'center',
         alignItems: 'center',
-        borderRadius: AppSizes.scale(17) / 2,
+        backgroundColor: '$contrast',
+        borderRadius: 12,
+        paddingHorizontal: Sizes.paddingExtraSml,
+        paddingVertical: 5,
+        marginHorizontal: Sizes.paddingSml,
+        marginBottom: Sizes.paddingExtraSml,
     },
-    accountCountBadgeLabel: {
-        fontFamily: AppFonts.base.familyExtraBold,
+    networkTextLabel: {
+        color: '$silver',
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size,
+    },
+    networkTextContent: {
+        color: '$textContrast',
+        fontFamily: AppFonts.base.familyMonoBold,
+        fontSize: AppFonts.subtext.size * 0.8,
+    },
+    accountSwitchElement: {
+        marginHorizontal: AppSizes.paddingSml,
     },
 });
 

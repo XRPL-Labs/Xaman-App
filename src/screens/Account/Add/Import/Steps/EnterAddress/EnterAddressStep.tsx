@@ -112,20 +112,21 @@ class EnterAddressStep extends Component<Props, State> {
         });
     };
 
+    onAddressTextChange = (address: string) => {
+        this.setState({ address: address.replace(/[^a-z0-9]/gi, '') });
+    };
+
     render() {
         const { goBack } = this.context;
         const { address, isLoading } = this.state;
         return (
             <SafeAreaView
-                onResponderRelease={() => Keyboard.dismiss()}
+                onResponderRelease={Keyboard.dismiss}
                 onStartShouldSetResponder={() => true}
                 testID="account-import-enter-address-view"
-                style={[AppStyles.container]}
+                style={AppStyles.container}
             >
-                <KeyboardAwareScrollView
-                    style={[AppStyles.flex1]}
-                    contentContainerStyle={[AppStyles.paddingHorizontal]}
-                >
+                <KeyboardAwareScrollView style={AppStyles.flex1} contentContainerStyle={AppStyles.paddingHorizontal}>
                     <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
                         {Localize.t('account.pleaseProvideAccountAddress')}
                     </Text>
@@ -138,7 +139,7 @@ class EnterAddressStep extends Component<Props, State> {
                         autoCorrect={false}
                         keyboardType="visible-password"
                         value={address}
-                        onChangeText={(value) => this.setState({ address: value.replace(/[^a-z0-9]/gi, '') })}
+                        onChangeText={this.onAddressTextChange}
                         placeholder={Localize.t('account.pleaseEnterYourAddress')}
                         numberOfLines={1}
                         showScanner
@@ -161,7 +162,7 @@ class EnterAddressStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
                             isDisabled={!address}

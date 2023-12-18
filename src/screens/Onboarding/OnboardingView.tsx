@@ -50,7 +50,7 @@ class OnboardingView extends Component<Props, State> {
                 imageStyle={styles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XummLogo')} />
+                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </SafeAreaView>
                 <SafeAreaView style={[AppStyles.flex8]}>
                     <Slider onFinish={this.onFinish}>

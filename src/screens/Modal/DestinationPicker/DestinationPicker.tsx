@@ -2,14 +2,15 @@
  * Destination Picker modal
  */
 
-import React, { Component } from 'react';
-import { Results } from 'realm';
 import { isEmpty, flatMap, get, uniqBy, toNumber } from 'lodash';
+import Realm from 'realm';
+
+import React, { Component } from 'react';
 import { View, Text, SectionList, BackHandler, NativeEventSubscription } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
-import { ContactSchema, AccountSchema } from '@store/schemas/latest';
+import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 import { Destination } from '@common/libs/ledger/parser/types';
@@ -22,7 +23,7 @@ import { BackendService } from '@services';
 
 // components
 import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
-import { RecipientElement } from '@components/Modules';
+import { AccountElement } from '@components/Modules';
 
 // locale
 import Localize from '@locale';
@@ -43,8 +44,8 @@ export interface State {
     isSearching: boolean;
     isLoading: boolean;
     searchText: string;
-    accounts: Results<AccountSchema>;
-    contacts: Results<ContactSchema>;
+    accounts: Realm.Results<AccountModel>;
+    contacts: Realm.Results<ContactModel>;
     dataSource: any[];
     destination: Destination;
     destinationInfo: AccountInfoType;
@@ -518,11 +519,21 @@ class DestinationPicker extends Component<Props, State> {
         const selected = item.address === get(destination, 'address') && item.name === get(destination, 'name');
 
         return (
-            <RecipientElement
-                recipient={item}
-                selected={selected}
-                showTag={false}
-                showSource
+            <AccountElement
+                address={item.address}
+                tag={item.tag}
+                info={{
+                    name: item.name,
+                    source: item.source,
+                }}
+                containerStyle={selected && styles.accountElementSelected}
+                textStyle={selected && styles.accountElementSelectedText}
+                visibleElements={{
+                    tag: false,
+                    avatar: true,
+                    source: true,
+                    button: false,
+                }}
                 onPress={() => {
                     if (!selected) {
                         this.setState({
@@ -545,7 +556,7 @@ class DestinationPicker extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Button
                             onPress={this.resetResult}
                             style={styles.clearSearchButton}
@@ -568,13 +579,13 @@ class DestinationPicker extends Component<Props, State> {
         if (!dataSource) return null;
 
         return (
-            <View testID="destination-picker-modal" style={[AppStyles.container]}>
+            <View testID="destination-picker-modal" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, { paddingVertical: AppSizes.padding }]}>
                     <Text style={AppStyles.h5}>{Localize.t('global.destination')}</Text>
                 </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
-                    <View style={[AppStyles.row]}>
+                    <View style={AppStyles.row}>
                         <TextInput
                             placeholder={Localize.t('send.enterANameOrAddress')}
                             inputStyle={styles.inputText}
@@ -604,11 +615,11 @@ class DestinationPicker extends Component<Props, State> {
                 </View>
 
                 {/* Bottom Bar */}
-                <Footer style={[AppStyles.row]} safeArea>
+                <Footer style={AppStyles.row} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
                         <Button light label={Localize.t('global.close')} onPress={this.onClose} />
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         <Button
                             isLoading={isLoading}
                             textStyle={AppStyles.strong}

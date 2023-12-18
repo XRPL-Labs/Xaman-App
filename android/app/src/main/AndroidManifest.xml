@@ -5,6 +5,7 @@
     <!-- Access to internet  -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- QR code scanning && Veriff KYC  -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- Veriff KYC -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -29,7 +30,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <!-- Google App measurement -->
     <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"/>
-    <!-- Update app badges - Shortcut Badger -->
+    <!-- Update app notification badges -->
     <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
     <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
     <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
@@ -47,9 +48,16 @@
     <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_READ"/>
     <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_WRITE"/>
 
+    <queries>
+        <package android:name="com.google.android.apps.maps"/>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="ton"/>
+        </intent>
+    </queries>
 
     <application
-            android:name=".MainApplication"
+            android:name=".ApplicationLoader"
             android:allowBackup="false"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -57,10 +65,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".MainActivity"
+                android:name=".LaunchActivity"
                 android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
                 android:exported="true"
-                android:label="@string/app_name"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"
                 android:taskAffinity=""
@@ -119,7 +126,11 @@
 
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/ic_stat_icon_xumm_android_notification"
+                android:resource="@drawable/ic_stat_icon_xaman_android_notification"
+                tools:replace="android:resource"/>
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:resource="@string/default_notification_channel_id"
                 tools:replace="android:resource"/>
         <meta-data
                 android:name="com.google.firebase.messaging.default_notification_color"

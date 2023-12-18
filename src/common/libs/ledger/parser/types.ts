@@ -10,8 +10,19 @@ export enum OfferStatus {
     UNKNOWN = 'UNKNOWN',
 }
 
+export enum ClaimRewardStatus {
+    OptIn = 'OptIn',
+    OptOut = 'OptOut',
+}
+
 export interface BalanceChangeType extends AmountType {
     action: 'DEC' | 'INC';
+}
+
+export interface OwnerCountChangeType {
+    address: string;
+    value: number;
+    action: string;
 }
 
 /**
@@ -25,7 +36,7 @@ export type LedgerAmount = string | AmountType;
 
 /**
  * Specification of which currency the account taking the offer would pay/
- * receive, as an object with currency and issuer fields (omit issuer for XRP).
+ * receive, as an object with currency and issuer fields (omit issuer for native asset).
  * Similar to currency amounts.
  */
 export interface TakerRequestAmount {
@@ -34,7 +45,7 @@ export interface TakerRequestAmount {
 }
 
 /**
- * A currency-counterparty pair, or just currency if it's XRP.
+ * A currency-counterparty pair, or just currency if it's native currency.
  */
 export interface Issuer {
     currency: string;
@@ -70,26 +81,44 @@ export type MemoType = {
     MemoType?: string;
 };
 
+/**
+ * Transaction Account
+ */
 export type Account = {
     name?: string;
     address: string;
     tag?: number;
 };
 
+/**
+ * Transaction Destination
+ */
 export type Destination = {
     name?: string;
     address: string;
     tag?: number;
 };
 
+/**
+ * Transaction Result submitted by the app
+ */
 export type TransactionResult = {
     success: boolean;
     code: string;
     message?: string;
 };
 
+/**
+ * Signer entry
+ */
 export type SignerEntry = {
     account: string;
     weight: number;
     walletLocator?: string;
 };
+
+export interface Signer {
+    account: string;
+    signature: string;
+    pubKey: string;
+}

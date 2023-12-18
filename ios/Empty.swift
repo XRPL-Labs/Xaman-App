@@ -1,6 +1,6 @@
 //
 //  Empty.swift
-//  XUMM
+//  Xaman
 //
 //  Created by XRPL Labs on 26/11/2020.
 //

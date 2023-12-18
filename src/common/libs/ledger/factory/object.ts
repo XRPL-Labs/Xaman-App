@@ -1,9 +1,12 @@
 import { get } from 'lodash';
 
 import * as LedgerObjects from '@common/libs/ledger/objects';
+
+/* Types ==================================================================== */
 import { LedgerObjects as LedgerObjectsType } from '@common/libs/ledger/objects/types';
 import { LedgerEntriesTypes } from '@common/libs/ledger/types';
 
+/* Module ==================================================================== */
 const LedgerObjectFactory = {
     /*
     Parse ledger entry to LedgerObject instance
@@ -23,4 +26,5 @@ const LedgerObjectFactory = {
     },
 };
 
+/* Export ==================================================================== */
 export default LedgerObjectFactory;

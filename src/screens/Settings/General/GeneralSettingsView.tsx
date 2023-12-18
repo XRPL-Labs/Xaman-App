@@ -15,7 +15,7 @@ import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { Themes } from '@store/types';
 
 import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
@@ -30,7 +30,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {
-    coreSettings: CoreSchema;
+    coreSettings: CoreModel;
     locales: any;
 }
 
@@ -61,7 +61,7 @@ class GeneralSettingsView extends Component<Props, State> {
         CoreRepository.off('updateSettings', this.updateUI);
     }
 
-    updateUI = (coreSettings: CoreSchema) => {
+    updateUI = (coreSettings: CoreModel) => {
         this.setState({ coreSettings });
     };
 
@@ -135,9 +135,9 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
-    onShowFiatPanelChange = (value: boolean) => {
+    onShowReservePanelChange = (value: boolean) => {
         CoreRepository.saveSettings({
-            showFiatPanel: value,
+            showReservePanel: value,
         });
     };
 
@@ -262,43 +262,43 @@ class GeneralSettingsView extends Component<Props, State> {
                 />
                 <ScrollView>
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex1]}>
-                            <Text style={AppStyles.pbold}>Theme</Text>
+                        <View style={AppStyles.flex1}>
+                            <Text style={AppStyles.pbold}>{Localize.t('global.theme')}</Text>
                         </View>
                     </View>
-                    <View style={[styles.rowNoBorder]}>
-                        <View style={[AppStyles.flex1]}>
+                    <View style={styles.rowNoBorder}>
+                        <View style={AppStyles.flex1}>
                             {/* @ts-ignore */}
                             {Object.keys(themeItems).map((key: Themes) => this.renderThemeButton(key, themeItems[key]))}
                         </View>
                     </View>
 
-                    <TouchableDebounce style={[styles.row]} onPress={this.showLanguagePicker}>
-                        <View style={[AppStyles.flex3]}>
+                    <TouchableDebounce style={styles.row} onPress={this.showLanguagePicker}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.language')}
                             </Text>
                         </View>
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{this.getLanguageTitle()}</Text>
-                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                            <Text style={styles.value}>{this.getLanguageTitle()}</Text>
+                            <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
                     </TouchableDebounce>
 
-                    <TouchableDebounce style={[styles.row]} onPress={this.showCurrencyPicker}>
-                        <View style={[AppStyles.flex3]}>
+                    <TouchableDebounce style={styles.row} onPress={this.showCurrencyPicker}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('global.currency')}
                             </Text>
                         </View>
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
-                            <Text style={[styles.value]}>{coreSettings.currency}</Text>
-                            <Icon size={25} style={[styles.rowIcon]} name="IconChevronRight" />
+                            <Text style={styles.value}>{coreSettings.currency}</Text>
+                            <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
                     </TouchableDebounce>
 
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.hapticFeedback')}
                             </Text>
@@ -309,7 +309,7 @@ class GeneralSettingsView extends Component<Props, State> {
                     </View>
 
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.useSystemSeparators')}
                             </Text>
@@ -323,13 +323,13 @@ class GeneralSettingsView extends Component<Props, State> {
                     </View>
 
                     <View style={styles.row}>
-                        <View style={[AppStyles.flex3]}>
+                        <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.showReserveValue')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.showFiatPanel} onChange={this.onShowFiatPanelChange} />
+                            <Switch checked={coreSettings.showReservePanel} onChange={this.onShowReservePanelChange} />
                         </View>
                     </View>
                 </ScrollView>

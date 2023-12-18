@@ -1,4 +1,4 @@
-# XRPL Labs (XUMM) Responsible Disclosure
+# Xaman Responsible Disclosure
 
 See:
-https://github.com/XRPL-Labs/XUMM-Issue-Tracker/blob/master/RESPONSIBLE-DISCLOSURE.md
+https://github.com/XRPL-Labs/Xaman-Issue-Tracker/blob/master/RESPONSIBLE-DISCLOSURE.md

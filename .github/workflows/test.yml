@@ -15,7 +15,7 @@ jobs:
       - name: Node
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 16.x
 
       - run: node --version
 
@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-yarn-cache-
-      - run: yarn --frozen-lockfile
+      - run: yarn install --frozen-lockfile
 
       - run: yarn test
         env:

@@ -1,16 +1,17 @@
-import { has } from 'lodash';
-import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import has from 'lodash/has';
+import React, { Component } from 'react';
+import { View, Text, InteractionManager } from 'react-native';
 
-import { BackendService } from '@services';
+import BackendService, { RatesType } from '@services/BackendService';
+import NetworkService from '@services/NetworkService';
 
 import { CalculateAvailableBalance, CalculateTotalReserve } from '@common/utils/balance';
 import { Toast } from '@common/helpers/interface';
 
 import { CoreRepository } from '@store/repositories';
-import { AccountSchema, CoreSchema } from '@store/schemas/latest';
+import { AccountModel, CoreModel } from '@store/models';
 
-import { AmountText, Icon, TokenAvatar, TouchableDebounce } from '@components/General';
+import { AmountText, Icon, TokenAvatar, TokenIcon, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -19,7 +20,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
+    account: AccountModel;
     discreetMode: boolean;
     reorderEnabled: boolean;
     onPress?: () => void;
@@ -27,14 +28,14 @@ interface Props {
 
 interface State {
     showReservePanel: boolean;
-    currency: string;
-    showRate: boolean;
+    fiatCurrency: string;
+    fiatRate: RatesType;
+    showFiatRate: boolean;
     isLoadingRate: boolean;
-    currencyRate: any;
 }
 
 /* Component ==================================================================== */
-class NativeItem extends PureComponent<Props, State> {
+class NativeItem extends Component<Props, State> {
     static Height = AppSizes.scale(45);
 
     constructor(props: Props) {
@@ -43,11 +44,11 @@ class NativeItem extends PureComponent<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
-            showReservePanel: coreSettings.showFiatPanel,
-            currency: coreSettings.currency,
-            showRate: false,
+            showReservePanel: coreSettings.showReservePanel,
+            fiatCurrency: coreSettings.currency,
+            fiatRate: undefined,
+            showFiatRate: false,
             isLoadingRate: false,
-            currencyRate: undefined,
         };
     }
 
@@ -60,30 +61,43 @@ class NativeItem extends PureComponent<Props, State> {
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
     }
 
-    onCoreSettingsUpdate = (coreSettings: CoreSchema, changes: Partial<CoreSchema>) => {
-        const { currency, showReservePanel } = this.state;
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        const { showFiatRate, fiatCurrency, showReservePanel } = this.state;
 
         // currency changed
-        if (has(changes, 'currency') && currency !== changes.currency) {
+        if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
             this.setState({
-                showRate: false,
-                currencyRate: undefined,
-                currency: coreSettings.currency,
+                showFiatRate: false,
+                fiatRate: undefined,
+                fiatCurrency: coreSettings.currency,
             });
         }
 
         // show reserve panel changed
-        if (has(changes, 'showFiatPanel') && showReservePanel !== changes.showFiatPanel) {
+        if (has(changes, 'showReservePanel') && showReservePanel !== changes.showReservePanel) {
             this.setState({
-                showRate: false,
-                currencyRate: undefined,
-                showReservePanel: coreSettings.showFiatPanel,
+                showFiatRate: false,
+                fiatRate: undefined,
+                showReservePanel: coreSettings.showReservePanel,
             });
+        }
+
+        // default network changed
+        if (has(changes, 'network')) {
+            // clean up rate
+            this.setState({
+                fiatRate: undefined,
+            });
+
+            // if already show rate re-fetch the rate with new native asset
+            if (showFiatRate) {
+                InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+            }
         }
     };
 
     fetchCurrencyRate = () => {
-        const { currency, isLoadingRate } = this.state;
+        const { fiatCurrency, isLoadingRate } = this.state;
 
         if (!isLoadingRate) {
             this.setState({
@@ -91,10 +105,10 @@ class NativeItem extends PureComponent<Props, State> {
             });
         }
 
-        BackendService.getCurrencyRate(currency)
+        BackendService.getCurrencyRate(fiatCurrency)
             .then((rate: any) => {
                 this.setState({
-                    currencyRate: rate,
+                    fiatRate: rate,
                     isLoadingRate: false,
                 });
             })
@@ -107,14 +121,14 @@ class NativeItem extends PureComponent<Props, State> {
     };
 
     toggleBalance = () => {
-        const { showRate } = this.state;
+        const { showFiatRate } = this.state;
 
         this.setState({
-            showRate: !showRate,
+            showFiatRate: !showFiatRate,
         });
 
         // fetch the rate again if show rate is true
-        if (!showRate) {
+        if (!showFiatRate) {
             this.fetchCurrencyRate();
         }
     };
@@ -127,56 +141,57 @@ class NativeItem extends PureComponent<Props, State> {
         }
     };
 
-    getAvatar = () => {
-        return <TokenAvatar token="XRP" border size={35} containerStyle={styles.brandAvatar} />;
+    getTokenAvatar = () => {
+        return <TokenAvatar token="Native" border size={35} />;
     };
 
-    getCurrencyAvatar = () => {
+    getTokenIcon = () => {
         const { discreetMode } = this.props;
 
         return (
-            <View style={styles.currencyAvatarContainer}>
-                <Icon
-                    size={12}
-                    style={[styles.currencyAvatar, discreetMode && AppStyles.imgColorGrey]}
-                    name="IconXrp"
-                />
-            </View>
+            <TokenIcon
+                token="Native"
+                containerStyle={styles.tokenIconContainer}
+                style={[styles.tokenIcon, discreetMode && AppStyles.imgColorGrey]}
+            />
         );
     };
 
-    getReserveCurrencyAvatar = () => {
+    getReserveTokenIcon = () => {
         return (
-            <View style={styles.reserveCurrencyAvatarContainer}>
-                <Icon size={8} style={AppStyles.imgColorGrey} name="IconXrp" />
-            </View>
+            <TokenIcon
+                token="Native"
+                size={8}
+                containerStyle={styles.reserveCurrencyAvatarContainer}
+                style={AppStyles.imgColorGrey}
+            />
         );
     };
 
     renderBalance = () => {
         const { account, discreetMode } = this.props;
-        const { showRate, currencyRate, isLoadingRate } = this.state;
+        const { showFiatRate, fiatRate, isLoadingRate } = this.state;
 
         const availableBalance = CalculateAvailableBalance(account, true);
 
         let balance: number;
         let prefix: any;
 
-        if (showRate && currencyRate) {
-            balance = Number(availableBalance) * Number(currencyRate.lastRate);
-            prefix = `${currencyRate.symbol} `;
+        if (showFiatRate && fiatRate) {
+            balance = Number(availableBalance) * Number(fiatRate.rate);
+            prefix = `${fiatRate.symbol} `;
         } else {
             balance = availableBalance;
-            prefix = this.getCurrencyAvatar;
+            prefix = this.getTokenIcon;
         }
 
         return (
             <View style={styles.balanceRow}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={styles.brandAvatarContainer}>{this.getAvatar()}</View>
+                    <View style={styles.tokenAvatarContainer}>{this.getTokenAvatar()}</View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyItemLabel}>
-                            XRP
+                            {NetworkService.getNativeAsset()}
                         </Text>
                     </View>
                 </View>
@@ -198,7 +213,7 @@ class NativeItem extends PureComponent<Props, State> {
 
     renderReservePanel = () => {
         const { account, reorderEnabled, discreetMode } = this.props;
-        const { showRate, showReservePanel, currencyRate, isLoadingRate } = this.state;
+        const { showFiatRate, showReservePanel, fiatRate, isLoadingRate } = this.state;
 
         // show fiat panel
         if (!showReservePanel || reorderEnabled) {
@@ -210,12 +225,12 @@ class NativeItem extends PureComponent<Props, State> {
 
         const accountReserve = CalculateTotalReserve(account);
 
-        if (showRate && currencyRate) {
-            totalReserve = Number(accountReserve) * Number(currencyRate.lastRate);
-            prefix = `${currencyRate.symbol} `;
+        if (showFiatRate && fiatRate) {
+            totalReserve = Number(accountReserve) * Number(fiatRate.rate);
+            prefix = `${fiatRate.symbol} `;
         } else {
             totalReserve = accountReserve;
-            prefix = this.getReserveCurrencyAvatar;
+            prefix = this.getReserveTokenIcon;
         }
 
         return (
@@ -247,7 +262,7 @@ class NativeItem extends PureComponent<Props, State> {
     render() {
         return (
             <TouchableDebounce
-                testID="xrp-currency"
+                testID="native-currency"
                 style={styles.currencyItem}
                 onPress={this.onPress}
                 activeOpacity={0.7}

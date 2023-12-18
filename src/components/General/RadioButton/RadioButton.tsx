@@ -5,7 +5,7 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ViewStyle } from 'react-native';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
 
@@ -22,6 +22,7 @@ interface Props {
     description?: string;
     disabled?: boolean;
     testID?: string;
+    style?: ViewStyle | ViewStyle[];
 }
 
 /* Component ==================================================================== */
@@ -35,7 +36,7 @@ class RadioButton extends PureComponent<Props> {
     };
 
     render() {
-        const { checked, label, labelSmall, description, disabled, testID } = this.props;
+        const { checked, label, labelSmall, description, disabled, testID, style } = this.props;
         return (
             <TouchableDebounce
                 testID={testID}
@@ -47,6 +48,7 @@ class RadioButton extends PureComponent<Props> {
                     checked && styles.selected,
                     checked && disabled && styles.selectedDisabled,
                     !checked && disabled && styles.disabled,
+                    style,
                 ]}
             >
                 <View style={AppStyles.flex1}>

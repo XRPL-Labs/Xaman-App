@@ -9,8 +9,6 @@ import { PayloadOrigin } from '../types';
 
 import PayloadTemplate from './templates/payload.json';
 
-// "e24cfcfd-c737-4de7-9f18-b809aa6b571d"
-
 describe('Payload', () => {
     it('Should be able to generate payload and return right values', () => {
         const transaction = {
@@ -27,11 +25,12 @@ describe('Payload', () => {
         expect(craftedPayload.getApplicationIcon()).toBe(
             'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png',
         );
-        expect(craftedPayload.getApplicationName()).toBe('XUMM');
+        expect(craftedPayload.getApplicationName()).toBe('Xaman');
         expect(craftedPayload.getTransaction().Json).toEqual(transaction);
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
         const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
+        // @ts-ignore
         craftedPayload.patch({ signed_blob: '', tx_id: '', multisigned: '' });
         expect(payloadPatchSpy).toBeCalledTimes(0);
         payloadPatchSpy.mockClear();
@@ -71,7 +70,7 @@ describe('Payload', () => {
         try {
             await Payload.from(invalidTypesPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -87,7 +86,7 @@ describe('Payload', () => {
         try {
             await Payload.from(invalidSignInPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -103,7 +102,7 @@ describe('Payload', () => {
         try {
             await Payload.from(InvalidPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.UnableVerifyPayload" translation]');
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -171,7 +170,9 @@ describe('Payload', () => {
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.payloadAlreadyResolved" translation]');
+            expect(e.toString()).toEqual(
+                'Error: This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
+            );
         }
 
         payloadFetchSpy.mockClear();
@@ -190,7 +191,9 @@ describe('Payload', () => {
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
         } catch (e) {
-            expect(e.toString()).toEqual('Error: [missing "en.payload.payloadExpired" translation]');
+            expect(e.toString()).toEqual(
+                'Error: This payload has expired. Please repeat the process that generated the request, and scan the new request.',
+            );
         }
 
         payloadFetchSpy2.mockClear();
@@ -225,7 +228,7 @@ describe('Payload', () => {
         try {
             payload.getTransaction();
         } catch (e) {
-            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in XUMM!');
+            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in Xaman!');
         }
     });
 

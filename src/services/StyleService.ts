@@ -2,12 +2,12 @@
  * Style service
  */
 import { has, get, toLower } from 'lodash';
-import { Appearance } from 'react-native';
+import { Appearance, StyleSheet } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
 import CoreRepository from '@store/repositories/core';
-import { CoreSchema } from '@store/schemas/latest';
+import { CoreModel } from '@store/models';
 import { Themes } from '@store/types';
 
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';
@@ -20,12 +20,14 @@ class StyleService {
     private themeName: Themes;
     private currentStyle: any;
 
+    public hairlineWidth = StyleSheet.hairlineWidth;
+
     constructor() {
         this.themeName = 'light';
         this.currentStyle = { ...ColorsTheme.light, ...ColorsGeneral };
     }
 
-    initialize = (coreSettings: CoreSchema) => {
+    initialize = (coreSettings: CoreModel) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // default theme
@@ -107,6 +109,18 @@ class StyleService {
 
     isDarkMode = (): boolean => {
         return this.themeName !== 'light';
+    };
+
+    select = (spec: {
+        light?: string | number;
+        dark?: string | number;
+        default?: string | number;
+    }): string | number => {
+        return 'light' in spec && !this.isDarkMode()
+            ? spec.light
+            : 'dark' in spec && this.isDarkMode()
+            ? spec.dark
+            : spec.default;
     };
 
     getImage = (image: Extract<keyof typeof Images, string>) => {

@@ -6,14 +6,15 @@
  */
 import React, { PureComponent } from 'react';
 
-import { StyleService } from '@services';
-import { TrustLineSchema } from '@store/schemas/latest';
+import { NetworkService, StyleService } from '@services';
+
+import { TrustLineModel } from '@store/models';
 
 import { Avatar, AvatarProps } from '@components/General/Avatar';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
-    token: TrustLineSchema | string;
+    token: TrustLineModel | 'Native';
 }
 
 interface State {
@@ -40,14 +41,15 @@ class TokenAvatar extends PureComponent<Props, State> {
         return null;
     }
 
-    static getAvatar = (token: TrustLineSchema | string): string => {
+    static getAvatar = (token: TrustLineModel | 'Native'): string => {
         if (!token) {
             return '';
         }
 
-        // XRP
-        if (typeof token === 'string') {
-            return StyleService.getImage('IconXrpSquare').uri;
+        // native
+        if (token === 'Native') {
+            const { asset } = NetworkService.getNativeAssetIcons();
+            return asset;
         }
 
         // IOU
@@ -56,9 +58,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         if (counterParty.avatar) {
             return counterParty.avatar;
         }
-        if (token.isNFT) {
-            return StyleService.getImage('ImageUnknownNFT').uri;
-        }
+
         return StyleService.getImage('ImageUnknownTrustLine').uri;
     };
 

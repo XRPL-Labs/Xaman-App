@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, Text, ViewStyle } from 'react-native';
 
-import { AccountSchema, TrustLineSchema } from '@store/schemas/latest';
-
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
+
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { TouchableDebounce, Icon } from '@components/General';
 import { CurrencyItem } from '@components/Modules/CurrencyPicker/CurrencyItem';
@@ -15,9 +15,9 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    account: AccountSchema;
-    currencies: Array<TrustLineSchema | string>;
-    selectedItem?: TrustLineSchema | string;
+    account: AccountModel;
+    currencies: Array<TrustLineModel | string>;
+    selectedItem?: TrustLineModel | string;
     onSelect?: (item: any) => void;
     containerStyle?: ViewStyle;
 }
