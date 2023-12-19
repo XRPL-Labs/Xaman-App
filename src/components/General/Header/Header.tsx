@@ -126,7 +126,7 @@ const Children = ({
 
 /* Component ==================================================================== */
 class Header extends PureComponent<Props> {
-    static Height = AppSizes.heightPercentageToDP(9) + (Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0);
+    static Height = AppSizes.heightPercentageToDP(9);
 
     static defaultProps = {
         placement: 'center',
@@ -152,7 +152,14 @@ class Header extends PureComponent<Props> {
             this.props;
 
         return (
-            <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
+            <View
+                style={[
+                    styles.container,
+                    backgroundColor && { backgroundColor },
+                    { height: Header.Height },
+                    containerStyle,
+                ]}
+            >
                 <Children style={this.getChildStyle('left')} placement="left">
                     {leftComponent}
                 </Children>
