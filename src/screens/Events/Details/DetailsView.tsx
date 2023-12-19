@@ -1534,7 +1534,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         onPress: this.showMenu,
                     }}
                     // eslint-disable-next-line react-native/no-inline-styles
-                    containerStyle={asModal && { paddingTop: 0 }}
+                    containerStyle={asModal && { marginTop: 0 }}
                 />
 
                 {scamAlert && (
