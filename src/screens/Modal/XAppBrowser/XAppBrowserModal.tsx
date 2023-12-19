@@ -408,6 +408,8 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     openTxDetails = async (data: { tx: string; account: string }) => {
+        const { network } = this.state;
+
         const hash = get(data, 'tx', undefined);
         const address = get(data, 'account', undefined);
 
@@ -427,7 +429,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal(AppScreens.Transaction.Details, { hash, account, asModal: true });
+            Navigator.showModal(AppScreens.Modal.TransactionLoader, { hash, account, network: network.key });
         }, delay);
     };
 
