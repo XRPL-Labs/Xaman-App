@@ -56,7 +56,7 @@ class AppService extends EventEmitter {
         this.prevAppState = undefined;
         this.currentAppState = AppStateStatus.Active;
 
-        this.logger = LoggerService.createLogger('AppState');
+        this.logger = LoggerService.createLogger('AppService');
     }
 
     initialize = () => {
@@ -131,7 +131,8 @@ class AppService extends EventEmitter {
                     );
                 }
             })
-            .catch(() => {
+            .catch((error) => {
+                this.logger.warn('checkAppUpdate', error);
                 // ignore
             });
     };
