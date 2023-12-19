@@ -15,8 +15,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     appTitlePlaceholder: {
-        color: '$light',
-        backgroundColor: '$light',
+        color: StyleService.select({ dark: '$darkGrey', light: '$light' }),
+        backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$light' }),
     },
     appIcon: {
         width: '80%',
@@ -24,7 +24,7 @@ const styles = StyleService.create({
         borderRadius: 10,
     },
     appIconPlaceholder: {
-        backgroundColor: '$silver',
+        backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$silver' }),
     },
     titleContainer: {
         flex: 1,
