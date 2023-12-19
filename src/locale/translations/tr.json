@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Dönüş URL'si açılamıyor!",
     "noAccountConfigured": "Hiçbir hesap yapılandırılmadı",
     "pleaseAddAccountToSignTheTransaction": "Lütfen işlemi imzalamak için bir hesap ekleyin",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Şu anda ödeme göndermek için yeterli bakiye yok.",
     "doNotRemindMe": "Bir daha hatırlatma",
     "invalidPayload": "Geçersiz ödeme",

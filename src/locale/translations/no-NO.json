@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Kan ikke åpne retur-url!",
     "noAccountConfigured": "Ingen konto konfigurert",
     "pleaseAddAccountToSignTheTransaction": "Vennligst legg inn en konto for å signere transaksjonen",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Det er ingen konto med disponibelt beløp for å sende betalinger.",
     "doNotRemindMe": "Ikke minn meg på dette igjen",
     "invalidPayload": "Ugyldig nyttelast",

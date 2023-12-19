@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "রিটার্ন ইউআরএল খুলতে অক্ষম!",
     "noAccountConfigured": "কোনও অ্যাকাউন্ট কনফিগার করা নেই",
     "pleaseAddAccountToSignTheTransaction": "লেনদেনে স্বাক্ষর করতে দয়া করে একটি অ্যাকাউন্ট যুক্ত করুন",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "পেমেন্ট প্রেরণের জন্য কোনও ব্যয়যোগ্য অ্যাকাউন্ট পাওয়া যায় না।",
     "doNotRemindMe": "আমাকে আবার মনে করিয়ে দিবেন না",
     "invalidPayload": "অবৈধ পেলোড",

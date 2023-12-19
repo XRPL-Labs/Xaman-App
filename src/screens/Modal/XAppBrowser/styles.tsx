@@ -51,6 +51,12 @@ const styles = StyleService.create({
         width: AppSizes.moderateScale(30),
         height: AppSizes.moderateScale(60),
     },
+    infoIcon: {
+        tintColor: '$red',
+    },
+    actionContainer: {
+        marginHorizontal: AppSizes.paddingSml,
+    },
 });
 
 export default styles;

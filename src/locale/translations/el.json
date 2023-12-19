@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Αδυναμία ανοίγματος url!",
     "noAccountConfigured": "Δεν έχει ρυθμιστεί λογαριασμός",
     "pleaseAddAccountToSignTheTransaction": "Προσθέστε ένα λογαριασμό για να επιβεβαιώσετε τη συναλλαγή",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Δεν υπάρχει διαθέσιμος λογαριασμός για αποστολή συναλλαγών.",
     "doNotRemindMe": "Δεν θέλω ξανά υπενθύμιση",
     "invalidPayload": "Μη έγκυρο payload",

@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "URL-i avamine nurjus!",
     "noAccountConfigured": "Kontot pole seadistatud",
     "pleaseAddAccountToSignTheTransaction": "Palun lisa konto tehingu  allkirjastamiseks",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Maksete saatmiseks ei ole loodud kulutamise kontot.",
     "doNotRemindMe": "Ära rohkem tuleta meelde",
     "invalidPayload": "Vigane veokoormus",

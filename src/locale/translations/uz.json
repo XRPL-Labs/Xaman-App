@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Qaytish URL ochib bulmayapti!",
     "noAccountConfigured": "Hech qanday hisob sozlanmagan",
     "pleaseAddAccountToSignTheTransaction": "Iltimos, bitimni tasdiqlash uchun hisob qaydnomasini qo'shing",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Hozirda to'lovlarni jo'natish uchun etarlik mablag 'mavjud emas.",
     "doNotRemindMe": "Menga boshqa eslatmang",
     "invalidPayload": "Notugri amaliyot",

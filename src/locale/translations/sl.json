@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Ne morem odpreti povratnega url-ja!",
     "noAccountConfigured": "Noben račun ni konfiguriran",
     "pleaseAddAccountToSignTheTransaction": "Če želite podpisati transakcijo, dodajte račun",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Za pošiljanje plačil ni na voljo nobenega potrošnega računa.",
     "doNotRemindMe": "Ne opominjaj me več",
     "invalidPayload": "Neveljavna vsebina",

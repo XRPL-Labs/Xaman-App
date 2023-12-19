@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "ರಿಟರ್ನ್ url ತೆರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ!",
     "noAccountConfigured": "ಯಾವುದೇ ಖಾತೆಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿಲ್ಲ",
     "pleaseAddAccountToSignTheTransaction": "ವ್ಯವಹಾರಕ್ಕೆ ಸಹಿ ಮಾಡಲು ದಯವಿಟ್ಟು ಖಾತೆಯನ್ನು ಸೇರಿಸಿ",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "ಪಾವತಿಗಳನ್ನು ಕಳುಹಿಸಲು ಖರ್ಚು ಮಾಡಬಹುದಾದ ಯಾವುದೇ ಖಾತೆ ಲಭ್ಯವಿಲ್ಲ.",
     "doNotRemindMe": "ನನ್ನನ್ನು ಮತ್ತೆ ನೆನಪಿಸಬೇಡಿ",
     "invalidPayload": "ಅಮಾನ್ಯ ಪೇಲೋಡ್",

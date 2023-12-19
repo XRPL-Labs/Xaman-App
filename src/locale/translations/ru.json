@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Не удалось открыть обратный URL адрес!",
     "noAccountConfigured": "Нет настроенных аккаунтов",
     "pleaseAddAccountToSignTheTransaction": "Пожалуйста, добавьте аккаунт, чтобы подписать транзакцию",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Для отправки платежей нет аккаунта со средствами доступными для трат.",
     "doNotRemindMe": "Не напоминать мне снова",
     "invalidPayload": "Неправильный payload",

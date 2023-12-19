@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Nie można otworzyć zwrotnego adresu URL!",
     "noAccountConfigured": "Nie skonfigurowano żadnego konta",
     "pleaseAddAccountToSignTheTransaction": "Dodaj konto, aby podpisać transakcję",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Brak konta przeznaczonego do wysyłania płatności",
     "doNotRemindMe": "Nie przypominaj mi ponownie",
     "invalidPayload": "Nieprawidłowa zawartość",

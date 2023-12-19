@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "¡No se puede abrir la URL!",
     "noAccountConfigured": "Ninguna cuenta configurada",
     "pleaseAddAccountToSignTheTransaction": "Por favor, agrega una cuenta para firmar la transacción.",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "No existe una cuenta disponible para enviar el pago.",
     "doNotRemindMe": "No me lo recuerdes de nuevo",
     "invalidPayload": "Payload inválida",

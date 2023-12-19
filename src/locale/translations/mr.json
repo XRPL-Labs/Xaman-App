@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "रिटर्न URL उघडण्यात अक्षम!",
     "noAccountConfigured": "खाते कॉन्फिगर केलेले नाही",
     "pleaseAddAccountToSignTheTransaction": "कृपया व्यवहारावर स्वाक्षरी करण्यासाठी खाते जोडा",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "देयके पाठविण्यासाठी सध्या कोणतेही शिल्लक उपलब्ध नाही.",
     "doNotRemindMe": "मला पुन्हा आठवण करुन देऊ नका",
     "invalidPayload": "अवैध पेलोड",

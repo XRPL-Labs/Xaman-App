@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Paluuosoitteen avaus ei onnistu!",
     "noAccountConfigured": "Tiliä ei ole määritetty",
     "pleaseAddAccountToSignTheTransaction": "Lisää tili allekirjoitusta varten",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Maksujen lähettämiseen ei ole käytettävissä tiliä.",
     "doNotRemindMe": "Älä muistuta uudelleen",
     "invalidPayload": "Virheellinen hyötykuorma",

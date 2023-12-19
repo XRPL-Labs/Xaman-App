@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Tidak dapat membuka URL kembali!",
     "noAccountConfigured": "Tidak ada akun yang dikonfigurasi",
     "pleaseAddAccountToSignTheTransaction": "Harap tambahkan akun untuk menandatangani transaksi",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Saat ini tidak ada saldo yang tersedia untuk mengirim pembayaran.",
     "doNotRemindMe": "Jangan ingatkan saya lagi",
     "invalidPayload": "Payload tidak valid",

@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "غير قادر على فتح رابط العودة!",
     "noAccountConfigured": "لم تتم تهيئة الحساب",
     "pleaseAddAccountToSignTheTransaction": "الرجاء إضافة حساب للتوقيع على الصفقة",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "لا يوجد حساب قابل للإنفاق متاح لإرسال الدفعات.",
     "doNotRemindMe": "لا تذكرني مجدداً ",
     "invalidPayload": "حمولة غير صالحة",

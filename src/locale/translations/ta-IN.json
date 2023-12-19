@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "திரும்பும் URL ஐ திறக்க முடியவில்லை!",
     "noAccountConfigured": "கணக்கு எதுவும் கட்டமைக்கப்படவில்லை",
     "pleaseAddAccountToSignTheTransaction": "பரிவர்த்தனையில் கையொப்பமிட ஒரு கணக்கைச் சேர்க்கவும்",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "கொடுப்பனவுகளை அனுப்புவதற்கு செலவிடக்கூடிய கணக்கு எதுவும் கிடைக்கவில்லை.",
     "doNotRemindMe": "மீண்டும் என்னை நினைவுபடுத்த வேண்டாம்",
     "invalidPayload": "தவறான பேலோட்",

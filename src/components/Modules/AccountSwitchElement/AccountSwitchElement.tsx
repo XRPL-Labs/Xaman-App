@@ -11,7 +11,7 @@ import { Icon, TouchableDebounce } from '@components/General';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
-
+import Locale from '@locale';
 /* Types ==================================================================== */
 interface Props {
     account: AccountModel;
@@ -44,35 +44,51 @@ class AccountSwitchElement extends Component<Props, State> {
     onSwitcherClose = () => {
         const { onSwitcherClose } = this.props;
 
-        this.setState({
-            isSwitcherOpen: false,
-        });
-
-        if (typeof onSwitcherClose === 'function') {
-            onSwitcherClose();
-        }
+        this.setState(
+            {
+                isSwitcherOpen: false,
+            },
+            () => {
+                if (typeof onSwitcherClose === 'function') {
+                    onSwitcherClose();
+                }
+            },
+        );
     };
 
     onPress = () => {
         const { onAccountSwitch, showAddAccountButton, discreet } = this.props;
 
         // set the tracker flag to true
-        this.setState({
-            isSwitcherOpen: true,
-        });
-
-        // open the switcher overlay
-        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
-            discreetMode: discreet,
-            showAddAccountButton,
-            onClose: this.onSwitcherClose,
-            onSwitch: onAccountSwitch,
-        });
+        this.setState(
+            {
+                isSwitcherOpen: true,
+            },
+            () => {
+                // open the switcher overlay
+                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
+                    discreetMode: discreet,
+                    showAddAccountButton,
+                    onClose: this.onSwitcherClose,
+                    onSwitch: onAccountSwitch,
+                });
+            },
+        );
     };
 
     render() {
         const { account, discreet, containerStyle } = this.props;
         const { isSwitcherOpen } = this.state;
+
+        if (!account) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.accountLabelText} numberOfLines={1}>
+                        {Locale.t('global.noAccountConfigured')}
+                    </Text>
+                </View>
+            );
+        }
 
         return (
             <TouchableDebounce activeOpacity={0.7} onPress={this.onPress} style={[styles.container, containerStyle]}>

@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "URL-ul indicat nu poate fi deschis.",
     "noAccountConfigured": "Niciun cont configurat",
     "pleaseAddAccountToSignTheTransaction": "Vă rugăm să adăugaţi un cont pentru a aproba tranzacţia. ",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Niciun cont de cheltuieli nu este disponibil pentru a efectua plăți.",
     "doNotRemindMe": "Nu-mi reaminti",
     "invalidPayload": "Conținutul cererii de aprobare este invalid.",

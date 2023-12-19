@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Impossible d'ouvrir l'URL de retour!",
     "noAccountConfigured": "Aucun compte configuré",
     "pleaseAddAccountToSignTheTransaction": "Veuillez ajouter un compte pour signer la transaction",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Aucun compte utilisable n'est disponible pour l'envoi de paiements.",
     "doNotRemindMe": "Ne me rappelle plus.",
     "invalidPayload": "Charge utile invalide",

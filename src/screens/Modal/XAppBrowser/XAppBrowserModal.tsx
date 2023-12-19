@@ -41,7 +41,16 @@ import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 
-import { Avatar, Button, LoadingIndicator, HeartBeatAnimation, Spacer, WebView } from '@components/General';
+import {
+    Avatar,
+    Button,
+    LoadingIndicator,
+    HeartBeatAnimation,
+    Spacer,
+    WebView,
+    Icon,
+    InfoMessage,
+} from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
@@ -816,6 +825,14 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
+    onAddAccountPress = async () => {
+        // close the browser modal and redirect user to add account screen
+        await Navigator.dismissModal();
+
+        // push to the screen
+        Navigator.push(AppScreens.Account.Add);
+    };
+
     onLoadEnd = (e: any) => {
         const { app } = this.state;
 
@@ -851,6 +868,27 @@ class XAppBrowserModal extends Component<Props, State> {
         this.setState({
             error: e.nativeEvent.description || 'An error occurred while loading xApp.',
         });
+    };
+
+    renderNoAccount = () => {
+        return (
+            <View style={styles.stateContainer}>
+                <Icon name="IconInfo" style={styles.infoIcon} size={80} />
+                <Spacer size={18} />
+                <Text style={AppStyles.h5}>{Localize.t('global.noAccountConfigured')}</Text>
+                <Spacer size={18} />
+                <InfoMessage
+                    type="neutral"
+                    labelStyle={styles.actionDescription}
+                    label={Localize.t('global.pleaseAddAccountToAccessXApp')}
+                    containerStyle={styles.actionContainer}
+                    actionButtonLabel={Localize.t('account.addAccount')}
+                    actionButtonIcon="IconPlus"
+                    actionButtonIconSize={17}
+                    onActionButtonPress={this.onAddAccountPress}
+                />
+            </View>
+        );
     };
 
     renderError = () => {
@@ -989,7 +1027,13 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderContent = () => {
+        const { account } = this.props;
         const { isLaunchingApp, isLoadingApp, isAppReady, isRequiredNetworkSwitch, error } = this.state;
+
+        // no account configured
+        if (!account) {
+            return this.renderNoAccount();
+        }
 
         let appView = null;
         let stateView = null;

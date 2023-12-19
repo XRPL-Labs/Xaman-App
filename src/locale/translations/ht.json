@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Kapab louvri URL retounen!",
     "noAccountConfigured": "Pa gen kont configuré",
     "pleaseAddAccountToSignTheTransaction": "Tanpri ajoute yon kont pou siyen tranzaksyon an",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Kounye a pa gen okenn balans ki disponib pou voye peman yo.",
     "doNotRemindMe": "Pa raple m 'ankò",
     "invalidPayload": "Envalid chaj",

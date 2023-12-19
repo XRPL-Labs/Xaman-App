@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Nelze otevřít adresu URL pro návrat!",
     "noAccountConfigured": "Není nastavený žádný účet",
     "pleaseAddAccountToSignTheTransaction": "Přidejte prosím účet pro podepsání transakce",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Není dostupný žádný účet, ze kterého by bylo možné posílat platby.",
     "doNotRemindMe": "Nepřipomínej mi to znovu",
     "invalidPayload": "Neplatná částka",

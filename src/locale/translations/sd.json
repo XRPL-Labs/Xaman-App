@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "واپسي يو آر ايل کولڻ جي قابل نه آهيو!",
     "noAccountConfigured": "ڪوبه کاتو ترتيب نه ڏنل آهي",
     "pleaseAddAccountToSignTheTransaction": "مهرباني ڪري ٽرانزيڪشن تي دستخط ٿيڻ لاءِ هڪ اڪائونٽ شامل ڪيو",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "ادائيگي موڪلڻ لاءِ في الحال ڪوبه بيلنس موجود ناهي.",
     "doNotRemindMe": "مون کي وري نصيحت نه ڪريو",
     "invalidPayload": "غلط پي لوڊ لوڊ",

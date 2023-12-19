@@ -261,6 +261,7 @@
     "unableOpenReturnURL": "Кері URL мекенжайын ашу мүмкін емес!",
     "noAccountConfigured": "Тіркелгі орнатылмаған",
     "pleaseAddAccountToSignTheTransaction": "Транзакцияға қол қою үшін есептік жазбаны қосыңыз",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Қазіргі уақытта төлемдерді жіберу үшін қол жетімді баланс жоқ.",
     "doNotRemindMe": "Маған көп еске салмаңыз",
     "invalidPayload": "Жол берілмейтін ақылы жүктеме",
