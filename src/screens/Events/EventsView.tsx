@@ -56,6 +56,8 @@ import { AppStateStatus } from '@services/AppService';
 import { Button, Header, SearchBar, SegmentButton } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
+import { DataSourceItem, DataSourceItemType } from '@components/Modules/EventsList/EventsList';
+
 // Locale
 import Localize from '@locale';
 
@@ -80,7 +82,7 @@ export interface State {
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
-    dataSource: Array<Transactions | LedgerObjects | Payload>;
+    dataSource: Array<DataSourceItem>;
 }
 
 enum DataSourceType {
@@ -228,6 +230,25 @@ class EventsView extends Component<Props, State> {
         }
     };
 
+    formatDate = (date: string) => {
+        const momentDate = moment(date);
+        const reference = moment();
+
+        if (momentDate.isSame(reference, 'day')) {
+            return Localize.t('global.today');
+        }
+        if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
+            return Localize.t('global.yesterday');
+        }
+
+        // same year, don't show year
+        if (momentDate.isSame(reference, 'year')) {
+            return momentDate.format('DD MMM');
+        }
+
+        return momentDate.format('DD MMM, Y');
+    };
+
     fetchPlannedObjects = async (
         account: string,
         type: string,
@@ -368,7 +389,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any) => {
+    buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any): Array<DataSourceItem> => {
         const { sectionIndex } = this.state;
 
         if (isEmpty(pendingRequests) && isEmpty(transactions) && isEmpty(plannedTransactions)) {
@@ -378,7 +399,7 @@ class EventsView extends Component<Props, State> {
         let items = [] as any;
 
         if (sectionIndex === 1) {
-            const open = orderBy(
+            const openItems = orderBy(
                 filter(plannedTransactions, (p) =>
                     [
                         LedgerObjectTypes.Offer,
@@ -391,25 +412,25 @@ class EventsView extends Component<Props, State> {
                 ['Date'],
             );
 
-            const planned = orderBy(filter(plannedTransactions, { Type: LedgerObjectTypes.Escrow }), ['Date']);
+            const plannedItems = orderBy(filter(plannedTransactions, { Type: LedgerObjectTypes.Escrow }), ['Date']);
             const dataSource = [];
 
-            if (!isEmpty(open)) {
-                dataSource.push({
-                    title: 'Open',
-                    type: 'string',
-                    data: open,
-                });
+            if (!isEmpty(openItems)) {
+                dataSource.push({ data: Localize.t('events.eventTypeOpen'), type: DataSourceItemType.SectionHeader });
+                map(openItems, (item) => dataSource.push({ data: item, type: DataSourceItemType.RowItem }));
             }
 
-            if (!isEmpty(planned)) {
-                dataSource.push({ title: Localize.t('events.plannedOn'), type: 'string', data: [] });
-                const grouped = groupBy(planned, (item) => {
+            if (!isEmpty(plannedItems)) {
+                dataSource.push({ data: Localize.t('events.plannedOn'), type: DataSourceItemType.SectionHeader });
+                const grouped = groupBy(plannedItems, (item) => {
                     return moment(item.Date).format('YYYY-MM-DD');
                 });
 
                 map(grouped, (v, k) => {
-                    dataSource.push({ title: k, data: v, type: 'date' });
+                    dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
+                    map(v, (item) => {
+                        dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+                    });
                 });
             }
 
@@ -424,14 +445,18 @@ class EventsView extends Component<Props, State> {
         // group items by month name and then get the name for each month
         const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
 
-        const dataSource = [] as any;
+        const dataSource: DataSourceItem[] = [];
 
         map(grouped, (v, k) => {
-            dataSource.push({ title: k, data: v, type: 'date' });
+            dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
+            map(v, (item) => {
+                dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+            });
         });
 
+        return dataSource;
         // sort by date
-        return orderBy(dataSource, ['title'], ['desc']);
+        // const sorted = orderBy(dataSource, ['title'], ['desc']);
     };
 
     updateDataSource = async (include?: DataSourceType[]) => {
@@ -785,13 +810,13 @@ class EventsView extends Component<Props, State> {
                     imageStyle={AppStyles.BackgroundShapes}
                     style={[AppStyles.contentContainer, AppStyles.padding]}
                 >
-                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
-                    <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageNoEvents')} />
+                    <Text style={AppStyles.emptyText}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                     <Button
                         testID="add-account-button"
                         label={Localize.t('home.addAccount')}
                         icon="IconPlus"
-                        iconStyle={[AppStyles.imgColorWhite]}
+                        iconStyle={AppStyles.imgColorWhite}
                         rounded
                         onPress={() => {
                             Navigator.push(AppScreens.Account.Add);

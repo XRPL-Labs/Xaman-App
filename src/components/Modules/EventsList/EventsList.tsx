@@ -1,7 +1,7 @@
-import moment from 'moment-timezone';
-
 import React, { PureComponent } from 'react';
-import { View, Text, SectionList, RefreshControl } from 'react-native';
+import { View, Text, RefreshControl } from 'react-native';
+
+import { FlashList } from '@shopify/flash-list';
 
 import { AccountModel } from '@store/models';
 
@@ -20,11 +20,28 @@ import styles from './styles';
 
 import * as EventListItems from './EventListItems';
 /* Types ==================================================================== */
+export enum DataSourceItemType {
+    'RowItem' = 'RowItem',
+    'SectionHeader' = 'SectionHeader',
+}
+
+export type RowDataSourceItem = {
+    data: BaseTransaction | BaseLedgerObject | Payload;
+    type: DataSourceItemType.RowItem;
+};
+
+export type SectionHeaderDataSourceItem = {
+    data: string;
+    type: DataSourceItemType.SectionHeader;
+};
+
+export type DataSourceItem = RowDataSourceItem | SectionHeaderDataSourceItem;
+
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
     isLoadingMore?: boolean;
-    dataSource: any;
+    dataSource: Array<DataSourceItem>;
     headerComponent?: any;
     timestamp?: number;
     onRefresh?: () => void;
@@ -33,25 +50,6 @@ interface Props {
 
 /* Component ==================================================================== */
 class EventsList extends PureComponent<Props> {
-    formatDate = (date: string) => {
-        const momentDate = moment(date);
-        const reference = moment();
-
-        if (momentDate.isSame(reference, 'day')) {
-            return Localize.t('global.today');
-        }
-        if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
-            return Localize.t('global.yesterday');
-        }
-
-        // same year, don't show year
-        if (momentDate.isSame(reference, 'year')) {
-            return momentDate.format('DD MMM');
-        }
-
-        return momentDate.format('DD MMM, Y');
-    };
-
     renderListEmpty = () => {
         const { isLoading } = this.props;
 
@@ -70,18 +68,38 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
-    renderItem = ({ item }: { item: any }): React.ReactElement => {
+    renderSectionHeader = (data: string) => {
+        return (
+            <View style={styles.sectionHeader}>
+                <Text style={[styles.sectionHeaderText, styles.sectionHeaderDateText]}>{data}</Text>
+            </View>
+        );
+    };
+
+    renderItem = ({ item }: { item: DataSourceItem }): React.ReactElement => {
         const { account, timestamp } = this.props;
 
-        const passProps = { item, account, timestamp };
+        const { data, type } = item;
 
-        switch (true) {
-            case item instanceof Payload:
-                return React.createElement(EventListItems.Request, passProps);
-            case item instanceof BaseTransaction:
-                return React.createElement(EventListItems.Transaction, passProps);
-            case item instanceof BaseLedgerObject:
-                return React.createElement(EventListItems.LedgerObject, passProps);
+        switch (type) {
+            case DataSourceItemType.SectionHeader:
+                return this.renderSectionHeader(data);
+            case DataSourceItemType.RowItem: {
+                const passProps = { item: data, account, timestamp };
+                if (data instanceof Payload) {
+                    // @ts-ignore
+                    return React.createElement(EventListItems.Request, passProps);
+                }
+                if (data instanceof BaseTransaction) {
+                    // @ts-ignore
+                    return React.createElement(EventListItems.Transaction, passProps);
+                }
+                if (data instanceof BaseLedgerObject) {
+                    // @ts-ignore
+                    return React.createElement(EventListItems.LedgerObject, passProps);
+                }
+                return null;
+            }
             default:
                 return null;
         }
@@ -96,44 +114,62 @@ class EventsList extends PureComponent<Props> {
         return null;
     };
 
-    renderSectionHeader = ({ section: { title, type } }: any) => {
+    renderRefreshControl = () => {
+        const { isLoading, onRefresh } = this.props;
+
         return (
-            <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionHeaderText, type === 'date' && styles.sectionHeaderDateText]}>
-                    {type === 'date' ? this.formatDate(title) : title}
-                </Text>
-            </View>
+            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={StyleService.value('$contrast')} />
         );
     };
 
+    keyExtractor = ({ type }: DataSourceItem, index: number): string => {
+        switch (type) {
+            case DataSourceItemType.RowItem:
+                return `row-item-${index}`;
+            case DataSourceItemType.SectionHeader:
+                return `header-${index}`;
+            default:
+                return `item-${index}`;
+        }
+    };
+
+    // stickyHeaderIndices = () => {
+    //     const { dataSource } = this.props;
+    //     return dataSource
+    //         .map((item, index) => {
+    //             if (item.type === DataSourceItemType.SectionHeader) {
+    //                 return index;
+    //             }
+    //             return null;
+    //         })
+    //         .filter((item) => item !== null) as number[];
+    // };
+
+    getItemType = (item: DataSourceItem) => {
+        return item.type;
+    };
+
     render() {
-        const { isLoading, onRefresh, dataSource, onEndReached, headerComponent } = this.props;
+        const { dataSource, onEndReached, headerComponent } = this.props;
 
         return (
-            <SectionList
-                style={styles.sectionList}
-                contentContainerStyle={styles.sectionListContainer}
-                sections={dataSource}
-                renderItem={this.renderItem}
-                renderSectionHeader={this.renderSectionHeader}
-                keyExtractor={(item) => item.Hash || item.meta?.uuid || item.Index}
-                ListEmptyComponent={this.renderListEmpty}
-                ListHeaderComponent={headerComponent}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.2}
-                ListFooterComponent={this.renderFooter}
-                windowSize={10}
-                maxToRenderPerBatch={10}
-                initialNumToRender={20}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={isLoading}
-                        onRefresh={onRefresh}
-                        tintColor={StyleService.value('$contrast')}
-                    />
-                }
-                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
-            />
+            <View style={styles.sectionList}>
+                <FlashList
+                    data={dataSource}
+                    renderItem={this.renderItem}
+                    estimatedItemSize={EventListItems.Transaction.Height}
+                    contentContainerStyle={styles.sectionListContainer}
+                    onEndReached={onEndReached}
+                    onEndReachedThreshold={0.2}
+                    ListEmptyComponent={this.renderListEmpty}
+                    ListHeaderComponent={headerComponent}
+                    ListFooterComponent={this.renderFooter()}
+                    keyExtractor={this.keyExtractor}
+                    getItemType={this.getItemType}
+                    refreshControl={this.renderRefreshControl()}
+                    indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                />
+            </View>
         );
     }
 }

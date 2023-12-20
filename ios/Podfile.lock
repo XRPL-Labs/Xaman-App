@@ -568,6 +568,8 @@ PODS:
     - FirebaseCoreExtension (= 10.18.0)
     - React-Core
     - RNFBApp
+  - RNFlashList (1.6.3):
+    - React-Core
   - RNTangemSdk (2.3.1):
     - React
     - TangemSdk (= 3.4.0)
@@ -627,6 +629,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - "RNFlashList (from `../node_modules/@shopify/flash-list`)"
   - RNTangemSdk (from `../node_modules/tangem-sdk-react-native`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -752,6 +755,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNFlashList:
+    :path: "../node_modules/@shopify/flash-list"
   RNTangemSdk:
     :path: "../node_modules/tangem-sdk-react-native"
   Yoga:
@@ -824,6 +829,7 @@ SPEC CHECKSUMS:
   RNFBApp: 09fd96441b0f556a1ef50ee70fa72160ae71ecb9
   RNFBCrashlytics: 0866393a9fbca1d8d353052243e21d1cdeb55394
   RNFBMessaging: 95fa608c79d3378b1a958a64f8be82e4699368a9
+  RNFlashList: 4b4b6b093afc0df60ae08f9cbf6ccd4c836c667a
   RNTangemSdk: b4a4c91c617daca427a69cc7f784425c6789acd7
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
