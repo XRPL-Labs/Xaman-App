@@ -7,7 +7,8 @@
 .PHONY: test help
 
 OS := $(shell sh -c 'uname -s 2>/dev/null')
-SIMULATOR = iPhone 11 Pro Max
+SIMULATOR = iPhone 15 Pro Max
+
 
 node_modules: package.json
 	@if ! [ $(shell which npm 2> /dev/null) ]; then \
@@ -153,7 +154,7 @@ build-android: | stop pre-build validate-style ## Build the Android app
 	$(call stop_packager)
 
 pre-e2e: | pre-build  ## build for e2e test
-	@npx detox build e2e --configuration ios.sim.release
+	@npx detox build e2e --configuration ios.sim
 
 test: | pre-run validate-style ## Runs tests
 	@npm run test
@@ -161,7 +162,10 @@ test: | pre-run validate-style ## Runs tests
 test-e2e: ## Runs e2e tests
 	@npx detox clean-framework-cache
 	@npx detox build-framework-cache
-	@npx cucumber-js ./e2e --configuration ios.sim.release
+	@npx cucumber-js ./e2e --configuration android.attached
+	@#npx cucumber-js ./e2e --configuration ios.sim
+
+
 
 ## Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

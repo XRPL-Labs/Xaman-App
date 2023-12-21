@@ -19,7 +19,7 @@ BeforeAll(async () => {
 
     const config = {
         configuration,
-        reuse: false,
+        reuse: true,
     };
 
     await detox.init({ argv: config });
