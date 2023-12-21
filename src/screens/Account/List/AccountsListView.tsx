@@ -127,6 +127,10 @@ class AccountListView extends Component<Props, State> {
     onItemPress = (account: AccountModel) => {
         const { reorderEnabled } = this.state;
 
+        if (!account?.isValid()) {
+            return;
+        }
+
         if (!reorderEnabled) {
             Navigator.push(AppScreens.Account.Edit.Settings, { account });
         }
@@ -148,6 +152,7 @@ class AccountListView extends Component<Props, State> {
         this.setState({
             dataSource: data,
         });
+
         for (let i = 0; i < data.length; i++) {
             if (data[i].address) {
                 AccountRepository.update({
@@ -166,8 +171,8 @@ class AccountListView extends Component<Props, State> {
         });
     };
 
-    itemKeyExtractor = (item: AccountModel) => {
-        return `account-${item.address}`;
+    itemKeyExtractor = (item: AccountModel, index: number) => {
+        return item?.isValid() ? `account-${item.address}` : `account-${index}`;
     };
 
     renderItem = ({ item }: { item: AccountModel }) => {
