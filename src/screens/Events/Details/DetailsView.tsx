@@ -158,7 +158,13 @@ class TransactionDetailsView extends Component<Props, State> {
 
     getTransactionLink = () => {
         const { tx } = this.props;
-        return GetTransactionLink(tx.CTID);
+
+        // only base transactions have CTID
+        if (tx instanceof BaseTransaction) {
+            return GetTransactionLink(tx.CTID);
+        }
+
+        return '#';
     };
 
     shareTxLink = () => {
@@ -1518,7 +1524,7 @@ class TransactionDetailsView extends Component<Props, State> {
     };
 
     render() {
-        const { asModal } = this.props;
+        const { tx, asModal } = this.props;
         const { scamAlert } = this.state;
 
         return (
@@ -1529,10 +1535,12 @@ class TransactionDetailsView extends Component<Props, State> {
                         onPress: this.close,
                     }}
                     centerComponent={{ text: Localize.t('events.transactionDetails') }}
-                    rightComponent={{
-                        icon: 'IconMoreHorizontal',
-                        onPress: this.showMenu,
-                    }}
+                    rightComponent={
+                        tx instanceof BaseTransaction && {
+                            icon: 'IconMoreHorizontal',
+                            onPress: this.showMenu,
+                        }
+                    }
                     // eslint-disable-next-line react-native/no-inline-styles
                     containerStyle={asModal && { marginTop: 0 }}
                 />
