@@ -119,24 +119,24 @@ const DecodeNFTokenID = (nfTokenID: string) => {
  */
 const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): string => {
     if (typeof ledgerSeq !== 'number') {
-        throw new Error('ledgerSeq must be a number.');
+        throw new Error(`ledgerSeq must be a number got ${typeof ledgerSeq}.`);
     }
     if (ledgerSeq > 0xfffffff || ledgerSeq < 0) {
-        throw new Error('ledgerSeq must not be greater than 268435455 or less than 0.');
+        throw new Error(`ledgerSeq must not be greater than 268435455 or less than 0, got ${ledgerSeq}.`);
     }
 
     if (typeof txnIndex !== 'number') {
-        throw new Error('txnIndex must be a number.');
+        throw new Error(`txnIndex must be a number got ${txnIndex}.`);
     }
     if (txnIndex > 0xffff || txnIndex < 0) {
-        throw new Error('txnIndex must not be greater than 65535 or less than 0.');
+        throw new Error(`txnIndex must not be greater than 65535 or less than 0, got ${txnIndex}`);
     }
 
     if (typeof networkId !== 'number') {
-        throw new Error('networkId must be a number.');
+        throw new Error(`networkId must be a number got ${typeof networkId}.`);
     }
     if (networkId > 0xffff || networkId < 0) {
-        throw new Error('networkId must not be greater than 65535 or less than 0.');
+        throw new Error(`networkId must not be greater than 65535 or less than 0, got ${networkId}`);
     }
 
     // @ts-ignore

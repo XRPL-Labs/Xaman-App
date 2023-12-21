@@ -3,10 +3,6 @@
  */
 import { get, has, set, isUndefined } from 'lodash';
 
-import { EncodeCTID } from '@common/utils/codec';
-
-import NetworkService from '@services/NetworkService';
-
 import { Account } from '@common/libs/ledger/parser/types';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
@@ -19,10 +15,6 @@ class BaseLedgerObject {
 
     constructor(object?: LedgerEntriesTypes) {
         this.object = object;
-    }
-
-    get CTID(): string {
-        return EncodeCTID(this.Sequence, this.Index, NetworkService.getNetworkId());
     }
 
     get Account(): Account {
