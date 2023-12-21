@@ -18,17 +18,19 @@ import { LedgerTransactionType } from '@common/libs/ledger/types';
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+
 import { AccountTypes } from '@store/types';
 
-/* events  ==================================================================== */
-declare interface AccountService {
-    on(
-        event: 'transaction',
-        listener: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void,
-    ): this;
-    on(event: string, listener: Function): this;
-}
+/* Events  ==================================================================== */
+export type AccountServiceEvent = {
+    transaction: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void;
+};
 
+declare interface AccountService {
+    on<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    off<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    emit<U extends keyof AccountServiceEvent>(event: U, ...args: Parameters<AccountServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
     private accounts: string[];

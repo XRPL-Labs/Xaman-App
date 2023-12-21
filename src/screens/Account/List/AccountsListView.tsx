@@ -235,7 +235,6 @@ class AccountListView extends Component<Props, State> {
                                 light
                                 roundedSmall
                                 icon="IconEdit"
-                                iconStyle={styles.rowIcon}
                                 iconSize={15}
                                 textStyle={styles.buttonEditText}
                                 label={Localize.t('global.edit')}

@@ -5,7 +5,7 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, Text, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -115,13 +115,13 @@ class InfoMessage extends PureComponent<Props> {
         const { children, icon, label, labelStyle, type } = this.props;
 
         if (children && !label) {
-            return <View style={[styles.labelContainer]}>{children}</View>;
+            return <View style={styles.labelContainer}>{children}</View>;
         }
 
-        const style = [styles.label];
+        const style: TextStyle[] = [styles.label];
 
         if (labelStyle) {
-            style.push(labelStyle);
+            style.push(StyleSheet.flatten(labelStyle));
         } else {
             switch (type) {
                 case 'info':

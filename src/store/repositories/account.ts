@@ -9,11 +9,17 @@ import Vault from '@common/libs/vault';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
+
+export type AccountRepositoryEvent = {
+    accountUpdate: (account: AccountModel, changes: Partial<AccountModel> | Partial<AccountDetailsModel>) => void;
+    accountCreate: (account: AccountModel) => void;
+    accountRemove: () => void;
+};
+
 declare interface AccountRepository {
-    on(event: 'accountUpdate', listener: (account: AccountModel, changes: Partial<AccountModel>) => void): this;
-    on(event: 'accountCreate', listener: (account: AccountModel) => void): this;
-    on(event: 'accountRemove', listener: () => void): this;
-    on(event: string, listener: Function): this;
+    on<U extends keyof AccountRepositoryEvent>(event: U, listener: AccountRepositoryEvent[U]): this;
+    off<U extends keyof AccountRepositoryEvent>(event: U, listener: AccountRepositoryEvent[U]): this;
+    emit<U extends keyof AccountRepositoryEvent>(event: U, ...args: Parameters<AccountRepositoryEvent[U]>): boolean;
 }
 
 /* Repository  ==================================================================== */
@@ -125,13 +131,6 @@ class AccountRepository extends BaseRepository<AccountModel> {
     };
 
     /**
-     * get all accounts count
-     */
-    getVisibleAccountCount = (): number => {
-        return this.query({ hidden: false }).length;
-    };
-
-    /**
      * get list of accounts with full access
      */
     getFullAccessAccounts = (): AccountModel[] => {
@@ -216,21 +215,36 @@ class AccountRepository extends BaseRepository<AccountModel> {
      * Downgrade access level to readonly
      * WARNING: this will remove private key from keychain
      */
-    downgrade = (account: AccountModel): boolean => {
-        // it's already readonly
-        if (account.accessLevel === AccessLevels.Readonly) return true;
+    downgrade = async (account: AccountModel): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                // it's already readonly
+                if (account.accessLevel === AccessLevels.Readonly) {
+                    resolve();
+                    return;
+                }
 
-        // remove private key from vault
-        Vault.purge(account.publicKey);
+                // check if private key exist in the vault
+                const exist = await Vault.exist(account.publicKey);
 
-        // set the access level to Readonly
-        this.update({
-            address: account.address,
-            accessLevel: AccessLevels.Readonly,
-            encryptionLevel: EncryptionLevels.None,
+                // purge private key from vault
+                if (exist) {
+                    await Vault.purge(account.publicKey);
+                }
+
+                // set the access level to Readonly
+                await this.update({
+                    address: account.address,
+                    accessLevel: AccessLevels.Readonly,
+                    encryptionLevel: EncryptionLevels.None,
+                });
+
+                resolve();
+            } catch (error: any) {
+                reject(error);
+            }
         });
-
-        return true;
     };
 
     /**

@@ -94,6 +94,7 @@ const styles = StyleService.create({
     buttonDisabled: {
         opacity: 0.4,
     },
+    textButtonDisabled: {},
 
     // Contrast
     buttonContrast: {

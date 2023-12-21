@@ -107,7 +107,7 @@ class LinkingService {
             const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
             // review the transaction
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 { payload },
                 { modalPresentationStyle: 'fullScreen' },
@@ -145,7 +145,7 @@ class LinkingService {
 
     handleXrplDestination = async (destination: XrplDestination & PayId) => {
         if (destination.payId) {
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Transaction.Payment,
                 {
                     scanResult: {
@@ -167,7 +167,7 @@ class LinkingService {
             amount = destination.amount;
         }
 
-        this.routeUser(
+        await this.routeUser(
             AppScreens.Transaction.Payment,
             {
                 scanResult: {

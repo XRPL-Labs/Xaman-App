@@ -536,7 +536,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             }
 
             // if everything is fine prepare the transaction for signing
-            this.prepareAndSignTransaction();
+            await this.prepareAndSignTransaction();
         } finally {
             if (this.mounted) {
                 this.setState({

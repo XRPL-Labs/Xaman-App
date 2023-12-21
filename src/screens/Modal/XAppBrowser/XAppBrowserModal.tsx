@@ -879,7 +879,6 @@ class XAppBrowserModal extends Component<Props, State> {
                 <Spacer size={18} />
                 <InfoMessage
                     type="neutral"
-                    labelStyle={styles.actionDescription}
                     label={Localize.t('global.pleaseAddAccountToAccessXApp')}
                     containerStyle={styles.actionContainer}
                     actionButtonLabel={Localize.t('account.addAccount')}

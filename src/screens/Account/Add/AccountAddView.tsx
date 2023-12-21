@@ -211,7 +211,7 @@ class AccountAddView extends Component<Props, State> {
         }
     };
 
-    onAddTangemCardPress = () => {
+    onAddTangemCardPress = async () => {
         const { NFCSupported, NFCEnabled } = this.state;
 
         if (!NFCSupported) {
@@ -228,7 +228,7 @@ class AccountAddView extends Component<Props, State> {
         });
 
         if (NFCEnabled) {
-            this.scanTangemCard();
+            await this.scanTangemCard();
         }
     };
 

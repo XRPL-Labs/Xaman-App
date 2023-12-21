@@ -36,6 +36,7 @@ interface State {
 }
 
 /* Component ==================================================================== */
+// noinspection JSUnusedGlobalSymbols
 class CardFlip extends Component<Props, State> {
     static defaultProps = {
         style: {},

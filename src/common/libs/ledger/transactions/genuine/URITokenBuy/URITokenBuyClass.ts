@@ -7,7 +7,7 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
 /* Types ==================================================================== */
-import { AmountType } from '@common/libs/ledger/parser/types';
+import { AmountType, LedgerAmount } from '@common/libs/ledger/parser/types';
 import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 
 /* Class ==================================================================== */
@@ -31,9 +31,7 @@ class URITokenBuy extends BaseTransaction {
     }
 
     get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
+        const amount: LedgerAmount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 

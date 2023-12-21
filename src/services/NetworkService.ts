@@ -37,13 +37,17 @@ export enum NetworkStateStatus {
     Disconnected = 'Disconnected',
 }
 
-declare interface NetworkService {
-    on(event: 'connect', listener: (networkId: number) => void): this;
-    on(event: 'stateChange', listener: (networkStatus: NetworkStateStatus) => void): this;
-    on(event: 'networkChange', listener: (network: NetworkModel) => void): this;
-    on(event: string, listener: Function): this;
-}
+export type NetworkServiceEvent = {
+    connect: (network: NetworkModel) => void;
+    stateChange: (networkStatus: NetworkStateStatus) => void;
+    networkChange: (network: NetworkModel) => void;
+};
 
+declare interface NetworkService {
+    on<U extends keyof NetworkServiceEvent>(event: U, listener: NetworkServiceEvent[U]): this;
+    off<U extends keyof NetworkServiceEvent>(event: U, listener: NetworkServiceEvent[U]): this;
+    emit<U extends keyof NetworkServiceEvent>(event: U, ...args: Parameters<NetworkServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class NetworkService extends EventEmitter {
     public network: NetworkModel;
@@ -300,7 +304,7 @@ class NetworkService extends EventEmitter {
      * Get connection details
      * @returns {object}
      */
-    getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: string } => {
+    getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: NetworkType } => {
         return {
             networkKey: this.network.key,
             networkId: this.network.networkId,
@@ -447,7 +451,7 @@ class NetworkService extends EventEmitter {
             throw new Error('Mismatched network ID in response.');
         }
 
-        return typeof res === 'object' ? { ...res, id: resId, networkId: this.network.networkId } : res;
+        return typeof res === 'object' ? { ...res, id: resId, __networkId: this.network.networkId } : res;
     };
 
     /**
@@ -621,7 +625,7 @@ class NetworkService extends EventEmitter {
         [this.updateNetworkReserve, this.updateNetworkDefinitions, this.updateNetworkFeatures].forEach((fn) => fn());
 
         // emit on connect event
-        this.emit('connect', { network: this.network });
+        this.emit('connect', this.network);
     };
 
     /**

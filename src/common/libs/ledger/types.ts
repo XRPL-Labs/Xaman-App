@@ -135,6 +135,28 @@ export interface Balance {
 }
 
 /**
+ * Ledger signer
+ */
+export interface Signer {
+    Signer: {
+        Account: string;
+        TxnSignature: string;
+        SigningPubKey: string;
+    };
+}
+
+/**
+ * Ledger signer entry
+ */
+export interface SignerEntry {
+    SignerEntry: {
+        Account: string;
+        SignerWeight: number;
+        WalletLocator: string;
+    };
+}
+
+/**
  * Ledger account root
  */
 export interface AccountRoot {

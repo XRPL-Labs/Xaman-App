@@ -15,7 +15,7 @@ const invariant = (condition: any, format: string, ...args: any[]) => {
     }
 
     if (!condition) {
-        let error = undefined as any;
+        let error: any;
         if (format === undefined) {
             error = new Error(
                 'Minified exception occurred; use the non-minified dev environment ' +

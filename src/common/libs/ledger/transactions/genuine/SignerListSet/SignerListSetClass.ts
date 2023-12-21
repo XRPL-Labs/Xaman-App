@@ -4,7 +4,7 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 
 /* Types ==================================================================== */
 import { SignerEntry } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJSONType, TransactionTypes, SignerEntry as LedgerSignerEntry } from '@common/libs/ledger/types';
 
 /* Class ==================================================================== */
 class SignerListSet extends BaseTransaction {
@@ -27,7 +27,7 @@ class SignerListSet extends BaseTransaction {
     }
 
     get SignerEntries(): Array<SignerEntry> {
-        const entries = get(this, ['tx', 'SignerEntries']);
+        const entries = get(this, ['tx', 'SignerEntries']) as Array<LedgerSignerEntry>;
 
         return flatMap(entries, (entry) => {
             return {

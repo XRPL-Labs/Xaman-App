@@ -20,6 +20,8 @@ class TextPlaceholder extends PureComponent<Props> {
     private readonly animatedPulse: Animated.Value;
     private readonly animatedFadeIn: Animated.Value;
 
+    private mounted = false;
+
     static defaultProps = {
         length: 12,
     };
@@ -32,7 +34,16 @@ class TextPlaceholder extends PureComponent<Props> {
     }
 
     componentDidMount() {
+        // track component mount state
+        this.mounted = true;
+
+        // start the placeholder
         InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
+    }
+
+    componentWillUnmount() {
+        // track component mount state
+        this.mounted = true;
     }
 
     componentDidUpdate(prevProps: Readonly<Props>) {
@@ -53,7 +64,7 @@ class TextPlaceholder extends PureComponent<Props> {
         const { isLoading } = this.props;
 
         // if not loading anymore then show the
-        if (!isLoading) {
+        if (!isLoading || !this.mounted) {
             return;
         }
 

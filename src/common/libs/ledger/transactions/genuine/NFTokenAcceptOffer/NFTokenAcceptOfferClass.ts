@@ -8,7 +8,7 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 import { NFTokenCreateOffer } from '@common/libs/ledger/transactions/genuine/NFTokenCreateOffer';
 
 /* Types ==================================================================== */
-import { AmountType } from '@common/libs/ledger/parser/types';
+import { AmountType, LedgerAmount } from '@common/libs/ledger/parser/types';
 import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 
 /* Class ==================================================================== */
@@ -61,9 +61,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
     }
 
     get NFTokenBrokerFee(): AmountType {
-        let brokerFee = undefined as AmountType;
-
-        brokerFee = get(this, ['tx', 'NFTokenBrokerFee']);
+        const brokerFee: LedgerAmount = get(this, ['tx', 'NFTokenBrokerFee']);
 
         if (isUndefined(brokerFee)) return undefined;
 

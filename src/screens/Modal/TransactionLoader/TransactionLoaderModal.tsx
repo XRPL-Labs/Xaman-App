@@ -179,7 +179,7 @@ class TransactionLoaderModal extends Component<Props, State> {
         await NetworkService.switchNetwork(requiredNetwork);
 
         // re-run the preFlight
-        this.loadTransaction();
+        await this.loadTransaction();
     };
 
     dismiss = () => {

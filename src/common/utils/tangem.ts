@@ -134,7 +134,7 @@ const GetCardSecurityOptions = (card: any): { [key in TangemSecurity]: boolean }
 /**
  * get card passcode status
  */
-const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
+const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
     // new cards
     if (get(card, 'isPasscodeSet') === true) {
         return TangemSecurity.Passcode;
@@ -145,6 +145,7 @@ const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
     }
 
     // older version of tangem sdk
+    // @ts-ignore
     if (has(card, 'isPin2Default') && !card.isPin2Default) {
         return TangemSecurity.Passcode;
     }
@@ -155,7 +156,7 @@ const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
 /**
  * get card ID
  */
-const GetCardId = (card: any): string => {
+const GetCardId = (card: Card): string => {
     if (has(card, 'cardId')) {
         return card.cardId;
     }

@@ -148,7 +148,9 @@ class AccountSettingsView extends Component<Props, State> {
         const { account } = this.state;
 
         // downgrade the access level
-        AccountRepository.downgrade(account);
+        AccountRepository.downgrade(account).catch(() => {
+            Alert.alert('Error', 'Unexpected error happened');
+        });
     };
 
     onAccessLevelSelected = (item: any) => {

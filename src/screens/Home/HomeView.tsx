@@ -174,14 +174,6 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    toggleDiscreetMode = () => {
-        const { discreetMode } = this.state;
-
-        this.setState({
-            discreetMode: !discreetMode,
-        });
-    };
-
     showExchangeAccountAlert = () => {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
     };

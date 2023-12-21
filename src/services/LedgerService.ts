@@ -25,6 +25,8 @@ import {
     LedgerNFToken,
 } from '@common/libs/ledger/types';
 
+import { NetworkType } from '@store/types';
+
 import { Issuer } from '@common/libs/ledger/parser/types';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
@@ -35,9 +37,18 @@ import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
 /* Types  ==================================================================== */
+export type LedgerServiceEvent = {
+    submitTransaction: (
+        blob: string,
+        hash: string,
+        network: { id: number; node: string; type: NetworkType; key: string },
+    ) => void;
+};
+
 declare interface LedgerService {
-    on(event: 'submitTransaction', listener: (blob: string, hash: string, network: {}) => void): this;
-    on(event: string, listener: Function): this;
+    on<U extends keyof LedgerServiceEvent>(event: U, listener: LedgerServiceEvent[U]): this;
+    off<U extends keyof LedgerServiceEvent>(event: U, listener: LedgerServiceEvent[U]): this;
+    emit<U extends keyof LedgerServiceEvent>(event: U, ...args: Parameters<LedgerServiceEvent[U]>): boolean;
 }
 
 /* Service  ==================================================================== */
@@ -423,15 +434,11 @@ class LedgerService extends EventEmitter {
             const { node, type: networkType, networkId, networkKey } = NetworkService.getConnectionDetails();
 
             // send event about we are about to submit the transaction
-            this.emit('submitTransaction', {
-                blob: txBlob,
-                hash: txHash,
-                network: {
-                    id: networkId,
-                    node,
-                    type: networkType,
-                    key: networkKey,
-                },
+            this.emit('submitTransaction', txBlob, txHash, {
+                id: networkId,
+                node,
+                type: networkType,
+                key: networkKey,
             });
 
             // submit the tx blob to the ledger

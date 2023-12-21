@@ -655,7 +655,7 @@ class RecipientStep extends Component<Props, State> {
         }
 
         // go to the next step if everything was fine
-        this.goNext();
+        await this.goNext();
     };
 
     onScannerRead = (content: any) => {

@@ -22,7 +22,6 @@ import LoggerService from '@services/LoggerService';
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
 const Emitter = new NativeEventEmitter(AppUtilsModule);
-
 /* Types  ==================================================================== */
 export enum NetStateStatus {
     Connected = 'Connected',
@@ -35,12 +34,17 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
-// events
-declare interface AppService {
-    on(event: 'appStateChange', listener: (status: AppStateStatus, prevStatus: AppStateStatus) => void): this;
-    on(event: string, listener: Function): this;
-}
+/* Events  ==================================================================== */
+export type AppServiceEvent = {
+    appStateChange: (status: AppStateStatus, prevStatus: AppStateStatus) => void;
+    netStateChange: (status: NetStateStatus, prevStatus: NetStateStatus) => void;
+};
 
+declare interface AppService {
+    on<U extends keyof AppServiceEvent>(event: U, listener: AppServiceEvent[U]): this;
+    off<U extends keyof AppServiceEvent>(event: U, listener: AppServiceEvent[U]): this;
+    emit<U extends keyof AppServiceEvent>(event: U, ...args: Parameters<AppServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class AppService extends EventEmitter {
     netStatus: NetStateStatus;
@@ -85,7 +89,7 @@ class AppService extends EventEmitter {
             Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
 
             // update the latest version code
-            Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
+            await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
         }
     };
 
@@ -138,17 +142,20 @@ class AppService extends EventEmitter {
     };
 
     setNetState = (isConnected: boolean) => {
-        let netStatus = NetStateStatus.Disconnected;
+        let newState: NetStateStatus;
+
+        const prevState = this.netStatus;
+
         if (isConnected) {
-            netStatus = NetStateStatus.Connected;
+            newState = NetStateStatus.Connected;
         } else {
-            netStatus = NetStateStatus.Disconnected;
+            newState = NetStateStatus.Disconnected;
         }
 
-        if (this.netStatus !== netStatus) {
-            this.netStatus = netStatus;
+        if (this.netStatus !== newState) {
+            this.netStatus = newState;
             // emit the netStateChange event
-            this.emit('netStateChange', this.netStatus);
+            this.emit('netStateChange', newState, prevState);
         }
     };
 

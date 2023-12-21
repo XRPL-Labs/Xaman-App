@@ -129,6 +129,7 @@ class Input extends Component<Props, State> {
                 (Platform.OS === 'android' &&
                     [...DEFAULT_KEYBAORDTYPES, ...ANDROID_KEYBAORDTYPES].indexOf(keyboardType) === -1)
             ) {
+                // noinspection JSConstantReassignment
                 delete filteredProps.keyboardType;
             }
         }

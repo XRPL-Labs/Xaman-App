@@ -1,6 +1,6 @@
 import { get, assign } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import { Navigation, Options } from 'react-native-navigation';
 
 import { GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
 
@@ -13,11 +13,11 @@ import StyleService from '@services/StyleService';
 
 import AppFonts from '@theme/fonts';
 /* Constants ==================================================================== */
-const getDefaultOptions = () => {
-    return StyleService.create({
+const getDefaultOptions = (): Options => {
+    return {
         layout: {
-            backgroundColor: '$background',
-            componentBackgroundColor: '$background',
+            backgroundColor: StyleService.value('$background'),
+            componentBackgroundColor: StyleService.value('$background'),
             orientation: ['portrait'] as any,
             adjustResize: false,
         },
@@ -25,17 +25,17 @@ const getDefaultOptions = () => {
             visible: false,
         },
         navigationBar: {
-            backgroundColor: '$tint',
+            backgroundColor: StyleService.value('$tint'),
         },
         statusBar: {
             style: Platform.select({
-                android: 'default',
+                android: undefined,
                 ios: StyleService.isDarkMode() ? 'light' : 'dark',
             }),
             drawBehind: false,
         },
         bottomTabs: {
-            backgroundColor: '$background',
+            backgroundColor: StyleService.value('$background'),
             translucent: false,
             animate: false,
             drawBehind: false,
@@ -59,7 +59,7 @@ const getDefaultOptions = () => {
         },
         popGesture: true,
         blurOnUnmount: true,
-    });
+    };
 };
 
 const getTabBarIcons = () => {

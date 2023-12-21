@@ -1,6 +1,7 @@
 /**
  * Authentication Service
  */
+import EventEmitter from 'events';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -22,7 +23,6 @@ import LinkingService from '@services/LinkingService';
 import PushNotificationsService from '@services/PushNotificationsService';
 
 import Localize from '@locale';
-import EventEmitter from 'events';
 
 /* Types  ==================================================================== */
 export enum LockStatus {
@@ -31,10 +31,18 @@ export enum LockStatus {
 }
 
 /* Events  ==================================================================== */
-declare interface AuthenticationService {
-    on(event: 'lockStateChange', listener: (state: LockStatus) => void): this;
-}
+export type AuthenticationServiceEvent = {
+    lockStateChange: (state: LockStatus) => void;
+};
 
+declare interface AuthenticationService {
+    on<U extends keyof AuthenticationServiceEvent>(event: U, listener: AuthenticationServiceEvent[U]): this;
+    off<U extends keyof AuthenticationServiceEvent>(event: U, listener: AuthenticationServiceEvent[U]): this;
+    emit<U extends keyof AuthenticationServiceEvent>(
+        event: U,
+        ...args: Parameters<AuthenticationServiceEvent[U]>
+    ): boolean;
+}
 /* Service  ==================================================================== */
 class AuthenticationService extends EventEmitter {
     private lockStatus: LockStatus;
@@ -182,7 +190,7 @@ class AuthenticationService extends EventEmitter {
 
     /**
      * Runs after success auth
-     * @param  {number} ts?
+     * @param ts
      */
     onSuccessAuthentication = async (ts?: number) => {
         if (!ts) {
@@ -206,7 +214,7 @@ class AuthenticationService extends EventEmitter {
     /**
      * runs after wrong passcode input
      * @param  {any} coreSettings
-     * @param  {number} ts?
+     * @param ts
      */
     private onWrongPasscodeInput = async (coreSettings: any, ts?: number) => {
         if (!ts) {

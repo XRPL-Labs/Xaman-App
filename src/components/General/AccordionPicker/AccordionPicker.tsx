@@ -101,10 +101,6 @@ class AccordionPicker extends Component<Props, State> {
         });
     };
 
-    public updateContainerPosition = () => {
-        this.setContainerPosition();
-    };
-
     onPress = () => {
         const { onPress } = this.props;
 

@@ -169,11 +169,7 @@ class PinInput extends Component<Props, State> {
         // check if pin is reference as date
         // if pin could be date with year (like 121091 that could be 12th of October or 10th of December 1991)
         const possibleDate = moment(code, 'DDMMYY').isValid() || moment(code, 'MMDDYY').isValid();
-        if (possibleDate) {
-            return false;
-        }
-
-        return true;
+        return !possibleDate;
     };
 
     setPinCode = (newCode: string) => {
@@ -253,7 +249,7 @@ class PinInput extends Component<Props, State> {
             );
         }
 
-        let props = {};
+        let props: {};
 
         // ios
         if (Platform.OS === 'ios') {

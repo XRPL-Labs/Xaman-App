@@ -36,6 +36,7 @@ import LedgerService from '@services/LedgerService';
 // Locale
 import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
+import { NetworkType } from '@store/types';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -72,17 +73,11 @@ class BackendService {
     /**
     On Ledger submit transaction
     */
-    onLedgerTransactionSubmit = ({
-        hash,
-        network,
-    }: {
-        hash: string;
-        network: {
-            node: string;
-            type: string;
-            key: string;
-        };
-    }) => {
+    onLedgerTransactionSubmit = (
+        blob: string,
+        hash: string,
+        network: { id: number; node: string; type: NetworkType; key: string },
+    ) => {
         // only if hash is provided
         if (!hash) {
             return;

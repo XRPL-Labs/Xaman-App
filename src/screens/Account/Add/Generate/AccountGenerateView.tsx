@@ -174,11 +174,11 @@ class AccountGenerateView extends Component<Props, State> {
         }
     };
 
-    goNext = (nextStep: GenerateSteps) => {
+    goNext = async (nextStep: GenerateSteps) => {
         const { currentStep, prevSteps } = this.state;
 
         if (currentStep === 'FinishStep') {
-            this.saveAccount();
+            await this.saveAccount();
             return;
         }
 

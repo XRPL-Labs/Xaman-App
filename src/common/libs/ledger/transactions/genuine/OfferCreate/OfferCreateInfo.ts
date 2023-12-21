@@ -22,7 +22,7 @@ const OfferCreateInfo = {
     },
 
     getDescription: (tx: OfferCreate): string => {
-        let content = '';
+        let content: string;
 
         content = Localize.t('events.offerTransactionExplain', {
             address: tx.Account.address,

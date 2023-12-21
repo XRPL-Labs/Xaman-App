@@ -61,7 +61,7 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     // IOU
     // currency code is hex try to decode it
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
-        let decoded = '';
+        let decoded: string;
 
         // check for XLS15d
         if (currencyCode.startsWith('02')) {

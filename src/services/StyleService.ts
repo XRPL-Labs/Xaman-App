@@ -12,7 +12,9 @@ import { Themes } from '@store/types';
 
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';
 
+import { ImageStyle, TextStyle, ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 /* Types  ==================================================================== */
+type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
 export type StyleType = Record<string, any>;
 
 /* Service  ==================================================================== */
@@ -68,7 +70,7 @@ class StyleService {
         }
     };
 
-    create = (styles: any) => {
+    create = <T extends NamedStyles<T> | NamedStyles<any>>(styles: T | NamedStyles<T>): T => {
         return Object.entries(styles).reduce((themed: any, style: any) => {
             const [key, value] = style;
 
@@ -87,7 +89,7 @@ class StyleService {
         return style;
     };
 
-    value = (value: any): string => {
+    value = (value: string): string => {
         if (this.isReference(value)) {
             const referenceKey: string = this.createKeyFromReference(value);
             return this.findValue(referenceKey);
@@ -111,17 +113,13 @@ class StyleService {
         return this.themeName !== 'light';
     };
 
-    select = (spec: {
-        light?: string | number;
-        dark?: string | number;
-        default?: string | number;
-    }): string | number => {
+    select<T extends string | number>(spec: { light?: T; dark?: T; default?: T }): T {
         return 'light' in spec && !this.isDarkMode()
             ? spec.light
             : 'dark' in spec && this.isDarkMode()
             ? spec.dark
             : spec.default;
-    };
+    }
 
     getImage = (image: Extract<keyof typeof Images, string>) => {
         // if dark mode and there is a light mode for image return light

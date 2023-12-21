@@ -8,7 +8,7 @@ import { ClaimReward } from '@common/libs/ledger/transactions';
 import { AccountElement } from '@components/Modules';
 
 import { AppStyles } from '@theme';
-import styles from '../styles';
+import styles from './styles';
 
 import { TemplateProps } from './types';
 

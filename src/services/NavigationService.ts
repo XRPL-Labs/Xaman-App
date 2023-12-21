@@ -38,6 +38,15 @@ export enum RootType {
     DefaultRoot = 'DefaultRoot',
 }
 
+export type NavigationServiceEvent = {
+    setRoot: (root: RootType) => void;
+};
+
+declare interface NavigationService {
+    on<U extends keyof NavigationServiceEvent>(event: U, listener: NavigationServiceEvent[U]): this;
+    off<U extends keyof NavigationServiceEvent>(event: U, listener: NavigationServiceEvent[U]): this;
+    emit<U extends keyof NavigationServiceEvent>(event: U, ...args: Parameters<NavigationServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
     private currentRoot: string;
@@ -307,7 +316,7 @@ class NavigationService extends EventEmitter {
         return l;
     };
 
-    onRootChange = (root: string) => {
+    onRootChange = (root: RootType) => {
         if (this.currentRoot !== root) {
             this.currentRoot = root;
         }

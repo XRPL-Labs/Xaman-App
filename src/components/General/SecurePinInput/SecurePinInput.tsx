@@ -287,7 +287,7 @@ class SecurePinInput extends Component<Props, State> {
         const { virtualKeyboard, length, isLoading } = this.props;
         const { digits } = this.state;
 
-        let props = {};
+        let props: {};
 
         // ios
         if (Platform.OS === 'ios') {

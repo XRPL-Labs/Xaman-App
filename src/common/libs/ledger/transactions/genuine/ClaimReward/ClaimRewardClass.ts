@@ -11,8 +11,6 @@ class ClaimReward extends BaseTransaction {
     public static Type = TransactionTypes.ClaimReward as const;
     public readonly Type = ClaimReward.Type;
 
-    private cachedClaimStatus: ClaimRewardStatus | undefined;
-
     constructor(tx?: TransactionJSONType, meta?: any) {
         super(tx, meta);
 

@@ -71,7 +71,7 @@ class Payment extends BaseTransaction {
     }
 
     get DeliveredAmount(): AmountType {
-        let deliveredAmount = undefined as AmountType;
+        let deliveredAmount: LedgerAmount | 'unavailable';
 
         if (has(this, ['meta', 'DeliveredAmount'])) {
             deliveredAmount = get(this, ['meta', 'DeliveredAmount']);
@@ -81,7 +81,7 @@ class Payment extends BaseTransaction {
 
         // the delivered_amount will be unavailable in old transactions
         // @ts-ignore
-        if (deliveredAmount === 'unavailable') {
+        if (deliveredAmount === 'unavailable' || deliveredAmount === null) {
             deliveredAmount = undefined;
         }
 
@@ -101,11 +101,8 @@ class Payment extends BaseTransaction {
         };
     }
 
-    // @ts-ignore
     get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
+        const amount: LedgerAmount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 

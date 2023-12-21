@@ -59,7 +59,7 @@ class AccountImportView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let initStep = undefined as ImportSteps;
+        let initStep: ImportSteps;
 
         switch (true) {
             case props.upgradeAccount !== undefined:
@@ -240,7 +240,7 @@ class AccountImportView extends Component<Props, State> {
 
         // we are in the last screen, just import the account and close the screen
         if (currentStep === 'FinishStep') {
-            this.importAccount();
+            await this.importAccount();
             return;
         }
 

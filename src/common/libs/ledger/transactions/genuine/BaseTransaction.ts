@@ -22,6 +22,7 @@ import {
     TransactionJSONType,
     TransactionTypes,
     VerifyResultType,
+    Signer as LedgerSigner,
 } from '@common/libs/ledger/types';
 
 import Meta from '@common/libs/ledger/parser/meta';
@@ -644,7 +645,7 @@ class BaseTransaction {
     }
 
     get Signers(): Array<Signer> {
-        const signers = get(this, ['tx', 'Signers']) as any;
+        const signers = get(this, ['tx', 'Signers']) as Array<LedgerSigner>;
         return flatMap(signers, (item) => {
             return {
                 account: item.Signer.Account,

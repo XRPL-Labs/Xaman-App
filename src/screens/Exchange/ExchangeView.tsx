@@ -427,7 +427,7 @@ class ExchangeView extends Component<Props, State> {
         const { account, trustLine } = this.props;
         const { direction } = this.state;
 
-        let availableBalance = '0';
+        let availableBalance: string;
 
         if (direction === MarketDirection.SELL) {
             availableBalance = new BigNumber(CalculateAvailableBalance(account)).toString();

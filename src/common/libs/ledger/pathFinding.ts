@@ -12,12 +12,6 @@ import { PathOption, RipplePathFindResponse } from '@common/libs/ledger/types';
 import { LedgerAmount } from '@common/libs/ledger/parser/types';
 
 /* Types ==================================================================== */
-declare interface LedgerPathFinding {
-    on(event: 'expire', listener: () => void): this;
-
-    on(event: string, listener: Function): this;
-}
-
 type PaymentOptions = {
     [key: string]: PathOption;
 };
@@ -26,6 +20,17 @@ type RequestPromise = {
     resolver: (value: PathOption[] | PromiseLike<PathOption[]>) => void;
     rejecter: (reason?: any) => void;
 };
+
+/* Events  ==================================================================== */
+export type LedgerPathFindingEvent = {
+    expire: () => void;
+};
+
+declare interface LedgerPathFinding {
+    on<U extends keyof LedgerPathFindingEvent>(event: U, listener: LedgerPathFindingEvent[U]): this;
+    off<U extends keyof LedgerPathFindingEvent>(event: U, listener: LedgerPathFindingEvent[U]): this;
+    emit<U extends keyof LedgerPathFindingEvent>(event: U, ...args: Parameters<LedgerPathFindingEvent[U]>): boolean;
+}
 
 /* Constants ==================================================================== */
 const RESOLVE_AFTER_SECS = 7000; // seconds before returning the data

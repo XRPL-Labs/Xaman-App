@@ -3,7 +3,6 @@ import { FlatList, RefreshControl, Text, View, ViewStyle } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
-
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
@@ -74,7 +73,6 @@ class AppsList extends Component<Props, State> {
                 data={dataSource}
                 renderItem={this.renderItem}
                 ListEmptyComponent={this.renderEmpty}
-                style={styles.sectionList}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}

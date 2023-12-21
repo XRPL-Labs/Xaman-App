@@ -7,6 +7,7 @@
 
 import get from 'lodash/get';
 import Realm from 'realm';
+import { Card } from 'tangem-sdk-react-native';
 
 import { StringIdentifier } from '@common/utils/string';
 
@@ -52,14 +53,14 @@ class Account extends Realm.Object<Account> {
      * Returns the parsed additional information object.
      * @type {Object}
      */
-    get additionalInfo(): Object {
+    get additionalInfo(): Card {
         return JSON.parse(this.additionalInfoString);
     }
 
     /**
      * Set the additional information after stringify it.
      */
-    set additionalInfo(data: Object) {
+    set additionalInfo(data: Card) {
         this.additionalInfoString = JSON.stringify(data);
     }
 

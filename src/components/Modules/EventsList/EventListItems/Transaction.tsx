@@ -452,7 +452,7 @@ class TransactionItem extends Component<Props, State> {
                     <AmountText
                         value={balanceChanges.received.value}
                         currency={balanceChanges.received.currency}
-                        style={[styles.amount, styles.incomingColor]}
+                        style={styles.amount}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
                         truncateCurrency
@@ -468,7 +468,7 @@ class TransactionItem extends Component<Props, State> {
                     <AmountText
                         value={balanceChanges.received.value}
                         currency={balanceChanges.received.currency}
-                        style={[styles.amount, styles.incomingColor]}
+                        style={styles.amount}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
                         truncateCurrency

@@ -124,7 +124,7 @@ class EnterMnemonicStep extends Component<Props, State> {
             return;
         }
 
-        let words = [];
+        let words: any[];
 
         // first try space
         words = mnemonic.split(' ');

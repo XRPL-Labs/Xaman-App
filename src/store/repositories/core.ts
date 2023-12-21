@@ -14,11 +14,15 @@ import NetworkModel from '@store/models/objects/network';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
-declare interface CoreRepository {
-    on(event: 'updateSettings', listener: (settings: CoreModel, changes: Partial<CoreModel>) => void): this;
-    on(event: string, listener: Function): this;
-}
+export type CoreRepositoryEvent = {
+    updateSettings: (settings: CoreModel, changes: Partial<CoreModel>) => void;
+};
 
+declare interface CoreRepository {
+    on<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
+    off<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
+    emit<U extends keyof CoreRepositoryEvent>(event: U, ...args: Parameters<CoreRepositoryEvent[U]>): boolean;
+}
 /* Repository  ==================================================================== */
 class CoreRepository extends BaseRepository<CoreModel> {
     /**
@@ -154,9 +158,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
 
             // hash the passcode
             const sha512Passcode = await SHA512(passcode);
-            const hashPasscode = await HMAC256(sha512Passcode, deviceUniqueId);
-
-            return hashPasscode;
+            return await HMAC256(sha512Passcode, deviceUniqueId);
         } catch (e) {
             return '';
         }

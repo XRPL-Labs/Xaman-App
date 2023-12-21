@@ -206,7 +206,7 @@ class ScanView extends Component<Props, State> {
             const payload = await Payload.from(uuid, PayloadOrigin.QR);
 
             // review the transaction
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
@@ -249,7 +249,7 @@ class ScanView extends Component<Props, State> {
                 {
                     text: Localize.t('global.submit'),
                     onPress: async () => {
-                        this.routeUser(
+                        await this.routeUser(
                             AppScreens.Modal.Submit,
                             {
                                 txblob: cleanBlob,
@@ -271,7 +271,7 @@ class ScanView extends Component<Props, State> {
         if (availableAccounts.length > 0) {
             // if it's payId do nothing
             if (destination.payId) {
-                this.routeUser(
+                await this.routeUser(
                     AppScreens.Transaction.Payment,
                     {
                         scanResult: {
@@ -308,7 +308,7 @@ class ScanView extends Component<Props, State> {
                 amount = destination.amount;
             }
 
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Transaction.Payment,
                 {
                     scanResult: {

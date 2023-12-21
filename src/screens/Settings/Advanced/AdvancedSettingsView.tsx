@@ -194,9 +194,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                 },
                 {
                     text: Localize.t('global.continue'),
-                    onPress: () => {
+                    onPress: async () => {
                         // switch the network
-                        NetworkService.switchNetwork(defaultNetwork);
+                        await NetworkService.switchNetwork(defaultNetwork);
                         // disable developer mode
                         this.disableDeveloperMode();
                     },

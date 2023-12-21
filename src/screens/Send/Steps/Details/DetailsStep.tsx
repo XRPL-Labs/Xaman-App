@@ -380,7 +380,7 @@ class DetailsStep extends Component<Props, State> {
                                 style={styles.editButton}
                                 roundedSmall
                                 iconSize={15}
-                                iconStyle={AppStyles.imgColorGreyDark}
+                                iconStyle={AppStyles.imgColorGrey}
                                 light
                                 icon="IconEdit"
                             />

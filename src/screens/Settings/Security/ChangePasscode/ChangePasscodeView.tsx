@@ -219,7 +219,7 @@ class ChangePasscodeView extends Component<Props, State> {
         }
     };
 
-    checkConfirmPasscode = (newPasscodeConfirm: string) => {
+    checkConfirmPasscode = async (newPasscodeConfirm: string) => {
         const { newPasscode } = this.state;
 
         if (newPasscode !== newPasscodeConfirm) {
@@ -234,7 +234,7 @@ class ChangePasscodeView extends Component<Props, State> {
         }
 
         // change passcode if everything looks good
-        this.changePasscode();
+        await this.changePasscode();
     };
 
     onPasscodeEntered = (passcode: string, isStrong?: boolean) => {

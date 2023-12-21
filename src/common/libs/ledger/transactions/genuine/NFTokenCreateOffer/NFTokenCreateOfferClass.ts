@@ -8,7 +8,7 @@ import LedgerDate from '@common/libs/ledger/parser/common/date';
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
 /* Types ==================================================================== */
-import { Destination, AmountType } from '@common/libs/ledger/parser/types';
+import { Destination, AmountType, LedgerAmount } from '@common/libs/ledger/parser/types';
 import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 
 /* Class ==================================================================== */
@@ -27,11 +27,8 @@ class NFTokenCreateOffer extends BaseTransaction {
         this.fields = this.fields.concat(['Amount', 'Destination', 'Expiration', 'Owner', 'NFTokenID']);
     }
 
-    // @ts-ignore
     get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
+        const amount: LedgerAmount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 

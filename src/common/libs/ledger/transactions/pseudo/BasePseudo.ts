@@ -9,11 +9,16 @@ import { AccountModel } from '@store/models';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import { PseudoTransactionTypes, SignedObjectType, TransactionJSONType } from '@common/libs/ledger/types';
+import {
+    PseudoTransactionTypes,
+    SignedObjectType,
+    Signer as LedgerSigner,
+    TransactionJSONType,
+} from '@common/libs/ledger/types';
 
 import Memo from '@common/libs/ledger/parser/common/memo';
 /* Types ==================================================================== */
-import { Account, MemoType } from '@common/libs/ledger/parser/types';
+import { Account, MemoType, Signer } from '@common/libs/ledger/parser/types';
 
 /* Class ==================================================================== */
 class BasePseudoTransaction {
@@ -206,11 +211,15 @@ class BasePseudoTransaction {
         return tx;
     }
 
-    get Signers(): Array<any> {
-        const signers = get(this, ['tx', 'Signers']);
+    get Signers(): Array<Signer> {
+        const signers = get(this, ['tx', 'Signers']) as Array<LedgerSigner>;
 
-        return flatMap(signers, (e) => {
-            return { account: e.Signer.Account, signature: e.Signer.TxnSignature, pubKey: e.Signer.SigningPubKey };
+        return flatMap(signers, (item) => {
+            return {
+                account: item.Signer.Account,
+                signature: item.Signer.TxnSignature,
+                pubKey: item.Signer.SigningPubKey,
+            };
         });
     }
 

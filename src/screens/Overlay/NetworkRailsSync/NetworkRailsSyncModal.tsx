@@ -236,8 +236,8 @@ class NetworkRailsSyncModal extends Component<Props, State> {
     renderChangeHeader = (networkKey: string) => {
         const { rails } = this.state;
 
-        let networkName = '';
-        let networkColor = '';
+        let networkName: string;
+        let networkColor: string;
 
         if (Object.prototype.hasOwnProperty.call(rails, networkKey)) {
             networkName = rails[networkKey].name;

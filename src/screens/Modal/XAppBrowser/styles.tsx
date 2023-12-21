@@ -15,6 +15,9 @@ const styles = StyleService.create({
     webView: {
         backgroundColor: '$background',
     },
+    webViewContainer: {
+        backgroundColor: '$background',
+    },
     stateContainer: {
         backgroundColor: '$background',
         position: 'absolute',
