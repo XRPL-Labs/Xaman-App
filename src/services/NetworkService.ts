@@ -2,6 +2,7 @@
  * Network service
  */
 
+import { isPlainObject, isArray, isString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import Realm from 'realm';
@@ -452,44 +453,64 @@ class NetworkService extends EventEmitter {
     /**
      * Updates the network definitions and persists them to the `NetworkRepository`.
      */
-    updateNetworkDefinitions = () => {
-        // include definitions hash if exist in the request
-        const request = {
-            command: 'server_definitions',
-        };
+    updateNetworkDefinitions = async () => {
+        try {
+            // include definitions hash if exist in the request
+            const request = { command: 'server_definitions' };
 
-        let definitionsHash = '';
+            let definitionsHash = '';
 
-        if (this.network.definitions) {
-            definitionsHash = this.network.definitions.hash as string;
-            Object.assign(request, { hash: definitionsHash });
-        }
+            if (this.network.definitions) {
+                definitionsHash = this.network.definitions.hash as string;
+                Object.assign(request, { hash: definitionsHash });
+            }
 
-        this.send(request)
-            .then(async (resp: any) => {
-                // an error happened
-                if ('error' in resp) {
-                    // ignore
-                    return;
+            const definitionsResp = await this.send(request);
+
+            // validate the response
+            if (typeof definitionsResp !== 'object' || 'error' in definitionsResp || !('hash' in definitionsResp)) {
+                this.logger.warn('server_definitions got invalid response:', definitionsResp);
+                return;
+            }
+
+            // nothing has been changed
+            if (definitionsResp.hash === definitionsHash) {
+                return;
+            }
+
+            // validate the response
+            const respValidation = {
+                TYPES: isPlainObject,
+                TRANSACTION_RESULTS: isPlainObject,
+                TRANSACTION_TYPES: isPlainObject,
+                LEDGER_ENTRY_TYPES: isPlainObject,
+                FIELDS: isArray,
+                hash: isString,
+            } as { [key: string]: (value?: any) => boolean };
+
+            const definitions = {};
+
+            for (const key in respValidation) {
+                if (Object.prototype.hasOwnProperty.call(respValidation, key)) {
+                    // validate
+                    if (respValidation[key](definitionsResp[key]) === false) {
+                        this.logger.warn('server_definitions got invalid format:', definitionsResp);
+                        return;
+                    }
+                    // set the key
+                    Object.assign(definitions, { [key]: definitionsResp[key] });
                 }
+            }
 
-                // nothing has been changed
-                if (resp?.hash === definitionsHash) {
-                    return;
-                }
+            this.logger.debug(`Updating network [${this.network.networkId}] definitions ${definitionsResp.hash} `);
 
-                // remove unnecessary fields
-                delete resp.__command;
-                delete resp.__replyMs;
-
-                NetworkRepository.update({
-                    id: this.network.id,
-                    definitionsString: JSON.stringify(resp),
-                });
-            })
-            .catch((error: any) => {
-                this.logger.error(error);
+            NetworkRepository.update({
+                id: this.network.id,
+                definitionsString: JSON.stringify(definitions),
             });
+        } catch (error: any) {
+            this.logger.error('updateNetworkDefinitions: ', error);
+        }
     };
 
     /**
