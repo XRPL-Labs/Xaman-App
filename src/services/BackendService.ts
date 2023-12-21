@@ -30,7 +30,7 @@ import { NFTokenOffer } from '@common/libs/ledger/objects';
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
 // Locale
@@ -48,8 +48,9 @@ export interface RatesType {
 
 /* Service  ==================================================================== */
 class BackendService {
-    private logger: any;
     private rates: Map<string, RatesType>;
+
+    private logger: LoggerInstance;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');

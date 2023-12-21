@@ -16,7 +16,7 @@ import { GetAppVersionCode } from '@common/helpers/app';
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
 
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
@@ -51,7 +51,7 @@ class AppService extends EventEmitter {
     prevAppState: AppStateStatus;
     currentAppState: AppStateStatus;
     private inactivityTimeout: any;
-    private logger: any;
+    private logger: LoggerInstance;
 
     constructor() {
         super();

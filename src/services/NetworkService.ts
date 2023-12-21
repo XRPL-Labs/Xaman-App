@@ -28,7 +28,7 @@ import { AppScreens, NetworkConfig } from '@common/constants';
 
 import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 
 /* Types  ==================================================================== */
 export enum NetworkStateStatus {
@@ -56,13 +56,12 @@ class NetworkService extends EventEmitter {
     private networkReserve: any;
     private lastNetworkErrorId: Realm.BSON.ObjectId;
 
-    private logger: any;
-
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
 
     static TIMEOUT_SECONDS = 40;
     static ORIGIN = `/xaman/${GetAppVersionCode()}/${Platform.OS}`;
+    private logger: LoggerInstance;
 
     constructor() {
         super();

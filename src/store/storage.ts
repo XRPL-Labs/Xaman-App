@@ -8,16 +8,17 @@
 import Realm from 'realm';
 import { sortBy, values, flatMap } from 'lodash';
 
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
+
 import Vault from '@common/libs/vault';
 
 import { AppConfig } from '@common/constants';
-
-import LoggerService from '@services/LoggerService';
 /* Module ==================================================================== */
 export default class Storage {
     private readonly compactionThreshold: number;
-    private logger: any;
     public dataStore: Realm;
+
+    private logger: LoggerInstance;
 
     constructor() {
         this.compactionThreshold = 30;

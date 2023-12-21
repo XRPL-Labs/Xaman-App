@@ -207,6 +207,14 @@ class AdvancedSettingsView extends Component<Props, State> {
         });
     };
 
+    showSessionLogs = () => {
+        Navigator.push(AppScreens.Settings.SessionLog);
+    };
+
+    showNetworkSettings = () => {
+        Navigator.push(AppScreens.Settings.Network.List);
+    };
+
     render() {
         const { coreSettings, profile } = this.state;
 
@@ -222,23 +230,19 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    {/* node & explorer section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('global.networks')}
                     </Text>
                     <TouchableDebounce
                         testID="network-settings-button"
                         style={styles.row}
-                        onPress={() => {
-                            Navigator.push(AppScreens.Settings.Network.List);
-                        }}
+                        onPress={this.showNetworkSettings}
                     >
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.networkSettings')}
                             </Text>
                         </View>
-
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
@@ -320,12 +324,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             />
                         </View>
                     </View>
-                    <TouchableDebounce
-                        style={styles.row}
-                        onPress={() => {
-                            Navigator.push(AppScreens.Settings.SessionLog);
-                        }}
-                    >
+                    <TouchableDebounce style={styles.row} onPress={this.showSessionLogs}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.sessionLog')}

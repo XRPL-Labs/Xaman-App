@@ -16,7 +16,7 @@ import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import NetworkService from '@services/NetworkService';
 
 /* Types  ==================================================================== */
@@ -46,7 +46,7 @@ class ApiService {
     private bearerHash: string;
     private uniqueDeviceIdentifier: string;
     private isRefreshingToken: boolean;
-    private logger: any;
+    private logger: LoggerInstance;
     [index: string]: any;
 
     constructor() {

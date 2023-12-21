@@ -18,7 +18,7 @@ import CoreRepository from '@store/repositories/core';
 import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LinkingService from '@services/LinkingService';
 import PushNotificationsService from '@services/PushNotificationsService';
 
@@ -47,7 +47,7 @@ declare interface AuthenticationService {
 class AuthenticationService extends EventEmitter {
     private lockStatus: LockStatus;
     private postSuccess: Array<() => void>;
-    private logger: any;
+    private logger: LoggerInstance;
 
     constructor() {
         super();
@@ -126,8 +126,8 @@ class AuthenticationService extends EventEmitter {
             while (this.postSuccess.length) {
                 try {
                     this.postSuccess.shift().call(null);
-                } catch (e) {
-                    this.logger.error(e);
+                } catch (error) {
+                    this.logger.error('runAfterSuccessAuth', error);
                 }
             }
         }, 500);

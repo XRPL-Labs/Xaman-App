@@ -16,7 +16,7 @@ import { Amount } from '@common/libs/ledger/parser/common';
 import { LedgerTransactionType } from '@common/libs/ledger/types';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
 import { AccountTypes } from '@store/types';
@@ -34,8 +34,9 @@ declare interface AccountService {
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
     private accounts: string[];
-    private logger: any;
     private transactionListener: any;
+
+    private logger: LoggerInstance;
 
     constructor() {
         super();

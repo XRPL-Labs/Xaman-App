@@ -18,7 +18,7 @@ import { AppScreens } from '@common/constants';
 
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import NavigationService, { ComponentTypes } from '@services/NavigationService';
 
 import { StringTypeCheck } from '@common/utils/string';
@@ -53,7 +53,7 @@ declare interface PushNotificationsService {
 class PushNotificationsService extends EventEmitter {
     initialized: boolean;
     initialNotification: FirebaseMessagingTypes.RemoteMessage;
-    logger: any;
+    private logger: LoggerInstance;
 
     constructor() {
         super();
