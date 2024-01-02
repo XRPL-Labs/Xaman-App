@@ -982,7 +982,7 @@
     "somethingWentWrong": "問題が発生しました！",
     "resultCopiedToClipboard": "結果をクリップボードにコピーしました",
     "txIdCopiedToClipboard": "トランザクションIDがクリップボードにコピーされました",
-    "submittingToLedger": "%{network}レジャーへトランザクションを送信中",
+    "submittingToLedger": "%{network}へトランザクションを送信中",
     "sendingFrom": "から送信しています",
     "enterDescription": "説明を入力してください",
     "enterPublicMemo": "公開メモを入力してください（オプション）",
