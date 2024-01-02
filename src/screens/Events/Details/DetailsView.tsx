@@ -22,7 +22,7 @@ import { Transactions } from '@common/libs/ledger/transactions/types';
 import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
-import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -523,7 +523,7 @@ class TransactionDetailsView extends Component<Props, State> {
             changes = {
                 address: account.address,
                 value: 1,
-                action: 'INC',
+                action: OperationActions.INC,
             };
         } else if (tx instanceof BaseTransaction && typeof tx.OwnerCountChange === 'function') {
             changes = tx.OwnerCountChange(account.address);
@@ -537,7 +537,7 @@ class TransactionDetailsView extends Component<Props, State> {
             <View style={styles.reserveContainer}>
                 <View style={AppStyles.row}>
                     <Icon
-                        name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
+                        name={changes.action === OperationActions.INC ? 'IconLock' : 'IconUnlock'}
                         size={18}
                         style={AppStyles.imgColorPrimary}
                     />
@@ -546,7 +546,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
                 <View style={AppStyles.paddingBottomSml}>
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
-                        {changes.action === 'INC'
+                        {changes.action === OperationActions.INC
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
                                   ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
                                   nativeAsset: NetworkService.getNativeAsset(),

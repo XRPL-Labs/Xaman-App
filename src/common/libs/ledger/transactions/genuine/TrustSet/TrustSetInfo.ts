@@ -5,6 +5,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import Localize from '@locale';
 
 import TrustSet from './TrustSetClass';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 const TrustSetInfo = {
@@ -18,7 +19,7 @@ const TrustSetInfo = {
         }
         const ownerCountChange = tx.OwnerCountChange(account.address);
         if (ownerCountChange) {
-            if (ownerCountChange.action === 'INC') {
+            if (ownerCountChange.action === OperationActions.INC) {
                 return Localize.t('events.addedATrustLine');
             }
             return Localize.t('events.removedATrustLine');
@@ -29,7 +30,7 @@ const TrustSetInfo = {
     getDescription: (tx: TrustSet, account: AccountModel): string => {
         const ownerCountChange = tx.OwnerCountChange(account.address);
 
-        if (ownerCountChange && ownerCountChange.action === 'DEC') {
+        if (ownerCountChange && ownerCountChange.action === OperationActions.DEC) {
             return Localize.t('events.itRemovedTrustLineCurrencyTo', {
                 currency: NormalizeCurrencyCode(tx.Currency),
                 issuer: tx.Issuer,
