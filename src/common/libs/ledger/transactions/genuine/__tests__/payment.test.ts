@@ -9,6 +9,7 @@ import { Payment, PaymentInfo, PaymentValidation } from '../Payment';
 import paymentTemplate from './fixtures/PaymentTx.json';
 
 import { NormalizeCurrencyCode } from '../../../../../utils/amount';
+import { OperationActions } from '../../../parser/types';
 
 jest.mock('@services/NetworkService');
 
@@ -43,12 +44,13 @@ describe('Payment tx', () => {
 
             expect(instance.BalanceChange()).toStrictEqual({
                 received: {
-                    action: 'INC',
+                    action: OperationActions.INC,
                     currency: 'XRP',
+                    issuer: undefined,
                     value: '0.999988',
                 },
                 sent: {
-                    action: 'DEC',
+                    action: OperationActions.DEC,
                     currency: 'USD',
                     issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
                     value: '1.23905437',

@@ -459,3 +459,18 @@ export interface GenesisMintsType
             Destination: string;
         };
     }> {}
+
+/**
+ * Hook executions
+ */
+export interface HookExecution {
+    HookAccount: string;
+    HookEmitCount: number;
+    HookExecutionIndex: number;
+    HookHash: string;
+    HookInstructionCount: string;
+    HookResult: number;
+    HookReturnCode: number;
+    HookReturnString: string;
+    HookStateChangeCount: number;
+}

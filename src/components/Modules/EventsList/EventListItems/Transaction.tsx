@@ -5,7 +5,7 @@ import { isEmpty, isEqual } from 'lodash';
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { TransactionTypes } from '@common/libs/ledger/types';
 import { Transactions } from '@common/libs/ledger/transactions/types';
-import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 
 import { AccountModel } from '@store/models';
 
@@ -220,7 +220,7 @@ class TransactionItem extends Component<Props, State> {
         if (changes) {
             return (
                 <Icon
-                    name={changes.action === 'INC' ? 'IconLock' : 'IconUnlock'}
+                    name={changes.action === OperationActions.INC ? 'IconLock' : 'IconUnlock'}
                     style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]}
                     size={12}
                 />

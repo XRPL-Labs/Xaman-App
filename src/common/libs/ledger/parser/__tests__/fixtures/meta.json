@@ -1,0 +1,45 @@
+{
+  "withHookExecutions": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrhoLvTp",
+            "AccountIndex": "1",
+            "Balance": "19999991348",
+            "Flags": 0,
+            "OwnerCount": 1,
+            "RewardAccumulator": "0",
+            "RewardLgrFirst": 41,
+            "RewardLgrLast": 41,
+            "RewardTime": 749750487,
+            "Sequence": 13
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F",
+          "PreviousFields": {
+            "Balance": "19999999988",
+            "Sequence": 12
+          }
+        }
+      }
+    ],
+    "HookExecutions": [
+      {
+        "HookExecution": {
+          "HookAccount": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+          "HookEmitCount": 0,
+          "HookExecutionIndex": 0,
+          "HookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864",
+          "HookInstructionCount": "98",
+          "HookResult": 3,
+          "HookReturnCode": "94",
+          "HookReturnString": "5265776172643A2050617373696E67207265776172642073657475702074786E00",
+          "HookStateChangeCount": 1
+        }
+      }
+    ],
+    "TransactionIndex": 0,
+    "TransactionResult": "tesSUCCESS"
+  }
+}

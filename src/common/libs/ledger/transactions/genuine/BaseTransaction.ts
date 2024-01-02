@@ -32,7 +32,14 @@ import Flag from '@common/libs/ledger/parser/common/flag';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
 /* Types ==================================================================== */
-import { Account, AmountType, MemoType, Signer, TransactionResult } from '@common/libs/ledger/parser/types';
+import {
+    Account,
+    AmountType,
+    MemoType,
+    OperationActions,
+    Signer,
+    TransactionResult,
+} from '@common/libs/ledger/parser/types';
 import { StringTypeCheck } from '@common/utils/string';
 
 /* Class ==================================================================== */
@@ -45,6 +52,8 @@ class BaseTransaction {
     private verifyResult?: VerifyResultType;
     private isAborted: boolean;
     private isSubmitted: boolean;
+
+    private hookExecutions: any[];
     private balanceChanges: Map<string, any>;
     private ownerCountChanges: Map<string, any>;
 
@@ -377,16 +386,19 @@ class BaseTransaction {
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
         // if cross currency remove fee from changes
-        if (size(filter(balanceChanges, { action: 'DEC' })) > 1) {
-            const decreaseNative = find(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
+        if (size(filter(balanceChanges, { action: OperationActions.DEC })) > 1) {
+            const decreaseNative = find(balanceChanges, {
+                action: OperationActions.DEC,
+                currency: NetworkService.getNativeAsset(),
+            });
             if (decreaseNative.value === this.Fee) {
-                remove(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
+                remove(balanceChanges, { action: OperationActions.DEC, currency: NetworkService.getNativeAsset() });
             }
         }
 
         const changes = {
-            sent: find(balanceChanges, (o) => o.action === 'DEC'),
-            received: find(balanceChanges, (o) => o.action === 'INC'),
+            sent: find(balanceChanges, (o) => o.action === OperationActions.DEC),
+            received: find(balanceChanges, (o) => o.action === OperationActions.INC),
         } as { sent: AmountType; received: AmountType };
 
         // remove fee from transaction owner balance changes
@@ -448,6 +460,24 @@ class BaseTransaction {
         this.ownerCountChanges.set(owner, ownerChanges);
 
         return ownerChanges;
+    }
+
+    /**
+     * get transaction hook executions
+     * @returns changes
+     */
+    HookExecutions() {
+        // if value is already set return
+        if (this.hookExecutions) {
+            return this.hookExecutions;
+        }
+
+        const hookExecutions = new Meta(this.meta).parseHookExecutions();
+
+        // memorize hook executions
+        this.hookExecutions = hookExecutions;
+
+        return hookExecutions;
     }
 
     /**

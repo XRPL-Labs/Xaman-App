@@ -1,7 +1,7 @@
 /**
  * Payload Result Screen
  */
-
+import { get } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { SafeAreaView, View, Text, Image, ScrollView } from 'react-native';
 
@@ -20,6 +20,8 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+import { HexEncoding } from '@common/utils/string';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -43,17 +45,25 @@ class ResultStep extends Component<Props, State> {
     getNormalizedErrorMessage = () => {
         const { transaction } = this.context;
 
-        // @ts-ignore
-        if (transaction.TransactionResult?.code === 'tecPATH_PARTIAL') {
-            return Localize.t('payload.tecPartialError');
-        }
-        // @ts-ignore
-        if (transaction.TransactionResult?.code === 'tecPATH_DRY') {
-            return Localize.t('payload.pathDryError');
+        // this will never happen as Pseudo transactions never submits to the network
+        if (transaction instanceof BasePseudoTransaction) {
+            return 'Pseudo transactions should never submit to the network!';
         }
 
-        // @ts-ignore
-        return transaction.TransactionResult?.message || 'No Description';
+        switch (transaction.TransactionResult?.code) {
+            case 'tecPATH_PARTIAL':
+                return Localize.t('errors.tecPATH_PARTIAL');
+            case 'tecPATH_DRY':
+                return Localize.t('errors.tecPATH_DRY');
+            case 'tecHOOK_REJECTED': {
+                const returnStringHex = get(transaction.HookExecutions(), '[0].HookReturnString', '');
+                return Localize.t('errors.tecHOOK_REJECTED', {
+                    hookReturnString: returnStringHex ? HexEncoding.toString(returnStringHex) : '',
+                });
+            }
+            default:
+                return transaction.TransactionResult?.message || 'No Description';
+        }
     };
 
     renderSuccess = () => {
@@ -93,6 +103,11 @@ class ResultStep extends Component<Props, State> {
         const { transaction, onFinish } = this.context;
         const { closeButtonLabel } = this.state;
 
+        if (transaction instanceof BasePseudoTransaction) {
+            console.warn('Pseudo transactions should never submit to the network!');
+            return null;
+        }
+
         return (
             <SafeAreaView testID="failed-result-view" style={[styles.container, styles.containerFailed]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
@@ -107,7 +122,6 @@ class ResultStep extends Component<Props, State> {
                 <View style={[AppStyles.flex2, styles.detailsCard, AppStyles.marginBottom]}>
                     <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                     <Spacer />
-                    {/* @ts-ignore */}
                     <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction.TransactionResult?.code}</Text>
 
                     <Spacer />
@@ -117,10 +131,7 @@ class ResultStep extends Component<Props, State> {
                     <Spacer />
 
                     <ScrollView>
-                        <Text style={AppStyles.subtext}>
-                            {/* @ts-ignore */}
-                            {this.getNormalizedErrorMessage()}
-                        </Text>
+                        <Text style={AppStyles.subtext}>{this.getNormalizedErrorMessage()}</Text>
                     </ScrollView>
 
                     <Spacer size={50} />

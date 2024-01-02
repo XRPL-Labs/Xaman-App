@@ -1,6 +1,12 @@
 /**
  * Meta data types
  */
+
+export enum OperationActions {
+    DEC,
+    INC,
+}
+
 export enum OfferStatus {
     CREATED = 'CREATED',
     PARTIALLY_FILLED = 'PARTIALLY_FILLED',
@@ -16,13 +22,13 @@ export enum ClaimRewardStatus {
 }
 
 export interface BalanceChangeType extends AmountType {
-    action: 'DEC' | 'INC';
+    action: OperationActions;
 }
 
 export interface OwnerCountChangeType {
     address: string;
     value: number;
-    action: string;
+    action: OperationActions;
 }
 
 /**
