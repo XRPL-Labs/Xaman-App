@@ -44,9 +44,8 @@ class CoreRepository extends BaseRepository<CoreModel> {
         if (current) {
             this.safeWrite(() => {
                 assign(current, settings);
-
-                this.emit('updateSettings', current, settings);
             });
+            this.emit('updateSettings', current, settings);
         } else {
             this.create(settings);
         }
