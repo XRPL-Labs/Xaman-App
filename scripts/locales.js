@@ -1,4 +1,5 @@
 /* eslint-disable import/no-dynamic-require */
+/* eslint-disable no-console */
 
 /*
    Add missing translation keys to languages
@@ -6,6 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const LOCALES_DIR = path.join(__dirname, '..', 'src', 'locale');
 const TRANSLATIONS_DIR = path.join(LOCALES_DIR, 'translations');
@@ -71,7 +73,6 @@ const sync = () => {
         });
     }
 
-    // eslint-disable-next-line no-console
     console.log('Sync Done!');
 };
 
@@ -110,12 +111,29 @@ const check = () => {
     }
 };
 
+const remove = (key) => {
+    try {
+        const command = `grep -rl '${key}' ${LOCALES_DIR} | xargs sed -i '' '/${key}/d'`;
+        execSync(command, { encoding: 'utf-8' });
+        console.log(`Locale with key "${key}" have been deleted from the translation files`);
+    } catch (error) {
+        console.error(`Error: ${error}`);
+    }
+};
+
 switch (process.argv[2]) {
-    case 'check':
+    case '--check':
         check();
         break;
-    case 'sync':
+    case '--sync':
         sync();
+        break;
+    case '--remove':
+        if (!process.argv[3]) {
+            console.error('missing key argument!');
+            return;
+        }
+        remove(process.argv[3]);
         break;
     default:
         break;

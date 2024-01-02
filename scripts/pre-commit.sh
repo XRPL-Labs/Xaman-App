@@ -27,7 +27,7 @@ fi
 
 
 # checking for any translations mismatch
-translationsError=$(node scripts/sync-locales.js check)
+translationsError=$(node scripts/locales.js --check)
 if [[ -n "$translationsError" ]]; then
     echo "ERROR: Check Translations hints."
     echo "$translationsError"
