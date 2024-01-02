@@ -723,12 +723,12 @@ class EventsView extends Component<Props, State> {
             keys: [
                 'Account.address',
                 'Account.tag',
-                'Account.name',
                 'Destination.address',
-                'Destination.name',
                 'Destination.tag',
                 'Amount.value',
                 'Amount.currency',
+                'Currency', // TrustSet currency
+                'Issuer', // TrustSet issuer
                 'Hash',
             ],
             shouldSort: false,
@@ -741,9 +741,7 @@ class EventsView extends Component<Props, State> {
             keys: [
                 'Account.address',
                 'Account.tag',
-                'Account.name',
                 'Destination.address',
-                'Destination.name',
                 'Destination.tag',
                 'Amount.value',
                 'Amount.currency',
