@@ -94,6 +94,7 @@ class EventsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Events;
 
     private forceReload: boolean;
+    private isScreenVisible: boolean;
     private navigationListener: EventSubscription;
 
     static options() {
@@ -123,11 +124,13 @@ class EventsView extends Component<Props, State> {
         };
 
         this.forceReload = false;
+        this.isScreenVisible = false;
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const { dataSource, account, isLoading, canLoadMore, isLoadingMore, filters } = this.state;
         const { timestamp } = this.props;
+
         return (
             !isEqual(nextState.dataSource, dataSource) ||
             !isEqual(nextState.isLoading, isLoading) ||
@@ -140,28 +143,25 @@ class EventsView extends Component<Props, State> {
     }
 
     componentDidAppear() {
+        // keep track of screen visibility
+        this.isScreenVisible = true;
+
+        // check if we need to reload the screen
         if (this.forceReload) {
             // set the flag to false
             this.forceReload = false;
 
-            // reset everything and load transaction
-            this.setState(
-                {
-                    account: CoreRepository.getDefaultAccount(),
-                    dataSource: [],
-                    transactions: [],
-                    plannedTransactions: [],
-                    lastMarker: undefined,
-                    canLoadMore: true,
-                },
-                this.updateDataSource,
-            );
+            // reload the state
+            this.reloadState();
         }
     }
 
-    componentDidMount() {
-        const { account } = this.state;
+    componentDidDisappear() {
+        // keep track of screen visibility
+        this.isScreenVisible = false;
+    }
 
+    componentDidMount() {
         // componentDidDisappear event
         this.navigationListener = Navigation.events().bindComponent(this);
 
@@ -175,11 +175,7 @@ class EventsView extends Component<Props, State> {
         AppService.on('appStateChange', this.onAppStateChange);
 
         // update data source after component mount
-        InteractionManager.runAfterInteractions(() => {
-            if (account?.isValid()) {
-                this.updateDataSource();
-            }
-        });
+        InteractionManager.runAfterInteractions(this.updateDataSource);
     }
 
     componentWillUnmount() {
@@ -194,10 +190,31 @@ class EventsView extends Component<Props, State> {
         }
     }
 
+    reloadState = () => {
+        // reset everything and load transaction
+        this.setState(
+            {
+                account: CoreRepository.getDefaultAccount(),
+                dataSource: [],
+                transactions: [],
+                plannedTransactions: [],
+                lastMarker: undefined,
+                canLoadMore: true,
+            },
+            this.updateDataSource,
+        );
+    };
+
     onCoreSettingsUpdate = (_coreSettings: CoreModel, changes: Partial<CoreModel>) => {
         // force reload if network or default account changed
         if (has(changes, 'network') || has(changes, 'account')) {
             this.forceReload = true;
+
+            // in some cases account can be switched when event list is visible,
+            // we need to force reload without relying on componentDidAppear event
+            if (this.isScreenVisible) {
+                InteractionManager.runAfterInteractions(this.reloadState);
+            }
         }
     };
 
