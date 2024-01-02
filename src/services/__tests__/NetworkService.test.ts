@@ -7,6 +7,21 @@ import * as FeeUtils from '@common/utils/fee';
 describe('NetworkService', () => {
     const networkService = NetworkService;
 
+    beforeAll(() => {
+        const logFn = console.warn;
+        jest.spyOn(console, 'warn').mockImplementation((...args) => {
+            if (typeof args[0] === 'string' && args[0].match(/server_definitions got invalid/)) {
+                return;
+            }
+
+            logFn(...args);
+        });
+    });
+
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     it('should properly initialize', async () => {
         const coreSettings = {
             network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
@@ -30,17 +45,23 @@ describe('NetworkService', () => {
                 LEDGER_ENTRY_TYPES: {},
                 // @ts-ignore
                 FIELDS: [],
-                hash: 'SOME_HASH',
+                hash: 'DEFINITIONS_HASH',
             };
 
+            jest.replaceProperty(networkService, 'network', {
+                // @ts-ignore
+                id: 'object_id',
+                networkId: 1337,
+            });
+
             const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() => Promise.resolve(returnedResponse));
-            const spy1 = jest.spyOn(NetworkRepository, 'update');
+            const spy1 = jest.spyOn(NetworkRepository, 'update').mockImplementation(jest.fn());
 
             await networkService.updateNetworkDefinitions();
 
             expect(spy0).toHaveBeenCalledWith({ command: 'server_definitions' });
             expect(spy1).toHaveBeenCalledWith({
-                id: undefined,
+                id: 'object_id',
                 definitionsString: JSON.stringify(returnedResponse),
             });
 
