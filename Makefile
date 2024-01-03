@@ -16,10 +16,12 @@ node_modules: package.json
 		exit 1; \
 	fi
 
-	@echo Getting Javascript dependencies
-	@npm install
+	@if npm check | grep -Eq "from the root project|npm ERR! missing:"; then \
+		echo "Update/Install dependencies required, please run 'make npm-install'"; \
+		exit 1; \
+	fi
 
-npm-ci: package.json
+npm-install: package.json
 	@if ! [ $(shell which npm 2> /dev/null) ]; then \
 		echo "npm is not installed https://docs.npmjs.com/downloading-and-installing-node-js-and-npm"; \
 		exit 1; \
@@ -33,18 +35,18 @@ ifeq ($(OS), Darwin)
 	@echo "Required version of Cocoapods is not installed"
 	@echo Installing gems;
 	@bundle install
-	@echo Getting Cocoapods dependencies;
+	@echo Getting Cocoapods dependencies;w
 	@cd ios && bundle exec pod install;
 endif
 	@touch $@
 
 build-env:
-	@echo "Generating Google Services files"
+	@echo "Generating build environment"
 	@./scripts/build-env.sh
 
 pre-run: | node_modules .podinstall build-env ## Installs dependencies
 
-pre-build: | npm-ci .podinstall build-env ## Install dependencies before building
+pre-build: | node_modules .podinstall build-env ## Install dependencies before building
 
 validate-style: node_modules ## Runs eslint
 	@echo Checking for style guide compliance
@@ -104,40 +106,28 @@ run: run-ios ## alias for run-ios
 run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		npm start & echo Running iOS app in development; \
-		if [ ! -z "${SIMULATOR}" ]; then \
-			react-native run-ios --simulator="${SIMULATOR}"; \
-		else \
-			react-native run-ios; \
-		fi; \
-		wait; \
+		npm start;\
+	fi;\
+	echo Running iOS app in development; \
+	if [ ! -z "${SIMULATOR}" ]; then \
+		npx react-native run-ios --simulator="${SIMULATOR}"; \
 	else \
-		echo Running iOS app in development; \
-		if [ ! -z "${SIMULATOR}" ]; then \
-			react-native run-ios --simulator="${SIMULATOR}"; \
-		else \
-			react-native run-ios; \
-		fi; \
-	fi
+		npx react-native run-ios; \
+	fi; \
+
 
 run-android: | check-device-android pre-run ## Runs the app on an Android emulator or dev device
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
         echo Starting React Native packager server; \
-    	npm start & echo Running Android app in development; \
+    	npm start; \
+    fi;\
+	echo Running Android app in development; \
 	if [ ! -z ${VARIANT} ]; then \
-    		react-native run-android --no-packager --variant=${VARIANT}; \
-    	else \
-    		react-native run-android --no-packager; \
-    	fi; \
-    	wait; \
-    else \
-    	echo Running Android app in development; \
-        if [ ! -z ${VARIANT} ]; then \
-			react-native run-android --no-packager --variant=${VARIANT}; \
-		else \
-			react-native run-android --no-packager; \
-		fi; \
-    fi
+		npx react-native run-android --main-activity LaunchActivity --no-packager --variant=${VARIANT}; \
+	else \
+		npx react-native run-android --main-activity LaunchActivity --no-packager; \
+	fi; \
+
 
 build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)

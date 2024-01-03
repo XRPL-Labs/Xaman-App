@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
+CURRENT_DIR=$(pwd)
 
-echo "Checking Google Services files..."
-
-GOOGLESERVICE_JSON_PATH="./android/app/google-services.json"
-GOOGLESERVICE_INFO_PATH="./ios/XUMM/GoogleService-Info.plist"
+GOOGLESERVICE_JSON_PATH="${CURRENT_DIR}/android/app/google-services.json"
+GOOGLESERVICE_INFO_PATH="${CURRENT_DIR}/ios/Xaman/GoogleService-Info.plist"
 
 GOOGLESERVICE_JSON_CONTENT='{
   "project_info": {
@@ -96,7 +95,7 @@ GOOGLESERVICE_INFO_CONTENT='
 
 
 if [ ! -f $GOOGLESERVICE_INFO_PATH ]; then
-  echo "No GoogleService-Info.plist file in ios app directory, creating placeholder..."
+  echo "Warning: No GoogleService-Info.plist file in ios app directory, creating placeholder..."
   echo $GOOGLESERVICE_INFO_CONTENT > $GOOGLESERVICE_INFO_PATH
 fi
 
