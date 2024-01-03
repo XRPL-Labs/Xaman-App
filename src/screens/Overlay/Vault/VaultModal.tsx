@@ -89,11 +89,13 @@ class VaultModal extends Component<Props, State> {
             const signers: AccountModel[] = [];
             let preferredSigner;
 
-            // check if we can sign the transaction with provided account
+            // check if we can sign the transaction
             // account is Readonly and no RegularKey is set
-            // NOTE: we shouldn't allow user to reach to this point but we are double-checking
+            // NOTE: we shouldn't allow user to reach to this point but let's double-check
             if (account.accessLevel === AccessLevels.Readonly && !account.regularKey) {
-                throw new Error('Unable to sign the transaction with provided account');
+                throw new Error(
+                    'Unable to sign the transaction with provided account, readonly and no regular key available',
+                );
             }
 
             // by default include the provided account if full access
@@ -102,7 +104,7 @@ class VaultModal extends Component<Props, State> {
                 preferredSigner = account;
             }
 
-            // if regular key is set to the account then we check if we should include it in the list of signer
+            // if regular key is set to the account then we check if we should include it in the list of signers
             if (account.regularKey) {
                 // check if regular key account is imported in the app
                 const regularKeyAccount = AccountRepository.findOne({ address: account.regularKey });
@@ -113,19 +115,24 @@ class VaultModal extends Component<Props, State> {
                 }
 
                 if (regularKeyAccount) {
-                    // Regular key exist but it's not imported as full access
-                    if (regularKeyAccount.accessLevel !== AccessLevels.Full) {
+                    // Regular key exist, but it's not imported as full access and account is not full access
+                    if (
+                        account.accessLevel !== AccessLevels.Full &&
+                        regularKeyAccount.accessLevel !== AccessLevels.Full
+                    ) {
                         throw new Error(
                             Localize.t('account.regularKeyAccountForThisAccountDoesNotImportedWithSignAccess'),
                         );
                     }
 
-                    // everything is find we can sign with the regular key beside the main account
-                    signers.push(regularKeyAccount);
+                    if (regularKeyAccount.accessLevel === AccessLevels.Full) {
+                        // everything is find we can sign with the regular also
+                        signers.push(regularKeyAccount);
 
-                    // if Master key is disabled on the main account set the preferred Signer to regular key
-                    if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
-                        preferredSigner = regularKeyAccount;
+                        // if Master key is disabled on the main account set the preferred Signer to regular key
+                        if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
+                            preferredSigner = regularKeyAccount;
+                        }
                     }
                 }
             }
