@@ -6,8 +6,7 @@ import React, { Component } from 'react';
 import { View, Text, Alert, Keyboard, Platform, Share } from 'react-native';
 
 import { StringType } from 'xumm-string-decode';
-import * as AccountLib from 'xrpl-accountlib';
-import { xAddressToClassicAddress } from 'ripple-address-codec';
+import { libraries } from 'xrpl-accountlib';
 
 import { StyleService } from '@services';
 
@@ -112,7 +111,7 @@ class EditContactView extends Component<Props, State> {
             return;
         }
 
-        if (!AccountLib.utils.isValidAddress(address)) {
+        if (!libraries.rippleAddressCodec.isValidClassicAddress(address)) {
             Alert.alert(Localize.t('global.invalidAddress'));
             return;
         }
@@ -198,7 +197,7 @@ class EditContactView extends Component<Props, State> {
         // decode if it's x address
         if (address && address.startsWith('X')) {
             try {
-                const decoded = xAddressToClassicAddress(address);
+                const decoded = libraries.rippleAddressCodec.xAddressToClassicAddress(address);
                 if (decoded) {
                     this.setState({
                         address: decoded.classicAddress,
