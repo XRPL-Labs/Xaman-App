@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "prettier": "prettier --write `find -E src -regex \".*.(ts|tsx)\"`",
-    "validate": "eslint --ignore-path .gitignore --ignore-pattern node_modules --quiet . && yarn run tsc",
+    "validate": "eslint --ignore-path .gitignore --ignore-pattern node_modules --quiet . && npm run tsc",
     "tsc": "NODE_OPTIONS=--max_old_space_size=12000 tsc --noEmit",
     "test": "jest --forceExit --detectOpenHandles",
     "sync-locals": "node scripts/locales.js --sync",
