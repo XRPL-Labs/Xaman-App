@@ -10,8 +10,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
-import { LedgerEntriesTypes } from '@common/libs/ledger/types';
-
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import NetworkService from '@services/NetworkService';
@@ -20,6 +18,8 @@ import LedgerService from '@services/LedgerService';
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
+
+import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
 // components
 import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar, TokenIcon } from '@components/General';
@@ -75,14 +75,18 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         InteractionManager.runAfterInteractions(this.setAccountObjectsState);
     }
 
-    loadAccountObjects = (
+    loadAccountObjects = async (
         account: string,
         marker?: string,
-        combined = [] as LedgerEntriesTypes[],
-    ): Promise<LedgerEntriesTypes[]> => {
+        combined = [] as LedgerEntry[],
+    ): Promise<LedgerEntry[]> => {
         return LedgerService.getAccountObjects(account, { marker }).then((resp) => {
-            const { account_objects, marker: _marker } = resp;
+            // just ignore?
+            if ('error' in resp) {
+                return combined;
+            }
 
+            const { account_objects, marker: _marker } = resp;
             // ignore TrustLines as we handle them in better way
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
@@ -97,11 +101,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         ['SignerList', 'PayChannel'].includes(o.LedgerEntryType))
                 );
             });
-
             if (_marker && _marker !== marker) {
                 return this.loadAccountObjects(account, _marker, filtered.concat(combined));
             }
-
             return filtered.concat(combined);
         });
     };

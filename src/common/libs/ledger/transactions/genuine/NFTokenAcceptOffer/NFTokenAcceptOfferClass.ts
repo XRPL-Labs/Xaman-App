@@ -8,15 +8,16 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 import { NFTokenCreateOffer } from '@common/libs/ledger/transactions/genuine/NFTokenCreateOffer';
 
 /* Types ==================================================================== */
-import { AmountType, LedgerAmount } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { AmountType } from '@common/libs/ledger/parser/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class NFTokenAcceptOffer extends BaseTransaction {
     public static Type = TransactionTypes.NFTokenAcceptOffer as const;
     public readonly Type = NFTokenAcceptOffer.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set
@@ -61,7 +62,7 @@ class NFTokenAcceptOffer extends BaseTransaction {
     }
 
     get NFTokenBrokerFee(): AmountType {
-        const brokerFee: LedgerAmount = get(this, ['tx', 'NFTokenBrokerFee']);
+        const brokerFee = get(this, ['tx', 'NFTokenBrokerFee']);
 
         if (isUndefined(brokerFee)) return undefined;
 

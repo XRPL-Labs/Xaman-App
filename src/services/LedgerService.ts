@@ -4,37 +4,47 @@
  */
 import EventEmitter from 'events';
 import BigNumber from 'bignumber.js';
-import moment from 'moment-timezone';
 import { has, map, isEmpty, assign, startsWith } from 'lodash';
 
 import { NetworkConfig } from '@common/constants';
 
-import {
-    LedgerMarker,
-    SubmitResultType,
-    VerifyResultType,
-    AccountTxResponse,
-    GatewayBalancesResponse,
-    AccountInfoResponse,
-    AccountObjectsResponse,
-    LedgerTrustline,
-    LedgerEntryResponse,
-    RippleStateLedgerEntry,
-    LedgerEntriesTypes,
-    AccountNFTsResponse,
-    LedgerNFToken,
-} from '@common/libs/ledger/types';
+import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import { NetworkType } from '@store/types';
 
-import { Issuer } from '@common/libs/ledger/parser/types';
 import { Amount } from '@common/libs/ledger/parser/common';
 import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import {
+    AccountInfoRequest,
+    AccountLinesTrustline,
+    AccountNFToken,
+    AccountNFTsRequest,
+    AccountObjectsRequest,
+    AccountObjectsResponse,
+    AccountTxRequest,
+    AccountTxResponse,
+    GatewayBalancesRequest,
+    GatewayBalancesResponse,
+    LedgerDataRequest,
+    LedgerDataResponse,
+    LedgerEntryRequest,
+    LedgerEntryResponse,
+    ServerInfoRequest,
+    TxRequest,
+    TxResponse,
+    ServerInfoResponse,
+    AccountInfoResponse,
+    SubmitRequest,
+    AccountNFTsResponse,
+    SubmitResponse,
+} from '@common/libs/ledger/types/methods';
+import { LedgerEntry, RippleState } from '@common/libs/ledger/types/ledger';
+import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 /* Types  ==================================================================== */
 export type LedgerServiceEvent = {
@@ -53,7 +63,7 @@ declare interface LedgerService {
 
 /* Service  ==================================================================== */
 class LedgerService extends EventEmitter {
-    logger: any;
+    logger: LoggerInstance;
 
     constructor() {
         super();
@@ -87,22 +97,22 @@ class LedgerService extends EventEmitter {
     /**
      * Get ledger entry
      */
-    getLedgerEntry = (options?: any): Promise<any> => {
-        const request = {
+    getLedgerEntry = <T>(options?: any) => {
+        const request: LedgerEntryRequest = {
             command: 'ledger_entry',
             ledger_index: 'validated',
         };
         if (typeof options === 'object') {
             Object.assign(request, options);
         }
-        return NetworkService.send(request);
+        return NetworkService.send<LedgerEntryRequest, LedgerEntryResponse<T>>(request);
     };
 
     /**
      * Get account info
      */
-    getGatewayBalances = (account: string): Promise<GatewayBalancesResponse> => {
-        return NetworkService.send({
+    getGatewayBalances = (account: string) => {
+        return NetworkService.send<GatewayBalancesRequest, GatewayBalancesResponse>({
             command: 'gateway_balances',
             account,
             strict: true,
@@ -114,8 +124,8 @@ class LedgerService extends EventEmitter {
     /**
      * Get account info
      */
-    getAccountInfo = (account: string): Promise<AccountInfoResponse> => {
-        return NetworkService.send({
+    getAccountInfo = (account: string) => {
+        return NetworkService.send<AccountInfoRequest, AccountInfoResponse>({
             command: 'account_info',
             account,
             ledger_index: 'validated',
@@ -126,8 +136,8 @@ class LedgerService extends EventEmitter {
     /**
      * Get account objects
      */
-    getAccountObjects = (account: string, options?: any): Promise<AccountObjectsResponse> => {
-        const request = {
+    getAccountObjects = (account: string, options?: any) => {
+        const request: AccountObjectsRequest = {
             command: 'account_objects',
             account,
             ledger_index: 'validated',
@@ -135,14 +145,14 @@ class LedgerService extends EventEmitter {
         if (typeof options === 'object') {
             Object.assign(request, options);
         }
-        return NetworkService.send(request);
+        return NetworkService.send<AccountObjectsRequest, AccountObjectsResponse>(request);
     };
 
     /**
      * Get single transaction by providing transaction id
      */
     getTransaction = (txId: string) => {
-        return NetworkService.send({
+        return NetworkService.send<TxRequest, TxResponse>({
             command: 'tx',
             transaction: txId,
             binary: false,
@@ -152,8 +162,8 @@ class LedgerService extends EventEmitter {
     /**
      * Get account transactions
      */
-    getTransactions = (account: string, marker?: LedgerMarker, limit?: number): Promise<AccountTxResponse> => {
-        const request = {
+    getTransactions = (account: string, marker?: any, limit?: number) => {
+        const request: AccountTxRequest = {
             command: 'account_tx',
             account,
             limit: limit || 50,
@@ -162,80 +172,82 @@ class LedgerService extends EventEmitter {
         if (marker) {
             Object.assign(request, { marker });
         }
-        return NetworkService.send(request);
+        return NetworkService.send<AccountTxRequest, AccountTxResponse>(request);
     };
 
     /**
      * Get account XLS20 NFTs
      */
-    getAccountNFTs = (account: string, marker?: string, combined = [] as LedgerNFToken[]): Promise<LedgerNFToken[]> => {
-        const request = {
+    getAccountNFTs = async (
+        account: string,
+        marker?: string,
+        combined = [] as AccountNFToken[],
+    ): Promise<AccountNFToken[]> => {
+        const request: AccountNFTsRequest = {
             command: 'account_nfts',
             account,
         };
         if (marker) {
             Object.assign(request, { marker });
         }
-        return NetworkService.send(request).then((resp: AccountNFTsResponse) => {
-            const { account_nfts, marker: _marker } = resp;
-            if (_marker && _marker !== marker) {
-                return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
-            }
-            return account_nfts.concat(combined);
-        });
+        const resp = await NetworkService.send<AccountNFTsRequest, AccountNFTsResponse>(request);
+
+        if ('error' in resp) {
+            this.logger.warn('Error fetching account NFTs:', resp.error);
+            return combined;
+        }
+
+        const { account_nfts, marker: _marker } = resp;
+        if (_marker && _marker !== marker) {
+            return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
+        }
+        return account_nfts.concat(combined);
     };
 
     /**
      * Get ledger data
      */
     getLedgerData = (marker: string, limit?: number) => {
-        const request = {
+        const request: LedgerDataRequest = {
             command: 'ledger_data',
             limit: limit || 50,
         };
         if (marker) {
             Object.assign(request, { marker });
         }
-        return NetworkService.send(request);
+        return NetworkService.send<LedgerDataRequest, LedgerDataResponse>(request);
     };
 
     /**
      * get server info
      */
     getServerInfo = () => {
-        return NetworkService.send({
+        return NetworkService.send<ServerInfoRequest, ServerInfoResponse>({
             command: 'server_info',
-        });
-    };
-
-    /**
-     * get ledger time from server
-     */
-    getLedgerTime = () => {
-        return new Promise((resolve, reject) => {
-            this.getServerInfo()
-                .then((server_info: any) => {
-                    const { info } = server_info;
-                    resolve(moment.utc(info.time, 'YYYY-MMM-DD HH:mm:ss.SSS').format());
-                })
-                .catch(() => {
-                    reject();
-                });
         });
     };
 
     /**
      * Get account obligation lines
      */
-    getAccountObligations = (account: string): Promise<LedgerTrustline[]> => {
+    getAccountObligations = (account: string): Promise<AccountLinesTrustline[]> => {
         return new Promise((resolve) => {
             this.getGatewayBalances(account)
-                .then((accountObligations: any) => {
-                    const { obligations } = accountObligations;
+                .then((resp) => {
+                    if ('error' in resp) {
+                        this.logger.error('Unable to get account obligations', resp.error);
+                        resolve([]);
+                        return;
+                    }
 
-                    if (isEmpty(obligations)) return resolve([]);
+                    const { obligations } = resp;
 
-                    const obligationsLines = [] as LedgerTrustline[];
+                    if (isEmpty(obligations)) {
+                        resolve([]);
+                        return;
+                    }
+
+                    const obligationsLines = [] as AccountLinesTrustline[];
 
                     map(obligations, (b, c) => {
                         obligationsLines.push({
@@ -250,9 +262,10 @@ class LedgerService extends EventEmitter {
                         });
                     });
 
-                    return resolve(obligationsLines);
+                    resolve(obligationsLines);
                 })
-                .catch(() => {
+                .catch((error: Error) => {
+                    this.logger.error('getAccountObligations error', error);
                     return resolve([]);
                 });
         });
@@ -264,17 +277,24 @@ class LedgerService extends EventEmitter {
     getAccountTransferRate = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
-                .then((issuerAccountInfo: any) => {
-                    if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                        const { TransferRate } = issuerAccountInfo.account_data;
-                        const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
-                        resolve(transferFee);
-                        return;
+                .then((resp) => {
+                    if ('error' in resp) {
+                        throw new Error(resp.error);
                     }
-                    resolve(0);
+
+                    if (!has(resp, ['account_data', 'TransferRate'])) {
+                        throw new Error('no TransferRate in account_data');
+                    }
+
+                    const { TransferRate } = resp.account_data;
+                    const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
+                    resolve(transferFee);
                 })
-                .catch(() => {
-                    reject(new Error('Unable to fetch account transfer rate!'));
+                .catch((error: Error) => {
+                    this.logger.error('Unable to fetch account transfer rate!', error);
+                    reject(
+                        new Error('Unable to fetch account transfer rate, please check session logs for more info!'),
+                    );
                 });
         });
     };
@@ -285,40 +305,41 @@ class LedgerService extends EventEmitter {
     getAccountAvailableBalance = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
-                .then((accountInfo) => {
-                    if (
-                        !has(accountInfo, 'error') &&
-                        has(accountInfo, ['account_data', 'Balance']) &&
-                        has(accountInfo, ['account_data', 'OwnerCount'])
-                    ) {
-                        const { Balance, OwnerCount } = accountInfo.account_data;
-                        const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
-
-                        const balance = new BigNumber(Balance);
-
-                        if (balance.isZero()) {
-                            resolve(0);
-                            return;
-                        }
-
-                        const availableBalance = balance
-                            .dividedBy(1000000.0)
-                            .minus(BaseReserve)
-                            .minus(Number(OwnerCount) * OwnerReserve)
-                            .decimalPlaces(8)
-                            .toNumber();
-
-                        if (availableBalance < 0) {
-                            resolve(0);
-                        }
-
-                        resolve(availableBalance);
-                    } else {
-                        reject(new Error('Unable to fetch account balance'));
+                .then((resp) => {
+                    if ('error' in resp) {
+                        throw new Error(resp.error);
                     }
+
+                    if (!has(resp, ['account_data', 'Balance']) || !has(resp, ['account_data', 'OwnerCount'])) {
+                        throw new Error('no Balance or OwnerCount in account_data');
+                    }
+
+                    const { Balance, OwnerCount } = resp.account_data;
+                    const { BaseReserve, OwnerReserve } = NetworkService.getNetworkReserve();
+
+                    const balance = new BigNumber(Balance);
+
+                    if (balance.isZero()) {
+                        resolve(0);
+                        return;
+                    }
+
+                    const availableBalance = balance
+                        .dividedBy(1000000.0)
+                        .minus(BaseReserve)
+                        .minus(Number(OwnerCount) * OwnerReserve)
+                        .decimalPlaces(8)
+                        .toNumber();
+
+                    if (availableBalance < 0) {
+                        resolve(0);
+                    }
+
+                    resolve(availableBalance);
                 })
-                .catch(() => {
-                    reject(new Error('Unable to fetch account balance'));
+                .catch((error: Error) => {
+                    this.logger.error('Unable to fetch account balance', error);
+                    reject(new Error('Unable to fetch account balance, please check session logs for more info!'));
                 });
         });
     };
@@ -329,16 +350,22 @@ class LedgerService extends EventEmitter {
     getAccountSequence = (account: string): Promise<number> => {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
-                .then((accountInfo) => {
-                    if (!has(accountInfo, 'error') && has(accountInfo, ['account_data', 'Sequence'])) {
-                        const { account_data } = accountInfo;
-                        resolve(Number(account_data.Sequence));
-                    } else {
-                        reject(new Error('Unable to fetch account sequence'));
+                .then((resp) => {
+                    if ('error' in resp) {
+                        reject(new Error(resp.error));
+                        return;
                     }
+
+                    if (!has(resp, ['account_data', 'Sequence'])) {
+                        throw new Error('no Sequence in account_data');
+                    }
+
+                    const { account_data } = resp;
+                    resolve(Number(account_data.Sequence));
                 })
-                .catch(() => {
-                    reject(new Error('Unable to fetch account sequence'));
+                .catch((error: Error) => {
+                    this.logger.error('Unable to fetch account sequence', error);
+                    reject(new Error('Unable to fetch account sequence, please check session logs for more info!'));
                 });
         });
     };
@@ -350,10 +377,17 @@ class LedgerService extends EventEmitter {
     getAccountBlockerObjects = async (
         account: string,
         marker?: string,
-        combined = [] as LedgerEntriesTypes[],
-    ): Promise<LedgerEntriesTypes[]> => {
+        combined = [] as LedgerEntry[],
+    ): Promise<LedgerEntry[]> => {
         const resp = await this.getAccountObjects(account, { deletion_blockers_only: true, marker });
+
+        if ('error' in resp) {
+            this.logger.error('Unable to get account blocker objects', resp.error);
+            return combined;
+        }
+
         const { account_objects, marker: _marker } = resp;
+
         if (_marker && _marker !== marker) {
             return this.getAccountBlockerObjects(account, _marker, account_objects.concat(combined));
         }
@@ -363,14 +397,17 @@ class LedgerService extends EventEmitter {
     /**
      * Get account line base on provided peer
      */
-    getFilteredAccountLine = async (account: string, peer: Issuer): Promise<LedgerTrustline> => {
-        return this.getLedgerEntry({
+    getFilteredAccountLine = async (account: string, peer: IssuedCurrency): Promise<AccountLinesTrustline> => {
+        return this.getLedgerEntry<RippleState>({
             ripple_state: { accounts: [account, peer.issuer], currency: peer.currency },
         })
-            .then((resp: LedgerEntryResponse) => {
-                const { node } = resp as {
-                    node: RippleStateLedgerEntry;
-                };
+            .then((resp) => {
+                if ('error' in resp) {
+                    this.logger.error('Unable to get account ripple_state entry', resp.error);
+                    return undefined;
+                }
+
+                const { node } = resp;
 
                 // return undefined if in default state or no ripple state found
                 if (
@@ -399,13 +436,19 @@ class LedgerService extends EventEmitter {
     getFilteredAccountLines = async (
         account: string,
         marker?: string,
-        combined = [] as LedgerTrustline[],
-    ): Promise<LedgerTrustline[]> => {
+        combined = [] as AccountLinesTrustline[],
+    ): Promise<AccountLinesTrustline[]> => {
         return this.getAccountObjects(account, { marker, type: 'state' }).then((resp) => {
+            if ('error' in resp) {
+                this.logger.error('Unable to get account objects state', resp.error);
+                return combined;
+            }
+
             const { account_objects, marker: _marker } = resp as {
-                account_objects: RippleStateLedgerEntry[];
-                marker?: string;
+                account_objects: RippleState[];
+                marker: string;
             };
+
             // filter lines that are not in default state
             const notInDefaultState = account_objects.filter((node) => {
                 return (
@@ -442,22 +485,19 @@ class LedgerService extends EventEmitter {
             });
 
             // submit the tx blob to the ledger
-            const submitResult = await NetworkService.send({
+            const submitResponse = await NetworkService.send<SubmitRequest, SubmitResponse>({
                 command: 'submit',
                 tx_blob: txBlob,
                 fail_hard: failHard,
             });
 
-            const { error, error_message, error_exception, engine_result, tx_json, engine_result_message } =
-                submitResult;
-
-            this.logger.debug('Submit Result TX:', submitResult);
+            this.logger.debug('Submit transaction:', submitResponse);
 
             // assign hash we received from submitting the transaction
             // this is necessary for verifying the transaction in case of only tx_blob is available
             // create default result
             const result = {
-                hash: tx_json?.hash,
+                hash: txHash,
                 node,
                 network: {
                     id: networkId,
@@ -469,13 +509,15 @@ class LedgerService extends EventEmitter {
 
             // error happened in validation of transaction
             // probably something missing
-            if (error) {
+            if ('error' in submitResponse) {
                 return assign(result, {
                     success: false,
-                    engineResult: error,
-                    message: error_message || error_exception,
+                    engineResult: submitResponse.error,
+                    message: submitResponse.error_message || submitResponse.error_code,
                 });
             }
+
+            const { engine_result, engine_result_message } = submitResponse;
 
             // Immediate rejection
             if (startsWith(engine_result, 'tem')) {
@@ -492,13 +534,13 @@ class LedgerService extends EventEmitter {
                 engineResult: engine_result,
                 message: engine_result_message,
             });
-        } catch (e) {
+        } catch (error) {
             // something wrong happened
             return {
                 success: false,
                 engineResult: 'telFAILED',
                 // @ts-ignore
-                message: e.message,
+                message: error.message,
                 network: {
                     id: undefined,
                     node: undefined,
@@ -518,8 +560,12 @@ class LedgerService extends EventEmitter {
 
             const ledgerListener = () => {
                 this.getTransaction(transactionId)
-                    .then((tx: any) => {
-                        if (tx.validated) {
+                    .then((resp) => {
+                        if ('error' in resp) {
+                            return;
+                        }
+
+                        if (resp.validated) {
                             // of event for ledger
                             NetworkService.offEvent('ledger', ledgerListener);
 
@@ -528,11 +574,11 @@ class LedgerService extends EventEmitter {
                                 clearTimeout(timeout);
                             }
 
-                            const { TransactionResult } = tx.meta;
+                            const { TransactionResult } = resp.meta;
 
                             resolve({
                                 success: TransactionResult === 'tesSUCCESS',
-                                transaction: tx,
+                                transaction: resp,
                             });
                         }
                     })

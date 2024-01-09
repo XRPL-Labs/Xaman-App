@@ -15,15 +15,9 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { EncodeCTID } from '@common/utils/codec';
+import { StringTypeCheck } from '@common/utils/string';
 
-import {
-    SignedObjectType,
-    SubmitResultType,
-    TransactionJSONType,
-    TransactionTypes,
-    VerifyResultType,
-    Signer as LedgerSigner,
-} from '@common/libs/ledger/types';
+import { SignedObjectType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import LedgerDate from '@common/libs/ledger/parser/common/date';
@@ -40,12 +34,13 @@ import {
     Signer,
     TransactionResult,
 } from '@common/libs/ledger/parser/types';
-import { StringTypeCheck } from '@common/utils/string';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    protected tx: TransactionJSONType;
-    protected meta: any;
+    protected tx: TransactionJson;
+    protected meta: TransactionMetadata;
     protected fields: string[];
 
     private submitResult?: SubmitResultType;
@@ -62,13 +57,10 @@ class BaseTransaction {
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         if (!isUndefined(tx)) {
             this.tx = tx;
             this.meta = meta;
-        } else {
-            this.tx = {};
-            this.meta = {};
         }
 
         this.fields = [
@@ -626,7 +618,7 @@ class BaseTransaction {
     }
 
     // serialize transaction object to rippled tx json
-    get Json(): TransactionJSONType {
+    get Json(): TransactionJson {
         // shallow copy
         const tx = { ...this.tx };
         Object.getOwnPropertyNames(this.tx).forEach((k: string) => {
@@ -675,7 +667,8 @@ class BaseTransaction {
     }
 
     get Signers(): Array<Signer> {
-        const signers = get(this, ['tx', 'Signers']) as Array<LedgerSigner>;
+        const signers = get(this, ['tx', 'Signers']);
+
         return flatMap(signers, (item) => {
             return {
                 account: item.Signer.Account,

@@ -29,7 +29,10 @@ const PaymentValidation = (tx: Payment): Promise<void> => {
             // ===== check if recipient have proper TrustLine when delivering IOU =====
             // Note: ignore if sending to the issuer
             if (tx.Amount.currency !== NetworkService.getNativeAsset() && tx.Amount.issuer !== tx.Destination.address) {
-                const destinationLine = await LedgerService.getFilteredAccountLine(tx.Destination.address, tx.Amount);
+                const destinationLine = await LedgerService.getFilteredAccountLine(tx.Destination.address, {
+                    issuer: tx.Amount.issuer,
+                    currency: tx.Amount.currency,
+                });
 
                 if (
                     !destinationLine ||
@@ -86,7 +89,10 @@ const PaymentValidation = (tx: Payment): Promise<void> => {
                 // sender is not issuer
                 if (IOUAmount.issuer !== tx.Account.address) {
                     // check IOU balance
-                    const sourceLine = await LedgerService.getFilteredAccountLine(tx.Account.address, IOUAmount);
+                    const sourceLine = await LedgerService.getFilteredAccountLine(tx.Account.address, {
+                        issuer: IOUAmount.issuer,
+                        currency: IOUAmount.currency,
+                    });
 
                     // TODO: show proper error message
                     if (!sourceLine) {

@@ -1,5 +1,5 @@
 import { has, get, set, isUndefined, isNumber, toInteger } from 'lodash';
-import * as AccountLib from 'xrpl-accountlib';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 
 import NetworkService from '@services/NetworkService';
 
@@ -10,14 +10,15 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class EscrowCreate extends BaseTransaction {
     public static Type = TransactionTypes.EscrowCreate as const;
     public readonly Type = EscrowCreate.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set
@@ -68,7 +69,7 @@ class EscrowCreate extends BaseTransaction {
 
     set Destination(destination: Destination) {
         if (has(destination, 'address')) {
-            if (!AccountLib.utils.isValidAddress(destination.address)) {
+            if (!AccountLibUtils.isValidAddress(destination.address)) {
                 throw new Error(`${destination.address} is not a valid Address`);
             }
             set(this, 'tx.Destination', destination.address);

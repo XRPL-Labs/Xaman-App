@@ -29,15 +29,15 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
         const { transaction } = this.props;
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.channel')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.Channel}</Text>
+                <Text style={styles.label}>{Localize.t('global.channel')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{transaction.Channel}</Text>
                 </View>
 
                 {transaction.Amount && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.amount')}</Text>
+                        <View style={styles.contentBox}>
                             <AmountText
                                 value={transaction.Amount.value}
                                 currency={transaction.Amount.currency}
@@ -50,8 +50,8 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
 
                 {transaction.Balance && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.balance')}</Text>
-                        <View style={[styles.contentBox]}>
+                        <Text style={styles.label}>{Localize.t('global.balance')}</Text>
+                        <View style={styles.contentBox}>
                             <AmountText
                                 value={transaction.Balance.value}
                                 currency={transaction.Balance.currency}
@@ -64,18 +64,18 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
 
                 {transaction.Signature && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.signature')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.Signature}</Text>
+                        <Text style={styles.label}>{Localize.t('global.signature')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.Signature}</Text>
                         </View>
                     </>
                 )}
 
                 {transaction.PublicKey && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.publicKey')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{transaction.PublicKey}</Text>
+                        <Text style={styles.label}>{Localize.t('global.publicKey')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.PublicKey}</Text>
                         </View>
                     </>
                 )}

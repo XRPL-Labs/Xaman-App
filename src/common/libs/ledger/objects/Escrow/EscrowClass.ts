@@ -9,11 +9,11 @@ import LedgerDate from '@common/libs/ledger/parser/common/date';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '@common/libs/ledger/parser/types';
-import { LedgerObjectTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class Escrow extends BaseLedgerObject {
-    public static Type = LedgerObjectTypes.Escrow as const;
+    public static Type = LedgerEntryTypes.Escrow as const;
     public readonly Type = Escrow.Type;
 
     constructor(object?: any) {

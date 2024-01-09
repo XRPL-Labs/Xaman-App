@@ -8,15 +8,16 @@ import LedgerDate from '@common/libs/ledger/parser/common/date';
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
 /* Types ==================================================================== */
-import { Destination, AmountType, LedgerAmount } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { Destination, AmountType } from '@common/libs/ledger/parser/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class NFTokenCreateOffer extends BaseTransaction {
     public static Type = TransactionTypes.NFTokenCreateOffer as const;
     public readonly Type = NFTokenCreateOffer.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set
@@ -28,7 +29,7 @@ class NFTokenCreateOffer extends BaseTransaction {
     }
 
     get Amount(): AmountType {
-        const amount: LedgerAmount = get(this, ['tx', 'Amount']);
+        const amount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 

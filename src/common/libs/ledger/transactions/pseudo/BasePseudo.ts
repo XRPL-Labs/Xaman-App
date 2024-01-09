@@ -9,20 +9,16 @@ import { AccountModel } from '@store/models';
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
-import {
-    PseudoTransactionTypes,
-    SignedObjectType,
-    Signer as LedgerSigner,
-    TransactionJSONType,
-} from '@common/libs/ledger/types';
-
 import Memo from '@common/libs/ledger/parser/common/memo';
 /* Types ==================================================================== */
 import { Account, MemoType, Signer } from '@common/libs/ledger/parser/types';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { SignedObjectType } from '@common/libs/ledger/types';
+import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class BasePseudoTransaction {
-    protected tx: TransactionJSONType;
+    protected tx: TransactionJson;
     protected fields: string[];
 
     private isAborted: boolean;
@@ -32,7 +28,7 @@ class BasePseudoTransaction {
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
-    constructor(tx?: TransactionJSONType) {
+    constructor(tx?: TransactionJson) {
         if (!isUndefined(tx)) {
             this.tx = tx;
         }
@@ -199,7 +195,7 @@ class BasePseudoTransaction {
     }
 
     // serialize transaction object to rippled tx json
-    get Json(): TransactionJSONType {
+    get Json(): TransactionJson {
         // shallow copy
         const tx = { ...this.tx };
         Object.getOwnPropertyNames(this.tx).forEach((k: string) => {
@@ -212,7 +208,7 @@ class BasePseudoTransaction {
     }
 
     get Signers(): Array<Signer> {
-        const signers = get(this, ['tx', 'Signers']) as Array<LedgerSigner>;
+        const signers = get(this, ['tx', 'Signers']);
 
         return flatMap(signers, (item) => {
             return {

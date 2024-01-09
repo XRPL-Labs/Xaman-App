@@ -3,13 +3,17 @@
  */
 
 import { mapKeys } from 'lodash';
-import * as AccountLib from 'xrpl-accountlib';
+import { binary as AccountLibBinary } from 'xrpl-accountlib';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA1 } from '@common/libs/crypto';
-import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
 
 import Digest from './digest';
+
+/* Types  ==================================================================== */
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+
 /* Class  ==================================================================== */
 class DigestCodecWithSHA1 extends Digest {
     /**
@@ -21,18 +25,18 @@ class DigestCodecWithSHA1 extends Digest {
     /**
      * Calculate the digest using SHA-1 algorithm and binary codec.
      *
-     * @param {TransactionJSONType} request_json - Transaction JSON data to be hashed.
+     * @param {TransactionJson} request_json - Transaction JSON data to be hashed.
      * @param {TransactionTypes | PseudoTransactionTypes} tx_type - The type of transaction.
      * @returns {Promise<string>} A promise that resolves with the SHA-1 hash and codec.
      * @deprecated SHA-1 is a deprecated and insecure hashing algorithm. Use a more secure hashing method.
      */
     static digest = (
-        request_json: TransactionJSONType,
+        request_json: TransactionJson,
         tx_type: TransactionTypes | PseudoTransactionTypes,
     ): Promise<string> => {
         return new Promise((resolve, reject) => {
             let hashEncodingMethod = 'encode';
-            let normalizedRequestJson = request_json;
+            let normalizedRequestJson: Object = request_json;
 
             // if it's the pseudo PaymentChannelAuthorize we need
             // 1) use encodeForSigningClaim method for encoding
@@ -44,7 +48,7 @@ class DigestCodecWithSHA1 extends Digest {
 
             // calculate checksum
             // @ts-ignore
-            const checksum = AccountLib.binary[hashEncodingMethod](normalizedRequestJson);
+            const checksum = AccountLibBinary[hashEncodingMethod](normalizedRequestJson);
 
             // calculate digest SHA1{checksum}+{deviceId}
             const deviceId = GetDeviceUniqueId();

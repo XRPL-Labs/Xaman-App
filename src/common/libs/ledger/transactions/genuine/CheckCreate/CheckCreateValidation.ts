@@ -43,7 +43,10 @@ const CheckCreateValidation = (tx: CheckCreate): Promise<void> => {
                 }
             } else {
                 // get TrustLine from ledger
-                const line = await LedgerService.getFilteredAccountLine(tx.Account.address, tx.SendMax);
+                const line = await LedgerService.getFilteredAccountLine(tx.Account.address, {
+                    issuer: tx.SendMax.issuer,
+                    currency: tx.SendMax.currency,
+                });
 
                 // check if line exist
                 if (line && Number(tx.SendMax.value) > Number(line.balance)) {

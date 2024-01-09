@@ -2,9 +2,9 @@ import { has } from 'lodash';
 import Realm from 'realm';
 
 import { CurrencyModel, CounterPartyModel } from '@store/models';
-import { Issuer } from '@common/libs/ledger/parser/types';
 
 import BaseRepository from './base';
+import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 /* Repository  ==================================================================== */
 class CurrencyRepository extends BaseRepository<CurrencyModel> {
@@ -29,8 +29,8 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
         return this.create(object, true);
     };
 
-    isVettedCurrency = (issuer: Issuer): boolean => {
-        const currency = this.findOne({ issuer: issuer.issuer, currency: issuer.currency });
+    isVettedCurrency = (issuedCurrency: IssuedCurrency): boolean => {
+        const currency = this.findOne({ issuer: issuedCurrency.issuer, currency: issuedCurrency.currency });
         if (!currency) {
             return false;
         }

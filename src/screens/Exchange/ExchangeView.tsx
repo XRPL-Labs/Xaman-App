@@ -3,7 +3,7 @@
  */
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { Animated, View, ScrollView, Text, Keyboard, InteractionManager } from 'react-native';
+import { Animated, InteractionManager, Keyboard, ScrollView, Text, View } from 'react-native';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
@@ -14,12 +14,13 @@ import { Navigator } from '@common/helpers/navigator';
 
 import NetworkService from '@services/NetworkService';
 
-import { TrustLineModel, AccountModel } from '@store/models';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -28,14 +29,14 @@ import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
 import {
-    AmountText,
     AmountInput,
-    Header,
-    Spacer,
+    AmountText,
     Button,
+    Header,
+    HorizontalLine,
     InfoMessage,
     LoadingIndicator,
-    HorizontalLine,
+    Spacer,
     TokenAvatar,
 } from '@components/General';
 
@@ -44,7 +45,7 @@ import { AmountValueType } from '@components/General/AmountInput';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -326,6 +327,7 @@ class ExchangeView extends Component<Props, State> {
 
         // create offerCreate transaction
         const offer = new OfferCreate({
+            TransactionType: TransactionTypes.OfferCreate,
             Account: account.address,
         });
 

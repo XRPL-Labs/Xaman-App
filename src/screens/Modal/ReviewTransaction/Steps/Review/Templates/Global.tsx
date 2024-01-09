@@ -4,7 +4,7 @@ import { InteractionManager, Text, View } from 'react-native';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { Amount } from '@common/libs/ledger/parser/common';
 

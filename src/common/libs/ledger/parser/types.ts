@@ -1,7 +1,3 @@
-/**
- * Meta data types
- */
-
 export enum OperationActions {
     DEC,
     INC,
@@ -21,6 +17,12 @@ export enum ClaimRewardStatus {
     OptOut = 'OptOut',
 }
 
+export interface AmountType {
+    value: string;
+    currency: string;
+    issuer?: string;
+}
+
 export interface BalanceChangeType extends AmountType {
     action: OperationActions;
 }
@@ -32,15 +34,6 @@ export interface OwnerCountChangeType {
 }
 
 /**
- * Ledger and transaction types
- */
-export interface AmountType extends Issuer {
-    value: string;
-}
-
-export type LedgerAmount = string | AmountType;
-
-/**
  * Specification of which currency the account taking the offer would pay/
  * receive, as an object with currency and issuer fields (omit issuer for native asset).
  * Similar to currency amounts.
@@ -48,34 +41,6 @@ export type LedgerAmount = string | AmountType;
 export interface TakerRequestAmount {
     currency: string;
     issuer?: string;
-}
-
-/**
- * A currency-counterparty pair, or just currency if it's native currency.
- */
-export interface Issuer {
-    currency: string;
-    issuer?: string;
-    counterparty?: string;
-}
-
-/**
- * Trustline Transaction schema from rippled
- */
-export interface Trustline {
-    account: string;
-    balance: string;
-    currency: string;
-    limit: string;
-    limit_peer: string;
-    quality_in: number;
-    quality_out: number;
-    no_ripple?: boolean;
-    no_ripple_peer?: boolean;
-    freeze?: boolean;
-    freeze_peer?: boolean;
-    authorized?: boolean;
-    peer_authorized?: boolean;
 }
 
 /**

@@ -6,7 +6,7 @@ import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
 import { BalanceChangeType, OfferStatus, OwnerCountChangeType, OperationActions } from './types';
-import { HookExecution } from '../types';
+import { HookExecution } from '../types/common';
 
 /* Class ==================================================================== */
 class Meta {

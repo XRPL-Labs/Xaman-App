@@ -6,14 +6,13 @@ import { get, has, set, isUndefined } from 'lodash';
 import { Account } from '@common/libs/ledger/parser/types';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
-/* Types ==================================================================== */
-import { LedgerEntriesTypes } from '@common/libs/ledger/types';
+import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
 /* Class ==================================================================== */
 class BaseLedgerObject {
-    protected object: LedgerEntriesTypes;
+    protected object: LedgerEntry;
 
-    constructor(object?: LedgerEntriesTypes) {
+    constructor(object?: LedgerEntry) {
         this.object = object;
     }
 

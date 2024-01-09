@@ -12,7 +12,8 @@ import { NetworkService, PushNotificationsService } from '@services';
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import ValidationFactory from '@common/libs/ledger/factory/validation';
 
