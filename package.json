@@ -33,11 +33,9 @@
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.37.0",
     "realm": "12.3.1",
-    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@7.0.1",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.1",
-    "xrpl-accountlib": "3.2.1",
-    "xrpl-client": "2.3.1",
+    "xrpl-accountlib": "3.2.8",
     "xrpl-orderbook-reader": "0.4.0",
     "xumm-string-decode": "0.6.2"
   },

@@ -9,8 +9,7 @@ import Realm from 'realm';
 
 import { Platform } from 'react-native';
 
-import { XrplDefinitions, DefinitionsData } from 'xrpl-accountlib';
-import DEFAULT_DEFINITIONS from 'ripple-binary-codec/dist/enums/definitions.json';
+import { XrplDefinitions, DefinitionsData, binary } from 'xrpl-accountlib';
 
 import { XrplClient } from 'xrpl-client';
 
@@ -270,7 +269,7 @@ class NetworkService extends EventEmitter {
             return new XrplDefinitions(<DefinitionsData>this.network.definitions);
         }
 
-        return new XrplDefinitions(DEFAULT_DEFINITIONS);
+        return new XrplDefinitions(binary.DEFAULT_DEFINITIONS);
     };
 
     /**
