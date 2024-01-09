@@ -1,19 +1,20 @@
 /**
  * Token Settings Overlay
  */
-import { has, get } from 'lodash';
+import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { View, Animated, Text, Image, Alert, InteractionManager } from 'react-native';
+import { Alert, Animated, Image, InteractionManager, Text, View } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
-import { TrustLineModel, AccountModel } from '@store/models';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
-import { TrustSet, Payment } from '@common/libs/ledger/transactions';
+import { Payment, TrustSet } from '@common/libs/ledger/transactions';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -29,14 +30,14 @@ import LedgerService from '@services/LedgerService';
 
 // components
 import {
+    AmountText,
     Button,
     Icon,
-    Spacer,
-    RaisedButton,
-    AmountText,
     InfoMessage,
-    TouchableDebounce,
+    RaisedButton,
+    Spacer,
     TokenAvatar,
+    TouchableDebounce,
 } from '@components/General';
 
 import Localize from '@locale';
@@ -178,6 +179,7 @@ class TokenSettingsModal extends Component<Props, State> {
             });
 
             const payment = new Payment({
+                TransactionType: TransactionTypes.Payment,
                 Account: account.address,
                 Destination: trustLine.currency.issuer,
                 DestinationTag: 0,
@@ -301,6 +303,7 @@ class TokenSettingsModal extends Component<Props, State> {
             }
 
             const trustSet = new TrustSet({
+                TransactionType: TransactionTypes.TrustSet,
                 Account: account.address,
                 LimitAmount: {
                     currency: trustLine.currency.currency,
@@ -505,6 +508,7 @@ class TokenSettingsModal extends Component<Props, State> {
         const { account, trustLine } = this.props;
 
         const trustSet = new TrustSet({
+            TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
                 currency: trustLine.currency.currency,
@@ -553,6 +557,7 @@ class TokenSettingsModal extends Component<Props, State> {
         }
 
         const trustSet = new TrustSet({
+            TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
                 currency: trustLine.currency.currency,

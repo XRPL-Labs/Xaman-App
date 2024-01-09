@@ -5,6 +5,7 @@ import LedgerService from '@services/LedgerService';
 
 import { NFTokenMint } from '@common/libs/ledger/transactions';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
+import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
 import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { AmountText, LoadingIndicator, InfoMessage } from '@components/General';
@@ -64,8 +65,13 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                 });
             }
 
-            LedgerService.getLedgerEntry({ index: nfTokenOffer })
+            LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: nfTokenOffer })
                 .then((resp) => {
+                    if ('error' in resp) {
+                        this.setState({ isLoading: false }, resolve);
+                        return;
+                    }
+
                     let object;
 
                     if (resp?.node?.LedgerEntryType === NFTokenOffer.Type) {

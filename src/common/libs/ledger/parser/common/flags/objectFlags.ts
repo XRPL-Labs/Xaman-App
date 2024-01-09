@@ -8,6 +8,9 @@ const LedgerObjectFlags = {
         lsfLowNoRipple: 0x00100000,
         lsfHighNoRipple: 0x00200000,
     },
+    SignerList: {
+        lsfOneOwnerCount: 0x00010000,
+    },
 };
 
 export { LedgerObjectFlags };

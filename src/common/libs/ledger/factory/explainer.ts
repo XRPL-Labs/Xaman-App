@@ -7,7 +7,7 @@ import * as PseudoTransactions from '@common/libs/ledger/transactions/pseudo';
 import * as LedgerObjects from '@common/libs/ledger/objects';
 
 /* Types ==================================================================== */
-import { LedgerObjectTypes, PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes, PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import {
     PseudoTransactions as PseudoTransactionsType,
@@ -25,7 +25,7 @@ type ExplainerType<T> = {
 /* Module ==================================================================== */
 const ExplainerFactory = {
     fromType: (
-        type: TransactionTypes | PseudoTransactionTypes | LedgerObjectTypes,
+        type: TransactionTypes | PseudoTransactionTypes | LedgerEntryTypes,
     ): ExplainerType<TransactionsType | PseudoTransactionsType | LedgerObjectsType> => {
         let explainer;
 
@@ -39,7 +39,7 @@ const ExplainerFactory = {
                 explainer = get(PseudoTransactions, `${type}Info`, undefined);
                 break;
             // Ledger object
-            case type in LedgerObjectTypes:
+            case type in LedgerEntryTypes:
                 explainer = get(LedgerObjects, `${type}Info`, undefined);
                 break;
             default:

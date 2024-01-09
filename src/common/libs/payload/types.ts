@@ -1,10 +1,6 @@
-import {
-    TransactionJSONType,
-    SubmitResultType,
-    SignedObjectType,
-    TransactionTypes,
-    PseudoTransactionTypes,
-} from '../ledger/types';
+import { SubmitResultType, SignedObjectType } from '../ledger/types';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
 
 export interface PayloadType {
     meta: MetaType;
@@ -48,7 +44,7 @@ export interface PayloadReferenceType {
     tx_type: TransactionTypes | PseudoTransactionTypes;
     tx_destination?: string;
     tx_destination_tag?: any;
-    request_json: TransactionJSONType;
+    request_json: TransactionJson;
     created_at?: string;
     expires_at?: string;
     hash?: string;

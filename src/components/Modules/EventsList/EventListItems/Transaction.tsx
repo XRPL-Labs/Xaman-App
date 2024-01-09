@@ -3,7 +3,7 @@ import { Image, InteractionManager, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 

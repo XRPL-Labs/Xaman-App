@@ -8,15 +8,16 @@ import Amount from '@common/libs/ledger/parser/common/amount';
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
 /* Types ==================================================================== */
-import { LedgerAmount, Destination, AmountType } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { Destination, AmountType } from '@common/libs/ledger/parser/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class Payment extends BaseTransaction {
     public static Type = TransactionTypes.Payment as const;
     public readonly Type = Payment.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set
@@ -71,7 +72,7 @@ class Payment extends BaseTransaction {
     }
 
     get DeliveredAmount(): AmountType {
-        let deliveredAmount = undefined as AmountType;
+        let deliveredAmount: any | 'unavailable';
 
         if (has(this, ['meta', 'DeliveredAmount'])) {
             deliveredAmount = get(this, ['meta', 'DeliveredAmount']);
@@ -80,8 +81,7 @@ class Payment extends BaseTransaction {
         }
 
         // the delivered_amount will be unavailable in old transactions
-        // @ts-ignore
-        if (deliveredAmount === 'unavailable') {
+        if (deliveredAmount === 'unavailable' || deliveredAmount === null) {
             deliveredAmount = undefined;
         }
 
@@ -101,11 +101,8 @@ class Payment extends BaseTransaction {
         };
     }
 
-    // @ts-ignore
     get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
+        const amount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 
@@ -123,8 +120,7 @@ class Payment extends BaseTransaction {
         };
     }
 
-    // @ts-ignore
-    set Amount(input: LedgerAmount) {
+    set Amount(input: AmountType | string) {
         // native currency
         if (typeof input === 'string') {
             set(this, 'tx.Amount', new Amount(input, false).nativeToDrops());
@@ -161,11 +157,12 @@ class Payment extends BaseTransaction {
         };
     }
 
-    set SendMax(input: LedgerAmount) {
+    set SendMax(input: AmountType | string) {
         if (typeof input === 'undefined') {
             set(this, 'tx.SendMax', undefined);
             return;
         }
+
         // native currency
         if (typeof input === 'string') {
             set(this, 'tx.SendMax', new Amount(input, false).nativeToDrops());
@@ -180,7 +177,7 @@ class Payment extends BaseTransaction {
         }
     }
 
-    set DeliverMin(input: AmountType | undefined) {
+    set DeliverMin(input: AmountType | string) {
         if (typeof input === 'undefined') {
             set(this, 'tx.DeliverMin', undefined);
             return;

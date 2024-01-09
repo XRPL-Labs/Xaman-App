@@ -9,11 +9,11 @@ import BaseLedgerObject from '@common/libs/ledger/objects/BaseLedgerObject';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '@common/libs/ledger/parser/types';
-import { LedgerObjectTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class NFTokenOffer extends BaseLedgerObject {
-    public static Type = LedgerObjectTypes.NFTokenOffer as const;
+    public static Type = LedgerEntryTypes.NFTokenOffer as const;
     public readonly Type = NFTokenOffer.Type;
 
     constructor(object?: any) {

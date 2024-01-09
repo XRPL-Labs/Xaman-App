@@ -15,7 +15,7 @@ import { AccountModel } from '@store/models';
 
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
-import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
@@ -50,6 +50,7 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
 
 /* types ==================================================================== */
 export interface Props {
@@ -313,7 +314,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
-        let transaction = {};
+        let transaction: TransactionJson;
 
         switch (type) {
             case 'OfferCancel':
@@ -346,7 +347,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case 'CheckCancel':
-                if (tx.Type === LedgerObjectTypes.Check) {
+                if (tx.Type === LedgerEntryTypes.Check) {
                     Object.assign(transaction, {
                         TransactionType: 'CheckCancel',
                         CheckID: tx.Index,
@@ -354,7 +355,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             case 'CheckCash':
-                if (tx.Type === LedgerObjectTypes.Check) {
+                if (tx.Type === LedgerEntryTypes.Check) {
                     Object.assign(transaction, {
                         TransactionType: 'CheckCash',
                         CheckID: tx.Index,
@@ -376,7 +377,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             case 'CancelTicket':
-                if (tx.Type === LedgerObjectTypes.Ticket) {
+                if (tx.Type === LedgerEntryTypes.Ticket) {
                     Object.assign(transaction, {
                         TransactionType: 'AccountSet',
                         Sequence: 0,
@@ -394,7 +395,7 @@ class TransactionDetailsView extends Component<Props, State> {
             Object.assign(transaction, { Account: account.address });
 
             // generate payload
-            const payload = await Payload.build(transaction);
+            const payload = Payload.build(transaction);
 
             Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
@@ -517,7 +518,7 @@ class TransactionDetailsView extends Component<Props, State> {
         // ledger objects always have reserve change increase
         if (tx instanceof BaseLedgerObject) {
             // ignore for incoming NFTokenOffers
-            if (tx.Type === LedgerObjectTypes.NFTokenOffer && tx.Owner !== account.address) {
+            if (tx.Type === LedgerEntryTypes.NFTokenOffer && tx.Owner !== account.address) {
                 return null;
             }
             changes = {
@@ -597,7 +598,7 @@ class TransactionDetailsView extends Component<Props, State> {
             !(
                 tx.Type === TransactionTypes.Payment ||
                 tx.Type === TransactionTypes.CheckCreate ||
-                tx.Type === LedgerObjectTypes.Check
+                tx.Type === LedgerEntryTypes.Check
             ) ||
             isUndefined(tx.InvoiceID)
         ) {
@@ -701,11 +702,11 @@ class TransactionDetailsView extends Component<Props, State> {
         if (tx instanceof BaseLedgerObject) {
             if (
                 [
-                    LedgerObjectTypes.Offer,
-                    LedgerObjectTypes.NFTokenOffer,
-                    LedgerObjectTypes.Check,
-                    LedgerObjectTypes.Ticket,
-                    LedgerObjectTypes.PayChannel,
+                    LedgerEntryTypes.Offer,
+                    LedgerEntryTypes.NFTokenOffer,
+                    LedgerEntryTypes.Check,
+                    LedgerEntryTypes.Ticket,
+                    LedgerEntryTypes.PayChannel,
                 ].includes(tx.Type)
             ) {
                 badgeType = 'open';
@@ -718,7 +719,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         let date;
 
-        if (tx.Type !== LedgerObjectTypes.Ticket) {
+        if (tx.Type !== LedgerEntryTypes.Ticket) {
             date = moment(tx.Date).format('LLLL');
         }
 
@@ -803,7 +804,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 break;
             }
             case TransactionTypes.EscrowCreate:
-            case LedgerObjectTypes.Escrow:
+            case LedgerEntryTypes.Escrow:
                 Object.assign(props, {
                     color: tx.Account.address === account.address ? styles.orangeColor : styles.naturalColor,
                     prefix: tx.Account.address === account.address ? '-' : '',
@@ -825,7 +826,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 });
                 break;
             case TransactionTypes.CheckCreate:
-            case LedgerObjectTypes.Check:
+            case LedgerEntryTypes.Check:
                 Object.assign(props, {
                     color: styles.naturalColor,
                     value: tx.SendMax.value,
@@ -866,7 +867,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            case LedgerObjectTypes.Offer:
+            case LedgerEntryTypes.Offer:
                 Object.assign(props, {
                     color: styles.naturalColor,
                     icon: 'IconCornerRightDown',
@@ -894,7 +895,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case LedgerObjectTypes.NFTokenOffer: {
+            case LedgerEntryTypes.NFTokenOffer: {
                 let icon;
                 if (tx.Owner !== account.address) {
                     icon = tx.Flags.SellToken ? 'IconCornerRightUp' : 'IconCornerRightDown';
@@ -968,7 +969,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case LedgerObjectTypes.PayChannel:
+            case LedgerEntryTypes.PayChannel:
                 break;
             default:
                 shouldShowAmount = false;
@@ -979,7 +980,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return null;
         }
 
-        if (tx.Type === TransactionTypes.OfferCreate || tx.Type === LedgerObjectTypes.Offer) {
+        if (tx.Type === TransactionTypes.OfferCreate || tx.Type === LedgerEntryTypes.Offer) {
             let takerGets;
 
             if (
@@ -1092,7 +1093,7 @@ class TransactionDetailsView extends Component<Props, State> {
         }
 
         if (
-            tx.Type === LedgerObjectTypes.NFTokenOffer ||
+            tx.Type === LedgerEntryTypes.NFTokenOffer ||
             tx.Type === TransactionTypes.NFTokenCreateOffer ||
             tx.Type === TransactionTypes.NFTokenAcceptOffer
         ) {
@@ -1123,7 +1124,7 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
-        if (tx.Type === LedgerObjectTypes.PayChannel) {
+        if (tx.Type === LedgerEntryTypes.PayChannel) {
             return (
                 <View style={styles.amountHeaderContainer}>
                     <Text style={styles.labelText}> {Localize.t('events.payChannelAmount')}</Text>
@@ -1205,14 +1206,14 @@ class TransactionDetailsView extends Component<Props, State> {
                     });
                 }
                 break;
-            case LedgerObjectTypes.Offer:
+            case LedgerEntryTypes.Offer:
                 actionButtons.push({
                     label: Localize.t('events.cancelOffer'),
                     type: 'OfferCancel',
                     secondary: true,
                 });
                 break;
-            case LedgerObjectTypes.NFTokenOffer:
+            case LedgerEntryTypes.NFTokenOffer:
                 if (tx.Owner === account.address) {
                     actionButtons.push({
                         label: Localize.t('events.cancelOffer'),
@@ -1235,7 +1236,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     }
                 }
                 break;
-            case LedgerObjectTypes.Escrow:
+            case LedgerEntryTypes.Escrow:
                 if (tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cancelEscrow'),
@@ -1253,7 +1254,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
 
                 break;
-            case LedgerObjectTypes.Check:
+            case LedgerEntryTypes.Check:
                 if (tx.Destination.address === account.address && !tx.isExpired) {
                     actionButtons.push({
                         label: Localize.t('events.cashCheck'),
@@ -1269,7 +1270,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     });
                 }
                 break;
-            case LedgerObjectTypes.Ticket:
+            case LedgerEntryTypes.Ticket:
                 actionButtons.push({
                     label: Localize.t('events.cancelTicket'),
                     type: 'CancelTicket',
@@ -1307,7 +1308,7 @@ class TransactionDetailsView extends Component<Props, State> {
 
         const warnings = [] as Array<string>;
 
-        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+        if (tx.Type === LedgerEntryTypes.NFTokenOffer) {
             // incoming offer with destination set other than
             if (tx.Owner !== account.address && tx.Destination && tx.Destination.address !== account.address) {
                 warnings.push(Localize.t('events.thisOfferCanOnlyBeAcceptedByThirdParty'));
@@ -1389,7 +1390,7 @@ class TransactionDetailsView extends Component<Props, State> {
             }
         }
 
-        if (tx.Type === LedgerObjectTypes.NFTokenOffer) {
+        if (tx.Type === LedgerEntryTypes.NFTokenOffer) {
             if (tx.Owner === account.address) {
                 from = {
                     address: account.address,

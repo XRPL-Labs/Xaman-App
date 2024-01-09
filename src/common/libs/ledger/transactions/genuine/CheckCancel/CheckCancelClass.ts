@@ -1,19 +1,19 @@
 import moment from 'moment-timezone';
-
 import { set, get, isUndefined } from 'lodash';
 
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 import { CheckCreate } from '@common/libs/ledger/transactions/genuine/CheckCreate';
 
 /* Types ==================================================================== */
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class CheckCancel extends BaseTransaction {
     public static Type = TransactionTypes.CheckCancel as const;
     public readonly Type = CheckCancel.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set

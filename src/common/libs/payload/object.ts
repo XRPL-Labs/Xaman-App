@@ -7,7 +7,8 @@ import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
 
-import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import {
     ApplicationType,
@@ -69,7 +70,7 @@ export class Payload {
      * @param TxJson Ledger format TXJson
      * @param message
      */
-    static build(TxJson: TransactionJSONType, message?: string): Payload {
+    static build(TxJson: TransactionJson, message?: string): Payload {
         const instance = new Payload();
 
         // force the signer accounts if account is set in transaction

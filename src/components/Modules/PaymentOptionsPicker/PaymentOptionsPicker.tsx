@@ -5,18 +5,18 @@ import { View, ViewStyle, InteractionManager } from 'react-native';
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services//NetworkService';
 
-import { AmountType } from '@common/libs/ledger/parser/types';
-
 import { Button, InfoMessage } from '@components/General';
 import { PaymentOptionItem } from '@components/Modules/PaymentOptionsPicker/PaymentOptionItem';
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { PathOption } from '@common/libs/ledger/types';
+import { PathFindPathOption } from '@common/libs/ledger/types/methods';
+
 import LedgerPathFinding from '@common/libs/ledger/pathFinding';
 
 import Locale from '@locale';
 
 import styles from './styles';
+import { AmountType } from '@common/libs/ledger/parser/types';
 
 /* Types ==================================================================== */
 interface Props {
@@ -26,13 +26,13 @@ interface Props {
     containerStyle?: ViewStyle;
     onLoad?: () => void;
     onLoadEnd?: () => void;
-    onSelect?: (item: PathOption) => void;
+    onSelect?: (item: PathFindPathOption) => void;
 }
 
 interface State {
-    paymentOptions: PathOption[];
-    localOption: PathOption;
-    selectedItem: PathOption;
+    paymentOptions: PathFindPathOption[];
+    localOption: PathFindPathOption;
+    selectedItem: PathFindPathOption;
     isLoading: boolean;
     isExpired: boolean;
 }
@@ -140,7 +140,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
 
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve) => {
-            let localOption = undefined as PathOption;
+            let localOption = undefined as PathFindPathOption;
 
             try {
                 // paying native currency
@@ -156,7 +156,10 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     // eslint-disable-next-line no-lonely-if
                     if (amount.issuer !== source) {
                         // source is not the issuer
-                        const sourceLine = await LedgerService.getFilteredAccountLine(source, amount);
+                        const sourceLine = await LedgerService.getFilteredAccountLine(source, {
+                            issuer: amount.issuer,
+                            currency: amount.currency,
+                        });
 
                         // can pay the amount
                         if (
@@ -183,11 +186,25 @@ class PaymentOptionsPicker extends Component<Props, State> {
                                     };
                                 }
                             } else {
-                                localOption = { source_amount: amount, paths_computed: [] };
+                                localOption = {
+                                    source_amount: {
+                                        issuer: amount.issuer,
+                                        currency: amount.currency,
+                                        value: amount.value,
+                                    },
+                                    paths_computed: [],
+                                };
                             }
                         }
                     } else {
-                        localOption = { source_amount: amount, paths_computed: [] };
+                        localOption = {
+                            source_amount: {
+                                issuer: amount.issuer,
+                                currency: amount.currency,
+                                value: amount.value,
+                            },
+                            paths_computed: [],
+                        };
                     }
                 }
             } catch {
@@ -250,7 +267,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         });
     };
 
-    onItemSelect = (item: PathOption) => {
+    onItemSelect = (item: PathFindPathOption) => {
         const { onSelect } = this.props;
         const { selectedItem } = this.state;
 
@@ -271,7 +288,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         }
     };
 
-    renderItem = (item: PathOption, index: number): React.ReactElement => {
+    renderItem = (item: PathFindPathOption, index: number): React.ReactElement => {
         const { amount } = this.props;
         const { selectedItem } = this.state;
 

@@ -8,14 +8,15 @@ import BasePseudoTransaction from '@common/libs/ledger/transactions/pseudo/BaseP
 
 /* Types ==================================================================== */
 import { AmountType } from '@common/libs/ledger/parser/types';
-import { PseudoTransactionTypes, TransactionJSONType } from '@common/libs/ledger/types';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class PaymentChannelAuthorize extends BasePseudoTransaction {
     public static Type = PseudoTransactionTypes.PaymentChannelAuthorize as const;
     public readonly Type = PaymentChannelAuthorize.Type;
 
-    constructor(tx?: TransactionJSONType) {
+    constructor(tx?: TransactionJson) {
         super(tx);
 
         // set transaction type if not set

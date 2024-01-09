@@ -32,13 +32,16 @@ import { Navigator } from '@common/helpers/navigator';
 
 // Parses
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
-import { LedgerEntriesTypes, LedgerMarker, LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
-import { Transactions } from '@common/libs/ledger/transactions/types';
+import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
-import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { Payload } from '@common/libs/payload';
 
 // types
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
+import { LedgerMarker } from '@common/libs/ledger/types/common';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { LedgerEntry } from '@common/libs/ledger/types/ledger';
+
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
 // Services
@@ -55,6 +58,8 @@ import { AppStateStatus } from '@services/AppService';
 // Components
 import { Button, Header, SearchBar, SegmentButton } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
+
+import { DataSourceItem, DataSourceItemType } from '@components/Modules/EventsList/EventsList';
 
 // Locale
 import Localize from '@locale';
@@ -80,7 +85,7 @@ export interface State {
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
-    dataSource: Array<Transactions | LedgerObjects | Payload>;
+    dataSource: Array<DataSourceItem>;
 }
 
 enum DataSourceType {
@@ -245,18 +250,39 @@ class EventsView extends Component<Props, State> {
         }
     };
 
+    formatDate = (date: string) => {
+        const momentDate = moment(date);
+        const reference = moment();
+
+        if (momentDate.isSame(reference, 'day')) {
+            return Localize.t('global.today');
+        }
+        if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
+            return Localize.t('global.yesterday');
+        }
+
+        // same year, don't show year
+        if (momentDate.isSame(reference, 'year')) {
+            return momentDate.format('DD MMM');
+        }
+
+        return momentDate.format('DD MMM, Y');
+    };
+
     fetchPlannedObjects = async (
         account: string,
         type: string,
         marker?: string,
-        combined = [] as LedgerEntriesTypes[],
-    ): Promise<LedgerEntriesTypes[]> => {
+        combined = [] as LedgerEntry[],
+    ): Promise<LedgerEntry[]> => {
         return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
-            const { error, account_objects, marker: _marker } = resp;
             // account is not found
-            if (error && error === 'actNotFound') {
+            if ('error' in resp) {
                 return [];
             }
+
+            const { account_objects, marker: _marker } = resp;
+
             if (_marker && _marker !== marker) {
                 return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
             }
@@ -277,7 +303,7 @@ class EventsView extends Component<Props, State> {
 
             // account objects we are interested in
             const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket', 'payment_channel'];
-            let objects = [] as LedgerEntriesTypes[];
+            let objects = [] as LedgerEntry[];
 
             objectTypes
                 .reduce(async (accumulator, type) => {
@@ -338,6 +364,11 @@ class EventsView extends Component<Props, State> {
 
             LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
                 .then((resp) => {
+                    if ('error' in resp) {
+                        resolve([]);
+                        return;
+                    }
+
                     const { transactions: txResp, marker } = resp;
                     let canLoadMore = true;
 
@@ -347,9 +378,14 @@ class EventsView extends Component<Props, State> {
                         canLoadMore = false;
                     }
 
-                    let parsedList = filter(flatMap(txResp, TransactionFactory.fromLedger), (t) => {
-                        return t?.TransactionResult?.success;
+                    // only success transactions
+                    const tesSuccessTransactions = filter(txResp, (transaction) => {
+                        return (
+                            typeof transaction.meta === 'object' && transaction?.meta.TransactionResult === 'tesSUCCESS'
+                        );
                     });
+
+                    let parsedList = flatMap(tesSuccessTransactions, (item) => TransactionFactory.fromLedger(item));
 
                     if (loadMore) {
                         parsedList = uniqBy([...transactions, ...parsedList], 'Hash');
@@ -360,6 +396,7 @@ class EventsView extends Component<Props, State> {
                     });
                 })
                 .catch(() => {
+                    // TODO: BETTER ERROR HANDLING AND ONLY SHOW WHEN SCREEN IS VISIBLE
                     Toast(Localize.t('events.canNotFetchTransactions'));
                     resolve([]);
                 });
@@ -385,7 +422,7 @@ class EventsView extends Component<Props, State> {
         }
     };
 
-    buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any) => {
+    buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any): Array<DataSourceItem> => {
         const { sectionIndex } = this.state;
 
         if (isEmpty(pendingRequests) && isEmpty(transactions) && isEmpty(plannedTransactions)) {
@@ -395,38 +432,38 @@ class EventsView extends Component<Props, State> {
         let items = [] as any;
 
         if (sectionIndex === 1) {
-            const open = orderBy(
+            const openItems = orderBy(
                 filter(plannedTransactions, (p) =>
                     [
-                        LedgerObjectTypes.Offer,
-                        LedgerObjectTypes.NFTokenOffer,
-                        LedgerObjectTypes.Check,
-                        LedgerObjectTypes.Ticket,
-                        LedgerObjectTypes.PayChannel,
+                        LedgerEntryTypes.Offer,
+                        LedgerEntryTypes.NFTokenOffer,
+                        LedgerEntryTypes.Check,
+                        LedgerEntryTypes.Ticket,
+                        LedgerEntryTypes.PayChannel,
                     ].includes(p.Type),
                 ),
                 ['Date'],
             );
 
-            const planned = orderBy(filter(plannedTransactions, { Type: LedgerObjectTypes.Escrow }), ['Date']);
+            const plannedItems = orderBy(filter(plannedTransactions, { Type: LedgerEntryTypes.Escrow }), ['Date']);
             const dataSource = [];
 
-            if (!isEmpty(open)) {
-                dataSource.push({
-                    title: 'Open',
-                    type: 'string',
-                    data: open,
-                });
+            if (!isEmpty(openItems)) {
+                dataSource.push({ data: Localize.t('events.eventTypeOpen'), type: DataSourceItemType.SectionHeader });
+                map(openItems, (item) => dataSource.push({ data: item, type: DataSourceItemType.RowItem }));
             }
 
-            if (!isEmpty(planned)) {
-                dataSource.push({ title: Localize.t('events.plannedOn'), type: 'string', data: [] });
-                const grouped = groupBy(planned, (item) => {
+            if (!isEmpty(plannedItems)) {
+                dataSource.push({ data: Localize.t('events.plannedOn'), type: DataSourceItemType.SectionHeader });
+                const grouped = groupBy(plannedItems, (item) => {
                     return moment(item.Date).format('YYYY-MM-DD');
                 });
 
                 map(grouped, (v, k) => {
-                    dataSource.push({ title: k, data: v, type: 'date' });
+                    dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
+                    map(v, (item) => {
+                        dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+                    });
                 });
             }
 
@@ -441,14 +478,18 @@ class EventsView extends Component<Props, State> {
         // group items by month name and then get the name for each month
         const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
 
-        const dataSource = [] as any;
+        const dataSource: DataSourceItem[] = [];
 
         map(grouped, (v, k) => {
-            dataSource.push({ title: k, data: v, type: 'date' });
+            dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
+            map(v, (item) => {
+                dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+            });
         });
 
+        return dataSource;
         // sort by date
-        return orderBy(dataSource, ['title'], ['desc']);
+        // const sorted = orderBy(dataSource, ['title'], ['desc']);
     };
 
     updateDataSource = async (include?: DataSourceType[]) => {
@@ -552,15 +593,15 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.EscrowCancel,
                         TransactionTypes.EscrowCreate,
                         TransactionTypes.EscrowFinish,
-                        LedgerObjectTypes.Escrow,
+                        LedgerEntryTypes.Escrow,
                     ];
                     break;
                 case 'Offer':
                     includeTypes = [
                         TransactionTypes.OfferCancel,
                         TransactionTypes.OfferCreate,
-                        LedgerObjectTypes.Offer,
-                        LedgerObjectTypes.NFTokenOffer,
+                        LedgerEntryTypes.Offer,
+                        LedgerEntryTypes.NFTokenOffer,
                     ];
                     break;
                 case 'Check':
@@ -568,7 +609,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.CheckCancel,
                         TransactionTypes.CheckCreate,
                         TransactionTypes.CheckCash,
-                        LedgerObjectTypes.Check,
+                        LedgerEntryTypes.Check,
                     ];
                     break;
                 case 'NFT':
@@ -578,7 +619,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenAcceptOffer,
                         TransactionTypes.NFTokenCancelOffer,
-                        LedgerObjectTypes.NFTokenOffer,
+                        LedgerEntryTypes.NFTokenOffer,
                     ];
                     break;
                 case 'Other':
@@ -597,7 +638,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenCancelOffer,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenMint,
-                        LedgerObjectTypes.Ticket,
+                        LedgerEntryTypes.Ticket,
                     ];
                     break;
                 default:
@@ -800,13 +841,13 @@ class EventsView extends Component<Props, State> {
                     imageStyle={AppStyles.BackgroundShapes}
                     style={[AppStyles.contentContainer, AppStyles.padding]}
                 >
-                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoEvents')} />
-                    <Text style={[AppStyles.emptyText]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageNoEvents')} />
+                    <Text style={AppStyles.emptyText}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                     <Button
                         testID="add-account-button"
                         label={Localize.t('home.addAccount')}
                         icon="IconPlus"
-                        iconStyle={[AppStyles.imgColorWhite]}
+                        iconStyle={AppStyles.imgColorWhite}
                         rounded
                         onPress={() => {
                             Navigator.push(AppScreens.Account.Add);

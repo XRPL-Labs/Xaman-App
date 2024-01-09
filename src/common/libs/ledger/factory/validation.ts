@@ -6,7 +6,7 @@ import * as Transactions from '@common/libs/ledger/transactions/genuine';
 import * as PseudoTransactions from '@common/libs/ledger/transactions/pseudo';
 
 /* Types ==================================================================== */
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import {
     Transactions as TransactionsType,

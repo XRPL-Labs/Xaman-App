@@ -21,7 +21,7 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import Localize from '@locale';
 

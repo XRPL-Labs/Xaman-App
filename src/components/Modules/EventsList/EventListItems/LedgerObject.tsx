@@ -7,7 +7,7 @@ import { AccountModel } from '@store/models';
 import { AppScreens } from '@common/constants';
 
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
-import { LedgerObjectTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -159,13 +159,13 @@ class LedgerObjectItem extends Component<Props, State> {
         const { recipientDetails } = this.state;
         const { item } = this.props;
 
-        if (item.Type === LedgerObjectTypes.Offer) {
+        if (item.Type === LedgerEntryTypes.Offer) {
             return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
                 item.TakerGets.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
         }
 
-        if (item.Type === LedgerObjectTypes.NFTokenOffer) {
+        if (item.Type === LedgerEntryTypes.NFTokenOffer) {
             return item.NFTokenID;
         }
 
@@ -178,7 +178,7 @@ class LedgerObjectItem extends Component<Props, State> {
     renderRightPanel = () => {
         const { item, account } = this.props;
 
-        if (item.Type === LedgerObjectTypes.Escrow) {
+        if (item.Type === LedgerEntryTypes.Escrow) {
             const incoming = item.Destination?.address === account.address;
             return (
                 <AmountText
@@ -193,7 +193,7 @@ class LedgerObjectItem extends Component<Props, State> {
             );
         }
 
-        if (item.Type === LedgerObjectTypes.Check) {
+        if (item.Type === LedgerEntryTypes.Check) {
             return (
                 <AmountText
                     value={item.SendMax.value}
@@ -206,7 +206,7 @@ class LedgerObjectItem extends Component<Props, State> {
             );
         }
 
-        if (item.Type === LedgerObjectTypes.Offer) {
+        if (item.Type === LedgerEntryTypes.Offer) {
             return (
                 <AmountText
                     value={item.TakerPays.value}
@@ -219,7 +219,7 @@ class LedgerObjectItem extends Component<Props, State> {
             );
         }
 
-        if (item.Type === LedgerObjectTypes.NFTokenOffer) {
+        if (item.Type === LedgerEntryTypes.NFTokenOffer) {
             return (
                 <AmountText
                     value={item.Amount.value}

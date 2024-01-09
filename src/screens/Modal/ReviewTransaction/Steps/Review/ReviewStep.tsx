@@ -17,7 +17,7 @@ import Localize from '@locale';
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
 
-import { PseudoTransactionTypes } from '@common/libs/ledger/types';
+import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
 

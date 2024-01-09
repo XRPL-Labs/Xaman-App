@@ -1,5 +1,3 @@
-import { has } from 'lodash';
-
 import LedgerService from '@services/LedgerService';
 import Localize from '@locale';
 
@@ -56,14 +54,14 @@ const AccountDeleteValidation = (tx: AccountDelete): Promise<void> => {
 
         // check if destination exist or required destination tag flag is set
         try {
-            const destinationAccountInfo = await LedgerService.getAccountInfo(tx.Destination.address);
+            const resp = await LedgerService.getAccountInfo(tx.Destination.address);
 
-            if (!destinationAccountInfo || has(destinationAccountInfo, 'error')) {
+            if ('error' in resp) {
                 reject(new Error(Localize.t('account.destinationAccountIsNotActivated')));
                 return;
             }
 
-            const { account_flags } = destinationAccountInfo;
+            const { account_flags } = resp;
 
             if (account_flags?.requireDestinationTag && tx.Destination.tag === undefined) {
                 reject(new Error(Localize.t('account.destinationAddressRequiredDestinationTag')));

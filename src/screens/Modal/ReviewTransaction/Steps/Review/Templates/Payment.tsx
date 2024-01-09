@@ -7,7 +7,7 @@ import { RatesType } from '@services/BackendService';
 import { CoreRepository } from '@store/repositories';
 
 import { Payment } from '@common/libs/ledger/transactions';
-import { PathOption } from '@common/libs/ledger/types';
+import { PathFindPathOption } from '@common/libs/ledger/types/methods';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -39,7 +39,7 @@ export interface State {
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
     issuerFee: number;
-    selectedPath: PathOption;
+    selectedPath: PathFindPathOption;
 }
 
 /* Component ==================================================================== */
@@ -180,7 +180,7 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
-    onPathSelect = (path: PathOption) => {
+    onPathSelect = (path: PathFindPathOption) => {
         const { transaction, setReady } = this.props;
 
         if (path) {

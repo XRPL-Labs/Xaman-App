@@ -5,7 +5,7 @@ import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
-import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 import PaymentChannelCreate from './PaymentChannelCreateClass';
 
@@ -32,7 +32,7 @@ const PaymentChannelCreateInfo = {
 
         content += Localize.t('events.theChannelIdIs', {
             // @ts-ignore
-            channel: tx.Type === LedgerObjectTypes.PayChannel ? tx.Index : tx.ChannelID,
+            channel: tx.Type === LedgerEntryTypes.PayChannel ? tx.Index : tx.ChannelID,
         });
         content += '\n';
 

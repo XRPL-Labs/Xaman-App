@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, keys } from 'lodash';
+import { map, isEmpty, flatMap, forEach, get, keys } from 'lodash';
 
 import { TrustLineModel } from '@store/models';
 import { AccountRepository, CurrencyRepository } from '@store/repositories';
@@ -13,27 +13,36 @@ import { AccountRepository, CurrencyRepository } from '@store/repositories';
 import Meta from '@common/libs/ledger/parser/meta';
 import { Amount } from '@common/libs/ledger/parser/common';
 
-import { LedgerTransactionType } from '@common/libs/ledger/types';
-
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+
 import { AccountTypes } from '@store/types';
 
-/* events  ==================================================================== */
-declare interface AccountService {
-    on(
-        event: 'transaction',
-        listener: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void,
-    ): this;
-    on(event: string, listener: Function): this;
-}
+import {
+    SubscribeRequest,
+    SubscribeResponse,
+    TransactionStream,
+    UnsubscribeRequest,
+    UnsubscribeResponse,
+} from '@common/libs/ledger/types/methods';
 
+/* Events  ==================================================================== */
+export type AccountServiceEvent = {
+    transaction: (transaction: TransactionStream, effectedAccounts: Array<string>) => void;
+};
+
+declare interface AccountService {
+    on<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    off<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    emit<U extends keyof AccountServiceEvent>(event: U, ...args: Parameters<AccountServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
     private accounts: string[];
-    private logger: any;
     private transactionListener: any;
+
+    private logger: LoggerInstance;
 
     constructor() {
         super();
@@ -89,7 +98,7 @@ class AccountService extends EventEmitter {
     /**
      * Handle stream transactions on subscribed accounts
      */
-    transactionHandler = (tx: LedgerTransactionType) => {
+    transactionHandler = (tx: TransactionStream) => {
         const { transaction, meta } = tx;
 
         if (typeof transaction === 'object' && typeof meta === 'object') {
@@ -143,8 +152,12 @@ class AccountService extends EventEmitter {
             // fetch account info from ledger
             const accountInfo = await LedgerService.getAccountInfo(account);
 
+            if (!accountInfo) {
+                this.logger.warn(`Fetch account info [${account}]: got empty response`);
+            }
+
             // if there is any error in the response return and ignore fetching the account lines
-            if (!accountInfo || has(accountInfo, 'error')) {
+            if ('error' in accountInfo) {
                 // account not found reset account to default state
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     // reset account details to default
@@ -260,8 +273,8 @@ class AccountService extends EventEmitter {
                 if (include.indexOf(account) === -1) return;
             }
 
-            this.updateAccountInfo(account).catch((e) => {
-                this.logger.error(`Update account info [${account}] `, e);
+            this.updateAccountInfo(account).catch((error: Error) => {
+                this.logger.error(`Update account info [${account}] `, error);
             });
         });
     };
@@ -289,11 +302,11 @@ class AccountService extends EventEmitter {
     unsubscribe() {
         this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
 
-        NetworkService.send({
+        NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
             accounts: this.accounts,
-        }).catch((e: any) => {
-            this.logger.warn('Unable to Unsubscribe accounts', e);
+        }).catch((error: Error) => {
+            this.logger.warn('Unable to Unsubscribe accounts', error);
         });
     }
 
@@ -303,11 +316,11 @@ class AccountService extends EventEmitter {
     subscribe() {
         this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
-        NetworkService.send({
+        NetworkService.send<SubscribeRequest, SubscribeResponse>({
             command: 'subscribe',
             accounts: this.accounts,
-        }).catch((e: any) => {
-            this.logger.warn('Unable to Subscribe accounts', e);
+        }).catch((error: Error) => {
+            this.logger.warn('Unable to Subscribe accounts', error);
         });
     }
 }

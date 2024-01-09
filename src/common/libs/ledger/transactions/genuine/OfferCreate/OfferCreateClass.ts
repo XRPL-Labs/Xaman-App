@@ -6,12 +6,14 @@ import Amount from '@common/libs/ledger/parser/common/amount';
 import LedgerDate from '@common/libs/ledger/parser/common/date';
 import Meta from '@common/libs/ledger/parser/meta';
 
+import { EncodeLedgerIndex } from '@common/utils/codec';
+
 import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransaction';
 
 /* Types ==================================================================== */
 import { OfferStatus, AmountType } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
-import { EncodeLedgerIndex } from '@common/utils/codec';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class OfferCreate extends BaseTransaction {
@@ -20,7 +22,7 @@ class OfferCreate extends BaseTransaction {
 
     private offerStatus: OfferStatus;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set

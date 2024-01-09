@@ -9,9 +9,10 @@ import Realm from 'realm';
 
 import { Platform } from 'react-native';
 
-import { XrplDefinitions, DefinitionsData, binary } from 'xrpl-accountlib';
+import { XrplDefinitions, DefinitionsData } from 'xrpl-accountlib';
+import DEFAULT_DEFINITIONS from 'ripple-binary-codec/dist/enums/definitions.json';
 
-import { ServerInfoResponse, XrplClient } from 'xrpl-client';
+import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
 import NetworkRepository from '@store/repositories/network';
@@ -27,7 +28,22 @@ import { AppScreens, NetworkConfig } from '@common/constants';
 
 import AppService, { AppStateStatus, NetStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
+
+import {
+    ErrorResponse,
+    FeeRequest,
+    FeeResponse,
+    LedgerEntryRequest,
+    LedgerEntryResponse,
+    Request,
+    Response,
+    ServerDefinitionsRequest,
+    ServerDefinitionsResponse,
+    ServerInfoRequest,
+    ServerInfoResponse,
+} from '@common/libs/ledger/types/methods';
+import { Amendments } from '@common/libs/ledger/types/ledger';
 
 /* Types  ==================================================================== */
 export enum NetworkStateStatus {
@@ -36,13 +52,17 @@ export enum NetworkStateStatus {
     Disconnected = 'Disconnected',
 }
 
-declare interface NetworkService {
-    on(event: 'connect', listener: (networkId: number) => void): this;
-    on(event: 'stateChange', listener: (networkStatus: NetworkStateStatus) => void): this;
-    on(event: 'networkChange', listener: (network: NetworkModel) => void): this;
-    on(event: string, listener: Function): this;
-}
+export type NetworkServiceEvent = {
+    connect: (network: NetworkModel) => void;
+    stateChange: (networkStatus: NetworkStateStatus) => void;
+    networkChange: (network: NetworkModel) => void;
+};
 
+declare interface NetworkService {
+    on<U extends keyof NetworkServiceEvent>(event: U, listener: NetworkServiceEvent[U]): this;
+    off<U extends keyof NetworkServiceEvent>(event: U, listener: NetworkServiceEvent[U]): this;
+    emit<U extends keyof NetworkServiceEvent>(event: U, ...args: Parameters<NetworkServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class NetworkService extends EventEmitter {
     public network: NetworkModel;
@@ -51,13 +71,12 @@ class NetworkService extends EventEmitter {
     private networkReserve: any;
     private lastNetworkErrorId: Realm.BSON.ObjectId;
 
-    private logger: any;
-
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
 
     static TIMEOUT_SECONDS = 40;
     static ORIGIN = `/xaman/${GetAppVersionCode()}/${Platform.OS}`;
+    private logger: LoggerInstance;
 
     constructor() {
         super();
@@ -251,7 +270,7 @@ class NetworkService extends EventEmitter {
             return new XrplDefinitions(<DefinitionsData>this.network.definitions);
         }
 
-        return new XrplDefinitions(binary.DEFAULT_DEFINITIONS);
+        return new XrplDefinitions(DEFAULT_DEFINITIONS);
     };
 
     /**
@@ -280,14 +299,16 @@ class NetworkService extends EventEmitter {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const request = {
+                const resp = await this.send<FeeRequest, FeeResponse>({
                     command: 'fee',
                     tx_blob: PrepareTxForHookFee(txJson, this.network.definitions),
-                };
+                });
 
-                const feeDataSet = await this.send(request);
+                if ('error' in resp) {
+                    throw new Error(resp.error);
+                }
 
-                resolve(NormalizeFeeDataSet(feeDataSet));
+                resolve(NormalizeFeeDataSet(resp));
             } catch (e) {
                 this.logger.warn('Unable to calculate available network fees:', e);
                 reject(new Error('Unable to calculate available network fees!'));
@@ -299,7 +320,7 @@ class NetworkService extends EventEmitter {
      * Get connection details
      * @returns {object}
      */
-    getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: string } => {
+    getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: NetworkType } => {
         return {
             networkKey: this.network.key,
             networkId: this.network.networkId,
@@ -422,23 +443,23 @@ class NetworkService extends EventEmitter {
      * Asynchronously sends a payload to the connected node and ensures that the response is valid by
      * matching the network ID.
      *
-     * @param {Object} payload - The data object that needs to be sent to the connected node. Should contain an 'id'
+     * @param {Request} payload - The data object that needs to be sent to the connected node. Should contain an 'id'
      * property or it will be automatically assigned a unique identifier.
-     * @returns {Promise<Object>} The response from the node. If the response is an object, it is augmented with
+     * @returns {Promise<Response>} The response from the node. If the response is an object, it is augmented with
      * the original ID and network ID before being returned.
      * @throws {Error} Throws an error if the network ID in the response does not match the current network ID.
      *
      * @todo refining the error handling to distinguish between network issues and ID mismatches.
      */
-    send = async (payload: any): Promise<any> => {
+    send = async <T extends Request, U extends Response>(payload: T): Promise<U | ErrorResponse> => {
         const payloadWithNetworkId = {
             ...payload,
             id: `${payload.id || uuidv4()}.${this.network?.id.toHexString()}`,
         };
 
-        const res = await this.connection.send(payloadWithNetworkId, {
+        const res = (await this.connection.send(payloadWithNetworkId, {
             timeoutSeconds: NetworkService.TIMEOUT_SECONDS,
-        });
+        })) as Response;
 
         const [resId, resNetworkId] = res.id?.split('.') || [];
 
@@ -446,7 +467,7 @@ class NetworkService extends EventEmitter {
             throw new Error('Mismatched network ID in response.');
         }
 
-        return typeof res === 'object' ? { ...res, id: resId, networkId: this.network.networkId } : res;
+        return { ...res, id: resId, __networkId: this.network.networkId } as U;
     };
 
     /**
@@ -455,7 +476,9 @@ class NetworkService extends EventEmitter {
     updateNetworkDefinitions = async () => {
         try {
             // include definitions hash if exist in the request
-            const request = { command: 'server_definitions' };
+            const request: ServerDefinitionsRequest = {
+                command: 'server_definitions',
+            };
 
             let definitionsHash = '';
 
@@ -464,10 +487,15 @@ class NetworkService extends EventEmitter {
                 Object.assign(request, { hash: definitionsHash });
             }
 
-            const definitionsResp = await this.send(request);
+            const definitionsResp = await this.send<ServerDefinitionsRequest, ServerDefinitionsResponse>(request);
 
             // validate the response
-            if (typeof definitionsResp !== 'object' || 'error' in definitionsResp || !('hash' in definitionsResp)) {
+            if (
+                typeof definitionsResp !== 'object' ||
+                'error' in definitionsResp ||
+                !('hash' in definitionsResp) ||
+                !definitionsResp.hash
+            ) {
                 this.logger.warn('server_definitions got invalid response:', definitionsResp);
                 return;
             }
@@ -516,13 +544,13 @@ class NetworkService extends EventEmitter {
      * Updates the network's enabled amendments by fetching and persisting them.
      */
     updateNetworkFeatures = () => {
-        this.send({
+        this.send<LedgerEntryRequest, LedgerEntryResponse<Amendments>>({
             command: 'ledger_entry',
             index: '7DB0788C020F02780A673DC74757F23823FA3014C1866E72CC4CD8B226CD6EF4',
         })
-            .then(async (resp: any) => {
+            .then((resp) => {
                 // ignore if error happened
-                if ('error' in resp || !Array.isArray(resp?.node?.Amendments)) {
+                if ('error' in resp || !resp.node || !Array.isArray(resp?.node?.Amendments)) {
                     return;
                 }
 
@@ -542,8 +570,8 @@ class NetworkService extends EventEmitter {
      * persists any changes locally and to the `NetworkRepository`.
      */
     updateNetworkReserve = () => {
-        this.send({ command: 'server_info' })
-            .then(async (resp: ServerInfoResponse) => {
+        this.send<ServerInfoRequest, ServerInfoResponse>({ command: 'server_info' })
+            .then(async (resp) => {
                 // ignore if error happened
                 if ('error' in resp || typeof resp?.info?.validated_ledger !== 'object') {
                     return;
@@ -620,7 +648,7 @@ class NetworkService extends EventEmitter {
         [this.updateNetworkReserve, this.updateNetworkDefinitions, this.updateNetworkFeatures].forEach((fn) => fn());
 
         // emit on connect event
-        this.emit('connect', { network: this.network });
+        this.emit('connect', this.network);
     };
 
     /**
