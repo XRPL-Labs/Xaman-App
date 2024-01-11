@@ -4,15 +4,14 @@ import groovy.json.JsonSlurper
 
 buildscript {
     ext {
-        buildToolsVersion = "33.0.0"
+        buildToolsVersion = "34.0.0"
         minSdkVersion = 26
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        compileSdkVersion = 34
+        targetSdkVersion = 34
         kotlinVersion = "1.7.10"
         RNNKotlinVersion = ext.kotlinVersion
         detoxKotlinVersion = ext.kotlinVersion
-        // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
-        ndkVersion = "23.1.7779620"
+        ndkVersion = "25.1.8937393"
     }
     repositories {
         google()
@@ -72,3 +71,5 @@ def getNpmVersionArray() { // major [0], minor [1], patch [2]
     def (major, minor, patch) = getNpmVersion().tokenize('.')
     return [Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch)] as int[]
 }
+
+apply plugin: "com.facebook.react.rootproject"

@@ -65,6 +65,13 @@
 	<true/>
 	<key>NFCReaderUsageDescription</key>
 	<string>Use NFC to read Tangem Cards</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Enabling camera access allows you to use your camera to scan Sign Request QR-codes.</string>
 	<key>NSFaceIDUsageDescription</key>
