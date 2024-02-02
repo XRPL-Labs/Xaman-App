@@ -92,14 +92,15 @@ check-device-android:
 		exit 1; \
 	fi
 
-	@echo "Connect your Android device or open the emulator"
-	@adb wait-for-device
-
 	@if ! [ $(shell which watchman 2> /dev/null) ]; then \
 		echo "watchman is not installed"; \
 		exit 1; \
 	fi
 
+	@while [ -z "$(shell adb devices | grep -w device)" ]; do \
+		echo "Waiting for Android device to be connected..."; \
+		sleep 5; \
+	done
 
 run: run-ios ## alias for run-ios
 
@@ -122,11 +123,17 @@ run-android: | check-device-android pre-run ## Runs the app on an Android emulat
     	npm start; \
     fi;\
 	echo Running Android app in development; \
-	if [ ! -z ${VARIANT} ]; then \
-		npx react-native run-android --main-activity LaunchActivity --no-packager --variant=${VARIANT}; \
-	else \
-		npx react-native run-android --main-activity LaunchActivity --no-packager; \
-	fi; \
+
+	@for device in $(shell adb devices | tail -n +2 | cut -sf 1); do \
+		export ANDROID_SERIAL=$$device ; \
+		if [ ! -z ${VARIANT} ]; then \
+			npx react-native run-android --main-activity LaunchActivity --no-packager --variant=${VARIANT}; \
+		else \
+			npx react-native run-android --main-activity LaunchActivity --no-packager; \
+		fi; \
+	done
+
+
 
 
 build-ios: | stop pre-build validate-style ## Builds the iOS app
