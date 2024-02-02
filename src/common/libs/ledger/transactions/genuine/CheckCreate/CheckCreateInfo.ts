@@ -1,8 +1,9 @@
+import { isUndefined } from 'lodash';
+import Localize from '@locale';
+
 import { AccountModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-
-import Localize from '@locale';
 
 import CheckCreate from './CheckCreateClass';
 
@@ -18,11 +19,12 @@ const CheckCreateInfo = {
             destination: tx.Destination.address,
         });
 
-        if (tx.Account.tag) {
+        if (!isUndefined(tx.Account?.tag)) {
             content += '\n';
             content += Localize.t('events.theCheckHasASourceTag', { tag: tx.Account.tag });
         }
-        if (tx.Destination.tag) {
+
+        if (!isUndefined(tx.Destination.tag)) {
             content += '\n';
             content += Localize.t('events.theCheckHasADestinationTag', { tag: tx.Destination.tag });
         }

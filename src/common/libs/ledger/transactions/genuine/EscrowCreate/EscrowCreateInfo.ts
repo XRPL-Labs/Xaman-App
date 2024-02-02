@@ -1,7 +1,9 @@
+import { isUndefined } from 'lodash';
 import moment from 'moment-timezone';
-import { AccountModel } from '@store/models';
 
 import Localize from '@locale';
+
+import { AccountModel } from '@store/models';
 
 import EscrowCreate from './EscrowCreateClass';
 
@@ -16,7 +18,8 @@ const EscrowCreateInfo = {
             account: tx.Account.address,
             destination: tx.Destination.address,
         });
-        if (tx.Destination.tag) {
+
+        if (!isUndefined(tx.Destination.tag)) {
             content += '\n';
             content += Localize.t('events.theEscrowHasADestinationTag', { tag: tx.Destination.tag });
             content += ' ';

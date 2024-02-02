@@ -1,8 +1,10 @@
+import { isUndefined } from 'lodash';
+
+import Localize from '@locale';
+
 import { AccountModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
-
-import Localize from '@locale';
 
 import Payment from './PaymentClass';
 
@@ -25,11 +27,13 @@ const PaymentInfo = {
 
     getDescription: (tx: Payment): string => {
         let content = '';
-        if (tx.Account.tag) {
+
+        if (!isUndefined(tx.Account?.tag)) {
             content += Localize.t('events.thePaymentHasASourceTag', { tag: tx.Account.tag });
             content += ' \n';
         }
-        if (tx.Destination.tag) {
+
+        if (!isUndefined(tx.Destination?.tag)) {
             content += Localize.t('events.thePaymentHasADestinationTag', { tag: tx.Destination.tag });
             content += ' \n';
         }
