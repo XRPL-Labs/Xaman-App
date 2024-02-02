@@ -24,7 +24,7 @@ export interface State {}
 /* Component ==================================================================== */
 class SecretTypeStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     onRadioButtonPress = (type: SecretTypes) => {
         const { setSecretType } = this.context;

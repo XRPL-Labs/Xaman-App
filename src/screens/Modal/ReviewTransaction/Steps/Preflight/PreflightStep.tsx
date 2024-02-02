@@ -66,7 +66,7 @@ class PreflightError extends Error {
 /* Component ==================================================================== */
 class PreflightStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);

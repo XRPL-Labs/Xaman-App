@@ -17,7 +17,7 @@ export interface State {}
 /* Component ==================================================================== */
 class TangemMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.startAuthentication);

@@ -62,7 +62,7 @@ class RecipientStep extends Component<Props, State> {
     sequence: number;
 
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);

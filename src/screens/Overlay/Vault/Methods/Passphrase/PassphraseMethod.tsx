@@ -29,7 +29,7 @@ export interface State {
 /* Component ==================================================================== */
 class PassphraseMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     private contentViewRef: React.RefObject<View>;
     private passwordInputRef: React.RefObject<PasswordInput>;

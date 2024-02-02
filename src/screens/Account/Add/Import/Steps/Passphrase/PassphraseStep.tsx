@@ -27,7 +27,7 @@ export interface State {
 /* Component ==================================================================== */
 class PassphraseStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);

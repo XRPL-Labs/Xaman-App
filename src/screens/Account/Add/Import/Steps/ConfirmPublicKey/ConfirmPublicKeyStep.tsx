@@ -32,7 +32,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ConfirmPublicKeyStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
         const { goBack, account } = this.context;

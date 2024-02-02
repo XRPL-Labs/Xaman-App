@@ -27,7 +27,7 @@ export interface State {
 /* Component ==================================================================== */
 class ConfirmStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 

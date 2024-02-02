@@ -26,7 +26,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ViewPublicKeyStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
         const { goBack } = this.context;

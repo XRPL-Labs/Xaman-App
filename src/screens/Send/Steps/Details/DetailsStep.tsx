@@ -48,7 +48,7 @@ class DetailsStep extends Component<Props, State> {
     amountRateInput: React.RefObject<typeof AmountInput | null>;
 
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: undefined) {
         super(props);

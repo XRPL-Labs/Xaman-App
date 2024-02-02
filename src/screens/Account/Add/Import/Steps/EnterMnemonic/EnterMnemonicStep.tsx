@@ -53,7 +53,7 @@ export interface State {
 /* Component ==================================================================== */
 class EnterMnemonicStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     scrollView: KeyboardAwareScrollView;
     inputs: TextInput[];

@@ -25,7 +25,7 @@ export interface State {
 /* Component ==================================================================== */
 class SelectSigner extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);

@@ -36,7 +36,7 @@ export interface State {
 /* Component ==================================================================== */
 class PasscodeMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     private contentViewRef: React.RefObject<View>;
     private animatedColor: Animated.Value;
