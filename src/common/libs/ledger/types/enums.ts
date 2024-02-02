@@ -37,6 +37,12 @@ export enum TransactionTypes {
     URITokenCancelSellOffer = 'URITokenCancelSellOffer',
     GenesisMint = 'GenesisMint',
     EnableAmendment = 'EnableAmendment',
+    AMMBid = 'AMMBid',
+    AMMCreate = 'AMMCreate',
+    AMMDelete = 'AMMDelete',
+    AMMDeposit = 'AMMDeposit',
+    AMMVote = 'AMMVote',
+    AMMWithdraw = 'AMMWithdraw',
 }
 
 /**

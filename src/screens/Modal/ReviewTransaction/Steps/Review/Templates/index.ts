@@ -32,6 +32,12 @@ import URITokenBurn from './URITokenBurn';
 import URITokenBuy from './URITokenBuy';
 import URITokenCreateSellOffer from './URITokenCreateSellOffer';
 import URITokenCancelSellOffer from './URITokenCancelSellOffer';
+import AMMBid from './AMMBid';
+import AMMCreate from './AMMCreate';
+import AMMDelete from './AMMDelete';
+import AMMDeposit from './AMMDeposit';
+import AMMVote from './AMMVote';
+import AMMWithdraw from './AMMWithdraw';
 
 export {
     Global,
@@ -68,4 +74,10 @@ export {
     URITokenBuy,
     URITokenCreateSellOffer,
     URITokenCancelSellOffer,
+    AMMBid,
+    AMMCreate,
+    AMMDelete,
+    AMMDeposit,
+    AMMVote,
+    AMMWithdraw,
 };

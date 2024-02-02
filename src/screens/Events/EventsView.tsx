@@ -622,6 +622,25 @@ class EventsView extends Component<Props, State> {
                         LedgerEntryTypes.NFTokenOffer,
                     ];
                     break;
+                case 'AMM':
+                    includeTypes = [
+                        TransactionTypes.AMMCreate,
+                        TransactionTypes.AMMDelete,
+                        TransactionTypes.AMMDeposit,
+                        TransactionTypes.AMMWithdraw,
+                        TransactionTypes.AMMBid,
+                        TransactionTypes.AMMVote,
+                    ];
+                    break;
+                case 'URIToken':
+                    includeTypes = [
+                        TransactionTypes.URITokenMint,
+                        TransactionTypes.URITokenBuy,
+                        TransactionTypes.URITokenBurn,
+                        TransactionTypes.URITokenCreateSellOffer,
+                        TransactionTypes.URITokenCancelSellOffer,
+                    ];
+                    break;
                 case 'Other':
                     includeTypes = [
                         TransactionTypes.AccountSet,

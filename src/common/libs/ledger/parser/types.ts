@@ -23,6 +23,11 @@ export interface AmountType {
     issuer?: string;
 }
 
+export interface IssueType {
+    currency: string;
+    issuer: string;
+}
+
 export interface BalanceChangeType extends AmountType {
     action: OperationActions;
 }
@@ -86,6 +91,13 @@ export type SignerEntry = {
     account: string;
     weight: number;
     walletLocator?: string;
+};
+
+/**
+ * AuthAccount
+ */
+export type AuthAccount = {
+    account: string;
 };
 
 export interface Signer {

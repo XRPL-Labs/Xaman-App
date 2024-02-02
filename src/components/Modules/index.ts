@@ -1,5 +1,6 @@
 export * from './SecretNumberInput';
 export * from './AccountElement';
+export * from './CurrencyElement';
 export * from './EventsFilterChip';
 export * from './EventsList';
 export * from './AccountPicker';

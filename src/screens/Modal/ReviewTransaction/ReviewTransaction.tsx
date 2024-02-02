@@ -167,6 +167,34 @@ class ReviewTransactionModal extends Component<Props, State> {
                 return Localize.t('events.cancelNFTOffer');
             case TransactionTypes.NFTokenAcceptOffer:
                 return Localize.t('events.acceptNFTOffer');
+            case TransactionTypes.Import:
+                return Localize.t('events.import');
+            case TransactionTypes.Invoke:
+                return Localize.t('events.invoke');
+            case TransactionTypes.SetHook:
+                return Localize.t('events.setHooks');
+            case TransactionTypes.URITokenMint:
+                return Localize.t('events.mintURIToken');
+            case TransactionTypes.URITokenBurn:
+                return Localize.t('events.burnURIToken');
+            case TransactionTypes.URITokenBuy:
+                return Localize.t('events.buyURIToken');
+            case TransactionTypes.URITokenCreateSellOffer:
+                return Localize.t('events.createURITokenSellOffer');
+            case TransactionTypes.URITokenCancelSellOffer:
+                return Localize.t('events.cancelURITokenSellOffer');
+            case TransactionTypes.AMMCreate:
+                return Localize.t('events.ammCreate');
+            case TransactionTypes.AMMDelete:
+                return Localize.t('events.ammDelete');
+            case TransactionTypes.AMMDeposit:
+                return Localize.t('events.ammDeposit');
+            case TransactionTypes.AMMWithdraw:
+                return Localize.t('events.ammWithdraw');
+            case TransactionTypes.AMMVote:
+                return Localize.t('events.ammVote');
+            case TransactionTypes.AMMBid:
+                return Localize.t('events.ammBid');
             case PseudoTransactionTypes.SignIn:
                 return Localize.t('global.signIn');
             case PseudoTransactionTypes.PaymentChannelAuthorize:

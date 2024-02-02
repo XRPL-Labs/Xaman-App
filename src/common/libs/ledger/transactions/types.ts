@@ -32,6 +32,12 @@ import {
     URITokenBuy,
     URITokenCreateSellOffer,
     URITokenCancelSellOffer,
+    AMMCreate,
+    AMMDelete,
+    AMMDeposit,
+    AMMWithdraw,
+    AMMVote,
+    AMMBid,
     GenesisMint,
     EnableAmendment,
 } from '.';
@@ -75,6 +81,12 @@ export type Transactions =
     | URITokenBuy
     | URITokenCreateSellOffer
     | URITokenCancelSellOffer
+    | AMMCreate
+    | AMMDelete
+    | AMMDeposit
+    | AMMWithdraw
+    | AMMVote
+    | AMMBid
     | GenesisMint
     | EnableAmendment;
 

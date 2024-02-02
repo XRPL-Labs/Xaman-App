@@ -6,7 +6,6 @@ const txFlags = {
     Universal: {
         FullyCanonicalSig: 0x80000000,
     },
-
     AccountSet: {
         RequireDestTag: 0x00010000,
         OptionalDestTag: 0x00020000,
@@ -15,7 +14,6 @@ const txFlags = {
         DisallowXRP: 0x00100000,
         AllowXRP: 0x00200000,
     },
-
     TrustSet: {
         SetAuth: 0x00010000,
         SetNoRipple: 0x00020000,
@@ -30,18 +28,15 @@ const txFlags = {
         FillOrKill: 0x00040000,
         Sell: 0x00080000,
     },
-
     Payment: {
         NoRippleDirect: 0x00010000,
         PartialPayment: 0x00020000,
         LimitQuality: 0x00040000,
     },
-
     PaymentChannelClaim: {
         Renew: 0x00010000,
         Close: 0x00020000,
     },
-
     NFTokenMint: {
         Burnable: 0x00000001,
         OnlyXRP: 0x00000002,
@@ -51,18 +46,31 @@ const txFlags = {
         IssuerCanCancelOffers: 0x00000010,
         IssuerApprovalRequired: 0x00000020,
     },
-
     NFTokenCreateOffer: {
         SellToken: 0x00000001,
         Approved: 0x00000002,
     },
-
     URITokenMint: {
         Burnable: 0x00000001,
     },
-
     ClaimReward: {
         OptOut: 0x00000001,
+    },
+    AMMDeposit: {
+        LPToken: 0x00010000,
+        SingleAsset: 0x00080000,
+        TwoAsset: 0x00100000,
+        OneAssetLPToken: 0x00200000,
+        LimitLPToken: 0x00400000,
+    },
+    AMMWithdraw: {
+        LPToken: 0x00010000,
+        WithdrawAll: 0x00020000,
+        OneAssetWithdrawAll: 0x00040000,
+        SingleAsset: 0x00080000,
+        TwoAsset: 0x00100000,
+        OneAssetLPToken: 0x00200000,
+        LimitLPToken: 0x00400000,
     },
 };
 
