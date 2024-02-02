@@ -55,6 +55,12 @@ class Flag {
             case 'ClaimReward':
                 flagsList = txFlags.ClaimReward;
                 break;
+            case 'AMMDeposit':
+                flagsList = txFlags.AMMDeposit;
+                break;
+            case 'AMMWithdraw':
+                flagsList = txFlags.AMMWithdraw;
+                break;
             default:
                 break;
         }
