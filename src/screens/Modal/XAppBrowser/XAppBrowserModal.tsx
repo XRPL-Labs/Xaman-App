@@ -1026,8 +1026,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { account } = this.props;
-        const { isLaunchingApp, isLoadingApp, isAppReady, isRequiredNetworkSwitch, error } = this.state;
+        const { account, isLaunchingApp, isLoadingApp, isAppReady, isRequiredNetworkSwitch, error } = this.state;
 
         // no account configured
         if (!account) {
