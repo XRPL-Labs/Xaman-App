@@ -100,6 +100,12 @@ export type AuthAccount = {
     account: string;
 };
 
+export type MintURIToken = {
+    Digest: string;
+    Flags: number;
+    URI: string;
+};
+
 export interface Signer {
     account: string;
     signature: string;

@@ -195,6 +195,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                 return Localize.t('events.ammVote');
             case TransactionTypes.AMMBid:
                 return Localize.t('events.ammBid');
+            case TransactionTypes.Remit:
+                return Localize.t('events.remit');
             case PseudoTransactionTypes.SignIn:
                 return Localize.t('global.signIn');
             case PseudoTransactionTypes.PaymentChannelAuthorize:

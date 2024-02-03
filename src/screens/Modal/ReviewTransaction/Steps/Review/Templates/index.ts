@@ -38,6 +38,7 @@ import AMMDelete from './AMMDelete';
 import AMMDeposit from './AMMDeposit';
 import AMMVote from './AMMVote';
 import AMMWithdraw from './AMMWithdraw';
+import Remit from './Remit';
 
 export {
     Global,
@@ -80,4 +81,5 @@ export {
     AMMDeposit,
     AMMVote,
     AMMWithdraw,
+    Remit,
 };
