@@ -86,6 +86,7 @@ public class LocalNotificationModule extends ReactContextBaseJavaModule {
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setContentText(notification.getBody())
+                        .setAutoCancel(true)
                         .setContentIntent(pendingActionIntent);
 
                 NotificationManager manager = (NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
