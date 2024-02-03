@@ -20,7 +20,7 @@ const PaymentChannelCreateInfo = {
 
         content += Localize.t(
             // @ts-ignore
-            tx.Type === LedgerObjectTypes.PayChannel
+            tx.Type === LedgerEntryTypes.PayChannel
                 ? 'events.accountCreatedAPaymentChannelTo'
                 : 'events.accountWillCreateAPaymentChannelTo',
             {

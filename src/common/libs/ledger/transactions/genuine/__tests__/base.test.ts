@@ -4,7 +4,7 @@
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
 
-import { TransactionTypes } from '../../../types';
+import { TransactionTypes } from '../../../types/enums';
 
 import BaseTransaction from '../BaseTransaction';
 
@@ -182,6 +182,8 @@ describe('BaseTransaction', () => {
         it('Should return right transaction result', () => {
             const instance = new BaseTransaction();
 
+            // @ts-ignore
+            instance.meta = {};
             // transaction already verified by network
             // @ts-ignore
             instance.meta.TransactionResult = 'tesSUCCESS';
