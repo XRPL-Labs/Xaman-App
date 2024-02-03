@@ -2,7 +2,7 @@
  * Network service
  */
 
-import { isPlainObject, isArray, isString } from 'lodash';
+import { isPlainObject, isArray, isString, find } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import Realm from 'realm';
@@ -677,32 +677,30 @@ class NetworkService extends EventEmitter {
         // set the connection status to connecting
         this.setConnectionStatus(NetworkStateStatus.Connecting);
 
-        // craft nodes
-        let nodes: string[];
-
         // get default node for selected network
         const { defaultNode } = this.network;
 
-        // for MainNet we add the list of all nodes for fail over
-        if (this.network.type === NetworkType.Main) {
-            nodes = this.network.nodes.map((node: NodeModel) => {
-                // for cluster, we add origin
-                if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
-                    return `${node.endpoint}${NetworkService.ORIGIN}`;
-                }
-                return node.endpoint;
-            });
+        const nodes = this.network.nodes
+            .toJSON()
+            .sort((x, y) => {
+                return x.endpoint === defaultNode.endpoint ? -1 : y.endpoint === defaultNode.endpoint ? 1 : 0;
+            })
+            // @ts-ignore
+            .map((node: NodeModel) => {
+                let normalizedEndpoint = node.endpoint;
 
-            // move preferred node to the first
-            nodes.sort((x, y) => {
-                return x === defaultNode.endpoint ? -1 : y === defaultNode.endpoint ? 1 : 0;
+                // for cluster endpoints, we add origin
+                if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
+                    normalizedEndpoint = `${node.endpoint}${NetworkService.ORIGIN}`;
+                }
+
+                // if endpoint is not in the white listed network list then use custom proxy for it
+                if (!find(NetworkConfig.networks, (network) => network.nodes.includes(node.endpoint))) {
+                    normalizedEndpoint = `${NetworkConfig.customNodeProxy}/${normalizedEndpoint}`;
+                }
+
+                return normalizedEndpoint;
             });
-        } else if (this.network.type === NetworkType.Custom) {
-            // wrap in proxy if the network type is custom
-            nodes = [`${NetworkConfig.customNodeProxy}/${defaultNode.endpoint}`];
-        } else {
-            nodes = [`${defaultNode.endpoint}`];
-        }
 
         this.connection = new XrplClient(nodes, {
             maxConnectionAttempts: 3,
