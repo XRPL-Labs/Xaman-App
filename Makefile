@@ -144,11 +144,8 @@ build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call stop_packager)
 
 build-android: | stop pre-build validate-style ## Build the Android app
-	$(call start_packager)
 	@echo "Building Android app"
-	@cd android
-	@./gradlew assembleRelease
-	$(call stop_packager)
+	@npx react-native build-android --mode=release
 
 pre-e2e: | pre-build  ## build for e2e test
 	@npx detox build e2e --configuration ios.sim
