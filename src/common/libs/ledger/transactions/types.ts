@@ -38,6 +38,7 @@ import {
     AMMWithdraw,
     AMMVote,
     AMMBid,
+    Remit,
     GenesisMint,
     EnableAmendment,
 } from '.';
@@ -87,6 +88,7 @@ export type Transactions =
     | AMMWithdraw
     | AMMVote
     | AMMBid
+    | Remit
     | GenesisMint
     | EnableAmendment;
 

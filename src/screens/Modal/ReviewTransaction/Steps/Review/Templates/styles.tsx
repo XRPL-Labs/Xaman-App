@@ -7,6 +7,13 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
     },
+    contentBoxSecondary: {
+        paddingTop: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        borderRadius: AppSizes.borderRadius,
+        backgroundColor: '$tint',
+        marginBottom: AppSizes.paddingSml,
+    },
     nfTokenContainer: {
         paddingHorizontal: 0,
     },

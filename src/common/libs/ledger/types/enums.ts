@@ -43,6 +43,7 @@ export enum TransactionTypes {
     AMMDeposit = 'AMMDeposit',
     AMMVote = 'AMMVote',
     AMMWithdraw = 'AMMWithdraw',
+    Remit = 'Remit',
 }
 
 /**
