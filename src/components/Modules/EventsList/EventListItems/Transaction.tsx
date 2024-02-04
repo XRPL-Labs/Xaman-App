@@ -33,6 +33,7 @@ export interface Props {
 }
 
 export interface State {
+    item: Transactions;
     isLoading: boolean;
     recipientDetails: {
         address: string;
@@ -53,6 +54,7 @@ class TransactionItem extends Component<Props, State> {
         super(props);
 
         this.state = {
+            item: props.item,
             isLoading: true,
             recipientDetails: undefined,
             label: undefined,
@@ -61,7 +63,22 @@ class TransactionItem extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const { timestamp } = this.props;
-        return !isEqual(nextState, this.state) || !isEqual(nextProps.timestamp, timestamp);
+        const { item, isLoading, recipientDetails, label } = this.state;
+
+        return (
+            !isEqual(nextState.item?.Hash, item?.Hash) ||
+            !isEqual(nextState.isLoading, isLoading) ||
+            !isEqual(nextState.recipientDetails, recipientDetails) ||
+            !isEqual(nextState.label, label) ||
+            !isEqual(nextProps.timestamp, timestamp)
+        );
+    }
+
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+        if (nextProps.item?.Hash !== prevState.item?.Hash) {
+            return { item: nextProps.item };
+        }
+        return null;
     }
 
     componentDidMount() {
@@ -74,9 +91,10 @@ class TransactionItem extends Component<Props, State> {
 
     componentDidUpdate(prevProps: Props) {
         const { timestamp } = this.props;
+        const { item } = this.state;
 
         // force the lookup if timestamp changed
-        if (timestamp !== prevProps.timestamp) {
+        if (timestamp !== prevProps.timestamp || item?.Hash !== prevProps.item?.Hash) {
             InteractionManager.runAfterInteractions(this.setDetails);
         }
     }

@@ -31,6 +31,7 @@ export interface Props {
 }
 
 export interface State {
+    item: LedgerObjects;
     isLoading: boolean;
     recipientDetails: {
         address: string;
@@ -51,6 +52,7 @@ class LedgerObjectItem extends Component<Props, State> {
         super(props);
 
         this.state = {
+            item: props.item,
             isLoading: true,
             recipientDetails: undefined,
             label: undefined,
@@ -59,7 +61,22 @@ class LedgerObjectItem extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         const { timestamp } = this.props;
-        return !isEqual(nextState, this.state) || !isEqual(nextProps.timestamp, timestamp);
+        const { item, isLoading, recipientDetails, label } = this.state;
+
+        return (
+            !isEqual(nextState.item?.Index, item?.Index) ||
+            !isEqual(nextState.isLoading, isLoading) ||
+            !isEqual(nextState.recipientDetails, recipientDetails) ||
+            !isEqual(nextState.label, label) ||
+            !isEqual(nextProps.timestamp, timestamp)
+        );
+    }
+
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+        if (nextProps.item?.Index !== prevState.item?.Index) {
+            return { item: nextProps.item };
+        }
+        return null;
     }
 
     componentDidMount() {
@@ -72,9 +89,10 @@ class LedgerObjectItem extends Component<Props, State> {
 
     componentDidUpdate(prevProps: Props) {
         const { timestamp } = this.props;
+        const { item } = this.state;
 
-        // force the lookup if timestamp changed
-        if (timestamp !== prevProps.timestamp) {
+        // force the lookup if timestamp changed or item changed
+        if (timestamp !== prevProps.timestamp || item?.Index !== prevProps.item?.Index) {
             InteractionManager.runAfterInteractions(this.setDetails);
         }
     }

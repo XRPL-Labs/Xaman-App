@@ -1,4 +1,4 @@
-import { has, get } from 'lodash';
+import { has, get, isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, InteractionManager } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
@@ -22,9 +22,11 @@ import styles from './styles';
 export interface Props {
     account: AccountModel;
     item: Payload;
+    timestamp?: number;
 }
 
 export interface State {
+    item: Payload;
     transactionLabel: string;
     description: string;
 }
@@ -42,13 +44,43 @@ class RequestItem extends Component<Props, State> {
         super(props);
 
         this.state = {
+            item: props.item,
             transactionLabel: undefined,
             description: undefined,
         };
     }
 
+    shouldComponentUpdate(nextProps: Props, nextState: State) {
+        const { timestamp } = this.props;
+        const { item, transactionLabel, description } = this.state;
+
+        return (
+            !isEqual(nextState.item?.getPayloadUUID(), item?.getPayloadUUID()) ||
+            !isEqual(nextState.transactionLabel, transactionLabel) ||
+            !isEqual(nextState.description, description) ||
+            !isEqual(nextProps.timestamp, timestamp)
+        );
+    }
+
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+        if (nextProps.item?.getPayloadUUID() !== prevState.item?.getPayloadUUID()) {
+            return { item: nextProps.item };
+        }
+        return null;
+    }
+
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.setDetails);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { timestamp } = this.props;
+        const { item } = this.state;
+
+        // force the lookup if timestamp changed
+        if (timestamp !== prevProps.timestamp || item?.getPayloadUUID() !== prevProps.item?.getPayloadUUID()) {
+            InteractionManager.runAfterInteractions(this.setDetails);
+        }
     }
 
     openXApp = () => {

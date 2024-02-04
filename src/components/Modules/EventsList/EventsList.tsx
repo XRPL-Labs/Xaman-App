@@ -122,10 +122,21 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
-    keyExtractor = ({ type }: DataSourceItem, index: number): string => {
+    keyExtractor = ({ type, data }: DataSourceItem, index: number): string => {
         switch (type) {
-            case DataSourceItemType.RowItem:
-                return `row-item-${index}`;
+            case DataSourceItemType.RowItem: {
+                // get key base on data type
+                let key = '';
+                if (data instanceof BaseTransaction) {
+                    key = `${data.Hash}`;
+                } else if (data instanceof BaseLedgerObject) {
+                    key = `${data.Index}`;
+                } else if (data instanceof Payload) {
+                    key = `${data.getPayloadUUID()}`;
+                }
+
+                return `row-item-${index}-${key}`;
+            }
             case DataSourceItemType.SectionHeader:
                 return `header-${index}`;
             default:
