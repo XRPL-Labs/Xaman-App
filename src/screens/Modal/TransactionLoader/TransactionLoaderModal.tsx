@@ -139,7 +139,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             delete resp.inLedger;
 
             // build transaction instance
-            const transactionInstance = TransactionFactory.fromLedger(resp);
+            const transactionInstance = TransactionFactory.fromJson(resp);
 
             // switch to the right account if necessary
             const coreSettings = CoreRepository.getSettings();
@@ -166,6 +166,7 @@ class TransactionLoaderModal extends Component<Props, State> {
                 return;
             }
             this.setState({
+                isLoading: false,
                 error: true,
             });
         }
