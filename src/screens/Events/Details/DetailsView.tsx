@@ -314,7 +314,7 @@ class TransactionDetailsView extends Component<Props, State> {
             return;
         }
 
-        let transaction: TransactionJson;
+        let transaction = {} as TransactionJson;
 
         switch (type) {
             case 'OfferCancel':
@@ -322,6 +322,7 @@ class TransactionDetailsView extends Component<Props, State> {
                     TransactionType: 'OfferCancel',
                     OfferSequence: tx.Sequence,
                 });
+
                 break;
             case 'NFTokenCancelOffer':
                 Object.assign(transaction, {
@@ -1400,6 +1401,24 @@ class TransactionDetailsView extends Component<Props, State> {
             } else {
                 from = {
                     address: tx.Owner,
+                };
+            }
+
+            to = {
+                address: undefined,
+            };
+        }
+
+        if (tx.Type === LedgerEntryTypes.Offer) {
+            if (tx.Account.address === account.address) {
+                from = {
+                    address: account.address,
+                    name: account.label,
+                    source: 'accounts',
+                };
+            } else {
+                from = {
+                    address: tx.Account.address,
                 };
             }
 
