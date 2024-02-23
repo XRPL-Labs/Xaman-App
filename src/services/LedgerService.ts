@@ -18,7 +18,7 @@ import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import LoggerService from '@services/LoggerService';
 import {
     AccountInfoRequest,
     AccountLinesTrustline,
@@ -274,7 +274,7 @@ class LedgerService extends EventEmitter {
     /**
      * Get account transfer rate on percent format
      */
-    getAccountTransferRate = (account: string): Promise<number> => {
+    getAccountTransferRate = (account: string): Promise<number | undefined> => {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
                 .then((resp) => {
@@ -282,8 +282,9 @@ class LedgerService extends EventEmitter {
                         throw new Error(resp.error);
                     }
 
-                    if (!has(resp, ['account_data', 'TransferRate'])) {
-                        throw new Error('no TransferRate in account_data');
+                    if (!resp?.account_data?.TransferRate) {
+                        resolve(undefined);
+                        return;
                     }
 
                     const { TransferRate } = resp.account_data;
@@ -458,6 +459,7 @@ class LedgerService extends EventEmitter {
                     ]
                 );
             });
+
             // convert RippleState entry to Ledger trustline format
             const accountLinesFormatted = notInDefaultState.map((node) => RippleStateToTrustLine(node, account));
 
