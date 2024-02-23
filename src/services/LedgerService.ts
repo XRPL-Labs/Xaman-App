@@ -277,7 +277,7 @@ class LedgerService extends EventEmitter {
     /**
      * Get account transfer rate on percent format
      */
-    getAccountTransferRate = (account: string): Promise<number> => {
+    getAccountTransferRate = (account: string): Promise<number | undefined> => {
         return new Promise((resolve, reject) => {
             this.getAccountInfo(account)
                 .then((resp) => {
@@ -286,7 +286,8 @@ class LedgerService extends EventEmitter {
                     }
 
                     if (!resp?.account_data?.TransferRate) {
-                        throw new Error('no TransferRate in account_data');
+                        resolve(undefined);
+                        return;
                     }
 
                     const { TransferRate } = resp.account_data;
