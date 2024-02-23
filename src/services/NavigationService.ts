@@ -107,29 +107,57 @@ class NavigationService extends EventEmitter {
     };
 
     bottomTabLongPressedListener = ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
-        if (selectedTabIndex !== 0) return;
-
-        const currentOverlay = this.getCurrentOverlay();
-        if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
-            // haptic vibrate
-            VibrateHapticFeedback('impactLight');
-            // show switch account overlay
-            Navigation.showOverlay({
-                component: {
-                    name: AppScreens.Overlay.SwitchAccount,
-                    id: AppScreens.Overlay.SwitchAccount,
-                    passProps: { componentType: ComponentTypes.Overlay },
-                    options: {
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                        overlay: {
-                            handleKeyboardEvents: true,
+        switch (selectedTabIndex) {
+            case 0:
+                if (this.getCurrentOverlay() === AppScreens.Overlay.SwitchAccount) {
+                    return;
+                }
+                // haptic vibrate
+                VibrateHapticFeedback('impactLight');
+                // show switch account overlay
+                Navigation.showOverlay({
+                    component: {
+                        name: AppScreens.Overlay.SwitchAccount,
+                        id: AppScreens.Overlay.SwitchAccount,
+                        passProps: { componentType: ComponentTypes.Overlay },
+                        options: {
+                            layout: {
+                                backgroundColor: 'transparent',
+                                componentBackgroundColor: 'transparent',
+                            },
+                            overlay: {
+                                handleKeyboardEvents: true,
+                            },
                         },
                     },
-                },
-            });
+                });
+                break;
+            case 2:
+                if (this.getCurrentModal() === AppScreens.Modal.Scan) {
+                    return;
+                }
+                // haptic vibrate
+                VibrateHapticFeedback('impactLight');
+                // show scan modal
+                Navigation.showModal({
+                    stack: {
+                        id: AppScreens.Modal.Scan,
+                        children: [
+                            {
+                                component: {
+                                    name: AppScreens.Modal.Scan,
+                                    id: AppScreens.Modal.Scan,
+                                    options: {},
+                                    passProps: { componentType: ComponentTypes.Modal },
+                                },
+                            },
+                        ],
+                    },
+                });
+
+                break;
+            default:
+                break;
         }
     };
 

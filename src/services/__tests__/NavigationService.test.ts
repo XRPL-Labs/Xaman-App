@@ -63,8 +63,9 @@ describe('NavigationService', () => {
         expect(navigationService.getCurrentRoot()).toBe(RootType.DefaultRoot);
     });
 
-    it('should show account switch overlay when longPress tabbar', () => {
+    it('should handle long pressing on tabbar buttons', () => {
         const showOverlaySpy = jest.spyOn(Navigation, 'showOverlay');
+        const showModalSpy = jest.spyOn(Navigation, 'showModal');
 
         navigationService.bottomTabLongPressedListener({ selectedTabIndex: 0 });
 
@@ -82,6 +83,24 @@ describe('NavigationService', () => {
                         handleKeyboardEvents: true,
                     },
                 },
+            },
+        });
+
+        navigationService.bottomTabLongPressedListener({ selectedTabIndex: 2 });
+
+        expect(showModalSpy).toBeCalledWith({
+            stack: {
+                id: AppScreens.Modal.Scan,
+                children: [
+                    {
+                        component: {
+                            name: AppScreens.Modal.Scan,
+                            id: AppScreens.Modal.Scan,
+                            options: {},
+                            passProps: { componentType: ComponentTypes.Modal },
+                        },
+                    },
+                ],
             },
         });
     });
