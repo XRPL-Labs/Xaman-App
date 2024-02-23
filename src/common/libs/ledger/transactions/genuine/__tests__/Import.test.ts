@@ -3,8 +3,9 @@
 
 import Localize from '@locale';
 
-import { Import, ImportInfo } from '../Import';
+import { MutationsMixin } from '@common/libs/ledger/mixin';
 
+import { Import, ImportInfo } from '../Import';
 import importTemplate from './fixtures/ImportTx.json';
 
 jest.mock('@services/NetworkService');
@@ -18,7 +19,7 @@ describe('Import ', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta } = importTemplate.RegularKey;
+            const { tx, meta }: any = importTemplate.RegularKey;
             const instance = new Import(tx, meta);
 
             expect(instance.TransactionType).toBe('Import');
@@ -32,23 +33,22 @@ describe('Import ', () => {
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const MixedImport = MutationsMixin(Import);
+        const { tx, meta }: any = importTemplate.RegularKey;
+        const instance = new MixedImport(tx, meta);
+
+        const infoInstance = new ImportInfo(instance, {} as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = importTemplate.RegularKey;
-                const instance = new Import(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.importTransactionExplain')}\n${Localize.t(
-                    'events.theIssuerIs',
-                    { issuer: instance.Issuer },
-                )}`;
-
-                expect(ImportInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `This is an Import transaction${'\n'}The issuer address set to rrrrrrrrrrrrrrrrrrrrrholvtp`;
+                expect(infoInstance.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(ImportInfo.getLabel()).toEqual(Localize.t('events.import'));
+                expect(infoInstance.getEventsLabel()).toEqual(Localize.t('events.import'));
             });
         });
     });

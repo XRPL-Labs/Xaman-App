@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import Localize from '@locale';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { EscrowCreate, EscrowCreateInfo } from '../EscrowCreate';
 import escrowCreateTemplate from './fixtures/EscrowCreateTx.json';
 
@@ -16,13 +18,12 @@ describe('EscrowCreate', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta } = escrowCreateTemplate;
+            const { tx, meta }: any = escrowCreateTemplate;
             const instance = new EscrowCreate(tx, meta);
 
-            expect(instance.Destination).toStrictEqual({
-                tag: 23480,
-                address: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
-            });
+            expect(instance.Destination).toEqual('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.DestinationTag).toEqual(23480);
+
             expect(instance.Amount).toStrictEqual({
                 currency: 'XRP',
                 value: '0.01',
@@ -38,25 +39,20 @@ describe('EscrowCreate', () => {
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = escrowCreateTemplate;
+        const Mixed = MutationsMixin(EscrowCreate);
+        const instance = new Mixed(tx, meta);
+        const info = new EscrowCreateInfo(instance, {} as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = escrowCreateTemplate;
-                const instance = new EscrowCreate(tx, meta);
-
-                const expectedDescription =
-                    'The escrow is from rrrrrrrrrrrrrrrrrrrrrholvtp to rrrrrrrrrrrrrrrrrrrrbzbvji\n' +
-                    'The escrow has a destination tag: 23480 \n' +
-                    'It escrowed 0.01 XRP\n' +
-                    'It can be cancelled after Thursday, November 24, 2016 12:12 AM\n' +
-                    'It can be finished after Wednesday, November 23, 2016 12:12 AM';
-
-                expect(EscrowCreateInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `The escrow is from rrrrrrrrrrrrrrrrrrrrrholvtp to rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}The escrow has a destination tag: 23480${'\n'}It escrowed 0.01 XRP${'\n'}It can be cancelled after Thursday, November 24, 2016 12:12 AM${'\n'}It can be finished after Wednesday, November 23, 2016 12:12 AM`;
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
-
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(EscrowCreateInfo.getLabel()).toEqual(Localize.t('events.createEscrow'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.createEscrow'));
             });
         });
     });

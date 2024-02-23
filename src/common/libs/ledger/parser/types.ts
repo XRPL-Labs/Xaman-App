@@ -61,7 +61,6 @@ export type MemoType = {
  * Transaction Account
  */
 export type Account = {
-    name?: string;
     address: string;
     tag?: number;
 };

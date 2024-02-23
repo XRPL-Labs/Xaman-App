@@ -31,9 +31,9 @@ export interface Props {
 }
 
 export interface State {
-    isLoading: boolean;
-    rails: XamanBackend.NetworkRailsResponse;
+    rails?: XamanBackend.NetworkRailsResponse;
     changes: Record<string, any[]>;
+    isLoading: boolean;
     headerHeight: number;
 }
 /* Component ==================================================================== */
@@ -167,7 +167,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
             }
 
             // apply network changes
-            await NetworkRepository.applyNetworkChanges(rails, changes);
+            await NetworkRepository.applyNetworkChanges(rails!, changes);
             // success
             this.onSuccessSync();
         } catch (error: any) {
@@ -236,17 +236,18 @@ class NetworkRailsSyncModal extends Component<Props, State> {
     renderChangeHeader = (networkKey: string) => {
         const { rails } = this.state;
 
-        let networkName: string;
-        let networkColor: string;
+        let networkName = 'UNKNOWN_NETWORK';
+        let networkColor = '#000';
 
-        if (Object.prototype.hasOwnProperty.call(rails, networkKey)) {
+        if (rails && networkKey in rails) {
             networkName = rails[networkKey].name;
             networkColor = rails[networkKey].color;
         } else {
             const localNetwork = NetworkRepository.findOne({ key: networkKey });
-
-            networkName = localNetwork.name;
-            networkColor = localNetwork.color;
+            if (localNetwork) {
+                networkName = localNetwork.name;
+                networkColor = localNetwork.color;
+            }
         }
 
         return (

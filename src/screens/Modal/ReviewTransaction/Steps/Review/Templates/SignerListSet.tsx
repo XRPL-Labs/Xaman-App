@@ -40,16 +40,17 @@ class SignerListSetTemplate extends Component<Props, State> {
 
         return transaction.SignerEntries.map((signer) => {
             return (
-                <View key={signer.account}>
-                    <AccountElement address={signer.account} />
+                <View key={signer.Account}>
+                    <AccountElement address={signer.Account} />
                     <View style={styles.signerEntryDetailsContainer}>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
-                            {Localize.t('global.weight')}: <Text style={AppStyles.colorBlue}>{signer.weight}</Text>
+                            {Localize.t('global.weight')}:{' '}
+                            <Text style={AppStyles.colorBlue}>{signer.SignerWeight}</Text>
                         </Text>
-                        {signer.walletLocator && (
+                        {signer.WalletLocator && (
                             <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                                 {Localize.t('global.walletLocator')}:{' '}
-                                <Text style={AppStyles.colorBlue}>{signer.walletLocator}</Text>
+                                <Text style={AppStyles.colorBlue}>{signer.WalletLocator}</Text>
                             </Text>
                         )}
                     </View>

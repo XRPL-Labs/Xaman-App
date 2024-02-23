@@ -38,7 +38,9 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
     public static ButtonHeight = AppSizes.scale(30);
     private animation: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof NetworkSwitchButton.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         loadingAnimation: true,
     };
 

@@ -55,7 +55,7 @@ const ANDROID_KEYBAORDTYPES = ['visible-password'];
 
 /* Component ==================================================================== */
 class Input extends Component<Props, State> {
-    instance: TextInput;
+    private instanceRef: React.RefObject<TextInput>;
 
     constructor(props: Props) {
         super(props);
@@ -63,21 +63,19 @@ class Input extends Component<Props, State> {
         this.state = {
             focused: false,
         };
+
+        this.instanceRef = React.createRef();
     }
 
     public focus = () => {
         setTimeout(() => {
-            if (this.instance) {
-                this.instance.focus();
-            }
+            this.instanceRef?.current?.focus();
         }, 100);
     };
 
     public blur = () => {
         setTimeout(() => {
-            if (this.instance) {
-                this.instance.blur();
-            }
+            this.instanceRef?.current?.blur();
         }, 100);
     };
 
@@ -137,9 +135,7 @@ class Input extends Component<Props, State> {
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
-                    ref={(r) => {
-                        this.instance = r;
-                    }}
+                    ref={this.instanceRef}
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
                     placeholderTextColor={StyleService.value('$textSecondary')}

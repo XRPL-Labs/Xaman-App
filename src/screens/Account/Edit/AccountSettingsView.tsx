@@ -329,7 +329,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 </Text>
 
                                 <Text selectable style={styles.address}>
-                                    {GetCardId(account.additionalInfo)}
+                                    {GetCardId(account.additionalInfo!)}
                                 </Text>
                             </View>
                         )}
@@ -403,7 +403,7 @@ class AccountSettingsView extends Component<Props, State> {
                                 </Text>
                                 <Text style={styles.value}>
                                     {(() => {
-                                        switch (GetCardEnforcedSecurity(account.additionalInfo)) {
+                                        switch (GetCardEnforcedSecurity(account.additionalInfo!)) {
                                             case TangemSecurity.Passcode:
                                                 return Localize.t('global.passcode');
                                             case TangemSecurity.AccessCode:

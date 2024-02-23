@@ -14,7 +14,7 @@ import { AccountModel } from '@store/models';
 
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
-import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import { MutatedTransaction, SignableTransaction } from '@common/libs/ledger/transactions/types';
 import ValidationFactory from '@common/libs/ledger/factory/validation';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions';
@@ -37,7 +37,7 @@ import { Props, State, Steps } from './types';
 class ReviewTransactionModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.ReviewTransaction;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
     private mounted = false;
 
     static options() {
@@ -113,6 +113,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     getTransactionLabel = () => {
         const { transaction } = this.state;
+
+        if (!transaction) {
+            return 'Transaction is not initiated!';
+        }
 
         switch (transaction.Type) {
             case TransactionTypes.AccountSet:
@@ -202,7 +206,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             case PseudoTransactionTypes.PaymentChannelAuthorize:
                 return Localize.t('global.paymentChannelAuthorize');
             default:
-                return transaction.Type;
+                return transaction!.Type;
         }
     };
 
@@ -219,17 +223,17 @@ class ReviewTransactionModal extends Component<Props, State> {
             isLoading: true,
         });
 
-        await transaction
-            .sign(source, payload.isMultiSign())
+        // TODO: transaction!
+        await transaction!
+            // TODO: source!
+            .sign(source!, payload.isMultiSign())
             .then(this.submit)
             .catch((error: Error) => {
                 if (this.mounted) {
-                    if (error) {
-                        if (typeof error.message === 'string') {
-                            Alert.alert(Localize.t('global.error'), error.message);
-                        } else {
-                            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
-                        }
+                    if (error?.message) {
+                        Alert.alert(Localize.t('global.error'), error.message);
+                    } else {
+                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
                     }
 
                     this.setState({
@@ -301,6 +305,10 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { payload } = this.props;
         const { source, transaction } = this.state;
 
+        if (!transaction || !source) {
+            throw new Error('Transaction and Source instance is required!');
+        }
+
         try {
             // set loading
             this.setState({ isLoading: true });
@@ -334,7 +342,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             try {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
-                const validation = ValidationFactory.fromType(transaction.Type);
+                const validation = ValidationFactory.fromType(transaction!.Type);
                 if (
                     transaction instanceof BaseTransaction &&
                     typeof validation === 'function' &&
@@ -368,10 +376,9 @@ class ReviewTransactionModal extends Component<Props, State> {
             // ignore for "Import" transaction as it can be submitted even if account is not activated
             if (
                 !payload.isPseudoTransaction() &&
-                // @ts-ignore
-                ![TransactionTypes.Import].includes(transaction.Type) &&
+                transaction.Type !== TransactionTypes.Import &&
                 !payload.isMultiSign() &&
-                source.balance === 0
+                source!.balance === 0
             ) {
                 Navigator.showAlertModal({
                     type: 'error',
@@ -455,10 +462,10 @@ class ReviewTransactionModal extends Component<Props, State> {
 
                 const takerPays = transaction.TakerPays;
 
-                if (takerPays.currency !== NetworkService.getNativeAsset()) {
+                if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
                     if (
                         !CurrencyRepository.isVettedCurrency({
-                            issuer: takerPays.issuer,
+                            issuer: takerPays.issuer!,
                             currency: takerPays.currency,
                         })
                     ) {
@@ -511,7 +518,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             if (transaction.Type === TransactionTypes.Payment) {
                 try {
-                    const destinationInfo = await getAccountInfo(transaction.Destination.address);
+                    const destinationInfo = await getAccountInfo(transaction.Destination);
 
                     // if sending to a blackHoled account
                     if (destinationInfo.blackHole) {
@@ -537,7 +544,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     // if sending native currency and destination
                     if (
                         (transaction.DeliverMin?.currency === NetworkService.getNativeAsset() ||
-                            transaction.Amount.currency === NetworkService.getNativeAsset()) &&
+                            transaction.Amount?.currency === NetworkService.getNativeAsset()) &&
                         destinationInfo.disallowIncomingXRP
                     ) {
                         Navigator.showAlertModal({
@@ -584,7 +591,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    setTransaction = (tx: Transactions | PseudoTransactions) => {
+    setTransaction = (tx: SignableTransaction & MutatedTransaction) => {
         const { transaction } = this.state;
 
         // we shouldn't override already set transaction
@@ -613,6 +620,10 @@ class ReviewTransactionModal extends Component<Props, State> {
         const { payload } = this.props;
         const { transaction } = this.state;
 
+        if (!transaction) {
+            throw new Error('Transaction is not set and cannot set source account!');
+        }
+
         // assign the source account address to transaction Account field
         // ignore if the payload is multiSign || Import transaction
 
@@ -620,7 +631,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         // As the Master account is imported as readonly and transaction can only be signed by regular key
         // we should not override the Account field, we should show the actual account
         if (!payload.isMultiSign() && transaction.Type !== TransactionTypes.Import) {
-            transaction.Account = { address: account.address };
+            transaction.Account = account.address;
         }
 
         // change state
@@ -650,6 +661,10 @@ class ReviewTransactionModal extends Component<Props, State> {
             return;
         }
 
+        if (!transaction) {
+            throw new Error('Transaction is not set and cannot be submitted!');
+        }
+
         // in this phase transaction is already signed
         // check if we need to submit or not and patch the payload
         try {
@@ -657,7 +672,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             // create patch object
             const payloadPatch = {
                 signed_blob: transaction.SignedBlob,
-                tx_id: transaction.Hash,
+                tx_id: transaction.hash,
                 signmethod: transaction.SignMethod,
                 signpubkey: transaction.SignerPubKey,
                 multisigned: payload.isMultiSign() ? transaction.SignerAccount : '',
@@ -709,8 +724,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // patch the payload again with submit result
                 payload.patch({
                     dispatched: {
-                        to: submitResult.network.node,
-                        nodetype: submitResult.network.key,
+                        to: submitResult.network?.node || 'UNKNOWN NODE',
+                        nodetype: submitResult.network?.key ?? 'UNKNOWN NODE',
                         result: submitResult.engineResult,
                     },
                 });
@@ -755,7 +770,7 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
         Navigator.dismissModal().then(() => {
             if (typeof onResolve === 'function') {
-                onResolve(transaction, payload);
+                onResolve(transaction!, payload);
             }
         });
     };
@@ -776,7 +791,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             return <ErrorView onBackPress={this.onDecline} errorMessage={errorMessage} />;
         }
 
-        let Step = null;
+        let Step;
 
         switch (currentStep) {
             case Steps.Preflight:
@@ -794,6 +809,10 @@ class ReviewTransactionModal extends Component<Props, State> {
                 break;
             default:
                 break;
+        }
+
+        if (!Step) {
+            throw new Error('Invalid Step in ReviewTransaction!');
         }
 
         return (

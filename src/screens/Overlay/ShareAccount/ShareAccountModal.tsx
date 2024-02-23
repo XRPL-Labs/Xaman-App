@@ -32,7 +32,7 @@ interface State {}
 class ShareAccountModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ShareAccount;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -46,12 +46,16 @@ class ShareAccountModal extends Component<Props, State> {
         };
     }
 
+    constructor(props: Props) {
+        super(props);
+
+        this.actionPanelRef = React.createRef();
+    }
+
     onSharePress = () => {
         const { account } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
             Share.share({
@@ -65,9 +69,7 @@ class ShareAccountModal extends Component<Props, State> {
     onCopyAddressPress = () => {
         const { account } = this.props;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         Clipboard.setString(account.address);
 
@@ -77,13 +79,15 @@ class ShareAccountModal extends Component<Props, State> {
     };
 
     onPaymentRequestPress = () => {
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
             Navigator.push(AppScreens.Transaction.Request);
         }, 1000);
+    };
+
+    onClosePress = () => {
+        this.actionPanelRef?.current?.slideDown();
     };
 
     render() {
@@ -94,10 +98,8 @@ class ShareAccountModal extends Component<Props, State> {
                 height={AppSizes.moderateScale(580)}
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={AppStyles.centerAligned}
+                ref={this.actionPanelRef}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -110,9 +112,7 @@ class ShareAccountModal extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                this.actionPanel?.slideDown();
-                            }}
+                            onPress={this.onClosePress}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.close')}
                         />

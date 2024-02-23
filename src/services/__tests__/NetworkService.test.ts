@@ -43,9 +43,14 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
-                // @ts-ignore
                 FIELDS: [],
                 hash: 'DEFINITIONS_HASH',
+                // other
+                id: 'id',
+                __replyMs: 0,
+                __command: '__command',
+                __networkId: 0,
+                inLedger: 0,
             };
 
             jest.replaceProperty(networkService, 'network', {
@@ -62,7 +67,14 @@ describe('NetworkService', () => {
             expect(spy0).toHaveBeenCalledWith({ command: 'server_definitions' });
             expect(spy1).toHaveBeenCalledWith({
                 id: 'object_id',
-                definitionsString: JSON.stringify(returnedResponse),
+                definitionsString: JSON.stringify({
+                    TYPES: returnedResponse.TYPES,
+                    TRANSACTION_RESULTS: returnedResponse.TRANSACTION_RESULTS,
+                    TRANSACTION_TYPES: returnedResponse.TRANSACTION_TYPES,
+                    LEDGER_ENTRY_TYPES: returnedResponse.LEDGER_ENTRY_TYPES,
+                    FIELDS: returnedResponse.FIELDS,
+                    hash: returnedResponse.hash,
+                }),
             });
 
             spy0.mockRestore();
@@ -70,7 +82,7 @@ describe('NetworkService', () => {
         });
 
         it('warns on invalid response', async () => {
-            const invalidResponses = [{ error: 'some error' }, 'invalid resp', {}];
+            const invalidResponses = [{ error: 'some error' }, 'invalid resp', {}] as any;
 
             // eslint-disable-next-line guard-for-in
             for (const resp of invalidResponses) {
@@ -96,9 +108,14 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
-                // @ts-ignore
                 FIELDS: [],
                 hash: 'SOME_HASH',
+                // other
+                id: 'id',
+                __replyMs: 0,
+                __command: '__command',
+                __networkId: 0,
+                inLedger: 0,
             };
 
             const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() => Promise.resolve(returnedResponse));
@@ -127,9 +144,14 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
-                // @ts-ignore
                 FIELDS: [],
                 hash: 'SOME_HASH',
+                // other
+                id: 'id',
+                __replyMs: 0,
+                __command: '__command',
+                __networkId: 0,
+                inLedger: 0,
             };
 
             // @ts-ignore
@@ -187,7 +209,7 @@ describe('NetworkService', () => {
                 const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
                     Promise.resolve({
                         drops: { base_fee: '15' },
-                    }),
+                    } as any),
                 );
 
                 const availableFees = await networkService.getAvailableNetworkFee({});
@@ -230,10 +252,10 @@ describe('NetworkService', () => {
                 const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
                     Promise.resolve({
                         drops: {
-                            base_fee: 6176,
+                            base_fee: '6176',
                         },
-                        fee_hooks_feeunits: 6186,
-                    }),
+                        fee_hooks_feeunits: '6186',
+                    } as any),
                 );
 
                 const availableFees = await networkService.getAvailableNetworkFee({

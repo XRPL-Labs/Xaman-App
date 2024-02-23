@@ -30,16 +30,16 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    account: string;
-    amount: string;
+    account?: string;
+    amount?: string;
     currencyName: string;
     editableAmount: boolean;
-    currencyRate: RatesType;
+    currencyRate?: RatesType;
     isLoadingRate: boolean;
     shouldShowIssuerFee: boolean;
     isLoadingIssuerFee: boolean;
     issuerFee: number;
-    selectedPath: PathFindPathOption;
+    selectedPath?: PathFindPathOption;
 }
 
 /* Component ==================================================================== */
@@ -105,7 +105,7 @@ class PaymentTemplate extends Component<Props, State> {
         const issuer = transaction.SendMax?.issuer || transaction.Amount?.issuer;
 
         // ignore if not sending IOU or sender is issuer or Destination is issuer
-        if (!issuer || account === issuer || transaction.Destination?.address === issuer) {
+        if (!issuer || account === issuer || transaction.Destination === issuer) {
             return;
         }
 
@@ -170,8 +170,10 @@ class PaymentTemplate extends Component<Props, State> {
 
         if (amount) {
             if (!transaction.Amount || transaction.Amount.currency === NetworkService.getNativeAsset()) {
-                // @ts-ignore
-                transaction.Amount = amount;
+                transaction.Amount = {
+                    currency: NetworkService.getNativeAsset(),
+                    value: amount,
+                };
             } else {
                 const payAmount = { ...transaction.Amount };
                 Object.assign(payAmount, { value: amount });
@@ -180,16 +182,22 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
-    onPathSelect = (path: PathFindPathOption) => {
+    onPathSelect = (path?: PathFindPathOption) => {
         const { transaction, setReady } = this.props;
 
         if (path) {
-            transaction.SendMax = path.source_amount;
-
+            if (typeof path.source_amount === 'string') {
+                transaction.SendMax = {
+                    currency: NetworkService.getNativeAsset(),
+                    value: path.source_amount,
+                };
+            } else {
+                transaction.SendMax = path.source_amount;
+            }
             // SendMax is not allowed for native to native
             if (
-                transaction.SendMax.currency === NetworkService.getNativeAsset() &&
-                transaction.Amount.currency === NetworkService.getNativeAsset()
+                transaction.SendMax?.currency === NetworkService.getNativeAsset() &&
+                transaction.Amount?.currency === NetworkService.getNativeAsset()
             ) {
                 transaction.SendMax = undefined;
             }
@@ -215,6 +223,14 @@ class PaymentTemplate extends Component<Props, State> {
         this.setState({
             selectedPath: path,
         });
+    };
+
+    onAmountEditPress = () => {
+        const { editableAmount } = this.state;
+
+        if (editableAmount) {
+            this.amountInput?.current?.focus();
+        }
     };
 
     renderAmountRate = () => {
@@ -258,6 +274,11 @@ class PaymentTemplate extends Component<Props, State> {
             selectedPath,
         } = this.state;
 
+        // TODO: better handling this part
+        if (!account) {
+            return null;
+        }
+
         return (
             <>
                 <View style={styles.label}>
@@ -267,8 +288,8 @@ class PaymentTemplate extends Component<Props, State> {
                 </View>
 
                 <AccountElement
-                    address={transaction.Destination.address}
-                    tag={transaction.Destination.tag}
+                    address={transaction.Destination}
+                    tag={transaction.DestinationTag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
@@ -276,15 +297,7 @@ class PaymentTemplate extends Component<Props, State> {
                 <>
                     <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                     <View style={styles.contentBox}>
-                        <TouchableOpacity
-                            activeOpacity={1}
-                            style={AppStyles.row}
-                            onPress={() => {
-                                if (editableAmount) {
-                                    this.amountInput.current?.focus();
-                                }
-                            }}
-                        >
+                        <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.onAmountEditPress}>
                             {editableAmount ? (
                                 <>
                                     <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -304,9 +317,7 @@ class PaymentTemplate extends Component<Props, State> {
                                         <Text style={styles.amountInput}> {currencyName}</Text>
                                     </View>
                                     <Button
-                                        onPress={() => {
-                                            this.amountInput.current?.focus();
-                                        }}
+                                        onPress={this.onAmountEditPress}
                                         style={styles.editButton}
                                         roundedSmall
                                         icon="IconEdit"
@@ -316,8 +327,8 @@ class PaymentTemplate extends Component<Props, State> {
                                 </>
                             ) : (
                                 <AmountText
-                                    value={amount}
-                                    currency={transaction.Amount.currency}
+                                    value={amount!}
+                                    currency={transaction.Amount?.currency}
                                     style={styles.amountInput}
                                     immutable
                                 />
@@ -378,8 +389,9 @@ class PaymentTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
                         <PaymentOptionsPicker
                             source={account}
-                            destination={transaction.Destination.address}
-                            amount={transaction.Amount}
+                            destination={transaction.Destination}
+                            // TODO: make sure the Amount is set as it's required for payment options
+                            amount={transaction.Amount!}
                             containerStyle={AppStyles.paddingBottomSml}
                             onSelect={this.onPathSelect}
                         />

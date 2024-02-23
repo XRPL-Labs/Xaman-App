@@ -11,11 +11,14 @@ const { ContactSchema, CounterPartySchema, ProfileSchema, TrustLineSchema, Custo
 /* Exports ==================================================================== */
 export const schemaVersion = 12;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    AccountSchema.migration(oldRealm, newRealm);
-    CurrencySchema.migration(oldRealm, newRealm);
-    CoreSchema.migration(oldRealm, newRealm);
-};
+    [AccountSchema, CurrencySchema, CoreSchema].forEach((entry) => {
+        if (typeof entry.migration !== 'function') {
+            throw new Error(`migration method is required for schema ${entry.schema.name}`);
+        }
 
+        entry.migration(oldRealm, newRealm);
+    });
+};
 export const schemas = {
     ContactSchema,
     CounterPartySchema,

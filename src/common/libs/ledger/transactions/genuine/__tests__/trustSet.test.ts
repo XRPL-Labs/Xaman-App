@@ -3,9 +3,10 @@
 
 import Localize from '@locale';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { TrustSet, TrustSetInfo } from '../TrustSet';
 import trustSetTemplate from './fixtures/TrustSetTx.json';
-import { NormalizeCurrencyCode } from '../../../../../utils/amount';
 
 jest.mock('@services/NetworkService');
 
@@ -18,8 +19,7 @@ describe('TrustSet tx', () => {
         });
 
         it('Should return right parsed values', () => {
-            // @ts-ignore
-            const { tx, meta } = trustSetTemplate;
+            const { tx, meta }: any = trustSetTemplate;
             const instance = new TrustSet(tx, meta);
 
             expect(instance.Currency).toBe('USD');
@@ -32,48 +32,36 @@ describe('TrustSet tx', () => {
         it('Should set/get fields', () => {
             const instance = new TrustSet();
 
-            instance.Currency = 'USD';
+            instance.LimitAmount = {
+                currency: 'USD',
+                issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
+                value: '100',
+            };
+
             expect(instance.Currency).toBe('USD');
-
-            instance.Issuer = 'rrrrrrrrrrrrrrrrrrrrbzbvji';
             expect(instance.Issuer).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
-
-            instance.Limit = 100;
             expect(instance.Limit).toBe(100);
         });
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = trustSetTemplate;
+        const Mixed = MutationsMixin(TrustSet);
+        const instance = new Mixed(tx, meta);
+        const info = new TrustSetInfo(instance, { address: tx.Account } as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = trustSetTemplate;
-                const instance = new TrustSet(tx, meta);
+                const expectedDescription =
+                    'It establishes 100 as the maximum amount of USD from rrrrrrrrrrrrrrrrrrrrbzbvji that rrrrrrrrrrrrrrrrrrrrrholvtp is willing to hold.';
 
-                // TODO: add more tests for different situations
-
-                const expectedDescription = `${Localize.t('events.itEstablishesTrustLineTo', {
-                    limit: instance.Limit,
-                    currency: NormalizeCurrencyCode(instance.Currency),
-                    issuer: instance.Issuer,
-                    address: instance.Account.address,
-                })}`;
-
-                // @ts-ignore
-                expect(TrustSetInfo.getDescription(instance, { address: tx.Account })).toEqual(expectedDescription);
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                const { tx, meta } = trustSetTemplate;
-                const instance = new TrustSet(tx, meta);
-
-                // TODO: add more tests for different situations
-
-                // @ts-ignore
-                expect(TrustSetInfo.getLabel(instance, { address: tx.Account })).toEqual(
-                    Localize.t('events.updatedATrustLine'),
-                );
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.updatedATrustLine'));
             });
         });
     });

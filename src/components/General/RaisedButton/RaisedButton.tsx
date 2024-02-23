@@ -22,23 +22,26 @@ import { AppSizes } from '@theme';
 import { styles } from './styles';
 
 /* Types ==================================================================== */
-interface Props {
-    small?: boolean;
+interface OptionProps {
+    small: boolean;
+    iconPosition: 'right' | 'left';
+    iconSize: number;
+    isDisabled: boolean;
+}
+
+interface Props extends OptionProps {
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     disabledStyle?: TextStyle | TextStyle[];
     iconStyle?: ImageStyle | ImageStyle[];
     accessibilityLabel?: string;
     testID?: string;
-    isDisabled?: boolean;
     isLoading?: boolean;
     loadingIndicatorStyle?: 'light' | 'dark';
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
     icon?: Extract<keyof typeof Images, string>;
-    iconPosition?: 'right' | 'left';
-    iconSize?: number;
 }
 
 interface State {
@@ -49,7 +52,7 @@ interface State {
 
 /* Component ==================================================================== */
 export default class RaisedButton extends Component<Props, State> {
-    static defaultProps = {
+    public static defaultProps: OptionProps = {
         small: false,
         iconPosition: 'left',
         iconSize: 20,
@@ -61,7 +64,9 @@ export default class RaisedButton extends Component<Props, State> {
 
         this.state = {
             isDisabled: props.isDisabled,
-            animatedShadow: new Animated.Value(props.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5 })),
+            animatedShadow: new Animated.Value(
+                props.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5, default: 0 }),
+            ),
             animatedScale: new Animated.Value(0),
         };
     }
@@ -70,11 +75,11 @@ export default class RaisedButton extends Component<Props, State> {
         return !isEqual(nextProps, this.props);
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         if (nextProps.isDisabled !== prevState.isDisabled) {
             return {
                 animatedShadow: new Animated.Value(
-                    nextProps.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5 }),
+                    nextProps.isDisabled ? 0 : Platform.select({ ios: 0.1, android: 5, default: 0 }),
                 ),
                 isDisabled: nextProps.isDisabled,
             };

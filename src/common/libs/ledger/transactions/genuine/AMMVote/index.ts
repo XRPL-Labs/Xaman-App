@@ -1,3 +1,3 @@
-export { default as AMMVote } from './AMMVoteClass';
-export { default as AMMVoteValidation } from './AMMVoteValidation';
-export { default as AMMVoteInfo } from './AMMVoteInfo';
+export { default as AMMVote } from './AMMVote.class';
+export { default as AMMVoteValidation } from './AMMVote.validation';
+export { default as AMMVoteInfo } from './AMMVote.info';

@@ -1,0 +1,35 @@
+{
+  "tx": {
+    "Account" : "rJVUeRqDFNs2xqA7ncVE6ZoAhPUoaJJSQm",
+    "Asset" : {
+      "currency" : "XRP"
+    },
+    "Asset2" : {
+      "currency" : "TST",
+      "issuer" : "rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd"
+    },
+    "AuthAccounts" : [
+      {
+        "AuthAccount" : {
+          "Account" : "rMKXGCbJ5d8LbrqthdG46q3f969MVK2Qeg"
+        }
+      },
+      {
+        "AuthAccount" : {
+          "Account" : "rBepJuTLFJt3WmtLXYAxSjtBWAeQxVbncv"
+        }
+      }
+    ],
+    "BidMax" : {
+      "currency" : "039C99CD9AB0B70B32ECDA51EAAE471625608EA2",
+      "issuer" : "rE54zDvgnghAoPopCgvtiqWNq3dU5y836S",
+      "value" : "100"
+    },
+    "Fee" : "10",
+    "Flags" : 2147483648,
+    "Sequence" : 9,
+    "TransactionType" : "AMMBid"
+  },
+  "meta": {}
+
+}

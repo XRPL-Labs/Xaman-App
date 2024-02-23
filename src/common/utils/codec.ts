@@ -15,7 +15,8 @@ const EncodeLedgerIndex = (account: string, sequence: number) => {
     if (sequenceHex.length > 8) return false;
     sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
     const payloadHex = `006F${libraries.rippleAddressCodec.decodeAccountID(account).toString('hex')}${sequenceHex}`;
-    return HexEncoding.toHex(AccountLibUtils.hash(payloadHex)).toUpperCase();
+    const payloadHash = AccountLibUtils.hash(payloadHex);
+    return HexEncoding.toHex(payloadHash).toUpperCase();
 };
 
 /**
@@ -164,7 +165,7 @@ const ConvertCodecAlphabet = (value: string, alphabet: string, toXRPL = true) =>
  * @param destination XrplDestination
  * @returns normalized XrplDestination
  */
-const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
+const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress?: string } => {
     let to;
     let tag;
     let xAddress;
@@ -187,6 +188,10 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         }
     } catch {
         // ignore
+    }
+
+    if (!to) {
+        throw new Error(`Unable to normalize destination ${JSON.stringify(destination)}`);
     }
 
     return {

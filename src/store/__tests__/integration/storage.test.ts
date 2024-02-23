@@ -20,7 +20,7 @@ describe('Storage', () => {
 
             expect(storage.dataStore).toBeDefined();
             // should have the latest schema version
-            expect(storage.dataStore.schemaVersion).toBe(latest.schemaVersion);
+            expect(storage.dataStore?.schemaVersion).toBe(latest.schemaVersion);
 
             // should have been called the populate method
             expect(populateSpy).toBeCalled();

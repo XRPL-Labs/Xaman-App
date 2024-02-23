@@ -48,7 +48,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
-            profile: ProfileRepository.getProfile(),
+            profile: ProfileRepository.getProfile()!,
         };
     }
 
@@ -178,6 +178,10 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         // get default network object
         const defaultNetwork = NetworkRepository.findOne({ networkId: NetworkConfig.defaultNetworkId });
+
+        if (!defaultNetwork) {
+            throw new Error('Unable to find default network from config!');
+        }
 
         Navigator.showAlertModal({
             type: 'warning',

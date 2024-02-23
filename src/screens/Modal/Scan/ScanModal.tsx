@@ -55,8 +55,8 @@ class ScanView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
-    private backHandler: NativeEventSubscription;
-    private shouldReadTimeout: any;
+    private backHandler: NativeEventSubscription | undefined;
+    private shouldReadTimeout: NodeJS.Timeout | undefined;
 
     static options() {
         return {
@@ -75,8 +75,6 @@ class ScanView extends Component<Props, State> {
             isLoading: false,
             coreSettings: CoreRepository.getSettings(),
         };
-
-        this.backHandler = undefined;
 
         // flag to check if we need to read the QR
         this.shouldRead = true;
@@ -304,7 +302,7 @@ class ScanView extends Component<Props, State> {
             }
 
             // if amount present as native pass the amount
-            if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
+            if (destination.amount && !destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }
 
@@ -528,7 +526,8 @@ class ScanView extends Component<Props, State> {
             return;
         }
         // get first barcode that exist
-        const { data } = first(barcodes);
+        const { data } = first(barcodes)!;
+
         if (data) {
             this.onReadCode(data);
         }
@@ -679,7 +678,7 @@ class ScanView extends Component<Props, State> {
                     onBarCodeRead={Platform.OS === 'ios' ? this.onBarCodeRead : undefined}
                     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                 >
-                    <View style={[styles.rectangleContainer]}>
+                    <View style={styles.rectangleContainer}>
                         <View style={styles.topLeft} />
                         <View style={styles.topRight} />
                         <View style={styles.bottomLeft} />
@@ -690,7 +689,7 @@ class ScanView extends Component<Props, State> {
                             {description}
                         </Text>
                     </View>
-                    <View style={[AppStyles.centerSelf]}>
+                    <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
                             onPress={this.checkClipboardContent}

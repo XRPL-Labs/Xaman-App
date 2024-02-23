@@ -6,6 +6,8 @@
  * API Functions
  */
 
+// TODO: refactor refresh token mechanism prevent multiple calling the refresh token
+
 import merge from 'lodash/merge';
 
 import { ProfileRepository } from '@store/repositories';
@@ -25,7 +27,7 @@ type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 /* Errors  ==================================================================== */
 export class ApiError extends Error {
     public code: number;
-    public reference: string;
+    public reference?: string;
 
     constructor(message: string, code?: number, reference?: 'string') {
         super(message);
@@ -42,9 +44,9 @@ class ApiService {
     private readonly timeoutSec: number;
     private endpoints: Map<string, string>;
     private idempotencyInt: number;
-    private accessToken: string;
-    private bearerHash: string;
-    private uniqueDeviceIdentifier: string;
+    private accessToken?: string;
+    private bearerHash?: string;
+    private uniqueDeviceIdentifier?: string;
     private isRefreshingToken: boolean;
     private logger: LoggerInstance;
     [index: string]: any;
@@ -63,6 +65,8 @@ class ApiService {
         this.bearerHash = undefined;
         this.idempotencyInt = 0;
         this.isRefreshingToken = false;
+
+        this.uniqueDeviceIdentifier = undefined;
 
         // Logger
         this.logger = LoggerService.createLogger('Api');
@@ -174,7 +178,7 @@ class ApiService {
         const postData = {};
 
         // include the prev bear hash to the request
-        if (profile.bearerHash) {
+        if (profile?.bearerHash) {
             Object.assign(postData, { refresh_token: profile.refreshToken });
         }
 
@@ -185,7 +189,7 @@ class ApiService {
                 const { refresh_token, bearer_hash } = res;
 
                 // check if current refresh token is different then save
-                if (refresh_token && refresh_token !== profile.refreshToken) {
+                if (refresh_token && refresh_token !== profile?.refreshToken) {
                     // store the new refresh token
                     ProfileRepository.saveProfile({
                         refreshToken: refresh_token,

@@ -1,19 +1,15 @@
 import { get } from 'lodash';
 
-import { AccountModel } from '@store/models';
-
 import * as Transactions from '@common/libs/ledger/transactions/genuine';
 import * as PseudoTransactions from '@common/libs/ledger/transactions/pseudo';
 
 /* Types ==================================================================== */
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-
 import {
     Transactions as TransactionsType,
     PseudoTransactions as PseudoTransactionsType,
 } from '@common/libs/ledger/transactions/types';
-
-type ValidationType<T> = (tx: T, account: AccountModel) => Promise<void>;
+import { ValidationType } from '@common/libs/ledger/factory/types';
 
 /* Module ==================================================================== */
 const ValidationFactory = {
@@ -39,6 +35,8 @@ const ValidationFactory = {
             throw new Error(`Validation "${type}Validation" not found. Did you forget to include it?`);
         }
 
+        // TODO: fix typing here
+        // @ts-ignore
         return validator;
     },
 };

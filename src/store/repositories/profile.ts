@@ -26,9 +26,11 @@ class ProfileRepository extends BaseRepository<ProfileModel> {
     updateIdempotency = (idempotency: number) => {
         const profile = this.getProfile();
 
-        this.safeWrite(() => {
-            profile.idempotency = idempotency;
-        });
+        if (profile) {
+            this.safeWrite(() => {
+                profile.idempotency = idempotency;
+            });
+        }
     };
 
     saveProfile = (object: Partial<ProfileModel>): Promise<ProfileModel> => {
@@ -52,7 +54,7 @@ class ProfileRepository extends BaseRepository<ProfileModel> {
         });
     };
 
-    getProfile = (): ProfileModel => {
+    getProfile = (): ProfileModel | undefined => {
         const profiles = this.findAll();
 
         // get profile

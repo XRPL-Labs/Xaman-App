@@ -12,7 +12,7 @@ import Digest from './digest';
 
 /* Types  ==================================================================== */
 import { TransactionJson } from '@common/libs/ledger/types/transaction';
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class  ==================================================================== */
 class DigestCodecWithSHA1 extends Digest {
@@ -26,17 +26,14 @@ class DigestCodecWithSHA1 extends Digest {
      * Calculate the digest using SHA-1 algorithm and binary codec.
      *
      * @param {TransactionJson} request_json - Transaction JSON data to be hashed.
-     * @param {TransactionTypes | PseudoTransactionTypes} tx_type - The type of transaction.
      * @returns {Promise<string>} A promise that resolves with the SHA-1 hash and codec.
      * @deprecated SHA-1 is a deprecated and insecure hashing algorithm. Use a more secure hashing method.
      */
-    static digest = (
-        request_json: TransactionJson,
-        tx_type: TransactionTypes | PseudoTransactionTypes,
-    ): Promise<string> => {
+    static digest = (request_json: TransactionJson): Promise<string> => {
         return new Promise((resolve, reject) => {
             let hashEncodingMethod = 'encode';
             let normalizedRequestJson: Object = request_json;
+            const tx_type = request_json.TransactionType;
 
             // if it's the pseudo PaymentChannelAuthorize we need
             // 1) use encodeForSigningClaim method for encoding

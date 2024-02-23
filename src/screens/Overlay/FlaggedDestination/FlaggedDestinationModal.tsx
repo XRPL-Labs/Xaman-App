@@ -42,9 +42,10 @@ class FlaggedDestinationModal extends Component<Props, State> {
     private textInputView: React.RefObject<View>;
     private bottomOffset: Animated.Value;
 
-    private backHandler: NativeEventSubscription;
-    private mounted: boolean;
-    private setListenerTimeout: any;
+    private backHandler: NativeEventSubscription | undefined;
+    private setListenerTimeout: NodeJS.Timeout | undefined;
+
+    private mounted = false;
 
     static options() {
         return {

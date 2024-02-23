@@ -5,8 +5,8 @@ import Realm from 'realm';
 
 /* Repository  ==================================================================== */
 export default class BaseRepository<T extends Realm.Object<any>> extends EventEmitter {
-    realm: Realm;
-    model: Realm.ObjectClass<T>;
+    realm!: Realm;
+    model!: Realm.ObjectClass<T>;
 
     /**
      * Normalizes the query for realm objects.
@@ -19,7 +19,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
 
         const queryObject = { ...query };
 
-        const props = this.model.schema.properties;
+        const props = this.model.schema?.properties!;
         const queries = Object.entries(queryObject)
             .filter(([key]) => props[key])
             .map(([key, value]) => {
@@ -102,7 +102,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @returns {T} - Found object.
      * @throws will throw an error if more than one result found.
      */
-    findOne = (query: string | Partial<T>): T => {
+    findOne = (query: string | Partial<T>): T | undefined => {
         const result = this.realm.objects(this.model).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {

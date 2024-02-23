@@ -59,8 +59,7 @@ class URITokenCreateSellOfferTemplate extends Component<Props, State> {
                             </Text>
                         </View>
                         <AccountElement
-                            address={transaction.Destination.address}
-                            tag={transaction.Destination.tag}
+                            address={transaction.Destination}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                         />
                     </>

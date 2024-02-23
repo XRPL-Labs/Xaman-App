@@ -23,7 +23,7 @@ interface Props {
 }
 
 interface State {
-    message: Message;
+    message?: Message;
     showMessage: boolean;
 }
 /* Component ==================================================================== */
@@ -102,7 +102,7 @@ class HeaderMessage extends Component<Props, State> {
         const { containerStyle } = this.props;
         const { showMessage, message } = this.state;
 
-        if (!showMessage) {
+        if (!showMessage || !message) {
             return null;
         }
 

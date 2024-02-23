@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 import Localize from '@locale';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { DepositPreauth, DepositPreauthInfo } from '../DepositPreauth';
 import depositPreauthTemplate from './fixtures/DepositPreauthTx.json';
 
@@ -16,8 +18,7 @@ describe('DepositPreauth', () => {
         });
 
         it('Should return right parsed values', () => {
-            // @ts-ignore
-            const { tx, meta } = depositPreauthTemplate;
+            const { tx, meta }: any = depositPreauthTemplate;
             const instance = new DepositPreauth(tx, meta);
 
             expect(instance.Authorize).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
@@ -26,41 +27,34 @@ describe('DepositPreauth', () => {
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = depositPreauthTemplate;
+        const MixedDepositPreauth = MutationsMixin(DepositPreauth);
+        const instanceAuthorize = new MixedDepositPreauth({ ...tx, ...{ Unauthorize: undefined } }, meta);
+        const instanceUnauthorize = new MixedDepositPreauth({ ...tx, ...{ Authorize: undefined } }, meta);
+
+        describe('generateDescription()', () => {
             it('should return the expected description Authorize', () => {
-                const { tx, meta } = depositPreauthTemplate;
-                const instance = new DepositPreauth({ ...tx, ...{ Unauthorize: undefined } }, meta);
-
-                const expectedDescription = Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', {
-                    address: tx.Authorize,
-                });
-
-                expect(DepositPreauthInfo.getDescription(instance)).toEqual(expectedDescription);
+                const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
+                const expectedDescription = 'It authorizes rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account';
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
             it('should return the expected description for Unauthorize', () => {
-                const { tx, meta } = depositPreauthTemplate;
-                const instance = new DepositPreauth({ ...tx, ...{ Authorize: undefined } }, meta);
-
-                const expectedDescription = Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', {
-                    address: tx.Unauthorize,
-                });
-
-                expect(DepositPreauthInfo.getDescription(instance)).toEqual(expectedDescription);
+                const info = new DepositPreauthInfo(instanceUnauthorize, {} as any);
+                const expectedDescription =
+                    'It removes the authorization for rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account';
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label for Authorize', () => {
-                const { tx, meta } = depositPreauthTemplate;
-                const instance = new DepositPreauth({ ...tx, ...{ Unauthorize: undefined } }, meta);
-                expect(DepositPreauthInfo.getLabel(instance)).toEqual(Localize.t('events.authorizeDeposit'));
+                const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.authorizeDeposit'));
             });
-
             it('should return the expected label for Unauthorize', () => {
-                const { tx, meta } = depositPreauthTemplate;
-                const instance = new DepositPreauth({ ...tx, ...{ Authorize: undefined } }, meta);
-                expect(DepositPreauthInfo.getLabel(instance)).toEqual(Localize.t('events.unauthorizeDeposit'));
+                const info = new DepositPreauthInfo(instanceUnauthorize, {} as any);
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.unauthorizeDeposit'));
             });
         });
     });

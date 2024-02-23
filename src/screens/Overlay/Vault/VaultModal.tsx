@@ -9,8 +9,6 @@ import { Alert, BackHandler, InteractionManager, Linking, NativeEventSubscriptio
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
@@ -48,7 +46,7 @@ import { AuthMethods, Props, SignOptions, State, Steps } from './types';
 class VaultModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
 
     static options() {
         return {
@@ -277,6 +275,10 @@ class VaultModal extends Component<Props, State> {
                 throw new Error('Encryption key is required for signing with private key!');
             }
 
+            if (!preferredSigner) {
+                throw new Error('Preferred signer is required!');
+            }
+
             // fetch private key from vault
             const privateKey = await Vault.open(preferredSigner.publicKey, encryptionKey);
 
@@ -297,13 +299,17 @@ class VaultModal extends Component<Props, State> {
             const definitions = NetworkService.getNetworkDefinitions();
 
             // IGNORE if multi signing or pseudo transaction
-            if (!multiSign && transaction instanceof BaseTransaction) {
+            if (!multiSign && !transaction.isPseudoTransaction()) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields();
             }
 
             let signedObject = AccountLib.sign(transaction.Json, signerInstance, definitions) as SignedObjectType;
-            signedObject = { ...signedObject, signerPubKey: signerInstance.keypair.publicKey, signMethod: method };
+            signedObject = {
+                ...signedObject,
+                signerPubKey: signerInstance.keypair.publicKey ?? undefined,
+                signMethod: method,
+            };
 
             this.onSign(signedObject);
         } catch (e: any) {
@@ -325,7 +331,7 @@ class VaultModal extends Component<Props, State> {
             }
 
             // IGNORE if multi signing or pseudo transaction
-            if (!multiSign && transaction instanceof BaseTransaction) {
+            if (!multiSign && !transaction.isPseudoTransaction()) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields({ lastLedgerOffset: 150 });
             }
@@ -351,9 +357,9 @@ class VaultModal extends Component<Props, State> {
                 .then((resp) => {
                     const { signatures } = resp;
 
-                    const sig = signatures instanceof Array ? signatures[0] : signatures;
+                    const sig = Array.isArray(signatures) ? signatures[0] : signatures;
 
-                    let signedObject = undefined as SignedObjectType;
+                    let signedObject: SignedObjectType;
 
                     if (multiSign) {
                         signedObject = AccountLib.rawSigning.completeMultiSigned(
@@ -411,7 +417,7 @@ class VaultModal extends Component<Props, State> {
         // preferred signer has not been set yet, we should wait more
         if (!step || !preferredSigner) return null;
 
-        let Step = null;
+        let Step;
 
         switch (true) {
             case step === Steps.SelectSigner:
@@ -435,6 +441,9 @@ class VaultModal extends Component<Props, State> {
             default:
                 break;
         }
+
+        // NOTE: this should never happen
+        if (!Step) return null;
 
         return (
             <MethodsContext.Provider

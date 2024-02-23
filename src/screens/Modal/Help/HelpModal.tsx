@@ -29,7 +29,7 @@ export interface State {}
 class HelpView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Help;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
 
     static options() {
         return {

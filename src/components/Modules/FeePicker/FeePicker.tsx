@@ -8,7 +8,7 @@ import { AppScreens } from '@common/constants';
 import NetworkService from '@services/NetworkService';
 import StyleService from '@services/StyleService';
 
-import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Capitalize } from '@common/utils/string';
@@ -34,15 +34,17 @@ interface Props {
 }
 
 interface State {
-    availableFees: FeeItem[];
-    selected: FeeItem;
-    feeHooks: number;
+    availableFees?: FeeItem[];
+    selected?: FeeItem;
+    feeHooks?: number;
     error: boolean;
 }
 
 /* Component ==================================================================== */
 class FeePicker extends Component<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof FeePicker.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         showHooksFee: true,
     };
 
@@ -101,7 +103,7 @@ class FeePicker extends Component<Props, State> {
                 });
 
                 // set the suggested fee by default
-                this.onSelect(find(availableFees, { type: suggested }));
+                this.onSelect(find(availableFees, { type: suggested })!);
             })
             .catch(() => {
                 this.setState({
@@ -138,19 +140,27 @@ class FeePicker extends Component<Props, State> {
     getNormalizedFee = () => {
         const { selected } = this.state;
 
-        return new Amount(selected.value).dropsToNative();
+        if (!selected) {
+            return 0;
+        }
+
+        return new AmountParser(selected.value).dropsToNative().toString();
     };
 
     getNormalizedHooksFee = () => {
         const { feeHooks } = this.state;
 
-        return new Amount(feeHooks).dropsToNative();
+        if (!feeHooks) {
+            return 0;
+        }
+
+        return new AmountParser(feeHooks).dropsToNative().toString();
     };
 
     getFeeColor = () => {
         const { selected } = this.state;
 
-        switch (selected.type) {
+        switch (selected?.type) {
             case 'LOW':
                 return StyleService.value('$green');
             case 'MEDIUM':

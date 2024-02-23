@@ -32,6 +32,10 @@ class NetworkService {
     public getNetworkDefinitions(): any {
         return undefined;
     }
+
+    public getNetwork(): any {
+        return this.network;
+    }
 }
 
 export default new NetworkService();

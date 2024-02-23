@@ -158,6 +158,9 @@ class CipherMigrationView extends Component<Props, State> {
             Navigator.showOverlay(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: () => {
+                    if (!coreSettings.passcode) {
+                        throw new Error('Core settings passcode is required for this method!');
+                    }
                     this.onSuccessAuth(account, coreSettings.passcode);
                 },
             });

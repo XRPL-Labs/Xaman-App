@@ -1,0 +1,62 @@
+import Localize from '@locale';
+
+import { AccountModel } from '@store/models';
+
+import PaymentChannelClaim from './PaymentChannelClaim.class';
+
+/* Types ==================================================================== */
+import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
+import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+
+/* Descriptor ==================================================================== */
+class PaymentChannelClaimInfo extends ExplainerAbstract<PaymentChannelClaim> {
+    constructor(item: PaymentChannelClaim & MutationsMixinType, account: AccountModel) {
+        super(item, account);
+    }
+
+    getEventsLabel(): string {
+        return Localize.t('events.claimPaymentChannel');
+    }
+
+    generateDescription(): string {
+        const { Channel, Balance, IsChannelClosed } = this.item;
+
+        const content: string[] = [];
+
+        content.push(Localize.t('events.itWillUpdateThePaymentChannel', { channel: Channel }));
+
+        if (typeof Balance !== 'undefined') {
+            content.push(
+                Localize.t('events.theChannelBalanceClaimedIs', {
+                    balance: Balance.value,
+                    currency: Balance.currency,
+                }),
+            );
+        }
+
+        if (IsChannelClosed) {
+            content.push(Localize.t('events.thePaymentChannelWillBeClosed'));
+        }
+
+        return content.join('\n');
+    }
+    getParticipants() {
+        return {
+            start: { address: this.item.Account, tag: this.item.SourceTag },
+        };
+    }
+
+    getMonetaryDetails() {
+        return {
+            mutate: this.item.BalanceChange(this.account.address),
+            factor: {
+                currency: this.item.Amount!.currency,
+                value: this.item.Amount!.currency,
+                effect: MonetaryStatus.IMMEDIATE_EFFECT,
+            },
+        };
+    }
+}
+
+/* Export ==================================================================== */
+export default PaymentChannelClaimInfo;

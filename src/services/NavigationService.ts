@@ -288,15 +288,14 @@ class NavigationService extends EventEmitter {
         }
     };
 
-    getCurrentModal = (): string => {
+    getCurrentModal = (): string | undefined => {
         return last(this.modals);
     };
 
-    pullCurrentModal = (): string => {
-        const l = last(this.modals);
+    pullCurrentModal = (): string | undefined => {
+        const lastModal = last(this.modals);
         this.modals = take(this.modals, this.modals.length - 1);
-
-        return l;
+        return lastModal;
     };
 
     setCurrentOverlay = (overlay: string) => {
@@ -306,14 +305,14 @@ class NavigationService extends EventEmitter {
         }
     };
 
-    getCurrentOverlay = (): string => {
+    getCurrentOverlay = (): string | undefined => {
         return last(this.overlays);
     };
 
-    pullCurrentOverlay = (): string => {
-        const l = last(this.overlays);
+    pullCurrentOverlay = (): string | undefined => {
+        const lastOverlay = last(this.overlays);
         this.overlays = take(this.overlays, this.overlays.length - 1);
-        return l;
+        return lastOverlay;
     };
 
     onRootChange = (root: RootType) => {

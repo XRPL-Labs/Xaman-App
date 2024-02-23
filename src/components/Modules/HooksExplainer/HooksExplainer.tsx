@@ -60,7 +60,7 @@ class HooksExplainer extends Component<Props, State> {
 
         if (transaction) {
             Object.assign(params, {
-                tx_hash: transaction.Hash,
+                tx_hash: transaction.hash,
                 tx_data: JSON.stringify(transaction.Json),
                 tx_metadata: JSON.stringify(transaction.MetaData),
             });

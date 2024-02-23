@@ -39,7 +39,7 @@ interface State {
     originalValue: any;
     value: string;
     currency: string;
-    truncated: 'LOW' | 'HIGH';
+    truncated?: 'LOW' | 'HIGH';
     showOriginalValue: boolean;
     localSettings: any;
 }

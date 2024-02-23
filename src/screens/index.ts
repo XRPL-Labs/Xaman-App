@@ -50,7 +50,7 @@ import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
-import RecipientMenu from './Overlay/RecipientMenu';
+import ParticipantMenu from './Overlay/ParticipantMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
 import SelectCurrency from './Overlay/SelectCurrency';
@@ -147,7 +147,7 @@ export {
     ExplainBalance,
     ChangeLog,
     ConnectionIssue,
-    RecipientMenu,
+    ParticipantMenu,
     ConfirmDestinationTag,
     SelectAccount,
     SelectCurrency,

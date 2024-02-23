@@ -19,3 +19,4 @@ export * from './NetworkLabel';
 export * from './AccountSwitchElement';
 export * from './XAppBrowserHeader';
 export * from './HooksExplainer';
+export * from './MutationWidgets';

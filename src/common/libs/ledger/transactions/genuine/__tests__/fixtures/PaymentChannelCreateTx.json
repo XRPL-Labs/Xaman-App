@@ -1,9 +1,9 @@
 {
   "tx": {
-    "Account": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
     "TransactionType": "PaymentChannelCreate",
     "Amount": "10000",
-    "Destination": "rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW",
+    "Destination": "rrrrrrrrrrrrrrrrrrrrbzbvji",
     "SettleDelay": 86400,
     "PublicKey": "32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A",
     "CancelAfter": 533171558,
@@ -12,5 +12,24 @@
     "Fee": 12,
     "Sequence": 0
   },
-  "meta": {}
+  "meta": {
+    "AffectedNodes": [
+      {
+        "CreatedNode": {
+          "LedgerEntryType": "PayChannel",
+          "LedgerIndex": "5DB01B7FFED6B67E6B0414DED11E051D2EE2B7619CE0EAA6286D67A3A4D5BDB3",
+          "NewFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "Amount": "100000000",
+            "Destination": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+            "DestinationTag": 23480,
+            "PublicKey": "32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A",
+            "SettleDelay": 86400
+          }
+        }
+      }
+    ],
+    "TransactionIndex": 16,
+    "TransactionResult": "tesSUCCESS"
+  }
 }

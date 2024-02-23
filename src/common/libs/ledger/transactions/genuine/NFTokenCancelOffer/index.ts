@@ -1,3 +1,3 @@
-export { default as NFTokenCancelOffer } from './NFTokenCancelOfferClass';
-export { default as NFTokenCancelOfferValidation } from './NFTokenCancelOfferValidation';
-export { default as NFTokenCancelOfferInfo } from './NFTokenCancelOfferInfo';
+export { default as NFTokenCancelOffer } from './NFTokenCancelOffer.class';
+export { default as NFTokenCancelOfferValidation } from './NFTokenCancelOffer.validation';
+export { default as NFTokenCancelOfferInfo } from './NFTokenCancelOffer.info';

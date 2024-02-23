@@ -7,8 +7,8 @@ import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 import { Images } from '@common/helpers/images';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
-import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
+import { Icon } from '@components/General/Icon';
 
 import styles from './styles';
 
@@ -45,7 +45,9 @@ interface Props extends PropsWithChildren {
 
 /* Component ==================================================================== */
 export default class Button extends Component<Props> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Button.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         iconPosition: 'left',
         iconSize: 20,
         activeOpacity: 0.6,
@@ -183,7 +185,7 @@ export default class Button extends Component<Props> {
             hitSlop,
         } = this.props;
 
-        if (isDisabled === true) {
+        if (isDisabled) {
             return (
                 <View
                     testID={testID}

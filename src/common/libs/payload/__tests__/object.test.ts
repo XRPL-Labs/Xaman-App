@@ -16,7 +16,7 @@ describe('Payload', () => {
             Account: 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
             Destination: 'rXUMMaPpZqPutoRszR29jtC8amWq3APkx',
             Amount: '1337',
-        };
+        } as any;
 
         const craftedPayload = Payload.build(transaction);
 
@@ -69,8 +69,8 @@ describe('Payload', () => {
 
         try {
             await Payload.from(invalidTypesPayload.meta.uuid);
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
+        } catch (error: any) {
+            expect(error.message).toEqual('Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -85,8 +85,8 @@ describe('Payload', () => {
 
         try {
             await Payload.from(invalidSignInPayload.meta.uuid);
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
+        } catch (error: any) {
+            expect(error.message).toEqual('Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -101,17 +101,16 @@ describe('Payload', () => {
 
         try {
             await Payload.from(InvalidPayload.meta.uuid);
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
+        } catch (error: any) {
+            expect(error.message).toEqual('Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
     });
 
     it('Should be able return right values for assigned payload', async () => {
-        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
 
-        // @ts-ignore
         const fetchedPayload = await Payload.from(AccountSetPayload);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
@@ -126,8 +125,7 @@ describe('Payload', () => {
     });
 
     it('Should be able return right values SignIn payload', async () => {
-        const { SignIn: SignInPayload } = PayloadTemplate;
-        // @ts-ignore
+        const { SignIn: SignInPayload }: any = PayloadTemplate;
         const fetchedPayload = await Payload.from(SignInPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
@@ -146,7 +144,6 @@ describe('Payload', () => {
         const multiSingPayload = JSON.parse(JSON.stringify(AccountSetPayload));
         multiSingPayload.meta.multisign = true;
 
-        // @ts-ignore
         const fetchedPayload = await Payload.from(multiSingPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isMultiSign()).toBe(true);
@@ -161,7 +158,7 @@ describe('Payload', () => {
                 ...AccountSetPayload,
                 ...{
                     response: {
-                        resolved_at: 'somevalue',
+                        resolved_at: 'SOME_VALUE',
                     },
                 },
             }),
@@ -169,9 +166,9 @@ describe('Payload', () => {
 
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
-        } catch (e) {
-            expect(e.toString()).toEqual(
-                'Error: This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
+        } catch (error: any) {
+            expect(error.message).toEqual(
+                'This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
             );
         }
 
@@ -190,9 +187,9 @@ describe('Payload', () => {
 
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
-        } catch (e) {
-            expect(e.toString()).toEqual(
-                'Error: This payload has expired. Please repeat the process that generated the request, and scan the new request.',
+        } catch (error: any) {
+            expect(error.message).toEqual(
+                'This payload has expired. Please repeat the process that generated the request, and scan the new request.',
             );
         }
 
@@ -210,13 +207,13 @@ describe('Payload', () => {
 
         try {
             payload.getTransaction();
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
+        } catch (error: any) {
+            expect(error.message).toEqual('Parsed transaction have invalid transaction type!');
         }
     });
 
     it('Should throw error if transaction type is not supported', async () => {
-        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
 
         // set unsupported type
         const unsupportedTypePayload = JSON.parse(JSON.stringify(AccountSetPayload));
@@ -227,24 +224,23 @@ describe('Payload', () => {
 
         try {
             payload.getTransaction();
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in Xaman!');
+        } catch (error: any) {
+            expect(error.message).toEqual('Requested transaction type is not supported in Xaman!');
         }
     });
 
     it('Should throw error if transaction and crafted tx have different type', async () => {
-        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
 
         // set unsupported type
         AccountSetPayload.payload.tx_type = 'SignIn';
 
-        // @ts-ignore
         const payload = await Payload.from(AccountSetPayload);
 
         try {
             payload.getTransaction();
-        } catch (e) {
-            expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
+        } catch (error: any) {
+            expect(error.message).toEqual('Parsed transaction have invalid transaction type!');
         }
     });
 });

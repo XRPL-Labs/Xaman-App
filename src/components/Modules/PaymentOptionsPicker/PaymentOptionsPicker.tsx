@@ -7,7 +7,7 @@ import NetworkService from '@services//NetworkService';
 
 import { Button, InfoMessage } from '@components/General';
 import { PaymentOptionItem } from '@components/Modules/PaymentOptionsPicker/PaymentOptionItem';
-import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import { PathFindPathOption } from '@common/libs/ledger/types/methods';
 
@@ -26,13 +26,13 @@ interface Props {
     containerStyle?: ViewStyle;
     onLoad?: () => void;
     onLoadEnd?: () => void;
-    onSelect?: (item: PathFindPathOption) => void;
+    onSelect?: (item: PathFindPathOption | undefined) => void;
 }
 
 interface State {
     paymentOptions: PathFindPathOption[];
-    localOption: PathFindPathOption;
-    selectedItem: PathFindPathOption;
+    localOption?: PathFindPathOption;
+    selectedItem?: PathFindPathOption;
     isLoading: boolean;
     isExpired: boolean;
 }
@@ -139,8 +139,8 @@ class PaymentOptionsPicker extends Component<Props, State> {
         const { source, amount } = this.props;
 
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve) => {
-            let localOption = undefined as PathFindPathOption;
+        return new Promise<void>(async (resolve) => {
+            let localOption: PathFindPathOption | undefined;
 
             try {
                 // paying native currency
@@ -154,7 +154,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
                 } else {
                     // paying IOU
                     // eslint-disable-next-line no-lonely-if
-                    if (amount.issuer !== source) {
+                    if (amount.issuer && amount.issuer !== source) {
                         // source is not the issuer
                         const sourceLine = await LedgerService.getFilteredAccountLine(source, {
                             issuer: amount.issuer,
@@ -172,7 +172,9 @@ class PaymentOptionsPicker extends Component<Props, State> {
 
                             if (transferRate) {
                                 // if transfer rate, check if we still can pay
-                                const withTransferRate = new Amount(amount.value, false).withTransferRate(transferRate);
+                                const withTransferRate = new AmountParser(amount.value, false)
+                                    .withTransferRate(transferRate)
+                                    .toString();
 
                                 // still can pay after transfer rate applied
                                 if (Number(sourceLine.balance) >= Number(withTransferRate)) {
@@ -199,7 +201,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     } else {
                         localOption = {
                             source_amount: {
-                                issuer: amount.issuer,
+                                issuer: amount.issuer!,
                                 currency: amount.currency,
                                 value: amount.value,
                             },
@@ -216,8 +218,9 @@ class PaymentOptionsPicker extends Component<Props, State> {
                 {
                     localOption,
                 },
-                // @ts-ignore
-                resolve,
+                () => {
+                    resolve();
+                },
             );
         });
     };
@@ -225,15 +228,9 @@ class PaymentOptionsPicker extends Component<Props, State> {
     fetchLedgerOptions = () => {
         const { amount, source, destination } = this.props;
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             this.pathFinding
-                .request(
-                    amount.currency === NetworkService.getNativeAsset()
-                        ? new Amount(amount.value, false).nativeToDrops()
-                        : amount,
-                    source,
-                    destination,
-                )
+                .request(amount, source, destination)
                 .then((options) => {
                     // remove local option from options as we include it by default
                     const filteredOptions = filter(options, (item) => {
@@ -245,7 +242,9 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     const paymentOptions = map(filteredOptions, (item) => {
                         const { source_amount } = item;
                         if (typeof source_amount === 'string') {
-                            return Object.assign(item, { source_amount: new Amount(source_amount).dropsToNative() });
+                            return Object.assign(item, {
+                                source_amount: new AmountParser(source_amount).dropsToNative().toString(),
+                            });
                         }
                         return item;
                     });
@@ -262,12 +261,13 @@ class PaymentOptionsPicker extends Component<Props, State> {
                         });
                     }
                 })
-                // @ts-ignore
-                .finally(resolve);
+                .finally(() => {
+                    resolve();
+                });
         });
     };
 
-    onItemSelect = (item: PathFindPathOption) => {
+    onItemSelect = (item: PathFindPathOption | undefined) => {
         const { onSelect } = this.props;
         const { selectedItem } = this.state;
 

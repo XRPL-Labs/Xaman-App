@@ -46,7 +46,7 @@ export interface State {
 class ExplainBalanceOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ExplainBalance;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -69,6 +69,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             nfTokenPageCount: 0,
             networkReserve: NetworkService.getNetworkReserve(),
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -133,7 +135,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 }
             });
 
-            if (!endOfPage && _marker && _marker !== marker && _marker.slice(0, 40) === marker.slice(0, 40)) {
+            if (!endOfPage && _marker && _marker !== marker && _marker.slice(0, 40) === marker?.slice(0, 40)) {
                 return this.loadNFTokenPageCount(account, _marker, tokenPageCount);
             }
             return tokenPageCount;
@@ -162,6 +164,10 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                 isLoading: false,
             });
         }
+    };
+
+    onClosePress = () => {
+        this.actionPanelRef?.current?.slideDown();
     };
 
     renderAccountObjects = () => {
@@ -209,39 +215,33 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { account } = this.props;
         const { networkReserve } = this.state;
 
-        if (account.lines.length === 0) return null;
+        if (account.lines?.length === 0) return null;
 
-        return (
-            <>
-                {account.lines.map((line: TrustLineModel, index: number) => {
-                    // don't render obligation TrustLines
-                    if (line.obligation) return null;
+        return account.lines?.map((line: TrustLineModel, index: number) => {
+            // don't render obligation TrustLines
+            if (line.obligation) return null;
 
-                    return (
-                        <View key={`line-${index}`} style={styles.objectItemCard}>
-                            <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={styles.brandAvatarContainer}>
-                                    <TokenAvatar token={line} border size={32} />
-                                </View>
-                                <Text style={styles.rowLabel}>
-                                    {Localize.t('global.asset')}
-                                    <Text style={styles.rowLabelSmall}>
-                                        {` (${line.counterParty.name} ${NormalizeCurrencyCode(
-                                            line.currency.currency,
-                                        )})`}
-                                    </Text>
-                                </Text>
-                            </View>
-                            <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <Text style={styles.reserveAmount}>
-                                    {networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
-                                </Text>
-                            </View>
+            return (
+                <View key={`line-${index}`} style={styles.objectItemCard}>
+                    <View style={[AppStyles.flex5, AppStyles.row, AppStyles.centerAligned]}>
+                        <View style={styles.brandAvatarContainer}>
+                            <TokenAvatar token={line} border size={32} />
                         </View>
-                    );
-                })}
-            </>
-        );
+                        <Text style={styles.rowLabel}>
+                            {Localize.t('global.asset')}
+                            <Text style={styles.rowLabelSmall}>
+                                {` (${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currency)})`}
+                            </Text>
+                        </Text>
+                    </View>
+                    <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                        <Text style={styles.reserveAmount}>
+                            {networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                        </Text>
+                    </View>
+                </View>
+            );
+        });
     };
 
     renderNFTokenPages = () => {
@@ -273,7 +273,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { account } = this.props;
         const { accountObjects, nfTokenPageCount, networkReserve } = this.state;
 
-        const remainingOwner = account.ownerCount - (accountObjects.length + nfTokenPageCount + account.lines.length);
+        const remainingOwner =
+            account.ownerCount - (accountObjects.length + nfTokenPageCount + (account.lines?.length ?? 0));
 
         if (remainingOwner > 0) {
             return (
@@ -357,9 +358,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             <ActionPanel
                 height={AppSizes.heightPercentageToDP(88)}
                 onSlideDown={Navigator.dismissOverlay}
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -373,11 +372,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                if (this.actionPanel) {
-                                    this.actionPanel.slideDown();
-                                }
-                            }}
+                            onPress={this.onClosePress}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.close')}
                         />

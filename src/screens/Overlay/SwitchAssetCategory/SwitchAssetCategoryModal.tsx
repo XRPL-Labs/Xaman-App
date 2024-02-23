@@ -105,7 +105,7 @@ class SwitchAssetCategoryModal extends Component<Props, State> {
                         <Button
                             light
                             label={Localize.t('global.assets')}
-                            style={selected === ASSETS_CATEGORY.Tokens && styles.selectedButton}
+                            style={selected === ASSETS_CATEGORY.Tokens ? styles.selectedButton : {}}
                             /* eslint-disable-next-line react/jsx-no-bind */
                             onPress={this.onAssetPress.bind(null, ASSETS_CATEGORY.Tokens)}
                         />
@@ -113,7 +113,7 @@ class SwitchAssetCategoryModal extends Component<Props, State> {
                         <Button
                             light
                             label={Localize.t('global.nfts')}
-                            style={selected === ASSETS_CATEGORY.NFTokens && styles.selectedButton}
+                            style={selected === ASSETS_CATEGORY.NFTokens ? styles.selectedButton : {}}
                             /* eslint-disable-next-line react/jsx-no-bind */
                             onPress={this.onAssetPress.bind(null, ASSETS_CATEGORY.NFTokens)}
                         />

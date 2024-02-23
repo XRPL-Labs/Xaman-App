@@ -31,7 +31,7 @@ export interface State {}
 class AlertModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
     private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;

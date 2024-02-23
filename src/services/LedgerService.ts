@@ -12,10 +12,10 @@ import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import { NetworkType } from '@store/types';
 
-import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 import NetworkService from '@services/NetworkService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
@@ -45,6 +45,7 @@ import {
 } from '@common/libs/ledger/types/methods';
 import { LedgerEntry, RippleState } from '@common/libs/ledger/types/ledger';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Types  ==================================================================== */
 export type LedgerServiceEvent = {
@@ -82,10 +83,12 @@ class LedgerService extends EventEmitter {
     getLedgerStatus = (): { Fee: number; LastLedger: number } => {
         if (NetworkService.connection) {
             const { fee, ledger } = NetworkService.connection.getState();
-            return {
-                Fee: fee.avg,
-                LastLedger: ledger.last,
-            };
+            if (fee?.avg && ledger) {
+                return {
+                    Fee: fee.avg,
+                    LastLedger: ledger.last,
+                };
+            }
         }
 
         return {
@@ -253,7 +256,7 @@ class LedgerService extends EventEmitter {
                         obligationsLines.push({
                             account,
                             currency: c,
-                            balance: new Amount(-b, false).toString(false),
+                            balance: new AmountParser(-b, false).toString(),
                             limit: '0',
                             limit_peer: '0',
                             quality_in: 0,
@@ -282,7 +285,7 @@ class LedgerService extends EventEmitter {
                         throw new Error(resp.error);
                     }
 
-                    if (!has(resp, ['account_data', 'TransferRate'])) {
+                    if (!resp?.account_data?.TransferRate) {
                         throw new Error('no TransferRate in account_data');
                     }
 
@@ -397,7 +400,10 @@ class LedgerService extends EventEmitter {
     /**
      * Get account line base on provided peer
      */
-    getFilteredAccountLine = async (account: string, peer: IssuedCurrency): Promise<AccountLinesTrustline> => {
+    getFilteredAccountLine = async (
+        account: string,
+        peer: IssuedCurrency,
+    ): Promise<AccountLinesTrustline | undefined> => {
         return this.getLedgerEntry<RippleState>({
             ripple_state: { accounts: [account, peer.issuer], currency: peer.currency },
         })
@@ -414,8 +420,8 @@ class LedgerService extends EventEmitter {
                     !node ||
                     !(
                         node.Flags &
-                        LedgerObjectFlags.RippleState[
-                            node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
+                        objectFlags[LedgerEntryTypes.RippleState]![
+                            node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
                         ]
                     )
                 ) {
@@ -453,11 +459,12 @@ class LedgerService extends EventEmitter {
             const notInDefaultState = account_objects.filter((node) => {
                 return (
                     node.Flags &
-                    LedgerObjectFlags.RippleState[
-                        node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
+                    objectFlags[LedgerEntryTypes.RippleState]![
+                        node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
                     ]
                 );
             });
+
             // convert RippleState entry to Ledger trustline format
             const accountLinesFormatted = notInDefaultState.map((node) => RippleStateToTrustLine(node, account));
 
@@ -477,7 +484,7 @@ class LedgerService extends EventEmitter {
             const { node, type: networkType, networkId, networkKey } = NetworkService.getConnectionDetails();
 
             // send event about we are about to submit the transaction
-            this.emit('submitTransaction', txBlob, txHash, {
+            this.emit('submitTransaction', txBlob, txHash ?? '', {
                 id: networkId,
                 node,
                 type: networkType,
@@ -513,7 +520,7 @@ class LedgerService extends EventEmitter {
                 return assign(result, {
                     success: false,
                     engineResult: submitResponse.error,
-                    message: submitResponse.error_message || submitResponse.error_code,
+                    message: submitResponse.error_message || submitResponse.error_code || 'NO_ERROR_DESCRIPTION',
                 });
             }
 
@@ -534,19 +541,13 @@ class LedgerService extends EventEmitter {
                 engineResult: engine_result,
                 message: engine_result_message,
             });
-        } catch (error) {
+        } catch (error: any) {
             // something wrong happened
             return {
                 success: false,
                 engineResult: 'telFAILED',
-                // @ts-ignore
-                message: error.message,
-                network: {
-                    id: undefined,
-                    node: undefined,
-                    type: undefined,
-                    key: undefined,
-                },
+                message: error?.message,
+                network: undefined,
             };
         }
     };
@@ -556,7 +557,7 @@ class LedgerService extends EventEmitter {
      */
     verifyTransaction = (transactionId: string): Promise<VerifyResultType> => {
         return new Promise((resolve) => {
-            let timeout = undefined as ReturnType<typeof setTimeout>;
+            let timeout: NodeJS.Timeout;
 
             const ledgerListener = () => {
                 this.getTransaction(transactionId)

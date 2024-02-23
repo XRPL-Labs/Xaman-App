@@ -14,10 +14,7 @@ import { AccountElement, AccountPicker } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-import { BasePseudoTransaction } from '@common/libs/ledger/transactions/pseudo';
-
-import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
 
@@ -61,7 +58,7 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    getSwipeButtonColor = (): string => {
+    getSwipeButtonColor = (): string | undefined => {
         const { coreSettings } = this.context;
 
         if (coreSettings?.developerMode && coreSettings?.network) {
@@ -81,13 +78,17 @@ class ReviewStep extends Component<Props, State> {
     getHeaderTitle = () => {
         const { transaction } = this.context;
 
-        return transaction.Type === PseudoTransactionTypes.SignIn
+        return transaction!.Type === PseudoTransactionTypes.SignIn
             ? Localize.t('global.signIn')
             : Localize.t('global.reviewTransaction');
     };
 
     renderDetails = () => {
         const { payload, transaction, source, setLoading, setReady } = this.context;
+
+        if (!transaction) {
+            return null;
+        }
 
         const Components = [];
         const Props = {
@@ -97,10 +98,10 @@ class ReviewStep extends Component<Props, State> {
             forceRender: this.forceRender,
             setLoading,
             setReady,
-        };
+        } as any;
 
         switch (true) {
-            case transaction instanceof BasePseudoTransaction:
+            case transaction.Type in PseudoTransactionTypes:
                 Components.push(
                     React.createElement(get(PseudoTemplates, String(transaction.Type)), {
                         ...Props,
@@ -108,15 +109,20 @@ class ReviewStep extends Component<Props, State> {
                     }),
                 );
                 break;
-            case transaction instanceof BaseTransaction:
+            case transaction.Type in TransactionTypes:
                 Components.push(
                     React.createElement(get(Templates, String(transaction.Type)), {
                         ...Props,
-                        key: `${transaction.Type}Template`,
+                        key: `${transaction!.Type}Template`,
                     }),
                 );
-                // @ts-ignore
-                Components.push(React.createElement(get(Templates, 'Global'), { ...Props, key: 'GlobalTemplate' }));
+                // also push global template
+                Components.push(
+                    React.createElement(get(Templates, 'Global'), {
+                        ...Props,
+                        key: 'GlobalTemplate',
+                    }),
+                );
                 break;
             default:
                 break;
@@ -140,8 +146,8 @@ class ReviewStep extends Component<Props, State> {
         } = this.context;
         const { canScroll } = this.state;
 
-        // waiting for accounts to be initiated
-        if (typeof accounts === 'undefined' || !source) {
+        // waiting for accounts / transaction to be initiated
+        if (typeof accounts === 'undefined' || !source || !transaction) {
             return null;
         }
 
@@ -202,14 +208,14 @@ class ReviewStep extends Component<Props, State> {
                         {/* in multi-sign transactions and in some cases in Import transaction */}
                         {/* the Account can be different than the signing account */}
 
-                        {transaction.Account && source.address !== transaction.Account.address && (
+                        {transaction.Account && source.address !== transaction.Account && (
                             <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingTopSml]}>
                                 <View style={styles.rowLabel}>
                                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                                         {Localize.t('global.signFor')}
                                     </Text>
                                 </View>
-                                <AccountElement address={transaction.Account.address} />
+                                <AccountElement address={transaction.Account} />
                             </View>
                         )}
                         <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>

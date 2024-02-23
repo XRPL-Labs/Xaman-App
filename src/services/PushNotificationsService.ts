@@ -52,15 +52,15 @@ declare interface PushNotificationsService {
 /* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
     initialized: boolean;
-    initialNotification: FirebaseMessagingTypes.RemoteMessage;
+    initialNotification: FirebaseMessagingTypes.RemoteMessage | undefined;
     private logger: LoggerInstance;
 
     constructor() {
         super();
 
-        // Do not double listen for notifications
+        // do not double listen for notifications
         this.initialized = false;
-        // First app cold lunch notifications
+        // first app cold lunch notifications
         this.initialNotification = undefined;
 
         this.logger = LoggerService.createLogger('Push');
@@ -172,7 +172,7 @@ class PushNotificationsService extends EventEmitter {
      * Fetch FCM token from firebase
      * @returns {Promise<string>} - firebase FCM token in string
      */
-    getToken = async (): Promise<string> => {
+    getToken = async (): Promise<string | undefined> => {
         try {
             return await messaging().getToken();
         } catch (error) {
@@ -190,7 +190,7 @@ class PushNotificationsService extends EventEmitter {
      * @param notification - FirebaseMessagingTypes.RemoteMessage
      * @returns {NotificationType}
      */
-    getType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType => {
+    getType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType | undefined => {
         const category = get(notification, ['data', 'category']) as 'SIGNTX' | 'OPENXAPP' | 'TXPUSH';
 
         switch (category) {
@@ -238,7 +238,10 @@ class PushNotificationsService extends EventEmitter {
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
         // complete the notification and show the notification if necessary
         const shouldShowNotification = NavigationService.getCurrentModal() !== AppScreens.Modal.ReviewTransaction;
-        LocalNotificationModule.complete(message.messageId, shouldShowNotification);
+
+        if (message.messageId) {
+            LocalNotificationModule.complete(message.messageId, shouldShowNotification);
+        }
 
         // if any sign request exist then emit the event, this is needed for refreshing the events list
         if (this.isSignRequest(message)) {

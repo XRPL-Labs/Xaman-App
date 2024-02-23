@@ -45,6 +45,9 @@ import {
 
 import { SignIn, PaymentChannelAuthorize } from './pseudo';
 
+// Mixing
+import { SignMixinType, MutationsMixinType } from '@common/libs/ledger/mixin/types';
+
 /**
  * Genuine Transactions types
  */
@@ -96,3 +99,15 @@ export type Transactions =
  * Pseudo Transactions types
  */
 export type PseudoTransactions = SignIn | PaymentChannelAuthorize;
+
+/**
+ * Genuine + Pseudo Transactions types
+ */
+export type CombinedTransactions = Transactions | PseudoTransactions;
+
+/**
+ * Mixed Transactions
+ */
+export type SignableTransaction = CombinedTransactions & SignMixinType;
+export type MutatedTransaction = CombinedTransactions & MutationsMixinType;
+export type SignableMutatedTransaction = CombinedTransactions & SignMixinType & MutationsMixinType;

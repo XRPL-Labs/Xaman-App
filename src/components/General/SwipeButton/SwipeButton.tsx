@@ -46,12 +46,14 @@ interface Props {
 
 interface State {
     screenReaderEnabled: boolean;
-    labelColor: string;
-    iconColor: string;
+    labelColor?: string;
+    iconColor?: string;
 }
 /* Component ==================================================================== */
 class SwipeButton extends Component<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SwipeButton.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         shouldResetAfterSuccess: false,
     };
 
@@ -254,7 +256,7 @@ class SwipeButton extends Component<Props, State> {
                         styles.container,
                         secondary && styles.containerSecondary,
                         style,
-                        color && { backgroundColor: color, borderColor: color },
+                        color ? { backgroundColor: color, borderColor: color } : {},
                     ]}
                 >
                     <LoadingIndicator style={styles.spinner} color="light" />
@@ -272,7 +274,7 @@ class SwipeButton extends Component<Props, State> {
                         styles.container,
                         secondary && styles.containerSecondary,
                         style,
-                        color && { backgroundColor: color, borderColor: color },
+                        color ? { backgroundColor: color, borderColor: color } : {},
                     ]}
                 >
                     {/* eslint-disable-next-line react-native/no-inline-styles */}
@@ -285,14 +287,14 @@ class SwipeButton extends Component<Props, State> {
             <View
                 style={[
                     styles.container,
-                    secondary && styles.containerSecondary,
+                    secondary ? styles.containerSecondary : {},
                     style,
-                    color && { backgroundColor: color, borderColor: color },
-                    isDisabled && styles.containerDisabled,
+                    color ? { backgroundColor: color, borderColor: color } : {},
+                    isDisabled ? styles.containerDisabled : {},
                 ]}
                 onLayout={this.onLayoutChange}
             >
-                <Text style={[styles.label, labelColor && { color: labelColor }]}>{label}</Text>
+                <Text style={[styles.label, labelColor ? { color: labelColor } : {}]}>{label}</Text>
                 <Animated.View
                     testID={testID}
                     style={[styles.thumpContainer, { width: this.animatedWidth }]}
@@ -302,8 +304,8 @@ class SwipeButton extends Component<Props, State> {
                     <View
                         style={[
                             styles.iconContainer,
-                            secondary && styles.iconContainerSecondary,
-                            iconColor && { backgroundColor: iconColor },
+                            secondary ? styles.iconContainerSecondary : {},
+                            iconColor ? { backgroundColor: iconColor } : {},
                         ]}
                     >
                         <Icon size={30} name="IconArrowRightLong" />

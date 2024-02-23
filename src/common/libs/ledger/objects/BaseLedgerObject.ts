@@ -1,70 +1,51 @@
 /**
  * Base Ledger Object
  */
-import { get, has, set, isUndefined } from 'lodash';
-
-import { Account } from '@common/libs/ledger/parser/types';
-import Flag from '@common/libs/ledger/parser/common/flag';
 
 import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
+import { LedgerEntryType, UInt32 } from '@common/libs/ledger/parser/fields';
+import { Flags } from '@common/libs/ledger/parser/fields/codec';
+import { createPropertyConfig } from '@common/libs/ledger/parser/fields/factory';
+
+/* Types ==================================================================== */
+import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
+
 /* Class ==================================================================== */
-class BaseLedgerObject {
-    protected object: LedgerEntry;
+class BaseLedgerObject<T extends LedgerEntry> {
+    protected _object: T;
 
-    constructor(object?: LedgerEntry) {
-        this.object = object;
-    }
+    // abstract
+    public static Fields: { [key: string]: FieldConfig } = {};
 
-    get Account(): Account {
-        const source = get(this, ['object', 'Account'], undefined);
-        const sourceTag = get(this, ['object', 'SourceTag'], undefined);
+    // common fields
+    public static CommonFields: { [key: string]: FieldConfig } = {
+        LedgerEntryType: { type: LedgerEntryType },
+        Flags: { type: UInt32, codec: Flags },
+    };
 
-        if (isUndefined(source)) return undefined;
+    declare LedgerEntryType: FieldReturnType<typeof LedgerEntryType>;
+    declare Flags?: FieldReturnType<typeof UInt32, typeof Flags>;
 
-        return {
-            address: source,
-            tag: sourceTag,
+    constructor(object: T) {
+        this._object = object;
+
+        const fields = {
+            ...(this.constructor as typeof BaseLedgerObject).Fields,
+            ...BaseLedgerObject.CommonFields,
         };
-    }
 
-    set Account(account: Account) {
-        if (has(account, 'address')) {
-            set(this, 'object.Account', account.address);
+        for (const property of Object.keys(fields)) {
+            // get the property config
+            // NOTE: all Ledger object properties are readonly
+            const fieldConfig = createPropertyConfig(property, { ...fields[property] }, this._object);
+            // define the property
+            Object.defineProperty(this, property, fieldConfig);
         }
-        if (has(account, 'tag')) {
-            set(this, 'object.SourceTag', account.tag);
-        }
     }
 
-    get LedgerEntryType(): string {
-        return get(this, ['object', 'LedgerEntryType'], undefined);
-    }
-
-    get Sequence(): number {
-        return get(this, ['object', 'Sequence'], undefined);
-    }
-
-    get PreviousTxnID(): string {
-        return get(this, ['object', 'PreviousTxnID'], undefined);
-    }
-
-    get PreviousTxnLgrSeq(): string {
-        return get(this, ['object', 'PreviousTxnLgrSeq'], undefined);
-    }
-
-    get OwnerNode(): string {
-        return get(this, ['object', 'OwnerNode'], undefined);
-    }
-
-    get Index(): number {
-        return get(this, ['object', 'index'], undefined);
-    }
-
-    get Flags(): any {
-        const intFlags = get(this, ['object', 'Flags'], undefined);
-        const flagParser = new Flag(this.LedgerEntryType, intFlags);
-        return flagParser.parse();
+    get Index(): string {
+        return this._object.index;
     }
 }
 

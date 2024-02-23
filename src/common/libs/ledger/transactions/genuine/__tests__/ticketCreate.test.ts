@@ -3,6 +3,8 @@
 
 import Localize from '@locale';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { TicketCreate, TicketCreateInfo } from '../TicketCreate';
 import ticketCreateTemplate from './fixtures/TicketCreateTx.json';
 
@@ -15,27 +17,31 @@ describe('TicketCreate tx', () => {
             expect(instance.TransactionType).toBe('TicketCreate');
             expect(instance.Type).toBe('TicketCreate');
         });
+
+        it('Should return right parsed values', () => {
+            const { tx, meta }: any = ticketCreateTemplate;
+            const instance = new TicketCreate(tx, meta);
+
+            expect(instance.TicketCount).toBe(10);
+        });
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = ticketCreateTemplate;
+        const Mixed = MutationsMixin(TicketCreate);
+        const instance = new Mixed(tx, meta);
+        const info = new TicketCreateInfo(instance, {} as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = ticketCreateTemplate;
-                const instance = new TicketCreate(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.itCreatesTicketForThisAccount', {
-                    ticketCount: instance.TicketCount,
-                })}\n\n${Localize.t('events.createdTicketsSequence', {
-                    ticketsSequence: instance.TicketsSequence.join(', '),
-                })}`;
-
-                expect(TicketCreateInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription =
+                    'It creates 10 ticket(s) for this account.\nCreated tickets sequence 70035199';
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
-
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(TicketCreateInfo.getLabel()).toEqual(Localize.t('events.createTicket'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.createTicket'));
             });
         });
     });

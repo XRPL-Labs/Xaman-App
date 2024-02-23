@@ -53,7 +53,7 @@ class LabelStep extends Component<Props, State> {
             });
         }
 
-        getAccountName(account.address)
+        getAccountName(account.address!)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     const name = get(res, 'name');

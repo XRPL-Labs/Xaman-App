@@ -37,12 +37,12 @@ export enum TransactionTypes {
 }
 
 export interface FilterProps {
-    ExpenseType: 'Income' | 'Outcome';
-    TransactionType: TransactionTypes;
-    AmountIndicator: 'Smaller' | 'Bigger';
-    Amount: string;
-    Currency: string;
-    [key: string]: string;
+    ExpenseType?: 'Income' | 'Outcome';
+    TransactionType?: TransactionTypes;
+    AmountIndicator?: 'Smaller' | 'Bigger';
+    Amount?: string;
+    Currency?: string;
+    [key: string]: any;
 }
 
 export interface Props {
@@ -60,17 +60,11 @@ export interface State {
 class EventsFilterView extends Component<Props, State> {
     static screenName = AppScreens.Modal.FilterEvents;
 
-    private backHandler: NativeEventSubscription;
+    declare readonly props: Props & Required<Pick<Props, keyof typeof EventsFilterView.defaultProps>>;
 
-    static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
-    }
+    private backHandler: NativeEventSubscription | undefined;
 
-    static defaultProps: Props = {
+    static defaultProps: Partial<Props> = {
         currentFilters: {
             ExpenseType: undefined,
             TransactionType: undefined,
@@ -78,7 +72,6 @@ class EventsFilterView extends Component<Props, State> {
             Amount: undefined,
             Currency: undefined,
         },
-        onApply: () => {},
     };
 
     constructor(props: Props) {
@@ -141,8 +134,8 @@ class EventsFilterView extends Component<Props, State> {
                     });
                 }}
                 roundedSmall
-                style={[styles.optionsButton, selected ? styles.optionsButtonSelected : null]}
-                textStyle={[styles.optionsButtonText, selected ? styles.optionsButtonSelectedText : null]}
+                style={[styles.optionsButton, selected ? styles.optionsButtonSelected : {}]}
+                textStyle={[styles.optionsButtonText, selected ? styles.optionsButtonSelectedText : {}]}
                 label={title}
             />
         );
@@ -193,13 +186,13 @@ class EventsFilterView extends Component<Props, State> {
                 </View>
                 {/* Content */}
 
-                <View style={[AppStyles.flex8]}>
+                <View style={AppStyles.flex8}>
                     <ScrollView style={[AppStyles.flex1, AppStyles.padding, AppStyles.paddingTopSml]}>
                         {/* Expense */}
                         <Text numberOfLines={1} style={AppStyles.h5}>
                             {Localize.t('global.direction')}
                         </Text>
-                        <View style={[styles.row]}>
+                        <View style={styles.row}>
                             {this.renderButton('ExpenseType', Localize.t('global.income'), 'Income')}
                             {this.renderButton('ExpenseType', Localize.t('global.outcome'), 'Outcome')}
                         </View>
@@ -209,7 +202,7 @@ class EventsFilterView extends Component<Props, State> {
                         <Text numberOfLines={1} style={AppStyles.h5}>
                             {Localize.t('events.transactionType')}
                         </Text>
-                        <View style={[styles.row]}>
+                        <View style={styles.row}>
                             {this.renderButton(
                                 'TransactionType',
                                 Localize.t(`global.${TransactionTypes.Payment.toLowerCase()}`),
@@ -261,7 +254,7 @@ class EventsFilterView extends Component<Props, State> {
                         <Text numberOfLines={1} style={AppStyles.h5}>
                             {Localize.t('global.asset')}
                         </Text>
-                        <View style={[styles.row]}>
+                        <View style={styles.row}>
                             {this.renderButton('Currency', NetworkService.getNativeAsset())}
                             {account.lines && this.renderAccountCurrencies()}
                         </View>
@@ -270,11 +263,11 @@ class EventsFilterView extends Component<Props, State> {
                         <Text numberOfLines={1} style={AppStyles.h5}>
                             {Localize.t('global.amount')}
                         </Text>
-                        <View style={[styles.row]}>
+                        <View style={styles.row}>
                             {this.renderButton('AmountIndicator', Localize.t('events.smallerThan'), 'Smaller')}
                             {this.renderButton('AmountIndicator', Localize.t('events.biggerThan'), 'Bigger')}
                         </View>
-                        <View style={[styles.row]}>
+                        <View style={styles.row}>
                             {this.renderButton('Amount', '10')}
                             {this.renderButton('Amount', '25')}
                             {this.renderButton('Amount', '50')}

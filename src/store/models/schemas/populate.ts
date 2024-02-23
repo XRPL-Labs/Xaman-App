@@ -48,11 +48,11 @@ export const populateNodes = (realm: Realm): void => {
         const networkConfig = NetworkConfig.networks.find((net) => net.key === network.key);
         const createdNodes: NodeModel[] = [];
 
-        for (let y = 0; y < networkConfig.nodes.length; y++) {
+        for (let y = 0; y < networkConfig!.nodes.length; y++) {
             createdNodes.push(
                 realm.create<NodeModel>(NodeModel.schema.name, {
                     id: new Realm.BSON.ObjectId(),
-                    endpoint: networkConfig.nodes[y],
+                    endpoint: networkConfig!.nodes[y],
                     registerAt: new Date(),
                     updatedAt: new Date(),
                 }),

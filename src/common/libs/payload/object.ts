@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { get, has, isObject, isString, isUndefined } from 'lodash';
 
 import ApiService from '@services/ApiService';
@@ -9,7 +10,8 @@ import Localize from '@locale';
 
 import { TransactionJson } from '@common/libs/ledger/types/transaction';
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import { MutatedTransaction, SignableTransaction } from '@common/libs/ledger/transactions/types';
+
 import {
     ApplicationType,
     MetaType,
@@ -19,6 +21,8 @@ import {
     PayloadReferenceType,
     PayloadType,
 } from './types';
+
+import { MixingTypes } from '@common/libs/ledger/mixin/types';
 
 import { DigestSerializeWithSHA1 } from './digest';
 
@@ -30,11 +34,11 @@ const logger = LoggerService.createLogger('Payload');
 
 /* Payload  ==================================================================== */
 export class Payload {
-    meta: MetaType;
-    application: ApplicationType;
-    payload: PayloadReferenceType;
-    origin: PayloadOrigin;
-    generated: boolean;
+    meta!: MetaType;
+    application!: ApplicationType;
+    payload!: PayloadReferenceType;
+    origin!: PayloadOrigin;
+    generated!: boolean;
 
     /**
      * get payload object from payload UUID or payload Json
@@ -68,25 +72,28 @@ export class Payload {
     /**
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
-     * @param message
+     * @param custom_instruction
+     * @param submit
      */
-    static build(TxJson: TransactionJson, message?: string): Payload {
+    static build(TxJson: TransactionJson, custom_instruction?: string, submit = true): Payload {
         const instance = new Payload();
 
         // force the signer accounts if account is set in transaction
         const signers = TxJson.Account ? [TxJson.Account] : [];
 
-        // set meta flag including submit and instruction message
         instance.meta = {
-            submit: true,
-            custom_instruction: message,
-            signers,
+            uuid: uuidv4(),
+            submit, // submit by default
+            signers, // only can be signed by tx Account or any
+            custom_instruction,
         };
 
         // set the payload and transaction type
         instance.payload = {
             tx_type: TxJson.TransactionType as TransactionTypes,
             request_json: TxJson,
+            created_at: new Date().toISOString(),
+            expires_at: new Date().toISOString(),
         };
 
         // set generated flag
@@ -111,11 +118,7 @@ export class Payload {
         try {
             const { hash, request_json, tx_type } = payload;
 
-            const isPseudoTransaction = [
-                PseudoTransactionTypes.SignIn,
-                PseudoTransactionTypes.PaymentChannelAuthorize,
-                // @ts-ignore
-            ].includes(tx_type);
+            const isPseudoTransaction = tx_type in PseudoTransactionTypes;
 
             // Pseudo transactions should not have transaction type
             if (isPseudoTransaction && request_json.TransactionType) {
@@ -310,7 +313,7 @@ export class Payload {
     /**
      * Get transaction
      */
-    getTransaction(): Transactions | PseudoTransactions {
+    getTransaction(): SignableTransaction & MutatedTransaction {
         const { request_json, tx_type } = this.payload;
 
         // check if normal transaction and supported by the app
@@ -330,18 +333,26 @@ export class Payload {
         }
 
         let craftedTransaction;
+
         if (this.isPseudoTransaction()) {
             craftedTransaction = TransactionFactory.getPseudoTransaction(
                 { ...request_json },
                 tx_type as PseudoTransactionTypes,
-            );
+                [MixingTypes.Sign, MixingTypes.Mutation],
+            ) as SignableTransaction & MutatedTransaction;
         } else {
-            craftedTransaction = TransactionFactory.getTransaction({ ...request_json });
+            craftedTransaction = TransactionFactory.getTransaction(
+                {
+                    ...request_json,
+                },
+                undefined,
+                [MixingTypes.Sign, MixingTypes.Mutation],
+            ) as SignableTransaction & MutatedTransaction;
         }
 
         // check assigned transaction have the same type as reported from backend
         // NOTE: THIS SHOULD NEVER HAPPEN
-        if (craftedTransaction.TransactionType !== this.getTransactionType()) {
+        if (craftedTransaction.TransactionType && craftedTransaction.TransactionType !== this.getTransactionType()) {
             throw new Error('Parsed transaction have invalid transaction type!');
         }
 
@@ -385,7 +396,7 @@ export class Payload {
     /**
      * Return payload custom instruction
      */
-    getCustomInstruction = (): string => {
+    getCustomInstruction = (): string | undefined => {
         return this.meta.custom_instruction;
     };
 
@@ -406,7 +417,7 @@ export class Payload {
             return signers;
         }
 
-        return undefined;
+        return [];
     };
 
     /**

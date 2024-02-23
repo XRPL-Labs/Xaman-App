@@ -362,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "Pagaments i sol·licituds de pagament a l'XRPL",
@@ -659,7 +660,7 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
@@ -1056,7 +1057,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xaman no avala cap token ni cap emissor de tokens. Continua només en el cas que l'emissor del token sigui de la teva confiança.\r\nEn cas de dubtes o problemes amb relació al token (Línia de confiança) hauràs de contactar amb l'emissor del token.\r\nSi continues ho fas al teu propi risc.\r\n",
     "trustLineIsAlreadyExist": "Aquest token ja existeix. No pots tornar a afegir el mateix token un altre cop.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "Intercanviant",

@@ -1,75 +1,91 @@
-import { txFlags, txFlagIndices } from './flags/txFlags';
+import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+
+import { txFlagIndices, txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+
+import { Flag } from '@common/libs/ledger/parser/common/flags/types';
+
+/* types ==================================================================== */
+export type ParsedFlags = {
+    [key: string]: boolean;
+};
 
 /* Class ==================================================================== */
-class Flag {
-    type: string;
-    flags: number;
+class FlagParser {
+    private readonly type: TransactionTypes | LedgerEntryTypes;
+    private readonly txFlagsList?: Flag;
+    private flagsInt?: number;
 
-    constructor(type: string, flags?: number) {
+    constructor(type: TransactionTypes | LedgerEntryTypes, flagsInt?: number) {
         this.type = type;
-        this.flags = flags;
+        this.flagsInt = flagsInt;
+        this.txFlagsList = this.getFlagsList(type);
     }
 
-    parseIndices() {
-        let flag = '';
-        const { AccountSet } = txFlagIndices;
-
-        for (const flagName in AccountSet) {
-            // @ts-ignore
-            if (this.flags === AccountSet[flagName]) {
-                flag = flagName;
-            }
+    private getFlagsList = (type: TransactionTypes | LedgerEntryTypes): Flag | undefined => {
+        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(txFlags, type)) {
+            return txFlags[type as keyof typeof txFlags];
         }
-        return flag;
-    }
 
-    parse() {
-        let flagsList = {} as any;
+        if (type in LedgerEntryTypes && Object.prototype.hasOwnProperty.call(objectFlags, type)) {
+            return objectFlags[type as keyof typeof objectFlags];
+        }
 
-        switch (this.type) {
-            case 'AccountSet':
-                flagsList = txFlags.AccountSet;
-                break;
-            case 'TrustSet':
-                flagsList = txFlags.TrustSet;
-                break;
-            case 'OfferCreate':
-                flagsList = txFlags.OfferCreate;
-                break;
-            case 'Payment':
-                flagsList = txFlags.Payment;
-                break;
-            case 'PaymentChannelClaim':
-                flagsList = txFlags.PaymentChannelClaim;
-                break;
-            case 'NFTokenMint':
-                flagsList = txFlags.NFTokenMint;
-                break;
-            case 'NFTokenCreateOffer':
-            case 'NFTokenOffer':
-                flagsList = txFlags.NFTokenCreateOffer;
-                break;
-            case 'URITokenMint':
-                flagsList = txFlags.URITokenMint;
-                break;
-            case 'ClaimReward':
-                flagsList = txFlags.ClaimReward;
-                break;
-            case 'AMMDeposit':
-                flagsList = txFlags.AMMDeposit;
-                break;
-            case 'AMMWithdraw':
-                flagsList = txFlags.AMMWithdraw;
-                break;
+        return undefined;
+    };
+
+    private getFlagIndices = (type: TransactionTypes | LedgerEntryTypes): Flag | undefined => {
+        switch (type) {
+            case TransactionTypes.AccountSet:
+                return txFlagIndices.AccountSet;
+            case TransactionTypes.AMMDeposit:
+                return txFlags.AMMDeposit;
+            case TransactionTypes.AMMWithdraw:
+                return txFlags.AMMWithdraw;
             default:
-                break;
+                return undefined;
+        }
+    };
+
+    getIndices() {
+        const indices = this.getFlagIndices(this.type);
+
+        if (typeof indices === 'undefined') {
+            throw new Error(`type ${this.type} does not include flag indices`);
         }
 
-        const settings = {} as any;
+        const flag = Object.keys(indices).find((flagName) => this.flagsInt === indices[flagName]);
+
+        return flag ?? '';
+    }
+
+    setIndices(value: string) {
+        const indices = this.getFlagIndices(this.type);
+
+        if (typeof indices === 'undefined') {
+            throw new Error(`type ${this.type} does not include flag indices`);
+        }
+
+        const flagKey = Object.keys(indices).find((flagName) => flagName === value);
+
+        if (typeof flagKey === 'undefined') {
+            throw new Error(`flag indices ${value} not found!`);
+        }
+
+        return indices[flagKey];
+    }
+
+    get(): ParsedFlags {
+        // no flag for this transaction type, just return empty object
+        if (typeof this.txFlagsList === 'undefined' || typeof this.flagsInt === 'undefined') {
+            return {};
+        }
+
+        const settings: ParsedFlags = {};
 
         // parse transaction flags
-        for (const flagName in flagsList) {
-            if (this.flags & flagsList[flagName]) {
+        for (const flagName in this.txFlagsList) {
+            if (this.flagsInt & this.txFlagsList[flagName]) {
                 settings[flagName] = true;
             } else {
                 settings[flagName] = false;
@@ -78,8 +94,7 @@ class Flag {
 
         // parse universal flags
         for (const flagName in txFlags.Universal) {
-            // @ts-ignore
-            if (this.flags & txFlags.Universal[flagName]) {
+            if (this.flagsInt & txFlags.Universal[flagName]) {
                 settings[flagName] = true;
             } else {
                 settings[flagName] = false;
@@ -89,24 +104,35 @@ class Flag {
         return settings;
     }
 
-    get(): number {
-        return this.flags;
-    }
-
-    set(flag: number) {
-        if (!this.flags) {
-            this.flags = flag;
-        } else {
-            this.flags |= flag;
-            /* eslint-disable-next-line spellcheck/spell-checker */
-            // JavaScript converts operands to 32-bit signed ints before doing bitwise
-            // operations. We need to convert it back to an unsigned int.
-            this.flags >>>= 0;
+    /**
+     * Sets the flags of the transaction.
+     *
+     * @param {ParsedFlags} value - The flags to be set. (Object)
+     * @throws {Error} - Throws an error if the transaction type does not support setting flags.
+     * @returns {number} - The newly set flags value in UInt32.
+     */
+    set(value: ParsedFlags): number {
+        if (typeof this.txFlagsList === 'undefined') {
+            throw new Error(`type ${this.type} doesn't not support setting flags!`);
         }
 
-        return this.flags;
+        // TODO: check if the flags are belong to the transaction
+
+        // reset the flags in
+        this.flagsInt = 0;
+
+        for (const flagName in value) {
+            if (flagName in this.txFlagsList && value[flagName]) {
+                this.flagsInt |= this.txFlagsList[flagName];
+                // JavaScript converts operands to 32-bit signed Int before doing Bit-wise
+                // operations. We need to convert it back to an unsigned int.
+                this.flagsInt >>>= 0;
+            }
+        }
+
+        return this.flagsInt;
     }
 }
 
 /* Export ==================================================================== */
-export default Flag;
+export default FlagParser;

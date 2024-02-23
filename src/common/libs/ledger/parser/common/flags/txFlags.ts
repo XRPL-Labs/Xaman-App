@@ -1,12 +1,13 @@
-/* eslint-disable spellcheck/spell-checker */
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
+import { Flag, TransactionFlags } from '@common/libs/ledger/parser/common/flags/types';
 
 /* Constants ==================================================================== */
-const txFlags = {
+const txFlags: TransactionFlags & { Universal: Flag } = {
     // Universal flags can apply to any transaction type
     Universal: {
         FullyCanonicalSig: 0x80000000,
     },
-    AccountSet: {
+    [TransactionTypes.AccountSet]: {
         RequireDestTag: 0x00010000,
         OptionalDestTag: 0x00020000,
         RequireAuth: 0x00040000,
@@ -14,7 +15,7 @@ const txFlags = {
         DisallowXRP: 0x00100000,
         AllowXRP: 0x00200000,
     },
-    TrustSet: {
+    [TransactionTypes.TrustSet]: {
         SetAuth: 0x00010000,
         SetNoRipple: 0x00020000,
         ClearNoRipple: 0x00040000,
@@ -22,22 +23,22 @@ const txFlags = {
         ClearFreeze: 0x00200000,
     },
 
-    OfferCreate: {
+    [TransactionTypes.OfferCreate]: {
         Passive: 0x00010000,
         ImmediateOrCancel: 0x00020000,
         FillOrKill: 0x00040000,
         Sell: 0x00080000,
     },
-    Payment: {
+    [TransactionTypes.Payment]: {
         NoRippleDirect: 0x00010000,
         PartialPayment: 0x00020000,
         LimitQuality: 0x00040000,
     },
-    PaymentChannelClaim: {
+    [TransactionTypes.PaymentChannelClaim]: {
         Renew: 0x00010000,
         Close: 0x00020000,
     },
-    NFTokenMint: {
+    [TransactionTypes.NFTokenMint]: {
         Burnable: 0x00000001,
         OnlyXRP: 0x00000002,
         TrustLine: 0x00000004,
@@ -46,14 +47,14 @@ const txFlags = {
         IssuerCanCancelOffers: 0x00000010,
         IssuerApprovalRequired: 0x00000020,
     },
-    NFTokenCreateOffer: {
+    [TransactionTypes.NFTokenCreateOffer]: {
         SellToken: 0x00000001,
         Approved: 0x00000002,
     },
-    URITokenMint: {
+    [TransactionTypes.URITokenMint]: {
         Burnable: 0x00000001,
     },
-    ClaimReward: {
+    [TransactionTypes.ClaimReward]: {
         OptOut: 0x00000001,
     },
     AMMDeposit: {
@@ -77,8 +78,8 @@ const txFlags = {
 // The following are integer (as opposed to bit) flags
 // that can be set for particular transactions in the
 // SetFlag or ClearFlag field
-const txFlagIndices = {
-    AccountSet: {
+const txFlagIndices: TransactionFlags = {
+    [TransactionTypes.AccountSet]: {
         asfRequireDest: 1,
         asfRequireAuth: 2,
         asfDisallowXRP: 3,

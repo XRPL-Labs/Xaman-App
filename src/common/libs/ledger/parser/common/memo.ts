@@ -14,7 +14,7 @@ enum MemoTypes {
 }
 
 /* Class ==================================================================== */
-class Memo {
+class MemoParser {
     static BinaryRegex = /^[ \t]*(0x)?([a-f0-9]{20,})[ \t]*$/i;
 
     /**
@@ -22,9 +22,9 @@ class Memo {
      */
     static Encode(data: string): MemoLedgerType {
         // application/x-binary
-        if (Memo.BinaryRegex.test(data.trim())) {
+        if (MemoParser.BinaryRegex.test(data.trim())) {
             return {
-                MemoData: data.trim().match(Memo.BinaryRegex)[2],
+                MemoData: data.trim().match(MemoParser.BinaryRegex)![2],
                 MemoFormat: HexEncoding.toHex(MemoFormats.ApplicationBinary).toUpperCase(),
                 MemoType: HexEncoding.toHex(MemoTypes.Reference).toUpperCase(),
             };
@@ -45,8 +45,8 @@ class Memo {
         // check memo format
         const { MemoData, MemoFormat, MemoType } = memo;
 
-        const decodedFormat = HexEncoding.toUTF8(MemoFormat);
-        const decodedType = HexEncoding.toUTF8(MemoType);
+        const decodedFormat = MemoFormat ? HexEncoding.toUTF8(MemoFormat) : undefined;
+        const decodedType = MemoType ? HexEncoding.toUTF8(MemoType) : undefined;
 
         // if application/x-binary then return the data without decoding to hex
         if (decodedFormat === MemoFormats.ApplicationBinary) {
@@ -58,11 +58,11 @@ class Memo {
         }
 
         return {
-            MemoData: HexEncoding.toUTF8(MemoData),
+            MemoData: MemoData ? HexEncoding.toUTF8(MemoData) : undefined,
             MemoFormat: decodedFormat,
             MemoType: decodedType,
         };
     }
 }
 
-export default Memo;
+export default MemoParser;

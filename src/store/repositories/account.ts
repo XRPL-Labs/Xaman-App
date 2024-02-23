@@ -1,5 +1,5 @@
-import { flatMap, has, filter, find } from 'lodash';
 import Realm from 'realm';
+import { flatMap, has, filter, find } from 'lodash';
 
 import { AccountModel, AccountDetailsModel, CurrencyModel, TrustLineModel } from '@store/models';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
@@ -9,7 +9,6 @@ import Vault from '@common/libs/vault';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
-
 export type AccountRepositoryEvent = {
     accountUpdate: (account: AccountModel, changes: Partial<AccountModel> | Partial<AccountDetailsModel>) => void;
     accountCreate: (account: AccountModel) => void;
@@ -45,14 +44,22 @@ class AccountRepository extends BaseRepository<AccountModel> {
         privateKey?: string,
         encryptionKey?: string,
     ): Promise<AccountModel> => {
-        // Handle special cases for Readonly or Tangem card accounts
+        // handle special cases for Readonly or Tangem card accounts
         if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
             const createdAccount = await this.create(account);
             this.emit('accountCreate', createdAccount);
             return createdAccount;
         }
 
-        // Handle full access accounts
+        if (!privateKey || !encryptionKey) {
+            throw new Error('private key and encryption key is required for full access accounts!');
+        }
+
+        if (!account?.publicKey) {
+            throw new Error('account public key is required');
+        }
+
+        // handle full access accounts
         await Vault.create(account.publicKey, privateKey, encryptionKey);
         const createdFullAccessAccount = await this.create(account, true);
         this.emit('accountCreate', createdFullAccessAccount);
@@ -66,7 +73,7 @@ class AccountRepository extends BaseRepository<AccountModel> {
      */
     update = async (object: Partial<AccountModel>): Promise<AccountModel> => {
         // Validate object has a primary key
-        if (!has(object, this.model.schema.primaryKey)) {
+        if (!has(object, this.model?.schema?.primaryKey!)) {
             throw new Error('Update require primary key to be set');
         }
 
@@ -92,6 +99,11 @@ class AccountRepository extends BaseRepository<AccountModel> {
             try {
                 this.safeWrite(() => {
                     const account = this.findOne({ address });
+
+                    if (!account) {
+                        throw new Error(`Account with address ${address} not found!`);
+                    }
+
                     const detailsObject = this.realm.create(
                         AccountDetailsModel.schema.name,
                         details,
@@ -107,7 +119,7 @@ class AccountRepository extends BaseRepository<AccountModel> {
                     }
 
                     if (objectsCount === 0) {
-                        account.details.push(detailsObject);
+                        account.details?.push(detailsObject);
                     }
 
                     this.emit('accountUpdate', account, details);
@@ -202,7 +214,7 @@ class AccountRepository extends BaseRepository<AccountModel> {
     hasCurrency = (account: AccountModel, currency: Partial<CurrencyModel>): boolean => {
         let found = false;
 
-        account.lines.forEach((line: TrustLineModel) => {
+        account.lines?.forEach((line: TrustLineModel) => {
             if (line.currency.issuer === currency.issuer && line.currency.currency === currency.currency) {
                 found = true;
             }
@@ -254,20 +266,21 @@ class AccountRepository extends BaseRepository<AccountModel> {
      * @returns {Promise<boolean>} Whether the account was successfully removed.
      */
     purge = async (account: AccountModel): Promise<boolean> => {
-        // Remove private key if account has full access
+        // remove private key if account has full access
         if (account.accessLevel === AccessLevels.Full) {
             await Vault.purge(account.publicKey);
         }
 
-        // Remove account trust lines
-        for (const line of account.lines) {
+        // remove account trust lines
+        for (const line of account.lines ?? []) {
+            // @ts-ignore
             await this.delete(line);
         }
 
-        // Delete the account
+        // delete the account
         await this.delete(account);
 
-        // Emit account removal event
+        // emit account removal event
         this.emit('accountRemove');
 
         return true;

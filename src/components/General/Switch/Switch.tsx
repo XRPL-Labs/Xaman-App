@@ -16,7 +16,9 @@ interface Props {
 
 /* Component ==================================================================== */
 class Switch extends Component<Props> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Switch.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         direction: 'left',
     };
 

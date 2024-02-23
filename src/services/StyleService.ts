@@ -113,18 +113,18 @@ class StyleService {
         return this.themeName !== 'light';
     };
 
-    select<T extends string | number>(spec: { light?: T; dark?: T; default?: T }): T {
+    select<T extends string | number>(spec: { light?: T; dark?: T; default?: T }): T | undefined {
         return 'light' in spec && !this.isDarkMode()
             ? spec.light
             : 'dark' in spec && this.isDarkMode()
-            ? spec.dark
-            : spec.default;
+              ? spec.dark
+              : spec.default;
     }
 
-    getImage = (image: Extract<keyof typeof Images, string>) => {
+    getImage = (image: Extract<keyof typeof Images, string>): { uri: string } => {
         // if dark mode and there is a light mode for image return light
-        if (this.isDarkMode() && has(Images, `${image}Light`)) {
-            return get(Images, `${image}Light`);
+        if (this.isDarkMode() && `${image}Light` in Images) {
+            return get(Images, `${image}Light`)!;
         }
 
         return get(Images, image);

@@ -10,6 +10,7 @@ import {
     Platform,
     LayoutChangeEvent,
     KeyboardTypeOptions,
+    InteractionManager,
 } from 'react-native';
 
 import StyleService from '@services/StyleService';
@@ -91,10 +92,12 @@ const barColor = StyleService.value('$tint');
 
 /* Component ==================================================================== */
 export default class PasswordInput extends Component<Props, State> {
-    private instance: any;
+    private textInputRef: React.RefObject<TextInput>;
     private animatedBarWidth: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof PasswordInput.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         validate: false,
         minLength: 6,
         editable: true,
@@ -109,6 +112,7 @@ export default class PasswordInput extends Component<Props, State> {
             keyboardType: 'default',
         };
 
+        this.textInputRef = React.createRef();
         this.animatedBarWidth = new Animated.Value(0);
     }
 
@@ -120,28 +124,16 @@ export default class PasswordInput extends Component<Props, State> {
         const { autoFocus } = this.props;
 
         if (autoFocus) {
-            setTimeout(() => {
-                if (this.instance) {
-                    this.instance.focus();
-                }
-            }, 100);
+            InteractionManager.runAfterInteractions(this.textInputRef?.current?.focus);
         }
     }
 
     public focus = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.focus();
-            }
-        }, 100);
+        InteractionManager.runAfterInteractions(this.textInputRef?.current?.focus);
     };
 
     public blur = () => {
-        setTimeout(() => {
-            if (this.instance) {
-                this.instance.blur();
-            }
-        }, 100);
+        InteractionManager.runAfterInteractions(this.textInputRef?.current?.blur);
     };
 
     toggleSwitch = () => {
@@ -149,7 +141,7 @@ export default class PasswordInput extends Component<Props, State> {
 
         let keyboardType = 'default' as KeyboardTypeOptions;
 
-        if (Platform.OS === 'android' && !hidePassword === false) {
+        if (Platform.OS === 'android' && hidePassword) {
             keyboardType = 'visible-password';
         }
 
@@ -302,13 +294,13 @@ export default class PasswordInput extends Component<Props, State> {
         }).start();
 
         return (
-            <View style={[styles.passwordStrengthWrapper]}>
+            <View style={styles.passwordStrengthWrapper}>
                 <View style={[styles.barContainer, { backgroundColor: barColor, width: inputWidth }]}>
                     <Animated.View
                         style={[styles.bar, { width: this.animatedBarWidth, backgroundColor: activeBarColor }]}
                     />
                 </View>
-                {score !== 0 ? <Text style={[styles.label, { color: labelColor }]}>{label}</Text> : null}
+                {score !== 0 && <Text style={[styles.label, { color: labelColor }]}>{label}</Text>}
             </View>
         );
     };
@@ -321,9 +313,7 @@ export default class PasswordInput extends Component<Props, State> {
             <View style={[styles.inputWrapper, inputWrapperStyle, AppStyles.stretchSelf]} onLayout={this.setInputWidth}>
                 <TextInput
                     testID={testID}
-                    ref={(r) => {
-                        this.instance = r;
-                    }}
+                    ref={this.textInputRef}
                     keyboardType={keyboardType}
                     editable={editable}
                     placeholderTextColor={StyleService.value('$grey')}
@@ -340,7 +330,7 @@ export default class PasswordInput extends Component<Props, State> {
                     <Icon
                         size={22}
                         name={hidePassword ? 'IconEye' : 'IconEyeOff'}
-                        style={[styles.eyeIcon, !editable ? { tintColor: StyleService.value('$grey') } : null]}
+                        style={[styles.eyeIcon, !editable ? { tintColor: StyleService.value('$grey') } : {}]}
                     />
                 </TouchableDebounce>
             </View>

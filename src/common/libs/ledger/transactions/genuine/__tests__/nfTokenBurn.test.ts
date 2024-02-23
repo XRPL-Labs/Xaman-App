@@ -3,6 +3,8 @@
 
 import Localize from '@locale';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { NFTokenBurn, NFTokenBurnInfo } from '../NFTokenBurn';
 import nFTokenBurnTemplate from './fixtures/NFTokenBurnTx.json';
 
@@ -15,24 +17,33 @@ describe('NFTokenBurn tx', () => {
             expect(instance.TransactionType).toBe('NFTokenBurn');
             expect(instance.Type).toBe('NFTokenBurn');
         });
+
+        it('Should return right parsed values', () => {
+            const { tx, meta }: any = nFTokenBurnTemplate;
+            const instance = new NFTokenBurn(tx, meta);
+
+            expect(instance.NFTokenID).toBe('000B013A95F14B0044F78A264E41713C64B5F89242540EE208C3098E00000D65');
+            expect(instance.Owner).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+        });
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
-            it('should return the expected description', () => {
-                const { tx, meta } = nFTokenBurnTemplate;
-                const instance = new NFTokenBurn(tx, meta);
+        const { tx, meta }: any = nFTokenBurnTemplate;
+        const MixedNFTokenBurn = MutationsMixin(NFTokenBurn);
+        const instance = new MixedNFTokenBurn(tx, meta);
+        const NFTokenBurnInfoInstance = new NFTokenBurnInfo(instance, {} as any);
 
-                const expectedDescription = `${Localize.t('events.nfTokenBurnExplain', {
-                    tokenID: instance.NFTokenID,
-                })}`;
-                expect(NFTokenBurnInfo.getDescription(instance)).toEqual(expectedDescription);
+        describe('generateDescription()', () => {
+            it('should return the expected description', () => {
+                const expectedDescription =
+                    'The transaction will burn NFT token with ID 000B013A95F14B0044F78A264E41713C64B5F89242540EE208C3098E00000D65';
+                expect(NFTokenBurnInfoInstance.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(NFTokenBurnInfo.getLabel()).toEqual(Localize.t('events.burnNFT'));
+                expect(NFTokenBurnInfoInstance.getEventsLabel()).toEqual(Localize.t('events.burnNFT'));
             });
         });
     });

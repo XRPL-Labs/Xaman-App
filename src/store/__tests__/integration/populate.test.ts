@@ -3,7 +3,7 @@ import { values } from 'lodash';
 import Realm from 'realm';
 
 // eslint-disable-next-line import/no-unresolved
-import NetworkConfig from '@constants/network';
+import NetworkConfig from '@common/constants/network';
 
 import * as models from '../../models';
 

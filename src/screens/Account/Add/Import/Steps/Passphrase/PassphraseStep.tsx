@@ -66,8 +66,8 @@ class PassphraseStep extends Component<Props, State> {
         }
     };
 
-    onPassphraseChange = (value: string, isValid: boolean) => {
-        this.setState({ passphrase: { value, isValid } });
+    onPassphraseChange = (value: string, isValid?: boolean) => {
+        this.setState({ passphrase: { value, isValid: isValid! } });
     };
 
     onPassphraseConfirmChange = (passphraseConfirmation: string) => {

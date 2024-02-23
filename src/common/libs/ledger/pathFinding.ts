@@ -9,6 +9,7 @@ import { NetworkService } from '@services';
 
 import { PathFindPathOption, PathFindRequest, PathFindResponse } from '@common/libs/ledger/types/methods';
 import { AmountType } from '@common/libs/ledger/parser/types';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 /* Types ==================================================================== */
 type PaymentOptions = {
@@ -37,21 +38,16 @@ const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
 class LedgerPathFinding extends EventEmitter {
-    private resolveTimeout: ReturnType<typeof setTimeout>;
-    private expireTimeout: ReturnType<typeof setTimeout>;
+    private resolveTimeout: ReturnType<typeof setTimeout> | undefined;
+    private expireTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    private requestId: string;
-    private requestPromise: RequestPromise;
+    private requestId: string | undefined;
+    private requestPromise: RequestPromise | undefined;
     private paymentOptions: PaymentOptions;
 
     constructor() {
         super();
 
-        this.resolveTimeout = undefined;
-        this.expireTimeout = undefined;
-
-        this.requestId = undefined;
-        this.requestPromise = undefined;
         this.paymentOptions = {};
     }
 
@@ -155,7 +151,10 @@ class LedgerPathFinding extends EventEmitter {
                 subcommand: 'create',
                 source_account: source,
                 destination_account: destination,
-                destination_amount: amount,
+                destination_amount:
+                    amount.currency === NetworkService.getNativeAsset()
+                        ? new AmountParser(amount.value, false).nativeToDrops().toString()
+                        : amount,
             } as PathFindRequest)
                 .then((response) => {
                     if ('error' in response) {

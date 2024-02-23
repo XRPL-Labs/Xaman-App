@@ -244,10 +244,10 @@ const Navigator = {
     },
 
     dismissOverlay(overlay?: string) {
-        const currentOverlay = NavigationService.getCurrentOverlay();
+        const overlayToDismiss = overlay ?? NavigationService.getCurrentOverlay();
 
-        if (overlay || currentOverlay) {
-            return Navigation.dismissOverlay(overlay || currentOverlay);
+        if (overlayToDismiss) {
+            return Navigation.dismissOverlay(overlayToDismiss);
         }
 
         return Promise.resolve();

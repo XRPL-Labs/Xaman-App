@@ -122,12 +122,13 @@ class AccountGenerateView extends Component<Props, State> {
 
         try {
             // include user & device UUID is signed transaction
-            const { deviceUUID, uuid } = ProfileRepository.getProfile();
+            const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
             const { signedTransaction } = AccountLib.sign(
                 { Account: account.address, InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`) },
                 generatedAccount,
             );
-            backendService.addAccount(account.address, signedTransaction).catch(() => {
+
+            backendService.addAccount(account.address!, signedTransaction).catch(() => {
                 // ignore
             });
 
@@ -149,7 +150,7 @@ class AccountGenerateView extends Component<Props, State> {
             // add account to store
             const createdAccount = await AccountRepository.add(
                 account,
-                generatedAccount.keypair.privateKey,
+                generatedAccount?.keypair.privateKey!,
                 encryptionKey,
             );
 
@@ -174,7 +175,7 @@ class AccountGenerateView extends Component<Props, State> {
         }
     };
 
-    goNext = async (nextStep: GenerateSteps) => {
+    goNext = async (nextStep?: GenerateSteps) => {
         const { currentStep, prevSteps } = this.state;
 
         if (currentStep === 'FinishStep') {
@@ -185,7 +186,7 @@ class AccountGenerateView extends Component<Props, State> {
         prevSteps.push(currentStep);
 
         this.setState({
-            currentStep: nextStep,
+            currentStep: nextStep!,
             prevSteps,
         });
     };
@@ -197,7 +198,7 @@ class AccountGenerateView extends Component<Props, State> {
             Navigator.pop();
         } else {
             this.setState({
-                currentStep: last(prevSteps),
+                currentStep: last(prevSteps)!,
                 prevSteps: dropRight(prevSteps),
             });
         }
@@ -268,10 +269,12 @@ class AccountGenerateView extends Component<Props, State> {
         return (
             <Header
                 leftComponent={
-                    currentStep === 'SeedExplanation' && {
-                        icon: 'IconChevronLeft',
-                        onPress: this.onHeaderBackPress,
-                    }
+                    currentStep === 'SeedExplanation'
+                        ? {
+                              icon: 'IconChevronLeft',
+                              onPress: this.onHeaderBackPress,
+                          }
+                        : {}
                 }
                 centerComponent={{ text: title }}
             />

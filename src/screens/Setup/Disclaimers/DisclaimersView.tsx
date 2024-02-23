@@ -33,7 +33,7 @@ export interface State {
 class DisclaimersView extends Component<Props, State> {
     static screenName = AppScreens.Setup.Disclaimers;
 
-    private progressBar: ProgressBar;
+    private progressBarRef: React.RefObject<ProgressBar>;
 
     static options() {
         return {
@@ -51,6 +51,8 @@ class DisclaimersView extends Component<Props, State> {
             agreed: false,
             currentStep: 0,
         };
+
+        this.progressBarRef = React.createRef();
     }
 
     componentDidMount() {
@@ -63,7 +65,7 @@ class DisclaimersView extends Component<Props, State> {
             agreed: false,
         });
 
-        this.progressBar.fill(10000, () => {
+        this.progressBarRef?.current?.fill(10000, () => {
             this.setState({
                 isProgressing: false,
             });
@@ -159,7 +161,7 @@ class DisclaimersView extends Component<Props, State> {
         const content = this.getStepContent();
 
         return (
-            <SafeAreaView testID="disclaimers-setup-screen" style={[styles.container]}>
+            <SafeAreaView testID="disclaimers-setup-screen" style={styles.container}>
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned]}>
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
@@ -167,7 +169,7 @@ class DisclaimersView extends Component<Props, State> {
                 <Spacer size={20} />
                 <NumberSteps currentStep={currentStep} length={7} onStepChange={this.onStepChange} />
 
-                <View testID="disclaimer-content-view" style={[styles.contentContainer]}>
+                <View testID="disclaimer-content-view" style={styles.contentContainer}>
                     <Text style={AppStyles.h5}>
                         {currentStep + 1}. {content.title}
                     </Text>
@@ -175,15 +177,9 @@ class DisclaimersView extends Component<Props, State> {
                     <Text style={AppStyles.subtext}>{content.content}</Text>
                 </View>
 
-                <Footer style={[styles.footerStyle]}>
-                    <ProgressBar
-                        ref={(r) => {
-                            this.progressBar = r;
-                        }}
-                        visible={isProgressing}
-                        style={[styles.progressBar]}
-                    />
-                    <View style={[styles.footerContent]}>
+                <Footer style={styles.footerStyle}>
+                    <ProgressBar ref={this.progressBarRef} visible={isProgressing} style={styles.progressBar} />
+                    <View style={styles.footerContent}>
                         {isProgressing ? (
                             <Text
                                 style={[

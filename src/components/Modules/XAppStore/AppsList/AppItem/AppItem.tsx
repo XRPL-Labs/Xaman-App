@@ -82,7 +82,7 @@ class AppItem extends Component<Props> {
         const { item, onPress } = this.props;
 
         if (typeof onPress === 'function') {
-            onPress(item);
+            onPress(item!);
         }
     };
 

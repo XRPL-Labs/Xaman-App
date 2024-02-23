@@ -31,16 +31,16 @@ class PaymentChannelFundTemplate extends Component<Props, State> {
         const { transaction } = this.props;
         return (
             <>
-                <Text style={[styles.label]}>{Localize.t('global.channel')}</Text>
-                <View style={[styles.contentBox]}>
-                    <Text style={[styles.value]}>{transaction.Channel}</Text>
+                <Text style={styles.label}>{Localize.t('global.channel')}</Text>
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{transaction.Channel}</Text>
                 </View>
 
-                <Text style={[styles.label]}>{Localize.t('global.amount')}</Text>
-                <View style={[styles.contentBox]}>
+                <Text style={styles.label}>{Localize.t('global.amount')}</Text>
+                <View style={styles.contentBox}>
                     <AmountText
-                        value={transaction.Amount.value}
-                        currency={transaction.Amount.currency}
+                        value={transaction.Amount!.value}
+                        currency={transaction.Amount!.currency}
                         style={styles.amount}
                         immutable
                     />
@@ -48,9 +48,9 @@ class PaymentChannelFundTemplate extends Component<Props, State> {
 
                 {transaction.Expiration && (
                     <>
-                        <Text style={[styles.label]}>{Localize.t('global.expireAfter')}</Text>
-                        <View style={[styles.contentBox]}>
-                            <Text style={[styles.value]}>{FormatDate(transaction.Expiration)}</Text>
+                        <Text style={styles.label}>{Localize.t('global.expireAfter')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{FormatDate(transaction.Expiration)}</Text>
                         </View>
                     </>
                 )}

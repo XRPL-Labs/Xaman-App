@@ -25,15 +25,17 @@ interface Props {
 
 interface State {
     isLoading: boolean;
-    name: string;
-    image: string;
+    name?: string;
+    image?: string;
 }
 
 /* Component ==================================================================== */
 class NFTokenElement extends PureComponent<Props, State> {
     private readonly animatedPlaceholder: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof NFTokenElement.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         truncate: true,
     };
 

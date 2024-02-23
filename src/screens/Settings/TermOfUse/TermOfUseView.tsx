@@ -37,7 +37,7 @@ export interface State {
 class TermOfUseView extends Component<Props, State> {
     static screenName = AppScreens.Settings.TermOfUse;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
 
     static options() {
         return {
@@ -49,7 +49,7 @@ class TermOfUseView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            TOSVersion: undefined,
+            TOSVersion: 0,
             isTOSLoaded: false,
             shouldShowAgreement: false,
             coreSettings: CoreRepository.getSettings(),
@@ -80,7 +80,7 @@ class TermOfUseView extends Component<Props, State> {
 
                 this.setState({
                     TOSVersion: version,
-                    shouldShowAgreement: profile.signedTOSVersion < version,
+                    shouldShowAgreement: (profile?.signedTOSVersion ?? 0) < version,
                 });
             }
         } catch {

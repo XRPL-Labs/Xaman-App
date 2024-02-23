@@ -127,8 +127,8 @@ class ChangePassphraseView extends Component<Props, State> {
         this.setState({ currentPassphrase });
     };
 
-    onPassphraseChange = (value: string, isValid: boolean) => {
-        this.setState({ passphrase: { value, isValid } });
+    onPassphraseChange = (value: string, isValid?: boolean) => {
+        this.setState({ passphrase: { value, isValid: isValid! } });
     };
 
     onPassphraseConfirmChange = (passphrase_confirmation: string) => {
@@ -172,8 +172,8 @@ class ChangePassphraseView extends Component<Props, State> {
                         placeholder={Localize.t('account.newPassword')}
                         minLength={8}
                         onChange={this.onPassphraseChange}
-                        validate
                         autoFocus={false}
+                        validate
                     />
 
                     <PasswordInput

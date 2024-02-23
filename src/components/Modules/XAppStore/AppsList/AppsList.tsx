@@ -3,19 +3,19 @@ import { FlatList, RefreshControl, Text, View, ViewStyle } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
+import { AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
+
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
-import { AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     dataSource: any;
     onAppPress: (app: any) => void;
     onRefresh?: () => void;
-
     refreshing?: boolean;
-
     searching?: boolean;
     containerStyle: ViewStyle | ViewStyle[];
 }
@@ -75,7 +75,7 @@ class AppsList extends Component<Props, State> {
                 ListEmptyComponent={this.renderEmpty}
                 refreshControl={
                     <RefreshControl
-                        refreshing={refreshing}
+                        refreshing={!!refreshing}
                         onRefresh={this.onRefresh}
                         tintColor={StyleService.value('$contrast')}
                     />

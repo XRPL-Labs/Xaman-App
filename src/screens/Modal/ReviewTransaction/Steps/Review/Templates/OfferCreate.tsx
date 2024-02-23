@@ -32,7 +32,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 export interface State {
     isLoadingIssuerFee: boolean;
     issuerFee: number;
-    warnings: string;
+    warning?: string;
 }
 
 /* Component ==================================================================== */
@@ -43,7 +43,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         this.state = {
             isLoadingIssuerFee: true,
             issuerFee: 0,
-            warnings: undefined,
+            warning: undefined,
         };
     }
 
@@ -57,10 +57,10 @@ class OfferCreateTemplate extends Component<Props, State> {
     setIssuerTransferFee = () => {
         const { transaction } = this.props;
 
-        const issuerAddress = transaction.TakerGets.issuer || transaction.TakerPays.issuer;
+        const issuerAddress = transaction.TakerGets?.issuer || transaction.TakerPays?.issuer;
 
         // get transfer rate from issuer account
-        LedgerService.getAccountTransferRate(issuerAddress)
+        LedgerService.getAccountTransferRate(issuerAddress!)
             .then((issuerFee) => {
                 if (issuerFee) {
                     this.setState({
@@ -81,17 +81,17 @@ class OfferCreateTemplate extends Component<Props, State> {
     setWarnings = () => {
         const { transaction, source } = this.props;
 
-        let showFullBalanceLiquidWarning: boolean;
+        let showFullBalanceLiquidWarning: boolean = false;
 
         // Warn users if they are about to trade their entire token worth
-        const { issuer, currency, value } = transaction.TakerGets;
+        const { issuer, currency, value } = transaction.TakerGets!;
 
         if (currency === NetworkService.getNativeAsset()) {
             // selling native currency
             showFullBalanceLiquidWarning = Number(value) >= CalculateAvailableBalance(source);
         } else {
             // sell IOU
-            const line = source.lines.find(
+            const line = source.lines?.find(
                 (l: TrustLineModel) => l.currency.issuer === issuer && l.currency.currency === currency,
             );
 
@@ -102,7 +102,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
         if (showFullBalanceLiquidWarning) {
             this.setState({
-                warnings: Localize.t('payload.tradeEntireTokenWorthWarning', {
+                warning: Localize.t('payload.tradeEntireTokenWorthWarning', {
                     currency: NormalizeCurrencyCode(currency),
                 }),
             });
@@ -111,41 +111,41 @@ class OfferCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
-        const { isLoadingIssuerFee, issuerFee, warnings } = this.state;
+        const { isLoadingIssuerFee, issuerFee, warning } = this.state;
 
         return (
             <>
                 <Text style={styles.label}>{Localize.t('global.issuer')}</Text>
                 <AccountElement
-                    address={transaction.TakerGets.issuer || transaction.TakerPays.issuer}
+                    address={transaction.TakerGets!.issuer || transaction.TakerPays!.issuer}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
-                {warnings && (
+                {warning && (
                     <View style={AppStyles.paddingBottomSml}>
-                        <InfoMessage type="error" label={warnings} />
+                        <InfoMessage type="error" label={warning} />
                     </View>
                 )}
 
                 <Text style={styles.label}>{Localize.t('global.selling')}</Text>
                 <View style={styles.contentBox}>
                     <AmountText
-                        value={transaction.TakerGets.value}
-                        currency={transaction.TakerGets.currency}
+                        value={transaction.TakerGets!.value}
+                        currency={transaction.TakerGets!.currency}
                         style={styles.amount}
                         immutable
                     />
                 </View>
 
                 <Text style={styles.label}>
-                    {transaction.Flags.Sell
+                    {transaction.Flags?.Sell
                         ? Localize.t('global.inExchangeForAtLeastReceive')
                         : Localize.t('global.inExchangeForReceive')}
                 </Text>
                 <View style={styles.contentBox}>
                     <AmountText
-                        value={transaction.TakerPays.value}
-                        currency={transaction.TakerPays.currency}
+                        value={transaction.TakerPays!.value}
+                        currency={transaction.TakerPays!.currency}
                         style={styles.amount}
                         immutable
                     />

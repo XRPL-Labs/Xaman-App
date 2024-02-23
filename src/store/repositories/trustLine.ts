@@ -25,8 +25,8 @@ class TrustLineRepository extends BaseRepository<TrustLineModel> {
 
     update = async (object: Partial<TrustLineModel>): Promise<TrustLineModel> => {
         // the primary key should be in the object
-        if (!has(object, this.model.schema.primaryKey)) {
-            throw new Error('Update require primary key to be set');
+        if (this.model.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {
+            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
         }
 
         return this.create(object, true).then((updatedTrustLine: TrustLineModel) => {

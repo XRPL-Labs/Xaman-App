@@ -22,7 +22,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    checkObject: CheckCreate;
+    checkObject?: CheckCreate;
 }
 
 /* Component ==================================================================== */
@@ -72,15 +72,15 @@ class CheckCancelTemplate extends Component<Props, State> {
 
         return (
             <>
+                {/* Check Destination */}
                 <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.to')}
                     </Text>
                 </View>
-
                 <AccountElement
-                    address={checkObject?.Destination.address}
-                    tag={checkObject?.Destination.tag}
+                    address={checkObject?.Destination}
+                    tag={checkObject?.DestinationTag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
@@ -88,11 +88,13 @@ class CheckCancelTemplate extends Component<Props, State> {
                 <Text style={styles.label}>{Localize.t('global.checkAmount')}</Text>
                 <View style={styles.contentBox}>
                     <Text style={styles.amountRed}>
-                        {`${checkObject?.SendMax.value || 0} ${NormalizeCurrencyCode(checkObject?.SendMax.currency)}`}
+                        {`${checkObject?.SendMax?.value ?? 0} ${
+                            checkObject?.SendMax?.currency ? NormalizeCurrencyCode(checkObject.SendMax.currency) : ''
+                        }`}
                     </Text>
                 </View>
 
-                {transaction.CheckID && (
+                {typeof transaction.CheckID !== 'undefined' && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.checkID')}</Text>
                         <View style={styles.contentBox}>

@@ -43,7 +43,7 @@ export interface State {
 class AccountAddView extends Component<Props, State> {
     static screenName = AppScreens.Account.Add;
 
-    private nfcListener: EventSubscription;
+    private nfcChangeListener: EventSubscription | undefined;
 
     static options() {
         return {
@@ -63,7 +63,7 @@ class AccountAddView extends Component<Props, State> {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             // on NFC state change (Android)
-            this.nfcListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
+            this.nfcChangeListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
 
             // get current NFC status
             RNTangemSdk.getNFCStatus().then((status) => {
@@ -78,8 +78,8 @@ class AccountAddView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        if (this.nfcListener) {
-            this.nfcListener.remove();
+        if (this.nfcChangeListener) {
+            this.nfcChangeListener.remove();
         }
 
         RNTangemSdk.stopSession().catch(() => {

@@ -3,20 +3,7 @@
  */
 import Fuse from 'fuse.js';
 import moment from 'moment-timezone';
-import {
-    has,
-    filter,
-    flatMap,
-    get,
-    groupBy,
-    isEmpty,
-    isEqual,
-    isUndefined,
-    map,
-    orderBy,
-    uniqBy,
-    without,
-} from 'lodash';
+import { has, filter, flatMap, groupBy, isEmpty, isEqual, map, orderBy, uniqBy } from 'lodash';
 import React, { Component } from 'react';
 import { Image, ImageBackground, InteractionManager, Text, View } from 'react-native';
 
@@ -41,6 +28,8 @@ import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { LedgerMarker } from '@common/libs/ledger/types/common';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { LedgerEntry } from '@common/libs/ledger/types/ledger';
+
+import { MixingTypes } from '@common/libs/ledger/mixin/types';
 
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
 
@@ -77,10 +66,10 @@ export interface State {
     isLoading: boolean;
     isLoadingMore: boolean;
     canLoadMore: boolean;
-    filters: FilterProps;
-    searchText: string;
+    searchText?: string;
+    filters?: FilterProps;
     sectionIndex: number;
-    lastMarker: LedgerMarker;
+    lastMarker?: LedgerMarker;
     account: AccountModel;
     transactions: Array<Transactions>;
     plannedTransactions: Array<LedgerObjects>;
@@ -100,7 +89,7 @@ class EventsView extends Component<Props, State> {
 
     private forceReload: boolean;
     private isScreenVisible: boolean;
-    private navigationListener: EventSubscription;
+    private navigationListener: EventSubscription | undefined;
 
     static options() {
         return {
@@ -318,11 +307,13 @@ class EventsView extends Component<Props, State> {
                     });
                 }, Promise.resolve())
                 .then(() => {
-                    const parsedList = flatMap(objects, LedgerObjectFactory.fromLedger);
-                    const filtered = without(parsedList, null);
+                    const parsedList = objects
+                        .map(LedgerObjectFactory.fromLedger)
+                        .flat()
+                        .filter((item): item is LedgerObjects => item !== undefined);
 
-                    this.setState({ plannedTransactions: filtered }, () => {
-                        resolve(filtered);
+                    this.setState({ plannedTransactions: parsedList }, () => {
+                        resolve(parsedList);
                     });
                 })
                 .catch(() => {
@@ -385,7 +376,9 @@ class EventsView extends Component<Props, State> {
                         );
                     });
 
-                    let parsedList = flatMap(tesSuccessTransactions, (item) => TransactionFactory.fromLedger(item));
+                    let parsedList = flatMap(tesSuccessTransactions, (item) =>
+                        TransactionFactory.fromLedger(item, [MixingTypes.Mutation]),
+                    );
 
                     if (loadMore) {
                         parsedList = uniqBy([...transactions, ...parsedList], 'Hash');
@@ -417,7 +410,7 @@ class EventsView extends Component<Props, State> {
         // apply any new search ad filter to the new sources
         if (searchText) {
             this.applySearch(searchText);
-        } else {
+        } else if (filters) {
             this.applyFilters(filters);
         }
     };
@@ -532,12 +525,22 @@ class EventsView extends Component<Props, State> {
 
         this.setState({ isLoading: false });
 
-        // apply any new search ad filter to the new sources
+        // apply any new search and filter to the new sources
         if (searchText) {
             this.applySearch(searchText);
-        } else {
+        } else if (filters) {
             this.applyFilters(filters);
+        } else {
+            this.applyDefaults();
         }
+    };
+
+    applyDefaults = () => {
+        const { transactions, pendingRequests, plannedTransactions } = this.state;
+
+        this.setState({
+            dataSource: this.buildDataSource(transactions, pendingRequests, plannedTransactions),
+        });
     };
 
     applyFilters = (filters: FilterProps) => {
@@ -555,7 +558,7 @@ class EventsView extends Component<Props, State> {
 
         if (filters && typeof filters === 'object') {
             Object.keys(filters).map((k) => {
-                if (!isUndefined(filters[k])) {
+                if (typeof filters[k] !== 'undefined') {
                     isEmptyFilters = false;
                     return false;
                 }
@@ -664,50 +667,64 @@ class EventsView extends Component<Props, State> {
                     break;
             }
 
-            newTransactions = filter(newTransactions, (t) => {
-                return includeTypes.includes(get(t, 'Type'));
-            });
+            newTransactions = newTransactions.filter((element) => includeTypes.includes(element?.Type));
         }
 
         if (filters.Amount && filters.AmountIndicator) {
-            newTransactions = filter(newTransactions, (t) => {
+            newTransactions = filter(newTransactions, (element) => {
                 if (filters.AmountIndicator === 'Bigger') {
                     return (
-                        parseFloat(get(t, 'Amount.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'DeliverMin.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'SendMax.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'TakerGets.value')) >= parseFloat(filters.Amount) ||
-                        parseFloat(get(t, 'TakerPays.value')) >= parseFloat(filters.Amount)
+                        // @ts-expect-error
+                        parseFloat(element?.Amount?.value) >= parseFloat(filters.Amount) ||
+                        // @ts-expect-error
+                        parseFloat(element?.DeliverMin?.value) >= parseFloat(filters.Amount) ||
+                        // @ts-expect-error
+                        parseFloat(element?.SendMax?.value) >= parseFloat(filters.Amount) ||
+                        // @ts-expect-error
+                        parseFloat(element?.TakerGets?.value) >= parseFloat(filters.Amount) ||
+                        // @ts-expect-error
+                        parseFloat(element?.TakerPays?.value) >= parseFloat(filters.Amount)
                     );
                 }
                 return (
-                    parseFloat(get(t, 'Amount.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'DeliverMin.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'SendMax.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'TakerGets.value')) <= parseFloat(filters.Amount) ||
-                    parseFloat(get(t, 'TakerPays.value')) <= parseFloat(filters.Amount)
+                    // @ts-expect-error
+                    parseFloat(element?.Amount?.value) <= parseFloat(filters.Amount) ||
+                    // @ts-expect-error
+                    parseFloat(element?.DeliverMin?.value) <= parseFloat(filters.Amount) ||
+                    // @ts-expect-error
+                    parseFloat(element?.SendMax?.value) <= parseFloat(filters.Amount) ||
+                    // @ts-expect-error
+                    parseFloat(element?.TakerGets?.value) <= parseFloat(filters.Amount) ||
+                    // @ts-expect-error
+                    parseFloat(element?.TakerPays?.value) <= parseFloat(filters.Amount)
                 );
             });
         }
 
         if (filters.Currency) {
-            newTransactions = filter(newTransactions, (t) => {
-                return (
-                    get(t, 'Amount.currency') === filters.Currency ||
-                    get(t, 'DeliverMin.currency') === filters.Currency ||
-                    get(t, 'SendMax.currency') === filters.Currency ||
-                    get(t, 'TakerGets.currency') === filters.Currency ||
-                    get(t, 'TakerPays.currency') === filters.Currency
-                );
-            });
+            newTransactions = newTransactions.filter(
+                (element) =>
+                    // @ts-expect-error
+                    element?.Amount?.currency === filters.Currency ||
+                    // @ts-expect-error
+                    element?.DeliverMin?.currency === filters.Currency ||
+                    // @ts-expect-error
+                    element?.SendMax?.currency === filters.Currency ||
+                    // @ts-expect-error
+                    element?.TakerGets?.currency === filters.Currency ||
+                    // @ts-expect-error
+                    element?.TakerPays?.currency === filters.Currency,
+            );
         }
 
         if (filters.ExpenseType) {
-            newTransactions = filter(newTransactions, (t) => {
+            newTransactions = newTransactions.filter((element) => {
                 if (filters.ExpenseType === 'Income') {
-                    return get(t, 'Destination.address') === account.address;
+                    // @ts-expect-error
+                    return element?.Destination?.address === account.address;
                 }
-                return get(t, 'Destination.address') !== account.address;
+                // @ts-expect-error
+                return element?.Destination?.address !== account.address;
             });
         }
 

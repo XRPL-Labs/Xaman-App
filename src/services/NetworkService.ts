@@ -64,11 +64,11 @@ declare interface NetworkService {
 }
 /* Service  ==================================================================== */
 class NetworkService extends EventEmitter {
-    public network: NetworkModel;
-    public connection: XrplClient;
+    public network?: NetworkModel;
+    public connection?: XrplClient;
     private status: NetworkStateStatus;
     private networkReserve: any;
-    private lastNetworkErrorId: Realm.BSON.ObjectId;
+    private lastNetworkErrorId?: Realm.BSON.ObjectId;
 
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
@@ -231,7 +231,7 @@ class NetworkService extends EventEmitter {
      * @returns {string}
      */
     getNativeAsset = (): string => {
-        return this.network.nativeAsset.asset;
+        return this.getNetwork().nativeAsset.asset;
     };
 
     /**
@@ -240,8 +240,8 @@ class NetworkService extends EventEmitter {
      */
     getNativeAssetIcons = (): { currency: string; asset: string } => {
         return {
-            currency: this.network.nativeAsset.icon,
-            asset: this.network.nativeAsset.iconSquare,
+            currency: this.getNetwork().nativeAsset.icon,
+            asset: this.getNetwork().nativeAsset.iconSquare,
         };
     };
 
@@ -250,7 +250,7 @@ class NetworkService extends EventEmitter {
      * @returns {number}
      */
     getNetworkId = (): number => {
-        return this.network.networkId;
+        return this.getNetwork().networkId;
     };
 
     /**
@@ -258,6 +258,9 @@ class NetworkService extends EventEmitter {
      * @returns {NetworkModel}
      */
     getNetwork = (): NetworkModel => {
+        if (!this.network) {
+            throw new Error('Network instance is not initiated in the NetworkService class!');
+        }
         return this.network;
     };
 
@@ -265,8 +268,8 @@ class NetworkService extends EventEmitter {
      * Get current network definitions
      */
     getNetworkDefinitions = (): XrplDefinitions => {
-        if (this.network && this.network.definitions) {
-            return new XrplDefinitions(<DefinitionsData>this.network.definitions);
+        if (this.network && this.getNetwork().definitions) {
+            return new XrplDefinitions(<DefinitionsData>this.getNetwork().definitions);
         }
 
         return new XrplDefinitions(binary.DEFAULT_DEFINITIONS);
@@ -300,7 +303,7 @@ class NetworkService extends EventEmitter {
             try {
                 const resp = await this.send<FeeRequest, FeeResponse>({
                     command: 'fee',
-                    tx_blob: PrepareTxForHookFee(txJson, this.network.definitions),
+                    tx_blob: PrepareTxForHookFee(txJson, this.getNetwork().definitions),
                 });
 
                 if ('error' in resp) {
@@ -321,10 +324,10 @@ class NetworkService extends EventEmitter {
      */
     getConnectionDetails = (): { networkId: number; networkKey: string; node: string; type: NetworkType } => {
         return {
-            networkKey: this.network.key,
-            networkId: this.network.networkId,
-            node: this.network.defaultNode.endpoint,
-            type: this.network.type,
+            networkKey: this.getNetwork().key,
+            networkId: this.getNetwork().networkId,
+            node: this.getNetwork().defaultNode.endpoint,
+            type: this.getNetwork().type,
         };
     };
 
@@ -336,7 +339,7 @@ class NetworkService extends EventEmitter {
         return new Promise((resolve, reject) => {
             try {
                 // nothing has been changed
-                if (network.id.equals(this.network.id) && network.defaultNode === this.network.defaultNode) {
+                if (network.id.equals(this.getNetwork().id) && network.defaultNode === this.getNetwork().defaultNode) {
                     return;
                 }
 
@@ -451,6 +454,11 @@ class NetworkService extends EventEmitter {
      * @todo refining the error handling to distinguish between network issues and ID mismatches.
      */
     send = async <T extends Request, U extends Response>(payload: T): Promise<U | ErrorResponse> => {
+        // check if connection is initiated
+        if (!this.connection) {
+            throw new Error('connection instance is not initiated in NetworkService class.');
+        }
+
         const payloadWithNetworkId = {
             ...payload,
             id: `${payload.id || uuidv4()}.${this.network?.id.toHexString()}`,
@@ -466,7 +474,7 @@ class NetworkService extends EventEmitter {
             throw new Error('Mismatched network ID in response.');
         }
 
-        return { ...res, id: resId, __networkId: this.network.networkId } as U;
+        return { ...res, id: resId, __networkId: this.getNetwork().networkId } as U;
     };
 
     /**
@@ -481,8 +489,8 @@ class NetworkService extends EventEmitter {
 
             let definitionsHash = '';
 
-            if (this.network.definitions) {
-                definitionsHash = this.network.definitions.hash as string;
+            if (this.getNetwork().definitions) {
+                definitionsHash = this.getNetwork().definitions?.hash as string;
                 Object.assign(request, { hash: definitionsHash });
             }
 
@@ -528,10 +536,10 @@ class NetworkService extends EventEmitter {
                 }
             }
 
-            this.logger.debug(`Updating network [${this.network.networkId}] definitions ${definitionsResp.hash} `);
+            this.logger.debug(`Updating network [${this.getNetwork().networkId}] definitions ${definitionsResp.hash} `);
 
             NetworkRepository.update({
-                id: this.network.id,
+                id: this.getNetwork().id,
                 definitionsString: JSON.stringify(definitions),
             });
         } catch (error: any) {
@@ -555,7 +563,7 @@ class NetworkService extends EventEmitter {
 
                 // persist the details
                 NetworkRepository.update({
-                    id: this.network.id,
+                    id: this.getNetwork().id,
                     amendments: resp.node.Amendments,
                 });
             })
@@ -590,7 +598,7 @@ class NetworkService extends EventEmitter {
 
                     // persist new network base/owner reserve
                     NetworkRepository.update({
-                        id: this.network.id,
+                        id: this.getNetwork().id,
                         baseReserve: reserve_base_xrp,
                         ownerReserve: reserve_inc_xrp,
                     });
@@ -610,9 +618,9 @@ class NetworkService extends EventEmitter {
         this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
         // show error if necessary
-        if (!this.network?.id.equals(this.lastNetworkErrorId)) {
+        if (!this.lastNetworkErrorId || !this.network?.id.equals(this.lastNetworkErrorId)) {
             this.showConnectionProblem();
-            this.lastNetworkErrorId = this.network.id;
+            this.lastNetworkErrorId = this.getNetwork().id;
         }
 
         this.logger.error('Socket Error: ', error || 'Tried all nodes!');
@@ -623,7 +631,7 @@ class NetworkService extends EventEmitter {
      */
     onConnect = () => {
         // fetch connected node from connection
-        const { uri, publicKey } = this.connection.getState().server;
+        const { uri, publicKey } = this.connection!.getState().server;
 
         let connectedNode = uri;
 
@@ -647,7 +655,7 @@ class NetworkService extends EventEmitter {
         [this.updateNetworkReserve, this.updateNetworkDefinitions, this.updateNetworkFeatures].forEach((fn) => fn());
 
         // emit on connect event
-        this.emit('connect', this.network);
+        this.emit('connect', this.getNetwork());
     };
 
     /**
@@ -678,10 +686,10 @@ class NetworkService extends EventEmitter {
         this.setConnectionStatus(NetworkStateStatus.Connecting);
 
         // get default node for selected network
-        const { defaultNode } = this.network;
+        const { defaultNode } = this.getNetwork();
 
-        const nodes = this.network.nodes
-            .toJSON()
+        const nodes = this.getNetwork()
+            .nodes.toJSON()
             .sort((x, y) => {
                 return x.endpoint === defaultNode.endpoint ? -1 : y.endpoint === defaultNode.endpoint ? 1 : 0;
             })

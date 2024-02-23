@@ -40,8 +40,8 @@ export interface State {
 class SelectCurrencyOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectCurrency;
 
-    private actionPanel: ActionPanel;
-    private searchBar: SearchBar;
+    private actionPanelRef: React.RefObject<ActionPanel>;
+    private searchBarRef: React.RefObject<SearchBar>;
 
     static options() {
         return {
@@ -61,6 +61,9 @@ class SelectCurrencyOverlay extends Component<Props, State> {
         this.state = {
             dataSource: props.currencies,
         };
+
+        this.actionPanelRef = React.createRef();
+        this.searchBarRef = React.createRef();
     }
 
     onSelect = (currency: TrustLineModel | string) => {
@@ -70,9 +73,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
             onSelect(currency);
         }
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
     };
 
     onClose = () => {
@@ -114,9 +115,11 @@ class SelectCurrencyOverlay extends Component<Props, State> {
     };
 
     setDefaultDataSource = () => {
-        if (this.searchBar) {
-            this.searchBar.clearText();
-        }
+        this.searchBarRef?.current?.clearText();
+    };
+
+    onCancelPress = () => {
+        this.actionPanelRef?.current?.slideDown();
     };
 
     renderItem = ({ item, index }: { item: TrustLineModel | string; index: number }) => {
@@ -155,12 +158,10 @@ class SelectCurrencyOverlay extends Component<Props, State> {
     renderListHeaderComponent = () => {
         return (
             <SearchBar
-                ref={(r) => {
-                    this.searchBar = r;
-                }}
+                ref={this.searchBarRef}
                 onChangeText={this.onFilter}
-                placeholder="Search tokens"
-                containerStyle={[styles.searchContainer]}
+                placeholder={Localize.t('global.searchTokens')}
+                containerStyle={styles.searchContainer}
             />
         );
     };
@@ -172,13 +173,13 @@ class SelectCurrencyOverlay extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
                     </View>
-                    <View style={[AppStyles.flex1]}>
+                    <View style={AppStyles.flex1}>
                         <Button
                             onPress={this.setDefaultDataSource}
                             style={styles.clearSearchButton}
+                            label={Localize.t('global.clearSearch')}
                             light
                             roundedSmall
-                            label={Localize.t('global.clearSearch')}
                         />
                     </View>
                 </View>
@@ -196,9 +197,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
             <ActionPanel
                 height={AppSizes.heightPercentageToDP(90)}
                 onSlideDown={this.onClose}
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -212,9 +211,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                this.actionPanel?.slideDown();
-                            }}
+                            onPress={this.onCancelPress}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />

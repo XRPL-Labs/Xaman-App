@@ -34,7 +34,7 @@ interface State {
     account: AccountModel;
     tokens: TrustLineModel[];
     dataSource: TrustLineModel[];
-    filters: FiltersType;
+    filters?: FiltersType;
     reorderEnabled: boolean;
 }
 
@@ -46,7 +46,7 @@ class TokensList extends Component<Props, State> {
         super(props);
 
         const { account } = props;
-        const tokens = account.lines.sorted([['order', false]]);
+        const tokens = (account.lines?.sorted([['order', false]]) as TrustLineModel[] | undefined) ?? [];
 
         this.state = {
             accountStateVersion: account.getStateVersion(),
@@ -85,7 +85,7 @@ class TokensList extends Component<Props, State> {
         );
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         // calculate account state version
         const accountStateVersion = nextProps.account.getStateVersion();
 
@@ -111,7 +111,7 @@ class TokensList extends Component<Props, State> {
             const { filters, reorderEnabled } = filtersState;
 
             // update tokens and dataSource
-            const tokens = nextProps.account.lines.sorted([['order', false]]);
+            const tokens = nextProps.account.lines?.sorted([['order', false]]) as TrustLineModel[] | undefined;
             let dataSource = filters ? TokensList.getFilteredList(tokens, filters) : tokens;
 
             // if reorder already enabled, keep the sorting in the dataSource and update the list
@@ -131,9 +131,9 @@ class TokensList extends Component<Props, State> {
         return null;
     }
 
-    static getFilteredList = (tokens: TrustLineModel[], filters: FiltersType): TrustLineModel[] => {
+    static getFilteredList = (tokens: TrustLineModel[] | undefined, filters: FiltersType): TrustLineModel[] => {
         if (!filters) {
-            return tokens;
+            return tokens ?? [];
         }
 
         // destruct filter variables
@@ -167,7 +167,7 @@ class TokensList extends Component<Props, State> {
             filtered = filter(filtered, { favorite: true });
         }
 
-        return filtered;
+        return filtered ?? [];
     };
 
     onTrustLineUpdate = (updatedToken: TrustLineModel, changes: Partial<TrustLineModel>) => {
@@ -269,7 +269,7 @@ class TokensList extends Component<Props, State> {
         this.toggleReordering();
     };
 
-    onFilterChange = (filters: FiltersType) => {
+    onFilterChange = (filters?: FiltersType) => {
         const { tokens } = this.state;
 
         // return if no token

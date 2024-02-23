@@ -362,7 +362,8 @@
     "stillWorkingOnIt": "準備中",
     "doNotCloseTheApp": "Xamanを閉じないでください\r\nデバイスをロックしないでください",
     "switchNetwork": "ネットワークの切り替え",
-    "theme": "テーマ"
+    "theme": "テーマ",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "XRPレジャーでの\r\n支払いと\r\n支払いリクエスト",
@@ -659,7 +660,7 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "このオファーは、%{address}のみが受け入れることができます。",
     "theTransactionWillCancelURITokenOffer": "このトランザクションでは、%{address}のURIトークン(%{tokenId})の売却オファーはキャンセルされます。",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
@@ -1056,7 +1057,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xamanは、いかなるトークンやトークン発行者も推奨していません。トークン発行者を信頼する場合にのみ手続きを行ってください。\r\nトークン（TrustLine）に関する質問や問題が発生した場合には、トークン発行者に連絡する必要があります。\r\n\r\nご自身のリスクでお進みください。",
     "trustLineIsAlreadyExist": "このトークンはすでに存在しています。同じトークンを追加することはできません。",
     "issuerAddressCopiedToClipboard": "発行者アドレスがクリップボードへコピーされました",
-    "unableToLoadListOfTokens": "トークンのリストを取得できません!"
+    "unableToLoadListOfTokens": "トークンのリストを取得できません!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "両替中",

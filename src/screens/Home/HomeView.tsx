@@ -47,7 +47,8 @@ export interface State {
 /* Component ==================================================================== */
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
-    private navigationListener: EventSubscription;
+
+    private navigationListener: EventSubscription | undefined;
 
     static options() {
         return {

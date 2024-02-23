@@ -47,8 +47,8 @@ export interface State {
     accounts: Realm.Results<AccountModel>;
     contacts: Realm.Results<ContactModel>;
     dataSource: any[];
-    destination: Destination;
-    destinationInfo: AccountInfoType;
+    destination?: Destination;
+    destinationInfo?: AccountInfoType;
 }
 /* Component ==================================================================== */
 class DestinationPicker extends Component<Props, State> {
@@ -56,7 +56,7 @@ class DestinationPicker extends Component<Props, State> {
 
     private lookupTimeout: any;
     private sequence: number;
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
 
     constructor(props: Props) {
         super(props);
@@ -333,7 +333,7 @@ class DestinationPicker extends Component<Props, State> {
         const { onSelect } = this.props;
 
         if (typeof onSelect === 'function') {
-            onSelect(destination, destinationInfo);
+            onSelect(destination!, destinationInfo!);
         }
 
         Navigator.dismissModal();
@@ -356,7 +356,7 @@ class DestinationPicker extends Component<Props, State> {
             buttonType: 'next',
             destination,
             onFinish: (destinationTag: string) => {
-                Object.assign(destination, { tag: destinationTag });
+                Object.assign(destination!, { tag: destinationTag });
                 this.setState(
                     {
                         destination,
@@ -365,7 +365,7 @@ class DestinationPicker extends Component<Props, State> {
                 );
             },
             onScannerRead: ({ tag }: { tag: number }) => {
-                Object.assign(destination, { tag: String(tag) });
+                Object.assign(destination!, { tag: String(tag) });
                 this.setState(
                     {
                         destination,
@@ -391,6 +391,11 @@ class DestinationPicker extends Component<Props, State> {
         this.setState({
             isLoading: true,
         });
+
+        if (!destination) {
+            // ignore
+            return;
+        }
 
         try {
             // check for account exist and potential destination tag required
@@ -523,16 +528,18 @@ class DestinationPicker extends Component<Props, State> {
                 address={item.address}
                 tag={item.tag}
                 info={{
+                    address: item.address,
+                    tag: item.tag,
                     name: item.name,
                     source: item.source,
                 }}
-                containerStyle={selected && styles.accountElementSelected}
-                textStyle={selected && styles.accountElementSelectedText}
+                containerStyle={selected ? styles.accountElementSelected : {}}
+                textStyle={selected ? styles.accountElementSelectedText : {}}
                 visibleElements={{
                     tag: false,
                     avatar: true,
                     source: true,
-                    button: false,
+                    menu: false,
                 }}
                 onPress={() => {
                     if (!selected) {
@@ -592,9 +599,9 @@ class DestinationPicker extends Component<Props, State> {
                             containerStyle={styles.inputContainer}
                             onChangeText={this.onSearch}
                             value={searchText}
-                            showScanner
                             scannerType={StringType.XrplDestination}
                             onScannerRead={this.onScannerRead}
+                            showScanner
                         />
                     </View>
 

@@ -172,7 +172,7 @@ describe('NavigationService', () => {
         navigationService.modalDismissedListener({
             componentId: AppScreens.Modal.DestinationPicker,
             componentName: '',
-            modalsDismissed: undefined,
+            modalsDismissed: 1,
         });
 
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.XAppBrowser);
@@ -180,11 +180,13 @@ describe('NavigationService', () => {
 
     it('should remove overlay from history list when dismissed', () => {
         navigationService.setCurrentOverlay(AppScreens.Overlay.Lock);
-        navigationService.setCurrentOverlay(AppScreens.Overlay.RecipientMenu);
+        navigationService.setCurrentOverlay(AppScreens.Overlay.ParticipantMenu);
 
-        expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.RecipientMenu);
+        expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.ParticipantMenu);
 
-        navigationService.navigatorCommandListener('dismissOverlay', { componentId: AppScreens.Overlay.RecipientMenu });
+        navigationService.navigatorCommandListener('dismissOverlay', {
+            componentId: AppScreens.Overlay.ParticipantMenu,
+        });
 
         expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.Lock);
     });

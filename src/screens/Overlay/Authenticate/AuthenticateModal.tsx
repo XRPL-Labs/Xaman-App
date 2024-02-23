@@ -56,8 +56,8 @@ class AuthenticateModal extends Component<Props, State> {
     private securePinInputRef: React.RefObject<SecurePinInput>;
 
     private animatedColor: Animated.Value;
-    private backHandler: NativeEventSubscription;
-    private mounted: boolean;
+    private backHandler: NativeEventSubscription | undefined;
+    private mounted = false;
 
     static options() {
         return {

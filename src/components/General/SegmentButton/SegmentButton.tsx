@@ -12,14 +12,16 @@ interface State {
 
 interface Props {
     buttons: Array<string>;
-    selectedIndex?: number;
+    selectedIndex: number;
     containerStyle?: ViewStyle | ViewStyle[];
     onPress: (index: number) => void;
 }
 
 /* Component ==================================================================== */
 class SegmentButton extends PureComponent<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SegmentButton.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         selectedIndex: 0,
     };
 
@@ -32,7 +34,7 @@ class SegmentButton extends PureComponent<Props, State> {
         };
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         if (prevState.ownUpdate) {
             return {
                 ownUpdate: false,
@@ -75,7 +77,7 @@ class SegmentButton extends PureComponent<Props, State> {
                         contrast={selectedIndex === i}
                         label={button}
                         style={styles.button}
-                        textStyle={[styles.buttonText, selectedIndex === i && styles.buttonTextSelected]}
+                        textStyle={[styles.buttonText, selectedIndex === i ? styles.buttonTextSelected : {}]}
                         // eslint-disable-next-line react/jsx-no-bind
                         onPress={this.onButtonPress.bind(null, i)}
                     />

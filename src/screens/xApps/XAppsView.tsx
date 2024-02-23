@@ -38,7 +38,6 @@ export interface State {
     categories: any;
     dataSource: any;
     isLoading: boolean;
-    // isError: boolean;
     searchEnabled: boolean;
 }
 
@@ -68,7 +67,6 @@ class XAppsView extends Component<Props, State> {
             dataSource: Array(8).fill(undefined),
             searchEnabled: false,
             isLoading: false,
-            // isError: false,
         };
 
         this.searchBarRef = React.createRef();
@@ -170,11 +168,12 @@ class XAppsView extends Component<Props, State> {
                 category = 'all';
                 break;
             default:
+                category = 'all';
                 break;
         }
 
         this.setState({
-            dataSource: get(categories, category),
+            dataSource: get(categories, category, undefined),
             selectedCategory: category,
             selectedCategoryIndex: categoryIndex,
         });

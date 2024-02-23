@@ -40,22 +40,22 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     </Text>
                 </View>
                 <AccountElement
-                    address={transaction.Destination.address}
-                    tag={transaction.Destination.tag}
+                    address={transaction.Destination}
+                    tag={transaction.DestinationTag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                 <View style={styles.contentBox}>
                     <AmountText
-                        value={transaction.Amount.value}
-                        currency={transaction.Amount.currency}
+                        value={transaction.Amount!.value}
+                        currency={transaction.Amount!.currency}
                         style={styles.amount}
                         immutable
                     />
                 </View>
 
-                {transaction.FinishAfter && (
+                {typeof transaction.FinishAfter !== 'undefined' && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.finishAfter')}</Text>
                         <View style={styles.contentBox}>
@@ -64,7 +64,7 @@ class EscrowCreateTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.CancelAfter && (
+                {typeof transaction.CancelAfter !== 'undefined' && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.cancelAfter')}</Text>
                         <View style={styles.contentBox}>

@@ -1,0 +1,15 @@
+{
+  "tx": {
+    "TransactionType" : "AMMCreate",
+    "Account" : "rJVUeRqDFNs2xqA7ncVE6ZoAhPUoaJJSQm",
+    "Amount" : {
+      "currency" : "TST",
+      "issuer" : "rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd",
+      "value" : "25"
+    },
+    "Amount2" : "250000000",
+    "TradingFee" : 500,
+    "Flags" : 2147483648
+  },
+  "meta": {}
+}

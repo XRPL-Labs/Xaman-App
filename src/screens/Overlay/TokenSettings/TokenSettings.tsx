@@ -16,8 +16,6 @@ import { Payload, XAppOrigin } from '@common/libs/payload';
 import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
-
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -45,6 +43,7 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -80,7 +79,7 @@ class TokenSettingsModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isFavorite: props.trustLine.favorite,
+            isFavorite: !!props.trustLine.favorite,
             hasXAppIdentifier: !!props.trustLine.currency.xapp_identifier,
             isRemoving: false,
             isLoading: false,
@@ -178,7 +177,7 @@ class TokenSettingsModal extends Component<Props, State> {
                 isRemoving: true,
             });
 
-            const payment = new Payment({
+            const paymentJson = {
                 TransactionType: TransactionTypes.Payment,
                 Account: account.address,
                 Destination: trustLine.currency.issuer,
@@ -188,16 +187,19 @@ class TokenSettingsModal extends Component<Props, State> {
                     issuer: trustLine.currency.issuer,
                     value: String(latestLineBalance),
                 },
-            });
+            };
 
             // add PartialPayment flag if issuer have transferFee
             const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.currency.issuer);
             // eslint-disable-next-line max-len
             if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
-                payment.Flags = [txFlags.Payment.PartialPayment];
+                Object.assign(paymentJson, {
+                    Flags: 131072, // PartialPayment Flag
+                });
             }
 
-            const payload = Payload.build(payment.Json);
+            // TODO: test me
+            const payload = Payload.build(paymentJson);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {
@@ -233,7 +235,7 @@ class TokenSettingsModal extends Component<Props, State> {
         }
     };
 
-    onClearDustResolve = (transaction: Payment) => {
+    onClearDustResolve = (transaction: Payment & MutationsMixinType & SignMixinType) => {
         this.setState({
             isRemoving: false,
             isReviewScreenVisible: false,
@@ -376,7 +378,7 @@ class TokenSettingsModal extends Component<Props, State> {
         );
     };
 
-    onRemoveLineResolve = (transaction: TrustSet) => {
+    onRemoveLineResolve = (transaction: TrustSet & MutationsMixinType & SignMixinType) => {
         this.setState(
             {
                 isRemoving: false,
@@ -507,7 +509,7 @@ class TokenSettingsModal extends Component<Props, State> {
     disableRippling = async () => {
         const { account, trustLine } = this.props;
 
-        const trustSet = new TrustSet({
+        const trustSetJson = {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
@@ -516,9 +518,9 @@ class TokenSettingsModal extends Component<Props, State> {
                 value: trustLine.limit,
             },
             Flags: 131072, // tfSetNoRipple
-        });
+        };
 
-        const payload = Payload.build(trustSet.Json);
+        const payload = Payload.build(trustSetJson);
 
         await this.dismiss();
 
@@ -556,7 +558,7 @@ class TokenSettingsModal extends Component<Props, State> {
             });
         }
 
-        const trustSet = new TrustSet({
+        const trustSetJson = {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
@@ -565,9 +567,9 @@ class TokenSettingsModal extends Component<Props, State> {
                 value: lineLimit,
             },
             Flags: 131072, // tfSetNoRipple
-        });
+        };
 
-        const payload = Payload.build(trustSet.Json);
+        const payload = Payload.build(trustSetJson);
 
         await this.dismiss();
 

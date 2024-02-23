@@ -59,7 +59,7 @@ const screens = {
         ExplainBalance: 'overlay.ExplainBalance',
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
-        RecipientMenu: 'overlay.RecipientMenu',
+        ParticipantMenu: 'overlay.ParticipantMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
         SelectCurrency: 'overlay.SelectCurrency',

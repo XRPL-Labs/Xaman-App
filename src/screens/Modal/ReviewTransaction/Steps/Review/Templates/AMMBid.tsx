@@ -43,8 +43,8 @@ class AMMBidTemplate extends Component<Props, State> {
 
         return transaction.AuthAccounts.map((item) => {
             return (
-                <View key={item.account}>
-                    <AccountElement address={item.account} />
+                <View key={item.Account}>
+                    <AccountElement address={item.Account} />
                 </View>
             );
         });

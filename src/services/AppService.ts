@@ -48,7 +48,7 @@ declare interface AppService {
 /* Service  ==================================================================== */
 class AppService extends EventEmitter {
     netStatus: NetStateStatus;
-    prevAppState: AppStateStatus;
+    prevAppState?: AppStateStatus;
     currentAppState: AppStateStatus;
     private inactivityTimeout: any;
     private logger: LoggerInstance;
@@ -166,14 +166,14 @@ class AppService extends EventEmitter {
         return new Promise<void>((resolve) => {
             NetInfo.fetch()
                 .then((state) => {
-                    this.setNetState(state.isConnected);
+                    this.setNetState(state.isConnected ?? false);
                 })
                 .finally(() => {
                     resolve();
                 });
 
             NetInfo.addEventListener((state) => {
-                this.setNetState(state.isConnected);
+                this.setNetState(state.isConnected ?? false);
             });
         });
     };

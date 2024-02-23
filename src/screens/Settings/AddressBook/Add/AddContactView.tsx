@@ -2,6 +2,7 @@
  * Add Contact Screen
  */
 import { v4 as uuidv4 } from 'uuid';
+import { toString } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, Alert, Keyboard } from 'react-native';
@@ -34,10 +35,10 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    address: string;
-    name: string;
-    tag: string;
-    xAddress: string;
+    address?: string;
+    name?: string;
+    tag?: string;
+    xAddress?: string;
 }
 
 /* Component ==================================================================== */
@@ -56,7 +57,7 @@ class AddContactView extends Component<Props, State> {
         this.state = {
             isLoading: false,
             address: props.address,
-            tag: props.tag && props.tag.toString(),
+            tag: typeof props.tag !== 'undefined' ? toString(props.tag) : undefined,
             name: props.name,
             xAddress: undefined,
         };
@@ -74,7 +75,7 @@ class AddContactView extends Component<Props, State> {
             this.setState({
                 xAddress,
                 address: to,
-                tag: tag && tag.toString(),
+                tag: tag ? toString(tag) : undefined,
                 name: name || accountInfo.name,
             });
         }
@@ -89,7 +90,13 @@ class AddContactView extends Component<Props, State> {
             // if payId try to resolve
             if (result.payId) {
                 const payIdInfo = await getPayIdInfo(result.payId);
-                await this.doNameLookup({ to: payIdInfo.account, tag: payIdInfo.tag && Number(payIdInfo.tag) });
+
+                if (payIdInfo) {
+                    await this.doNameLookup({
+                        to: payIdInfo.account,
+                        tag: payIdInfo.tag ? Number(payIdInfo.tag) : undefined,
+                    });
+                }
             } else {
                 await this.doNameLookup(result);
             }
@@ -107,6 +114,12 @@ class AddContactView extends Component<Props, State> {
 
         if (!name) {
             Alert.alert(Localize.t('settings.enterName'));
+            return;
+        }
+
+        // save button should be disabled, but double check
+        if (!address) {
+            Alert.alert('Address is required!');
             return;
         }
 
@@ -164,7 +177,7 @@ class AddContactView extends Component<Props, State> {
         }
     };
 
-    onAddressChange = (text: string) => {
+    onAddressChange = (text: string): void => {
         const address = text.replace(/[^a-z0-9]/gi, '');
         // decode if it's x address
         if (address && address.startsWith('X')) {
@@ -173,7 +186,7 @@ class AddContactView extends Component<Props, State> {
                 if (decoded) {
                     this.setState({
                         address: decoded.classicAddress,
-                        tag: decoded.tag && decoded.tag.toString(),
+                        tag: decoded.tag ? toString(decoded.tag) : undefined,
                         xAddress: address,
                     });
                 }

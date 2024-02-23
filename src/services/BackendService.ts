@@ -116,7 +116,7 @@ class BackendService {
             // update the list
             const updatedParties = await reduce(
                 details,
-                async (result, value) => {
+                async (result: Promise<number[]>, value) => {
                     const currenciesList = [] as CurrencyModel[];
 
                     await Promise.all(
@@ -273,7 +273,7 @@ class BackendService {
                     // check for tos version
                     const profile = ProfileRepository.getProfile();
 
-                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                    if (profile && profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
                         // show the modal to check new policy and confirm new agreement
                         Navigator.showModal(
                             AppScreens.Settings.TermOfUse,
@@ -486,7 +486,7 @@ class BackendService {
                                 const { node } = resp;
                                 if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer) {
                                     // combine ledger time with the object
-                                    return Object.assign(resp.node, {
+                                    return Object.assign(node, {
                                         LedgerTime: get(offer, 'ledger_close_time'),
                                     });
                                 }
@@ -544,11 +544,11 @@ class BackendService {
             // check the cached version before requesting from backend
             if (this.rates.has(cacheKey)) {
                 // calculate passed seconds from the latest sync
-                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey).lastSync), 'second');
+                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey)!.lastSync), 'second');
 
                 // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.rates.get(cacheKey));
+                    resolve(this.rates.get(cacheKey)!);
                     return;
                 }
             }

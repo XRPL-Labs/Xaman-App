@@ -24,7 +24,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    amount: string;
+    amount?: string;
     currencyName: string;
     editableAmount: boolean;
 }
@@ -56,8 +56,10 @@ class CheckCreateTemplate extends Component<Props, State> {
 
         if (amount) {
             if (!transaction.SendMax || transaction.SendMax.currency === NetworkService.getNativeAsset()) {
-                // @ts-ignore
-                transaction.SendMax = amount;
+                transaction.SendMax = {
+                    currency: NetworkService.getNativeAsset(),
+                    value: amount,
+                };
             } else {
                 transaction.SendMax = {
                     ...transaction.SendMax,
@@ -67,9 +69,14 @@ class CheckCreateTemplate extends Component<Props, State> {
         }
     };
 
+    focusAmountInput = () => {
+        this.amountInput.current?.focus();
+    };
+
     render() {
         const { transaction } = this.props;
         const { editableAmount, currencyName, amount } = this.state;
+
         return (
             <>
                 <View style={styles.label}>
@@ -79,23 +86,15 @@ class CheckCreateTemplate extends Component<Props, State> {
                 </View>
 
                 <AccountElement
-                    address={transaction.Destination.address}
-                    tag={transaction.Destination.tag}
+                    address={transaction.Destination}
+                    tag={transaction.DestinationTag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
                 {/* Amount */}
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                 <View style={styles.contentBox}>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={AppStyles.row}
-                        onPress={() => {
-                            if (editableAmount && this.amountInput) {
-                                this.amountInput.current?.focus();
-                            }
-                        }}
-                    >
+                    <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.focusAmountInput}>
                         <View style={[AppStyles.row, AppStyles.flex1]}>
                             <AmountInput
                                 ref={this.amountInput}
@@ -114,11 +113,7 @@ class CheckCreateTemplate extends Component<Props, State> {
                         </View>
                         {editableAmount && (
                             <Button
-                                onPress={() => {
-                                    if (this.amountInput) {
-                                        this.amountInput.current?.focus();
-                                    }
-                                }}
+                                onPress={this.focusAmountInput}
                                 style={styles.editButton}
                                 light
                                 roundedSmall

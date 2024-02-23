@@ -39,7 +39,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     requiredSwitchNetwork: boolean;
-    requiredNetwork: NetworkModel;
+    requiredNetwork?: NetworkModel;
     error: boolean;
 }
 
@@ -130,9 +130,8 @@ class TransactionLoaderModal extends Component<Props, State> {
                 return;
             }
 
-            // cleanup
-            delete resp.meta;
             // eslint-disable-next-line no-underscore-dangle
+            // @ts-ignore
             delete resp.__replyMs;
             // eslint-disable-next-line no-underscore-dangle
             delete resp.__command;
@@ -156,7 +155,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             // redirect to details screen with a little-bit delay
             setTimeout(() => {
                 Navigator.showModal(AppScreens.Transaction.Details, {
-                    tx: transactionInstance,
+                    item: transactionInstance,
                     account,
                     asModal: true,
                 });
@@ -174,6 +173,11 @@ class TransactionLoaderModal extends Component<Props, State> {
 
     onSwitchNetworkPress = async () => {
         const { requiredNetwork } = this.state;
+
+        // double check
+        if (!requiredNetwork) {
+            return;
+        }
 
         // switch to the desired network
         await NetworkService.switchNetwork(requiredNetwork);
@@ -193,7 +197,7 @@ class TransactionLoaderModal extends Component<Props, State> {
 
         // only enable network switch if developer mode is on
         let ShouldShowSwitchButton = true;
-        if (requiredNetwork.type !== NetworkType.Main && !coreSettings.developerMode) {
+        if (requiredNetwork?.type !== NetworkType.Main && !coreSettings.developerMode) {
             ShouldShowSwitchButton = false;
         }
 
@@ -204,7 +208,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             const connectedNetwork = NetworkService.getNetwork();
             switchNetworkWarning = Localize.t('settings.networkChangeAccountDetailsWarning', {
                 from: `"${connectedNetwork.name}"`,
-                to: `"${requiredNetwork.name}`,
+                to: `"${requiredNetwork?.name}`,
             });
         }
 
@@ -215,7 +219,7 @@ class TransactionLoaderModal extends Component<Props, State> {
                 <InfoMessage
                     type="neutral"
                     label={`${Localize.t('events.transactionDetailsDifferentNetworkError', {
-                        network: `"${requiredNetwork.name}"`,
+                        network: `"${requiredNetwork?.name}"`,
                     })}\n\n${switchNetworkWarning}\n`}
                     hideActionButton={!ShouldShowSwitchButton}
                     actionButtonLabel={Localize.t('global.switchNetwork')}

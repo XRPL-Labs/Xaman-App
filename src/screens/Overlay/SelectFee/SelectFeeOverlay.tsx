@@ -39,7 +39,7 @@ interface State {
 class SelectFeeOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectFee;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -59,6 +59,8 @@ class SelectFeeOverlay extends Component<Props, State> {
         this.state = {
             selected: props.selectedFee,
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     onItemSelect = (item: FeeItem) => {
@@ -71,15 +73,17 @@ class SelectFeeOverlay extends Component<Props, State> {
         const { onSelect } = this.props;
         const { selected } = this.state;
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
             if (typeof onSelect === 'function') {
                 onSelect(selected);
             }
         }, 200);
+    };
+
+    onClosePress = () => {
+        this.actionPanelRef?.current?.slideDown();
     };
 
     render() {
@@ -92,9 +96,7 @@ class SelectFeeOverlay extends Component<Props, State> {
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={AppStyles.centerAligned}
                 extraBottomInset
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -107,9 +109,7 @@ class SelectFeeOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                this.actionPanel?.slideDown();
-                            }}
+                            onPress={this.onClosePress}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.close')}
                         />

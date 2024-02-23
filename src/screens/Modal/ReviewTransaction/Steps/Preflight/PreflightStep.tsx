@@ -41,7 +41,7 @@ enum RequiredActionsType {
 export interface Props {}
 
 export interface State {
-    requiredAction: RequiredActionsType;
+    requiredAction?: RequiredActionsType;
     requiredActionData: any;
 }
 
@@ -215,8 +215,8 @@ class PreflightStep extends Component<Props, State> {
                 }
 
                 // choose preferred account for sign
-                let preferredAccount = undefined as AccountModel;
-                let source = undefined as AccountModel;
+                let preferredAccount: AccountModel | undefined;
+                let source: AccountModel | undefined;
 
                 // check for enforced signer accounts
                 const forcedSigners = payload.getSigners();
@@ -237,8 +237,8 @@ class PreflightStep extends Component<Props, State> {
                 }
 
                 // if any account set from payload, set as preferred account
-                if (transaction.Account) {
-                    preferredAccount = find(availableAccounts, { address: transaction.Account.address });
+                if (transaction && transaction.Account) {
+                    preferredAccount = find(availableAccounts, { address: transaction.Account });
                 }
 
                 // remove hidden accounts but keep preferred account even if hidden
@@ -265,6 +265,12 @@ class PreflightStep extends Component<Props, State> {
                 } else {
                     const defaultAccount = CoreRepository.getDefaultAccount();
                     source = find(availableAccounts, { address: defaultAccount.address }) || first(availableAccounts);
+                }
+
+                // double check
+                if (!source) {
+                    reject(new PreflightError(RequiredActionsType.ADD_ACCOUNT));
+                    return;
                 }
 
                 // set the source

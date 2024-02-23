@@ -20,7 +20,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    offerSequence: number;
+    offerSequence?: number;
 }
 
 /* Component ==================================================================== */

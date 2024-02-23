@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface State {
-    duration?: number;
+    duration: number;
     flipZoom?: number;
     flipDirection?: FlipDirection;
     side: number;
@@ -36,9 +36,10 @@ interface State {
 }
 
 /* Component ==================================================================== */
-// noinspection JSUnusedGlobalSymbols
 class CardFlip extends Component<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof CardFlip.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         style: {},
         duration: 500,
         flipZoom: 0.09,
@@ -211,8 +212,10 @@ class CardFlip extends Component<Props, State> {
     private flipTo(toValue: any) {
         const { onFlip, onFlipStart, onFlipEnd } = this.props;
         const { duration, rotation, progress, zoom, side } = this.state;
+
         onFlip(side === 0 ? 1 : 0);
         onFlipStart(side === 0 ? 1 : 0);
+
         Animated.parallel([
             Animated.timing(progress, {
                 toValue: side === 0 ? 100 : 0,

@@ -20,12 +20,8 @@ import { StringTypeCheck } from '@common/utils/string';
 import Localize from '@locale';
 /* Service  ==================================================================== */
 class LinkingService {
-    private initialURL: string;
-    private eventListener: EmitterSubscription;
-
-    constructor() {
-        this.initialURL = null;
-    }
+    private initialURL?: string;
+    private eventListener: EmitterSubscription | undefined;
 
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
@@ -113,8 +109,8 @@ class LinkingService {
                 { modalPresentationStyle: 'fullScreen' },
                 ComponentTypes.Modal,
             );
-        } catch (e: any) {
-            Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
+        } catch (error: any) {
+            Alert.alert(Localize.t('global.error'), error?.message, [{ text: 'OK' }], { cancelable: false });
         }
     };
 
@@ -163,7 +159,11 @@ class LinkingService {
         const { to, tag } = NormalizeDestination(destination);
 
         // if amount present as native currency and valid amount
-        if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
+        if (
+            !destination.currency &&
+            typeof destination.amount !== 'undefined' &&
+            StringTypeCheck.isValidAmount(destination.amount)
+        ) {
             amount = destination.amount;
         }
 

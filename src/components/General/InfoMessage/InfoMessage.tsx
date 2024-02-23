@@ -36,7 +36,9 @@ interface Props {
 
 /* Component ==================================================================== */
 class InfoMessage extends PureComponent<Props> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof InfoMessage.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         iconSize: 20,
     };
 
@@ -105,7 +107,7 @@ class InfoMessage extends PureComponent<Props> {
         }
 
         return (
-            <View style={[styles.iconContainer]}>
+            <View style={styles.iconContainer}>
                 <Icon size={iconSize} name={icon} style={style} />
             </View>
         );

@@ -6,7 +6,7 @@ import { Transactions } from '@common/libs/ledger/transactions/types';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
-import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import NetworkService from '@services/NetworkService';
 
@@ -26,7 +26,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
 }
 export interface State {
-    warnings: Array<string>;
+    warnings?: Array<string>;
     showFeePicker: boolean;
 }
 
@@ -53,7 +53,7 @@ class GlobalTemplate extends Component<Props, State> {
         // AccountDelete
         // check if destination account is already imported in XUMM and can be signed
         if (transaction.Type === TransactionTypes.AccountDelete) {
-            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination?.address)) {
+            if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination)) {
                 warnings.push(Localize.t('payload.accountDeleteExchangeSupportWarning'));
             }
         }
@@ -68,8 +68,11 @@ class GlobalTemplate extends Component<Props, State> {
     setTransactionFee = (fee: any) => {
         const { transaction } = this.props;
 
-        // NOTE: setting the transaction fee require Native and not drops
-        transaction.Fee = new Amount(fee.value).dropsToNative();
+        // NOTE: setting the transaction fee require Native and not Drops
+        transaction.Fee = {
+            currency: NetworkService.getNativeAsset(),
+            value: new AmountParser(fee.value).dropsToNative().toString(),
+        };
     };
 
     renderWarnings = () => {
@@ -123,7 +126,7 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 <Text style={styles.label}>{Localize.t('global.signers')}</Text>
                 <View style={styles.signersContainer}>
-                    {transaction.Signers.map((signer) => {
+                    {transaction.Signers?.map((signer) => {
                         return <AccountElement key={`${signer.account}`} address={signer.account} />;
                     })}
                 </View>
@@ -211,14 +214,12 @@ class GlobalTemplate extends Component<Props, State> {
                 <Text style={styles.label}>{Localize.t('global.hookParameters')}</Text>
                 <View style={styles.contentBox}>
                     {transaction.HookParameters.map((parameter, index: number) => {
-                        const { HookParameter } = parameter;
-
                         return (
                             <View key={`hook-parameter-${index}`}>
                                 <Text style={styles.value}>
-                                    <Text style={styles.hookParamText}>{HookParameter.HookParameterName}</Text>
+                                    <Text style={styles.hookParamText}>{parameter.HookParameterName}</Text>
                                     &nbsp;:&nbsp;
-                                    <Text style={styles.hookParamText}>{HookParameter.HookParameterValue}</Text>
+                                    <Text style={styles.hookParamText}>{parameter.HookParameterValue}</Text>
                                 </Text>
                             </View>
                         );
@@ -269,7 +270,7 @@ class GlobalTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                         <View style={styles.contentBox}>
                             <Text style={styles.feeText}>
-                                {transaction.Fee} {NetworkService.getNativeAsset()}
+                                {transaction.Fee.value} {NetworkService.getNativeAsset()}
                             </Text>
                         </View>
                     </>

@@ -19,17 +19,15 @@
       "es2022.object",
       "es2022.string"
     ],
-
     "allowJs": true,
+    "declaration": false,
     "jsx": "react-native",
     "noEmit": true,
-
-    // "isolatedModules": true, // UNCOMMENT_ME
-    // "strict": true, // UNCOMMENT_ME
-
+    "isolatedModules": true,
+    "strict": true,
     "moduleResolution": "bundler",
     "customConditions": ["react-native"],
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
     "resolvePackageJsonImports": false,
@@ -57,5 +55,5 @@
     },
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "typings/**/*.d.ts"],
-  "exclude": ["node_modules", "**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx","**/*.stories.ts", "**/*.spec.ts", "**/__mocks__/*.ts"]
+  "exclude": [ "node_modules", "**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx","**/*.stories.ts", "**/*.spec.ts", "**/__mocks__/*.ts"],
 }

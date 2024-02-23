@@ -2,9 +2,8 @@
 /* eslint-disable max-len */
 
 import Localize from '@locale';
-import moment from 'moment-timezone';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { NFTokenCreateOffer, NFTokenCreateOfferInfo } from '../NFTokenCreateOffer';
 import nfTokenCreateOfferTemplate from './fixtures/NFTokenCreateOfferTx.json';
@@ -18,49 +17,53 @@ describe('NFTokenCreateOffer tx', () => {
             expect(instance.TransactionType).toBe('NFTokenCreateOffer');
             expect(instance.Type).toBe('NFTokenCreateOffer');
         });
+
+        it('Should return right parsed values', () => {
+            const { tx, meta }: any = nfTokenCreateOfferTemplate.sellOffer;
+            const instance = new NFTokenCreateOffer(tx, meta);
+
+            expect(instance.Amount).toStrictEqual({
+                value: '1',
+                currency: 'XRP',
+            });
+            expect(instance.NFTokenID).toEqual('000100001E962F495F07A990F4ED55ACCFEEF365DBAA76B6A048C0A200000007');
+            expect(instance.Owner).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.Destination).toBe('rrrrrrrrrrrrrrrrrrrrrholvtp');
+            expect(instance.Expiration).toBe('2018-01-24T12:52:01.000Z');
+        });
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const Mixed = MutationsMixin(NFTokenCreateOffer);
+        const sellInstance = new Mixed(
+            nfTokenCreateOfferTemplate.sellOffer.tx as any,
+            nfTokenCreateOfferTemplate.sellOffer.meta as any,
+        );
+        const buyInstance = new Mixed(
+            nfTokenCreateOfferTemplate.buyOffer.tx as any,
+            nfTokenCreateOfferTemplate.buyOffer.meta as any,
+        );
+
+        describe('generateDescription()', () => {
             it('should return the expected description for sell offer', () => {
-                const { tx, meta } = nfTokenCreateOfferTemplate.sellOffer;
-                const instance = new NFTokenCreateOffer(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.nftOfferSellExplain', {
-                    address: instance.Account.address,
-                    tokenID: instance.NFTokenID,
-                    amount: instance.Amount.value,
-                    currency: NormalizeCurrencyCode(instance.Amount.currency),
-                })}\n${Localize.t('events.theNftOwnerIs', { address: instance.Owner })}\n${Localize.t(
-                    'events.thisNftOfferMayOnlyBeAcceptedBy',
-                    {
-                        address: instance.Destination.address,
-                    },
-                )}\n${Localize.t('events.theOfferExpiresAtUnlessCanceledOrAccepted', {
-                    expiration: moment(instance.Expiration).format('LLLL'),
-                })}`;
-
-                expect(NFTokenCreateOfferInfo.getDescription(instance)).toEqual(expectedDescription);
+                const info = new NFTokenCreateOfferInfo(sellInstance, {} as any);
+                const expectedDescription = `rrrrrrrrrrrrrrrrrrrrrholvtp offered to sell NFT token with ID 000100001E962F495F07A990F4ED55ACCFEEF365DBAA76B6A048C0A200000007 in order to receive 1 XRP${'\n'}The NFT owner is rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}This offer may only be accepted by rrrrrrrrrrrrrrrrrrrrrholvtp${'\n'}The offer expires at Wednesday, January 24, 2018 1:52 PM unless it is canceled or accepted before then.`;
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
             it('should return the expected description for buy offer', () => {
-                const { tx, meta } = nfTokenCreateOfferTemplate.buyOffer;
-                const instance = new NFTokenCreateOffer(tx, meta);
+                const info = new NFTokenCreateOfferInfo(buyInstance, {} as any);
+                const expectedDescription =
+                    'rrrrrrrrrrrrrrrrrrrrrholvtp offered to pay 1 XRP in order to receive NFT token with ID 000100001E962F495F07A990F4ED55ACCFEEF365DBAA76B6A048C0A200000007';
 
-                const expectedDescription = `${Localize.t('events.nftOfferBuyExplain', {
-                    address: instance.Account.address,
-                    tokenID: instance.NFTokenID,
-                    amount: instance.Amount.value,
-                    currency: NormalizeCurrencyCode(instance.Amount.currency),
-                })}`;
-
-                expect(NFTokenCreateOfferInfo.getDescription(instance)).toEqual(expectedDescription);
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(NFTokenCreateOfferInfo.getLabel()).toEqual(Localize.t('events.createNFTOffer'));
+                const info = new NFTokenCreateOfferInfo(buyInstance, {} as any);
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.createNFTOffer'));
             });
         });
     });

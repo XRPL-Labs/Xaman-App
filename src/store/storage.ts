@@ -16,9 +16,9 @@ import { AppConfig } from '@common/constants';
 /* Module ==================================================================== */
 export default class Storage {
     private readonly compactionThreshold: number;
-    public dataStore: Realm;
-
     private logger: LoggerInstance;
+
+    public dataStore?: Realm;
 
     constructor() {
         this.compactionThreshold = 30;
@@ -64,7 +64,7 @@ export default class Storage {
         return new Promise((resolve, reject) => {
             try {
                 // get current version
-                const currentVersion = Realm.schemaVersion(config.path, config.encryptionKey);
+                const currentVersion = Realm.schemaVersion(config.path!, config.encryptionKey);
 
                 this.logger.debug(`Current schema version: v${currentVersion}`);
 
@@ -125,7 +125,7 @@ export default class Storage {
      * Close db instance
      */
     close = (): void => {
-        this.dataStore.close();
+        this.dataStore?.close();
     };
 
     /**
@@ -171,7 +171,7 @@ export default class Storage {
         return new Promise<void>((resolve, reject) => {
             try {
                 // data store is not empty
-                if (!this.dataStore.isEmpty) {
+                if (!this.dataStore?.isEmpty) {
                     resolve();
                     return;
                 }

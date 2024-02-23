@@ -21,7 +21,7 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    offerSequence: number;
+    offerSequence?: number;
 }
 
 /* Component ==================================================================== */
@@ -34,13 +34,13 @@ class EscrowCancelTemplate extends Component<Props, State> {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         const { transaction } = this.props;
 
-        // in case of OfferSequence is not exist and PreviousTxnID is set fetch the sequence
+        // in case of OfferSequence is not exist and PreviousTxnID or AccountTxnID is set fetch the sequence
         // from transaction id
-        if (isUndefined(transaction.OfferSequence) && transaction.PreviousTxnID) {
-            await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
+        if (isUndefined(transaction.OfferSequence) && (transaction.AccountTxnID ?? transaction.PreviousTxnID)) {
+            LedgerService.getTransaction(transaction.AccountTxnID! ?? transaction.PreviousTxnID!).then((tx: any) => {
                 const { Sequence } = tx;
                 if (Sequence) {
                     this.setState(
@@ -72,7 +72,7 @@ class EscrowCancelTemplate extends Component<Props, State> {
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
 
-                {!isUndefined(offerSequence) && (
+                {typeof offerSequence !== 'undefined' && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.offerSequence')}</Text>
                         <View style={styles.contentBox}>
@@ -81,7 +81,7 @@ class EscrowCancelTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {!isUndefined(transaction.EscrowID) && (
+                {typeof transaction.EscrowID !== 'undefined' && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.escrowID')}</Text>
                         <View style={styles.contentBox}>

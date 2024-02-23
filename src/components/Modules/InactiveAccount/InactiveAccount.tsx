@@ -35,7 +35,7 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         // include card serial number if tangem card
         if (account.type === AccountTypes.Tangem) {
-            params = { cid: GetCardId(account.additionalInfo) };
+            params = { cid: GetCardId(account.additionalInfo!) };
         }
 
         Navigator.showModal(

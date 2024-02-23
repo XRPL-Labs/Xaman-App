@@ -57,9 +57,9 @@ export interface AccountTxTransaction {
      * If binary is True, then this is a hex string of the transaction metadata.
      * Otherwise, the transaction metadata is included in JSON format.
      */
-    meta: string | TransactionMetadata;
+    meta: TransactionMetadata;
     /** JSON object defining the transaction. */
-    tx?: TransactionJson & ResponseOnlyTxInfo;
+    tx: TransactionJson & ResponseOnlyTxInfo;
     /** Unique hashed String representing the transaction. */
     tx_blob?: string;
     /**

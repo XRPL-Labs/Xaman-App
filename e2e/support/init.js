@@ -1,7 +1,7 @@
 const detox = require('detox/internals');
 
 const { device } = require('detox');
-const { Before, BeforeAll, AfterAll, After } = require('cucumber');
+const { Before, BeforeAll, AfterAll, After } = require('@cucumber/cucumber');
 const adapter = require('./adapter');
 
 const { startRecordingVideo, stopRecordingVideo } = require('../helpers/artifacts');

@@ -40,8 +40,9 @@ class PasscodeMethod extends Component<Props, State> {
 
     private contentViewRef: React.RefObject<View>;
     private animatedColor: Animated.Value;
-    private mounted: boolean;
     private securePinInputRef: React.RefObject<SecurePinInput>;
+
+    private mounted = false;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);

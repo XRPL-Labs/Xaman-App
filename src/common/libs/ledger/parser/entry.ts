@@ -1,8 +1,9 @@
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 /* Types ==================================================================== */
 import { RippleState } from '@common/libs/ledger/types/ledger';
 import { AccountLinesTrustline } from '@common/libs/ledger/types/methods';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Parser ==================================================================== */
 const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): AccountLinesTrustline => {
@@ -10,10 +11,10 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
     const [self, counterparty] = ledgerEntry.HighLimit.issuer === account ? parties : parties.reverse();
 
     const ripplingFlags = [
-        (LedgerObjectFlags.RippleState.lsfHighNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfHighNoRipple,
-        (LedgerObjectFlags.RippleState.lsfLowNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfLowNoRipple,
+        (objectFlags[LedgerEntryTypes.RippleState]!.HighNoRipple & ledgerEntry.Flags) ===
+            objectFlags[LedgerEntryTypes.RippleState]!.HighNoRipple,
+        (objectFlags[LedgerEntryTypes.RippleState]!.LowNoRipple & ledgerEntry.Flags) ===
+            objectFlags[LedgerEntryTypes.RippleState]!.LowNoRipple,
     ];
     const [no_ripple, no_ripple_peer] =
         ledgerEntry.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();

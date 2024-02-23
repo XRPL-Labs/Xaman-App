@@ -1,56 +1,63 @@
 import { get } from 'lodash';
 
-import { AccountModel } from '@store/models';
-
 import * as Transactions from '@common/libs/ledger/transactions/genuine';
 import * as PseudoTransactions from '@common/libs/ledger/transactions/pseudo';
 import * as LedgerObjects from '@common/libs/ledger/objects';
 
+import { AccountModel } from '@store/models/objects';
+
 /* Types ==================================================================== */
 import { LedgerEntryTypes, PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-
 import {
     PseudoTransactions as PseudoTransactionsType,
     Transactions as TransactionsType,
 } from '@common/libs/ledger/transactions/types';
-
 import { LedgerObjects as LedgerObjectsType } from '@common/libs/ledger/objects/types';
-
-type ExplainerType<T> = {
-    getLabel(tx: T, account: AccountModel): string;
-    getDescription(item: T, account: AccountModel): string;
-    getRecipient(item: T, account: AccountModel): { address: string; tag?: number };
-};
+import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Module ==================================================================== */
 const ExplainerFactory = {
     fromType: (
         type: TransactionTypes | PseudoTransactionTypes | LedgerEntryTypes,
-    ): ExplainerType<TransactionsType | PseudoTransactionsType | LedgerObjectsType> => {
-        let explainer;
+    ):
+        | (new (...args: any[]) => ExplainerAbstract<TransactionsType | PseudoTransactionsType | LedgerObjectsType>)
+        | undefined => {
+        let Explainer;
 
         switch (true) {
             // Genuine transaction
             case type in TransactionTypes:
-                explainer = get(Transactions, `${type}Info`, undefined);
+                Explainer = get(Transactions, `${type}Info`, undefined);
                 break;
             // Pseudo transaction
             case type in PseudoTransactionTypes:
-                explainer = get(PseudoTransactions, `${type}Info`, undefined);
+                Explainer = get(PseudoTransactions, `${type}Info`, undefined);
                 break;
             // Ledger object
             case type in LedgerEntryTypes:
-                explainer = get(LedgerObjects, `${type}Info`, undefined);
+                Explainer = get(LedgerObjects, `${type}Info`, undefined);
                 break;
             default:
                 break;
         }
 
-        if (typeof explainer === 'undefined') {
-            throw new Error(`Explainer "${type}Info" not found. Did you forget to include it?`);
+        if (typeof Explainer === 'undefined') {
+            console.warn(`Explainer "${type}Info" not found. Did you forget to include it?`);
         }
 
-        return explainer;
+        return Explainer;
+    },
+    fromItem: (
+        item: TransactionsType | PseudoTransactionsType | LedgerObjectsType,
+        account: AccountModel,
+    ): ExplainerAbstract<TransactionsType | PseudoTransactionsType | LedgerObjectsType> | undefined => {
+        const Explainer = ExplainerFactory.fromType(item.Type);
+
+        if (typeof Explainer === 'undefined') {
+            return undefined;
+        }
+
+        return new Explainer(item, account);
     },
 };
 

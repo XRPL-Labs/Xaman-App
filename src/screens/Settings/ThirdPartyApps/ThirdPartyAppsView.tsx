@@ -52,7 +52,7 @@ export interface State {
 /* Component ==================================================================== */
 class ThirdPartyAppsView extends Component<Props, State> {
     static screenName = AppScreens.Settings.ThirdPartyApps.List;
-    private navigationListener: EventSubscription;
+    private navigationListener: EventSubscription | undefined;
 
     static options() {
         return {

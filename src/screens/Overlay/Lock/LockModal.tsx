@@ -31,9 +31,9 @@ export interface Props {
 }
 
 export interface State {
-    error: string;
-    isBiometricAvailable: boolean;
     coreSettings: CoreModel;
+    isBiometricAvailable: boolean;
+    error?: string;
 }
 /* Component ==================================================================== */
 class LockModal extends Component<Props, State> {
@@ -53,9 +53,9 @@ class LockModal extends Component<Props, State> {
         super(props);
 
         this.state = {
-            error: undefined,
-            isBiometricAvailable: false,
             coreSettings: CoreRepository.getSettings(),
+            isBiometricAvailable: false,
+            error: undefined,
         };
 
         this.securePinInputRef = React.createRef();

@@ -78,6 +78,10 @@ class NetworkSettingView extends Component<Props, State> {
         // get network
         const network = first(node.linkingObjects<NetworkModel>('Network', 'nodes'));
 
+        if (!network) {
+            throw new Error('Node does not have linked network object');
+        }
+
         // if this is the only node for this network then show a message
         if (network.nodes.length === 1) {
             Prompt(Localize.t('global.notice'), Localize.t('settings.networkHaveOnlyOneNodeAsDefault'));

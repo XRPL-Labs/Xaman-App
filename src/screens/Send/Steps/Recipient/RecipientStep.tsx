@@ -298,7 +298,7 @@ class RecipientStep extends Component<Props, State> {
 
         const myAccountList = remove(Array.from(accounts), (n) => {
             // remove source account from list
-            return n.address !== source.address;
+            return n.address !== source?.address;
         });
 
         if (myAccountList && myAccountList.length !== 0) {
@@ -378,6 +378,12 @@ class RecipientStep extends Component<Props, State> {
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
         const { setDestinationInfo, amount, currency, destination, source } = this.context;
         let { destinationInfo } = this.context;
+
+        // double check, this should not be happening
+        if (!destination || !source) {
+            Alert.alert(Localize.t('global.error'), 'Source and Destination is required!');
+            return;
+        }
 
         try {
             this.setState({
@@ -669,6 +675,12 @@ class RecipientStep extends Component<Props, State> {
     goNext = async () => {
         const { goNext, setIssuerFee, source, destination, currency } = this.context;
 
+        // double check, this should not be happening
+        if (!destination || !source) {
+            Alert.alert(Localize.t('global.error'), 'Source and Destination is required!');
+            return;
+        }
+
         try {
             this.setState({
                 isLoading: true,
@@ -749,16 +761,18 @@ class RecipientStep extends Component<Props, State> {
                 address={item.address}
                 tag={item.tag}
                 info={{
+                    address: item.address,
+                    tag: item.tag,
                     name: item.name,
                     source: item.source,
                 }}
-                containerStyle={selected && styles.accountElementSelected}
-                textStyle={selected && styles.accountElementSelectedText}
+                containerStyle={selected ? styles.accountElementSelected : {}}
+                textStyle={selected ? styles.accountElementSelectedText : {}}
                 visibleElements={{
                     tag: false,
                     avatar: true,
                     source: true,
-                    button: false,
+                    menu: false,
                 }}
                 onPress={() => {
                     if (isLoading) {

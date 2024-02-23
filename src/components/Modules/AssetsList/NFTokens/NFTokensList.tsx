@@ -43,14 +43,14 @@ interface Props {
 interface State {
     nfTokens: NFTokenData[];
     dataSource: NFTokenData[];
-    filterText: string;
+    filterText?: string;
     isLoading: boolean;
     isRefreshing: boolean;
 }
 
 /* Component ==================================================================== */
 class NFTokensList extends Component<Props, State> {
-    private readonly searchInputRef: React.RefObject<SearchBar | null>;
+    private readonly searchInputRef: React.RefObject<SearchBar>;
 
     constructor(props: Props) {
         super(props);
@@ -106,7 +106,7 @@ class NFTokensList extends Component<Props, State> {
             [isRefreshing ? 'isRefreshing' : 'isLoading']: true,
         } as unknown as Pick<State, keyof State>);
 
-        let nfTokenIds = undefined as string[];
+        let nfTokenIds: string[] | undefined;
 
         // fetch account NFTokens from ledger
         await LedgerService.getAccountNFTs(account.address)

@@ -1,0 +1,19 @@
+{
+  "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+  "Destination": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+  "Amount": "4325800",
+  "Balance": "2323423",
+  "PublicKey": "32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A",
+  "SettleDelay": 3600,
+  "Expiration": 536027313,
+  "CancelAfter": 536891313,
+  "SourceTag": 0,
+  "DestinationTag": 1002341,
+  "DestinationNode": "0000000000000000",
+  "Flags": 0,
+  "LedgerEntryType": "PayChannel",
+  "OwnerNode": "0000000000000000",
+  "PreviousTxnID": "F0AB71E777B2DA54B86231E19B82554EF1F8211F92ECA473121C655BFC5329BF",
+  "PreviousTxnLgrSeq": 14524914,
+  "index": "96F76F27D8A327FC48753167EC04A46AA0E382E6F57F32FD12274144D00F1797"
+}

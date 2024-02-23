@@ -11,6 +11,10 @@ import { Payload } from '@common/libs/payload';
 import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { BaseLedgerObject } from '@common/libs/ledger/objects';
 
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { LedgerObjects } from '@common/libs/ledger/objects/types';
+import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
+
 import { LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
@@ -26,7 +30,7 @@ export enum DataSourceItemType {
 }
 
 export type RowDataSourceItem = {
-    data: BaseTransaction | BaseLedgerObject | Payload;
+    data: BaseTransaction | BaseLedgerObject<any> | Payload;
     type: DataSourceItemType.RowItem;
 };
 
@@ -76,7 +80,7 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
-    renderItem = ({ item }: { item: DataSourceItem }): React.ReactElement => {
+    renderItem = ({ item }: { item: DataSourceItem }): React.ReactElement | null => {
         const { account, timestamp } = this.props;
 
         const { data, type } = item;
@@ -85,18 +89,34 @@ class EventsList extends PureComponent<Props> {
             case DataSourceItemType.SectionHeader:
                 return this.renderSectionHeader(data);
             case DataSourceItemType.RowItem: {
-                const passProps = { item: data, account, timestamp };
                 if (data instanceof Payload) {
-                    // @ts-ignore
-                    return React.createElement(EventListItems.Request, passProps);
+                    return React.createElement(EventListItems.Request, {
+                        item: data,
+                        account,
+                        timestamp,
+                    });
                 }
                 if (data instanceof BaseTransaction) {
-                    // @ts-ignore
-                    return React.createElement(EventListItems.Transaction, passProps);
+                    return React.createElement(EventListItems.Transaction, {
+                        item: data,
+                        account,
+                        timestamp,
+                    } as {
+                        item: Transactions & MutationsMixinType;
+                        account: AccountModel;
+                        timestamp: number | undefined;
+                    });
                 }
                 if (data instanceof BaseLedgerObject) {
-                    // @ts-ignore
-                    return React.createElement(EventListItems.LedgerObject, passProps);
+                    return React.createElement(EventListItems.LedgerObject, {
+                        item: data,
+                        account,
+                        timestamp,
+                    } as {
+                        item: LedgerObjects & MutationsMixinType;
+                        account: AccountModel;
+                        timestamp: number | undefined;
+                    });
                 }
                 return null;
             }
@@ -118,7 +138,11 @@ class EventsList extends PureComponent<Props> {
         const { isLoading, onRefresh } = this.props;
 
         return (
-            <RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={StyleService.value('$contrast')} />
+            <RefreshControl
+                refreshing={!!isLoading}
+                onRefresh={onRefresh}
+                tintColor={StyleService.value('$contrast')}
+            />
         );
     };
 
@@ -128,7 +152,7 @@ class EventsList extends PureComponent<Props> {
                 // get key base on data type
                 let key = '';
                 if (data instanceof BaseTransaction) {
-                    key = `${data.Hash}`;
+                    key = `${data.hash}`;
                 } else if (data instanceof BaseLedgerObject) {
                     key = `${data.Index}`;
                 } else if (data instanceof Payload) {

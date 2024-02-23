@@ -1,4 +1,3 @@
-export { default as BaseTransaction } from './BaseTransaction';
 export * from './Payment';
 export * from './TrustSet';
 export * from './AccountSet';

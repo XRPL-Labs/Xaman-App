@@ -130,6 +130,10 @@ class ChangePasscodeView extends Component<Props, State> {
                 // get current passcode
                 const { passcode } = CoreRepository.getSettings();
 
+                if (!passcode) {
+                    throw new Error('Core settings passcode has not been set!');
+                }
+
                 // store the new passcode in the store
                 const newEncPasscode = await CoreRepository.setPasscode(newPasscode);
 
@@ -245,7 +249,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 this.checkOldPasscode(passcode);
                 break;
             case Steps.ENTER_NEW_PASSCODE:
-                this.checkNewPasscode(passcode, isStrong);
+                this.checkNewPasscode(passcode, isStrong!);
                 break;
             case Steps.CONFIRM_NEW_PASSCODE:
                 this.checkConfirmPasscode(passcode);

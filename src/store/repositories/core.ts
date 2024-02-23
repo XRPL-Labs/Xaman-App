@@ -72,11 +72,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
     getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
-        if (settings && settings.network) {
-            return settings.network;
-        }
-
-        return undefined;
+        return settings.network;
     };
 
     /**
@@ -125,7 +121,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
             return result[0];
         }
 
-        return undefined;
+        throw new Error('Core settings object not found!');
     };
 
     /**

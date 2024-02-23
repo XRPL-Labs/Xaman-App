@@ -19,10 +19,11 @@ export interface Props {
 class TextPlaceholder extends PureComponent<Props> {
     private readonly animatedPulse: Animated.Value;
     private readonly animatedFadeIn: Animated.Value;
-
     private mounted = false;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof TextPlaceholder.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         length: 12,
     };
 

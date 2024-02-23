@@ -362,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "Les paiements et\r\nles demandes de paiement\r\nsur le XRP Ledger",
@@ -659,7 +660,7 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
@@ -1056,7 +1057,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xaman n'endosse aucun émetteur de jeton ou de jeton. Vous ne devez procéder que si vous faites confiance à l'émetteur du jeton.\nEn cas de questions ou de problèmes concernant le jeton (Ligne de confiance), vous devez contacter l'émetteur du jeton.\n\nContinuez à vos propres risques.",
     "trustLineIsAlreadyExist": "Ce jeton existe déjà. Vous ne pouvez pas ajouter le même jeton.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "Conversion en cours",

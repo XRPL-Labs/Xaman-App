@@ -44,9 +44,9 @@ export interface Props {
 }
 
 export interface State {
-    dataSource: XamanBackend.CuratedIOUsDetails;
-    selectedPartyId: number;
-    selectedCurrencyId: number;
+    dataSource?: XamanBackend.CuratedIOUsDetails;
+    selectedPartyId?: number;
+    selectedCurrencyId?: number;
     isLoading: boolean;
     isLoadingTokenInfo: boolean;
     error: boolean;
@@ -56,7 +56,7 @@ export interface State {
 class AddTokenModal extends Component<Props, State> {
     static screenName = AppScreens.Overlay.AddToken;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -80,6 +80,8 @@ class AddTokenModal extends Component<Props, State> {
             isLoadingTokenInfo: false,
             error: false,
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -136,6 +138,11 @@ class AddTokenModal extends Component<Props, State> {
             id: selectedCurrencyId,
         });
 
+        if (typeof selectedCurrency === 'undefined') {
+            Alert.alert(Localize.t('global.error'), Localize.t('asset.selectCurrency'));
+            return;
+        }
+
         // if trustline is already exist return
         if (
             AccountRepository.hasCurrency(account, {
@@ -189,9 +196,8 @@ class AddTokenModal extends Component<Props, State> {
             }),
         );
 
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        // slide down
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
             Navigator.showModal(
@@ -202,6 +208,10 @@ class AddTokenModal extends Component<Props, State> {
                 { modalPresentationStyle: 'fullScreen' },
             );
         }, 800);
+    };
+
+    onCancelPress = () => {
+        this.actionPanelRef?.current?.slideDown();
     };
 
     renderCurrencies = () => {
@@ -348,9 +358,7 @@ class AddTokenModal extends Component<Props, State> {
                 height={AppSizes.heightPercentageToDP(90)}
                 onSlideDown={Navigator.dismissOverlay}
                 testID="add-asset-overlay"
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
+                ref={this.actionPanelRef}
                 contentStyle={AppStyles.centerAligned}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
@@ -364,11 +372,7 @@ class AddTokenModal extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={() => {
-                                if (this.actionPanel) {
-                                    this.actionPanel.slideDown();
-                                }
-                            }}
+                            onPress={this.onCancelPress}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />

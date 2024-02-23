@@ -37,9 +37,7 @@ class ViewPublicKeyStep extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.goBack'),
-                    onPress: () => {
-                        goBack();
-                    },
+                    onPress: goBack,
                     style: 'destructive',
                 },
                 { text: Localize.t('global.cancel') },
@@ -57,8 +55,10 @@ class ViewPublicKeyStep extends Component<Props, State> {
     copyPubKeyToClipboard = () => {
         const { generatedAccount } = this.context;
 
-        Clipboard.setString(generatedAccount.address);
-        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+        if (generatedAccount?.address) {
+            Clipboard.setString(generatedAccount.address);
+            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
+        }
     };
 
     render() {

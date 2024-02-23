@@ -176,7 +176,7 @@ class PaymentOptionItem extends Component<Props> {
                             source={{
                                 uri: counterParty
                                     ? counterParty.avatar
-                                    : StyleService.getImage('ImageUnknownTrustLine').uri,
+                                    : StyleService.getImage('ImageUnknownTrustLine')?.uri,
                             }}
                             border
                             size={35}

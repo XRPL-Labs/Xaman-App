@@ -26,9 +26,8 @@ export interface Props {
 }
 
 export interface State {
-    item: Payload;
-    transactionLabel: string;
-    description: string;
+    transactionLabel?: string;
+    description?: string;
 }
 
 export enum RequestType {
@@ -44,29 +43,21 @@ class RequestItem extends Component<Props, State> {
         super(props);
 
         this.state = {
-            item: props.item,
             transactionLabel: undefined,
             description: undefined,
         };
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { timestamp } = this.props;
-        const { item, transactionLabel, description } = this.state;
+        const { item, timestamp } = this.props;
+        const { transactionLabel, description } = this.state;
 
         return (
-            !isEqual(nextState.item?.getPayloadUUID(), item?.getPayloadUUID()) ||
+            !isEqual(nextProps.item?.getPayloadUUID(), item?.getPayloadUUID()) ||
             !isEqual(nextState.transactionLabel, transactionLabel) ||
             !isEqual(nextState.description, description) ||
             !isEqual(nextProps.timestamp, timestamp)
         );
-    }
-
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
-        if (nextProps.item?.getPayloadUUID() !== prevState.item?.getPayloadUUID()) {
-            return { item: nextProps.item };
-        }
-        return null;
     }
 
     componentDidMount() {
@@ -74,8 +65,7 @@ class RequestItem extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        const { timestamp } = this.props;
-        const { item } = this.state;
+        const { item, timestamp } = this.props;
 
         // force the lookup if timestamp changed
         if (timestamp !== prevProps.timestamp || item?.getPayloadUUID() !== prevProps.item?.getPayloadUUID()) {

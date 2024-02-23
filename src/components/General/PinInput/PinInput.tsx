@@ -18,7 +18,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
-    codeLength: number;
+    codeLength?: number;
     autoFocus?: boolean;
     checkStrength?: boolean;
     onFinish?: (code: string, isStrong?: boolean) => void;
@@ -33,7 +33,9 @@ interface State {
 class PinInput extends Component<Props, State> {
     private readonly textInputRef: React.RefObject<TextInput>;
 
-    public static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof PinInput.defaultProps>>;
+
+    public static defaultProps: Partial<Props> = {
         codeLength: 4,
         autoFocus: true,
         checkStrength: false,

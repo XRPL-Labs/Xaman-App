@@ -32,6 +32,10 @@ const NodeSchema = {
             const networkConfig = NetworkConfig.networks.find((net) => net.key === network.key);
             const createdNodes = [] as any[];
 
+            if (!networkConfig) {
+                throw new Error(`Unable to find network config for network ${network.key}`);
+            }
+
             for (let y = 0; y < networkConfig.nodes.length; y++) {
                 createdNodes.push(
                     newRealm.create(NodeSchema.schema.name, {

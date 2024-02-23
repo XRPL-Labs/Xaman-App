@@ -1,4 +1,4 @@
-import { Amount, HookExecution, HookEmission } from '../common';
+import { LedgerAmount, HookExecution, HookEmission } from '../common';
 
 export interface CreatedNode {
     CreatedNode: {
@@ -31,11 +31,12 @@ export type Node = CreatedNode | ModifiedNode | DeletedNode;
 
 export interface TransactionMetadata {
     AffectedNodes: Node[];
-    DeliveredAmount?: Amount;
+    DeliveredAmount?: LedgerAmount;
     // "unavailable" possible for transactions before 2014-01-20
-    delivered_amount?: Amount | 'unavailable';
+    delivered_amount?: LedgerAmount | 'unavailable';
     TransactionIndex: number;
     TransactionResult: string;
     HookExecutions?: HookExecution[];
     HookEmissions?: HookEmission[];
+    nftoken_id?: string;
 }

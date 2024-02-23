@@ -26,7 +26,7 @@ interface Props {
 }
 
 interface State {
-    issuerInfo: AccountNameType;
+    issuerInfo?: AccountNameType;
     isLoading: boolean;
 }
 

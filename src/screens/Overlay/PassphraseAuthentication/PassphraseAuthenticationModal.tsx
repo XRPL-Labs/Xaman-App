@@ -47,7 +47,7 @@ export interface Props {
 
 export interface State {
     coreSettings: CoreModel;
-    passphrase: string;
+    passphrase?: string;
     offsetBottom: number;
 }
 /* Component ==================================================================== */
@@ -57,8 +57,9 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
     private passwordInputRef: React.RefObject<PasswordInput>;
 
     private animatedColor: Animated.Value;
-    private backHandler: NativeEventSubscription;
-    private mounted: boolean;
+    private backHandler: NativeEventSubscription | undefined;
+
+    private mounted = false;
 
     static options() {
         return {
@@ -119,18 +120,21 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
 
     startAuthentication = () => {
         // focus the input
-        if (this.passwordInputRef) {
-            this.passwordInputRef.current.focus();
-        }
+        this.passwordInputRef?.current?.focus();
     };
 
     onAuthenticatePress = async () => {
         const { account } = this.props;
         const { passphrase } = this.state;
 
+        // passphrase is empty ??
+        if (!passphrase) {
+            return;
+        }
+
         // blur the input if android
-        if (Platform.OS === 'android' && this.passwordInputRef.current) {
-            this.passwordInputRef.current.blur();
+        if (Platform.OS === 'android') {
+            this.passwordInputRef?.current?.blur();
         }
 
         // try to fetch the private key from vault with provided passphrase
@@ -143,10 +147,10 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
         }
 
         // clear the private key
-        privateKey = null;
+        privateKey = undefined;
 
         // run the success authentication
-        this.onSuccessAuthentication();
+        this.onSuccessAuthentication(passphrase);
     };
 
     onPassphraseChange = (passphrase: string) => {
@@ -220,8 +224,7 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
         );
     };
 
-    onSuccessAuthentication = () => {
-        const { passphrase } = this.state;
+    onSuccessAuthentication = (passphrase: string) => {
         const { onSuccess } = this.props;
 
         if (typeof onSuccess === 'function') {

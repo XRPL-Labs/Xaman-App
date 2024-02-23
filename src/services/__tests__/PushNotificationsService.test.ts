@@ -99,7 +99,7 @@ describe('PushNotificationsService', () => {
             setTimeout(resolve, 300);
         });
 
-        expect(spy0).toBeCalledWith(notificationOpen.data.payload, PayloadOrigin.PUSH_NOTIFICATION);
+        expect(spy0).toBeCalledWith(notificationOpen?.data?.payload, PayloadOrigin.PUSH_NOTIFICATION);
         expect(spy1).toBeCalledWith(
             AppScreens.Modal.ReviewTransaction,
             { payload: expect.any(Payload), componentType: 'MODAL' },

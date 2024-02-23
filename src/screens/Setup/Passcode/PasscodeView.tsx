@@ -46,7 +46,8 @@ export interface State {
 /* Component ==================================================================== */
 class PasscodeSetupView extends Component<Props, State> {
     static screenName = AppScreens.Setup.Passcode;
-    pinInput: PinInput;
+
+    private pinInputRef: React.RefObject<PinInput>;
 
     static options() {
         return {
@@ -65,6 +66,8 @@ class PasscodeSetupView extends Component<Props, State> {
             currentStep: Steps.EXPLANATION,
             isLoading: false,
         };
+
+        this.pinInputRef = React.createRef();
     }
 
     onFinishStep = async () => {
@@ -130,14 +133,17 @@ class PasscodeSetupView extends Component<Props, State> {
                 currentStep: Steps.ENTER_PASSCODE,
             });
         } else if (currentStep === Steps.ENTER_PASSCODE) {
-            this.setState({
-                currentStep: Steps.CONFIRM_PASSCODE,
-            });
-
-            if (this.pinInput) {
-                this.pinInput.clean();
-                this.pinInput.focus();
-            }
+            this.setState(
+                {
+                    currentStep: Steps.CONFIRM_PASSCODE,
+                },
+                () => {
+                    if (this.pinInputRef?.current) {
+                        this.pinInputRef?.current.clean();
+                        this.pinInputRef?.current.focus();
+                    }
+                },
+            );
         } else {
             this.onFinishStep();
         }
@@ -155,14 +161,18 @@ class PasscodeSetupView extends Component<Props, State> {
                 currentStep: Steps.EXPLANATION,
             });
         } else {
-            this.setState({
-                passcode: '',
-                passcodeConfirm: '',
-                currentStep: Steps.ENTER_PASSCODE,
-            });
-            if (this.pinInput) {
-                this.pinInput.clean();
-            }
+            this.setState(
+                {
+                    passcode: '',
+                    passcodeConfirm: '',
+                    currentStep: Steps.ENTER_PASSCODE,
+                },
+                () => {
+                    if (this.pinInputRef?.current) {
+                        this.pinInputRef?.current.clean();
+                    }
+                },
+            );
         }
     };
 
@@ -205,9 +215,9 @@ class PasscodeSetupView extends Component<Props, State> {
                     {
                         text: Localize.t('setupPasscode.changePasscode'),
                         onPress: () => {
-                            if (this.pinInput) {
-                                this.pinInput.clean();
-                                this.pinInput.focus();
+                            if (this.pinInputRef?.current) {
+                                this.pinInputRef?.current.clean();
+                                this.pinInputRef?.current.focus();
                             }
                         },
                     },
@@ -220,15 +230,15 @@ class PasscodeSetupView extends Component<Props, State> {
     checkPasscodeConfirm = (passcodeConfirm: string) => {
         const { passcode } = this.state;
 
-        // pincode doesn't match the confirm pin
+        // passcode doesn't match the confirmation pin
         if (passcode !== passcodeConfirm) {
             Toast(Localize.t('setupPasscode.passcodeDoNotMatch'));
             VibrateHapticFeedback('notificationError');
 
             // clean pin code
-            if (this.pinInput) {
-                this.pinInput.clean();
-                this.pinInput.focus();
+            if (this.pinInputRef?.current) {
+                this.pinInputRef?.current.clean();
+                this.pinInputRef?.current.focus();
             }
 
             // go back to entry step
@@ -250,7 +260,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
         switch (currentStep) {
             case Steps.ENTER_PASSCODE:
-                this.checkPasscode(code, isStrong);
+                this.checkPasscode(code, isStrong!);
                 break;
             case Steps.CONFIRM_PASSCODE:
                 this.checkPasscodeConfirm(code);
@@ -273,7 +283,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
         if (currentStep === Steps.EXPLANATION) {
             return (
-                <Footer style={[AppStyles.paddingBottom]}>
+                <Footer style={AppStyles.paddingBottom}>
                     <Button testID="go-button" onPress={this.onNext} label={Localize.t('global.go')} />
                 </Footer>
             );
@@ -291,7 +301,7 @@ class PasscodeSetupView extends Component<Props, State> {
                     />
                 </View>
 
-                <View style={[AppStyles.flex4]}>
+                <View style={AppStyles.flex4}>
                     <Button
                         testID="next-button"
                         isDisabled={
@@ -341,10 +351,8 @@ class PasscodeSetupView extends Component<Props, State> {
                     </Text>
                     <Spacer size={30} />
                     <PinInput
-                        ref={(r) => {
-                            this.pinInput = r;
-                        }}
                         autoFocus
+                        ref={this.pinInputRef}
                         checkStrength={currentStep === Steps.ENTER_PASSCODE}
                         codeLength={6}
                         onFinish={this.onPasscodeEnter}
@@ -358,7 +366,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="setup-passcode-screen" style={[AppStyles.container]}>
+            <SafeAreaView testID="setup-passcode-screen" style={AppStyles.container}>
                 {this.renderHeader()}
                 {this.renderContent()}
                 {this.renderFooter()}

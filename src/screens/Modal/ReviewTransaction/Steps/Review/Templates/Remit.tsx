@@ -56,7 +56,7 @@ class RemitTemplate extends Component<Props, State> {
             return <Text style={styles.value}>{Localize.t('global.empty')}</Text>;
         }
 
-        return transaction.URITokenIDs.map((id) => {
+        return transaction.URITokenIDs?.map((id) => {
             return (
                 <Text key={`${id}`} style={styles.value}>
                     {id}
@@ -86,8 +86,8 @@ class RemitTemplate extends Component<Props, State> {
                         </View>
 
                         <AccountElement
-                            address={transaction.Destination.address}
-                            tag={transaction.Destination.tag}
+                            address={transaction.Destination}
+                            tag={transaction.DestinationTag}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                         />
                     </>

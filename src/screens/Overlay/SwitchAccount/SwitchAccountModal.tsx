@@ -35,9 +35,9 @@ export interface Props {
 }
 
 export interface State {
-    defaultAccount: AccountModel;
-    accounts: Realm.Results<AccountModel>;
-    signableAccount: Array<AccountModel>;
+    defaultAccount?: AccountModel;
+    accounts?: Realm.Results<AccountModel>;
+    signableAccount?: Array<AccountModel>;
     contentHeight: number;
     paddingBottom: number;
 }
@@ -47,7 +47,7 @@ const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 class SwitchAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAccount;
 
-    private actionPanel: ActionPanel;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -71,6 +71,8 @@ class SwitchAccountOverlay extends Component<Props, State> {
             contentHeight: 0,
             paddingBottom: 0,
         };
+
+        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -115,9 +117,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     };
 
     onAddPressed = () => {
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
             Navigator.push(AppScreens.Account.Add);
@@ -136,15 +136,13 @@ class SwitchAccountOverlay extends Component<Props, State> {
         }
 
         // slide down
-        if (this.actionPanel) {
-            this.actionPanel.slideDown();
-        }
+        this.actionPanelRef?.current?.slideDown();
     };
 
     isRegularKey = (account: AccountModel) => {
         const { accounts } = this.state;
 
-        const found = accounts.find((a) => a.regularKey === account.address);
+        const found = accounts?.find((a) => a.regularKey === account.address);
 
         if (found) {
             return found.label;
@@ -180,7 +178,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
-        if (account.address === defaultAccount.address) {
+        if (account.address === defaultAccount?.address) {
             return (
                 <View
                     key={account.address}
@@ -251,7 +249,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
     renderContent = () => {
         const { accounts } = this.state;
 
-        if (accounts.length === 0) {
+        if (accounts?.length === 0) {
             return (
                 <View style={[AppStyles.centerContent, AppStyles.centerAligned, AppStyles.paddingTop]}>
                     <Text style={[AppStyles.p, AppStyles.strong]}>{Localize.t('account.noAccountYet')}</Text>
@@ -259,7 +257,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
             );
         }
 
-        return accounts.map((account) => {
+        return accounts?.map((account) => {
             return this.renderRow(account);
         });
     };
@@ -271,13 +269,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         if (!accounts || !contentHeight) return null;
 
         return (
-            <ActionPanel
-                height={contentHeight}
-                onSlideDown={this.onPanelSlideDown}
-                ref={(r) => {
-                    this.actionPanel = r;
-                }}
-            >
+            <ActionPanel height={contentHeight} onSlideDown={this.onPanelSlideDown} ref={this.actionPanelRef}>
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
                         <Text numberOfLines={1} style={AppStyles.h5}>

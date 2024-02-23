@@ -362,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "Maksut ja\r\nmaksupyynnöt\r\nXRP Ledgerissä",
@@ -659,7 +660,7 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
@@ -1056,7 +1057,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xaman does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "Vaihto",

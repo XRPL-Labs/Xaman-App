@@ -125,7 +125,7 @@ class AuthenticationService extends EventEmitter {
         setTimeout(() => {
             while (this.postSuccess.length) {
                 try {
-                    this.postSuccess.shift().call(null);
+                    this.postSuccess.shift()?.call(null);
                 } catch (error) {
                     this.logger.error('runAfterSuccessAuth', error);
                 }
@@ -340,8 +340,8 @@ class AuthenticationService extends EventEmitter {
 
             if (
                 coreSettings.lastUnlockedTimestamp === 0 ||
-                realTime < coreSettings.lastUnlockedTimestamp ||
-                realTime - coreSettings.lastUnlockedTimestamp > coreSettings.minutesAutoLock * 60
+                realTime < (coreSettings.lastUnlockedTimestamp ?? 0) ||
+                realTime - (coreSettings.lastUnlockedTimestamp ?? 0) > coreSettings.minutesAutoLock * 60
             ) {
                 // show lock overlay
                 await Navigator.showOverlay(
@@ -429,6 +429,7 @@ class AuthenticationService extends EventEmitter {
      */
     onAppStateChange = async () => {
         if (
+            AppService.prevAppState &&
             [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
             AppService.currentAppState === AppStateStatus.Active
         ) {

@@ -37,8 +37,8 @@ class AccountDeleteTemplate extends Component<Props, State> {
                     </Text>
                 </View>
                 <AccountElement
-                    address={transaction.Destination.address}
-                    tag={transaction.Destination.tag}
+                    address={transaction.Destination}
+                    tag={transaction.DestinationTag}
                     containerStyle={[styles.contentBox, styles.addressContainer]}
                 />
             </>

@@ -2,6 +2,8 @@ import { Card } from 'tangem-sdk-react-native';
 
 import { AccountModel, CoreModel } from '@store/models';
 
+import { SignMixinType } from '@common/libs/ledger/mixin/types';
+
 import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import { SignedObjectType } from '@common/libs/ledger/types';
 
@@ -25,16 +27,16 @@ export enum Steps {
 
 export interface Props {
     account: AccountModel;
-    transaction: Transactions | PseudoTransactions;
+    transaction: (Transactions | PseudoTransactions) & SignMixinType;
     multiSign?: boolean;
     onDismissed: () => void;
     onSign: (signedObject: SignedObjectType) => void;
 }
 
 export interface State {
-    step: Steps;
-    signers: AccountModel[];
-    preferredSigner: AccountModel;
+    step?: Steps;
+    signers?: AccountModel[];
+    preferredSigner?: AccountModel;
     coreSettings: CoreModel;
     isSigning: boolean;
 }

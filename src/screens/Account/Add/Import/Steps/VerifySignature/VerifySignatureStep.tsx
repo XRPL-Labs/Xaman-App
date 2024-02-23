@@ -74,13 +74,13 @@ class VerifySignatureStep extends Component<Props, State> {
         // NOTE: as this the address that been shown to the user with get it from account object
         const { address } = account;
 
-        const tangemCard = JSON.parse(account.additionalInfoString) as Card;
+        const tangemCard = JSON.parse(account.additionalInfoString!) as Card;
         // we can get public key from account object
         // but as we use card data to sign in the other parts we get it from card data
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
         // include device UUID and user uuid is signed transaction
-        const { uuid, deviceUUID } = ProfileRepository.getProfile();
+        const { uuid, deviceUUID } = ProfileRepository.getProfile()!;
 
         // prepare the transaction for signing
         const preparedTx = AccountLib.rawSigning.prepare(

@@ -1,7 +1,7 @@
 /**
  * Edit Contact Screen
  */
-import { filter, isEmpty } from 'lodash';
+import { filter, isEmpty, toString } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, Keyboard, Platform, Share } from 'react-native';
 
@@ -37,8 +37,8 @@ export interface State {
     isLoading: boolean;
     address: string;
     name: string;
-    tag: string;
-    xAddress: string;
+    tag?: string;
+    xAddress?: string;
 }
 
 /* Component ==================================================================== */
@@ -80,16 +80,18 @@ class EditContactView extends Component<Props, State> {
 
                 const payIdInfo = await getPayIdInfo(result.payId);
 
-                this.setState({
-                    address: payIdInfo.account,
-                    tag: payIdInfo.tag,
-                });
+                if (payIdInfo) {
+                    this.setState({
+                        address: payIdInfo.account,
+                        tag: payIdInfo.tag,
+                    });
+                }
             } else {
                 const { to, tag, xAddress } = NormalizeDestination(result);
 
                 this.setState({
                     address: to,
-                    tag: tag && tag.toString(),
+                    tag: tag ? toString(tag) : undefined,
                     xAddress,
                 });
             }
@@ -201,7 +203,7 @@ class EditContactView extends Component<Props, State> {
                 if (decoded) {
                     this.setState({
                         address: decoded.classicAddress,
-                        tag: decoded.tag && decoded.tag.toString(),
+                        tag: decoded.tag ? toString(decoded.tag) : undefined,
                         xAddress: address,
                     });
                 }

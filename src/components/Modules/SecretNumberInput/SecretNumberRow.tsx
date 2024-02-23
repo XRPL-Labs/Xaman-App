@@ -25,9 +25,11 @@ interface State {}
 
 /* Component ==================================================================== */
 class SecretNumberRow extends Component<Props, State> {
-    rowAnimatedValue: Animated.Value;
+    private rowAnimatedValue: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SecretNumberRow.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         columnsNumber: 6,
     };
 

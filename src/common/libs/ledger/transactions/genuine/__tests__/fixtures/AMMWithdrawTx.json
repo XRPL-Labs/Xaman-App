@@ -1,0 +1,12 @@
+{
+  "tx": {
+    "TransactionType": "AMMWithdraw",
+    "Asset": {"currency": "XRP"},
+    "Asset2": {"currency": "ETH", "issuer": "rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9"},
+    "Amount": "1000",
+    "Amount2": {"currency": "ETH", "issuer": "rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9", "value": "500"},
+    "LPTokenIn": {"currency": "B3813FCAB4EE68B3D0D735D6849465A9113EE048", "issuer": "rH438jEAzTs5PYtV6CHZqpDpwCKQmPW9Cg", "value": "1000"},
+    "EPrice": "25"
+  },
+  "meta": {}
+}

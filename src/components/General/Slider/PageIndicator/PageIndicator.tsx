@@ -8,6 +8,7 @@ import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     style: ViewStyle;
@@ -19,13 +20,10 @@ interface Props {
     onFinish: () => void;
 }
 
-interface State {
-    currentIndex: number;
-}
+interface State {}
 
+/* Component ==================================================================== */
 export default class Indicator extends PureComponent<Props, State> {
-    currentIndex: number;
-
     componentWillUnmount() {
         const { progress } = this.props;
         progress.removeAllListeners();
@@ -61,8 +59,8 @@ export default class Indicator extends PureComponent<Props, State> {
 
         return (
             <SafeAreaView style={[styles.container, style]}>
-                <View style={[styles.leftContent]}>{dots}</View>
-                <View style={[styles.rightContent]}>{this.renderSkipButton()}</View>
+                <View style={styles.leftContent}>{dots}</View>
+                <View style={styles.rightContent}>{this.renderSkipButton()}</View>
             </SafeAreaView>
         );
     }

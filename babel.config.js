@@ -48,6 +48,7 @@ module.exports = {
             },
         ],
         ['@babel/plugin-transform-flow-strip-types', { allowDeclareFields: true }],
+        ['@babel/plugin-transform-class-static-block'],
     ],
     env: {
         production: {

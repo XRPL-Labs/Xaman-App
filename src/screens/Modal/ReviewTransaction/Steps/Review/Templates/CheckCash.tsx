@@ -24,8 +24,8 @@ export interface Props extends Omit<TemplateProps, 'transaction'> {
 }
 
 export interface State {
-    checkObject: CheckCreate;
-    cashAmount: string;
+    checkObject?: CheckCreate;
+    cashAmount?: string;
     editableAmount: boolean;
     amountField: 'DeliverMin' | 'Amount';
     currencyName: string;
@@ -40,7 +40,7 @@ class CheckCashTemplate extends Component<Props, State> {
 
         const amountField = props.transaction.Amount ? 'Amount' : 'DeliverMin';
         const currencyName = props.transaction[amountField]?.currency
-            ? NormalizeCurrencyCode(props.transaction[amountField].currency)
+            ? NormalizeCurrencyCode(props.transaction[amountField]!.currency)
             : NetworkService.getNativeAsset();
 
         this.state = {
@@ -94,15 +94,22 @@ class CheckCashTemplate extends Component<Props, State> {
             cashAmount: amount,
         });
 
-        if (!transaction[amountField] || transaction[amountField].currency === NetworkService.getNativeAsset()) {
-            // @ts-ignore
-            transaction[amountField] = amount;
+        if (!transaction[amountField] || transaction[amountField]!.currency === NetworkService.getNativeAsset()) {
+            transaction[amountField] = {
+                currency: NetworkService.getNativeAsset(),
+                value: amount,
+            };
         } else {
             transaction[amountField] = {
-                ...transaction[amountField],
-                ...{ value: amount },
+                currency: transaction[amountField]?.currency!,
+                issuer: transaction[amountField]?.issuer!,
+                value: amount,
             };
         }
+    };
+
+    focusAmountInput = () => {
+        this.amountInput.current?.focus();
     };
 
     render() {
@@ -111,40 +118,36 @@ class CheckCashTemplate extends Component<Props, State> {
 
         return (
             <>
-                <View style={styles.label}>
-                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                        {Localize.t('global.from')}
-                    </Text>
-                </View>
+                {checkObject && (
+                    <>
+                        <View style={styles.label}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.from')}
+                            </Text>
+                        </View>
 
-                <AccountElement
-                    containerStyle={[styles.contentBox, styles.addressContainer]}
-                    address={checkObject?.Account.address}
-                />
+                        <AccountElement
+                            containerStyle={[styles.contentBox, styles.addressContainer]}
+                            address={checkObject?.Account}
+                        />
 
-                {/* Check Amount */}
-                <Text style={styles.label}>{Localize.t('global.checkAmount')}</Text>
-                <View style={styles.contentBox}>
-                    <AmountText
-                        value={checkObject?.SendMax.value}
-                        currency={checkObject?.SendMax.currency}
-                        style={styles.amount}
-                        immutable
-                    />
-                </View>
+                        {/* Check Amount */}
+                        <Text style={styles.label}>{Localize.t('global.checkAmount')}</Text>
+                        <View style={styles.contentBox}>
+                            <AmountText
+                                value={checkObject.SendMax!.value}
+                                currency={checkObject.SendMax!.currency}
+                                style={styles.amount}
+                                immutable
+                            />
+                        </View>
+                    </>
+                )}
 
                 {/* Amount */}
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                 <View style={styles.contentBox}>
-                    <TouchableOpacity
-                        activeOpacity={1}
-                        style={AppStyles.row}
-                        onPress={() => {
-                            if (editableAmount && this.amountInput) {
-                                this.amountInput.current?.focus();
-                            }
-                        }}
-                    >
+                    <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.focusAmountInput}>
                         {editableAmount ? (
                             <>
                                 <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -164,11 +167,7 @@ class CheckCashTemplate extends Component<Props, State> {
                                     <Text style={styles.amountInput}> {currencyName}</Text>
                                 </View>
                                 <Button
-                                    onPress={() => {
-                                        if (this.amountInput) {
-                                            this.amountInput.current?.focus();
-                                        }
-                                    }}
+                                    onPress={this.focusAmountInput}
                                     style={styles.editButton}
                                     roundedSmall
                                     icon="IconEdit"
@@ -178,7 +177,7 @@ class CheckCashTemplate extends Component<Props, State> {
                             </>
                         ) : (
                             <AmountText
-                                value={cashAmount}
+                                value={cashAmount!}
                                 currency={transaction[amountField]?.currency || NetworkService.getNativeAsset()}
                                 style={styles.amountInput}
                                 immutable

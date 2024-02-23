@@ -1,0 +1,10 @@
+{
+  "tx": {
+    "TransactionType": "AMMVote",
+    "Account": "rP5ZkB5RZQaECsSVR4DeSFK4fAw52BYtbw",
+    "Asset": {"currency": "XRP"},
+    "Asset2": {"currency": "ETH", "issuer": "rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9"},
+    "TradingFee": 234
+  },
+  "meta": {}
+}

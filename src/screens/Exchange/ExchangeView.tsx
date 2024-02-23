@@ -22,7 +22,6 @@ import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
@@ -47,6 +46,7 @@ import Localize from '@locale';
 // style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -60,7 +60,7 @@ export interface State {
     expectedOutcome: string;
     minimumOutcome: string;
     exchangeRate: string;
-    liquidity: LiquidityResult;
+    liquidity?: LiquidityResult;
     isLoading: boolean;
     isExchanging: boolean;
 }
@@ -340,8 +340,11 @@ class ExchangeView extends Component<Props, State> {
             offer.TakerPays = { currency: NetworkService.getNativeAsset(), value: minimumOutcome };
         }
 
-        // ImmediateOrCancel & Sell flag
-        offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
+        // set ImmediateOrCancel & Sell flag
+        offer.Flags = {
+            ImmediateOrCancel: true,
+            Sell: true,
+        };
 
         // generate payload
         const payload = Payload.build(offer.Json);
@@ -363,7 +366,7 @@ class ExchangeView extends Component<Props, State> {
         });
     };
 
-    onReviewScreenResolve = (offer: OfferCreate) => {
+    onReviewScreenResolve = (offer: OfferCreate & SignMixinType & MutationsMixinType) => {
         const { account } = this.props;
 
         this.setState({
@@ -381,9 +384,11 @@ class ExchangeView extends Component<Props, State> {
         }
 
         if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(offer.GetOfferStatus(account.address)) > -1) {
+            const balanceChanges = offer.BalanceChange(account.address);
+
             // calculate delivered amounts
-            const takerGot = offer.TakerGot(account.address);
-            const takerPaid = offer.TakerPaid(account.address);
+            const takerGot = balanceChanges?.sent!;
+            const takerPaid = balanceChanges?.received!;
 
             this.showResultAlert(
                 Localize.t('global.success'),
@@ -394,9 +399,8 @@ class ExchangeView extends Component<Props, State> {
                     getCurrency: NormalizeCurrencyCode(takerPaid.currency),
                 }),
             );
-        } else {
-            this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
         }
+        this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
     };
 
     onAmountChange = (amount: string) => {
@@ -445,7 +449,7 @@ class ExchangeView extends Component<Props, State> {
 
         let errorsText = '';
 
-        liquidity.errors.forEach((e, i) => {
+        liquidity?.errors.forEach((e, i) => {
             errorsText += `* ${this.ledgerExchange.errors[e]}`;
             if (i + 1 < liquidity.errors.length) {
                 errorsText += '\n';

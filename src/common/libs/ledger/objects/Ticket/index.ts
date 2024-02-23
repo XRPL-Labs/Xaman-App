@@ -1,3 +1,3 @@
-export { default as Ticket } from './TicketClass';
-export { default as TicketValidation } from './TicketValidation';
-export { default as TicketInfo } from './TicketInfo';
+export { default as Ticket } from './Ticket.class';
+export { default as TicketValidation } from './Ticket.validation';
+export { default as TicketInfo } from './Ticket.info';

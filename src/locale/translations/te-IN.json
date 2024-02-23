@@ -362,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "చెల్లింపులు మరియు చెల్లింపు అభ్యర్థనలు XRP లెడ్జర్‌లో",
@@ -659,7 +660,7 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
@@ -1056,7 +1057,8 @@
     "addingTrustLineWarning": "XRPL Labs/Xaman ఏదైనా టోకెన్ లేదా టోకెన్ జారీని దోహదించదు. మీరు టోకెన్ జారీని విశ్వసించండి ఉంటే మాత్రమే కదిలించాలి.\nటోకెన్ (ట్రస్ట్ లైన్) గురించి ప్రశ్నలు లేదా సమస్యలు లేదా సమస్యలు విషయంలో మీరు టోకెన్ జారీని సంప్రదించవలసి ఉంటుంది.\n\nమీ సొంత ప్రమాదంలో కొనసాగించు.",
     "trustLineIsAlreadyExist": "ఈ టోకెన్ ఇప్పటికే వుంది. మీరు మళ్ళీ అదే టోకెన్ను జతచేయలేరు.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "మార్పిడి",
