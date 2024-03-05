@@ -27,7 +27,7 @@ export interface Props {
 
 export interface State {}
 /* Component ==================================================================== */
-class ConfirmDestinationTagModal extends Component<Props, State> {
+class ConfirmDestinationTagOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ConfirmDestinationTag;
 
     private animateScale: Animated.Value;
@@ -166,4 +166,4 @@ class ConfirmDestinationTagModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ConfirmDestinationTagModal;
+export default ConfirmDestinationTagOverlay;

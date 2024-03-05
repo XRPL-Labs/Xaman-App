@@ -17,21 +17,13 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    testID?: string;
-    type: 'success' | 'info' | 'warning' | 'error';
-    text: string;
-    title?: string;
-    buttons: { text: string; onPress: () => void; type?: 'continue' | 'dismiss'; light?: boolean }[];
-    onDismissed?: () => void;
-}
+import { Props, State } from './types';
 
-export interface State {}
 /* Component ==================================================================== */
-class AlertModal extends Component<Props, State> {
+class AlertOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Alert;
 
-    private backHandler: NativeEventSubscription | undefined;
+    private backHandler?: NativeEventSubscription;
     private animateScale: Animated.Value;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
@@ -228,4 +220,4 @@ class AlertModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AlertModal;
+export default AlertOverlay;

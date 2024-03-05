@@ -16,6 +16,8 @@ import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 
+import { ExplainBalanceOverlayProps } from '@screens/Overlay/ExplainBalance';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -33,7 +35,7 @@ class ReserveChange extends PureComponent<Props> {
             return;
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
+        Navigator.showOverlay<ExplainBalanceOverlayProps>(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     getLedgerObjectChanges = (): OwnerCountChangeType | undefined => {

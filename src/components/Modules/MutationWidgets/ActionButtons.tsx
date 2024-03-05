@@ -17,6 +17,8 @@ import { Button } from '@components/General';
 
 import { AccountRepository } from '@store/repositories';
 
+import { Props as SendViewProps } from '@screens/Send/types';
+
 import Localize from '@locale';
 
 import styles from './styles';
@@ -190,7 +192,7 @@ class ActionButtons extends PureComponent<Props, State> {
                 );
                 Object.assign(params, { currency: trustLine });
             }
-            Navigator.push(AppScreens.Transaction.Payment, params);
+            Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, params);
         }
 
         // when the Escrow is eligible for release, we'll leave out the button if an escrow has a condition,

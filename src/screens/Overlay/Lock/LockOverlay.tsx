@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import { View, Text, SafeAreaView, Image, Platform, Keyboard, InteractionManager } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
 
 import { AuthenticationService, StyleService } from '@services';
 
@@ -16,27 +15,18 @@ import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
-// components
 import { SecurePinInput, BlurView } from '@components/General';
 
 import Localize from '@locale';
 
-// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    onUnlock: () => void;
-}
+import { Props, State } from './types';
 
-export interface State {
-    coreSettings: CoreModel;
-    isBiometricAvailable: boolean;
-    error?: string;
-}
 /* Component ==================================================================== */
-class LockModal extends Component<Props, State> {
+class LockOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Lock;
 
     private securePinInputRef: React.RefObject<SecurePinInput>;
@@ -198,4 +188,4 @@ class LockModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default LockModal;
+export default LockOverlay;

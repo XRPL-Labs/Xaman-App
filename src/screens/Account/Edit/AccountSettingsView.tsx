@@ -21,7 +21,13 @@ import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@compon
 
 import Localize from '@locale';
 
-// style
+import { PickerModalProps } from '@screens/Global/Picker';
+import { AccountImportViewProps } from '@screens/Account/Add/Import';
+import { ChangePassphraseViewProps } from '@screens/Account/Edit/ChangePassphrase';
+import { ChangeTangemSecurityViewProps } from '@screens/Account/Edit/ChangeTangemSecurity';
+import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
+import { PassphraseAuthenticationOverlayProps } from '@screens/Overlay/PassphraseAuthentication';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -114,7 +120,7 @@ class AccountSettingsView extends Component<Props, State> {
     showAccessLevelPicker = () => {
         const { account } = this.state;
 
-        Navigator.push(AppScreens.Global.Picker, {
+        Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
             title: Localize.t('account.accessLevel'),
             description: Localize.t('account.accessLevelChangeAlert'),
             items: [
@@ -131,13 +137,13 @@ class AccountSettingsView extends Component<Props, State> {
 
         // auth with passcode for accounts with Passcode as encryption level
         if (account.encryptionLevel === EncryptionLevels.Passcode) {
-            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: this.downgradeAccountAccessLevel,
             });
             // for accounts with passphrase auth with passphrase
         } else if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+            Navigator.showOverlay<PassphraseAuthenticationOverlayProps>(AppScreens.Overlay.PassphraseAuthentication, {
                 account,
                 onSuccess: this.downgradeAccountAccessLevel,
             });
@@ -191,7 +197,7 @@ class AccountSettingsView extends Component<Props, State> {
                     text: Localize.t('global.doIt'),
                     testID: 'yes-iam-sure-button',
                     onPress: () => {
-                        Navigator.push(AppScreens.Account.Import, { upgradeAccount: account });
+                        Navigator.push<AccountImportViewProps>(AppScreens.Account.Import, { upgradeAccount: account });
                     },
                 },
             ],
@@ -201,12 +207,12 @@ class AccountSettingsView extends Component<Props, State> {
 
     showChangePassphrase = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangePassphrase, { account });
+        Navigator.push<ChangePassphraseViewProps>(AppScreens.Account.Edit.ChangePassphrase, { account });
     };
 
     showChangeTangemSecurity = () => {
         const { account } = this.props;
-        Navigator.push(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
+        Navigator.push<ChangeTangemSecurityViewProps>(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
     };
 
     removeAccount = () => {
@@ -240,7 +246,7 @@ class AccountSettingsView extends Component<Props, State> {
         }
 
         // auth with passcode for full access accounts
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+        Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: this.removeAccount,
         });

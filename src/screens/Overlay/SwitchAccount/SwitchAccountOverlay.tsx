@@ -3,7 +3,6 @@
  */
 
 import { find } from 'lodash';
-import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
@@ -17,30 +16,17 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
-// components
 import { TouchableDebounce, Button, Icon, ActionPanel } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { AccountAddViewProps } from '@screens/Account/Add';
+
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    discreetMode: boolean;
-    showAddAccountButton: boolean;
-    onClose?: () => void;
-    onSwitch?: (account: AccountModel) => void;
-}
-
-export interface State {
-    defaultAccount?: AccountModel;
-    accounts?: Realm.Results<AccountModel>;
-    signableAccount?: Array<AccountModel>;
-    contentHeight: number;
-    paddingBottom: number;
-}
+import { Props, State } from './types';
 
 const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 /* Component ==================================================================== */
@@ -120,7 +106,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
         this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Account.Add);
+            Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
         }, 300);
     };
 

@@ -27,7 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     onSuccessSync: (changes: Record<string, any[]>) => void;
-    onError: () => void;
+    onError?: () => void;
 }
 
 export interface State {
@@ -37,7 +37,7 @@ export interface State {
     headerHeight: number;
 }
 /* Component ==================================================================== */
-class NetworkRailsSyncModal extends Component<Props, State> {
+class NetworkRailsSyncOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.NetworkRailsSync;
 
     private readonly animatedDialog = React.createRef<AnimatedDialog>();
@@ -362,4 +362,4 @@ class NetworkRailsSyncModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default NetworkRailsSyncModal;
+export default NetworkRailsSyncOverlay;

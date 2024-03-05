@@ -12,25 +12,25 @@ import { AccountRepository, CoreRepository, NetworkRepository } from '@store/rep
 import { NetworkType } from '@store/types';
 import { AccountModel } from '@store/models';
 
-// components
-import { Button, Icon, InfoMessage, Spacer } from '@components/General';
-import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
-
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
+import { Images } from '@common/helpers/images';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
+import { Button, Icon, InfoMessage, Spacer } from '@components/General';
+import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
+
 import Localize from '@locale';
+
+import { AccountAddViewProps } from '@screens/Account/Add';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-import { Images } from '@common/helpers/images';
-
 /* types ==================================================================== */
 enum RequiredActionsType {
     SWITCH_NETWORK = 'SWITCH_NETWORK',
@@ -325,7 +325,7 @@ class PreflightStep extends Component<Props, State> {
         await Navigator.dismissModal();
 
         // push to the screen
-        Navigator.push(AppScreens.Account.Add);
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
     renderForcedSigners = () => {

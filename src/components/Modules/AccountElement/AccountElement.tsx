@@ -5,14 +5,17 @@ import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-nati
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
+import { Props as ParticipantMenuOverlayProps } from '@screens/Overlay/ParticipantMenu/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
-import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
 
 /* Types ==================================================================== */
 
@@ -163,7 +166,7 @@ class AccountElement extends Component<Props, State> {
     onMenuPress = () => {
         const { address, tag } = this.props;
 
-        Navigator.showOverlay(AppScreens.Overlay.ParticipantMenu, {
+        Navigator.showOverlay<ParticipantMenuOverlayProps>(AppScreens.Overlay.ParticipantMenu, {
             address,
             tag,
         });

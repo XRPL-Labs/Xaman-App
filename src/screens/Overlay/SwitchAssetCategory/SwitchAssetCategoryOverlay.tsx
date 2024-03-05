@@ -5,8 +5,6 @@
 import React, { Component } from 'react';
 import { Animated, Text, View } from 'react-native';
 
-import { ASSETS_CATEGORY } from '@components/Modules/AssetsList/AssetsList';
-
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
@@ -19,14 +17,10 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    selected: ASSETS_CATEGORY;
-    onSelect: (asset: ASSETS_CATEGORY) => void;
-}
+import { ASSETS_CATEGORY, Props, State } from './types';
 
-export interface State {}
 /* Component ==================================================================== */
-class SwitchAssetCategoryModal extends Component<Props, State> {
+class SwitchAssetCategoryOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SwitchAssetCategory;
 
     private animatedColor: Animated.Value;
@@ -125,4 +119,4 @@ class SwitchAssetCategoryModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default SwitchAssetCategoryModal;
+export default SwitchAssetCategoryOverlay;

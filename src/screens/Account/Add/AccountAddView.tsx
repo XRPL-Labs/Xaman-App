@@ -27,7 +27,9 @@ import { Button, Header, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { AccountGenerateViewProps } from '@screens/Account/Add/Generate';
+import { AccountImportViewProps } from '@screens/Account/Add/Import';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -43,7 +45,7 @@ export interface State {
 class AccountAddView extends Component<Props, State> {
     static screenName = AppScreens.Account.Add;
 
-    private nfcChangeListener: EventSubscription | undefined;
+    private nfcChangeListener?: EventSubscription;
 
     static options() {
         return {
@@ -93,12 +95,12 @@ class AccountAddView extends Component<Props, State> {
         });
     };
 
-    goToImport = (props?: any) => {
-        Navigator.push(AppScreens.Account.Import, props);
+    goToImport = (props: AccountImportViewProps = {}) => {
+        Navigator.push<AccountImportViewProps>(AppScreens.Account.Import, props);
     };
 
     goToGenerate = () => {
-        Navigator.push(AppScreens.Account.Generate);
+        Navigator.push<AccountGenerateViewProps>(AppScreens.Account.Generate, {});
     };
 
     validateAndImportCard = (card: Card) => {
@@ -198,12 +200,11 @@ class AccountAddView extends Component<Props, State> {
                 ],
                 { type: 'default' },
             );
-        } catch (e) {
-            // @ts-ignore
-            if (e?.message && e?.message === 'The user cancelled the operation') {
+        } catch (error: any) {
+            if (error?.message && error?.message === 'The user cancelled the operation') {
                 return;
             }
-            LoggerService.recordError('Unexpected error in scanning tangem card', e);
+            LoggerService.recordError('Unexpected error in scanning tangem card', error);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -234,13 +235,11 @@ class AccountAddView extends Component<Props, State> {
 
     render() {
         return (
-            <View testID="account-add-screen" style={[AppStyles.container]}>
+            <View testID="account-add-screen" style={AppStyles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('account.addAccount') }}
                 />
@@ -256,7 +255,7 @@ class AccountAddView extends Component<Props, State> {
                                 source={StyleService.getImage('ImageAddAccount')}
                             />
                         </View>
-                        <View style={[AppStyles.flexEnd]}>
+                        <View style={AppStyles.flexEnd}>
                             <Text style={[AppStyles.emptyText, AppStyles.baseText]}>
                                 {Localize.t('account.addAccountDescription')}
                             </Text>
@@ -278,8 +277,8 @@ class AccountAddView extends Component<Props, State> {
                                     onPress={this.goToImport}
                                 />
 
-                                <View style={[styles.separatorContainer]}>
-                                    <Text style={[styles.separatorText]}>{Localize.t('global.or')}</Text>
+                                <View style={styles.separatorContainer}>
+                                    <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
                                 </View>
 
                                 <Button

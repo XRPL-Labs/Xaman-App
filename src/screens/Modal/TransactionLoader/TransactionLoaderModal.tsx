@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, InteractionManager, ImageBackground } from 'react-native';
+import { ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
@@ -13,6 +13,8 @@ import StyleService from '@services/StyleService';
 import { AppScreens } from '@common/constants';
 
 import { TransactionFactory } from '@common/libs/ledger/factory';
+import { MixingTypes, MutationsMixinType } from '@common/libs/ledger/mixin/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -20,12 +22,12 @@ import { CoreRepository, NetworkRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
-// components
-import { Icon, Spacer, LoadingIndicator, InfoMessage, Button, Footer } from '@components/General';
+import { Button, Footer, Icon, InfoMessage, LoadingIndicator, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { TransactionDetailsViewProps } from '@screens/Events/Details';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -138,7 +140,8 @@ class TransactionLoaderModal extends Component<Props, State> {
             delete resp.inLedger;
 
             // build transaction instance
-            const transactionInstance = TransactionFactory.fromJson(resp);
+            const transactionInstance = TransactionFactory.fromJson(resp, [MixingTypes.Mutation]) as Transactions &
+                MutationsMixinType;
 
             // switch to the right account if necessary
             const coreSettings = CoreRepository.getSettings();
@@ -154,10 +157,9 @@ class TransactionLoaderModal extends Component<Props, State> {
 
             // redirect to details screen with a little-bit delay
             setTimeout(() => {
-                Navigator.showModal(AppScreens.Transaction.Details, {
+                Navigator.showModal<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
                     item: transactionInstance,
                     account,
-                    asModal: true,
                 });
             }, 500);
         } catch (error) {

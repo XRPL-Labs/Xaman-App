@@ -33,7 +33,7 @@ export interface State {
     isLoading: boolean;
 }
 /* Component ==================================================================== */
-class FlaggedDestinationModal extends Component<Props, State> {
+class FlaggedDestinationOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.FlaggedDestination;
 
     private animatedColor: Animated.Value;
@@ -277,4 +277,4 @@ class FlaggedDestinationModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default FlaggedDestinationModal;
+export default FlaggedDestinationOverlay;

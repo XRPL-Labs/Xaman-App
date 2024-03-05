@@ -12,6 +12,8 @@ import { NetworkModel } from '@store/models';
 
 import { Icon, TouchableDebounce } from '@components/General';
 
+import { SwitchNetworkOverlayProps } from '@screens/Overlay/SwitchNetwork';
+
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
@@ -161,7 +163,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
             isSwitcherOpen: true,
         });
 
-        Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork, {
+        Navigator.showOverlay<SwitchNetworkOverlayProps>(AppScreens.Overlay.SwitchNetwork, {
             onChangeNetwork: this.debouncedOnNetworkChange,
             onClose: this.onSwitcherClose,
         });

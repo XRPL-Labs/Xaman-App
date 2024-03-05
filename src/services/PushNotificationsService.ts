@@ -8,12 +8,12 @@ import EventEmitter from 'events';
 
 import { Alert, NativeModules, Platform } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { utils } from 'xrpl-accountlib';
 
 import { AccountRepository } from '@store/repositories';
 
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
@@ -265,7 +265,7 @@ class PushNotificationsService extends EventEmitter {
      * @param options - screen options
      * @param screenType - screen type
      */
-    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: AppScreenKeys, passProps: any, options: any, screenType?: ComponentTypes) => {
         // check if we need to close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
@@ -380,7 +380,7 @@ class PushNotificationsService extends EventEmitter {
         if (
             typeof address !== 'string' ||
             typeof hash !== 'string' ||
-            !utils.isValidAddress(address) ||
+            !AccountLibUtils.isValidAddress(address) ||
             !StringTypeCheck.isValidHash(hash)
         ) {
             return;

@@ -32,12 +32,12 @@ import {
 
 import { AccountPicker, FeePicker } from '@components/Modules';
 
-// locale
 import Localize from '@locale';
 
-// style
-import { AppStyles, AppColors } from '@theme';
+import { EnterDestinationTagOverlayProps } from '@screens/Overlay/EnterDestinationTag';
+import { ConfirmDestinationTagOverlayProps } from '@screens/Overlay/ConfirmDestinationTag';
 
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -132,8 +132,8 @@ class SummaryStep extends Component<Props, State> {
             });
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
-            buttonType: 'apply',
+        Navigator.showOverlay<EnterDestinationTagOverlayProps>(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'set',
             destination,
             onFinish: (destinationTag: string) => {
                 Object.assign(destination, { tag: destinationTag });
@@ -197,8 +197,8 @@ class SummaryStep extends Component<Props, State> {
         }
 
         if (!isEmpty(destination!.tag) && destination!.tag !== confirmedDestinationTag) {
-            Navigator.showOverlay(AppScreens.Overlay.ConfirmDestinationTag, {
-                destinationTag: destination!.tag,
+            Navigator.showOverlay<ConfirmDestinationTagOverlayProps>(AppScreens.Overlay.ConfirmDestinationTag, {
+                destinationTag: `${destination!.tag ?? ''}`,
                 onConfirm: this.onDestinationTagConfirm,
                 onChange: this.showEnterDestinationTag,
             });

@@ -17,24 +17,16 @@ import { Button, Spacer, ActionPanel } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
 import { GetAccountLink } from '@common/utils/explorer';
+import { AccountNameType } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
-// style
+import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
+
 import { AppStyles, AppSizes } from '@theme';
-import { AccountNameType } from '@common/helpers/resolver';
+
 /* types ==================================================================== */
-
-export interface Props {
-    address: string;
-    tag?: number;
-    onClose: () => void;
-}
-
-export interface State {
-    recipientName?: string;
-    contactExist: boolean;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
 class ParticipantMenuOverlay extends Component<Props, State> {
@@ -102,7 +94,11 @@ class ParticipantMenuOverlay extends Component<Props, State> {
         this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Settings.AddressBook.Add, { address, tag, name: recipientName });
+            Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {
+                address,
+                tag: `${tag ?? ''}`,
+                name: recipientName,
+            });
         }, 500);
     };
 

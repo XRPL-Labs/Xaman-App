@@ -14,12 +14,11 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import { StyleService, BackendService, NetworkService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import { NormalizeDestination } from '@common/utils/codec';
@@ -37,21 +36,10 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    onRead: (decoded: any) => void;
-    onClose?: () => void;
-    blackList?: StringType[];
-    type: StringType;
-    fallback?: boolean;
-}
-
-export interface State {
-    isLoading: boolean;
-    coreSettings: CoreModel;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
-class ScanView extends Component<Props, State> {
+class ScanModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
@@ -96,7 +84,7 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = value;
     };
 
-    routeUser = async (screen: string, passProps?: any, options?: any) => {
+    routeUser = async (screen: AppScreenKeys, passProps?: any, options?: any) => {
         // close scan modal
         await Navigator.dismissModal();
 
@@ -429,7 +417,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // if any black list defined check in the list
-        if (!type && onRead && blackList) {
+        if (!type && typeof onRead === 'function' && blackList) {
             if (blackList.indexOf(detectedType) === -1) {
                 Navigator.dismissModal();
                 onRead(content);
@@ -443,7 +431,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // just return scanned content
-        if (!type && onRead) {
+        if (!type && typeof onRead === 'function') {
             Navigator.dismissModal();
             onRead(content);
             return;
@@ -452,7 +440,7 @@ class ScanView extends Component<Props, State> {
         const parsed = new StringDecoder(detected).getAny();
 
         // the other component wants to handle the decoded content
-        if (detectedType === type && onRead) {
+        if (detectedType === type && typeof onRead === 'function') {
             onRead(parsed);
             Navigator.dismissModal();
             return;
@@ -715,4 +703,4 @@ class ScanView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ScanView;
+export default ScanModal;

@@ -13,6 +13,10 @@ import { AccountModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
 
+import { AddTokenOverlayProps } from '@screens/Overlay/AddToken';
+import { ExplainBalanceOverlayProps } from '@screens/Overlay/ExplainBalance';
+import { Props as TokenSettingsOverlayProps } from '@screens/Overlay/TokenSettings/types';
+
 import { TokenItem } from '@components/Modules/AssetsList/Tokens/TokenItem';
 import { NativeItem } from '@components/Modules/AssetsList/Tokens/NativeItem';
 import { ListHeader } from '@components/Modules/AssetsList/Tokens/ListHeader';
@@ -179,7 +183,7 @@ class TokensList extends Component<Props, State> {
 
     onTokenAddButtonPress = () => {
         const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.AddToken, { account });
+        Navigator.showOverlay<AddTokenOverlayProps>(AppScreens.Overlay.AddToken, { account });
     };
 
     onTokenItemPress = (token: TrustLineModel) => {
@@ -192,7 +196,7 @@ class TokensList extends Component<Props, State> {
         }
 
         if (spendable) {
-            Navigator.showOverlay(
+            Navigator.showOverlay<TokenSettingsOverlayProps>(
                 AppScreens.Overlay.TokenSettings,
                 { trustLine: token, account },
                 {
@@ -206,7 +210,7 @@ class TokensList extends Component<Props, State> {
 
     onNativeItemPress = () => {
         const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
+        Navigator.showOverlay<ExplainBalanceOverlayProps>(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     onCategoryChangePress = () => {

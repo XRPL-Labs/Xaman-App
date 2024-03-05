@@ -21,7 +21,8 @@ import { NodeList } from '@components/Modules';
 
 import Localize from '@locale';
 
-// style
+import { NetworkRailsSyncOverlayProps } from '@screens/Overlay/NetworkRailsSync';
+
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -124,7 +125,7 @@ class NetworkSettingView extends Component<Props, State> {
     };
 
     showNetworkRailsSync = async () => {
-        Navigator.showOverlay(AppScreens.Overlay.NetworkRailsSync, {
+        Navigator.showOverlay<NetworkRailsSyncOverlayProps>(AppScreens.Overlay.NetworkRailsSync, {
             onSuccessSync: this.onSuccessSync,
         });
     };

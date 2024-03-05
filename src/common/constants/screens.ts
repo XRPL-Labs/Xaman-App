@@ -103,6 +103,6 @@ const screens = {
         Picker: 'app.global.Picker',
         Placeholder: 'app.global.Placeholder',
     },
-};
+} as const;
 
 export default screens;

@@ -22,7 +22,7 @@ export interface Props {}
 
 export interface State {}
 /* Component ==================================================================== */
-class ConnectionIssueModal extends Component<Props, State> {
+class ConnectionIssueOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ConnectionIssue;
 
     private animatedColor: Animated.Value;
@@ -98,4 +98,4 @@ class ConnectionIssueModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ConnectionIssueModal;
+export default ConnectionIssueOverlay;

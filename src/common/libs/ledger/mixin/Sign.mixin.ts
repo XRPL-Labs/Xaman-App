@@ -12,9 +12,13 @@ import Localize from '@locale';
 import { SignedObjectType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
+import { Props as VaultOverlayProps } from '@screens/Overlay/Vault/types';
+
 /* Types ==================================================================== */
-import { Constructor, SignMethodType, SignMixinType } from './types';
 import { TransactionResult } from '@common/libs/ledger/parser/types';
+import { SignableTransaction } from '@common/libs/ledger/transactions/types';
+
+import { Constructor, SignMethodType, SignMixinType } from './types';
 
 /* Mixin ==================================================================== */
 export function SignMixin<TBase extends Constructor>(Base: TBase) {
@@ -221,10 +225,10 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                     }
 
                     // show vault overlay and handle the reset of signing
-                    Navigator.showOverlay(AppScreens.Overlay.Vault, {
+                    Navigator.showOverlay<VaultOverlayProps>(AppScreens.Overlay.Vault, {
                         account,
                         multiSign,
-                        transaction: this,
+                        transaction: this as unknown as SignableTransaction,
                         onSign: (signedObject: SignedObjectType) => {
                             const { id, signedTransaction, signerPubKey, signMethod, signers } = signedObject;
 

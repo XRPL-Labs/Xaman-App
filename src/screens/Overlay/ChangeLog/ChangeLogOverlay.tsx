@@ -4,7 +4,6 @@
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
 
-import { CoreModel } from '@store/models';
 import { CoreRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -19,16 +18,10 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    version: string;
-}
-
-export interface State {
-    coreSettings: CoreModel;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
-class ChangeLogModalView extends Component<Props, State> {
+class ChangeLogOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ChangeLog;
 
     private animatedColor: Animated.Value;
@@ -127,4 +120,4 @@ class ChangeLogModalView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ChangeLogModalView;
+export default ChangeLogOverlay;

@@ -41,8 +41,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
-    onDismissed: () => void;
     onSuccess: (passphrase: string) => void;
+    onDismissed?: () => void;
 }
 
 export interface State {
@@ -51,7 +51,7 @@ export interface State {
     offsetBottom: number;
 }
 /* Component ==================================================================== */
-class PassphraseAuthenticationModal extends Component<Props, State> {
+class PassphraseAuthenticationOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.PassphraseAuthentication;
     private contentViewRef: React.RefObject<View>;
     private passwordInputRef: React.RefObject<PasswordInput>;
@@ -311,4 +311,4 @@ class PassphraseAuthenticationModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default PassphraseAuthenticationModal;
+export default PassphraseAuthenticationOverlay;

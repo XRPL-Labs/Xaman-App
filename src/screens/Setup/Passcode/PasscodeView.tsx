@@ -17,13 +17,14 @@ import { VibrateHapticFeedback, Toast, Prompt } from '@common/helpers/interface'
 
 import { PushNotificationsService, StyleService } from '@services';
 
-// components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
 
-// locale
 import Localize from '@locale';
 
-// style
+import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
+import { BiometrySetupViewProps } from '@screens/Setup/Biometry';
+import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -92,7 +93,7 @@ class PasscodeSetupView extends Component<Props, State> {
             }
             // if biometric auth supported move to page
             if (await this.isBiometricSupported()) {
-                Navigator.push(AppScreens.Setup.Biometric);
+                Navigator.push<BiometrySetupViewProps>(AppScreens.Setup.Biometric, {});
                 return;
             }
 
@@ -102,12 +103,12 @@ class PasscodeSetupView extends Component<Props, State> {
             // if push notification already granted then go to last part
             const granted = await PushNotificationsService.checkPermission();
             if (granted) {
-                Navigator.push(AppScreens.Setup.Disclaimers);
+                Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
                 return;
             }
 
             // go to the next step
-            Navigator.push(AppScreens.Setup.PushNotification);
+            Navigator.push<PushNotificationSetupViewProps>(AppScreens.Setup.PushNotification, {});
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         } finally {

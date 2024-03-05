@@ -24,6 +24,8 @@ import PushNotificationsService from '@services/PushNotificationsService';
 
 import Localize from '@locale';
 
+import { Props as LockOverlayProps } from '@screens/Overlay/Lock/types';
+
 /* Types  ==================================================================== */
 export enum LockStatus {
     LOCKED = 'LOCKED',
@@ -344,7 +346,7 @@ class AuthenticationService extends EventEmitter {
                 realTime - (coreSettings.lastUnlockedTimestamp ?? 0) > coreSettings.minutesAutoLock * 60
             ) {
                 // show lock overlay
-                await Navigator.showOverlay(
+                await Navigator.showOverlay<LockOverlayProps>(
                     AppScreens.Overlay.Lock,
                     {},
                     {

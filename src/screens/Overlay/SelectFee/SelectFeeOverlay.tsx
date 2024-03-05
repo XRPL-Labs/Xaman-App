@@ -19,21 +19,7 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-interface FeeItem {
-    type: string;
-    value: number;
-    suggested?: boolean;
-}
-
-interface Props {
-    availableFees: FeeItem[];
-    selectedFee: FeeItem;
-    onSelect: (fee: FeeItem) => void;
-}
-
-interface State {
-    selected: FeeItem;
-}
+import { FeeItem, Props, State } from './types';
 
 /* Component ==================================================================== */
 class SelectFeeOverlay extends Component<Props, State> {

@@ -1,3 +1,4 @@
-import AccountAddContainer from './AccountAddView';
+import AccountAddView, { Props as AccountAddViewProps } from './AccountAddView';
 
-export default AccountAddContainer;
+export type { AccountAddViewProps };
+export default AccountAddView;

@@ -17,14 +17,12 @@ import { TouchableDebounce, Badge, Button, LoadingIndicator, InfoMessage } from 
 
 import Localize from '@locale';
 
+import { FeeItem, Props as SelectFeeOverlayProps } from '@screens/Overlay/SelectFee/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
-export interface FeeItem {
-    type: string;
-    value: string;
-}
 interface Props {
     txJson: any;
     containerStyle?: ViewStyle | ViewStyle[];
@@ -130,9 +128,9 @@ class FeePicker extends Component<Props, State> {
     showFeeSelectOverlay = () => {
         const { availableFees, selected } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.SelectFee, {
-            availableFees,
-            selectedFee: selected,
+        Navigator.showOverlay<SelectFeeOverlayProps>(AppScreens.Overlay.SelectFee, {
+            availableFees: availableFees!,
+            selectedFee: selected!,
             onSelect: this.onSelect,
         });
     };

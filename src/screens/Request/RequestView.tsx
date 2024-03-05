@@ -41,9 +41,9 @@ import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-interface Props {}
+export interface Props {}
 
-interface State {
+export interface State {
     coreSettings: CoreModel;
     accounts: Realm.Results<AccountModel>;
     source: AccountModel;

@@ -12,24 +12,24 @@ import { Clipboard } from '@common/helpers/clipboard';
 
 import { AccountModel } from '@store/models';
 
-// components
 import { ActionPanel, Button, QRCode, Footer } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { RequestViewProps } from '@screens/Request';
+
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-interface Props {
+export interface Props {
     account: AccountModel;
 }
 
-interface State {}
+export interface State {}
 
 /* Component ==================================================================== */
-class ShareAccountModal extends Component<Props, State> {
+class ShareAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.ShareAccount;
 
     private actionPanelRef: React.RefObject<ActionPanel>;
@@ -82,7 +82,7 @@ class ShareAccountModal extends Component<Props, State> {
         this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Transaction.Request);
+            Navigator.push<RequestViewProps>(AppScreens.Transaction.Request, {});
         }, 1000);
     };
 
@@ -171,4 +171,4 @@ class ShareAccountModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ShareAccountModal;
+export default ShareAccountOverlay;

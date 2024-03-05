@@ -57,10 +57,10 @@ export interface State {
 }
 
 /* Component ==================================================================== */
-class EventsFilterView extends Component<Props, State> {
+class EventsFilterModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.FilterEvents;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof EventsFilterView.defaultProps>>;
+    declare readonly props: Props & Required<Pick<Props, keyof typeof EventsFilterModal.defaultProps>>;
 
     private backHandler: NativeEventSubscription | undefined;
 
@@ -290,4 +290,4 @@ class EventsFilterView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default EventsFilterView;
+export default EventsFilterModal;

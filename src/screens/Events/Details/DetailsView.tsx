@@ -40,7 +40,6 @@ import { AppStyles } from '@theme';
 export interface Props {
     item: (Transactions | LedgerObjects) & MutationsMixinType;
     account: AccountModel;
-    componentType: ComponentTypes;
 }
 
 export interface State {
@@ -54,7 +53,7 @@ type WidgetComponents = {
 };
 
 /* Component ==================================================================== */
-class TransactionDetailsView extends Component<Props, State> {
+class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {
     static screenName = AppScreens.Transaction.Details;
 
     private navigationListener: any;
@@ -66,7 +65,7 @@ class TransactionDetailsView extends Component<Props, State> {
         };
     }
 
-    constructor(props: Props) {
+    constructor(props: Props & { componentType: ComponentTypes }) {
         super(props);
 
         this.state = {

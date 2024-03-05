@@ -13,8 +13,6 @@ import { derive } from 'xrpl-accountlib';
 
 import { StringType, XrplSecret } from 'xumm-string-decode';
 
-import Localize from '@locale';
-
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -30,7 +28,10 @@ import {
     Footer,
 } from '@components/General';
 
-// style
+import Localize from '@locale';
+
+import { ScanModalProps } from '@screens/Modal/Scan';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -158,7 +159,7 @@ class EnterMnemonicStep extends Component<Props, State> {
     };
 
     showScanner = () => {
-        Navigator.showModal(AppScreens.Modal.Scan, {
+        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
             onRead: this.onScannerRead,
             type: StringType.XrplSecret,
         });

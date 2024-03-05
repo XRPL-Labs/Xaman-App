@@ -18,6 +18,8 @@ import { VersionDiff } from '@common/utils/version';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 
+import { Props as ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog/types';
+
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
@@ -86,7 +88,7 @@ class AppService extends EventEmitter {
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
             // showChangeLogModal
-            Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
+            Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
 
             // update the latest version code
             await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);

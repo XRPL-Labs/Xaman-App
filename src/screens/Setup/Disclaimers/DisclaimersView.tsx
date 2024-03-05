@@ -11,12 +11,12 @@ import { AppScreens } from '@common/constants';
 
 import StyleService from '@services/StyleService';
 
-import Localize from '@locale';
-
-// component
 import { Footer, NumberSteps, Spacer, ProgressBar, CheckBox } from '@components/General';
 
-// style
+import Localize from '@locale';
+
+import { FinishSetupViewProps } from '@screens/Setup/Finish';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -86,7 +86,7 @@ class DisclaimersView extends Component<Props, State> {
         });
 
         if (currentStep === 6) {
-            Navigator.push(AppScreens.Setup.Finish);
+            Navigator.push<FinishSetupViewProps>(AppScreens.Setup.Finish, {});
             return;
         }
 

@@ -16,37 +16,18 @@ import { TouchableDebounce, Header, Avatar, Icon, Spacer } from '@components/Gen
 
 import Localize from '@locale';
 
+import { EditThirdPartyAppViewProps } from '@screens/Settings/ThirdPartyApps/Edit';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export type ThirdPartyAppType = {
-    app: {
-        id: string;
-        name: string;
-        description: string;
-        icon: string;
-    };
-    urls: {
-        homepage?: string;
-        terms?: string;
-        support?: string;
-        privacy?: string;
-    };
-    grant: {
-        validity: number;
-        issued: string;
-        expires: string;
-    };
-    report?: string;
-};
-
 export interface Props {}
 
 export interface State {
     isLoading: boolean;
-    thirdPartyApps: ThirdPartyAppType[];
+    thirdPartyApps: XamanBackend.ThirdPartyPermissionResponse;
 }
 
 /* Component ==================================================================== */
@@ -87,7 +68,7 @@ class ThirdPartyAppsView extends Component<Props, State> {
 
     fetchThirdPartyApps = () => {
         BackendService.getThirdPartyApps()
-            .then((thirdPartyApps: ThirdPartyAppType[]) => {
+            .then((thirdPartyApps) => {
                 if (Array.isArray(thirdPartyApps)) {
                     this.setState({
                         thirdPartyApps,
@@ -108,11 +89,11 @@ class ThirdPartyAppsView extends Component<Props, State> {
             });
     };
 
-    onItemPress = (item: ThirdPartyAppType) => {
-        Navigator.push(AppScreens.Settings.ThirdPartyApps.Edit, { thirdPartyApp: item });
+    onItemPress = (item: XamanBackend.ThirdPartyPermission) => {
+        Navigator.push<EditThirdPartyAppViewProps>(AppScreens.Settings.ThirdPartyApps.Edit, { thirdPartyApp: item });
     };
 
-    renderItem = ({ item }: { item: ThirdPartyAppType }) => {
+    renderItem = ({ item }: { item: XamanBackend.ThirdPartyPermission }) => {
         const { app } = item;
 
         return (

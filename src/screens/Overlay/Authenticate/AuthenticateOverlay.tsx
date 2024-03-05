@@ -40,8 +40,8 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     canAuthorizeBiometrics: boolean;
-    onDismissed: () => void;
     onSuccess: () => void;
+    onDismissed?: () => void;
 }
 
 export interface State {
@@ -50,7 +50,7 @@ export interface State {
     offsetBottom: number;
 }
 /* Component ==================================================================== */
-class AuthenticateModal extends Component<Props, State> {
+class AuthenticateOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Auth;
     private contentViewRef: React.RefObject<View>;
     private securePinInputRef: React.RefObject<SecurePinInput>;
@@ -292,4 +292,4 @@ class AuthenticateModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AuthenticateModal;
+export default AuthenticateOverlay;

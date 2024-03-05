@@ -23,7 +23,7 @@ import styles from './styles';
 export interface Props {
     testID?: string;
     title: string;
-    task: () => Promise<void>;
+    task: () => Promise<any>;
     onSuccess: () => void;
     onError: (exception: any) => void;
 }
@@ -34,7 +34,7 @@ const WARMUP_TIMEOUT_SEC = 1500; // wait time before running the task
 const LONG_LAST_TASK_TIMEOUT_SEC = 5000; // set long lasting process after five seconds
 
 /* Component ==================================================================== */
-class CriticalProcessing extends Component<Props, State> {
+class CriticalProcessingOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.CriticalProcessing;
 
     private longTaskTimeout: NodeJS.Timeout | undefined;
@@ -196,4 +196,4 @@ class CriticalProcessing extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default CriticalProcessing;
+export default CriticalProcessingOverlay;

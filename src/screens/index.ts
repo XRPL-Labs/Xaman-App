@@ -9,7 +9,7 @@ import FinishSetup from './Setup/Finish';
 // TabBar
 import Home from './Home';
 import Events from './Events';
-import Profile from './xApps';
+import XApps from './xApps';
 import Settings from './Settings';
 
 // Account
@@ -98,20 +98,16 @@ import Placeholder from './Global/Placeholder';
 import Picker from './Global/Picker';
 
 export {
-    // onboarding
     Onboarding,
-    // Setup
     PasscodeSetup,
     BiometrySetup,
     PushNotificationSetup,
     DisclaimersSetup,
     FinishSetup,
-    // Tab bar
     Home,
     Events,
-    Profile,
+    XApps,
     Settings,
-    // Account
     AccountAdd,
     AccountList,
     AccountEdit,
@@ -120,7 +116,6 @@ export {
     AccountImport,
     AccountGenerate,
     AccountCipherMigrationView,
-    // Modals
     ReviewTransaction,
     Scan,
     Submit,
@@ -131,7 +126,6 @@ export {
     CurrencyPicker,
     DestinationPicker,
     TransactionLoader,
-    // overlay
     SwitchAccount,
     ShareAccount,
     AddToken,
@@ -158,31 +152,23 @@ export {
     SwitchNetwork,
     XAppInfo,
     NetworkRailsSync,
-    // transaction
     Send,
     Request,
     Exchange,
     TransactionDetails,
-    // addressBook
     AddressBook,
     AddContact,
     EditContact,
-    // settings
     GeneralSettings,
     AdvancedSettings,
     SecuritySettings,
     TermOfUse,
     Credits,
-    // change passcode
     ChangePasscode,
-    // third party apps
     ThirdPartyAppsList,
     EditThirdPartyApp,
-    // networks
     NetworkList,
-    // session logs
     SessionLog,
-    // global
     Picker,
     Placeholder,
 };

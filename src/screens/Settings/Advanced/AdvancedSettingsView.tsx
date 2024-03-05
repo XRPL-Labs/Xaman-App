@@ -5,7 +5,9 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Alert, Platform } from 'react-native';
 
-import { PushNotificationsService, ApiService } from '@services';
+import ApiService from '@services/ApiService';
+import PushNotificationsService from '@services/PushNotificationsService';
+import NetworkService from '@services/NetworkService';
 
 import { CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { CoreModel, ProfileModel } from '@store/models';
@@ -20,10 +22,14 @@ import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
+import { SessionLogViewProps } from '@screens/Settings/Advanced/Logs';
+import { NetworkSettingViewProps } from '@screens/Settings/Advanced/Network';
+import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
+import { ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
-import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -69,7 +75,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     showChangeLog = () => {
         const currentVersionCode = GetAppVersionCode();
 
-        Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
+        Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
     };
 
     reRegisterPushToken = async () => {
@@ -114,7 +120,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
     enableDeveloperMode = () => {
         // authenticate with passcode before enabling the developer mode
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+        Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: () => {
                 // persist the settings
@@ -212,11 +218,11 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     showSessionLogs = () => {
-        Navigator.push(AppScreens.Settings.SessionLog);
+        Navigator.push<SessionLogViewProps>(AppScreens.Settings.SessionLog, {});
     };
 
     showNetworkSettings = () => {
-        Navigator.push(AppScreens.Settings.Network.List);
+        Navigator.push<NetworkSettingViewProps>(AppScreens.Settings.Network.List, {});
     };
 
     render() {

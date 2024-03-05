@@ -27,6 +27,8 @@ import { getAccountInfo } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
+import { RequestDeclineOverlayProps } from '@screens/Overlay/RequestDecline';
+
 import { PreflightStep, ResultStep, ReviewStep, SubmittingStep } from './Steps';
 import ErrorView from './Shared/ErrorView';
 
@@ -294,7 +296,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             this.onDecline();
         } else {
             // otherwise show dialog for reject
-            Navigator.showOverlay(AppScreens.Overlay.RequestDecline, {
+            Navigator.showOverlay<RequestDeclineOverlayProps>(AppScreens.Overlay.RequestDecline, {
                 onDecline: this.onDecline,
                 onClose: this.closeReviewModal,
             });

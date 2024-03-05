@@ -16,13 +16,14 @@ import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
 import { Button, Footer, AmountText, Spacer } from '@components/General';
+
 import Localize from '@locale';
+import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-
 /* types ==================================================================== */
 export interface Props {}
 
@@ -70,7 +71,11 @@ class ResultStep extends Component<Props, State> {
         Navigator.popToRoot();
 
         setTimeout(() => {
-            Navigator.push(AppScreens.Settings.AddressBook.Add, destination);
+            Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {
+                address: destination?.address,
+                tag: `${destination?.tag ?? ''}`,
+                name: destination?.name,
+            });
         }, 1000);
     };
 

@@ -21,6 +21,8 @@ import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactio
 
 import * as Blocks from './Blocks';
 
+import { TransactionDetailsViewProps } from '@screens/Events/Details';
+
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
@@ -141,7 +143,7 @@ class LedgerObjectItem extends Component<Props, State> {
     onPress = () => {
         const { item, account } = this.props;
 
-        Navigator.push(AppScreens.Transaction.Details, {
+        Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
             item,
             account,
         });

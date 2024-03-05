@@ -23,18 +23,17 @@ import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
-// components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
-// locale
 import Localize from '@locale';
 
-// style
+import { EnterDestinationTagOverlayProps } from '@screens/Overlay/EnterDestinationTag';
+import { FlaggedDestinationOverlayProps } from '@screens/Overlay/FlaggedDestination';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
-// context
 import { StepsContext } from '../../Context';
 
 /* types ==================================================================== */
@@ -340,7 +339,7 @@ class RecipientStep extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+        Navigator.showOverlay<EnterDestinationTagOverlayProps>(AppScreens.Overlay.EnterDestinationTag, {
             buttonType: 'next',
             destination,
             onFinish: (destinationTag: string) => {
@@ -435,7 +434,7 @@ class RecipientStep extends Component<Props, State> {
 
             if (destinationInfo.risk === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
                 setTimeout(() => {
-                    Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                    Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
                         destination: destination.address,
                         onContinue: this.checkAndNext.bind(null, [...passedChecks, PassableChecks.CONFIRMED_SCAM]),
                         onDismissed: this.resetResult,

@@ -9,9 +9,13 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Icon, TouchableDebounce } from '@components/General';
 
+import Locale from '@locale';
+
+import { Props as SwitchAccountOverlayProps } from '@screens/Overlay/SwitchAccount/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
-import Locale from '@locale';
+
 /* Types ==================================================================== */
 interface Props {
     account: AccountModel;
@@ -66,9 +70,9 @@ class AccountSwitchElement extends Component<Props, State> {
             },
             () => {
                 // open the switcher overlay
-                Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
-                    discreetMode: discreet,
-                    showAddAccountButton,
+                Navigator.showOverlay<SwitchAccountOverlayProps>(AppScreens.Overlay.SwitchAccount, {
+                    discreetMode: !!discreet,
+                    showAddAccountButton: !!showAddAccountButton,
                     onClose: this.onSwitcherClose,
                     onSwitch: onAccountSwitch,
                 });

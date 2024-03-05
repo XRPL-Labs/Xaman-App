@@ -23,6 +23,7 @@ import Localize from '@locale';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+import { CriticalProcessingOverlayProps } from '@screens/Overlay/CriticalProcessing';
 
 /* types ==================================================================== */
 enum Steps {
@@ -31,9 +32,9 @@ enum Steps {
     CONFIRM_NEW_PASSCODE = 'CONFIRM_NEW_PASSCODE',
 }
 
-interface Props {}
+export interface Props {}
 
-interface State {
+export interface State {
     newPasscode: string;
     currentStep: Steps;
     stepDescription: string;
@@ -121,11 +122,11 @@ class ChangePasscodeView extends Component<Props, State> {
         Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
     };
 
-    processChangePasscode = () => {
+    processChangePasscode = (): Promise<void> => {
         const { newPasscode } = this.state;
 
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve, reject): Promise<void> => {
             try {
                 // get current passcode
                 const { passcode } = CoreRepository.getSettings();
@@ -160,7 +161,7 @@ class ChangePasscodeView extends Component<Props, State> {
                     await CoreRepository.setPasscode(passcode);
                 }
 
-                resolve(true);
+                resolve();
             } catch (e) {
                 reject(e);
             }
@@ -168,7 +169,7 @@ class ChangePasscodeView extends Component<Props, State> {
     };
 
     changePasscode = async () => {
-        Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+        Navigator.showOverlay<CriticalProcessingOverlayProps>(AppScreens.Overlay.CriticalProcessing, {
             title: Localize.t('global.encrypting'),
             task: this.processChangePasscode,
             onSuccess: this.onChangePasscodeSuccess,

@@ -380,7 +380,7 @@ class NetworkService extends EventEmitter {
      * Show's connection problem overlay
      */
     showConnectionProblem = () => {
-        Navigator.showOverlay(AppScreens.Overlay.ConnectionIssue);
+        Navigator.showOverlay<{}>(AppScreens.Overlay.ConnectionIssue, {});
     };
 
     /**

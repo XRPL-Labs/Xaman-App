@@ -10,7 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
-import { Navigator } from '@common/helpers/navigator';
+import { Navigator, AppScreenKeys } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
@@ -18,6 +18,7 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
+
 /* Service  ==================================================================== */
 class LinkingService {
     private initialURL?: string;
@@ -68,7 +69,7 @@ class LinkingService {
         });
     };
 
-    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: AppScreenKeys, passProps: any, options: any, screenType?: ComponentTypes) => {
         // close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 

@@ -1,3 +1,5 @@
-import SwitchAccountModal from './SwitchAccountModal';
+import SwitchAccountOverlay from './SwitchAccountOverlay';
+import { Props as SwitchAccountOverlayProps } from './types';
 
-export default SwitchAccountModal;
+export type { SwitchAccountOverlayProps };
+export default SwitchAccountOverlay;

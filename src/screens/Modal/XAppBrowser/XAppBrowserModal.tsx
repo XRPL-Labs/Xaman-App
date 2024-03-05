@@ -26,7 +26,7 @@ import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { AccountInfoType } from '@common/helpers/resolver';
 
@@ -55,7 +55,10 @@ import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
 
-// style
+import { AccountAddViewProps } from '@screens/Account/Add';
+import { TransactionLoaderModalProps } from '@screens/Modal/TransactionLoader';
+import { XAppInfoOverlayProps } from '@screens/Overlay/XAppInfo';
+
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
@@ -66,7 +69,7 @@ export interface Props {
     title?: string;
     icon?: string;
     account?: AccountModel;
-    origin?: PayloadOrigin;
+    origin?: XAppOrigin;
     originData?: any;
 }
 
@@ -456,7 +459,11 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal(AppScreens.Modal.TransactionLoader, { hash, account, network: network.key });
+            Navigator.showModal<TransactionLoaderModalProps>(AppScreens.Modal.TransactionLoader, {
+                hash,
+                account,
+                network: network.key,
+            });
         }, delay);
     };
 
@@ -861,10 +868,10 @@ class XAppBrowserModal extends Component<Props, State> {
     onInfoPress = () => {
         const { identifier, title, icon } = this.props;
 
-        Navigator.showOverlay(AppScreens.Overlay.XAppInfo, {
+        Navigator.showOverlay<XAppInfoOverlayProps>(AppScreens.Overlay.XAppInfo, {
             identifier,
-            title,
-            icon,
+            title: title!,
+            icon: icon!,
             onDonationPress: this.openDonation,
         });
     };
@@ -874,7 +881,7 @@ class XAppBrowserModal extends Component<Props, State> {
         await Navigator.dismissModal();
 
         // push to the screen
-        Navigator.push(AppScreens.Account.Add);
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
     onLoadEnd = (e: any) => {

@@ -7,25 +7,26 @@ import { Alert, InteractionManager, SectionList, Text, View } from 'react-native
 
 import { AppScreens } from '@common/constants';
 
-// service
 import LoggerService, { LogEvents } from '@services/LoggerService';
 
-// helpers
 import { Navigator } from '@common/helpers/navigator';
 import Screens from '@common/constants/screens';
 
 import Vault from '@common/libs/vault';
 
-// store
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 import { EncryptionLevels } from '@store/types';
 
-// components
 import { Button, Header } from '@components/General';
 
 import Localize from '@locale';
-// style
+
+import { MigrationExplainModalProps } from '@screens/Modal/MigrationExplain';
+import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
+import { PassphraseAuthenticationOverlayProps } from '@screens/Overlay/PassphraseAuthentication';
+import { CriticalProcessingOverlayProps } from '@screens/Overlay/CriticalProcessing';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -134,7 +135,7 @@ class CipherMigrationView extends Component<Props, State> {
 
     onSuccessAuth = (account: AccountModel, key: string) => {
         // start the migration
-        Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+        Navigator.showOverlay<CriticalProcessingOverlayProps>(AppScreens.Overlay.CriticalProcessing, {
             title: Localize.t('global.encrypting'),
             task: this.processMigrateAccount.bind(null, account, key),
             onSuccess: this.onMigrationSuccess,
@@ -147,7 +148,7 @@ class CipherMigrationView extends Component<Props, State> {
 
         // start the authentication base on encryption level
         if (account.encryptionLevel === EncryptionLevels.Passphrase) {
-            Navigator.showOverlay(AppScreens.Overlay.PassphraseAuthentication, {
+            Navigator.showOverlay<PassphraseAuthenticationOverlayProps>(AppScreens.Overlay.PassphraseAuthentication, {
                 account,
                 onSuccess: (passphrase: string) => {
                     this.onSuccessAuth(account, passphrase);
@@ -155,7 +156,7 @@ class CipherMigrationView extends Component<Props, State> {
             });
         }
         if (account.encryptionLevel === EncryptionLevels.Passcode) {
-            Navigator.showOverlay(AppScreens.Overlay.Auth, {
+            Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
                 canAuthorizeBiometrics: false,
                 onSuccess: () => {
                     if (!coreSettings.passcode) {
@@ -168,7 +169,7 @@ class CipherMigrationView extends Component<Props, State> {
     };
 
     onHelpPress = () => {
-        Navigator.showModal(Screens.Modal.MigrationExplain);
+        Navigator.showModal<MigrationExplainModalProps>(Screens.Modal.MigrationExplain, {});
     };
 
     renderMigrationRequiredItem = (item: AccountModel) => {
@@ -206,8 +207,8 @@ class CipherMigrationView extends Component<Props, State> {
                 <View style={styles.rowFade} />
                 <View style={styles.rowContent}>
                     <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
-                        <View style={[AppStyles.flex6]}>
-                            <Text style={[styles.accountLabel]}>{item.label}</Text>
+                        <View style={AppStyles.flex6}>
+                            <Text style={styles.accountLabel}>{item.label}</Text>
                         </View>
                         <View>
                             <Button
@@ -219,7 +220,7 @@ class CipherMigrationView extends Component<Props, State> {
                         </View>
                     </View>
                     <View style={[AppStyles.row, styles.subRow]}>
-                        <View style={[AppStyles.flex1]}>
+                        <View style={AppStyles.flex1}>
                             <Text style={[AppStyles.monoBold, AppStyles.colorGrey, styles.subLabel]}>
                                 {Localize.t('global.address')}:
                             </Text>

@@ -53,7 +53,7 @@ export interface State {
 }
 
 /* Component ==================================================================== */
-class AddTokenModal extends Component<Props, State> {
+class AddTokenOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.AddToken;
 
     private actionPanelRef: React.RefObject<ActionPanel>;
@@ -423,4 +423,4 @@ class AddTokenModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default AddTokenModal;
+export default AddTokenOverlay;

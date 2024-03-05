@@ -24,7 +24,8 @@ import { Header, Spacer, Button, TextInput, InfoMessage, KeyboardAwareScrollView
 
 import Localize from '@locale';
 
-// style
+import { ScanModalProps } from '@screens/Modal/Scan';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -64,7 +65,7 @@ class EditContactView extends Component<Props, State> {
     }
 
     showScanner = () => {
-        Navigator.showModal(AppScreens.Modal.Scan, {
+        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
             type: StringType.XrplDestination,
             onRead: this.onScannerRead,
         });

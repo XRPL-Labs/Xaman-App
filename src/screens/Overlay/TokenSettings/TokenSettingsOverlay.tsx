@@ -9,12 +9,12 @@ import { Alert, Animated, Image, InteractionManager, Text, View } from 'react-na
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
-import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
 import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
@@ -40,28 +40,17 @@ import {
 
 import Localize from '@locale';
 
-// style
+import { SendViewProps } from '@screens/Send';
+import { ExchangeViewProps } from '@screens/Exchange';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
-import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* types ==================================================================== */
-export interface Props {
-    account: AccountModel;
-    trustLine: TrustLineModel;
-}
+import { Props, State } from './types';
 
-export interface State {
-    isFavorite: boolean;
-    isRemoving: boolean;
-    isLoading: boolean;
-    isReviewScreenVisible: boolean;
-    hasXAppIdentifier: boolean;
-    latestLineBalance: number;
-    canRemove: boolean;
-}
 /* Component ==================================================================== */
-class TokenSettingsModal extends Component<Props, State> {
+class TokenSettingsOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.TokenSettings;
     private animatedColor: Animated.Value;
     private animatedOpacity: Animated.Value;
@@ -434,7 +423,7 @@ class TokenSettingsModal extends Component<Props, State> {
         const { trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Payment, { currency: trustLine });
+            Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, { currency: trustLine });
         });
     };
 
@@ -442,7 +431,7 @@ class TokenSettingsModal extends Component<Props, State> {
         const { account, trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push(AppScreens.Transaction.Exchange, { account, trustLine });
+            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, trustLine });
         });
     };
 
@@ -808,4 +797,4 @@ class TokenSettingsModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default TokenSettingsModal;
+export default TokenSettingsOverlay;

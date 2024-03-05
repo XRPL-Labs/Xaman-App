@@ -1,3 +1,5 @@
-import VaultModal from './VaultModal';
+import VaultOverlay from './VaultOverlay';
+import { Props as VaultOverlayProps } from './types';
 
-export default VaultModal;
+export type { VaultOverlayProps };
+export default VaultOverlay;

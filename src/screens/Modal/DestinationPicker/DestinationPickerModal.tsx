@@ -21,14 +21,14 @@ import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService } from '@services';
 
-// components
 import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
-// locale
 import Localize from '@locale';
 
-// style
+import { EnterDestinationTagOverlayProps } from '@screens/Overlay/EnterDestinationTag';
+import { FlaggedDestinationOverlayProps } from '@screens/Overlay/FlaggedDestination';
+
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
@@ -51,7 +51,7 @@ export interface State {
     destinationInfo?: AccountInfoType;
 }
 /* Component ==================================================================== */
-class DestinationPicker extends Component<Props, State> {
+class DestinationPickerModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.DestinationPicker;
 
     private lookupTimeout: any;
@@ -352,7 +352,7 @@ class DestinationPicker extends Component<Props, State> {
     showEnterDestinationTag = () => {
         const { destination } = this.state;
 
-        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
+        Navigator.showOverlay<EnterDestinationTagOverlayProps>(AppScreens.Overlay.EnterDestinationTag, {
             buttonType: 'next',
             destination,
             onFinish: (destinationTag: string) => {
@@ -432,7 +432,7 @@ class DestinationPicker extends Component<Props, State> {
             }
 
             if (destinationInfo.risk === 'CONFIRMED') {
-                Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
+                Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
                     destination: destination.address,
                     onContinue: this.onSelect,
                     onDismissed: this.resetResult,
@@ -642,4 +642,4 @@ class DestinationPicker extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default DestinationPicker;
+export default DestinationPickerModal;

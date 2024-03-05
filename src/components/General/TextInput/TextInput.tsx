@@ -19,6 +19,8 @@ import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
+import { Props as ScanModalProps } from '@screens/Modal/Scan/types';
+
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
@@ -156,7 +158,7 @@ class Input extends Component<Props, State> {
             onScannerOpen();
         }
 
-        Navigator.showModal(AppScreens.Modal.Scan, {
+        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
             type: scannerType,
             onRead: onScannerRead,
             onClose: onScannerClose,

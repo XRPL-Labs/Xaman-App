@@ -23,17 +23,14 @@ import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/en
 import { NFTokenOffer } from '@common/libs/ledger/objects';
 import { Payload } from '@common/libs/payload';
 
-// types
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { LedgerMarker } from '@common/libs/ledger/types/common';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
 import { MixingTypes } from '@common/libs/ledger/mixin/types';
+import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterModal';
 
-import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterView';
-
-// Services
 import {
     AccountService,
     AppService,
@@ -44,16 +41,17 @@ import {
 } from '@services';
 import { AppStateStatus } from '@services/AppService';
 
-// Components
 import { Button, Header, SearchBar, SegmentButton } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
-import { DataSourceItem, DataSourceItemType } from '@components/Modules/EventsList/EventsList';
-
-// Locale
 import Localize from '@locale';
 
-// style
+import { AccountAddViewProps } from '@screens/Account/Add';
+
+import { DataSourceItem, DataSourceItemType } from '@components/Modules/EventsList/EventsList';
+
+import { EventsFilterModalProps } from '@screens/Modal/FilterEvents';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -860,6 +858,10 @@ class EventsView extends Component<Props, State> {
         );
     };
 
+    onAddAccountPress = () => {
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
+    };
+
     renderEmptyAccount = () => {
         return (
             <View testID="events-tab-empty-view" style={AppStyles.tabContainer}>
@@ -885,9 +887,7 @@ class EventsView extends Component<Props, State> {
                         icon="IconPlus"
                         iconStyle={AppStyles.imgColorWhite}
                         rounded
-                        onPress={() => {
-                            Navigator.push(AppScreens.Account.Add);
-                        }}
+                        onPress={this.onAddAccountPress}
                     />
                 </ImageBackground>
             </View>
@@ -926,8 +926,8 @@ class EventsView extends Component<Props, State> {
                         iconSize: 25,
                         iconStyle: styles.filterIcon,
                         onPress: () => {
-                            Navigator.showModal(AppScreens.Modal.FilterEvents, {
-                                currentFilters: filters,
+                            Navigator.showModal<EventsFilterModalProps>(AppScreens.Modal.FilterEvents, {
+                                currentFilters: filters ?? {},
                                 onApply: this.applyFilters,
                             });
                         },

@@ -22,7 +22,10 @@ import { ContactModel } from '@store/models';
 import { TouchableDebounce, Header, Button, SearchBar, Avatar } from '@components/General';
 
 import Localize from '@locale';
-// style
+
+import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
+import { EditContactViewProps } from '@screens/Settings/AddressBook/Edit';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -127,8 +130,14 @@ class AddressBookView extends Component<Props, State> {
         });
     };
 
-    onItemPress = (item: any) => {
-        Navigator.push(AppScreens.Settings.AddressBook.Edit, { contact: item });
+    onItemPress = (item: ContactModel) => {
+        Navigator.push<EditContactViewProps>(AppScreens.Settings.AddressBook.Edit, {
+            contact: item,
+        });
+    };
+
+    onAddContactPress = () => {
+        Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {});
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {
@@ -139,7 +148,7 @@ class AddressBookView extends Component<Props, State> {
         );
     };
 
-    renderItem = (contact: any) => {
+    renderItem = (contact: { item: ContactModel }) => {
         const { item } = contact;
 
         return (
@@ -149,7 +158,7 @@ class AddressBookView extends Component<Props, State> {
                 }}
                 activeOpacity={0.8}
             >
-                <View style={[styles.row]}>
+                <View style={styles.row}>
                     <Avatar size={40} source={{ uri: `https://xumm.app/avatar/${item.address}_180_50.png` }} />
                     <View style={styles.contentContainer}>
                         <Text style={styles.name}>{item.name}</Text>
@@ -165,13 +174,11 @@ class AddressBookView extends Component<Props, State> {
 
         if (isEmpty(contacts)) {
             return (
-                <View testID="address-book-view" style={[AppStyles.container]}>
+                <View testID="address-book-view" style={AppStyles.container}>
                     <Header
                         leftComponent={{
                             icon: 'IconChevronLeft',
-                            onPress: () => {
-                                Navigator.pop();
-                            },
+                            onPress: Navigator.pop,
                         }}
                         centerComponent={{ text: Localize.t('global.addressBook') }}
                     />
@@ -186,11 +193,9 @@ class AddressBookView extends Component<Props, State> {
                             <Button
                                 rounded
                                 icon="IconPlus"
-                                iconStyle={[AppStyles.imgColorWhite]}
+                                iconStyle={AppStyles.imgColorWhite}
                                 label={Localize.t('settings.addContact')}
-                                onPress={() => {
-                                    Navigator.push(AppScreens.Settings.AddressBook.Add);
-                                }}
+                                onPress={this.onAddContactPress}
                             />
                         </ImageBackground>
                     </View>
@@ -199,19 +204,17 @@ class AddressBookView extends Component<Props, State> {
         }
 
         return (
-            <View testID="address-book-view" style={[AppStyles.container]}>
+            <View testID="address-book-view" style={AppStyles.container}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('global.addressBook') }}
                     rightComponent={{
                         icon: 'IconPlus',
                         onPress: () => {
-                            Navigator.push(AppScreens.Settings.AddressBook.Add);
+                            Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {});
                         },
                     }}
                 />

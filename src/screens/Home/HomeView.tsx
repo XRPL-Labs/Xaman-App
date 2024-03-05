@@ -14,19 +14,20 @@ import { AccountService, NetworkService, StyleService } from '@services';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 
-// constants
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
-import Localize from '@locale';
-
-// components
 import { Button, RaisedButton } from '@components/General';
 import { ProBadge, NetworkSwitchButton, AccountSwitchElement, InactiveAccount, AssetsList } from '@components/Modules';
 
-// style
+import Localize from '@locale';
+
+import { SendViewProps } from '@screens/Send';
+import { AccountAddViewProps } from '@screens/Account/Add';
+import { ShareAccountOverlayProps } from '@screens/Overlay/ShareAccount';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -208,12 +209,16 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         if (account) {
-            Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+            Navigator.showOverlay<ShareAccountOverlayProps>(AppScreens.Overlay.ShareAccount, { account });
         }
     };
 
     pushSendScreen = () => {
-        Navigator.push(AppScreens.Transaction.Payment);
+        Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, {});
+    };
+
+    onAddAccountPress = () => {
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
     renderHeader = () => {
@@ -315,9 +320,7 @@ class HomeView extends Component<Props, State> {
                         icon="IconPlus"
                         iconStyle={AppStyles.imgColorWhite}
                         rounded
-                        onPress={() => {
-                            Navigator.push(AppScreens.Account.Add);
-                        }}
+                        onPress={this.onAddAccountPress}
                     />
                 </ImageBackground>
             </View>

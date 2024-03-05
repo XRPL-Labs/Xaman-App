@@ -8,16 +8,16 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { XAppOrigin } from '@common/libs/payload';
 
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 
 import { TouchableDebounce, Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 
-// style
-import { AppStyles } from '@theme';
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -37,9 +37,9 @@ class SettingsView extends Component<Props, State> {
         };
     }
 
-    onRowPress = (route: string) => {
-        if (route === 'Xaman.Support.XApp') {
-            Navigator.showModal(
+    onRowPress = (route: AppScreenKeys | 'xumm.support') => {
+        if (route === 'xumm.support') {
+            Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier: AppConfig.xappIdentifiers.support,
@@ -51,11 +51,11 @@ class SettingsView extends Component<Props, State> {
                 },
             );
         } else {
-            Navigator.push(route);
+            Navigator.push(route, {});
         }
     };
 
-    renderRow = (icon: any, label: string, screen: string, testID: string) => {
+    renderRow = (icon: any, label: string, screen: AppScreenKeys | 'xumm.support', testID: string) => {
         return (
             <TouchableDebounce
                 testID={testID}
@@ -139,7 +139,7 @@ class SettingsView extends Component<Props, State> {
                         {this.renderRow(
                             'IconHelpCircle',
                             Localize.t('setupTermOfService.questionsAndSupport'),
-                            'Xaman.Support.XApp',
+                            'xumm.support',
                             'support-button',
                         )}
                         {this.renderRow(

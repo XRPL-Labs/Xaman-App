@@ -16,7 +16,8 @@ import { PasswordInput, Header, Footer, Button, Spacer, KeyboardAwareScrollView 
 
 import Localize from '@locale';
 
-// style
+import { CriticalProcessingOverlayProps } from '@screens/Overlay/CriticalProcessing';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -108,7 +109,7 @@ class ChangePassphraseView extends Component<Props, State> {
             }
 
             // show critical processing overlay
-            Navigator.showOverlay(AppScreens.Overlay.CriticalProcessing, {
+            Navigator.showOverlay<CriticalProcessingOverlayProps>(AppScreens.Overlay.CriticalProcessing, {
                 title: Localize.t('global.encrypting'),
                 task: this.processChangePassphrase,
                 onSuccess: this.onChangePassphraseSuccess,

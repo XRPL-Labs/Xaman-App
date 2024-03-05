@@ -43,7 +43,7 @@ import { SelectSigner } from './SelectSinger';
 import { AuthMethods, Props, SignOptions, State, Steps } from './types';
 
 /* Component ==================================================================== */
-class VaultModal extends Component<Props, State> {
+class VaultOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Vault;
 
     private backHandler: NativeEventSubscription | undefined;
@@ -462,4 +462,4 @@ class VaultModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default VaultModal;
+export default VaultOverlay;

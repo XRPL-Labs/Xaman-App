@@ -10,6 +10,8 @@ import { AccountModel, TrustLineModel } from '@store/models';
 import { TouchableDebounce, Icon } from '@components/General';
 import { CurrencyItem } from '@components/Modules/CurrencyPicker/CurrencyItem';
 
+import { SelectCurrencyOverlayProps } from '@screens/Overlay/SelectCurrency';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -62,7 +64,7 @@ class CurrencyPicker extends Component<Props, State> {
             expanded: true,
         });
 
-        Navigator.showOverlay(AppScreens.Overlay.SelectCurrency, {
+        Navigator.showOverlay<SelectCurrencyOverlayProps>(AppScreens.Overlay.SelectCurrency, {
             account,
             currencies,
             selectedItem,
