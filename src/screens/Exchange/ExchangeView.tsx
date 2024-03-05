@@ -69,12 +69,12 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    private timeout: any;
+    private timeout?: ReturnType<typeof setTimeout>;
     private sequence: number;
     private ledgerExchange: LedgerExchange;
     private amountInput: React.RefObject<typeof AmountInput | null>;
     private animatedOpacity: Animated.Value;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -104,9 +104,7 @@ class ExchangeView extends Component<Props, State> {
 
         this.amountInput = React.createRef();
         this.animatedOpacity = new Animated.Value(1);
-        this.timeout = null;
         this.sequence = 0;
-        this.mounted = true;
     }
 
     componentDidMount() {
@@ -226,10 +224,7 @@ class ExchangeView extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.back'),
-
-                    onPress: () => {
-                        Navigator.pop();
-                    },
+                    onPress: Navigator.pop,
                 },
             ],
             { type: 'default' },
@@ -548,9 +543,7 @@ class ExchangeView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{
                         text: Localize.t('global.exchange'),

@@ -36,7 +36,7 @@ class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
     declare context: React.ContextType<typeof StepsContext>;
 
-    private showDetailsTimeout: any;
+    private showDetailsTimeout?: ReturnType<typeof setTimeout>;
 
     constructor(props: Props) {
         super(props);
@@ -60,6 +60,7 @@ class ResultStep extends Component<Props, State> {
 
     showDetailsCard = () => {
         LayoutAnimation.spring();
+
         this.setState({
             showDetailsCard: true,
         });

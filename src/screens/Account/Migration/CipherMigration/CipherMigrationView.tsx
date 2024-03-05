@@ -35,7 +35,7 @@ export interface Props {}
 
 export interface State {
     coreSettings: CoreModel;
-    dataSource: any;
+    dataSource: { type: 'requiredMigration' | 'doneMigration'; data: AccountModel[] }[];
 }
 
 /* Component ==================================================================== */

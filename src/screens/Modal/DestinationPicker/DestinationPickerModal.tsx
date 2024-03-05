@@ -6,7 +6,7 @@ import { isEmpty, flatMap, get, uniqBy, toNumber } from 'lodash';
 import Realm from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, SectionList, BackHandler, NativeEventSubscription } from 'react-native';
+import { View, Text, SectionList, BackHandler, NativeEventSubscription, InteractionManager } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
 import { AccountRepository, ContactRepository } from '@store/repositories';
@@ -54,9 +54,9 @@ export interface State {
 class DestinationPickerModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.DestinationPicker;
 
-    private lookupTimeout: any;
+    private lookupTimeout?: ReturnType<typeof setTimeout>;
+    private backHandler?: NativeEventSubscription;
     private sequence: number;
-    private backHandler: NativeEventSubscription | undefined;
 
     constructor(props: Props) {
         super(props);
@@ -72,12 +72,11 @@ class DestinationPickerModal extends Component<Props, State> {
             destinationInfo: undefined,
         };
 
-        this.lookupTimeout = null;
         this.sequence = 0;
     }
 
     componentDidMount() {
-        this.setDefaultDataSource();
+        InteractionManager.runAfterInteractions(this.setDefaultDataSource);
 
         // prevent from hardware back in android devices
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);

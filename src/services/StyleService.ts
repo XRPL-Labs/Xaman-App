@@ -1,7 +1,7 @@
 /**
  * Style service
  */
-import { has, get, toLower } from 'lodash';
+import { has, get } from 'lodash';
 import { Appearance, StyleSheet } from 'react-native';
 
 import { Images } from '@common/helpers/images';
@@ -49,9 +49,8 @@ class StyleService {
                     }
                 } else {
                     // lowerCase the theme name is required as we stored
-                    // theme name in title mode in version before 1.0.1
-                    // @ts-ignore
-                    theme = toLower(coreSettings.theme) || 'light';
+                    // theme name in title mode in version before v1.0.1
+                    theme = (coreSettings.theme?.toLowerCase() || 'light') as Themes;
                 }
 
                 this.setTheme(theme);

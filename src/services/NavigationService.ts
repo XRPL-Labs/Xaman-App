@@ -58,7 +58,7 @@ class NavigationService extends EventEmitter {
     private modals: Array<AppScreenKeys>;
     private overlays: Array<AppScreenKeys>;
     private backHandlerClickCount: number;
-    private backHandlerClickCountTimeout: any;
+    private backHandlerClickCountTimeout?: ReturnType<typeof setTimeout>;
 
     constructor() {
         super();

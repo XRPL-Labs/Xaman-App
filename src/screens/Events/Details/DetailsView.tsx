@@ -1,7 +1,7 @@
 /**
  * Transaction Details screen
  */
-import { Navigation } from 'react-native-navigation';
+import { EventSubscription, Navigation } from 'react-native-navigation';
 
 import React, { Component } from 'react';
 import { View, Alert, Linking, Platform, ScrollView, Share, InteractionManager } from 'react-native';
@@ -56,7 +56,7 @@ type WidgetComponents = {
 class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {
     static screenName = AppScreens.Transaction.Details;
 
-    private navigationListener: any;
+    private navigationListener?: EventSubscription;
     private mounted = false;
 
     static options() {

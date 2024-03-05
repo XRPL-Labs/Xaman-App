@@ -24,12 +24,20 @@ import Localize from '@locale';
 import { NetworkRailsSyncOverlayProps } from '@screens/Overlay/NetworkRailsSync';
 
 import styles from './styles';
+import { NetworkType } from '@store/types';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
-    dataSource: any;
+    dataSource: {
+        key: string;
+        title: string;
+        color: string;
+        defaultNode: NodeModel;
+        type: NetworkType;
+        data: NodeModel[];
+    }[];
 }
 
 /* Component ==================================================================== */
@@ -57,7 +65,7 @@ class NetworkSettingView extends Component<Props, State> {
     updateDataSource = () => {
         const networks = NetworkRepository.getNetworks();
 
-        const dataSource = [] as any[];
+        const dataSource: any[] = [];
 
         networks.forEach((network: NetworkModel) => {
             dataSource.push({

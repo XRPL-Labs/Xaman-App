@@ -193,9 +193,7 @@ class RequestView extends Component<Props, State> {
 
     onHeaderBackPress = () => {
         Keyboard.dismiss();
-        setTimeout(() => {
-            Navigator.pop();
-        }, 10);
+        setTimeout(Navigator.pop, 10);
     };
 
     onHeaderSharePress = () => {

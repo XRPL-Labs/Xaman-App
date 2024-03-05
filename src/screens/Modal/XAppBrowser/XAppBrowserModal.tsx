@@ -134,12 +134,10 @@ interface IEvent {
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
-    private backHandler: NativeEventSubscription | undefined;
-
+    private backHandler?: NativeEventSubscription;
+    private softLoadingTimeout?: ReturnType<typeof setTimeout>;
     private readonly webView: React.RefObject<WebView>;
-
     private lastMessageReceived: number;
-    private softLoadingTimeout: any;
 
     static options() {
         return {

@@ -19,6 +19,7 @@ export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
     L0 extends Record<string, any> ? AppScreenKeys<L0> : L0;
 
 type EnforcedProps<P extends { [K in keyof P]: any }> = P;
+
 /* Constants ==================================================================== */
 const getDefaultOptions = (): Options => {
     return {
@@ -108,7 +109,13 @@ const getTabBarIcons = (): {
 /* Lib ==================================================================== */
 
 const Navigator = {
-    startDefault() {
+    /**
+     * Initializes and sets the default configuration for the navigation tabs.
+     * This method starts the app in bottom tabs mode
+     *
+     * @return {void}
+     */
+    startDefault(): void {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
@@ -172,7 +179,12 @@ const Navigator = {
         });
     },
 
-    startOnboarding() {
+    /**
+     * Starts the app navigation in onboarding screen
+     *
+     * @return {void}
+     */
+    startOnboarding(): void {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
@@ -376,21 +388,49 @@ const Navigator = {
         });
     },
 
-    showAlertModal(props: AlertOverlayProps) {
+    /**
+     * Displays a modal overlay with an alert message and passed props.
+     *
+     * @param {AlertOverlayProps} props - The props for the alert overlay.
+     * @return {Promsie<string | boolean>}
+     */
+    showAlertModal(props: AlertOverlayProps): Promise<string | boolean> {
         return Navigator.showOverlay<AlertOverlayProps>(AppScreens.Overlay.Alert, props);
     },
 
-    mergeOptions(screen: AppScreenKeys, options: Options = {}) {
+    /**
+     * Merges the provided options object with the options of the current screen.
+     * If screen is not provided, the current screen is determined using NavigationService.
+     *
+     * @param {AppScreenKeys} screen - The screen for which to merge the options. defaults to the current screen.
+     * @param {Options} options - The options to merge with the current screen's options.
+     *
+     * @return {void}
+     */
+    mergeOptions(screen: AppScreenKeys, options: Options = {}): void {
         const currentScreen = screen || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
     },
 
-    updateProps<P>(screen: AppScreenKeys, props: EnforcedProps<P>) {
+    /**
+     * Updates the props of a specific screen in the app.
+     *
+     * @template P - The type of the props being updated.
+     * @param {AppScreenKeys} screen - The key of the screen to update the props for or current screen
+     * @param {EnforcedProps<P>} props - The new props to apply to the screen.
+     * @return {void}
+     */
+    updateProps<P>(screen: AppScreenKeys, props: EnforcedProps<P>): void {
         const currentScreen = screen || NavigationService.getCurrentScreen();
         Navigation.updateProps(currentScreen, props as any);
     },
 
-    reRender() {
+    /**
+     * Updates the tabbar and re-renders the AppScreens.TabBar component.
+     *
+     * @return {void}
+     */
+    reRender(): void {
         // update the tabbar
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             Navigation.mergeOptions(`bottomTab-${tab}`, {

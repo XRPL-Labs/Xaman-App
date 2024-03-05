@@ -8,7 +8,12 @@ import { get, flatMap } from 'lodash';
 import React, { Component } from 'react';
 import { View, InteractionManager } from 'react-native';
 
-import { Navigation, OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import {
+    EventSubscription,
+    Navigation,
+    OptionsModalPresentationStyle,
+    OptionsModalTransitionStyle,
+} from 'react-native-navigation';
 
 // constants
 import { Navigator } from '@common/helpers/navigator';
@@ -46,7 +51,7 @@ class XAppsView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.XApps;
 
     private searchBarRef: React.RefObject<SearchBar>;
-    private navigationListener: any;
+    private navigationListener?: EventSubscription;
 
     static options() {
         return {

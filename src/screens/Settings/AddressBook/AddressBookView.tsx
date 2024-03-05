@@ -9,7 +9,7 @@ import Fuse from 'fuse.js';
 import React, { Component } from 'react';
 import { View, Text, SectionList, Image, ImageBackground } from 'react-native';
 
-import { Navigation } from 'react-native-navigation';
+import { EventSubscription, Navigation } from 'react-native-navigation';
 
 import StyleService from '@services/StyleService';
 
@@ -34,14 +34,14 @@ export interface Props {}
 
 export interface State {
     contacts: Realm.Results<ContactModel>;
-    dataSource: any;
+    dataSource: { title: string; data: ContactModel[] }[];
 }
 
 /* Component ==================================================================== */
 class AddressBookView extends Component<Props, State> {
     static screenName = AppScreens.Settings.AddressBook.List;
 
-    private navigationListener: any;
+    private navigationListener?: EventSubscription;
 
     static options() {
         return {
@@ -79,7 +79,7 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    convertContactsArrayToMap = (contacts: Realm.Results<ContactModel>) => {
+    convertContactsArrayToMap = (contacts: Realm.Results<ContactModel>): { title: string; data: ContactModel[] }[] => {
         const contactsCategoryMap = [] as any;
 
         sortBy(contacts, 'name').forEach((item) => {
@@ -213,9 +213,7 @@ class AddressBookView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('global.addressBook') }}
                     rightComponent={{
                         icon: 'IconPlus',
-                        onPress: () => {
-                            Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {});
-                        },
+                        onPress: this.onAddContactPress,
                     }}
                 />
                 <SearchBar
