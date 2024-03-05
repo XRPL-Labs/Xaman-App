@@ -11,15 +11,9 @@ import BackendService from '@services/BackendService';
 import StyleService from '@services/StyleService';
 import { ComponentTypes } from '@services/NavigationService';
 
-import { AccountModel } from '@store/models';
-
 import { BaseTransaction } from '@common/libs/ledger/transactions';
-import { Transactions, PseudoTransactions } from '@common/libs/ledger/transactions/types';
-import { LedgerObjects } from '@common/libs/ledger/objects/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
-import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 import { AppScreens } from '@common/constants';
 
@@ -30,27 +24,12 @@ import { GetTransactionLink } from '@common/utils/explorer';
 import { Header } from '@components/General';
 
 import * as MutationWidgets from '@components/Modules/MutationWidgets';
-import { Props as MutationWidgetProps } from '@components/Modules/MutationWidgets/types';
 
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
-
 /* types ==================================================================== */
-export interface Props {
-    item: (Transactions | LedgerObjects) & MutationsMixinType;
-    account: AccountModel;
-}
-
-export interface State {
-    advisory?: string;
-    explainer?: ExplainerAbstract<Transactions | PseudoTransactions | LedgerObjects>;
-}
-
-type WidgetKey = keyof typeof MutationWidgets;
-type WidgetComponents = {
-    [key in WidgetKey]: React.ComponentClass<MutationWidgetProps>;
-};
+import { Props, State, WidgetComponents, WidgetKey } from './types';
 
 /* Component ==================================================================== */
 class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {

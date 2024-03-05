@@ -22,6 +22,7 @@ import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
@@ -43,10 +44,11 @@ import { AmountValueType } from '@components/General/AmountInput';
 
 import Localize from '@locale';
 
+import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
+
 // style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
-import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -344,7 +346,7 @@ class ExchangeView extends Component<Props, State> {
         // generate payload
         const payload = Payload.build(offer.Json);
 
-        Navigator.showModal(
+        Navigator.showModal<ReviewTransactionModalProps<OfferCreate>>(
             AppScreens.Modal.ReviewTransaction,
             {
                 payload,

@@ -19,9 +19,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { Payload } from '@common/libs/payload';
 import { AccountRepository } from '@store/repositories';
-import { AccountModel } from '@store/models';
 
-// components
 import {
     ActionPanel,
     Button,
@@ -34,23 +32,13 @@ import {
 
 import Localize from '@locale';
 
-// style
+import { Props as ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction/types';
+
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    account: AccountModel;
-}
-
-export interface State {
-    dataSource?: XamanBackend.CuratedIOUsDetails;
-    selectedPartyId?: number;
-    selectedCurrencyId?: number;
-    isLoading: boolean;
-    isLoadingTokenInfo: boolean;
-    error: boolean;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
 class AddTokenOverlay extends Component<Props, State> {
@@ -200,7 +188,7 @@ class AddTokenOverlay extends Component<Props, State> {
         this.actionPanelRef?.current?.slideDown();
 
         setTimeout(() => {
-            Navigator.showModal(
+            Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,

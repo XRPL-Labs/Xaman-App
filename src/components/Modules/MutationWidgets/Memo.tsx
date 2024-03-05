@@ -15,6 +15,8 @@ import { Button, Icon, ReadMore, TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -66,10 +68,10 @@ class Memos extends PureComponent<Props, State> {
         const { item } = this.props;
         const { xAppIdentifier } = this.state;
 
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
-                identifier: xAppIdentifier,
+                identifier: xAppIdentifier!,
                 origin: XAppOrigin.TRANSACTION_MEMO,
                 originData: { txid: (item as BaseTransaction).hash },
             },

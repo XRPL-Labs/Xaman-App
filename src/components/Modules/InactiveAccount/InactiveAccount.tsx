@@ -18,6 +18,8 @@ import { Button, Icon, InfoMessage, Spacer, TouchableDebounce } from '@component
 
 import Localize from '@locale';
 
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 /* Types ==================================================================== */
@@ -38,7 +40,7 @@ class InactiveAccount extends PureComponent<Props, State> {
             params = { cid: GetCardId(account.additionalInfo!) };
         }
 
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
                 identifier: AppConfig.xappIdentifiers.activateAccount,

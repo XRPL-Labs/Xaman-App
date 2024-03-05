@@ -14,6 +14,7 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencyModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
@@ -34,11 +35,11 @@ import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
-
-// Locale
-import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
-import { NetworkType } from '@store/types';
+
+import Localize from '@locale';
+
+import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -275,7 +276,7 @@ class BackendService {
 
                     if (profile && profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
                         // show the modal to check new policy and confirm new agreement
-                        Navigator.showModal(
+                        Navigator.showModal<TermOfUseViewProps>(
                             AppScreens.Settings.TermOfUse,
                             { asModal: true },
                             {

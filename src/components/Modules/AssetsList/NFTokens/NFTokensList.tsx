@@ -28,6 +28,8 @@ import { ListEmpty } from '@components/Modules/AssetsList/NFTokens/ListEmpty';
 
 import Localize from '@locale';
 
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+
 import { AppSizes } from '@theme';
 import styles from './styles';
 
@@ -211,7 +213,7 @@ class NFTokensList extends Component<Props, State> {
     onNFTItemPress = (item: NFTokenData) => {
         const { token } = item;
 
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
                 identifier: AppConfig.xappIdentifiers.nftInfo,

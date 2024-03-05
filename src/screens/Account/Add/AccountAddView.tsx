@@ -27,8 +27,8 @@ import { Button, Header, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-import { AccountGenerateViewProps } from '@screens/Account/Add/Generate';
-import { AccountImportViewProps } from '@screens/Account/Add/Import';
+import { Props as AccountGenerateViewProps } from '@screens/Account/Add/Generate/types';
+import { Props as AccountImportViewProps } from '@screens/Account/Add/Import/types';
 
 import { AppStyles } from '@theme';
 import styles from './styles';

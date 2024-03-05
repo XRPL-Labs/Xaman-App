@@ -42,6 +42,8 @@ import Localize from '@locale';
 
 import { SendViewProps } from '@screens/Send';
 import { ExchangeViewProps } from '@screens/Exchange';
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -207,7 +209,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         isReviewScreenVisible: true,
                     },
                     () => {
-                        Navigator.showModal(
+                        Navigator.showModal<ReviewTransactionModalProps<Payment>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
                                 payload,
@@ -323,7 +325,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         isReviewScreenVisible: true,
                     },
                     () => {
-                        Navigator.showModal(
+                        Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
                                 payload,
@@ -439,10 +441,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.showModal(
+            Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    identifier: trustLine.currency.xapp_identifier,
+                    identifier: trustLine.currency.xapp_identifier!,
                     params: {
                         issuer: trustLine.currency.issuer,
                         asset: trustLine.currency.currency,
@@ -462,10 +464,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { trustLine } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.showModal(
+            Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    identifier: trustLine.currency.xapp_identifier,
+                    identifier: trustLine.currency.xapp_identifier!,
                     params: {
                         issuer: trustLine.currency.issuer,
                         asset: trustLine.currency.currency,
@@ -513,7 +515,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         await this.dismiss();
 
-        Navigator.showModal(
+        Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
             AppScreens.Modal.ReviewTransaction,
             {
                 payload,
@@ -562,7 +564,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         await this.dismiss();
 
-        Navigator.showModal(
+        Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
             AppScreens.Modal.ReviewTransaction,
             {
                 payload,

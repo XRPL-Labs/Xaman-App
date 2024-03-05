@@ -11,7 +11,6 @@ import Payment from './Payment.class';
 
 /* Types ==================================================================== */
 import { ValidationType } from '@common/libs/ledger/factory/types';
-import { SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Validation ==================================================================== */
 const PaymentValidation: ValidationType<Payment> = (tx: Payment): Promise<void> => {

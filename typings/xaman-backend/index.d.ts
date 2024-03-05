@@ -163,6 +163,11 @@ declare namespace XamanBackend {
             recent: AppCategory[];
             all: AppCategory[];
         };
+        message: {
+            id: number;
+            title: string;
+            content: string;
+        };
     }
     interface XAppShortListResponse {
         apps: {

@@ -18,6 +18,7 @@ import { Button } from '@components/General';
 import { AccountRepository } from '@store/repositories';
 
 import { Props as SendViewProps } from '@screens/Send/types';
+import { Props as ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction/types';
 
 import Localize from '@locale';
 
@@ -287,11 +288,13 @@ class ActionButtons extends PureComponent<Props, State> {
             // generate payload
             const payload = Payload.build(craftedTxJson);
 
-            Navigator.showModal(
+            Navigator.showModal<ReviewTransactionModalProps>(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
-                    onResolve: Navigator.pop,
+                    onResolve: () => {
+                        Navigator.pop();
+                    },
                 },
                 { modalPresentationStyle: 'fullScreen' },
             );

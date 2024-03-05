@@ -32,12 +32,12 @@ import { Header } from '@components/General';
 
 import Localize from '@locale';
 
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+
 import { AppStyles } from '@theme';
 
-// steps
 import Steps from './Steps';
 
-// context
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
@@ -440,9 +440,9 @@ class AccountImportView extends Component<Props, State> {
                 // if account imported with alternative seed alphabet and xApp present
                 // route user to the xApp
                 if (has(alternativeSeedAlphabet, 'params.xapp')) {
-                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp');
+                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp') as string;
 
-                    Navigator.showModal(
+                    Navigator.showModal<XAppBrowserModalProps>(
                         AppScreens.Modal.XAppBrowser,
                         {
                             account: createdAccount,

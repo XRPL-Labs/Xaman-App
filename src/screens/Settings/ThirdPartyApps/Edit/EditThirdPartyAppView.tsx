@@ -22,7 +22,8 @@ import { Icon, Avatar, Button, Header, Spacer, TouchableDebounce } from '@compon
 
 import Localize from '@locale';
 
-// style
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 /* types ==================================================================== */
@@ -67,7 +68,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                 await Navigator.pop();
 
                 if (report) {
-                    Navigator.showModal(
+                    Navigator.showModal<XAppBrowserModalProps>(
                         AppScreens.Modal.XAppBrowser,
                         {
                             identifier: report,

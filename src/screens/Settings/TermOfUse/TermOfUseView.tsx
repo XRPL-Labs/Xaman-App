@@ -11,7 +11,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository, CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
 
 import { WebViewBrowser, Header, Footer, Spacer, Button } from '@components/General';
 
@@ -22,16 +21,7 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    asModal: boolean;
-}
-
-export interface State {
-    TOSVersion: number;
-    isTOSLoaded: boolean;
-    shouldShowAgreement: boolean;
-    coreSettings: CoreModel;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
 class TermOfUseView extends Component<Props, State> {

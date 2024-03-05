@@ -2,7 +2,8 @@ import { AccountModel, CoreModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 import { SubmitResultType } from '@common/libs/ledger/types';
-import { SignableMutatedTransaction } from '@common/libs/ledger/transactions/types';
+import { SignableMutatedTransaction, CombinedTransactions } from '@common/libs/ledger/transactions/types';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 export enum Steps {
     Preflight = 'Preflight',
@@ -12,9 +13,9 @@ export enum Steps {
     Result = 'Result',
 }
 
-export interface Props {
+export interface Props<T = CombinedTransactions> {
     payload: Payload;
-    onResolve?: (transaction: SignableMutatedTransaction, payload: Payload) => void;
+    onResolve?: (transaction: T & SignMixinType & MutationsMixinType, payload: Payload) => void;
     onDecline?: (payload: Payload) => void;
     onClose?: () => void;
 }

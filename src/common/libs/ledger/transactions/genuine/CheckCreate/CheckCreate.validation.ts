@@ -11,7 +11,6 @@ import CheckCreate from './CheckCreate.class';
 
 /* Types ==================================================================== */
 import { ValidationType } from '@common/libs/ledger/factory/types';
-import { SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Validation ==================================================================== */
 const CheckCreateValidation: ValidationType<CheckCreate> = (tx: CheckCreate): Promise<void> => {

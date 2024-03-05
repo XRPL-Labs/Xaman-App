@@ -26,7 +26,7 @@ import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
-import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
+import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { AccountInfoType } from '@common/helpers/resolver';
 
@@ -36,7 +36,7 @@ import AuthenticationService, { LockStatus } from '@services/AuthenticationServi
 import NetworkService from '@services/NetworkService';
 
 import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
-import { AccountModel, CoreModel, NetworkModel } from '@store/models';
+import { AccountModel, NetworkModel } from '@store/models';
 import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
@@ -58,77 +58,15 @@ import Localize from '@locale';
 import { AccountAddViewProps } from '@screens/Account/Add';
 import { TransactionLoaderModalProps } from '@screens/Modal/TransactionLoader';
 import { XAppInfoOverlayProps } from '@screens/Overlay/XAppInfo';
+import { ScanModalProps } from '@screens/Modal/Scan';
+import { DestinationPickerModalProps } from '@screens/Modal/DestinationPicker';
+import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    identifier: string;
-    params?: any;
-    title?: string;
-    icon?: string;
-    account?: AccountModel;
-    origin?: XAppOrigin;
-    originData?: any;
-}
-
-export interface State {
-    ott?: string;
-    app?: {
-        title?: string;
-        icon?: string;
-        identifier: string;
-        supportUrl?: string;
-        permissions?: {
-            special: string[];
-            commands: string[];
-        };
-        networks?: string[];
-        __ott?: string;
-    };
-    account: AccountModel;
-    network: NetworkModel;
-    error?: string;
-    isLaunchingApp: boolean;
-    isLoadingApp: boolean;
-    isAppReady: boolean;
-    isAppReadyTimeout: boolean;
-    isRequiredNetworkSwitch: boolean;
-    coreSettings: CoreModel;
-    appVersionCode: string;
-}
-
-export enum XAppMethods {
-    SelectDestination = 'selectDestination',
-    OpenSignRequest = 'openSignRequest',
-    PayloadResolved = 'payloadResolved',
-    XAppNavigate = 'xAppNavigate',
-    OpenBrowser = 'openBrowser',
-    TxDetails = 'txDetails',
-    KycVeriff = 'kycVeriff',
-    ScanQr = 'scanQr',
-    Share = 'share',
-    Close = 'close',
-    Ready = 'ready',
-    NetworkSwitch = 'networkSwitch',
-}
-
-export enum XAppSpecialPermissions {
-    UrlLaunchNoConfirmation = 'URL_LAUNCH_NO_CONFIRMATION',
-    NetworkSwitchEventNoReload = 'NETWORK_SWITCH_EVENT_NO_RELOAD',
-}
-
-interface IEvent {
-    method: string;
-    reason?: string;
-    uuid?: string;
-    qrContents?: string;
-    destination?: Destination;
-    info?: AccountInfoType;
-    result?: any;
-    network?: string;
-}
+import { Props, State, XAppMethods, XAppSpecialPermissions, IEvent } from './types';
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
@@ -234,7 +172,7 @@ class XAppBrowserModal extends Component<Props, State> {
             const payload = await Payload.from(uuid, PayloadOrigin.XAPP);
 
             // review the transaction
-            Navigator.showModal(
+            Navigator.showModal<ReviewTransactionModalProps>(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
@@ -294,7 +232,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     showScanner = () => {
-        Navigator.showModal(
+        Navigator.showModal<ScanModalProps>(
             AppScreens.Modal.Scan,
             {
                 onRead: this.onScannerRead,
@@ -310,7 +248,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     showDestinationPicker = (data?: { ignoreDestinationTag?: boolean }) => {
-        Navigator.showModal(
+        Navigator.showModal<DestinationPickerModalProps>(
             AppScreens.Modal.DestinationPicker,
             {
                 onSelect: this.onDestinationSelect,

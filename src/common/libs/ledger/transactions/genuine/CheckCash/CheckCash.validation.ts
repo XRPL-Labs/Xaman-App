@@ -6,7 +6,6 @@ import CheckCash from './CheckCash.class';
 
 /* Types ==================================================================== */
 import { ValidationType } from '@common/libs/ledger/factory/types';
-import { SignMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Validation ==================================================================== */
 const CheckCashValidation: ValidationType<CheckCash> = (tx: CheckCash): Promise<void> => {

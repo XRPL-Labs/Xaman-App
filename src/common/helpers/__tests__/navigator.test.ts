@@ -22,7 +22,7 @@ describe('Navigator helper', () => {
         const showOverlaySpy = jest.spyOn(Navigation, 'showOverlay');
 
         Navigator.push(screen);
-        Navigator.showModal(modal);
+        Navigator.showModal<>(modal);
         Navigator.showOverlay(overlay);
 
         expect(showScreenSpy).toBeCalledWith(AppScreens.TabBar.Home, {

@@ -29,6 +29,8 @@ import { XAppShortList } from '@components/Modules/XAppShortList';
 
 import Localize from '@locale';
 
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -100,7 +102,7 @@ class XAppsView extends Component<Props, State> {
 
     fetchStoreListings = () => {
         BackendService.getXAppStoreListings('message,featured,popular,recent,all')
-            .then((resp: any) => {
+            .then((resp) => {
                 const { selectedCategory } = this.state;
                 const { message, categories } = resp;
 
@@ -123,8 +125,7 @@ class XAppsView extends Component<Props, State> {
         const { identifier, title, icon } = app;
 
         // open xApp browser
-
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
                 identifier,
@@ -149,9 +150,7 @@ class XAppsView extends Component<Props, State> {
             },
             () => {
                 if (!searchEnabled) {
-                    if (this.searchBarRef?.current) {
-                        this.searchBarRef.current.focus();
-                    }
+                    this.searchBarRef?.current?.focus();
                 }
             },
         );
