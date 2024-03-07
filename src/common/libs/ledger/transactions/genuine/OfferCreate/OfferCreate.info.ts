@@ -94,7 +94,7 @@ class OfferCreateInfo extends ExplainerAbstract<OfferCreate> {
             mutate: this.item.BalanceChange(this.account.address),
             factor: {
                 currency: this.item.TakerPays!.currency,
-                value: this.item.TakerPays!.currency,
+                value: this.item.TakerPays!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

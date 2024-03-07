@@ -66,7 +66,7 @@ class EscrowCreateInfo extends ExplainerAbstract<EscrowCreate> {
             mutate: this.item.BalanceChange(this.account.address),
             factor: {
                 currency: this.item.Amount!.currency,
-                value: this.item.Amount!.currency,
+                value: this.item.Amount!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

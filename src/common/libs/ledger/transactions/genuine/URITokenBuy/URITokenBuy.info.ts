@@ -40,7 +40,7 @@ class URITokenBuyInfo extends ExplainerAbstract<URITokenBuy> {
             mutate: this.item.BalanceChange(this.account.address),
             factor: {
                 currency: this.item.Amount!.currency,
-                value: this.item.Amount!.currency,
+                value: this.item.Amount!.value,
                 effect: MonetaryStatus.IMMEDIATE_EFFECT,
             },
         };

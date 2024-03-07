@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { TextStyle } from 'react-native';
 
 import { AmountText } from '@components/General';
 
@@ -7,7 +8,7 @@ import { MonetaryStatus } from '@common/libs/ledger/factory/types';
 import styles from './styles';
 
 import { Props } from './types';
-import { TextStyle } from 'react-native';
+
 /* Types ==================================================================== */
 interface IProps extends Pick<Props, 'explainer'> {}
 
@@ -58,10 +59,10 @@ class Monetary extends PureComponent<IProps, State> {
         return null;
     }
 
-    static getDerivedStateFromProps(nextProps: IProps, prevState: State): Partial<State> | null {
+    static getDerivedStateFromProps(nextProps: IProps): Partial<State> | null {
         const { explainer } = nextProps;
 
-        if (typeof explainer === 'undefined' || prevState.value) {
+        if (typeof explainer === 'undefined') {
             return null;
         }
 

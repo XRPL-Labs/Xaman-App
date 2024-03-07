@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 
 import { TextPlaceholder } from '@components/General';
 
@@ -12,7 +12,7 @@ interface State {
 
 interface IProps extends Pick<Props, 'item' | 'explainer' | 'participant'> {}
 /* Component ==================================================================== */
-class ActionBlock extends PureComponent<IProps, State> {
+class ActionBlock extends Component<IProps, State> {
     constructor(props: IProps) {
         super(props);
 
@@ -21,8 +21,8 @@ class ActionBlock extends PureComponent<IProps, State> {
         };
     }
 
-    static getDerivedStateFromProps(nextProps: IProps, prevState: State): Partial<State> | null {
-        if (typeof nextProps.explainer === 'undefined' || prevState.actionLabel) {
+    static getDerivedStateFromProps(nextProps: IProps): Partial<State> | null {
+        if (typeof nextProps.explainer === 'undefined') {
             return null;
         }
 

@@ -384,7 +384,7 @@ class EventsView extends Component<Props, State> {
                     );
 
                     if (loadMore) {
-                        parsedList = uniqBy([...transactions, ...parsedList], 'Hash');
+                        parsedList = uniqBy([...transactions, ...parsedList], 'hash');
                     }
 
                     this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
@@ -415,6 +415,8 @@ class EventsView extends Component<Props, State> {
             this.applySearch(searchText);
         } else if (filters) {
             this.applyFilters(filters);
+        } else {
+            this.applyDefaults();
         }
     };
 

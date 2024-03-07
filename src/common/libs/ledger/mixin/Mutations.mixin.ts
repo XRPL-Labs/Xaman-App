@@ -48,8 +48,14 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
 
             let balanceChanges = new Meta(this._meta).parseBalanceChanges()[owner];
 
+            // no balance changes
+            if (!balanceChanges) {
+                this.BalanceChanges.set(owner, undefined);
+                return undefined;
+            }
+
             // if cross currency remove fee from changes
-            if (balanceChanges.filter((changes) => changes.action === OperationActions.DEC).length > 1) {
+            if (balanceChanges?.filter((changes) => changes.action === OperationActions.DEC).length > 1) {
                 const decreaseNative = balanceChanges.find(
                     (change) =>
                         change.action === OperationActions.DEC && change.currency === NetworkService.getNativeAsset(),
