@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { FlatList, RefreshControl, Text, View, ViewStyle } from 'react-native';
+import { RefreshControl, SectionList, Text, View, ViewStyle } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
-import { AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
+import { HorizontalLine } from '@components/General';
+import { AppActions, AppItem } from '@components/Modules/XAppStore/AppsList/AppItem';
 
 import Localize from '@locale';
 
@@ -14,6 +15,7 @@ import styles from './styles';
 interface Props {
     dataSource: any;
     onAppPress: (app: any) => void;
+    visible: boolean;
     onRefresh?: () => void;
     refreshing?: boolean;
     searching?: boolean;
@@ -60,19 +62,45 @@ class AppsList extends Component<Props, State> {
         );
     };
 
-    renderItem = ({ item }: { item: any }): React.ReactElement => {
-        return <AppItem item={item} onPress={this.onAppPress} />;
+    renderItem = ({ item }: { item: XamanBackend.AppCategory }): React.ReactElement => {
+        return <AppItem item={item} onPress={this.onAppPress} action={AppActions.OPEN_ABOUT} />;
+    };
+
+    renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => {
+        if (!title) {
+            return null;
+        }
+        return (
+            <View style={styles.sectionHeader}>
+                <Text style={styles.sectionHeaderText}>{title}</Text>
+            </View>
+        );
+    };
+
+    renderSeparator = ({ leadingItem, trailingSection }: { leadingItem: any; trailingSection: any }) => {
+        if (!leadingItem || !trailingSection) {
+            return null;
+        }
+        return <HorizontalLine />;
     };
 
     render() {
-        const { dataSource, refreshing, containerStyle } = this.props;
+        const { dataSource, refreshing, visible, containerStyle } = this.props;
+
+        if (!visible) {
+            return null;
+        }
 
         return (
-            <FlatList
-                contentContainerStyle={containerStyle}
-                data={dataSource}
+            <SectionList
+                style={containerStyle}
+                sections={dataSource ?? []}
                 renderItem={this.renderItem}
+                keyExtractor={(item: XamanBackend.AppCategory, index) => `${item?.identifier}${index}`}
+                renderSectionHeader={this.renderSectionHeader}
                 ListEmptyComponent={this.renderEmpty}
+                SectionSeparatorComponent={this.renderSeparator}
+                stickySectionHeadersEnabled
                 refreshControl={
                     <RefreshControl
                         refreshing={!!refreshing}

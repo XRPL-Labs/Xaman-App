@@ -148,6 +148,7 @@ declare namespace XamanBackend {
     }
     interface AppCategory {
         title: string;
+        description: string;
         category: string;
         identifier: string;
         icon: string;
@@ -156,17 +157,24 @@ declare namespace XamanBackend {
         development: boolean;
         suppress: boolean;
     }
+    interface XAppStoreListingsCategories {
+        featured: AppCategory[];
+        popular: AppCategory[];
+        recent: AppCategory[];
+        all: AppCategory[];
+    }
     interface XAppStoreListingsResponse {
-        categories: {
-            featured: AppCategory[];
-            popular: AppCategory[];
-            recent: AppCategory[];
-            all: AppCategory[];
-        };
+        categories: XAppStoreListingsCategories;
         message: {
             id: number;
             title: string;
             content: string;
+            app: {
+                title: string;
+                description: string;
+                identifier: string;
+                icon: string;
+            };
         };
     }
     interface XAppShortListResponse {

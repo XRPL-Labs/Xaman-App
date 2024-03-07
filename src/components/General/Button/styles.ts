@@ -81,10 +81,10 @@ const styles = StyleService.create({
 
     // Rounded Mini
     buttonRoundedMini: {
-        height: AppSizes.scale(28),
+        height: AppSizes.scale(25),
         paddingHorizontal: 12,
         alignSelf: 'center',
-        borderRadius: AppSizes.scale(28) / 2,
+        borderRadius: AppSizes.scale(25) / 2,
     },
     textButtonRoundedMini: {
         fontSize: AppFonts.base.size * 0.8,

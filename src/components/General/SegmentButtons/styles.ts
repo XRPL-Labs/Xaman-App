@@ -6,9 +6,10 @@ const styles = StyleService.create({
     container: {
         flexDirection: 'row',
         paddingVertical: AppSizes.paddingSml,
+        flexGrow: 0,
     },
     button: {
-        borderRadius: AppSizes.scale(75) / 10,
+        borderRadius: AppSizes.scale(75) / 5,
         marginRight: AppSizes.paddingExtraSml,
     },
     textContainer: {
@@ -18,8 +19,8 @@ const styles = StyleService.create({
         paddingHorizontal: 10,
     },
     buttonText: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.base.size,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size,
         color: '$grey',
     },
     buttonTextSelected: {

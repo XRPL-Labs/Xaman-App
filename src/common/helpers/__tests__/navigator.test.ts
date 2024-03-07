@@ -25,7 +25,7 @@ describe('Navigator helper', () => {
         Navigator.showModal(modal, {});
         Navigator.showOverlay(overlay, {});
 
-        expect(showScreenSpy).toBeCalledWith(screen, {
+        expect(showScreenSpy).toBeCalledWith(AppScreens.TabBar.Home, {
             component: {
                 name: screen,
                 id: screen,

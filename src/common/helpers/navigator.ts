@@ -14,6 +14,7 @@ import StyleService from '@services/StyleService';
 import { Props as AlertOverlayProps } from '@screens/Overlay/Alert/types';
 
 import AppFonts from '@theme/fonts';
+
 /* Types ==================================================================== */
 export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
     L0 extends Record<string, any> ? AppScreenKeys<L0> : L0;
@@ -223,9 +224,9 @@ const Navigator = {
         passProps: EnforcedProps<P>,
         options: Options = {},
     ): Promise<string | boolean> {
-        const currentScreen = NavigationService.getCurrentScreen();
+        const currentScreen = NavigationService.getCurrentScreen() ?? '';
         if (currentScreen !== nextScreen) {
-            return Navigation.push(nextScreen, {
+            return Navigation.push(currentScreen, {
                 component: {
                     name: nextScreen,
                     id: nextScreen,

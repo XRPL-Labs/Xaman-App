@@ -4,24 +4,30 @@ import { View, Text, Animated } from 'react-native';
 import StyleService from '@services/StyleService';
 
 import { AppStyles } from '@theme';
-import { TouchableDebounce, Avatar } from '@components/General';
+import { TouchableDebounce, Avatar, Button } from '@components/General';
 
 import styles from './styles';
+import Locale from '@locale';
 
 /* types ==================================================================== */
 export type AppType = {
-    icon: string;
-    identifier: string;
     title: string;
-
-    category: string;
-
-    development: boolean;
+    description: string;
+    identifier: string;
+    icon: string;
+    category?: string;
+    development?: boolean;
 };
+
+export enum AppActions {
+    LUNCH_APP = 'LUNCH',
+    OPEN_ABOUT = 'ABOUT',
+}
 
 export interface Props {
     item?: AppType;
     onPress: (app: AppType) => void;
+    action: AppActions;
 }
 
 /* Component ==================================================================== */
@@ -106,9 +112,46 @@ class AppItem extends Component<Props> {
                         numberOfLines={1}
                         style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}
                     >
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </Animated.Text>
+                    <Animated.Text
+                        numberOfLines={1}
+                        style={[
+                            styles.appDescription,
+                            styles.appDescriptionPlaceholder,
+                            { opacity: this.placeholderAnimation },
+                        ]}
+                    >
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                 </View>
+            </View>
+        );
+    };
+
+    renderActionButton = () => {
+        const { action } = this.props;
+
+        if (!action) {
+            return null;
+        }
+
+        let actionLabel;
+
+        switch (action) {
+            case AppActions.LUNCH_APP:
+                actionLabel = Locale.t('xapp.openXapp');
+                break;
+            case AppActions.OPEN_ABOUT:
+                actionLabel = Locale.t('xapp.aboutXapp');
+                break;
+            default:
+                return null;
+        }
+
+        return (
+            <View style={styles.rightPanelContainer}>
+                <Button onPress={this.onPress} light roundedMini label={actionLabel} />
             </View>
         );
     };
@@ -121,10 +164,10 @@ class AppItem extends Component<Props> {
         }
 
         return (
-            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.9}>
                 <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
                     <Avatar
-                        size={42}
+                        size={40}
                         source={{ uri: item.icon }}
                         badge={item.development ? 'IconSmartPhone' : undefined}
                         badgeColor={StyleService.value('$orange')}
@@ -133,14 +176,11 @@ class AppItem extends Component<Props> {
                         <Text numberOfLines={1} style={styles.appTitle}>
                             {item.title}
                         </Text>
+                        <Text numberOfLines={2} style={styles.appDescription}>
+                            {item.description ?? 'This is a short description'}
+                        </Text>
                     </View>
-                    <View style={styles.rightPanelContainer}>
-                        <View style={styles.categoryContainer}>
-                            <Text numberOfLines={1} style={styles.categoryLabel}>
-                                {item.category}
-                            </Text>
-                        </View>
-                    </View>
+                    {this.renderActionButton()}
                 </Animated.View>
             </TouchableDebounce>
         );

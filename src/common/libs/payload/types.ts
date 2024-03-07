@@ -112,6 +112,7 @@ export enum PayloadOrigin {
 
 export enum XAppOrigin {
     XAPP_STORE = 'XAPP_STORE',
+    XAPP_STORE_MESSAGE = 'XAPP_STORE_MESSAGE',
     XAPP_SHORT_LIST = 'XAPP_SHORT_LIST',
 
     QR = 'QR',
