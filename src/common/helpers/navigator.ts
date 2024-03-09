@@ -60,8 +60,6 @@ const getDefaultOptions = (): Options => {
                     radius: StyleService.isDarkMode() ? 12 : 8,
                 },
             }),
-            // TODO: REMOVE_ME
-            currentTabIndex: 3,
         },
 
         animations: {

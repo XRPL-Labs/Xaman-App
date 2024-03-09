@@ -122,19 +122,14 @@ run-android: | check-device-android pre-run ## Runs the app on an Android emulat
         echo Starting React Native packager server; \
     	npm start; \
     fi;\
-	echo Running Android app in development; \
+
+    VARIANT=${VARIANT:-debug}
+	echo Running Android app in ${VARIANT}; \
 
 	@for device in $(shell adb devices | tail -n +2 | cut -sf 1); do \
 		export ANDROID_SERIAL=$$device ; \
-		if [ ! -z ${VARIANT} ]; then \
-			npx react-native run-android --main-activity LaunchActivity --no-packager --variant=${VARIANT}; \
-		else \
-			npx react-native run-android --main-activity LaunchActivity --no-packager; \
-		fi; \
+		npx react-native run-android --main-activity LaunchActivity --no-packager --mode=${VARIANT}; \
 	done
-
-
-
 
 build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)
