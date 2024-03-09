@@ -49,7 +49,7 @@ import Localize from '@locale';
 import { AccountAddViewProps } from '@screens/Account/Add';
 import { EventsFilterModalProps } from '@screens/Modal/FilterEvents';
 
-import { DataSourceItem, DataSourceItemType } from '@components/Modules/EventsList/EventsList';
+import { DataSourceItem, RowItemType } from '@components/Modules/EventsList/EventsList';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -427,7 +427,7 @@ class EventsView extends Component<Props, State> {
             return [];
         }
 
-        let items = [] as any;
+        let items: RowItemType[] = [];
 
         if (activeSection === EventSections.PLANNED) {
             const openItems = orderBy(
@@ -444,23 +444,29 @@ class EventsView extends Component<Props, State> {
             );
 
             const plannedItems = orderBy(filter(plannedTransactions, { Type: LedgerEntryTypes.Escrow }), ['Date']);
-            const dataSource = [];
+            const dataSource: DataSourceItem[] = [];
 
             if (!isEmpty(openItems)) {
-                dataSource.push({ data: Localize.t('events.eventTypeOpen'), type: DataSourceItemType.SectionHeader });
-                map(openItems, (item) => dataSource.push({ data: item, type: DataSourceItemType.RowItem }));
+                dataSource.push({
+                    header: Localize.t('events.eventTypeOpen'),
+                    data: openItems,
+                });
             }
 
             if (!isEmpty(plannedItems)) {
-                dataSource.push({ data: Localize.t('events.plannedOn'), type: DataSourceItemType.SectionHeader });
+                dataSource.push({
+                    header: Localize.t('events.plannedOn'),
+                    data: [],
+                });
+
                 const grouped = groupBy(plannedItems, (item) => {
                     return moment(item.Date).format('YYYY-MM-DD');
                 });
 
                 map(grouped, (v, k) => {
-                    dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
-                    map(v, (item) => {
-                        dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+                    dataSource.push({
+                        header: this.formatDate(k),
+                        data: v,
                     });
                 });
             }
@@ -474,20 +480,18 @@ class EventsView extends Component<Props, State> {
         }
 
         // group items by month name and then get the name for each month
-        const grouped = groupBy(items, (item) => moment(item.Date).format('YYYY-MM-DD'));
+        const grouped = groupBy(items, (item) => (item.Date ? moment(item.Date).format('YYYY-MM-DD') : undefined));
 
         const dataSource: DataSourceItem[] = [];
 
         map(grouped, (v, k) => {
-            dataSource.push({ data: this.formatDate(k), type: DataSourceItemType.SectionHeader });
-            map(v, (item) => {
-                dataSource.push({ data: item, type: DataSourceItemType.RowItem });
+            dataSource.push({
+                header: this.formatDate(k),
+                data: v,
             });
         });
 
         return dataSource;
-        // sort by date
-        // const sorted = orderBy(dataSource, ['title'], ['desc']);
     };
 
     updateDataSource = async (include?: DataSourceType[]) => {

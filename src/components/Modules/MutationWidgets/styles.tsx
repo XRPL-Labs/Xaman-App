@@ -9,6 +9,7 @@ const styles = StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 25,
+        gap: AppSizes.paddingExtraSml,
     },
     advisoryContainer: {
         alignSelf: 'stretch',

@@ -2,10 +2,12 @@ import React, { PureComponent } from 'react';
 import { Image } from 'react-native';
 
 import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
-import { OperationActions } from '@common/libs/ledger/parser/types';
+import { BaseLedgerObject } from '@common/libs/ledger/objects';
+import { OperationActions, OwnerCountChangeType } from '@common/libs/ledger/parser/types';
+
+import NetworkService from '@services/NetworkService';
 
 import { Images } from '@common/helpers/images';
-
 import { Icon } from '@components/General';
 
 import { AppStyles } from '@theme';
@@ -33,7 +35,17 @@ class IndicatorIconBlock extends PureComponent<IProps> {
     renderReserveIndicator = () => {
         const { item, account } = this.props;
 
-        const ownerCountChanges = item.OwnerCountChange(account.address);
+        let ownerCountChanges: OwnerCountChangeType | undefined;
+
+        if (item instanceof BaseTransaction) {
+            ownerCountChanges = item.OwnerCountChange(account.address);
+        } else if (item instanceof BaseLedgerObject) {
+            ownerCountChanges = {
+                address: item.Account,
+                value: NetworkService.getNetworkReserve().OwnerReserve,
+                action: OperationActions.INC,
+            };
+        }
 
         if (ownerCountChanges) {
             return (
@@ -52,7 +64,7 @@ class IndicatorIconBlock extends PureComponent<IProps> {
         const { item } = this.props;
 
         // if memo contain xApp identifier then show xApp Icon
-        if (item.getXappIdentifier()) {
+        if (item instanceof BaseTransaction && item.getXappIdentifier()) {
             return this.renderXAppIndicator();
         }
 

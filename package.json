@@ -19,7 +19,6 @@
     "@react-native-firebase/app": "18.8.0",
     "@react-native-firebase/crashlytics": "18.8.0",
     "@react-native-firebase/messaging": "18.8.0",
-    "@shopify/flash-list": "1.6.3",
     "@veriff/react-native-sdk": "6.0.0",
     "bignumber.js": "9.1.2",
     "fuse.js": "6.6.2",

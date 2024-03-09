@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, RefreshControl } from 'react-native';
-
-import { FlashList } from '@shopify/flash-list';
+import { View, Text, RefreshControl, SectionList } from 'react-native';
 
 import { AccountModel } from '@store/models';
 
@@ -24,22 +22,12 @@ import styles from './styles';
 
 import * as EventListItems from './EventListItems';
 /* Types ==================================================================== */
-export enum DataSourceItemType {
-    'RowItem' = 'RowItem',
-    'SectionHeader' = 'SectionHeader',
-}
+export type RowItemType = (BaseTransaction & MutationsMixinType) | BaseLedgerObject<any> | Payload;
 
-export type RowDataSourceItem = {
-    data: BaseTransaction | BaseLedgerObject<any> | Payload;
-    type: DataSourceItemType.RowItem;
+export type DataSourceItem = {
+    data: Array<RowItemType>;
+    header: string;
 };
-
-export type SectionHeaderDataSourceItem = {
-    data: string;
-    type: DataSourceItemType.SectionHeader;
-};
-
-export type DataSourceItem = RowDataSourceItem | SectionHeaderDataSourceItem;
 
 interface Props {
     account: AccountModel;
@@ -72,57 +60,47 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
-    renderSectionHeader = (data: string) => {
+    renderSectionHeader = ({ section: { header } }: any) => {
         return (
             <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionHeaderText, styles.sectionHeaderDateText]}>{data}</Text>
+                <Text style={[styles.sectionHeaderText, styles.sectionHeaderDateText]}>{header}</Text>
             </View>
         );
     };
 
-    renderItem = ({ item }: { item: DataSourceItem }): React.ReactElement | null => {
+    renderItem = ({ item }: { item: RowItemType }): React.ReactElement | null => {
         const { account, timestamp } = this.props;
 
-        const { data, type } = item;
-
-        switch (type) {
-            case DataSourceItemType.SectionHeader:
-                return this.renderSectionHeader(data);
-            case DataSourceItemType.RowItem: {
-                if (data instanceof Payload) {
-                    return React.createElement(EventListItems.Request, {
-                        item: data,
-                        account,
-                        timestamp,
-                    });
-                }
-                if (data instanceof BaseTransaction) {
-                    return React.createElement(EventListItems.Transaction, {
-                        item: data,
-                        account,
-                        timestamp,
-                    } as {
-                        item: Transactions & MutationsMixinType;
-                        account: AccountModel;
-                        timestamp: number | undefined;
-                    });
-                }
-                if (data instanceof BaseLedgerObject) {
-                    return React.createElement(EventListItems.LedgerObject, {
-                        item: data,
-                        account,
-                        timestamp,
-                    } as {
-                        item: LedgerObjects & MutationsMixinType;
-                        account: AccountModel;
-                        timestamp: number | undefined;
-                    });
-                }
-                return null;
-            }
-            default:
-                return null;
+        if (item instanceof Payload) {
+            return React.createElement(EventListItems.Request, {
+                item,
+                account,
+                timestamp,
+            });
         }
+        if (item instanceof BaseTransaction) {
+            return React.createElement(EventListItems.Transaction, {
+                item,
+                account,
+                timestamp,
+            } as {
+                item: Transactions & MutationsMixinType;
+                account: AccountModel;
+                timestamp: number | undefined;
+            });
+        }
+        if (item instanceof BaseLedgerObject) {
+            return React.createElement(EventListItems.LedgerObject, {
+                item,
+                account,
+                timestamp,
+            } as {
+                item: LedgerObjects & MutationsMixinType;
+                account: AccountModel;
+                timestamp: number | undefined;
+            });
+        }
+        return null;
     };
 
     renderFooter = () => {
@@ -146,65 +124,42 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
-    keyExtractor = ({ type, data }: DataSourceItem, index: number): string => {
-        switch (type) {
-            case DataSourceItemType.RowItem: {
-                // get key base on data type
-                let key = '';
-                if (data instanceof BaseTransaction) {
-                    key = `${data.hash}`;
-                } else if (data instanceof BaseLedgerObject) {
-                    key = `${data.Index}`;
-                } else if (data instanceof Payload) {
-                    key = `${data.getPayloadUUID()}`;
-                }
-
-                return `row-item-${index}-${key}`;
-            }
-            case DataSourceItemType.SectionHeader:
-                return `header-${index}`;
-            default:
-                return `item-${index}`;
+    keyExtractor = (item: any, index: number): string => {
+        let key = '';
+        if (item instanceof BaseTransaction) {
+            key = `${item.hash}`;
+        } else if (item instanceof BaseLedgerObject) {
+            key = `${item.Index}`;
+        } else if (item instanceof Payload) {
+            key = `${item.getPayloadUUID()}`;
         }
-    };
 
-    // stickyHeaderIndices = () => {
-    //     const { dataSource } = this.props;
-    //     return dataSource
-    //         .map((item, index) => {
-    //             if (item.type === DataSourceItemType.SectionHeader) {
-    //                 return index;
-    //             }
-    //             return null;
-    //         })
-    //         .filter((item) => item !== null) as number[];
-    // };
-
-    getItemType = (item: DataSourceItem) => {
-        return item.type;
+        return `row-item-${index}-${key}`;
     };
 
     render() {
         const { dataSource, onEndReached, headerComponent } = this.props;
 
         return (
-            <View style={styles.sectionList}>
-                <FlashList
-                    data={dataSource}
-                    renderItem={this.renderItem}
-                    estimatedItemSize={EventListItems.Transaction.Height}
-                    contentContainerStyle={styles.sectionListContainer}
-                    onEndReached={onEndReached}
-                    onEndReachedThreshold={0.2}
-                    ListEmptyComponent={this.renderListEmpty}
-                    ListHeaderComponent={headerComponent}
-                    ListFooterComponent={this.renderFooter()}
-                    keyExtractor={this.keyExtractor}
-                    getItemType={this.getItemType}
-                    refreshControl={this.renderRefreshControl()}
-                    indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
-                />
-            </View>
+            <SectionList
+                style={styles.sectionList}
+                contentContainerStyle={styles.sectionListContainer}
+                sections={dataSource}
+                renderItem={this.renderItem}
+                renderSectionHeader={this.renderSectionHeader}
+                keyExtractor={this.keyExtractor}
+                ListEmptyComponent={this.renderListEmpty}
+                ListHeaderComponent={headerComponent}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={0.2}
+                ListFooterComponent={this.renderFooter}
+                windowSize={10}
+                maxToRenderPerBatch={10}
+                initialNumToRender={20}
+                refreshControl={this.renderRefreshControl()}
+                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                stickySectionHeadersEnabled={false}
+            />
         );
     }
 }

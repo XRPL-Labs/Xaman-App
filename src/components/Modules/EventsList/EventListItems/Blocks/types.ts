@@ -7,7 +7,7 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { AccountNameType } from '@common/helpers/resolver';
 
 export interface Props {
-    item: (Transactions | LedgerObjects) & MutationsMixinType;
+    item: (Transactions & MutationsMixinType) | LedgerObjects;
     account: AccountModel;
     participant?: AccountNameType;
     explainer?: ExplainerAbstract<Transactions | PseudoTransactions | LedgerObjects>;

@@ -55,6 +55,8 @@ class Memos extends PureComponent<Props, State> {
     checkXAppIdentifier = () => {
         const { item } = this.props;
 
+        if (!(item instanceof BaseTransaction)) return;
+
         const identifier = item.getXappIdentifier();
 
         if (identifier) {
