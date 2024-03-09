@@ -22,7 +22,7 @@ describe('TicketCreate tx', () => {
             const { tx, meta }: any = ticketCreateTemplate;
             const instance = new TicketCreate(tx, meta);
 
-            expect(instance.TicketCount).toBe(10);
+            expect(instance.TicketCount).toBe(1);
         });
     });
 
@@ -34,14 +34,34 @@ describe('TicketCreate tx', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription =
-                    'It creates 10 ticket(s) for this account.\nCreated tickets sequence 70035199';
+                const expectedDescription = 'It creates 1 ticket(s) for this account.\nCreated tickets sequence 48';
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.createTicket'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rP1TMyJHp5QceDoh9MdxLhYaJL2yCwPom', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: undefined,
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

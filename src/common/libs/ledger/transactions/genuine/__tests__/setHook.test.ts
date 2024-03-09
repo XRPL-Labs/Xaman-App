@@ -44,6 +44,24 @@ describe('SetHook tx', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.setHooks'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                // TODO: check me
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: { sent: undefined, received: undefined },
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

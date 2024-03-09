@@ -91,6 +91,7 @@ describe('CheckCash', () => {
             const { tx, meta }: any = checkCashTemplates;
             const Mixed = MutationsMixin(CheckCash);
             const instance = new Mixed(tx, meta);
+            const info = new CheckCashInfo(instance, {} as any);
 
             describe('generateDescription()', () => {
                 it('should return the expected description', () => {
@@ -100,15 +101,43 @@ describe('CheckCash', () => {
                         currency: NormalizeCurrencyCode(instance.Amount!.currency),
                         checkId: tx.CheckID,
                     });
-                    const info = new CheckCashInfo(instance, {} as any);
                     expect(info.generateDescription()).toEqual(expectedDescription);
                 });
             });
 
             describe('getEventsLabel()', () => {
                 it('should return the expected label', () => {
-                    const info = new CheckCashInfo(instance, {} as any);
                     expect(info.getEventsLabel()).toEqual(Localize.t('events.cashCheck'));
+                });
+            });
+
+            describe('getParticipants()', () => {
+                it('should return the expected participants', () => {
+                    expect(info.getParticipants()).toStrictEqual({
+                        start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                        end: { address: 'rrrrrrrrrrrrrrrrrrrrBZbvji', tag: undefined },
+                    });
+                });
+            });
+
+            describe('getMonetaryDetails()', () => {
+                it('should return the expected monetary details', () => {
+                    expect(info.getMonetaryDetails()).toStrictEqual({
+                        mutate: {
+                            sent: undefined,
+                            received: {
+                                issuer: undefined,
+                                currency: 'XRP',
+                                value: '2.499988',
+                                action: 1,
+                            },
+                        },
+                        factor: {
+                            currency: 'XRP',
+                            effect: 0,
+                            value: '100',
+                        },
+                    });
                 });
             });
         });

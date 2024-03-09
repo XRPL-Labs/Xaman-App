@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Class ==================================================================== */
-class DepositPreauthInfo extends ExplainerAbstract<DepositPreauth & MutationsMixinType> {
+class DepositPreauthInfo extends ExplainerAbstract<DepositPreauth, MutationsMixinType> {
     constructor(item: DepositPreauth & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -43,7 +43,7 @@ class DepositPreauthInfo extends ExplainerAbstract<DepositPreauth & MutationsMix
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.Authorize || this.item.Unauthorize },
+            end: { address: this.item.Authorize || this.item.Unauthorize, tag: undefined },
         };
     }
 

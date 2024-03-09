@@ -33,6 +33,10 @@ class Ticket extends BaseLedgerObject<TicketLedgerEntry> {
 
         this.LedgerEntryType = LedgerEntryTypes.Ticket;
     }
+
+    get Date(): undefined {
+        return undefined;
+    }
 }
 
 /* Export ==================================================================== */

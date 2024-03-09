@@ -54,6 +54,10 @@ class PayChannel extends BaseLedgerObject<PayChannelLedgerEntry> {
         this.LedgerEntryType = LedgerEntryTypes.PayChannel;
     }
 
+    get Date(): string | undefined {
+        return this.Expiration;
+    }
+
     get isExpired(): boolean {
         const date = this._object.Expiration;
         if (typeof date === 'undefined') return false;

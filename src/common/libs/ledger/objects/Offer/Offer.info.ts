@@ -12,11 +12,10 @@ import Offer from './Offer.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class OfferInfo extends ExplainerAbstract<Offer> {
-    constructor(item: Offer & MutationsMixinType, account: AccountModel) {
+    constructor(item: Offer, account: AccountModel) {
         super(item, account);
     }
 
@@ -79,7 +78,7 @@ class OfferInfo extends ExplainerAbstract<Offer> {
 
     getParticipants() {
         return {
-            start: { address: this.item.Account },
+            start: { address: this.item.Account, tag: undefined },
         };
     }
 
@@ -88,7 +87,7 @@ class OfferInfo extends ExplainerAbstract<Offer> {
             mutate: undefined,
             factor: {
                 currency: this.item.TakerPays!.currency,
-                value: this.item.TakerPays!.currency,
+                value: this.item.TakerPays!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

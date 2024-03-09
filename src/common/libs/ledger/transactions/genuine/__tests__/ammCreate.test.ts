@@ -25,12 +25,15 @@ describe('AMMCreate tx', () => {
             const instance = new AMMCreate(tx, meta);
 
             expect(instance.Amount).toStrictEqual({
-                currency: 'TST',
-                issuer: 'rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd',
-                value: '25',
+                currency: 'XRP',
+                value: '10000',
             });
-            expect(instance.Amount2).toStrictEqual({ currency: 'XRP', value: '250' });
-            expect(instance.TradingFee).toBe(0.5);
+            expect(instance.Amount2).toStrictEqual({
+                currency: 'USD',
+                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                value: '10000',
+            });
+            expect(instance.TradingFee).toBe(0.001);
         });
     });
 
@@ -50,6 +53,36 @@ describe('AMMCreate tx', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.ammCreate'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rwRGF9pmfEGT4GcZ379cYC9p3wpJDozy8w', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: {
+                            action: 0,
+                            currency: 'USD',
+                            issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                            value: '10000',
+                        },
+                        received: {
+                            action: 1,
+                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                            value: '10000000',
+                        },
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

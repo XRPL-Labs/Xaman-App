@@ -22,9 +22,9 @@ describe('TrustSet tx', () => {
             const { tx, meta }: any = trustSetTemplate;
             const instance = new TrustSet(tx, meta);
 
-            expect(instance.Currency).toBe('USD');
-            expect(instance.Issuer).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
-            expect(instance.Limit).toBe(100);
+            expect(instance.Currency).toBe('CNY');
+            expect(instance.Issuer).toBe('razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA');
+            expect(instance.Limit).toBe(1000000000);
             expect(instance.QualityIn).toBe(1);
             expect(instance.QualityOut).toBe(1);
         });
@@ -53,7 +53,7 @@ describe('TrustSet tx', () => {
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
                 const expectedDescription =
-                    'It establishes 100 as the maximum amount of USD from rrrrrrrrrrrrrrrrrrrrbzbvji that rrrrrrrrrrrrrrrrrrrrrholvtp is willing to hold.';
+                    'It establishes 1000000000 as the maximum amount of CNY from razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA that rhr8s3nSVJUFwkApgLP32XyYQXZ28Xphfc is willing to hold.';
 
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
@@ -61,7 +61,28 @@ describe('TrustSet tx', () => {
 
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.updatedATrustLine'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.addedATrustLine'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rhr8s3nSVJUFwkApgLP32XyYQXZ28Xphfc', tag: undefined },
+                    end: { address: 'razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: undefined,
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

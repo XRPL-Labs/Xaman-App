@@ -45,6 +45,20 @@ describe('OfferCancel tx', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.cancelOffer'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'ra5nK24KXen9AHvsdFTKHSANinZseWnPcX', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({ mutate: undefined, factor: undefined });
+            });
+        });
     });
 
     describe('Validation', () => {});

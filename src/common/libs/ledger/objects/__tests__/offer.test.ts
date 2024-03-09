@@ -44,7 +44,6 @@ describe('Offer object', () => {
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
                 const expectedDescription = `rrrrrrrrrrrrrrrrrrrrrholvtp offered to pay 37 XAG in order to receive 79550 XRP${'\n'}The exchange rate for this offer is 0.00046511627906976747 XAG/XRP${'\n'}The transaction will also cancel rrrrrrrrrrrrrrrrrrrrrholvtp 's existing offer #866${'\n'}The transaction offer ID is: 96F76F27D8A327FC48753167EC04A46AA0E382E6F57F32FD12274144D00F1797`;
-
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
@@ -52,6 +51,23 @@ describe('Offer object', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('global.offer'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '79550', effect: 1 },
+                });
             });
         });
     });

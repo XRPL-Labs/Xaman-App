@@ -21,20 +21,20 @@ describe('EscrowCreate', () => {
             const { tx, meta }: any = escrowCreateTemplate;
             const instance = new EscrowCreate(tx, meta);
 
-            expect(instance.Destination).toEqual('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.Destination).toEqual('rLbgNAngLq3HABBXK4uPGCHrqeZwgaYi7q');
             expect(instance.DestinationTag).toEqual(23480);
 
             expect(instance.Amount).toStrictEqual({
                 currency: 'XRP',
-                value: '0.01',
+                value: '997.5',
             });
 
             expect(instance.Condition).toBe(
-                'A0258020E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855810100',
+                'A0258020886F982742772F414243855DC13B348FC78FB3D5119412C8A6480114E36A4451810120',
             );
 
-            expect(instance.CancelAfter).toBe('2016-11-23T23:12:38.000Z');
-            expect(instance.FinishAfter).toBe('2016-11-22T23:12:38.000Z');
+            expect(instance.CancelAfter).toBe('2020-03-01T08:54:20.000Z');
+            expect(instance.FinishAfter).toBe('2020-03-01T09:01:00.000Z');
         });
     });
 
@@ -46,13 +46,36 @@ describe('EscrowCreate', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `The escrow is from rrrrrrrrrrrrrrrrrrrrrholvtp to rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}The escrow has a destination tag: 23480${'\n'}It escrowed 0.01 XRP${'\n'}It can be cancelled after Thursday, November 24, 2016 12:12 AM${'\n'}It can be finished after Wednesday, November 23, 2016 12:12 AM`;
+                const expectedDescription = `The escrow is from rLbgNAngLq3HABBXK4uPGCHrqeZwgaYi8q to rLbgNAngLq3HABBXK4uPGCHrqeZwgaYi7q${'\n'}The escrow has a destination tag: 23480${'\n'}It escrowed 997.5 XRP${'\n'}It can be cancelled after Sunday, March 1, 2020 9:54 AM${'\n'}It can be finished after Sunday, March 1, 2020 10:01 AM`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.createEscrow'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rLbgNAngLq3HABBXK4uPGCHrqeZwgaYi8q', tag: undefined },
+                    end: { address: 'rLbgNAngLq3HABBXK4uPGCHrqeZwgaYi7q', tag: 23480 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                // TODO: check me
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: { issuer: undefined, currency: 'XRP', value: '997.5', action: 0 },
+                        received: undefined,
+                    },
+                    factor: { currency: 'XRP', value: '997.5', effect: 1 },
+                });
             });
         });
     });

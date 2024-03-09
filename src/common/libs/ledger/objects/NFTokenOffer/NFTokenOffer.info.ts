@@ -9,11 +9,10 @@ import NFTokenOffer from '@common/libs/ledger/objects/NFTokenOffer/NFTokenOffer.
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
-    constructor(item: NFTokenOffer & MutationsMixinType, account: AccountModel) {
+    constructor(item: NFTokenOffer, account: AccountModel) {
         super(item, account);
     }
 
@@ -76,8 +75,8 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
 
     getParticipants() {
         return {
-            start: { address: this.item.Owner },
-            send: { address: this.item.Destination },
+            start: { address: this.item.Owner, tag: undefined },
+            send: { address: this.item.Destination, tag: undefined },
         };
     }
 
@@ -86,7 +85,7 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
             mutate: undefined,
             factor: {
                 currency: this.item.Amount!.currency,
-                value: this.item.Amount!.currency,
+                value: this.item.Amount!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

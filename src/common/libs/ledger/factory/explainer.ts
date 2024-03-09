@@ -14,13 +14,18 @@ import {
 } from '@common/libs/ledger/transactions/types';
 import { LedgerObjects as LedgerObjectsType } from '@common/libs/ledger/objects/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Module ==================================================================== */
 const ExplainerFactory = {
     fromType: (
         type: TransactionTypes | PseudoTransactionTypes | LedgerEntryTypes,
     ):
-        | (new (...args: any[]) => ExplainerAbstract<TransactionsType | PseudoTransactionsType | LedgerObjectsType>)
+        | (new (
+              ...args: any[]
+          ) =>
+              | ExplainerAbstract<TransactionsType, MutationsMixinType>
+              | ExplainerAbstract<PseudoTransactionsType | LedgerObjectsType>)
         | undefined => {
         let Explainer;
 
@@ -50,7 +55,10 @@ const ExplainerFactory = {
     fromItem: (
         item: TransactionsType | PseudoTransactionsType | LedgerObjectsType,
         account: AccountModel,
-    ): ExplainerAbstract<TransactionsType | PseudoTransactionsType | LedgerObjectsType> | undefined => {
+    ):
+        | ExplainerAbstract<TransactionsType, MutationsMixinType>
+        | ExplainerAbstract<PseudoTransactionsType | LedgerObjectsType>
+        | undefined => {
         const Explainer = ExplainerFactory.fromType(item.Type);
 
         if (typeof Explainer === 'undefined') {

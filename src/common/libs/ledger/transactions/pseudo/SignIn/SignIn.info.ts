@@ -4,12 +4,11 @@ import { AccountModel } from '@store/models';
 
 import SignIn from './SignIn.class';
 /* Types ==================================================================== */
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class SignInInfo extends ExplainerAbstract<SignIn> {
-    constructor(item: SignIn & MutationsMixinType, account: AccountModel) {
+    constructor(item: SignIn, account: AccountModel) {
         super(item, account);
     }
 

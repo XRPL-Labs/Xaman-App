@@ -50,6 +50,24 @@ describe('Escrow object', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('global.escrow'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: 1337 },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: 23480 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '0.01', effect: 1 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

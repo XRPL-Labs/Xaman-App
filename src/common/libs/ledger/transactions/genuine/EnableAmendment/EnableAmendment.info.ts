@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Class ==================================================================== */
-class EnableAmendmentInfo extends ExplainerAbstract<EnableAmendment> {
+class EnableAmendmentInfo extends ExplainerAbstract<EnableAmendment, MutationsMixinType> {
     constructor(item: EnableAmendment & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

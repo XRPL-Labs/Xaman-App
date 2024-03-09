@@ -57,9 +57,28 @@ describe('NFTokenMint tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.mintNFT'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rXMART8usFd5kABXCayoP6ZfB35b4v43t', tag: undefined },
+                    end: { address: 'ra5jrnrq9BxsvzGeJY5XS9inftcJWMdJUx', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: { sent: undefined, received: undefined },
+                    factor: undefined,
+                });
             });
         });
     });

@@ -48,6 +48,23 @@ describe('NFTokenCancelOffer tx', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.cancelNFTOffer'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

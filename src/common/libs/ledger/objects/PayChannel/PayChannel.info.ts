@@ -8,11 +8,10 @@ import PayChannel from '@common/libs/ledger/objects/PayChannel/PayChannel.class'
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class PayChannelInfo extends ExplainerAbstract<PayChannel> {
-    constructor(item: PayChannel & MutationsMixinType, account: AccountModel) {
+    constructor(item: PayChannel, account: AccountModel) {
         super(item, account);
     }
 

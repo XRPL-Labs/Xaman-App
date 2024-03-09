@@ -38,6 +38,23 @@ describe('URITokenCreateSellOffer tx', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.createURITokenSellOffer'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: { sent: undefined, received: undefined },
+                    factor: { currency: 'XRP', value: '10', effect: 1 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

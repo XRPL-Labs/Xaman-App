@@ -13,7 +13,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class NFTokenCreateOfferInfo extends ExplainerAbstract<NFTokenCreateOffer> {
+class NFTokenCreateOfferInfo extends ExplainerAbstract<NFTokenCreateOffer, MutationsMixinType> {
     constructor(item: NFTokenCreateOffer & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -67,7 +67,7 @@ class NFTokenCreateOfferInfo extends ExplainerAbstract<NFTokenCreateOffer> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.Destination },
+            end: this.item.Destination ? { address: this.item.Destination, tag: undefined } : undefined,
         };
     }
 

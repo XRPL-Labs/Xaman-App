@@ -11,7 +11,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class CheckCreateInfo extends ExplainerAbstract<CheckCreate> {
+class CheckCreateInfo extends ExplainerAbstract<CheckCreate, MutationsMixinType> {
     constructor(item: CheckCreate & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

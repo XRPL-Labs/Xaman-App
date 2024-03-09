@@ -34,7 +34,7 @@ class Offer extends BaseLedgerObject<OfferLedgerEntry> {
     declare Account: FieldReturnType<typeof AccountID>;
     declare TakerPays: FieldReturnType<typeof Amount>;
     declare TakerGets: FieldReturnType<typeof Amount>;
-    declare Expiration: FieldReturnType<typeof UInt32>;
+    declare Expiration: FieldReturnType<typeof UInt32, typeof RippleTime>;
     declare BookDirectory: FieldReturnType<typeof Hash256>;
     declare BookNode: FieldReturnType<typeof UInt64>;
     declare OfferID: FieldReturnType<typeof Hash256>;
@@ -48,6 +48,10 @@ class Offer extends BaseLedgerObject<OfferLedgerEntry> {
         super(object);
 
         this.LedgerEntryType = LedgerEntryTypes.Offer;
+    }
+
+    get Date(): string | undefined {
+        return this.Expiration;
     }
 
     get Rate(): number {

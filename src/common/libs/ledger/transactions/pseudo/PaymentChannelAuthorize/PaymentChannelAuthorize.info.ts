@@ -4,12 +4,11 @@ import { AccountModel } from '@store/models';
 
 import PaymentChannelAuthorize from './PaymentChannelAuthorize.class';
 /* Types ==================================================================== */
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class PaymentChannelAuthorizeInfo extends ExplainerAbstract<PaymentChannelAuthorize> {
-    constructor(item: PaymentChannelAuthorize & MutationsMixinType, account: AccountModel) {
+    constructor(item: PaymentChannelAuthorize, account: AccountModel) {
         super(item, account);
     }
 

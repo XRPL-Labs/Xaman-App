@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class NFTokenCancelOfferInfo extends ExplainerAbstract<NFTokenCancelOffer> {
+class NFTokenCancelOfferInfo extends ExplainerAbstract<NFTokenCancelOffer, MutationsMixinType> {
     constructor(item: NFTokenCancelOffer & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

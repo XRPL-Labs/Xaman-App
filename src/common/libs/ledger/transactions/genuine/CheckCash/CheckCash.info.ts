@@ -11,7 +11,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Class Declaration ==================================================================== */
-class CheckCashInfo extends ExplainerAbstract<CheckCash> {
+class CheckCashInfo extends ExplainerAbstract<CheckCash, MutationsMixinType> {
     constructor(item: CheckCash & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -37,8 +37,8 @@ class CheckCashInfo extends ExplainerAbstract<CheckCash> {
 
     getParticipants() {
         return {
-            start: { address: this.item.Check!.Account },
-            end: { address: this.item.Account },
+            start: { address: this.item.Check!.Account, tag: undefined },
+            end: { address: this.item.Account, tag: undefined },
         };
     }
 

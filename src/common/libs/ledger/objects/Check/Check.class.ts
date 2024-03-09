@@ -50,6 +50,10 @@ class Check extends BaseLedgerObject<CheckLedgerEntry> {
         this.LedgerEntryType = LedgerEntryTypes.Check;
     }
 
+    get Date(): string {
+        return this.Expiration;
+    }
+
     get isExpired(): boolean {
         const date = this.Expiration;
 

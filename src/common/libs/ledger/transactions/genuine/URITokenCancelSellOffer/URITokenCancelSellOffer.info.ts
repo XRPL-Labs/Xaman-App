@@ -7,7 +7,7 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { AccountModel } from '@store/models';
 
 /* Descriptor ==================================================================== */
-class URITokenCancelSellOfferInfo extends ExplainerAbstract<URITokenCancelSellOffer> {
+class URITokenCancelSellOfferInfo extends ExplainerAbstract<URITokenCancelSellOffer, MutationsMixinType> {
     constructor(item: URITokenCancelSellOffer & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

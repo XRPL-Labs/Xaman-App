@@ -32,9 +32,30 @@ describe('URITokenBuy tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.buyURIToken'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: { issuer: undefined, currency: 'XRP', value: '10', action: 0 },
+                        received: undefined,
+                    },
+                    factor: { currency: 'XRP', value: '10', effect: 0 },
+                });
             });
         });
     });

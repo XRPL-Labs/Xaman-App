@@ -58,6 +58,25 @@ describe('EscrowFinish', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.finishEscrow'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: 1337 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                // TODO: check me
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: { sent: undefined, received: undefined },
+                    factor: { currency: 'XRP', value: '500000000', effect: 2 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

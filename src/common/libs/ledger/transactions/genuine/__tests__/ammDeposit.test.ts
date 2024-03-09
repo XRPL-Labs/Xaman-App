@@ -23,12 +23,15 @@ describe('AMMDeposit tx', () => {
             const instance = new AMMDeposit(tx, meta);
 
             expect(instance.Asset).toStrictEqual({ currency: 'XRP' });
-            expect(instance.Asset2).toStrictEqual({ currency: 'ETH', issuer: 'rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9' });
-            expect(instance.Amount).toStrictEqual({ currency: 'XRP', value: '0.001' });
+            expect(instance.Asset2).toStrictEqual({ currency: 'USD', issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET' });
+            expect(instance.Amount).toStrictEqual({
+                currency: 'USD',
+                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                value: '10000',
+            });
             expect(instance.Amount2).toStrictEqual({
-                currency: 'ETH',
-                issuer: 'rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9',
-                value: '500',
+                currency: 'XRP',
+                value: '20000',
             });
             expect(instance.LPTokenOut).toStrictEqual({
                 currency: 'B3813FCAB4EE68B3D0D735D6849465A9113EE048',
@@ -54,6 +57,36 @@ describe('AMMDeposit tx', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.ammDeposit'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rUwaiErsYE5kibUUtaPczXZVVd73VNy4R9', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: {
+                            action: 0,
+                            currency: 'XRP',
+                            issuer: undefined,
+                            value: '10997.290462',
+                        },
+                        received: {
+                            action: 1,
+                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                            value: '10486796.68037148',
+                        },
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

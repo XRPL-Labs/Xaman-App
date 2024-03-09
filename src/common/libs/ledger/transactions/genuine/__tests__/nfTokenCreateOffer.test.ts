@@ -66,6 +66,41 @@ describe('NFTokenCreateOffer tx', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.createNFTOffer'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants for buy offer', () => {
+                const info = new NFTokenCreateOfferInfo(buyInstance, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: undefined,
+                });
+            });
+            it('should return the expected participants for sell offer', () => {
+                const info = new NFTokenCreateOfferInfo(sellInstance, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details for buy offer', () => {
+                const info = new NFTokenCreateOfferInfo(buyInstance, {} as any);
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                });
+            });
+
+            it('should return the expected monetary details for sell offer', () => {
+                const info = new NFTokenCreateOfferInfo(sellInstance, {} as any);
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

@@ -17,7 +17,7 @@ import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/t
 
 /* Descriptor ==================================================================== */
 
-class OfferCreateInfo extends ExplainerAbstract<OfferCreate> {
+class OfferCreateInfo extends ExplainerAbstract<OfferCreate, MutationsMixinType> {
     constructor(item: OfferCreate & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

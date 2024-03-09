@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class SetRegularKeyInfo extends ExplainerAbstract<SetRegularKey> {
+class SetRegularKeyInfo extends ExplainerAbstract<SetRegularKey, MutationsMixinType> {
     constructor(item: SetRegularKey & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -38,7 +38,7 @@ class SetRegularKeyInfo extends ExplainerAbstract<SetRegularKey> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.RegularKey },
+            end: this.item.RegularKey ? { address: this.item.RegularKey, tag: undefined } : undefined,
         };
     }
 

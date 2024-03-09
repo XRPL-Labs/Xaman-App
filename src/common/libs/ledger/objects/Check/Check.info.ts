@@ -9,11 +9,10 @@ import Check from '@common/libs/ledger/objects/Check/Check.class';
 /* Types ==================================================================== */
 
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class CheckInfo extends ExplainerAbstract<Check> {
-    constructor(item: Check & MutationsMixinType, account: AccountModel) {
+    constructor(item: Check, account: AccountModel) {
         super(item, account);
     }
     getEventsLabel = (): string => {
@@ -61,7 +60,7 @@ class CheckInfo extends ExplainerAbstract<Check> {
             mutate: undefined,
             factor: {
                 currency: this.item.SendMax!.currency,
-                value: this.item.SendMax!.currency,
+                value: this.item.SendMax!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

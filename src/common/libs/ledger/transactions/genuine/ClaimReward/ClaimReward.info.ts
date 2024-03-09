@@ -10,7 +10,7 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { ClaimRewardStatus } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
-class ClaimRewardInfo extends ExplainerAbstract<ClaimReward & MutationsMixinType> {
+class ClaimRewardInfo extends ExplainerAbstract<ClaimReward, MutationsMixinType> {
     constructor(item: ClaimReward & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

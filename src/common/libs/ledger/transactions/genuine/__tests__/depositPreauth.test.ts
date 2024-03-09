@@ -57,6 +57,26 @@ describe('DepositPreauth', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.unauthorizeDeposit'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

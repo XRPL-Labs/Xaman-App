@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class AMMWithdrawInfo extends ExplainerAbstract<AMMWithdraw> {
+class AMMWithdrawInfo extends ExplainerAbstract<AMMWithdraw, MutationsMixinType> {
     constructor(item: AMMWithdraw & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

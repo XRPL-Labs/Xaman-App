@@ -26,12 +26,17 @@ describe('SignerListSet tx', () => {
 
             expect(instance.SignerEntries).toStrictEqual([
                 {
-                    Account: 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW',
-                    WalletLocator: '03075F65D8353E3A5DA3193FF976BC17A2D0B9376BE7DA942349B6526E5A2BBF54',
+                    Account: 'rK8MWkYVgHR6VmPH6WpWcvVce9evvMpKSv',
                     SignerWeight: 2,
                 },
-                { Account: 'rUpy3eEg8rqjqfUoLeBnZkscbKbFsKXC3v', SignerWeight: 1 },
-                { Account: 'raKEEVSGnKSD9Zyvxu4z6Pqpm4ABH8FS6n', SignerWeight: 1 },
+                {
+                    Account: 'rLoRH7XuBgz2kTP1ACkoyVYk9hsLggVvbP',
+                    SignerWeight: 1,
+                },
+                {
+                    Account: 'rL6SsrxyVp1JLNEZsX1hFWHcP2iJcZJ2dy',
+                    SignerWeight: 1,
+                },
             ]);
         });
     });
@@ -53,6 +58,26 @@ describe('SignerListSet tx', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.setSignerList'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'radE4Xd2RpQTBAx6YkpWbb7Z3fkcAgsHpK', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: undefined,
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

@@ -23,8 +23,11 @@ describe('AMMVote tx', () => {
             const instance = new AMMVote(tx, meta);
 
             expect(instance.Asset).toStrictEqual({ currency: 'XRP' });
-            expect(instance.Asset2).toStrictEqual({ currency: 'ETH', issuer: 'rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9' });
-            expect(instance.TradingFee).toBe(0.234);
+            expect(instance.Asset2).toStrictEqual({
+                currency: 'USD',
+                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+            });
+            expect(instance.TradingFee).toBe(0.001);
         });
     });
 
@@ -40,9 +43,30 @@ describe('AMMVote tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.ammVote'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rUwaiErsYE5kibUUtaPczXZVVd73VNy4R9', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: undefined,
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

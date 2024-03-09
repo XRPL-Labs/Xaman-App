@@ -42,6 +42,10 @@ class NFTokenOffer extends BaseLedgerObject<NFTokenOfferEntry> {
         this.LedgerEntryType = LedgerEntryTypes.NFTokenOffer;
     }
 
+    get Date(): string | undefined {
+        return this.Expiration;
+    }
+
     /*
      NOTE: as all classed and objects have Account field we normalize this object as the rest
      */

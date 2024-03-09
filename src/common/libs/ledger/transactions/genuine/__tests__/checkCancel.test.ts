@@ -61,6 +61,23 @@ describe('CheckCancel', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.cancelCheck'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {

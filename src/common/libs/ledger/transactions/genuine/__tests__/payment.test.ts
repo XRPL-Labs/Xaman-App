@@ -144,9 +144,41 @@ describe('Payment tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.paymentReceived'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ', tag: 1337 },
+                    end: { address: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ', tag: 1338 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: {
+                            currency: 'USD',
+                            issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                            value: '1.23905437',
+                            action: 0,
+                        },
+                        received: {
+                            issuer: undefined,
+                            currency: 'XRP',
+                            value: '0.999988',
+                            action: 1,
+                        },
+                    },
+                    factor: { currency: 'XRP', value: '1', effect: 0 },
+                });
             });
         });
     });

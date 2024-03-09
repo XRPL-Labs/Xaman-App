@@ -37,11 +37,14 @@ class BaseLedgerObject<T extends LedgerEntry> {
 
         for (const property of Object.keys(fields)) {
             // get the property config
-            // NOTE: all Ledger object properties are readonly
             const fieldConfig = createPropertyConfig(property, { ...fields[property] }, this._object);
             // define the property
             Object.defineProperty(this, property, fieldConfig);
         }
+    }
+
+    get Date(): string | undefined {
+        return undefined;
     }
 
     get Index(): string {

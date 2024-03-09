@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class PaymentChannelFundInfo extends ExplainerAbstract<PaymentChannelFund & MutationsMixinType> {
+class PaymentChannelFundInfo extends ExplainerAbstract<PaymentChannelFund, MutationsMixinType> {
     constructor(item: PaymentChannelFund & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

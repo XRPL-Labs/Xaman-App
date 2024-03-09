@@ -73,6 +73,27 @@ describe('ClaimReward', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.claimReward'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                // TODO: check me
+                const info = new ClaimRewardInfo(optInInstance, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrhoLvTp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                // TODO: check me
+                const info = new ClaimRewardInfo(emittedInstance, {} as any);
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: { sent: undefined, received: undefined },
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

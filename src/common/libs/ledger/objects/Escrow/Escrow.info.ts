@@ -8,11 +8,10 @@ import Escrow from './Escrow.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class EscrowInfo extends ExplainerAbstract<Escrow> {
-    constructor(item: Escrow & MutationsMixinType, account: AccountModel) {
+    constructor(item: Escrow, account: AccountModel) {
         super(item, account);
     }
 
@@ -64,7 +63,7 @@ class EscrowInfo extends ExplainerAbstract<Escrow> {
             mutate: undefined,
             factor: {
                 currency: this.item.Amount!.currency,
-                value: this.item.Amount!.currency,
+                value: this.item.Amount!.value,
                 effect: MonetaryStatus.POTENTIAL_EFFECT,
             },
         };

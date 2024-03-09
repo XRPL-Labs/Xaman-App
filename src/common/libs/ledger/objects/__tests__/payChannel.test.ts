@@ -47,6 +47,24 @@ describe('PayChannel object', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.paymentChannel'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: 0 },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: 1002341 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '4.3258', effect: 0 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

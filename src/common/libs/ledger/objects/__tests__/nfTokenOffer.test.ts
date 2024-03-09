@@ -83,6 +83,24 @@ describe('NFTokenOffer object', () => {
                 ).toEqual(Localize.t('events.buyNFToken'));
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    send: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

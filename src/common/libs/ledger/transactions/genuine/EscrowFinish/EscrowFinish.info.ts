@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class EscrowFinishInfo extends ExplainerAbstract<EscrowFinish> {
+class EscrowFinishInfo extends ExplainerAbstract<EscrowFinish, MutationsMixinType> {
     constructor(item: EscrowFinish & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -43,7 +43,7 @@ class EscrowFinishInfo extends ExplainerAbstract<EscrowFinish> {
 
     getParticipants() {
         return {
-            start: { address: this.item.Owner },
+            start: { address: this.item.Owner, tag: undefined },
             end: { address: this.item.Escrow.Destination, tag: this.item.Escrow.DestinationTag },
         };
     }

@@ -12,7 +12,7 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
-class TrustSetInfo extends ExplainerAbstract<TrustSet & MutationsMixinType> {
+class TrustSetInfo extends ExplainerAbstract<TrustSet, MutationsMixinType> {
     constructor(item: TrustSet & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -56,7 +56,7 @@ class TrustSetInfo extends ExplainerAbstract<TrustSet & MutationsMixinType> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.Issuer },
+            end: { address: this.item.Issuer, tag: undefined },
         };
     }
 

@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class URITokenBuyInfo extends ExplainerAbstract<URITokenBuy> {
+class URITokenBuyInfo extends ExplainerAbstract<URITokenBuy, MutationsMixinType> {
     constructor(item: URITokenBuy & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

@@ -25,8 +25,8 @@ describe('AMMDelete tx', () => {
                 currency: 'XRP',
             });
             expect(instance.Asset2).toStrictEqual({
-                currency: 'TST',
-                issuer: 'rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd',
+                currency: 'FOO',
+                issuer: 'rm5c42Crqpdch5fbuCdHmSMV1wrL9arV9',
             });
         });
     });
@@ -47,6 +47,26 @@ describe('AMMDelete tx', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.ammDelete'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rm5c42Crqpdch5fbuCdHmSMV1wrL9arV9', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: undefined,
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

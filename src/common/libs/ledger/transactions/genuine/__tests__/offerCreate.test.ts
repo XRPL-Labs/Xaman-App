@@ -194,9 +194,40 @@ describe('OfferCreate tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.exchangedAssets'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: {
+                            issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                            currency: 'BTC',
+                            value: '0.01257026',
+                            action: 0,
+                        },
+                        received: {
+                            issuer: undefined,
+                            currency: 'XRP',
+                            value: '501.44754',
+                            action: 1,
+                        },
+                    },
+                    factor: { currency: 'XRP', value: '484.553386', effect: 1 },
+                });
             });
         });
     });

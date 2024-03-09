@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class InvokeInfo extends ExplainerAbstract<Invoke> {
+class InvokeInfo extends ExplainerAbstract<Invoke, MutationsMixinType> {
     constructor(item: Invoke & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -47,7 +47,7 @@ class InvokeInfo extends ExplainerAbstract<Invoke> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.Destination },
+            end: { address: this.item.Destination, tag: undefined },
         };
     }
 

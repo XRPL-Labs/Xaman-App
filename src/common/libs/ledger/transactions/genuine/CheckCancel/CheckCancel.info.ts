@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class CheckCancelInfo extends ExplainerAbstract<CheckCancel> {
+class CheckCancelInfo extends ExplainerAbstract<CheckCancel, MutationsMixinType> {
     constructor(item: CheckCancel & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

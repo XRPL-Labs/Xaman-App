@@ -51,6 +51,34 @@ describe('SetRegularKey tx', () => {
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants for setting the key', () => {
+                const info = new SetRegularKeyInfo(setInstance, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: undefined },
+                });
+            });
+
+            it('should return the expected participants for removing the key', () => {
+                const info = new SetRegularKeyInfo(clearInstance, {} as any);
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: undefined,
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                const info = new SetRegularKeyInfo(setInstance, {} as any);
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: undefined,
+                });
+            });
+        });
     });
 
     describe('Validation', () => {});

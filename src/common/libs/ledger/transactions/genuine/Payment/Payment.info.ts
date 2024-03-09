@@ -11,7 +11,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class PaymentInfo extends ExplainerAbstract<Payment> {
+class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
     constructor(item: Payment & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
@@ -82,7 +82,7 @@ class PaymentInfo extends ExplainerAbstract<Payment> {
             mutate: this.item.BalanceChange(this.account.address),
             factor: {
                 currency: this.item.DeliveredAmount!.currency,
-                value: this.item.DeliveredAmount!.currency,
+                value: this.item.DeliveredAmount!.value,
                 effect: MonetaryStatus.IMMEDIATE_EFFECT,
             },
         };

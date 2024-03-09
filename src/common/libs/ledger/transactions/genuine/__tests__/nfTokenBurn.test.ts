@@ -31,19 +31,36 @@ describe('NFTokenBurn tx', () => {
         const { tx, meta }: any = nFTokenBurnTemplate;
         const MixedNFTokenBurn = MutationsMixin(NFTokenBurn);
         const instance = new MixedNFTokenBurn(tx, meta);
-        const NFTokenBurnInfoInstance = new NFTokenBurnInfo(instance, {} as any);
+        const info = new NFTokenBurnInfo(instance, {} as any);
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
                 const expectedDescription =
                     'The transaction will burn NFT token with ID 000B013A95F14B0044F78A264E41713C64B5F89242540EE208C3098E00000D65';
-                expect(NFTokenBurnInfoInstance.generateDescription()).toEqual(expectedDescription);
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(NFTokenBurnInfoInstance.getEventsLabel()).toEqual(Localize.t('events.burnNFT'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.burnNFT'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: undefined,
+                    factor: undefined,
+                });
             });
         });
     });

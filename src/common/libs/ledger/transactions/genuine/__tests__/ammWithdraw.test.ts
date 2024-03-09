@@ -25,12 +25,15 @@ describe('AMMWithdraw tx', () => {
             const instance = new AMMWithdraw(tx, meta);
 
             expect(instance.Asset).toStrictEqual({ currency: 'XRP' });
-            expect(instance.Asset2).toStrictEqual({ currency: 'ETH', issuer: 'rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9' });
-            expect(instance.Amount).toStrictEqual({ currency: 'XRP', value: '0.001' });
+            expect(instance.Asset2).toStrictEqual({ currency: 'USD', issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET' });
+            expect(instance.Amount).toStrictEqual({
+                currency: 'USD',
+                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                value: '4000',
+            });
             expect(instance.Amount2).toStrictEqual({
-                currency: 'ETH',
-                issuer: 'rPyfep3gcLzkosKC9XiE77Y8DZWG6iWDT9',
-                value: '500',
+                currency: 'XRP',
+                value: '4000',
             });
             expect(instance.LPTokenIn).toStrictEqual({
                 currency: 'B3813FCAB4EE68B3D0D735D6849465A9113EE048',
@@ -57,6 +60,36 @@ describe('AMMWithdraw tx', () => {
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.ammWithdraw'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rUwaiErsYE5kibUUtaPczXZVVd73VNy4R9', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: {
+                            action: 0,
+                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                            value: '3829663.63131411',
+                        },
+                        received: {
+                            action: 1,
+                            currency: 'XRP',
+                            issuer: undefined,
+                            value: '3666.580872',
+                        },
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

@@ -36,19 +36,39 @@ describe('Import ', () => {
         const MixedImport = MutationsMixin(Import);
         const { tx, meta }: any = importTemplate.RegularKey;
         const instance = new MixedImport(tx, meta);
-
-        const infoInstance = new ImportInfo(instance, {} as any);
+        const info = new ImportInfo(instance, {} as any);
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
                 const expectedDescription = `This is an Import transaction${'\n'}The issuer address set to rrrrrrrrrrrrrrrrrrrrrholvtp`;
-                expect(infoInstance.generateDescription()).toEqual(expectedDescription);
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(infoInstance.getEventsLabel()).toEqual(Localize.t('events.import'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.import'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                // TODO: check me
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        sent: undefined,
+                        received: { issuer: undefined, currency: 'XRP', value: '12', action: 1 },
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

@@ -6,11 +6,10 @@ import Ticket from './Ticket.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /* Descriptor ==================================================================== */
 class TicketInfo extends ExplainerAbstract<Ticket> {
-    constructor(item: Ticket & MutationsMixinType, account: AccountModel) {
+    constructor(item: Ticket, account: AccountModel) {
         super(item, account);
     }
 
@@ -24,12 +23,15 @@ class TicketInfo extends ExplainerAbstract<Ticket> {
 
     getParticipants() {
         return {
-            start: { address: this.item.Account },
+            start: { address: this.item.Account, tag: undefined },
         };
     }
 
     getMonetaryDetails() {
-        return undefined;
+        return {
+            mutate: undefined,
+            factor: undefined,
+        };
     }
 }
 

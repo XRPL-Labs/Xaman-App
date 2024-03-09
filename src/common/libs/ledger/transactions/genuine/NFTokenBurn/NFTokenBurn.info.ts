@@ -10,7 +10,7 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 
-class NFTokenBurnInfo extends ExplainerAbstract<NFTokenBurn> {
+class NFTokenBurnInfo extends ExplainerAbstract<NFTokenBurn, MutationsMixinType> {
     constructor(item: NFTokenBurn & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }

@@ -9,7 +9,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
-class TicketCreateInfo extends ExplainerAbstract<TicketCreate> {
+class TicketCreateInfo extends ExplainerAbstract<TicketCreate, MutationsMixinType> {
     constructor(item: TicketCreate & MutationsMixinType, account: AccountModel) {
         super(item, account);
     }
