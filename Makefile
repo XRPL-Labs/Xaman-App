@@ -123,7 +123,7 @@ run-android: | check-device-android pre-run ## Runs the app on an Android emulat
     	npm start; \
     fi;\
 
-    VARIANT=${VARIANT:-debug}
+    VARIANT=${VARIANT:-debug}; \
 	echo Running Android app in ${VARIANT}; \
 
 	@for device in $(shell adb devices | tail -n +2 | cut -sf 1); do \
