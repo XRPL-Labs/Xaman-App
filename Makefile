@@ -119,11 +119,11 @@ run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 
 run-android: | check-device-android pre-run ## Runs the app on an Android emulator or dev device
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
-        echo Starting React Native packager server; \
-    	npm start; \
-    fi;\
+		echo Starting React Native packager server; \
+		npm start; \
+	fi;\
 
-    VARIANT=${VARIANT:-debug}; \
+	VARIANT=${VARIANT:-debug}; \
 	echo Running Android app in ${VARIANT}; \
 
 	@for device in $(shell adb devices | tail -n +2 | cut -sf 1); do \
