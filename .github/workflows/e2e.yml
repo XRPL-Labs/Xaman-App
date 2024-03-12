@@ -30,15 +30,15 @@ jobs:
         id: cache
         with:
           path: node_modules
-          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+          key: node-modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: Rebuild detox
         if: steps.cache.outputs.cache-hit == 'true'
-        run: yarn detox clean-framework-cache && yarn detox build-framework-cache
+        run: npx detox clean-framework-cache && npx detox build-framework-cache
 
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Cache Pods
         uses: actions/cache@v1
@@ -59,8 +59,8 @@ jobs:
           make generate-locales
           mv src/app.tsx src/app.tsx.old && cat src/app.tsx.old|perl -pe'BEGIN{undef $/;} s/if \(isJailBroken.+?}/\/\/ No root or jailbreak detection/gms' > src/app.tsx
 
-      - run: yarn detox build e2e --configuration ios.sim.release
-      - run: yarn cucumber-js ./e2e --configuration ios.sim.release
+      - run: npx detox build e2e --configuration ios.sim.release
+      - run: npx cucumber-js ./e2e --configuration ios.sim.release
 
       - name: Upload artifact files
         if: ${{ always() }}
