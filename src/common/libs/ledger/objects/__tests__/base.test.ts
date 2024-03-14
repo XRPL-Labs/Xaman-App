@@ -1,7 +1,7 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
-import BaseLedgerObject from '../BaseLedgerObject';
+import BaseLedgerObject from '../base';
 
 jest.mock('@services/LedgerService');
 jest.mock('@services/NetworkService');

@@ -1,7 +1,7 @@
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
-import BaseGenuineTransaction from '../BaseGenuineTransaction';
+import BaseGenuineTransaction from '../base';
 
 import BaseTxTemplate from './fixtures/BaseTx.json';
 
@@ -96,7 +96,7 @@ describe('BaseGenuineTransaction', () => {
             };
 
             const transaction = new BaseGenuineTransaction(txData);
-            const jsonResult = transaction.Json;
+            const jsonResult = transaction.JsonForSigning;
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { RegularKey, Amount, ...expectedResult } = txData;

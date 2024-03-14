@@ -26,7 +26,7 @@ describe('Payload', () => {
             'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png',
         );
         expect(craftedPayload.getApplicationName()).toBe('Xaman');
-        expect(craftedPayload.getTransaction().Json).toEqual(transaction);
+        expect(craftedPayload.getTransaction().JsonForSigning).toEqual(transaction);
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
         const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
@@ -120,7 +120,7 @@ describe('Payload', () => {
         expect(fetchedPayload.getApplicationName()).toBe(AccountSetPayload.application.name);
         expect(fetchedPayload.getReturnURL()).toBe(AccountSetPayload.meta.return_url_app);
         expect(fetchedPayload.getPayloadUUID()).toBe(AccountSetPayload.meta.uuid);
-        expect(fetchedPayload.getTransaction().Json).toEqual(AccountSetPayload.payload.request_json);
+        expect(fetchedPayload.getTransaction().JsonForSigning).toEqual(AccountSetPayload.payload.request_json);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.UNKNOWN);
     });
 
@@ -132,7 +132,7 @@ describe('Payload', () => {
         expect(fetchedPayload.isPseudoTransaction()).toBe(true);
         expect(fetchedPayload.shouldSubmit()).toBe(false);
         expect(fetchedPayload.getTransactionType()).toBe('SignIn');
-        expect(fetchedPayload.getTransaction().Json).toEqual({});
+        expect(fetchedPayload.getTransaction().JsonForSigning).toEqual({});
         expect(fetchedPayload.getTransaction().Type).toEqual(PseudoTransactionTypes.SignIn);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.DEEP_LINK);
     });

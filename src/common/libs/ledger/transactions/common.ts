@@ -79,6 +79,11 @@ export abstract class BaseTransaction {
     declare AccountTxnID?: FieldReturnType<typeof Hash256>;
     declare PreviousTxnID?: FieldReturnType<typeof Hash256>;
 
-    abstract get JsonForSigning(): TransactionJson;
-    abstract get MetaData(): TransactionMetadata | Record<string, never>;
+    get JsonForSigning(): TransactionJson {
+        throw new Error('Method JsonForSigning not implemented.');
+    }
+
+    get MetaData(): TransactionMetadata | Record<string, never> {
+        throw new Error('Method MetaData not implemented.');
+    }
 }

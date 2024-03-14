@@ -15,14 +15,10 @@ import { HookExecution } from '@common/libs/ledger/types/common';
 
 /* Types ==================================================================== */
 import { Constructor, MutationsMixinType } from './types';
-import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 
 /* Mixin ==================================================================== */
 export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base implements MutationsMixinType {
-        JsonForSigning!: TransactionJson;
-        MetaData!: TransactionMetadata | Record<string, never>;
-
         private BalanceChanges: Map<string, any>;
         private OwnerCountChanges: Map<string, any>;
         private HookExecutions: HookExecution[];

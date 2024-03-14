@@ -19,14 +19,10 @@ import { TransactionResult } from '@common/libs/ledger/parser/types';
 import { SignableTransaction } from '@common/libs/ledger/transactions/types';
 
 import { Constructor, SignMethodType, SignMixinType } from './types';
-import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 
 /* Mixin ==================================================================== */
 export function SignMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base implements SignMixinType {
-        JsonForSigning!: TransactionJson;
-        MetaData!: TransactionMetadata | Record<string, never>;
-
         private _submitResult?: SubmitResultType;
         private _verifyResult?: VerifyResultType;
         private isAborted?: boolean;
