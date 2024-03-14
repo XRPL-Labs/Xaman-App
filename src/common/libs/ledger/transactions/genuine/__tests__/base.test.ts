@@ -1,18 +1,18 @@
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
-import BaseTransaction from '../BaseTransaction';
+import BaseGenuineTransaction from '../BaseGenuineTransaction';
 
 import BaseTxTemplate from './fixtures/BaseTx.json';
 
 jest.mock('@services/NetworkService');
 
-describe('BaseTransaction', () => {
+describe('BaseGenuineTransaction', () => {
     describe('Set & Get', () => {
         it('Should return right parsed values for all common fields', () => {
             const { tx, meta }: any = BaseTxTemplate;
 
-            const instance = new BaseTransaction(tx, meta);
+            const instance = new BaseGenuineTransaction(tx, meta);
 
             expect(instance.Account).toBe(tx.Account);
             expect(instance.SourceTag).toBe(tx.SourceTag);
@@ -36,7 +36,7 @@ describe('BaseTransaction', () => {
         it('Should Set/Get common fields', () => {
             const { tx }: any = BaseTxTemplate;
 
-            const instance = new BaseTransaction();
+            const instance = new BaseGenuineTransaction();
 
             instance.TransactionType = TransactionTypes.Payment;
             expect(instance.TransactionType).toBe(TransactionTypes.Payment);
@@ -95,7 +95,7 @@ describe('BaseTransaction', () => {
                 RegularKey: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx',
             };
 
-            const transaction = new BaseTransaction(txData);
+            const transaction = new BaseGenuineTransaction(txData);
             const jsonResult = transaction.Json;
 
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

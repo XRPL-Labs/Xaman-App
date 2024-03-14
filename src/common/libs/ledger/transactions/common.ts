@@ -1,25 +1,23 @@
 /**
- * Base Ledger transaction
+ * Common base transaction
  */
-
-import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 
 import { TransactionType, AccountID, Amount, UInt32, Hash256, STArray, Blob } from '@common/libs/ledger/parser/fields';
 import { Flags, Signers, Memos, HookParameters } from '@common/libs/ledger/parser/fields/codec';
-import { createPropertyConfig } from '@common/libs/ledger/parser/fields/factory';
 
 /* Types ==================================================================== */
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { createPropertyConfig } from '@common/libs/ledger/parser/fields/factory';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
-/* Class ==================================================================== */
-class BaseTransaction {
-    protected _tx: TransactionJson | Record<string, never>;
-    protected _meta: TransactionMetadata | Record<string, never>;
+export abstract class BaseTransaction {
+    InstanceType!: InstanceTypes;
 
-    // abstract
+    protected _tx!: TransactionJson | Record<string, never>;
+    protected _meta!: TransactionMetadata | Record<string, never>;
+
     public static Fields: { [key: string]: FieldConfig } = {};
-
-    // common fields
     public static CommonFields: { [key: string]: FieldConfig } = {
         hash: { required: true, type: Hash256 },
         TransactionType: { required: true, type: TransactionType },
@@ -43,6 +41,23 @@ class BaseTransaction {
         PreviousTxnID: { type: Hash256 },
     };
 
+    protected constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
+        this._tx = tx ?? {};
+        this._meta = meta ?? {};
+
+        const fields = {
+            ...(this.constructor as typeof BaseTransaction).Fields,
+            ...BaseTransaction.CommonFields,
+        };
+
+        for (const property of Object.keys(fields)) {
+            // get the property config
+            const fieldConfig = createPropertyConfig(property, fields[property], this._tx);
+            // define the property
+            Object.defineProperty(this, property, fieldConfig);
+        }
+    }
+
     declare hash: FieldReturnType<typeof Hash256>;
     declare TransactionType: FieldReturnType<typeof TransactionType>;
     declare Account: FieldReturnType<typeof AccountID>;
@@ -64,58 +79,6 @@ class BaseTransaction {
     declare AccountTxnID?: FieldReturnType<typeof Hash256>;
     declare PreviousTxnID?: FieldReturnType<typeof Hash256>;
 
-    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
-        this._tx = tx ?? {};
-        this._meta = meta ?? {};
-
-        const fields = {
-            ...(this.constructor as typeof BaseTransaction).Fields,
-            ...BaseTransaction.CommonFields,
-        };
-
-        for (const property of Object.keys(fields)) {
-            // get the property config
-            const fieldConfig = createPropertyConfig(property, fields[property], this._tx);
-            // define the property
-            Object.defineProperty(this, property, fieldConfig);
-        }
-
-        // seal the object
-        // Object.seal(this);
-    }
-
-    /**
-     * check if transaction is a Pseudo transaction
-     * @returns boolean
-     */
-    isPseudoTransaction(): boolean {
-        return typeof this.TransactionType === 'undefined';
-    }
-
-    /**
-     * serialize transaction object to the ledger tx json
-     */
-    get Json(): TransactionJson {
-        // shallow copy
-        const tx = { ...this._tx } as TransactionJson;
-        Object.getOwnPropertyNames(this._tx).forEach((k: string) => {
-            if (
-                !Object.keys({
-                    ...BaseTransaction.CommonFields,
-                    ...(this.constructor as typeof BaseTransaction).Fields,
-                }).includes(k)
-            ) {
-                delete tx[k];
-            }
-        });
-
-        return tx;
-    }
-
-    get MetaData() {
-        return { ...this._meta };
-    }
+    abstract get JsonForSigning(): TransactionJson;
+    abstract get MetaData(): TransactionMetadata | Record<string, never>;
 }
-
-/* Export ==================================================================== */
-export default BaseTransaction;

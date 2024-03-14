@@ -2,12 +2,12 @@ import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
 
 import { SignMixin } from '../Sign.mixin';
-import { BaseTransaction } from '../../transactions';
+import { BaseGenuineTransaction } from '../../transactions/genuine';
 
 jest.mock('@services/NetworkService');
 
 describe('Sign Mixin', () => {
-    const Mixed = SignMixin(BaseTransaction);
+    const Mixed = SignMixin(BaseGenuineTransaction);
 
     it('Should return right transaction result', () => {
         const instance = new Mixed();

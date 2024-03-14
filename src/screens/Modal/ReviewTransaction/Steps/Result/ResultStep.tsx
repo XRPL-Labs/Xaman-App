@@ -3,18 +3,20 @@
  */
 import { get } from 'lodash';
 import React, { Component, Fragment } from 'react';
-import { SafeAreaView, View, Text, Image, ScrollView } from 'react-native';
+import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
+
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 // components
 import { Avatar, Button, Footer, Spacer } from '@components/General';
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -44,7 +46,7 @@ class ResultStep extends Component<Props, State> {
         const { transaction } = this.context;
 
         // this will never happen as Pseudo transactions never submits to the network
-        if (transaction!.isPseudoTransaction()) {
+        if (transaction!.InstanceType === InstanceTypes.PseudoTransaction) {
             return 'Pseudo transactions should never submit to the network!';
         }
 
@@ -177,7 +179,7 @@ class ResultStep extends Component<Props, State> {
 
                 <View style={AppStyles.flex3}>
                     <View style={styles.detailsCard}>
-                        {transaction?.isPseudoTransaction() ? (
+                        {transaction?.InstanceType === InstanceTypes.PseudoTransaction ? (
                             <View key="applicationDetails" style={[AppStyles.centerAligned, AppStyles.paddingVertical]}>
                                 <Avatar size={70} border source={{ uri: payload.getApplicationIcon() }} />
                                 {/* eslint-disable-next-line react-native/no-inline-styles */}
@@ -256,7 +258,7 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { submitResult, transaction } = this.context;
 
-        if (!submitResult || transaction!.isPseudoTransaction()) {
+        if (!submitResult || transaction!.InstanceType === InstanceTypes.PseudoTransaction) {
             return this.renderSigned();
         }
 

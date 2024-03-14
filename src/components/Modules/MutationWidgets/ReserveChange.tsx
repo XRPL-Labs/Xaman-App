@@ -1,15 +1,12 @@
 import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import NetworkService from '@services/NetworkService';
 
-import { BaseLedgerObject } from '@common/libs/ledger/objects';
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-
-import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+import { InstanceTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 import { OperationActions, OwnerCountChangeType } from '@common/libs/ledger/parser/types';
 
 import { Button, Icon } from '@components/General';
@@ -55,7 +52,7 @@ class ReserveChange extends PureComponent<Props> {
     };
 
     getTransactionChanges = (): OwnerCountChangeType => {
-        const { item, account } = this.props;
+        const { item, account }: { item: any; account: any } = this.props;
 
         return item.OwnerCountChange(account.address);
     };
@@ -65,11 +62,12 @@ class ReserveChange extends PureComponent<Props> {
 
         let changes;
 
-        switch (true) {
-            case item instanceof BaseLedgerObject:
+        switch (item.InstanceType) {
+            case InstanceTypes.LedgerObject:
                 changes = this.getLedgerObjectChanges();
                 break;
-            case item instanceof BaseTransaction:
+            case InstanceTypes.GenuineTransaction:
+            case InstanceTypes.FallbackTransaction:
                 changes = this.getTransactionChanges();
                 break;
             default:

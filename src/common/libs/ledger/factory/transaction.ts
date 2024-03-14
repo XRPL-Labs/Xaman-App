@@ -4,13 +4,16 @@ import * as TransactionClasses from '@common/libs/ledger/transactions/genuine';
 import * as PseudoTransactionClasses from '@common/libs/ledger/transactions/pseudo';
 
 // mixins
-import { MixingTypes, SignMixinType, MutationsMixinType } from '@common/libs/ledger/mixin/types';
+import { MixingTypes, MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 import { MutationsMixin, SignMixin } from '@common/libs/ledger/mixin';
+
+// fallback
+import { FallbackTransaction } from '@common/libs/ledger/transactions/fallback';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 
-import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 import { AccountTxTransaction } from '@common/libs/ledger/types/methods';
 
 /* Module ==================================================================== */
@@ -41,11 +44,12 @@ const TransactionFactory = {
      * @throws {Error} Throws an error if the pseudo transaction type is unsupported.
      */
     getPseudoTransaction: (json: TransactionJson, type: PseudoTransactionTypes, mixins?: MixingTypes[]) => {
-        // get the Pseudo transaction class
-        const PseudoTransaction = PseudoTransactionClasses[type];
+        let PseudoTransaction: any;
 
-        if (typeof PseudoTransaction === 'undefined') {
-            throw new Error(`Unsupported Pseudo transaction type ${type}`);
+        if (type in PseudoTransactionTypes && Object.keys(PseudoTransactionClasses).includes(type)) {
+            PseudoTransaction = PseudoTransactionClasses[type];
+        } else {
+            PseudoTransaction = FallbackTransaction;
         }
 
         const Mixed = TransactionFactory.applyMixins<typeof PseudoTransaction>(PseudoTransaction, mixins ?? []);
@@ -64,17 +68,19 @@ const TransactionFactory = {
      */
     getTransaction: (transaction: TransactionJson, meta?: TransactionMetadata, mixin?: MixingTypes[]) => {
         // get the transaction type
-        const type = transaction?.TransactionType;
+        const type = transaction?.TransactionType as TransactionTypes;
 
         if (typeof type === 'undefined') {
             throw new Error('getTransaction required TransactionType to be set in txJson!');
         }
 
-        // get transaction class
-        const Transaction = get(TransactionClasses, type, undefined);
+        let Transaction: any;
 
-        if (typeof Transaction === 'undefined') {
-            throw new Error(`Unsupported transaction type ${type}`);
+        if (type in TransactionTypes && Object.keys(TransactionClasses).includes(type)) {
+            Transaction = TransactionClasses[type];
+        } else {
+            // fallback transaction
+            Transaction = FallbackTransaction;
         }
 
         // apply mixins

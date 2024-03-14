@@ -2,7 +2,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AmountParser } from '@common/libs/ledger/parser/common';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { AccountID, Amount, Hash256, PathSet, UInt32 } from '@common/libs/ledger/parser/fields';
 
@@ -13,7 +13,7 @@ import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/
 import { AmountType } from '@common/libs/ledger/parser/types';
 
 /* Class ==================================================================== */
-class Payment extends BaseTransaction {
+class Payment extends BaseGenuineTransaction {
     public static Type = TransactionTypes.Payment as const;
     public readonly Type = Payment.Type;
 

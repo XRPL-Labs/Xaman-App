@@ -9,7 +9,7 @@ import { Payload } from '@common/libs/payload';
 import NetworkService from '@services/NetworkService';
 import StyleService from '@services/StyleService';
 
-import { Transactions as TransactionsType } from '@common/libs/ledger/transactions/types';
+import { Transactions as TransactionsType, FallbackTransaction } from '@common/libs/ledger/transactions/types';
 
 import { WebViewBrowser } from '@components/General/WebView';
 
@@ -22,7 +22,7 @@ import { AppSizes } from '@theme';
 interface Props {
     account: AccountModel;
     payload?: Payload;
-    transaction?: TransactionsType;
+    transaction?: TransactionsType | FallbackTransaction;
 }
 
 interface State {
@@ -61,7 +61,7 @@ class HooksExplainer extends Component<Props, State> {
         if (transaction) {
             Object.assign(params, {
                 tx_hash: transaction.hash,
-                tx_data: JSON.stringify(transaction.Json),
+                tx_data: JSON.stringify(transaction.JsonForSigning),
                 tx_metadata: JSON.stringify(transaction.MetaData),
             });
         }

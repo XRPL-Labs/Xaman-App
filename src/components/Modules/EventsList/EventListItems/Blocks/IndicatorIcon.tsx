@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Image } from 'react-native';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
-import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { OperationActions, OwnerCountChangeType } from '@common/libs/ledger/parser/types';
 
 import NetworkService from '@services/NetworkService';
 
 import { Images } from '@common/helpers/images';
 import { Icon } from '@components/General';
+
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -25,7 +25,11 @@ class IndicatorIconBlock extends PureComponent<IProps> {
     renderMemoIndicator = () => {
         const { item } = this.props;
 
-        if (item instanceof BaseTransaction && typeof item.Memos !== 'undefined') {
+        if (
+            (item.InstanceType === InstanceTypes.GenuineTransaction ||
+                InstanceTypes.FallbackTransaction === item.InstanceType) &&
+            typeof item.Memos !== 'undefined'
+        ) {
             return <Icon name="IconFileText" style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]} size={12} />;
         }
 
@@ -37,9 +41,12 @@ class IndicatorIconBlock extends PureComponent<IProps> {
 
         let ownerCountChanges: OwnerCountChangeType | undefined;
 
-        if (item instanceof BaseTransaction) {
+        if (
+            item.InstanceType === InstanceTypes.GenuineTransaction ||
+            InstanceTypes.FallbackTransaction === item.InstanceType
+        ) {
             ownerCountChanges = item.OwnerCountChange(account.address);
-        } else if (item instanceof BaseLedgerObject) {
+        } else if (item.InstanceType === InstanceTypes.LedgerObject) {
             ownerCountChanges = {
                 address: item.Account,
                 value: NetworkService.getNetworkReserve().OwnerReserve,
@@ -64,7 +71,11 @@ class IndicatorIconBlock extends PureComponent<IProps> {
         const { item } = this.props;
 
         // if memo contain xApp identifier then show xApp Icon
-        if (item instanceof BaseTransaction && item.getXappIdentifier()) {
+        if (
+            (item.InstanceType === InstanceTypes.GenuineTransaction ||
+                InstanceTypes.FallbackTransaction === item.InstanceType) &&
+            item.getXappIdentifier()
+        ) {
             return this.renderXAppIndicator();
         }
 

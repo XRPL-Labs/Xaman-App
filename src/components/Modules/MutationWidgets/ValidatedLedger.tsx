@@ -1,9 +1,9 @@
 import moment from 'moment-timezone';
 
 import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import Localize from '@locale';
 
@@ -17,7 +17,10 @@ class ValidatedLedger extends PureComponent<Props> {
     render() {
         const { item } = this.props;
 
-        if (!(item instanceof BaseTransaction)) {
+        if (
+            item.InstanceType !== InstanceTypes.GenuineTransaction &&
+            item.InstanceType !== InstanceTypes.FallbackTransaction
+        ) {
             return null;
         }
 

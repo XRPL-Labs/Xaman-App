@@ -10,9 +10,13 @@ import { createPropertyConfig } from '@common/libs/ledger/parser/fields/factory'
 
 /* Types ==================================================================== */
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class BaseLedgerObject<T extends LedgerEntry> {
+    public static InstanceType = InstanceTypes.LedgerObject as const;
+    public readonly InstanceType = BaseLedgerObject.InstanceType;
+
     protected _object: T;
 
     // abstract

@@ -1,15 +1,13 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-
 import Localize from '@locale';
 
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
+
 import styles from './styles';
-
-import { Props } from './types';
-
 /* Types ==================================================================== */
+import { Props } from './types';
 
 interface State {}
 
@@ -19,7 +17,10 @@ class Fee extends PureComponent<Props, State> {
         const { item } = this.props;
 
         // ledger objects doesn't contain fee
-        if (!(item instanceof BaseTransaction)) {
+        if (
+            InstanceTypes.GenuineTransaction !== item.InstanceType &&
+            InstanceTypes.FallbackTransaction !== item.InstanceType
+        ) {
             return null;
         }
 

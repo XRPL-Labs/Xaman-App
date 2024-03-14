@@ -1,6 +1,6 @@
 import { AccountModel } from '@store/models';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import { BaseTransaction } from '@common/libs/ledger/transactions/common';
 
 import { AmountType, OwnerCountChangeType, TransactionResult } from '@common/libs/ledger/parser/types';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';

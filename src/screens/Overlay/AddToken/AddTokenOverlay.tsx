@@ -177,7 +177,7 @@ class AddTokenOverlay extends Component<Props, State> {
         });
 
         const payload = Payload.build(
-            trustSet.Json,
+            trustSet.JsonForSigning,
             Localize.t('asset.addingAssetReserveDescription', {
                 ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
                 nativeAsset: NetworkService.getNativeAsset(),

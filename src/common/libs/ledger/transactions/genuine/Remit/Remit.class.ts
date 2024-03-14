@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { AccountID, Hash256, STArray, STObject, UInt32, Blob } from '@common/libs/ledger/parser/fields';
 import { Amounts } from '@common/libs/ledger/parser/fields/codec';
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class Remit extends BaseTransaction {
+class Remit extends BaseGenuineTransaction {
     public static Type = TransactionTypes.Remit as const;
     public readonly Type = Remit.Type;
 

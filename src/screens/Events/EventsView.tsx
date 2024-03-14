@@ -682,29 +682,21 @@ class EventsView extends Component<Props, State> {
             newTransactions = filter(newTransactions, (element) => {
                 if (filters.AmountIndicator === 'Bigger') {
                     return (
-                        // @ts-expect-error
-                        parseFloat(element?.Amount?.value) >= parseFloat(filters.Amount) ||
-                        // @ts-expect-error
-                        parseFloat(element?.DeliverMin?.value) >= parseFloat(filters.Amount) ||
-                        // @ts-expect-error
-                        parseFloat(element?.SendMax?.value) >= parseFloat(filters.Amount) ||
-                        // @ts-expect-error
-                        parseFloat(element?.TakerGets?.value) >= parseFloat(filters.Amount) ||
-                        // @ts-expect-error
-                        parseFloat(element?.TakerPays?.value) >= parseFloat(filters.Amount)
+                        ('Amount' in element && parseFloat(element?.Amount!.value) >= parseFloat(filters.Amount!)) ||
+                        ('DeliverMin' in element &&
+                            parseFloat(element?.DeliverMin!.value) >= parseFloat(filters.Amount!)) ||
+                        ('SendMax' in element && parseFloat(element?.SendMax!.value) >= parseFloat(filters.Amount!)) ||
+                        ('TakerGets' in element &&
+                            parseFloat(element?.TakerGets!.value) >= parseFloat(filters.Amount!)) ||
+                        ('TakerPays' in element && parseFloat(element?.TakerPays!.value) >= parseFloat(filters.Amount!))
                     );
                 }
                 return (
-                    // @ts-expect-error
-                    parseFloat(element?.Amount?.value) <= parseFloat(filters.Amount) ||
-                    // @ts-expect-error
-                    parseFloat(element?.DeliverMin?.value) <= parseFloat(filters.Amount) ||
-                    // @ts-expect-error
-                    parseFloat(element?.SendMax?.value) <= parseFloat(filters.Amount) ||
-                    // @ts-expect-error
-                    parseFloat(element?.TakerGets?.value) <= parseFloat(filters.Amount) ||
-                    // @ts-expect-error
-                    parseFloat(element?.TakerPays?.value) <= parseFloat(filters.Amount)
+                    ('Amount' in element && parseFloat(element.Amount!.value) <= parseFloat(filters.Amount!)) ||
+                    ('DeliverMin' in element && parseFloat(element.DeliverMin!.value) <= parseFloat(filters.Amount!)) ||
+                    ('SendMax' in element && parseFloat(element.SendMax!.value) <= parseFloat(filters.Amount!)) ||
+                    ('TakerGets' in element && parseFloat(element.TakerGets!.value) <= parseFloat(filters.Amount!)) ||
+                    ('TakerPays' in element && parseFloat(element.TakerPays!.value) <= parseFloat(filters.Amount!))
                 );
             });
         }
@@ -712,27 +704,23 @@ class EventsView extends Component<Props, State> {
         if (filters.Currency) {
             newTransactions = newTransactions.filter(
                 (element) =>
-                    // @ts-expect-error
-                    element?.Amount?.currency === filters.Currency ||
-                    // @ts-expect-error
-                    element?.DeliverMin?.currency === filters.Currency ||
-                    // @ts-expect-error
-                    element?.SendMax?.currency === filters.Currency ||
-                    // @ts-expect-error
-                    element?.TakerGets?.currency === filters.Currency ||
-                    // @ts-expect-error
-                    element?.TakerPays?.currency === filters.Currency,
+                    ('Amount' in element && element.Amount!.currency === filters.Currency) ||
+                    ('DeliverMin' in element && element.DeliverMin!.currency === filters.Currency) ||
+                    ('SendMax' in element && element.SendMax!.currency === filters.Currency) ||
+                    ('TakerGets' in element && element.TakerGets!.currency === filters.Currency) ||
+                    ('TakerPays' in element && element.TakerPays!.currency === filters.Currency),
             );
         }
 
         if (filters.ExpenseType) {
             newTransactions = newTransactions.filter((element) => {
-                if (filters.ExpenseType === 'Income') {
-                    // @ts-expect-error
-                    return element?.Destination?.address === account.address;
+                if ('Destination' in element) {
+                    if (filters.ExpenseType === 'Income') {
+                        return element?.Destination === account.address;
+                    }
+                    return element?.Destination !== account.address;
                 }
-                // @ts-expect-error
-                return element?.Destination?.address !== account.address;
+                return false;
             });
         }
 

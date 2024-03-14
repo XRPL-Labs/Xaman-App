@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { STArray, UInt32 } from '@common/libs/ledger/parser/fields';
 import { SignerEntries } from '@common/libs/ledger/parser/fields/codec';
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class SignerListSet extends BaseTransaction {
+class SignerListSet extends BaseGenuineTransaction {
     public static Type = TransactionTypes.SignerListSet as const;
     public readonly Type = SignerListSet.Type;
 

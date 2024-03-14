@@ -1,6 +1,11 @@
 /**
  * transaction types
  */
+
+/**
+ * Genuine transaction types
+ * @enum {string}
+ */
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -48,12 +53,25 @@ export enum TransactionTypes {
 
 /**
  * Pseudo transaction types
+ * @enum {string}
  */
 export enum PseudoTransactionTypes {
     SignIn = 'SignIn',
     PaymentChannelAuthorize = 'PaymentChannelAuthorize',
 }
 
+/**
+ * Fallback enum types
+ * @enum {string}
+ */
+export enum FallbackTypes {
+    FallbackTransaction = '__falback_transactions',
+}
+
+/**
+ * Ledger entry object types
+ * @enum {string}
+ */
 export enum LedgerEntryTypes {
     AccountRoot = 'AccountRoot',
     Amendments = 'Amendments',
@@ -72,4 +90,15 @@ export enum LedgerEntryTypes {
     PayChannel = 'PayChannel',
     RippleState = 'RippleState',
     SignerList = 'SignerList',
+}
+
+/**
+ * Enum representing various types of class instances.
+ * @enum {string}
+ */
+export enum InstanceTypes {
+    GenuineTransaction = 'GenuineTransaction', // know transaction type,
+    FallbackTransaction = 'FallbackTransaction', // any other transaction types
+    PseudoTransaction = 'PseudoTransaction', // pseudo transactions, which doesn't contain field TransactionType
+    LedgerObject = 'LedgerObject', // known Ledger object instances
 }

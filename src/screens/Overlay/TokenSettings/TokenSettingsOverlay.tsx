@@ -306,7 +306,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 Flags: transactionFlags,
             });
 
-            const payload = Payload.build(trustSet.Json);
+            const payload = Payload.build(trustSet.JsonForSigning);
 
             Animated.parallel([
                 Animated.timing(this.animatedColor, {

@@ -4,7 +4,7 @@
 
 import { isUndefined } from 'lodash';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { AccountID, Blob, Hash128, Hash256, UInt32 } from '@common/libs/ledger/parser/fields';
 import { FlagIndices, Hex, TransferRate } from '@common/libs/ledger/parser/fields/codec';
@@ -15,7 +15,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class AccountSet extends BaseTransaction {
+class AccountSet extends BaseGenuineTransaction {
     public static Type = TransactionTypes.AccountSet as const;
     public readonly Type = AccountSet.Type;
 

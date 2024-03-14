@@ -284,7 +284,7 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                 <FeePicker
-                    txJson={transaction.Json}
+                    txJson={transaction.JsonForSigning}
                     onSelect={this.setTransactionFee}
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}

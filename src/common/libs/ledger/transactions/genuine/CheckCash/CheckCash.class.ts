@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 import { CheckCreate } from '@common/libs/ledger/transactions/genuine/CheckCreate';
 
 import { Hash256, Amount } from '@common/libs/ledger/parser/fields';
@@ -11,7 +11,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class CheckCash extends BaseTransaction {
+class CheckCash extends BaseGenuineTransaction {
     public static Type = TransactionTypes.CheckCash as const;
     public readonly Type = CheckCash.Type;
 

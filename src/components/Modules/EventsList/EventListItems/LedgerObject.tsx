@@ -100,7 +100,7 @@ class LedgerObjectItem extends Component<Props, State> {
             });
         }
 
-        const explainer = ExplainerFactory.fromItem(item, account);
+        const explainer = ExplainerFactory.fromLedgerObject(item, account);
 
         if (typeof explainer === 'undefined') {
             this.setState({

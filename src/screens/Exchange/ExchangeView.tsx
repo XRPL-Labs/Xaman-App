@@ -344,7 +344,7 @@ class ExchangeView extends Component<Props, State> {
         };
 
         // generate payload
-        const payload = Payload.build(offer.Json);
+        const payload = Payload.build(offer.JsonForSigning);
 
         Navigator.showModal<ReviewTransactionModalProps<OfferCreate>>(
             AppScreens.Modal.ReviewTransaction,

@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { STArray } from '@common/libs/ledger/parser/fields';
 /* Types ==================================================================== */
@@ -7,7 +7,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class SetHook extends BaseTransaction {
+class SetHook extends BaseGenuineTransaction {
     public static Type = TransactionTypes.SetHook as const;
     public readonly Type = SetHook.Type;
 

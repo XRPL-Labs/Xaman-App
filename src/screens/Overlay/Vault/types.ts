@@ -2,9 +2,7 @@ import { Card } from 'tangem-sdk-react-native';
 
 import { AccountModel, CoreModel } from '@store/models';
 
-import { SignMixinType } from '@common/libs/ledger/mixin/types';
-
-import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import { SignableTransaction } from '@common/libs/ledger/transactions/types';
 import { SignedObjectType } from '@common/libs/ledger/types';
 
 export enum AuthMethods {
@@ -27,7 +25,7 @@ export enum Steps {
 
 export interface Props {
     account: AccountModel;
-    transaction: (Transactions | PseudoTransactions) & SignMixinType;
+    transaction: SignableTransaction;
     multiSign?: boolean;
     onDismissed: () => void;
     onSign: (signedObject: SignedObjectType) => void;

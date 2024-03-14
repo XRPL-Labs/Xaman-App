@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { Issue, Amount, STArray } from '@common/libs/ledger/parser/fields';
 import { AuthAccounts } from '@common/libs/ledger/parser/fields/codec';
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class AMMBid extends BaseTransaction {
+class AMMBid extends BaseGenuineTransaction {
     public static Type = TransactionTypes.AMMBid as const;
     public readonly Type = AMMBid.Type;
 

@@ -3,8 +3,7 @@ import moment from 'moment-timezone';
 import React, { PureComponent } from 'react';
 import { View, Text, InteractionManager } from 'react-native';
 
-import { BaseLedgerObject } from '@common/libs/ledger/objects';
-import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+import { InstanceTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 import { Badge, BadgeType } from '@components/General';
 
@@ -51,7 +50,7 @@ class Label extends PureComponent<Props, State> {
 
         let badgeType: BadgeType;
 
-        if (item instanceof BaseLedgerObject) {
+        if (item.InstanceType === InstanceTypes.LedgerObject) {
             // ledger object
             if ([LedgerEntryTypes.Escrow].includes(item.Type)) {
                 badgeType = BadgeType.Planned;

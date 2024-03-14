@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { View, InteractionManager } from 'react-native';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
-import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
+import { CombinedTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
@@ -36,7 +36,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     participant?: AccountNameType;
-    explainer?: ExplainerAbstract<Transactions | PseudoTransactions | LedgerObjects>;
+    explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
 }
 
 /* Component ==================================================================== */
@@ -100,7 +100,7 @@ class TransactionItem extends Component<Props, State> {
             });
         }
 
-        const explainer = ExplainerFactory.fromItem(item, account);
+        const explainer = ExplainerFactory.fromTransaction(item, account);
 
         if (typeof explainer === 'undefined') {
             this.setState({

@@ -1,10 +1,10 @@
 import { MutationsMixin } from '../Mutations.mixin';
-import { BaseTransaction } from '../../transactions';
+import { BaseGenuineTransaction } from '../../transactions/genuine';
 
 jest.mock('@services/NetworkService');
 
 describe('Mutations Mixin', () => {
-    const Mixed = MutationsMixin(BaseTransaction);
+    const Mixed = MutationsMixin(BaseGenuineTransaction);
 
     // TODO: add more test for the getter's
     // it('Should return right values', () => {

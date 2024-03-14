@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 
 import { CheckCreate } from '@common/libs/ledger/transactions/genuine/CheckCreate';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { Hash256 } from '@common/libs/ledger/parser/fields';
 
@@ -12,7 +12,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class CheckCancel extends BaseTransaction {
+class CheckCancel extends BaseGenuineTransaction {
     public static Type = TransactionTypes.CheckCancel as const;
     public readonly Type = CheckCancel.Type;
 

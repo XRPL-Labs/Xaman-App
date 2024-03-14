@@ -17,8 +17,6 @@ import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/ty
 import { MutatedTransaction, SignableTransaction } from '@common/libs/ledger/transactions/types';
 import ValidationFactory from '@common/libs/ledger/factory/validation';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-
 import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
@@ -344,12 +342,8 @@ class ReviewTransactionModal extends Component<Props, State> {
             try {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
-                const validation = ValidationFactory.fromType(transaction!.Type);
-                if (
-                    transaction instanceof BaseTransaction &&
-                    typeof validation === 'function' &&
-                    !payload.isMultiSign()
-                ) {
+                const validation = ValidationFactory.fromTransaction(transaction!);
+                if (typeof validation === 'function' && !payload.isMultiSign()) {
                     await validation(transaction, source);
                 }
             } catch (validationError: any) {

@@ -6,12 +6,11 @@ import { AccountModel } from '@store/models';
 import StyleService from '@services/StyleService';
 
 import { Payload } from '@common/libs/payload';
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-import { BaseLedgerObject } from '@common/libs/ledger/objects';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import { LoadingIndicator } from '@components/General';
 
@@ -22,7 +21,7 @@ import styles from './styles';
 
 import * as EventListItems from './EventListItems';
 /* Types ==================================================================== */
-export type RowItemType = (BaseTransaction & MutationsMixinType) | BaseLedgerObject<any> | Payload;
+export type RowItemType = (Transactions & MutationsMixinType) | LedgerObjects | Payload;
 
 export type DataSourceItem = {
     data: Array<RowItemType>;
@@ -78,7 +77,7 @@ class EventsList extends PureComponent<Props> {
                 timestamp,
             });
         }
-        if (item instanceof BaseTransaction) {
+        if ([InstanceTypes.GenuineTransaction, InstanceTypes.FallbackTransaction].includes(item.InstanceType)) {
             return React.createElement(EventListItems.Transaction, {
                 item,
                 account,
@@ -89,7 +88,7 @@ class EventsList extends PureComponent<Props> {
                 timestamp: number | undefined;
             });
         }
-        if (item instanceof BaseLedgerObject) {
+        if (item.InstanceType === InstanceTypes.LedgerObject) {
             return React.createElement(EventListItems.LedgerObject, {
                 item,
                 account,
@@ -126,9 +125,9 @@ class EventsList extends PureComponent<Props> {
 
     keyExtractor = (item: any, index: number): string => {
         let key = '';
-        if (item instanceof BaseTransaction) {
+        if ([InstanceTypes.GenuineTransaction, InstanceTypes.FallbackTransaction].includes(item.InstanceType)) {
             key = `${item.hash}`;
-        } else if (item instanceof BaseLedgerObject) {
+        } else if (item.InstanceType === InstanceTypes.LedgerObject) {
             key = `${item.Index}`;
         } else if (item instanceof Payload) {
             key = `${item.getPayloadUUID()}`;

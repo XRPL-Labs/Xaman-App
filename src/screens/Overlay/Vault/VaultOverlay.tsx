@@ -17,6 +17,7 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import { SignedObjectType } from '@common/libs/ledger/types';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import Vault from '@common/libs/vault';
 
@@ -299,12 +300,16 @@ class VaultOverlay extends Component<Props, State> {
             const definitions = NetworkService.getNetworkDefinitions();
 
             // IGNORE if multi signing or pseudo transaction
-            if (!multiSign && !transaction.isPseudoTransaction()) {
+            if (!multiSign && transaction.InstanceType !== InstanceTypes.PseudoTransaction) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields();
             }
 
-            let signedObject = AccountLib.sign(transaction.Json, signerInstance, definitions) as SignedObjectType;
+            let signedObject = AccountLib.sign(
+                transaction.JsonForSigning,
+                signerInstance,
+                definitions,
+            ) as SignedObjectType;
             signedObject = {
                 ...signedObject,
                 signerPubKey: signerInstance.keypair.publicKey ?? undefined,
@@ -331,7 +336,7 @@ class VaultOverlay extends Component<Props, State> {
             }
 
             // IGNORE if multi signing or pseudo transaction
-            if (!multiSign && !transaction.isPseudoTransaction()) {
+            if (!multiSign && transaction.InstanceType !== InstanceTypes.PseudoTransaction) {
                 // populate transaction LastLedgerSequence before signing
                 transaction.populateFields({ lastLedgerOffset: 150 });
             }
@@ -343,7 +348,12 @@ class VaultOverlay extends Component<Props, State> {
             const definitions = NetworkService.getNetworkDefinitions();
 
             // prepare the transaction for signing
-            const preparedTx = AccountLib.rawSigning.prepare(transaction.Json, publicKey, multiSign, definitions);
+            const preparedTx = AccountLib.rawSigning.prepare(
+                transaction.JsonForSigning,
+                publicKey,
+                multiSign,
+                definitions,
+            );
 
             // get sign options base on HD wallet support
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
@@ -363,7 +373,7 @@ class VaultOverlay extends Component<Props, State> {
 
                     if (multiSign) {
                         signedObject = AccountLib.rawSigning.completeMultiSigned(
-                            transaction.Json,
+                            transaction.JsonForSigning,
                             [
                                 {
                                     pubKey: publicKey,

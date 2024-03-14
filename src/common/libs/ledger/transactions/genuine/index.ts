@@ -1,3 +1,4 @@
+export { default as BaseGenuineTransaction } from './base';
 export * from './Payment';
 export * from './TrustSet';
 export * from './AccountSet';

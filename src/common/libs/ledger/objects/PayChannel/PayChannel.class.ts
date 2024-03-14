@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import BaseLedgerObject from '@common/libs/ledger/objects/BaseLedgerObject';
+import BaseLedgerObject from '@common/libs/ledger/objects/base';
 
 import { AccountID, Blob, Amount, Hash256, UInt32, UInt64 } from '@common/libs/ledger/parser/fields';
 import { RippleTime } from '@common/libs/ledger/parser/fields/codec';

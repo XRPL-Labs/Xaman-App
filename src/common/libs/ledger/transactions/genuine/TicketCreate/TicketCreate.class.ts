@@ -1,6 +1,6 @@
 import Meta from '@common/libs/ledger/parser/meta';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { UInt32 } from '@common/libs/ledger/parser/fields';
 /* Types ==================================================================== */
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class TicketCreate extends BaseTransaction {
+class TicketCreate extends BaseGenuineTransaction {
     public static Type = TransactionTypes.TicketCreate as const;
     public readonly Type = TicketCreate.Type;
 

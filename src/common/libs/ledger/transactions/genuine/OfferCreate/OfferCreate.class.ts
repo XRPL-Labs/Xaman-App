@@ -5,7 +5,7 @@ import { EncodeLedgerIndex } from '@common/utils/codec';
 
 import Meta from '@common/libs/ledger/parser/meta';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { UInt32, Amount, Hash256 } from '@common/libs/ledger/parser/fields';
 import { RippleTime } from '@common/libs/ledger/parser/fields/codec';
@@ -17,7 +17,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class OfferCreate extends BaseTransaction {
+class OfferCreate extends BaseGenuineTransaction {
     public static Type = TransactionTypes.OfferCreate as const;
     public readonly Type = OfferCreate.Type;
 

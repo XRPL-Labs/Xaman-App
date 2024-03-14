@@ -8,7 +8,8 @@ export const TransactionType = {
             | Exclude<
                   PseudoTransactionTypes,
                   PseudoTransactionTypes.SignIn | PseudoTransactionTypes.PaymentChannelAuthorize
-              > => {
+              >
+            | string => {
             return self[field];
         };
     },

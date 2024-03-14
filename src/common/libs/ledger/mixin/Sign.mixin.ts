@@ -10,7 +10,7 @@ import { AppScreens } from '@common/constants';
 import Localize from '@locale';
 
 import { SignedObjectType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
-import { TransactionTypes } from '@common/libs/ledger/types/enums';
+import { InstanceTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { Props as VaultOverlayProps } from '@screens/Overlay/Vault/types';
 
@@ -19,10 +19,14 @@ import { TransactionResult } from '@common/libs/ledger/parser/types';
 import { SignableTransaction } from '@common/libs/ledger/transactions/types';
 
 import { Constructor, SignMethodType, SignMixinType } from './types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 
 /* Mixin ==================================================================== */
 export function SignMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base implements SignMixinType {
+        JsonForSigning!: TransactionJson;
+        MetaData!: TransactionMetadata | Record<string, never>;
+
         private _submitResult?: SubmitResultType;
         private _verifyResult?: VerifyResultType;
         private isAborted?: boolean;
@@ -90,7 +94,8 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
          */
         prepare = async (account: AccountModel): Promise<void> => {
             // ignore for pseudo transactions
-            if (this.isPseudoTransaction()) {
+
+            if (this.InstanceType === InstanceTypes.PseudoTransaction) {
                 return;
             }
 
@@ -127,7 +132,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
          */
         populateFields = ({ lastLedgerOffset }: { lastLedgerOffset?: number } = {}): void => {
             // ignore for pseudo transactions
-            if (this.isPseudoTransaction()) {
+            if (this.InstanceType === InstanceTypes.PseudoTransaction) {
                 return;
             }
 

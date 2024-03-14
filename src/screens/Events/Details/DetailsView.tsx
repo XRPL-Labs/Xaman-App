@@ -11,8 +11,6 @@ import BackendService from '@services/BackendService';
 import StyleService from '@services/StyleService';
 import { ComponentTypes } from '@services/NavigationService';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
-
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 
 import { AppScreens } from '@common/constants';
@@ -30,6 +28,7 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 /* types ==================================================================== */
 import { Props, State, WidgetComponents, WidgetKey } from './types';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 /* Component ==================================================================== */
 class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {
@@ -49,7 +48,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
 
         this.state = {
             advisory: undefined,
-            explainer: ExplainerFactory.fromItem(props.item, props.account),
+            explainer: ExplainerFactory.fromInstance(props.item, props.account),
         };
     }
 
@@ -109,7 +108,10 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         const { item } = this.props;
 
         // only validated transactions have CTID
-        if (item instanceof BaseTransaction) {
+        if (
+            item.InstanceType === InstanceTypes.GenuineTransaction ||
+            item.InstanceType === InstanceTypes.FallbackTransaction
+        ) {
             return GetTransactionLink(item.CTID);
         }
 

@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { AccountID, Amount, UInt32, Hash256 } from '@common/libs/ledger/parser/fields';
 import { RippleTime } from '@common/libs/ledger/parser/fields/codec';
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class CheckCreate extends BaseTransaction {
+class CheckCreate extends BaseGenuineTransaction {
     public static Type = TransactionTypes.CheckCreate as const;
     public readonly Type = CheckCreate.Type;
 

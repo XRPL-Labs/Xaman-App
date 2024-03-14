@@ -7,6 +7,7 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { Props } from './types';
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 /* Types ==================================================================== */
 interface State {}
@@ -15,6 +16,11 @@ interface State {}
 class TransferredAssets extends PureComponent<Props, State> {
     renderSent = () => {
         const { item, account } = this.props;
+
+        // TODO: return factor instead
+        if (item.InstanceType === InstanceTypes.LedgerObject) {
+            return null;
+        }
 
         const sentValue = item.BalanceChange(account.address)?.sent;
 
@@ -41,6 +47,11 @@ class TransferredAssets extends PureComponent<Props, State> {
 
     renderReceived = () => {
         const { item, account } = this.props;
+
+        // TODO: return factor instead
+        if (item.InstanceType === InstanceTypes.LedgerObject) {
+            return null;
+        }
 
         const receivedValue = item.BalanceChange(account.address)?.received;
 

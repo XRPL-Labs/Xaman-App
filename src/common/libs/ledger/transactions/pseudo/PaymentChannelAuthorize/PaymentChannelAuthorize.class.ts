@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BasePseudoTransaction from '@common/libs/ledger/transactions/pseudo/base';
 
 import { Amount, Hash256 } from '@common/libs/ledger/parser/fields';
 
@@ -8,7 +8,7 @@ import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class PaymentChannelAuthorize extends BaseTransaction {
+class PaymentChannelAuthorize extends BasePseudoTransaction {
     public static Type = PseudoTransactionTypes.PaymentChannelAuthorize as const;
     public readonly Type = PaymentChannelAuthorize.Type;
 

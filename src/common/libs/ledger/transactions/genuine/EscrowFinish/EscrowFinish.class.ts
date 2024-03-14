@@ -1,6 +1,6 @@
 import { EscrowCreate } from '@common/libs/ledger/transactions/genuine/EscrowCreate';
 
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { AccountID, UInt32, Blob, Hash256 } from '@common/libs/ledger/parser/fields';
 
@@ -10,7 +10,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class EscrowFinish extends BaseTransaction {
+class EscrowFinish extends BaseGenuineTransaction {
     public static Type = TransactionTypes.EscrowFinish as const;
     public readonly Type = EscrowFinish.Type;
 

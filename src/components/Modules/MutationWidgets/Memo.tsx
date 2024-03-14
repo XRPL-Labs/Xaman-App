@@ -6,8 +6,10 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { BaseTransaction } from '@common/libs/ledger/transactions';
 import { XAppOrigin } from '@common/libs/payload';
+
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
+import { BaseTransaction } from '@common/libs/ledger/transactions/common';
 
 import { ComponentTypes } from '@services/NavigationService';
 
@@ -20,8 +22,9 @@ import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types
 import { AppStyles } from '@theme';
 import styles from './styles';
 
-import { Props } from './types';
 /* Types ==================================================================== */
+import { Props } from './types';
+
 interface State {
     visibleMemo: boolean;
     xAppIdentifier?: string;
@@ -55,7 +58,12 @@ class Memos extends PureComponent<Props, State> {
     checkXAppIdentifier = () => {
         const { item } = this.props;
 
-        if (!(item instanceof BaseTransaction)) return;
+        if (
+            item.InstanceType !== InstanceTypes.FallbackTransaction &&
+            item.InstanceType !== InstanceTypes.GenuineTransaction
+        ) {
+            return;
+        }
 
         const identifier = item.getXappIdentifier();
 
@@ -75,7 +83,7 @@ class Memos extends PureComponent<Props, State> {
             {
                 identifier: xAppIdentifier!,
                 origin: XAppOrigin.TRANSACTION_MEMO,
-                originData: { txid: (item as BaseTransaction).hash },
+                originData: { txid: (item as any).hash },
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -144,7 +152,13 @@ class Memos extends PureComponent<Props, State> {
         const { xAppIdentifier } = this.state;
 
         // no memo to render
-        if (!(item instanceof BaseTransaction) || !item.Memos) return null;
+        if (
+            (item.InstanceType !== InstanceTypes.FallbackTransaction &&
+                item.InstanceType !== InstanceTypes.GenuineTransaction) ||
+            !item.Memos
+        ) {
+            return null;
+        }
 
         // there is an xApp identifier in one of the memos
         if (xAppIdentifier) {

@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { Issue, UInt16 } from '@common/libs/ledger/parser/fields';
 import { TradingFee } from '@common/libs/ledger/parser/fields/codec';
@@ -9,7 +9,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class AMMVote extends BaseTransaction {
+class AMMVote extends BaseGenuineTransaction {
     public static Type = TransactionTypes.AMMVote as const;
     public readonly Type = AMMVote.Type;
 

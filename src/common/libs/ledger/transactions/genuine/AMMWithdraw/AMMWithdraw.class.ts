@@ -1,4 +1,4 @@
-import BaseTransaction from '@common/libs/ledger/transactions/BaseTransaction';
+import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
 import { Issue, Amount } from '@common/libs/ledger/parser/fields';
 
@@ -8,7 +8,7 @@ import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
 /* Class ==================================================================== */
-class AMMWithdraw extends BaseTransaction {
+class AMMWithdraw extends BaseGenuineTransaction {
     public static Type = TransactionTypes.AMMWithdraw as const;
     public readonly Type = AMMWithdraw.Type;
 
