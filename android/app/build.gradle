@@ -5,6 +5,8 @@ apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
+canonicalVersionName = "2.8.0"
+canonicalVersionCode = 30_003
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -110,7 +112,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy 'react-native-camera', 'mlkit'
-        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch * 10 + buildNumber
+        versionCode canonicalVersionCode
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testBuildType System.getProperty('testBuildType', 'debug')
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

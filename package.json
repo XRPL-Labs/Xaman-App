@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "2.6.0",
+  "version": "2.8.0",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
