@@ -549,7 +549,7 @@ PODS:
     - React-CoreModules
     - React-RCTImage
     - React-RCTText
-  - RealmJS (12.3.1):
+  - RealmJS (12.6.0):
     - React
   - RNFBAnalytics (18.6.2):
     - Firebase/AnalyticsWithoutAdIdSupport (= 10.18.0)
@@ -819,7 +819,7 @@ SPEC CHECKSUMS:
   React-utils: dc51e2c7c2e49d327b90771d8a7acc95918eb485
   ReactCommon: 4ef37cb61335f2c7a29225d754c06857b4cc6361
   ReactNativeNavigation: 2651d0bc1479e9df0789b077ae93320dc2c9b73b
-  RealmJS: 578e16cf7c0b32c13a23b2df667b021bb3c36f1c
+  RealmJS: a62dc7a1f94b888fe9e8712cd650167ad97dc636
   RNFBAnalytics: 40c559013d6c4dd842435c7eed4eb8fcf4b53787
   RNFBApp: 09fd96441b0f556a1ef50ee70fa72160ae71ecb9
   RNFBCrashlytics: 0866393a9fbca1d8d353052243e21d1cdeb55394
