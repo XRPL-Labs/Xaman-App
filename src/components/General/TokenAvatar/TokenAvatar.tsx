@@ -52,11 +52,15 @@ class TokenAvatar extends PureComponent<Props, State> {
             return asset;
         }
 
-        // IOU
+        // token
         const { counterParty } = token;
 
         if (counterParty.avatar) {
             return counterParty.avatar;
+        }
+
+        if (token.isLPToken()) {
+            return StyleService.getImage('ImageUnknownAMM').uri;
         }
 
         return StyleService.getImage('ImageUnknownTrustLine').uri;

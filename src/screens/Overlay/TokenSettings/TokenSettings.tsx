@@ -700,25 +700,27 @@ class TokenSettingsModal extends Component<Props, State> {
                             </View>
                         </View>
 
-                        {(trustLine.no_ripple === false || Number(trustLine.limit) === 0) && !trustLine.obligation && (
-                            <>
-                                <Spacer />
-                                <InfoMessage
-                                    type="warning"
-                                    containerStyle={styles.infoContainer}
-                                    labelStyle={styles.infoText}
-                                    label={
-                                        !trustLine.no_ripple
-                                            ? Localize.t('asset.dangerousConfigurationDetected')
-                                            : Localize.t('asset.restrictingConfigurationDetected')
-                                    }
-                                    actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
-                                    actionButtonIcon="IconInfo"
-                                    isActionButtonLoading={isLoading}
-                                    onActionButtonPress={this.showConfigurationAlert}
-                                />
-                            </>
-                        )}
+                        {(trustLine.no_ripple === false || Number(trustLine.limit) === 0) &&
+                            !trustLine.obligation &&
+                            !trustLine.isLPToken() && (
+                                <>
+                                    <Spacer />
+                                    <InfoMessage
+                                        type="warning"
+                                        containerStyle={styles.infoContainer}
+                                        labelStyle={styles.infoText}
+                                        label={
+                                            !trustLine.no_ripple
+                                                ? Localize.t('asset.dangerousConfigurationDetected')
+                                                : Localize.t('asset.restrictingConfigurationDetected')
+                                        }
+                                        actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
+                                        actionButtonIcon="IconInfo"
+                                        isActionButtonLoading={isLoading}
+                                        onActionButtonPress={this.showConfigurationAlert}
+                                    />
+                                </>
+                            )}
 
                         <View style={styles.buttonRow}>
                             <RaisedButton

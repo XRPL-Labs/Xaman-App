@@ -22,7 +22,7 @@ import { Transactions } from '@common/libs/ledger/transactions/types';
 import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
-import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
+import { BalanceChangeType, OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
@@ -739,13 +739,11 @@ class TransactionDetailsView extends Component<Props, State> {
         const { tx, account } = this.props;
         const { incomingTx } = this.state;
 
-        let shouldShowAmount = true;
-
         const props = {
             icon: incomingTx ? 'IconCornerRightDown' : 'IconCornerLeftUp',
             color: {},
             prefix: '',
-            value: 0,
+            value: undefined as number,
             currency: '',
         };
 
@@ -780,8 +778,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 } else if (tx.Account.address === account.address && tx.Destination.address === account.address) {
                     // payment to self
                     Object.assign(props, {
-                        value: tx.Amount.value,
-                        currency: tx.Amount.currency,
+                        value: tx.BalanceChange()?.received.value,
+                        currency: tx.BalanceChange()?.received.currency,
                         icon: undefined,
                     });
                 } else {
@@ -891,8 +889,6 @@ class TransactionDetailsView extends Component<Props, State> {
                         value: amount.value,
                         currency: amount.currency,
                     });
-                } else {
-                    shouldShowAmount = false;
                 }
                 break;
             }
@@ -954,6 +950,8 @@ class TransactionDetailsView extends Component<Props, State> {
             // all new transactions types
             case TransactionTypes.Import:
             case TransactionTypes.GenesisMint:
+            case TransactionTypes.AMMBid:
+            case TransactionTypes.AMMCreate:
             case TransactionTypes.EnableAmendment: {
                 const balanceChanges = tx.BalanceChange(account.address);
                 if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
@@ -970,15 +968,8 @@ class TransactionDetailsView extends Component<Props, State> {
                 }
                 break;
             }
-            case LedgerEntryTypes.PayChannel:
-                break;
             default:
-                shouldShowAmount = false;
                 break;
-        }
-
-        if (!shouldShowAmount) {
-            return null;
         }
 
         if (tx.Type === TransactionTypes.OfferCreate || tx.Type === LedgerEntryTypes.Offer) {
@@ -1154,6 +1145,85 @@ class TransactionDetailsView extends Component<Props, State> {
             );
         }
 
+        if (tx.Type === TransactionTypes.AMMDeposit) {
+            const balanceChanges: BalanceChangeType[] = tx.BalanceChange(account.address, true);
+            const inAmounts = balanceChanges.filter(
+                (b) =>
+                    b.action === OperationActions.DEC &&
+                    b.value !== tx.Fee &&
+                    b.currency !== NetworkService.getNativeAsset(),
+            );
+            const lpToken = balanceChanges.find((b) => b.action === OperationActions.INC);
+
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    {inAmounts.map((amount) => (
+                        <>
+                            <Spacer />
+                            <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                                <AmountText
+                                    value={amount.value}
+                                    currency={amount.currency}
+                                    style={[styles.amountTextSmall, styles.outgoingColor]}
+                                />
+                            </View>
+                        </>
+                    ))}
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGrey} name="IconArrowDown" />
+                    <Spacer />
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        <AmountText
+                            value={lpToken.value}
+                            currency={lpToken.currency}
+                            prefix={props.prefix}
+                            style={styles.amountTextSmall}
+                            truncateCurrency
+                        />
+                    </View>
+                </View>
+            );
+        }
+
+        if (tx.Type === TransactionTypes.AMMWithdraw) {
+            const balanceChanges: BalanceChangeType[] = tx.BalanceChange(account.address, true);
+            const outAmounts = balanceChanges.filter((b) => b.action === OperationActions.INC);
+            const lpToken = balanceChanges.find((b) => b.action === OperationActions.DEC);
+
+            return (
+                <View style={styles.amountHeaderContainer}>
+                    <View style={[AppStyles.row, styles.amountContainer]}>
+                        <AmountText
+                            value={lpToken.value}
+                            currency={lpToken.currency}
+                            prefix={props.prefix}
+                            style={[styles.amountTextSmall, styles.outgoingColor]}
+                            truncateCurrency
+                        />
+                    </View>
+                    <Spacer />
+                    <Icon size={20} style={AppStyles.imgColorGrey} name="IconArrowDown" />
+                    <Spacer />
+                    {outAmounts.map((amount) => (
+                        <>
+                            <Spacer />
+                            <View style={[AppStyles.row, styles.amountContainerSmall]}>
+                                <AmountText
+                                    value={amount.value}
+                                    currency={amount.currency}
+                                    style={[styles.amountTextSmall]}
+                                />
+                            </View>
+                        </>
+                    ))}
+                </View>
+            );
+        }
+
+        if (typeof props.value === 'undefined') {
+            return null;
+        }
+
         return (
             <View style={styles.amountHeaderContainer}>
                 <View style={[AppStyles.row, styles.amountContainer]}>
@@ -1166,6 +1236,7 @@ class TransactionDetailsView extends Component<Props, State> {
                         currency={props.currency}
                         prefix={props.prefix}
                         style={[styles.amountText, props.color]}
+                        truncateCurrency
                     />
                 </View>
             </View>
@@ -1536,7 +1607,7 @@ class TransactionDetailsView extends Component<Props, State> {
                 <AccountElement
                     address={to.address}
                     tag={to.tag}
-                    visibleElements={{ tag: true, avatar: true, button: to.source !== 'accounts' }}
+                    visibleElements={{ tag: true, avatar: true, button: to.source && to.source !== 'accounts' }}
                     onButtonPress={this.showRecipientMenu}
                 />
             </View>

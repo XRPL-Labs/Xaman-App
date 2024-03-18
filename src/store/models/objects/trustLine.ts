@@ -73,6 +73,15 @@ class TrustLine extends Realm.Object<TrustLine> {
             domain: '',
         };
     }
+
+    /**
+     * Returns true if token is LP Token.
+     *
+     * @returns {boolean}
+     */
+    isLPToken(): boolean {
+        return !!this.currency.currency.startsWith('03');
+    }
 }
 
 export default TrustLine;

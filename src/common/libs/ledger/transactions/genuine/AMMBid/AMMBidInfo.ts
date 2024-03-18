@@ -11,7 +11,7 @@ const AMMBidInfo = {
     },
 
     getDescription: (tx: AMMBid): string => {
-        return `This is an ${tx.Type} transaction`;
+        return `This is an ${tx.Type} transaction, please check the explorer for more information.`;
     },
 
     getRecipient: (tx: AMMBid, account: AccountModel): { address: string; tag?: number } => {

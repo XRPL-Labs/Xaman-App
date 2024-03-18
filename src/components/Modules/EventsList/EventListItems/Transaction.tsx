@@ -406,7 +406,13 @@ class TransactionItem extends Component<Props, State> {
             );
         }
 
-        if (['PaymentChannelClaim', 'PaymentChannelFund', 'PaymentChannelCreate'].includes(item.Type)) {
+        if (
+            [
+                TransactionTypes.PaymentChannelClaim,
+                TransactionTypes.PaymentChannelFund,
+                TransactionTypes.PaymentChannelCreate,
+            ].includes(item.Type)
+        ) {
             const balanceChanges = item.BalanceChange(account.address);
 
             if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
@@ -523,6 +529,33 @@ class TransactionItem extends Component<Props, State> {
                         currency={amount.currency}
                         prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
                         style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (
+            [
+                TransactionTypes.AMMBid,
+                TransactionTypes.AMMWithdraw,
+                TransactionTypes.AMMDeposit,
+                TransactionTypes.AMMCreate,
+                TransactionTypes.AMMDelete,
+                TransactionTypes.AMMVote,
+            ].includes(item.Type)
+        ) {
+            const lpTokenChanges = item.LPTokenChanges(account.address);
+            if (lpTokenChanges && (lpTokenChanges.received || lpTokenChanges.sent)) {
+                const amount = lpTokenChanges?.received || lpTokenChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!lpTokenChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!lpTokenChanges.sent && styles.outgoingColor]}
                         currencyStyle={styles.currency}
                         valueContainerStyle={styles.amountValueContainer}
                         truncateCurrency

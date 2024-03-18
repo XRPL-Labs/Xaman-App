@@ -318,7 +318,13 @@ class PaymentTemplate extends Component<Props, State> {
                                 <AmountText
                                     value={amount}
                                     currency={transaction.Amount.currency}
-                                    style={styles.amountInput}
+                                    style={[
+                                        styles.amountInput,
+                                        // if SendMax and DeliverMin are set then amount is not effected
+                                        transaction.SendMax && transaction.DeliverMin
+                                            ? styles.amountInputUneffected
+                                            : {},
+                                    ]}
                                     immutable
                                 />
                             )}

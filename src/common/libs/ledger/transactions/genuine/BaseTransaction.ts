@@ -50,6 +50,7 @@ class BaseTransaction {
 
     private hookExecutions: any[];
     private balanceChanges: Map<string, any>;
+    private lPTokenChanges: Map<string, any>;
     private ownerCountChanges: Map<string, any>;
 
     public SignedBlob: string;
@@ -88,6 +89,7 @@ class BaseTransaction {
         // memorize balance and owner count changes
         this.balanceChanges = new Map();
         this.ownerCountChanges = new Map();
+        this.lPTokenChanges = new Map();
     }
 
     /**
@@ -368,7 +370,7 @@ class BaseTransaction {
      * get transaction balance changes
      * @returns changes
      */
-    BalanceChange(owner?: string) {
+    BalanceChange(owner?: string, unfiltered?: boolean) {
         if (!owner) {
             owner = this.Account.address;
         }
@@ -379,6 +381,10 @@ class BaseTransaction {
         }
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        if (unfiltered) {
+            return balanceChanges;
+        }
 
         // if cross currency remove fee from changes
         if (size(filter(balanceChanges, { action: OperationActions.DEC })) > 1) {
@@ -431,6 +437,34 @@ class BaseTransaction {
 
         // memorize the changes for this account
         this.balanceChanges.set(owner, changes);
+
+        return changes;
+    }
+
+    /**
+     * get transaction lp token balance changes
+     * @returns changes
+     */
+    LPTokenChanges(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        // if already calculated return value
+        if (this.lPTokenChanges.has(owner)) {
+            return this.lPTokenChanges.get(owner);
+        }
+
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        // find in balance changes the currency which starts with 03
+        const changes = {
+            sent: find(balanceChanges, (o) => o.action === OperationActions.DEC && o.currency.startsWith('03')),
+            received: find(balanceChanges, (o) => o.action === OperationActions.INC && o.currency.startsWith('03')),
+        } as { sent: AmountType; received: AmountType };
+
+        // memorize the changes for this account
+        this.lPTokenChanges.set(owner, changes);
 
         return changes;
     }

@@ -1,6 +1,6 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
 import BigNumber from 'bignumber.js';
-import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues } from 'lodash';
+import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues, first, filter } from 'lodash';
 
 import NetworkService from '@services/NetworkService';
 
@@ -285,6 +285,14 @@ class Meta {
         });
 
         return compact(executions);
+    };
+
+    parseAMMAccountID = () => {
+        const account = first(filter(this.nodes, (node: any) => node.entryType === 'AMM'));
+
+        if (account) return account.FinalFields?.Account || account.NewFields?.Account;
+
+        return undefined;
     };
 }
 

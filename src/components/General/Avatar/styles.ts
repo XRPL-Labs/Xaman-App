@@ -3,7 +3,7 @@ import StyleService from '@services/StyleService';
 /* Styles ==================================================================== */
 export default StyleService.create({
     container: {
-        borderRadius: 10,
+        borderRadius: 11,
         backgroundColor: '$tint',
         alignItems: 'center',
         justifyContent: 'center',
@@ -12,7 +12,7 @@ export default StyleService.create({
         backgroundColor: '$grey',
     },
     image: {
-        borderRadius: 10,
+        borderRadius: 11,
     },
     border: {
         borderColor: '$lightGrey',

@@ -11,7 +11,7 @@ const AMMDeleteInfo = {
     },
 
     getDescription: (tx: AMMCreate): string => {
-        return `This is an ${tx.Type} transaction`;
+        return `This is an ${tx.Type} transaction, please check the explorer for more information.`;
     },
 
     getRecipient: (tx: AMMCreate, account: AccountModel): { address: string; tag?: number } => {

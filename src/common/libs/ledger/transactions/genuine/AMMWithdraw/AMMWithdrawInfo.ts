@@ -11,7 +11,7 @@ const AMMWithdrawInfo = {
     },
 
     getDescription: (tx: AMMWithdraw): string => {
-        return `This is an ${tx.Type} transaction`;
+        return `This is an ${tx.Type} transaction, please check the explorer for more information.`;
     },
 
     getRecipient: (tx: AMMWithdraw, account: AccountModel): { address: string; tag?: number } => {
