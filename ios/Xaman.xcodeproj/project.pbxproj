@@ -25,6 +25,7 @@
 		A22A152028C61E97001A632E /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22A151F28C61E97001A632E /* Crypto.swift */; };
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2771FC229828E33008A95E3 /* security.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2771FC129828E33008A95E3 /* security.txt */; };
+		A27996282BB5AFCE00998100 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A27996272BB5AFCE00998100 /* PrivacyInfo.xcprivacy */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
 		A28BA8A6282409B600109CC8 /* SecurityProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A28BA8A5282409B600109CC8 /* SecurityProvider.m */; };
 		A2A9F31428858F45009AE778 /* BlurViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A2A9F31328858F45009AE778 /* BlurViewManager.m */; };
@@ -109,6 +110,7 @@
 		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
 		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
 		A2771FC129828E33008A95E3 /* security.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = security.txt; sourceTree = "<group>"; };
+		A27996272BB5AFCE00998100 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
 		A2805CE324D1984700B5552E /* LocalNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocalNotification.h; sourceTree = "<group>"; };
 		A28BA8A5282409B600109CC8 /* SecurityProvider.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityProvider.m; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				A20B9292256FCE670066FECA /* Empty.swift */,
 				A20B9291256FCE670066FECA /* Xaman-Bridging-Header.h */,
+				A27996272BB5AFCE00998100 /* PrivacyInfo.xcprivacy */,
 			);
 			name = Xaman;
 			sourceTree = "<group>";
@@ -649,6 +652,7 @@
 				A2AFF133243E79C30007005E /* Proxima Nova Extrabold.otf in Resources */,
 				A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */,
 				A2AFF131243E79C30007005E /* Proxima Nova Alt Bold.otf in Resources */,
+				A27996282BB5AFCE00998100 /* PrivacyInfo.xcprivacy in Resources */,
 				A2AFF136243E79C30007005E /* Proxima Nova Black.otf in Resources */,
 				A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
@@ -1040,7 +1044,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -1122,7 +1126,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
