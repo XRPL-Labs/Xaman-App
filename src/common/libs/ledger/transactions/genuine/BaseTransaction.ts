@@ -61,6 +61,9 @@ class BaseTransaction {
         if (!isUndefined(tx)) {
             this.tx = tx;
             this.meta = meta;
+        } else {
+            this.tx = {} as any;
+            this.meta = {} as any;
         }
 
         this.fields = [

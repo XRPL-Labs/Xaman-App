@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import ApiService from '@services/ApiService';
 
-import { PseudoTransactionTypes } from '../../ledger/types';
+import { PseudoTransactionTypes } from '../../ledger/types/enums';
 
 import { Payload } from '../object';
 import { PayloadOrigin } from '../types';

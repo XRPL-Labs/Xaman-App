@@ -4,7 +4,7 @@
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
 
-import { TransactionTypes } from '../../../types';
+import { TransactionTypes } from '../../../types/enums';
 
 import BaseTransaction from '../BaseTransaction';
 

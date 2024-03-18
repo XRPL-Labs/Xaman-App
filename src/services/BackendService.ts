@@ -14,6 +14,7 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencyModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
@@ -72,19 +73,13 @@ class BackendService {
     };
 
     /**
-    On Ledger submit transaction
-    */
-    onLedgerTransactionSubmit = ({
-        hash,
-        network,
-    }: {
-        hash: string;
-        network: {
-            node: string;
-            type: string;
-            key: string;
-        };
-    }) => {
+     On Ledger submit transaction
+     */
+    onLedgerTransactionSubmit = (
+        blob: string,
+        hash: string,
+        network: { id: number; node: string; type: NetworkType; key: string },
+    ) => {
         // only if hash is provided
         if (!hash) {
             return;
