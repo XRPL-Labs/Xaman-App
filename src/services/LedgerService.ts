@@ -18,7 +18,7 @@ import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import {
     AccountInfoRequest,
     AccountLinesTrustline,
