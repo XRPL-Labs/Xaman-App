@@ -44,6 +44,7 @@ export enum TransactionTypes {
     AMMVote = 'AMMVote',
     AMMWithdraw = 'AMMWithdraw',
     Remit = 'Remit',
+    Clawback = 'Clawback',
 }
 
 /**

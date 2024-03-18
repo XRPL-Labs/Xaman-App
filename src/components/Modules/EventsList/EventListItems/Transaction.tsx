@@ -513,6 +513,24 @@ class TransactionItem extends Component<Props, State> {
             }
         }
 
+        if (item.Type === TransactionTypes.Clawback) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
         return null;
     };
 

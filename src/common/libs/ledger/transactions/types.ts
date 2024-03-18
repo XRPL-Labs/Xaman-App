@@ -39,6 +39,7 @@ import {
     AMMVote,
     AMMBid,
     Remit,
+    Clawback,
     GenesisMint,
     EnableAmendment,
 } from '.';
@@ -89,6 +90,7 @@ export type Transactions =
     | AMMVote
     | AMMBid
     | Remit
+    | Clawback
     | GenesisMint
     | EnableAmendment;
 

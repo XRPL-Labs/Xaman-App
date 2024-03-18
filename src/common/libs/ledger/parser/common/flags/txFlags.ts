@@ -21,7 +21,6 @@ const txFlags = {
         SetFreeze: 0x00100000,
         ClearFreeze: 0x00200000,
     },
-
     OfferCreate: {
         Passive: 0x00010000,
         ImmediateOrCancel: 0x00020000,
@@ -93,6 +92,7 @@ const txFlagIndices = {
         asfDisallowIncomingCheck: 13,
         asfDisallowIncomingPayChan: 14,
         asfDisallowIncomingTrustline: 15,
+        asfAllowTrustLineClawback: 16,
     },
 };
 

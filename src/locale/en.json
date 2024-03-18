@@ -512,6 +512,7 @@
     "ammVote": "AMM Vote",
     "ammWithdraw": "AMM Withdraw",
     "remit": "Remit",
+    "clawback": "Clawback",
     "amounts": "Amounts",
     "uriTokenIDs": "URIToken IDs",
     "mintURIToken": "Mint URIToken",
