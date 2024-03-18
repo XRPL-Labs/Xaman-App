@@ -24,7 +24,7 @@ class FallbackTransaction extends BaseTransaction {
      * serialize transaction object to the ledger tx json for signing
      */
     get JsonForSigning(): TransactionJson {
-        // shallow copy
+        // shallow copy without any filtering
         return { ...this._tx } as TransactionJson;
     }
 

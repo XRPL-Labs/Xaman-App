@@ -14,27 +14,27 @@ class AMMVoteInfo extends ExplainerAbstract<AMMVote, MutationsMixinType> {
         super(item, account);
     }
 
-    getEventsLabel = (): string => {
+    getEventsLabel(): string {
         return Localize.t('events.ammVote');
-    };
+    }
 
-    generateDescription = (): string => {
+    generateDescription(): string {
         return `This is an ${this.item.Type} transaction`;
-    };
+    }
 
-    getParticipants = () => {
+    getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
         };
-    };
+    }
 
-    getMonetaryDetails = () => {
+    getMonetaryDetails() {
         // TODO: add factor
         return {
             mutate: this.item.BalanceChange(this.account.address),
             factor: undefined,
         };
-    };
+    }
 }
 
 /* Export ==================================================================== */

@@ -14,19 +14,19 @@ class AMMWithdrawInfo extends ExplainerAbstract<AMMWithdraw, MutationsMixinType>
         super(item, account);
     }
 
-    getEventsLabel = (): string => {
+    getEventsLabel(): string {
         return Localize.t('events.ammWithdraw');
-    };
+    }
 
-    generateDescription = (): string => {
+    generateDescription(): string {
         return `This is an ${this.item.Type} transaction`;
-    };
+    }
 
-    getParticipants = () => {
+    getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
         };
-    };
+    }
 
     getMonetaryDetails() {
         // TODO: add factor

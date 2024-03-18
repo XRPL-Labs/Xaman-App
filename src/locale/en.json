@@ -1143,7 +1143,8 @@
     "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
-    "blobCopiedToClipboard": "Blob copied to clipboard"
+    "blobCopiedToClipboard": "Blob copied to clipboard",
+    "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
   },
   "errors": {
     "unableToLoadTermOfService":"Oops! Unable to Retrieve Terms of Service",

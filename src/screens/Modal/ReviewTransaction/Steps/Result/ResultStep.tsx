@@ -21,6 +21,7 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 import { HexEncoding } from '@common/utils/string';
+import { ExplainerFactory } from '@common/libs/ledger/factory';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -66,8 +67,16 @@ class ResultStep extends Component<Props, State> {
         }
     };
 
+    getTransactionLabel = () => {
+        const { source, transaction } = this.context;
+
+        const explainer = ExplainerFactory.fromInstance(transaction!, source!);
+
+        return explainer?.getEventsLabel();
+    };
+
     renderSuccess = () => {
-        const { onFinish, getTransactionLabel } = this.context;
+        const { onFinish } = this.context;
         const { closeButtonLabel } = this.state;
 
         return (
@@ -79,7 +88,7 @@ class ResultStep extends Component<Props, State> {
                     <Text
                         style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreen, AppStyles.textCenterAligned]}
                     >
-                        {getTransactionLabel()}
+                        {this.getTransactionLabel()}
                     </Text>
                 </View>
 

@@ -18,7 +18,7 @@ class AccountSetInfo extends ExplainerAbstract<AccountSet, MutationsMixinType> {
         if (this.item.isNoOperation() && this.item.isCancelTicket()) {
             return Localize.t('events.cancelTicket');
         }
-        return Localize.t('events.accountSettings');
+        return Localize.t('events.updateAccountSettings');
     }
 
     generateDescription(): string {

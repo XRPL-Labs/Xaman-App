@@ -4,6 +4,8 @@ import { get, has, isObject, isString, isUndefined } from 'lodash';
 import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
+import CoreRepository from '@store/repositories/core';
+
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
@@ -316,20 +318,29 @@ export class Payload {
     getTransaction(): SignableTransaction & MutatedTransaction {
         const { request_json, tx_type } = this.payload;
 
-        // check if normal transaction and supported by the app
-        if (
-            request_json.TransactionType &&
-            !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
-        ) {
-            throw new Error(`Requested transaction type is not supported "${request_json.TransactionType}".`);
-        }
-
         // check if pseudo transaction and supported by the app
         if (
             !request_json.TransactionType &&
             !Object.values(PseudoTransactionTypes).includes(tx_type as PseudoTransactionTypes)
         ) {
-            throw new Error(`Requested pseudo transaction type is not supported "${request_json.TransactionType}".`);
+            throw new Error(`Requested pseudo transaction type "${request_json.TransactionType} is not supported".`);
+        }
+
+        // check if normal transaction and supported by the app
+        // NOTE: only in case of developer mode enabled we allow transaction fallback
+        if (
+            request_json.TransactionType &&
+            !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
+        ) {
+            if (CoreRepository.isDeveloperModeEnabled()) {
+                logger.warn(
+                    `Requested transaction type "${request_json.TransactionType}" not found, revert to fallback transaction.`,
+                );
+            } else {
+                throw new Error(
+                    `Requested transaction type "${request_json.TransactionType} is not supported at the moment.`,
+                );
+            }
         }
 
         let craftedTransaction;

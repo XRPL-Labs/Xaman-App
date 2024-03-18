@@ -4,31 +4,30 @@
 
 import { get } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, Text, View } from 'react-native';
+import { ImageBackground, View } from 'react-native';
 
 import { StyleService } from '@services';
 
 // components
-import { Avatar, KeyboardAwareScrollView, SwipeButton } from '@components/General';
-import { AccountElement, AccountPicker } from '@components/Modules';
+import { KeyboardAwareScrollView, SwipeButton } from '@components/General';
+import { AccountPicker } from '@components/Modules';
+
+import { InstanceTypes } from '@common/libs/ledger/types/enums';
+
+import { AppInfo, SignerLabel, SignForAccount } from '@components/Modules/ReviewTransaction';
+import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
 
 import Localize from '@locale';
 
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-
-import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
-
-// style
 import { AppStyles } from '@theme';
-
-// transaction templates
-import * as Templates from './Templates';
-import * as PseudoTemplates from './Templates/pseudo';
-
-import { StepsContext } from '../../Context';
-
 import styles from './styles';
 
+// transaction templates
+import * as GenuineTransactionTemplates from './Templates/genuine';
+import * as PseudoTransactionTemplates from './Templates/pseudo';
+import { FallbackTemplate } from './Templates/fallback';
+
+import { StepsContext } from '../../Context';
 /* types ==================================================================== */
 export interface Props {}
 
@@ -75,14 +74,6 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    getHeaderTitle = () => {
-        const { transaction } = this.context;
-
-        return transaction!.Type === PseudoTransactionTypes.SignIn
-            ? Localize.t('global.signIn')
-            : Localize.t('global.reviewTransaction');
-    };
-
     renderDetails = () => {
         const { payload, transaction, source, setLoading, setReady } = this.context;
 
@@ -100,27 +91,32 @@ class ReviewStep extends Component<Props, State> {
             setReady,
         } as any;
 
-        switch (true) {
-            case transaction.Type in PseudoTransactionTypes:
+        switch (transaction.InstanceType) {
+            case InstanceTypes.PseudoTransaction:
                 Components.push(
-                    React.createElement(get(PseudoTemplates, String(transaction.Type)), {
+                    React.createElement(get(PseudoTransactionTemplates, String(transaction.Type)), {
                         ...Props,
                         key: `${transaction.Type}Template`,
                     }),
                 );
                 break;
-            case transaction.Type in TransactionTypes:
+            case InstanceTypes.GenuineTransaction:
                 Components.push(
-                    React.createElement(get(Templates, String(transaction.Type)), {
+                    React.createElement(get(GenuineTransactionTemplates, String(transaction.Type)), {
                         ...Props,
                         key: `${transaction!.Type}Template`,
                     }),
-                );
-                // also push global template
-                Components.push(
-                    React.createElement(get(Templates, 'Global'), {
+                    React.createElement(get(GenuineTransactionTemplates, 'Global'), {
                         ...Props,
                         key: 'GlobalTemplate',
+                    }),
+                );
+                break;
+            case InstanceTypes.FallbackTransaction:
+                Components.push(
+                    React.createElement(FallbackTemplate, {
+                        ...Props,
+                        key: `${transaction!.Type}Template`,
                     }),
                 );
                 break;
@@ -132,18 +128,8 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const {
-            accounts,
-            payload,
-            transaction,
-            source,
-            isReady,
-            isLoading,
-            setSource,
-            onAccept,
-            onClose,
-            getTransactionLabel,
-        } = this.context;
+        const { accounts, payload, transaction, source, isReady, isLoading, setSource, onAccept, onClose } =
+            this.context;
         const { canScroll } = this.state;
 
         // waiting for accounts / transaction to be initiated
@@ -158,71 +144,32 @@ class ReviewStep extends Component<Props, State> {
                 imageStyle={styles.xamanAppBackground}
                 style={styles.container}
             >
-                {/* header */}
-                <ReviewHeader title={this.getHeaderTitle()} onClose={onClose} />
-
+                <ReviewHeader transaction={transaction} onClose={onClose} />
                 <KeyboardAwareScrollView
                     testID="review-content-container"
                     contentContainerStyle={styles.keyboardAvoidContainerStyle}
                     style={AppStyles.flex1}
                     scrollEnabled={canScroll}
                 >
-                    <View style={AppStyles.centerContent}>
-                        <View style={[AppStyles.row, AppStyles.paddingSml]}>
-                            <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                                <Avatar size={60} border source={{ uri: payload.getApplicationIcon() }} />
+                    {/* App info */}
+                    <AppInfo source={source} transaction={transaction} payload={payload} />
 
-                                <Text style={styles.appTitle}>{payload.getApplicationName()}</Text>
-
-                                {!!payload.getCustomInstruction() && (
-                                    <>
-                                        <Text style={styles.descriptionLabel}>{Localize.t('global.details')}</Text>
-                                        <Text style={styles.instructionText}>{payload.getCustomInstruction()}</Text>
-                                    </>
-                                )}
-
-                                {transaction.Type !== PseudoTransactionTypes.SignIn && (
-                                    <>
-                                        <Text style={styles.descriptionLabel}>{Localize.t('global.type')}</Text>
-                                        <Text style={[styles.instructionText, AppStyles.colorBlue, AppStyles.bold]}>
-                                            {getTransactionLabel()}
-                                        </Text>
-                                    </>
-                                )}
-                            </View>
-                        </View>
-                    </View>
-
+                    {/* transaction info content */}
                     <View style={styles.transactionContent}>
                         <View style={AppStyles.paddingHorizontalSml}>
-                            <View style={styles.rowLabel}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                    {payload.isPseudoTransaction() || payload.isMultiSign()
-                                        ? Localize.t('global.signAs')
-                                        : Localize.t('global.signWith')}
-                                </Text>
-                            </View>
+                            <SignerLabel payload={payload} />
                             <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
                         </View>
 
                         {/* in multi-sign transactions and in some cases in Import transaction */}
                         {/* the Account can be different than the signing account */}
+                        <SignForAccount transaction={transaction} source={source} />
 
-                        {transaction.Account && source.address !== transaction.Account && (
-                            <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingTopSml]}>
-                                <View style={styles.rowLabel}>
-                                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                        {Localize.t('global.signFor')}
-                                    </Text>
-                                </View>
-                                <AccountElement address={transaction.Account} />
-                            </View>
-                        )}
-                        <View style={[AppStyles.paddingHorizontalSml, AppStyles.paddingVerticalSml]}>
-                            {this.renderDetails()}
-                        </View>
+                        {/* transaction details */}
+                        <View style={styles.detailsContainer}>{this.renderDetails()}</View>
 
-                        <View style={[styles.acceptButtonContainer, AppStyles.paddingHorizontalSml]}>
+                        {/* accept button */}
+                        <View style={styles.acceptButtonContainer}>
                             <SwipeButton
                                 testID="accept-button"
                                 color={this.getSwipeButtonColor()}

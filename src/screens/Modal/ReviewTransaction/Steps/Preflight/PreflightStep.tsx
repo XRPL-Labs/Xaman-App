@@ -221,7 +221,7 @@ class PreflightStep extends Component<Props, State> {
                 // check for enforced signer accounts
                 const forcedSigners = payload.getSigners();
 
-                if (forcedSigners) {
+                if (Array.isArray(forcedSigners) && forcedSigners.length > 0) {
                     // filter available accounts base on forced signers
                     availableAccounts = filter(availableAccounts, (account) => forcedSigners.includes(account.address));
 
@@ -411,7 +411,7 @@ class PreflightStep extends Component<Props, State> {
     };
 
     render() {
-        const { onClose } = this.context;
+        const { onClose, transaction } = this.context;
         const { requiredAction } = this.state;
 
         // no action is required
@@ -437,7 +437,7 @@ class PreflightStep extends Component<Props, State> {
 
         return (
             <View testID="preflight-error-view" style={styles.container}>
-                <ReviewHeader onClose={onClose} title={Localize.t('global.reviewTransaction')} />
+                <ReviewHeader onClose={onClose} transaction={transaction} />
                 {ActionRenderer()}
             </View>
         );

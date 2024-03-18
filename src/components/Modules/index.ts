@@ -20,3 +20,4 @@ export * from './AccountSwitchElement';
 export * from './XAppBrowserHeader';
 export * from './HooksExplainer';
 export * from './MutationWidgets';
+export * from './ReviewTransaction';

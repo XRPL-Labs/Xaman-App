@@ -46,5 +46,4 @@ export interface ContextProps extends State {
     onClose: () => void;
     onAccept: () => void;
     onFinish: () => void;
-    getTransactionLabel: () => string;
 }

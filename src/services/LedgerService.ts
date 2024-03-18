@@ -521,7 +521,11 @@ class LedgerService extends EventEmitter {
                 return assign(result, {
                     success: false,
                     engineResult: submitResponse.error,
-                    message: submitResponse.error_message || submitResponse.error_code || 'NO_ERROR_DESCRIPTION',
+                    message:
+                        submitResponse.error_message ||
+                        submitResponse.error_exception ||
+                        submitResponse.error_code ||
+                        'NO_ERROR_DESCRIPTION',
                 });
             }
 

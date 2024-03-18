@@ -125,6 +125,16 @@ class CoreRepository extends BaseRepository<CoreModel> {
     };
 
     /**
+     * Get true if developer mode is active in the app
+     * @returns {boolean} - The value of developer mode flag
+     */
+    isDeveloperModeEnabled = (): boolean => {
+        const settings = this.getSettings();
+
+        return !!settings.developerMode;
+    };
+
+    /**
      * Hash the passcode
      * @param passcode - The passcode to hash.
      * @returns {Promise<string>} - A promise that resolves to the hashed passcode.

@@ -12,7 +12,7 @@ import { NetworkService, PushNotificationsService } from '@services';
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
-import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { MutatedTransaction, SignableTransaction } from '@common/libs/ledger/transactions/types';
 import ValidationFactory from '@common/libs/ledger/factory/validation';
@@ -109,105 +109,6 @@ class ReviewTransactionModal extends Component<Props, State> {
         }
 
         return true;
-    };
-
-    getTransactionLabel = () => {
-        const { transaction } = this.state;
-
-        if (!transaction) {
-            return 'Transaction is not initiated!';
-        }
-
-        switch (transaction.Type) {
-            case TransactionTypes.AccountSet:
-                if (transaction.isNoOperation() && transaction.isCancelTicket()) {
-                    return Localize.t('events.cancelTicket');
-                }
-                return Localize.t('events.updateAccountSettings');
-            case TransactionTypes.AccountDelete:
-                return Localize.t('events.deleteAccount');
-            case TransactionTypes.EscrowFinish:
-                return Localize.t('events.finishEscrow');
-            case TransactionTypes.EscrowCancel:
-                return Localize.t('events.cancelEscrow');
-            case TransactionTypes.EscrowCreate:
-                return Localize.t('events.createEscrow');
-            case TransactionTypes.SetRegularKey:
-                return Localize.t('events.setARegularKey');
-            case TransactionTypes.SignerListSet:
-                return Localize.t('events.setSignerList');
-            case TransactionTypes.TrustSet:
-                return Localize.t('events.updateAccountAssets');
-            case TransactionTypes.OfferCreate:
-                return Localize.t('events.createOffer');
-            case TransactionTypes.OfferCancel:
-                return Localize.t('events.cancelOffer');
-            case TransactionTypes.DepositPreauth:
-                if (transaction.Authorize) {
-                    return Localize.t('events.authorizeDeposit');
-                }
-                return Localize.t('events.unauthorizeDeposit');
-            case TransactionTypes.CheckCreate:
-                return Localize.t('events.createCheck');
-            case TransactionTypes.CheckCash:
-                return Localize.t('events.cashCheck');
-            case TransactionTypes.CheckCancel:
-                return Localize.t('events.cancelCheck');
-            case TransactionTypes.TicketCreate:
-                return Localize.t('events.createTicket');
-            case TransactionTypes.PaymentChannelCreate:
-                return Localize.t('events.createPaymentChannel');
-            case TransactionTypes.PaymentChannelFund:
-                return Localize.t('events.fundPaymentChannel');
-            case TransactionTypes.PaymentChannelClaim:
-                return Localize.t('events.claimPaymentChannel');
-            case TransactionTypes.NFTokenMint:
-                return Localize.t('events.mintNFT');
-            case TransactionTypes.NFTokenBurn:
-                return Localize.t('events.burnNFT');
-            case TransactionTypes.NFTokenCreateOffer:
-                return Localize.t('events.createNFTOffer');
-            case TransactionTypes.NFTokenCancelOffer:
-                return Localize.t('events.cancelNFTOffer');
-            case TransactionTypes.NFTokenAcceptOffer:
-                return Localize.t('events.acceptNFTOffer');
-            case TransactionTypes.Import:
-                return Localize.t('events.import');
-            case TransactionTypes.Invoke:
-                return Localize.t('events.invoke');
-            case TransactionTypes.SetHook:
-                return Localize.t('events.setHooks');
-            case TransactionTypes.URITokenMint:
-                return Localize.t('events.mintURIToken');
-            case TransactionTypes.URITokenBurn:
-                return Localize.t('events.burnURIToken');
-            case TransactionTypes.URITokenBuy:
-                return Localize.t('events.buyURIToken');
-            case TransactionTypes.URITokenCreateSellOffer:
-                return Localize.t('events.createURITokenSellOffer');
-            case TransactionTypes.URITokenCancelSellOffer:
-                return Localize.t('events.cancelURITokenSellOffer');
-            case TransactionTypes.AMMCreate:
-                return Localize.t('events.ammCreate');
-            case TransactionTypes.AMMDelete:
-                return Localize.t('events.ammDelete');
-            case TransactionTypes.AMMDeposit:
-                return Localize.t('events.ammDeposit');
-            case TransactionTypes.AMMWithdraw:
-                return Localize.t('events.ammWithdraw');
-            case TransactionTypes.AMMVote:
-                return Localize.t('events.ammVote');
-            case TransactionTypes.AMMBid:
-                return Localize.t('events.ammBid');
-            case TransactionTypes.Remit:
-                return Localize.t('events.remit');
-            case PseudoTransactionTypes.SignIn:
-                return Localize.t('global.signIn');
-            case PseudoTransactionTypes.PaymentChannelAuthorize:
-                return Localize.t('global.paymentChannelAuthorize');
-            default:
-                return transaction!.Type;
-        }
     };
 
     prepareAndSignTransaction = async () => {
@@ -318,11 +219,11 @@ class ReviewTransactionModal extends Component<Props, State> {
                 if (!payload.isGenerated()) {
                     await payload.validate();
                 }
-            } catch (e: any) {
+            } catch (payloadValidationError: any) {
                 if (this.mounted) {
                     Navigator.showAlertModal({
                         type: 'error',
-                        text: e.message,
+                        text: payloadValidationError.message,
                         buttons: [
                             {
                                 text: Localize.t('global.ok'),
@@ -825,7 +726,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                     onClose: this.onClose,
                     onAccept: this.onAccept,
                     onFinish: this.onFinish,
-                    getTransactionLabel: this.getTransactionLabel,
                 }}
             >
                 <Step />

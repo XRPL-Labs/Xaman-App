@@ -9,6 +9,7 @@ import {
     PanResponderGestureState,
     GestureResponderEvent,
     ViewStyle,
+    StyleProp,
 } from 'react-native';
 
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
@@ -40,7 +41,7 @@ interface Props {
     onPanResponderGrant?: () => void;
     onPanResponderRelease?: () => void;
     shouldResetAfterSuccess?: boolean;
-    style?: ViewStyle | ViewStyle[];
+    style?: StyleProp<ViewStyle>;
     color?: string;
 }
 
@@ -112,8 +113,8 @@ class SwipeButton extends Component<Props, State> {
                 iconColor: secondary
                     ? StyleService.value('$lightGreen')
                     : colorContrast === 'light'
-                    ? StyleService.value('$transparentWhite')
-                    : StyleService.value('$darkGrey'),
+                      ? StyleService.value('$transparentWhite')
+                      : StyleService.value('$darkGrey'),
             };
         }
 
