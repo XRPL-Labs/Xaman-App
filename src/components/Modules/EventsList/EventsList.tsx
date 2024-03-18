@@ -125,6 +125,8 @@ class EventsList extends PureComponent<Props> {
                 windowSize={10}
                 maxToRenderPerBatch={10}
                 initialNumToRender={20}
+                stickySectionHeadersEnabled={false}
+                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
                 refreshControl={
                     <RefreshControl
                         refreshing={isLoading}
@@ -132,7 +134,6 @@ class EventsList extends PureComponent<Props> {
                         tintColor={StyleService.value('$contrast')}
                     />
                 }
-                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );
     }
