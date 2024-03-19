@@ -26,9 +26,16 @@ const AMMVoteInfo = {
     },
 
     getRecipient: (tx: AMMVote, account: AccountModel): { address: string; tag?: number } => {
-        if (tx.Account.address !== account.address) {
+        if (tx.Account.address === account.address) {
+            const ammAccountId = new Meta(tx.MetaData).parseAMMAccountID();
+
+            if (ammAccountId) {
+                return { address: ammAccountId };
+            }
+        } else {
             return tx.Account;
         }
+
         return undefined;
     },
 };

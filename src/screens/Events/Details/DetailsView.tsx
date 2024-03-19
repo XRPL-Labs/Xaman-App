@@ -51,6 +51,7 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import BigNumber from 'bignumber.js';
 
 /* types ==================================================================== */
 export interface Props {
@@ -1147,12 +1148,18 @@ class TransactionDetailsView extends Component<Props, State> {
 
         if (tx.Type === TransactionTypes.AMMDeposit) {
             const balanceChanges: BalanceChangeType[] = tx.BalanceChange(account.address, true);
-            const inAmounts = balanceChanges.filter(
-                (b) =>
-                    b.action === OperationActions.DEC &&
-                    b.value !== tx.Fee &&
-                    b.currency !== NetworkService.getNativeAsset(),
-            );
+
+            const inAmounts = balanceChanges
+                .filter((b) => b.action === OperationActions.DEC)
+                .map((b) => {
+                    if (b.currency === NetworkService.getNativeAsset()) {
+                        const afterFee = new BigNumber(b.value).minus(tx.Fee);
+                        return afterFee.isZero() ? null : { ...b, value: afterFee.toString(10) };
+                    }
+                    return b;
+                })
+                .filter(Boolean);
+
             const lpToken = balanceChanges.find((b) => b.action === OperationActions.INC);
 
             return (
