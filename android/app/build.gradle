@@ -6,7 +6,7 @@ apply plugin: "com.google.firebase.crashlytics"
 import com.android.build.OutputFile
 
 def canonicalVersionName = "2.8.0"
-def canonicalVersionCode = 30_005
+def canonicalVersionCode = 30_006
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -26,7 +26,7 @@ react {
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
-    //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
+    //   If you add flavors like lite, prod , etc. you'll have to list your debuggableVariants.
     // debuggableVariants = ["liteDebug", "prodDebug"]
 
     /* Bundling */
