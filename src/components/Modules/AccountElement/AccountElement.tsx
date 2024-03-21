@@ -5,9 +5,14 @@ import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-nati
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
+
+import { Props as ParticipantMenuOverlayProps } from '@screens/Overlay/ParticipantMenu/types';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -24,7 +29,7 @@ export type VisibleElementsType = {
     tag?: boolean;
     source?: boolean;
     avatar?: boolean;
-    button?: boolean;
+    menu?: boolean;
 };
 
 interface Props {
@@ -36,23 +41,24 @@ interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     onPress?: (account: AccountElementType) => void;
-    onButtonPress?: (account: AccountElementType) => void;
     onInfoUpdate?: (info: AccountNameType) => void;
 }
 
 interface State {
-    info: AccountNameType;
+    info?: AccountNameType;
     isLoading: boolean;
 }
 
 /* Component ==================================================================== */
 class AccountElement extends Component<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof AccountElement.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         visibleElements: {
             tag: true,
             avatar: true,
             source: false,
-            button: false,
+            menu: false,
         },
     };
 
@@ -120,7 +126,7 @@ class AccountElement extends Component<Props, State> {
 
         getAccountName(address, tag)
             .then((res) => {
-                if (!isEmpty(res)) {
+                if (!isEmpty(res) && this.mounted) {
                     this.setState(
                         {
                             info: res,
@@ -137,9 +143,11 @@ class AccountElement extends Component<Props, State> {
                 // ignore
             })
             .finally(() => {
-                this.setState({
-                    isLoading: false,
-                });
+                if (this.mounted) {
+                    this.setState({
+                        isLoading: false,
+                    });
+                }
             });
     };
 
@@ -155,16 +163,13 @@ class AccountElement extends Component<Props, State> {
         }
     };
 
-    onButtonPress = () => {
-        const { id, address, tag, onButtonPress } = this.props;
+    onMenuPress = () => {
+        const { address, tag } = this.props;
 
-        if (typeof onButtonPress === 'function') {
-            onButtonPress({
-                id,
-                address,
-                tag,
-            });
-        }
+        Navigator.showOverlay<ParticipantMenuOverlayProps>(AppScreens.Overlay.ParticipantMenu, {
+            address,
+            tag,
+        });
     };
 
     renderAvatar = () => {
@@ -237,14 +242,14 @@ class AccountElement extends Component<Props, State> {
         );
     };
 
-    renderActions = () => {
+    renderMenuActions = () => {
         const { visibleElements } = this.props;
 
-        if (!visibleElements?.button) return null;
+        if (!visibleElements?.menu) return null;
 
         return (
             <TouchableDebounce
-                onPress={this.onButtonPress}
+                onPress={this.onMenuPress}
                 activeOpacity={0.7}
                 style={[AppStyles.flex1, AppStyles.rightAligned, AppStyles.centerContent]}
             >
@@ -259,7 +264,7 @@ class AccountElement extends Component<Props, State> {
         return (
             <TouchableDebounce
                 testID={`recipient-${address}`}
-                activeOpacity={onPress ? 0.7 : 1}
+                activeOpacity={typeof onPress === 'function' ? 0.7 : 1}
                 onPress={this.onPress}
                 style={[styles.container, containerStyle]}
                 key={id}
@@ -270,7 +275,7 @@ class AccountElement extends Component<Props, State> {
                     {this.renderAddress()}
                     {this.renderDestinationTag()}
                 </View>
-                {this.renderActions()}
+                {this.renderMenuActions()}
             </TouchableDebounce>
         );
     }

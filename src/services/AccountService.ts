@@ -5,35 +5,44 @@
  */
 
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, has, get, keys } from 'lodash';
+import { map, isEmpty, flatMap, forEach, get, keys } from 'lodash';
 
 import { TrustLineModel } from '@store/models';
 import { AccountRepository, CurrencyRepository } from '@store/repositories';
 
 import Meta from '@common/libs/ledger/parser/meta';
-import { Amount } from '@common/libs/ledger/parser/common';
-
-import { LedgerTransactionType } from '@common/libs/ledger/types';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+
 import { AccountTypes } from '@store/types';
 
-/* events  ==================================================================== */
-declare interface AccountService {
-    on(
-        event: 'transaction',
-        listener: (transaction: LedgerTransactionType, effectedAccounts: Array<string>) => void,
-    ): this;
-    on(event: string, listener: Function): this;
-}
+import {
+    SubscribeRequest,
+    SubscribeResponse,
+    TransactionStream,
+    UnsubscribeRequest,
+    UnsubscribeResponse,
+} from '@common/libs/ledger/types/methods';
 
+/* Events  ==================================================================== */
+export type AccountServiceEvent = {
+    transaction: (transaction: TransactionStream, effectedAccounts: Array<string>) => void;
+};
+
+declare interface AccountService {
+    on<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    off<U extends keyof AccountServiceEvent>(event: U, listener: AccountServiceEvent[U]): this;
+    emit<U extends keyof AccountServiceEvent>(event: U, ...args: Parameters<AccountServiceEvent[U]>): boolean;
+}
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
     private accounts: string[];
-    private logger: any;
     private transactionListener: any;
+
+    private logger: LoggerInstance;
 
     constructor() {
         super();
@@ -89,7 +98,7 @@ class AccountService extends EventEmitter {
     /**
      * Handle stream transactions on subscribed accounts
      */
-    transactionHandler = (tx: LedgerTransactionType) => {
+    transactionHandler = (tx: TransactionStream) => {
         const { transaction, meta } = tx;
 
         if (typeof transaction === 'object' && typeof meta === 'object') {
@@ -143,8 +152,12 @@ class AccountService extends EventEmitter {
             // fetch account info from ledger
             const accountInfo = await LedgerService.getAccountInfo(account);
 
+            if (!accountInfo) {
+                this.logger.warn(`Fetch account info [${account}]: got empty response`);
+            }
+
             // if there is any error in the response return and ignore fetching the account lines
-            if (!accountInfo || has(accountInfo, 'error')) {
+            if ('error' in accountInfo) {
                 // account not found reset account to default state
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     // reset account details to default
@@ -159,7 +172,7 @@ class AccountService extends EventEmitter {
                         domain: '',
                         emailHash: '',
                         messageKey: '',
-                        lines: [],
+                        lines: [] as any,
                     });
                 }
 
@@ -180,13 +193,13 @@ class AccountService extends EventEmitter {
                 network: NetworkService.getNetwork(),
                 ownerCount: account_data.OwnerCount,
                 sequence: account_data.Sequence,
-                balance: new Amount(account_data.Balance).dropsToNative(true),
+                balance: new AmountParser(account_data.Balance).dropsToNative().toNumber(),
                 flagsString: JSON.stringify(account_flags),
                 regularKey: get(account_data, 'RegularKey', ''),
                 domain: get(account_data, 'Domain', ''),
                 emailHash: get(account_data, 'EmailHash', ''),
                 messageKey: get(account_data, 'MessageKey', ''),
-                lines: normalizedAccountLines,
+                lines: normalizedAccountLines as unknown as Realm.Results<TrustLineModel>,
             });
         } catch (e: any) {
             throw new Error(e);
@@ -197,56 +210,51 @@ class AccountService extends EventEmitter {
      * Get normalized account lines
      */
     getNormalizedAccountLines = async (account: string): Promise<Partial<TrustLineModel>[]> => {
-        try {
-            // fetch filtered account lines from ledger
-            let accountLines = await LedgerService.getFilteredAccountLines(account);
+        // fetch filtered account lines from ledger
+        let accountLines = await LedgerService.getFilteredAccountLines(account);
 
-            // fetch account obligations lines
-            const accountObligations = await LedgerService.getAccountObligations(account);
+        // fetch account obligations lines
+        const accountObligations = await LedgerService.getAccountObligations(account);
 
-            // if there is any obligations lines combine result
-            if (!isEmpty(accountObligations)) {
-                accountLines = accountLines.concat(accountObligations);
-            }
-
-            // create empty list base on TrustLineModel
-            const normalizedList = [] as Partial<TrustLineModel>[];
-
-            // process every line exist in the accountLines
-            await Promise.all(
-                map(accountLines, async (line) => {
-                    // upsert currency object in the store
-                    const currency = await CurrencyRepository.include({
-                        id: `${line.account}.${line.currency}`,
-                        issuer: line.account,
-                        currency: line.currency,
-                    });
-
-                    // convert trust line to the normalized format
-                    normalizedList.push({
-                        // id: `${account}.${currency.id}.${NetworkService.getNetworkId()}`,
-                        id: `${account}.${currency.id}}`,
-                        currency,
-                        balance: line.balance,
-                        no_ripple: get(line, 'no_ripple', false),
-                        no_ripple_peer: get(line, 'no_ripple_peer', false),
-                        limit: line.limit,
-                        limit_peer: line.limit_peer,
-                        quality_in: get(line, 'quality_in', 0),
-                        quality_out: get(line, 'quality_out', 0),
-                        authorized: get(line, 'authorized', false),
-                        peer_authorized: get(line, 'peer_authorized', false),
-                        freeze: get(line, 'freeze', false),
-                        obligation: get(line, 'obligation', false),
-                    });
-                }),
-            );
-
-            // return normalized list
-            return normalizedList;
-        } catch (e) {
-            throw new Error('Unable get Account lines');
+        // if there is any obligations lines combine result
+        if (!isEmpty(accountObligations)) {
+            accountLines = accountLines.concat(accountObligations);
         }
+
+        // create empty list base on TrustLineModel
+        const normalizedList = [] as Partial<TrustLineModel>[];
+
+        // process every line exist in the accountLines
+        await Promise.all(
+            map(accountLines, async (line) => {
+                // upsert currency object in the store
+                const currency = await CurrencyRepository.include({
+                    id: `${line.account}.${line.currency}`,
+                    issuer: line.account,
+                    currency: line.currency,
+                });
+
+                // convert trust line to the normalized format
+                normalizedList.push({
+                    id: `${account}.${currency.id}}`,
+                    currency,
+                    balance: line.balance,
+                    no_ripple: get(line, 'no_ripple', false),
+                    no_ripple_peer: get(line, 'no_ripple_peer', false),
+                    limit: line.limit,
+                    limit_peer: line.limit_peer,
+                    quality_in: get(line, 'quality_in', 0),
+                    quality_out: get(line, 'quality_out', 0),
+                    authorized: get(line, 'authorized', false),
+                    peer_authorized: get(line, 'peer_authorized', false),
+                    freeze: get(line, 'freeze', false),
+                    obligation: get(line, 'obligation', false),
+                });
+            }),
+        );
+
+        // return normalized list
+        return normalizedList;
     };
 
     /**
@@ -256,12 +264,12 @@ class AccountService extends EventEmitter {
     updateAccountsDetails = (include?: string[]) => {
         forEach(this.accounts, (account) => {
             // check if include present
-            if (!isEmpty(include)) {
+            if (Array.isArray(include) && include.length > 0) {
                 if (include.indexOf(account) === -1) return;
             }
 
-            this.updateAccountInfo(account).catch((e) => {
-                this.logger.error(`Update account info [${account}] `, e);
+            this.updateAccountInfo(account).catch((error: Error) => {
+                this.logger.error(`Update account info [${account}] `, error);
             });
         });
     };
@@ -289,11 +297,11 @@ class AccountService extends EventEmitter {
     unsubscribe() {
         this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
 
-        NetworkService.send({
+        NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
             accounts: this.accounts,
-        }).catch((e: any) => {
-            this.logger.warn('Unable to Unsubscribe accounts', e);
+        }).catch((error: Error) => {
+            this.logger.warn('Unable to Unsubscribe accounts', error);
         });
     }
 
@@ -303,11 +311,11 @@ class AccountService extends EventEmitter {
     subscribe() {
         this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
 
-        NetworkService.send({
+        NetworkService.send<SubscribeRequest, SubscribeResponse>({
             command: 'subscribe',
             accounts: this.accounts,
-        }).catch((e: any) => {
-            this.logger.warn('Unable to Subscribe accounts', e);
+        }).catch((error: Error) => {
+            this.logger.warn('Unable to Subscribe accounts', error);
         });
     }
 }

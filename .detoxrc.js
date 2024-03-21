@@ -17,7 +17,7 @@ module.exports = {
         },
         'android.release': {
             type: 'android.apk',
-            binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
+            binaryPath: 'android/app/build/outputs/apk/release/app-x86_64-release.apk',
             build: 'cd android && ./gradlew app:assembleRelease app:assembleAndroidTest -DtestBuildType=release && cd ..',
         },
     },
@@ -30,19 +30,25 @@ module.exports = {
             type: 'android.apk',
             device: { avdName: 'Nexus_5X_API_28' },
         },
+        'android.attached': {
+            type: 'android.attached',
+            device: {
+                adbName: '.*',
+            },
+        },
     },
     configurations: {
-        'ios.sim.debug': {
-            device: 'ios.simulator',
-            app: 'ios.debug',
-        },
-        'ios.sim.release': {
+        'ios.sim': {
             device: 'ios.simulator',
             app: 'ios.release',
         },
-        'android.emu.debug': {
+        'android.emu': {
             device: 'android.emulator',
-            app: 'android.debug',
+            app: 'android.release',
+        },
+        'android.attached': {
+            device: 'android.attached',
+            app: 'android.release',
         },
     },
 };

@@ -1,15 +1,20 @@
-import { LedgerTrustline, RippleStateLedgerEntry } from '@common/libs/ledger/types';
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
 
-const RippleStateToTrustLine = (ledgerEntry: RippleStateLedgerEntry, account: string): LedgerTrustline => {
+/* Types ==================================================================== */
+import { RippleState } from '@common/libs/ledger/types/ledger';
+import { AccountLinesTrustline } from '@common/libs/ledger/types/methods';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+
+/* Parser ==================================================================== */
+const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): AccountLinesTrustline => {
     const parties = [ledgerEntry.HighLimit, ledgerEntry.LowLimit];
     const [self, counterparty] = ledgerEntry.HighLimit.issuer === account ? parties : parties.reverse();
 
     const ripplingFlags = [
-        (LedgerObjectFlags.RippleState.lsfHighNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfHighNoRipple,
-        (LedgerObjectFlags.RippleState.lsfLowNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfLowNoRipple,
+        (objectFlags[LedgerEntryTypes.RippleState]!.HighNoRipple & ledgerEntry.Flags) ===
+            objectFlags[LedgerEntryTypes.RippleState]!.HighNoRipple,
+        (objectFlags[LedgerEntryTypes.RippleState]!.LowNoRipple & ledgerEntry.Flags) ===
+            objectFlags[LedgerEntryTypes.RippleState]!.LowNoRipple,
     ];
     const [no_ripple, no_ripple_peer] =
         ledgerEntry.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
@@ -27,7 +32,9 @@ const RippleStateToTrustLine = (ledgerEntry: RippleStateLedgerEntry, account: st
         limit_peer: counterparty.value,
         no_ripple,
         no_ripple_peer,
-    } as LedgerTrustline;
+        quality_in: 0,
+        quality_out: 0,
+    };
 };
 
 export { RippleStateToTrustLine };

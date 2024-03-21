@@ -6,15 +6,13 @@ import { AppStyles, AppSizes } from '@theme';
 const styles = StyleService.create({
     container: {
         paddingHorizontal: 20,
-        paddingTop: Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0,
+        marginTop: Platform.select({ ios: AppSizes.statusBarHeight, default: 0 }),
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         zIndex: 99999,
-        height: AppSizes.heightPercentageToDP(9) + (Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0),
         backgroundColor: '$background',
     },
-
     fixedContainer: {
         flex: 3,
     },

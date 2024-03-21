@@ -1,8 +1,6 @@
 import Realm from 'realm';
 
-// @ts-expect-error
-// eslint-disable-next-line import/no-unresolved
-import { AppConfig, NetworkConfig } from '@constants';
+import { AppConfig, NetworkConfig } from '@common/constants';
 
 import SampleDataV1 from '../fixture/v1.test.data';
 

@@ -158,4 +158,5 @@ export const Images = {
     IconToggleRight: buildImageSource('IconToggleRight', 'icon_toggle_right'),
     IconCopy: buildImageSource('IconCopy', 'icon_copy'),
     IconRadio: buildImageSource('IconRadio', 'icon_radio'),
+    IconFlaskConical: buildImageSource('IconFlaskConical', 'icon_flask_conical'),
 };

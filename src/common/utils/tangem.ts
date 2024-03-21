@@ -60,7 +60,7 @@ const GetWalletPublicKey = (card: Card): string => {
             // get the first wallet
             const wallet = first(wallets);
             // return wallet pub key
-            return wallet.publicKey;
+            return wallet!.publicKey;
         }
     }
 
@@ -93,9 +93,9 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         if (isPlainObject(derivedKeys)) {
             const key = first(keys(derivedKeys));
             try {
-                const keyJSON = JSON.parse(key);
+                const keyJSON = JSON.parse(key!);
                 if (get(keyJSON, 'rawPath') === DefaultDerivationPaths) {
-                    derivedKey = get(derivedKeys, key);
+                    derivedKey = get(derivedKeys, key!);
                 }
             } catch (e) {
                 // ignore
@@ -123,7 +123,7 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
 /**
  * get card enforced security options
  */
-const GetCardSecurityOptions = (card: any): { [key in TangemSecurity]: boolean } => {
+const GetCardSecurityOptions = (card: Card): { [key in TangemSecurity]: boolean } => {
     return {
         [TangemSecurity.LongTap]: true,
         [TangemSecurity.Passcode]: get(card, 'settings.isSettingPasscodeAllowed', false),
@@ -134,7 +134,7 @@ const GetCardSecurityOptions = (card: any): { [key in TangemSecurity]: boolean }
 /**
  * get card passcode status
  */
-const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
+const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
     // new cards
     if (get(card, 'isPasscodeSet') === true) {
         return TangemSecurity.Passcode;
@@ -145,6 +145,7 @@ const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
     }
 
     // older version of tangem sdk
+    // @ts-ignore
     if (has(card, 'isPin2Default') && !card.isPin2Default) {
         return TangemSecurity.Passcode;
     }
@@ -155,7 +156,7 @@ const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
 /**
  * get card ID
  */
-const GetCardId = (card: any): string => {
+const GetCardId = (card: Card): string => {
     if (has(card, 'cardId')) {
         return card.cardId;
     }

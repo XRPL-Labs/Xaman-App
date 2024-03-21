@@ -25,9 +25,11 @@ interface State {}
 
 /* Component ==================================================================== */
 class SecretNumberRow extends Component<Props, State> {
-    rowAnimatedValue: Animated.Value;
+    private rowAnimatedValue: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SecretNumberRow.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         columnsNumber: 6,
     };
 
@@ -101,23 +103,6 @@ class SecretNumberRow extends Component<Props, State> {
 
         const abcdefgh = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
-        const animatedStyle = {
-            transform: [
-                {
-                    translateY: this.rowAnimatedValue.interpolate({
-                        inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-                        outputRange: [0, 10, -15, 12, -9, 18, -7, 10, -11, 5, 0],
-                    }),
-                },
-                {
-                    translateX: this.rowAnimatedValue.interpolate({
-                        inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
-                        outputRange: [0, 2, -3, 4, -4, 3, -3, 4, -5, 2, 0],
-                    }),
-                },
-            ],
-        };
-
         if (!rowActive) {
             return (
                 <View
@@ -150,10 +135,25 @@ class SecretNumberRow extends Component<Props, State> {
                         style={[
                             AppStyles.row,
                             AppStyles.flex1,
-                            animatedStyle,
                             styles.rowStyleInnerActive,
                             readonly && styles.rowStyleInnerReadonly,
                             rowChecksumError && styles.rowStyleInnerError,
+                            {
+                                transform: [
+                                    {
+                                        translateY: this.rowAnimatedValue.interpolate({
+                                            inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                                            outputRange: [0, 10, -15, 12, -9, 18, -7, 10, -11, 5, 0],
+                                        }),
+                                    },
+                                    {
+                                        translateX: this.rowAnimatedValue.interpolate({
+                                            inputRange: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+                                            outputRange: [0, 2, -3, 4, -4, 3, -3, 4, -5, 2, 0],
+                                        }),
+                                    },
+                                ],
+                            },
                         ]}
                     >
                         {this.renderColumns()}

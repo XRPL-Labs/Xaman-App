@@ -15,6 +15,9 @@ const styles = StyleService.create({
     webView: {
         backgroundColor: '$background',
     },
+    webViewContainer: {
+        backgroundColor: '$background',
+    },
     stateContainer: {
         backgroundColor: '$background',
         position: 'absolute',
@@ -50,6 +53,12 @@ const styles = StyleService.create({
         marginRight: AppSizes.moderateScale(70),
         width: AppSizes.moderateScale(30),
         height: AppSizes.moderateScale(60),
+    },
+    infoIcon: {
+        tintColor: '$red',
+    },
+    actionContainer: {
+        marginHorizontal: AppSizes.paddingSml,
     },
 });
 

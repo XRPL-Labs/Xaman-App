@@ -21,7 +21,7 @@ export default class Slide extends PureComponent<Props> {
                     style={[
                         styles.animatedView,
                         {
-                            opacity: progress.interpolate({
+                            opacity: progress?.interpolate({
                                 inputRange: [-0.25, 0, 1],
                                 outputRange: [0, 1, 1],
                             }),

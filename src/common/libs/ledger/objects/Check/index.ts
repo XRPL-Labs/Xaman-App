@@ -1,3 +1,3 @@
-export { default as Check } from './CheckClass';
-export { default as CheckValidation } from './CheckValidation';
-export { default as CheckInfo } from './CheckInfo';
+export { default as Check } from './Check.class';
+export { default as CheckValidation } from './Check.validation';
+export { default as CheckInfo } from './Check.info';

@@ -14,11 +14,15 @@ import NetworkModel from '@store/models/objects/network';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
-declare interface CoreRepository {
-    on(event: 'updateSettings', listener: (settings: CoreModel, changes: Partial<CoreModel>) => void): this;
-    on(event: string, listener: Function): this;
-}
+export type CoreRepositoryEvent = {
+    updateSettings: (settings: CoreModel, changes: Partial<CoreModel>) => void;
+};
 
+declare interface CoreRepository {
+    on<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
+    off<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
+    emit<U extends keyof CoreRepositoryEvent>(event: U, ...args: Parameters<CoreRepositoryEvent[U]>): boolean;
+}
 /* Repository  ==================================================================== */
 class CoreRepository extends BaseRepository<CoreModel> {
     /**
@@ -40,9 +44,8 @@ class CoreRepository extends BaseRepository<CoreModel> {
         if (current) {
             this.safeWrite(() => {
                 assign(current, settings);
-
-                this.emit('updateSettings', current, settings);
             });
+            this.emit('updateSettings', current, settings);
         } else {
             this.create(settings);
         }
@@ -69,11 +72,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
     getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
-        if (settings && settings.network) {
-            return settings.network;
-        }
-
-        return undefined;
+        return settings.network;
     };
 
     /**
@@ -122,7 +121,17 @@ class CoreRepository extends BaseRepository<CoreModel> {
             return result[0];
         }
 
-        return undefined;
+        throw new Error('Core settings object not found!');
+    };
+
+    /**
+     * Get true if developer mode is active in the app
+     * @returns {boolean} - The value of developer mode flag
+     */
+    isDeveloperModeEnabled = (): boolean => {
+        const settings = this.getSettings();
+
+        return !!settings.developerMode;
     };
 
     /**
@@ -154,9 +163,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
 
             // hash the passcode
             const sha512Passcode = await SHA512(passcode);
-            const hashPasscode = await HMAC256(sha512Passcode, deviceUniqueId);
-
-            return hashPasscode;
+            return await HMAC256(sha512Passcode, deviceUniqueId);
         } catch (e) {
             return '';
         }

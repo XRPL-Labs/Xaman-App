@@ -14,13 +14,13 @@ describe('Utils.Fee', () => {
             50000: ['50000', '60000', '75000'],
             20000: ['20000', '25000', '35000'],
             800000: ['800000', '850000', '850000'],
-        };
+        } as any;
 
         Object.keys(baseFees).forEach((base) => {
             expect(
                 NormalizeFeeDataSet({
-                    drops: { base_fee: Number(base) },
-                    fee_hooks_feeunits: 0,
+                    drops: { base_fee: base },
+                    fee_hooks_feeunits: '0',
                 }),
             ).toMatchObject({
                 availableFees: [

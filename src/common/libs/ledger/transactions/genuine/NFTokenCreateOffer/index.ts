@@ -1,3 +1,3 @@
-export { default as NFTokenCreateOffer } from './NFTokenCreateOfferClass';
-export { default as NFTokenCreateOfferValidation } from './NFTokenCreateOfferValidation';
-export { default as NFTokenCreateOfferInfo } from './NFTokenCreateOfferInfo';
+export { default as NFTokenCreateOffer } from './NFTokenCreateOffer.class';
+export { default as NFTokenCreateOfferValidation } from './NFTokenCreateOffer.validation';
+export { default as NFTokenCreateOfferInfo } from './NFTokenCreateOffer.info';

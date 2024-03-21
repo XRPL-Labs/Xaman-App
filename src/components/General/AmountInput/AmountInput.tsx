@@ -40,7 +40,9 @@ const MAX_IOU_PRECISION = 16;
 
 /* Component ==================================================================== */
 class AmountInput extends PureComponent<Props, State> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof AmountInput.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         fractional: true,
         valueType: AmountValueType.Native,
     };
@@ -59,7 +61,7 @@ class AmountInput extends PureComponent<Props, State> {
         return value;
     };
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         if (nextProps.value !== prevState.value) {
             const formatted = nextProps.value
                 ? AmountInput.format(nextProps.value, nextProps.valueType, nextProps.fractional)
@@ -186,7 +188,7 @@ class AmountInput extends PureComponent<Props, State> {
                 onChangeText={this.onValueChange}
                 returnKeyType={returnKeyType || 'done'}
                 placeholder="0"
-                style={[style]}
+                style={style}
                 value={formatted}
                 editable={editable}
                 placeholderTextColor={placeholderTextColor}

@@ -93,16 +93,16 @@ const Prompt = (title: string, message: string, callbackOrButtons?: any, options
             };
         }
 
-        PromptAndroid.promptWithArgs(config, (action: any, buttonKey: any, input: any) => {
+        PromptAndroid.promptWithArgs(config, (action: string, buttonKey: string, input: string) => {
             if (action !== PromptAndroid.buttonClicked) {
                 return;
             }
             if (buttonKey === PromptAndroid.buttonNeutral) {
-                buttonNeutral.onPress && buttonNeutral.onPress(input);
+                typeof buttonNeutral.onPress === 'function' && buttonNeutral.onPress(input);
             } else if (buttonKey === PromptAndroid.buttonNegative) {
-                buttonNegative.onPress && buttonNegative.onPress();
+                typeof buttonNegative.onPress === 'function' && buttonNegative.onPress();
             } else if (buttonKey === PromptAndroid.buttonPositive) {
-                buttonPositive.onPress && buttonPositive.onPress(input);
+                typeof buttonPositive.onPress === 'function' && buttonPositive.onPress(input);
             }
         });
     }

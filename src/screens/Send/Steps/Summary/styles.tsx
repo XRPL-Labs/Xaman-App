@@ -125,6 +125,7 @@ const styles = StyleService.create({
         paddingLeft: 15,
         paddingTop: 15,
     },
+
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
@@ -137,6 +138,10 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         color: '$textPrimary',
+    },
+    feeContainer: {
+        paddingLeft: 15,
+        paddingTop: 15,
     },
     feePickerContainer: {
         paddingLeft: 15,

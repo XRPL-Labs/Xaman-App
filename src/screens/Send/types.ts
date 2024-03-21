@@ -1,8 +1,13 @@
 import { XrplDestination } from 'xumm-string-decode';
+
 import { Payment } from '@common/libs/ledger/transactions';
 import { AccountInfoType } from '@common/helpers/resolver';
-import { AccountModel, TrustLineModel, CoreModel } from '@store/models';
+
 import { Destination } from '@common/libs/ledger/parser/types';
+
+import { SignMixinType } from '@common/libs/ledger/mixin/types';
+
+import { AccountModel, TrustLineModel, CoreModel } from '@store/models';
 
 export enum Steps {
     Details = 'Details',
@@ -27,16 +32,16 @@ export interface Props {
 export interface State {
     currentStep: Steps;
     accounts: Array<AccountModel>;
-    source: AccountModel;
-    destination: Destination;
-    destinationInfo: AccountInfoType;
+    source?: AccountModel;
+    destination?: Destination;
+    destinationInfo?: AccountInfoType;
     currency: TrustLineModel | string;
     amount: string;
-    memo: string;
-    selectedFee: FeeItem;
-    issuerFee: number;
-    payment: Payment;
-    scanResult: XrplDestination;
+    memo?: string;
+    selectedFee?: FeeItem;
+    issuerFee?: number;
+    payment: Payment & SignMixinType;
+    scanResult?: XrplDestination;
     coreSettings: CoreModel;
     isLoading: boolean;
 }
@@ -45,7 +50,7 @@ export interface ContextProps extends State {
     setSource: (source: AccountModel) => void;
     setCurrency: (currency: TrustLineModel | string) => void;
     setAmount: (amount: string) => void;
-    setDestination: (destination: Destination) => void;
+    setDestination: (destination: Destination | undefined) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;

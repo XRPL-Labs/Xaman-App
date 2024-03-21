@@ -14,6 +14,7 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencyModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
@@ -26,16 +27,19 @@ import { Payload, PayloadType } from '@common/libs/payload';
 
 import { LedgerObjectFactory } from '@common/libs/ledger/factory';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
+import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
-
-// Locale
-import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
+
+import Localize from '@locale';
+
+import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -47,8 +51,9 @@ export interface RatesType {
 
 /* Service  ==================================================================== */
 class BackendService {
-    private logger: any;
     private rates: Map<string, RatesType>;
+
+    private logger: LoggerInstance;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
@@ -72,17 +77,11 @@ class BackendService {
     /**
     On Ledger submit transaction
     */
-    onLedgerTransactionSubmit = ({
-        hash,
-        network,
-    }: {
-        hash: string;
-        network: {
-            node: string;
-            type: string;
-            key: string;
-        };
-    }) => {
+    onLedgerTransactionSubmit = (
+        blob: string,
+        hash: string,
+        network: { id: number; node: string; type: NetworkType; key: string },
+    ) => {
         // only if hash is provided
         if (!hash) {
             return;
@@ -118,7 +117,7 @@ class BackendService {
             // update the list
             const updatedParties = await reduce(
                 details,
-                async (result, value) => {
+                async (result: Promise<number[]>, value) => {
                     const currenciesList = [] as CurrencyModel[];
 
                     await Promise.all(
@@ -275,9 +274,9 @@ class BackendService {
                     // check for tos version
                     const profile = ProfileRepository.getProfile();
 
-                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                    if (profile && profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
                         // show the modal to check new policy and confirm new agreement
-                        Navigator.showModal(
+                        Navigator.showModal<TermOfUseViewProps>(
                             AppScreens.Settings.TermOfUse,
                             { asModal: true },
                             {
@@ -478,12 +477,17 @@ class BackendService {
                 const ledgerOffers = await Promise.all(
                     flatMap(res, async (offer) => {
                         const { OfferID } = offer;
-                        return LedgerService.getLedgerEntry({ index: OfferID })
+                        return LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: OfferID })
                             .then((resp) => {
+                                // something went wrong ?
+                                if ('error' in resp) {
+                                    return null;
+                                }
+
                                 const { node } = resp;
-                                if (node?.LedgerEntryType === 'NFTokenOffer') {
+                                if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer) {
                                     // combine ledger time with the object
-                                    return Object.assign(resp.node, {
+                                    return Object.assign(node, {
                                         LedgerTime: get(offer, 'ledger_close_time'),
                                     });
                                 }
@@ -541,11 +545,11 @@ class BackendService {
             // check the cached version before requesting from backend
             if (this.rates.has(cacheKey)) {
                 // calculate passed seconds from the latest sync
-                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey).lastSync), 'second');
+                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey)!.lastSync), 'second');
 
                 // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.rates.get(cacheKey));
+                    resolve(this.rates.get(cacheKey)!);
                     return;
                 }
             }

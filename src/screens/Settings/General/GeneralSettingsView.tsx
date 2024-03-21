@@ -22,7 +22,9 @@ import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { PickerModalProps } from '@screens/Global/Picker';
+import { CurrencyPickerModalProps } from '@screens/Modal/CurrencyPicker';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -79,7 +81,7 @@ class GeneralSettingsView extends Component<Props, State> {
 
         normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
-        Navigator.push(AppScreens.Global.Picker, {
+        Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
             title: Localize.t('global.language'),
             description: Localize.t('settings.selectLanguage'),
             items: normalizedLocales,
@@ -91,7 +93,7 @@ class GeneralSettingsView extends Component<Props, State> {
     showCurrencyPicker = () => {
         const { coreSettings } = this.state;
 
-        Navigator.push(AppScreens.Modal.CurrencyPicker, {
+        Navigator.push<CurrencyPickerModalProps>(AppScreens.Modal.CurrencyPicker, {
             selected: coreSettings.currency,
             onSelect: this.onCurrencySelected,
         });

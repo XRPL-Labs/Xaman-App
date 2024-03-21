@@ -11,7 +11,7 @@ A macOS computer is required to build the Xaman App iOS mobile app.
 Install the following prerequisite software to develop and build the iOS or Android apps. For macOS, we recommend using [Homebrew](https://brew.sh/) as a package manager.
 
 #### Install [NodeJS](https://nodejs.org/en/).
-This includes YARN which is also needed. Currently minimum version `12.18.4` is required with yarn `1.22.4`.
+This includes NPM which is also needed. Currently minimum version `18.19.0` is required with yarn `10.2.3`.
 
 ##### MacOS
 - To install using Homebrew open a terminal and execute ..
@@ -23,11 +23,11 @@ This includes YARN which is also needed. Currently minimum version `12.18.4` is 
 -   Download and install the package from the [NodeJS website](https://nodejs.org/en/)
 ##### Linux
 -	Install using your distributions package manager (Note that different distros provide
-    different node versions which might be lower than 10.11.0 and may cause problems)
+    different node versions which might be lower than 18 and may cause problems)
 -   Install using NVM by following the instructions [here](https://github.com/creationix/nvm#install-script)
 -   Download and install the package from the [NodeJS website](https://nodejs.org/en/)
 
-#### Install [Watchman](https://facebook.github.io/watchman/). (minimum required version is 4.9.0)
+#### Install [Watchman](https://facebook.github.io/watchman/). (minimum required version is 2023.12.04.00)
 ##### MacOS
 - To install using Homebrew open a terminal and execute ..
     ```sh
@@ -72,14 +72,14 @@ Some distributions come with git preinstalled but you'll most likely have to ins
 Make sure you have the following ENV VARS configured:
     - `ANDROID_HOME` to where Android SDK is located (likely `/Users/<username>/Library/Android/sdk` or `/home/<username>/Android/Sdk`)
     - Make sure your `PATH` includes `ANDROID_HOME/tools` and `ANDROID_HOME/platform-tools`
-    - Install NDK `$ANDROID_HOME/tools/bin/sdkmanager --install "ndk;20.1.5948944"`
+    - Install NDK `$ANDROID_HOME/tools/bin/sdkmanager --install "ndk;25.1.8937393"`
 ##### MacOS
 -   On Mac, this usually requires adding the following lines to your `~/.bash_profile` file:
 
     ```sh
     export ANDROID_HOME=$HOME/Library/Android/sdk
     export PATH=$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH
-    export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/20.1.5948944
+    export ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/25.1.8937393
     ```
 - Then reload your bash configuration:
 
@@ -104,7 +104,7 @@ Make sure you have the following ENV VARS configured:
 ### Installing the right SDKs and SDK Tools
 In the SDK Manager using Android Studio or the [Android SDK command line tool](https://developer.android.com/studio/command-line/sdkmanager.html), ensure the following are installed
 - SDK Tools (you may have to click "Show Package Details" to expand packages)
-    - Android SDK Build-Tools 29.0.2
+    - Android SDK Build-Tools 34.0.0
     - Android Emulator
     - Android SDK Platform-Tools
     - Android SDK Tools
@@ -115,11 +115,10 @@ In the SDK Manager using Android Studio or the [Android SDK command line tool](h
         -   Google Repository
 
 - SDK Platforms (you may have to click "Show Package Details" to expand packages)
-    - Android 5 (Lollipop) or above
+    - Android 11 (R) or above
         - Google APIs
         - SDK Platform
             - For Android 7 or above -> Android SDK Platform 24 or above
-            - For Android 5/6 -> Android SDK Platform 23 or below
         - Intel x86 Atom\_64 System Image
     - Any other API version that you want to test
 
@@ -142,6 +141,6 @@ In order to develop and build the Xaman mobile app you'll need to get a copy of 
     cd Xaman-App
     ```
 
-4.  Run `make pre-run` in order to install all the dependencies.
+4.  Run `make npm-install` in order to install all the npm dependencies.
 
-5.  Run `make generate-locales` to generate locale files
+5.  Run `make pre-run` to generate needed env and install pod dependencies

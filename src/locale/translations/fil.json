@@ -66,6 +66,8 @@
     "offer": "Alok",
     "check": "Tsek",
     "nft": "NFT",
+    "amm": "AMM",
+    "uritoken": "URIToken",
     "other": "Iba pa",
     "filter": "Salain",
     "favorite": "Favorite",
@@ -134,6 +136,7 @@
     "signing": "pagpirma",
     "paymentChannelAuthorize": "Payment Channel Authorize",
     "issuer": "nagbigay",
+    "inform": "Inform",
     "accept": "Tanggapin",
     "slideToAccept": "Padausdusin upang tanggapin",
     "decline": "Tumanggi",
@@ -261,6 +264,7 @@
     "unableOpenReturnURL": "Hindi mabuksan ang url ng pagbalik!",
     "noAccountConfigured": "Walang account isinaayos",
     "pleaseAddAccountToSignTheTransaction": "Mangyaring magdagdag ng isang account upang lagdaan ang transaksyon",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Kasalukuyang walang magagamit na balanse para sa pagpapadala ng mga pagbabayad.",
     "doNotRemindMe": "Huwag ipaalala sa akin muli",
     "invalidPayload": "Di-wastong kargada",
@@ -358,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "Mga Pagbabayad at\r\nmga kahilingan sa pagbabayad\r\nsa XRP Ledger",
@@ -502,6 +507,25 @@
     "createNFTOffer": "Lumikha ng alok ng NFT",
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
+    "ammBid": "AMM Bid",
+    "ammCreate": "AMM Create",
+    "ammDelete": "AMM Delete",
+    "ammDeposit": "AMM Deposit",
+    "ammVote": "AMM Vote",
+    "ammWithdraw": "AMM Withdraw",
+    "remit": "Remit",
+    "amounts": "Amounts",
+    "uriTokenIDs": "URIToken IDs",
+    "asset": "Asset",
+    "asset2": "Asset 2",
+    "amount2": "Amount 2",
+    "bidMin": "Bid Min",
+    "bidMax": "Bid Max",
+    "ePrice": "EPrice",
+    "lpTokenOut": "LP Token Out",
+    "lpTokenIn": "LP Token In",
+    "tradingFee": "Trading Fee",
+    "authAccounts": "Auth Accounts",
     "genesisMint": "Genesis Mint",
     "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "Kanselahin ang alok ng NFT",
@@ -636,16 +660,22 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
   },
   "xapp": {
     "popular": "Popular",
+    "recent": "Recent",
+    "ADashZ": "A-Z",
+    "categories": "Categories",
+    "openXapp": "Open",
+    "aboutXapp": "About",
     "recentlyUsed": "Recently used",
     "ourSuggestions": "Our suggestions",
     "all": "All",
+    "seeAll": "See all",
     "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
     "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
     "forceShowXApp": "Force show xApp",
@@ -1033,7 +1063,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xaman ay hindi nag-eendorso ng anumang token o token issuer. Dapat ka lang magpatuloy kung nagtitiwala ka sa nagbigay ng token. \r\nSa kaso ng mga tanong o problema tungkol sa token (TrustLine) makipag ugnayan ka sa nagpadala ng token.",
     "trustLineIsAlreadyExist": "Umiral na ang token na ito. Hindi mo na maidaragdag muli ang parehong token.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "pakikipagpalitan",
@@ -1111,14 +1142,15 @@
     "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
-    "pathDryError": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
-    "tecPartialError": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
     "blobCopiedToClipboard": "Blob copied to clipboard"
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",
     "unableToLoadCredits": "Oops! Unable to Retrieve Credits",
-    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs"
+    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
+    "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
+    "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
   },
   "moment": {
     "calendar": {

@@ -15,26 +15,26 @@ import TrustLineModel from './trustLine';
 class AccountDetails extends Realm.Object<AccountDetails> {
     public static schema: Realm.ObjectSchema = AccountDetailsSchema.schema;
 
-    public id: string;
-    public network: any;
-    public balance: number;
-    public ownerCount: number;
-    public sequence: number;
-    public regularKey?: string;
-    public domain?: string;
-    public emailHash?: string;
-    public messageKey?: string;
-    public flagsString?: string;
-    public lines: TrustLineModel[];
-    public registerAt?: Date;
-    public updatedAt?: Date;
+    public declare id: string;
+    public declare network: any;
+    public declare balance: number;
+    public declare ownerCount: number;
+    public declare sequence: number;
+    public declare regularKey?: string;
+    public declare domain?: string;
+    public declare emailHash?: string;
+    public declare messageKey?: string;
+    public declare flagsString?: string;
+    public declare lines: Realm.Results<TrustLineModel>;
+    public declare registerAt?: Date;
+    public declare updatedAt?: Date;
 
     /**
      * Returns the parsed flags as an object.
      * @type {Object}
      */
     get flags(): { [key: string]: boolean } {
-        return JSON.parse(this.flagsString);
+        return this.flagsString ? JSON.parse(this.flagsString) : {};
     }
 
     /**

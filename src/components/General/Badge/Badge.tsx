@@ -11,18 +11,19 @@ import { AppColors, AppFonts } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
-type BadgeType =
-    | 'bithomp'
-    | 'xrplns'
-    | 'xrpscan'
-    | 'payid'
-    | 'fioprotocol'
-    | 'contacts'
-    | 'accounts'
-    | 'success'
-    | 'open'
-    | 'planned'
-    | 'count';
+export enum BadgeType {
+    Bithomp = 'bithomp',
+    Xrplns = 'xrplns',
+    Xrpscan = 'xrpscan',
+    Payid = 'payid',
+    Fioprotocol = 'fioprotocol',
+    Contacts = 'contacts',
+    Accounts = 'accounts',
+    Success = 'success',
+    Planned = 'planned',
+    Open = 'open',
+    Count = 'count',
+}
 
 interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
@@ -36,17 +37,17 @@ interface Props {
 }
 
 const COLORS = {
-    bithomp: AppColors.brandBithomp,
-    xrplns: AppColors.brandXrplns,
-    xrpscan: AppColors.brandXrpscan,
-    payid: AppColors.brandPayid,
-    fioprotocol: AppColors.brandFIO,
-    accounts: AppColors.blue,
-    contacts: AppColors.blue,
-    success: AppColors.green,
-    planned: AppColors.blue,
-    open: AppColors.grey,
-    count: AppColors.grey,
+    [BadgeType.Bithomp]: AppColors.brandBithomp,
+    [BadgeType.Xrplns]: AppColors.brandXrplns,
+    [BadgeType.Xrpscan]: AppColors.brandXrpscan,
+    [BadgeType.Payid]: AppColors.brandPayid,
+    [BadgeType.Fioprotocol]: AppColors.brandFIO,
+    [BadgeType.Accounts]: AppColors.blue,
+    [BadgeType.Contacts]: AppColors.blue,
+    [BadgeType.Success]: AppColors.green,
+    [BadgeType.Planned]: AppColors.blue,
+    [BadgeType.Open]: AppColors.grey,
+    [BadgeType.Count]: AppColors.grey,
 };
 
 const SIZES = {
@@ -57,7 +58,9 @@ const SIZES = {
 
 /* Component ==================================================================== */
 export default class Badge extends PureComponent<Props> {
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Badge.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         size: 'small',
     };
 
@@ -85,34 +88,34 @@ export default class Badge extends PureComponent<Props> {
         let content = '';
 
         switch (type) {
-            case 'xrplns':
+            case BadgeType.Xrplns:
                 content = 'XRPLNS';
                 break;
-            case 'bithomp':
+            case BadgeType.Bithomp:
                 content = 'Bithomp';
                 break;
-            case 'xrpscan':
+            case BadgeType.Xrpscan:
                 content = 'XRPScan';
                 break;
-            case 'payid':
+            case BadgeType.Payid:
                 content = 'PayString';
                 break;
-            case 'fioprotocol':
+            case BadgeType.Fioprotocol:
                 content = 'FIO';
                 break;
-            case 'accounts':
+            case BadgeType.Accounts:
                 content = 'Myself';
                 break;
-            case 'contacts':
+            case BadgeType.Contacts:
                 content = Localize.t('global.contact');
                 break;
-            case 'success':
+            case BadgeType.Success:
                 content = Localize.t('global.success');
                 break;
-            case 'open':
+            case BadgeType.Open:
                 content = Localize.t('events.eventTypeOpen');
                 break;
-            case 'planned':
+            case BadgeType.Planned:
                 content = Localize.t('events.eventTypePlanned');
                 break;
             default:
@@ -131,7 +134,7 @@ export default class Badge extends PureComponent<Props> {
 
         return (
             <TouchableDebounce
-                activeOpacity={onPress ? 0.8 : 1}
+                activeOpacity={typeof onPress === 'function' ? 0.8 : 1}
                 style={[styles.container, { backgroundColor: color || COLORS[type] }, containerStyle]}
                 onPress={this.onPress}
                 testID={testID}

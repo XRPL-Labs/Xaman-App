@@ -1,3 +1,5 @@
-import ChangeLogView from './ChangeLogView';
+import ChangeLogOverlay from './ChangeLogOverlay';
+import { Props as ChangeLogOverlayProps } from './types';
 
-export default ChangeLogView;
+export type { ChangeLogOverlayProps };
+export default ChangeLogOverlay;

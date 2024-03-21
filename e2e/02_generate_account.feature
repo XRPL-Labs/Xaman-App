@@ -45,7 +45,6 @@ Feature: Generate Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -105,7 +104,6 @@ Feature: Generate Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -142,8 +140,7 @@ Feature: Generate Account
     Scenario: Add a asset for testing signing
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
-        Then I tap 'currency-rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.EUR'
+        Then I tap 'currency-rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq.USD'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'

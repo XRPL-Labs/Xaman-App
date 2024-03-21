@@ -45,9 +45,9 @@ const COLUMN_WIHTOUT_CHECKSUM = 5;
 
 /* Component ==================================================================== */
 class SecretNumberInput extends Component<Props, State> {
-    allFilled: boolean;
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SecretNumberInput.defaultProps>>;
 
-    static defaultProps = {
+    static defaultProps: Partial<Props> = {
         checksum: true,
     };
 
@@ -68,8 +68,6 @@ class SecretNumberInput extends Component<Props, State> {
             secretNumbers: rows,
             rowChecksumError: false,
         };
-
-        this.allFilled = false;
     }
 
     componentDidMount() {
@@ -149,7 +147,9 @@ class SecretNumberInput extends Component<Props, State> {
                         onRowChanged(currentRow - 1);
                     }
                     if (currentRow === rowsNumber) {
-                        onAllFilled(false);
+                        if (typeof onAllFilled === 'function') {
+                            onAllFilled(false);
+                        }
                     }
                 },
             );
@@ -185,7 +185,9 @@ class SecretNumberInput extends Component<Props, State> {
                             onRowChanged(currentRow + 1);
                         }
                         if (currentRow + 1 === rowsNumber) {
-                            onAllFilled(true);
+                            if (typeof onAllFilled === 'function') {
+                                onAllFilled(true);
+                            }
                         }
                     },
                 );
@@ -245,7 +247,7 @@ class SecretNumberInput extends Component<Props, State> {
         }
     };
 
-    setValue = (row: number, col: number, value: number, newRow?: boolean) => {
+    setValue = (row: number, col: number, value: number | undefined, newRow?: boolean) => {
         const { secretNumbers } = this.state;
 
         // animation
@@ -299,16 +301,16 @@ class SecretNumberInput extends Component<Props, State> {
 
         return (
             <View style={AppStyles.stretchSelf}>
-                <View style={[]}>{this.renderRows()}</View>
+                <View>{this.renderRows()}</View>
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingTopSml]}>
                     <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
                         <TouchableOpacity
                             testID="left-btn"
                             activeOpacity={0.8}
                             onPress={this.goLeft}
-                            style={[styles.buttonRoundBlack]}
+                            style={styles.buttonRoundBlack}
                         >
-                            <Icon size={25} name="IconChevronLeft" style={[styles.buttonRoundIcon]} />
+                            <Icon size={25} name="IconChevronLeft" style={styles.buttonRoundIcon} />
                         </TouchableOpacity>
                     </View>
 
@@ -317,17 +319,17 @@ class SecretNumberInput extends Component<Props, State> {
                             testID="minus-btn"
                             activeOpacity={0.8}
                             onPress={this.minusValue}
-                            style={[styles.buttonMiddleLeft]}
+                            style={styles.buttonMiddleLeft}
                         >
-                            <Icon size={30} name="IconMinus" style={[styles.buttonRoundIcon]} />
+                            <Icon size={30} name="IconMinus" style={styles.buttonRoundIcon} />
                         </TouchableOpacity>
                         <TouchableOpacity
                             testID="plus-btn"
                             activeOpacity={0.8}
                             onPress={this.plusValue}
-                            style={[styles.buttonMiddleRight]}
+                            style={styles.buttonMiddleRight}
                         >
-                            <Icon size={30} name="IconPlus" style={[styles.buttonRoundIcon]} />
+                            <Icon size={30} name="IconPlus" style={styles.buttonRoundIcon} />
                         </TouchableOpacity>
                     </View>
 
@@ -336,9 +338,9 @@ class SecretNumberInput extends Component<Props, State> {
                             testID="right-btn"
                             activeOpacity={0.8}
                             onPress={this.goRight}
-                            style={[styles.buttonRoundBlack]}
+                            style={styles.buttonRoundBlack}
                         >
-                            <Icon size={25} name="IconChevronRight" style={[styles.buttonRoundIcon]} />
+                            <Icon size={25} name="IconChevronRight" style={styles.buttonRoundIcon} />
                         </TouchableOpacity>
                     </View>
                 </View>

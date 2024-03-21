@@ -39,7 +39,7 @@ interface State {
     originalValue: any;
     value: string;
     currency: string;
-    truncated: 'LOW' | 'HIGH';
+    truncated?: 'LOW' | 'HIGH';
     showOriginalValue: boolean;
     localSettings: any;
 }
@@ -145,7 +145,7 @@ class AmountText extends Component<Props, State> {
         const PRECISION = 8;
         const MAX_VALUE = 99999;
 
-        let newValue = '';
+        let newValue: string;
         let truncated;
 
         // value is low, we will show it as zero but better with ellipsis
@@ -257,7 +257,7 @@ class AmountText extends Component<Props, State> {
         const { testID, prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
-        let showValue = '';
+        let showValue: string;
 
         if (discreet) {
             showValue = '••••••••';

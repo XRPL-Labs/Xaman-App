@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { xAddressToClassicAddress, decodeAccountID, encodeAccountID } from 'ripple-address-codec';
+import { utils as AccountLibUtils, libraries } from 'xrpl-accountlib';
 import { XrplDestination } from 'xumm-string-decode';
 
 import { HexEncoding } from '@common/utils/string';
@@ -15,8 +14,9 @@ const EncodeLedgerIndex = (account: string, sequence: number) => {
     let sequenceHex = sequence.toString(16);
     if (sequenceHex.length > 8) return false;
     sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
-    const payloadHex = `006F${decodeAccountID(account).toString('hex')}${sequenceHex}`;
-    return HexEncoding.toHex(AccountLibUtils.hash(payloadHex)).toUpperCase();
+    const payloadHex = `006F${libraries.rippleAddressCodec.decodeAccountID(account).toString('hex')}${sequenceHex}`;
+    const payloadHash = AccountLibUtils.hash(payloadHex);
+    return HexEncoding.toHex(payloadHash).toUpperCase();
 };
 
 /**
@@ -25,7 +25,7 @@ const EncodeLedgerIndex = (account: string, sequence: number) => {
  * @returns decoded account id
  */
 const DecodeAccountId = (account: string): string => {
-    const decodedAccount = decodeAccountID(account);
+    const decodedAccount = libraries.rippleAddressCodec.decodeAccountID(account);
     return HexEncoding.toHex(decodedAccount).toUpperCase();
 };
 
@@ -45,7 +45,7 @@ const EncodeNFTokenID = (
     transferFee: number,
     tokenTaxon: number,
 ): string => {
-    const issuer = decodeAccountID(account);
+    const issuer = libraries.rippleAddressCodec.decodeAccountID(account);
 
     const unscrambleTaxon = new BigNumber(384160001)
         .multipliedBy(tokenSequence)
@@ -104,7 +104,7 @@ const DecodeNFTokenID = (nfTokenID: string) => {
         NFTokenID: nfTokenID,
         Flags: new BigNumber(nfTokenID.substring(0, 4), 16).toNumber(),
         TransferFee: new BigNumber(nfTokenID.substring(4, 8), 16).toNumber(),
-        Issuer: encodeAccountID(Buffer.from(nfTokenID.substring(8, 48), 'hex')),
+        Issuer: libraries.rippleAddressCodec.encodeAccountID(Buffer.from(nfTokenID.substring(8, 48), 'hex')),
         Taxon: taxon,
         Sequence: sequence,
     };
@@ -119,24 +119,24 @@ const DecodeNFTokenID = (nfTokenID: string) => {
  */
 const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): string => {
     if (typeof ledgerSeq !== 'number') {
-        throw new Error('ledgerSeq must be a number.');
+        throw new Error(`ledgerSeq must be a number got ${typeof ledgerSeq}.`);
     }
     if (ledgerSeq > 0xfffffff || ledgerSeq < 0) {
-        throw new Error('ledgerSeq must not be greater than 268435455 or less than 0.');
+        throw new Error(`ledgerSeq must not be greater than 268435455 or less than 0, got ${ledgerSeq}.`);
     }
 
     if (typeof txnIndex !== 'number') {
-        throw new Error('txnIndex must be a number.');
+        throw new Error(`txnIndex must be a number got ${txnIndex}.`);
     }
     if (txnIndex > 0xffff || txnIndex < 0) {
-        throw new Error('txnIndex must not be greater than 65535 or less than 0.');
+        throw new Error(`txnIndex must not be greater than 65535 or less than 0, got ${txnIndex}`);
     }
 
     if (typeof networkId !== 'number') {
-        throw new Error('networkId must be a number.');
+        throw new Error(`networkId must be a number got ${typeof networkId}.`);
     }
     if (networkId > 0xffff || networkId < 0) {
-        throw new Error('networkId must not be greater than 65535 or less than 0.');
+        throw new Error(`networkId must not be greater than 65535 or less than 0, got ${networkId}`);
     }
 
     // @ts-ignore
@@ -165,7 +165,7 @@ const ConvertCodecAlphabet = (value: string, alphabet: string, toXRPL = true) =>
  * @param destination XrplDestination
  * @returns normalized XrplDestination
  */
-const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
+const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress?: string } => {
     let to;
     let tag;
     let xAddress;
@@ -174,7 +174,7 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         // decode if it's x address
         if (destination.to.startsWith('X')) {
             try {
-                const decoded = xAddressToClassicAddress(destination.to);
+                const decoded = libraries.rippleAddressCodec.xAddressToClassicAddress(destination.to);
                 to = decoded.classicAddress;
                 tag = Number(decoded.tag);
 
@@ -188,6 +188,10 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         }
     } catch {
         // ignore
+    }
+
+    if (!to) {
+        throw new Error(`Unable to normalize destination ${JSON.stringify(destination)}`);
     }
 
     return {

@@ -1,3 +1,3 @@
-export { default as PaymentChannelAuthorize } from './PaymentChannelAuthorizeClass';
-export { default as PaymentChannelAuthorizeValidation } from './PaymentChannelAuthorizeValidation';
-export { default as PaymentChannelAuthorizeInfo } from './PaymentChannelAuthorizeInfo';
+export { default as PaymentChannelAuthorize } from './PaymentChannelAuthorize.class';
+export { default as PaymentChannelAuthorizeValidation } from './PaymentChannelAuthorize.validation';
+export { default as PaymentChannelAuthorizeInfo } from './PaymentChannelAuthorize.info';

@@ -134,10 +134,6 @@ class CellComponent extends PureComponent<Props> {
         });
     };
 
-    adjustPosition = () => {
-        this.moveToIndex(this.currentIndex);
-    };
-
     movePosition = (dy: number) => {
         // move the element
         this.positionAnimation.setValue({

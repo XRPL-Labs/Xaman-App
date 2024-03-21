@@ -22,7 +22,7 @@ class Localize {
     instance: any;
     moment: any;
     meta: any;
-    settings: LocalizeSettings;
+    settings?: LocalizeSettings;
 
     constructor() {
         this.instance = new I18n();

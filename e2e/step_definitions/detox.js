@@ -1,4 +1,4 @@
-const { Given, Then } = require('cucumber');
+const { Given, Then } = require('@cucumber/cucumber');
 const { waitFor, expect, element, by, device } = require('detox');
 
 Then('I tap {string}', async (buttonId) => {

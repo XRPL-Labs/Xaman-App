@@ -1,4 +1,4 @@
-export { default as BaseTransaction } from './BaseTransaction';
+export { default as BaseGenuineTransaction } from './base';
 export * from './Payment';
 export * from './TrustSet';
 export * from './AccountSet';
@@ -34,3 +34,10 @@ export * from './URITokenCreateSellOffer';
 export * from './URITokenCancelSellOffer';
 export * from './GenesisMint';
 export * from './EnableAmendment';
+export * from './AMMBid';
+export * from './AMMCreate';
+export * from './AMMDelete';
+export * from './AMMDeposit';
+export * from './AMMVote';
+export * from './AMMWithdraw';
+export * from './Remit';

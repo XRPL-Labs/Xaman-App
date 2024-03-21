@@ -66,6 +66,8 @@
     "offer": "Ofa",
     "check": "Angalia",
     "nft": "NFT",
+    "amm": "AMM",
+    "uritoken": "URIToken",
     "other": "Nyingine",
     "filter": "Chuja",
     "favorite": "Favorite",
@@ -134,6 +136,7 @@
     "signing": "Kutia saini",
     "paymentChannelAuthorize": "Payment Channel Authorize",
     "issuer": "Mtoaji",
+    "inform": "Inform",
     "accept": "Kubali",
     "slideToAccept": "Slide to accept",
     "decline": "Kataa",
@@ -261,6 +264,7 @@
     "unableOpenReturnURL": "Unable to open return URL!",
     "noAccountConfigured": "No account configured",
     "pleaseAddAccountToSignTheTransaction": "Please add an account to sign the transaction",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "There is currently no available balance for sending payments.",
     "doNotRemindMe": "Don't remind me again",
     "invalidPayload": "Invalid payload",
@@ -358,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "Payments and\r\npayment requests\r\non the XRP Ledger",
@@ -502,6 +507,25 @@
     "createNFTOffer": "Create NFT offer",
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
+    "ammBid": "AMM Bid",
+    "ammCreate": "AMM Create",
+    "ammDelete": "AMM Delete",
+    "ammDeposit": "AMM Deposit",
+    "ammVote": "AMM Vote",
+    "ammWithdraw": "AMM Withdraw",
+    "remit": "Remit",
+    "amounts": "Amounts",
+    "uriTokenIDs": "URIToken IDs",
+    "asset": "Asset",
+    "asset2": "Asset 2",
+    "amount2": "Amount 2",
+    "bidMin": "Bid Min",
+    "bidMax": "Bid Max",
+    "ePrice": "EPrice",
+    "lpTokenOut": "LP Token Out",
+    "lpTokenIn": "LP Token In",
+    "tradingFee": "Trading Fee",
+    "authAccounts": "Auth Accounts",
     "genesisMint": "Genesis Mint",
     "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "Cancel NFT offer",
@@ -636,16 +660,22 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
   },
   "xapp": {
     "popular": "Popular",
+    "recent": "Recent",
+    "ADashZ": "A-Z",
+    "categories": "Categories",
+    "openXapp": "Open",
+    "aboutXapp": "About",
     "recentlyUsed": "Recently used",
     "ourSuggestions": "Our suggestions",
     "all": "All",
+    "seeAll": "See all",
     "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
     "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
     "forceShowXApp": "Force show xApp",
@@ -1033,7 +1063,8 @@
     "addingTrustLineWarning": "XRPL Labs / Xaman does not endorse any token or token issuer. You should only proceed if you trust the token issuer.\r\nIn case of questions or problems regarding the token (TrustLine) you will need to contact the token issuer.\r\n\r\nContinue at your own risk.",
     "trustLineIsAlreadyExist": "This token already exists. You cannot add the same token again.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "Exchanging",
@@ -1111,14 +1142,15 @@
     "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
-    "pathDryError": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
-    "tecPartialError": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
     "blobCopiedToClipboard": "Blob copied to clipboard"
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",
     "unableToLoadCredits": "Oops! Unable to Retrieve Credits",
-    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs"
+    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
+    "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
+    "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
   },
   "moment": {
     "calendar": {

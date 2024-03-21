@@ -24,7 +24,7 @@ interface State {
     snapPoints: any;
     boundaries: any;
     alertAreas: any;
-    panelHeight: number;
+    panelHeight?: number;
 }
 
 /* Constants ==================================================================== */
@@ -32,14 +32,10 @@ const BOUNDARY_HEIGHT = 20;
 
 /* Component ==================================================================== */
 class ActionPanel extends Component<Props, State> {
-    panel: any;
-    deltaY: Animated.Value;
-    deltaX: Animated.Value;
-    isOpening: boolean;
-
-    static defaultProps = {
-        showHandler: true,
-    };
+    private panelRef: React.RefObject<any>;
+    private deltaY: Animated.Value;
+    private deltaX: Animated.Value;
+    private isOpening: boolean;
 
     constructor(props: Props) {
         super(props);
@@ -50,6 +46,8 @@ class ActionPanel extends Component<Props, State> {
             alertAreas: undefined,
             panelHeight: undefined,
         };
+
+        this.panelRef = React.createRef();
 
         this.deltaY = new Animated.Value(AppSizes.screen.height);
         this.deltaX = new Animated.Value(0);
@@ -105,25 +103,19 @@ class ActionPanel extends Component<Props, State> {
 
     public slideUp = () => {
         setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 1 });
-            }
+            this.panelRef?.current?.snapTo({ index: 1 });
         }, 50);
     };
 
     public slideDown = () => {
         setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index: 0 });
-            }
+            this.panelRef?.current?.snapTo({ index: 0 });
         }, 50);
     };
 
     public snapTo = (index: number) => {
         setTimeout(() => {
-            if (this.panel) {
-                this.panel.snapTo({ index });
-            }
+            this.panelRef?.current?.snapTo({ index });
         }, 50);
     };
 
@@ -169,9 +161,7 @@ class ActionPanel extends Component<Props, State> {
                 </TouchableWithoutFeedback>
 
                 <Interactable.View
-                    ref={(r) => {
-                        this.panel = r;
-                    }}
+                    ref={this.panelRef}
                     animatedNativeDriver
                     onAlert={this.onAlert}
                     verticalOnly

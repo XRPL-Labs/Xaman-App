@@ -35,16 +35,16 @@ export interface Props {
 }
 
 export interface State {
+    info?: XAppInfo;
     isLoading: boolean;
-    info: XAppInfo;
 }
 
 /* Component ==================================================================== */
 class XAppInfoOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.XAppInfo;
 
-    private mounted: boolean;
     private actionPanelRef: React.RefObject<ActionPanel>;
+    private mounted = false;
 
     static options() {
         return {

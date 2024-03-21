@@ -14,12 +14,11 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import { StyleService, BackendService, NetworkService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import { NormalizeDestination } from '@common/utils/codec';
@@ -37,26 +36,15 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    onRead: (decoded: any) => void;
-    onClose?: () => void;
-    blackList?: StringType[];
-    type: StringType;
-    fallback?: boolean;
-}
-
-export interface State {
-    isLoading: boolean;
-    coreSettings: CoreModel;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
-class ScanView extends Component<Props, State> {
+class ScanModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
-    private backHandler: NativeEventSubscription;
-    private shouldReadTimeout: any;
+    private backHandler: NativeEventSubscription | undefined;
+    private shouldReadTimeout: NodeJS.Timeout | undefined;
 
     static options() {
         return {
@@ -75,8 +63,6 @@ class ScanView extends Component<Props, State> {
             isLoading: false,
             coreSettings: CoreRepository.getSettings(),
         };
-
-        this.backHandler = undefined;
 
         // flag to check if we need to read the QR
         this.shouldRead = true;
@@ -98,7 +84,7 @@ class ScanView extends Component<Props, State> {
         this.shouldRead = value;
     };
 
-    routeUser = async (screen: string, passProps?: any, options?: any) => {
+    routeUser = async (screen: AppScreenKeys, passProps?: any, options?: any) => {
         // close scan modal
         await Navigator.dismissModal();
 
@@ -206,7 +192,7 @@ class ScanView extends Component<Props, State> {
             const payload = await Payload.from(uuid, PayloadOrigin.QR);
 
             // review the transaction
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
@@ -249,7 +235,7 @@ class ScanView extends Component<Props, State> {
                 {
                     text: Localize.t('global.submit'),
                     onPress: async () => {
-                        this.routeUser(
+                        await this.routeUser(
                             AppScreens.Modal.Submit,
                             {
                                 txblob: cleanBlob,
@@ -271,7 +257,7 @@ class ScanView extends Component<Props, State> {
         if (availableAccounts.length > 0) {
             // if it's payId do nothing
             if (destination.payId) {
-                this.routeUser(
+                await this.routeUser(
                     AppScreens.Transaction.Payment,
                     {
                         scanResult: {
@@ -304,11 +290,11 @@ class ScanView extends Component<Props, State> {
             }
 
             // if amount present as native pass the amount
-            if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
+            if (destination.amount && !destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }
 
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Transaction.Payment,
                 {
                     scanResult: {
@@ -431,7 +417,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // if any black list defined check in the list
-        if (!type && onRead && blackList) {
+        if (!type && typeof onRead === 'function' && blackList) {
             if (blackList.indexOf(detectedType) === -1) {
                 Navigator.dismissModal();
                 onRead(content);
@@ -445,7 +431,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // just return scanned content
-        if (!type && onRead) {
+        if (!type && typeof onRead === 'function') {
             Navigator.dismissModal();
             onRead(content);
             return;
@@ -454,7 +440,7 @@ class ScanView extends Component<Props, State> {
         const parsed = new StringDecoder(detected).getAny();
 
         // the other component wants to handle the decoded content
-        if (detectedType === type && onRead) {
+        if (detectedType === type && typeof onRead === 'function') {
             onRead(parsed);
             Navigator.dismissModal();
             return;
@@ -528,7 +514,8 @@ class ScanView extends Component<Props, State> {
             return;
         }
         // get first barcode that exist
-        const { data } = first(barcodes);
+        const { data } = first(barcodes)!;
+
         if (data) {
             this.onReadCode(data);
         }
@@ -679,7 +666,7 @@ class ScanView extends Component<Props, State> {
                     onBarCodeRead={Platform.OS === 'ios' ? this.onBarCodeRead : undefined}
                     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                 >
-                    <View style={[styles.rectangleContainer]}>
+                    <View style={styles.rectangleContainer}>
                         <View style={styles.topLeft} />
                         <View style={styles.topRight} />
                         <View style={styles.bottomLeft} />
@@ -690,7 +677,7 @@ class ScanView extends Component<Props, State> {
                             {description}
                         </Text>
                     </View>
-                    <View style={[AppStyles.centerSelf]}>
+                    <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
                             onPress={this.checkClipboardContent}
@@ -716,4 +703,4 @@ class ScanView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ScanView;
+export default ScanModal;

@@ -10,6 +10,7 @@ import { NativeModules, Platform } from 'react-native';
 const { InAppPurchaseModule } = NativeModules;
 
 enum ERRORS {
+    // noinspection JSUnusedGlobalSymbols
     E_UNABLE_TO_INIT_MODULE = 'E_UNABLE_TO_INIT_MODULE',
     E_PLAYSERVICE_NO_AVAILABLE = 'E_PLAYSERVICE_NO_AVAILABLE',
     E_CLIENT_IS_NOT_READY = 'E_CLIENT_IS_NOT_READY',
@@ -63,10 +64,7 @@ const IAP = {
      * Verify receipt with backend
      */
     verify: async (receipt: string): Promise<boolean> => {
-        if (receipt) {
-            return true;
-        }
-        return false;
+        return !!receipt;
     },
     /**
      * Check if user already bought the pro subscription

@@ -1,3 +1,5 @@
-import DetailsView from './DetailsView';
+import TransactionDetailsView from './DetailsView';
+import { Props as TransactionDetailsViewProps } from './types';
 
-export default DetailsView;
+export type { TransactionDetailsViewProps };
+export default TransactionDetailsView;

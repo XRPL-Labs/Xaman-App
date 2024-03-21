@@ -9,7 +9,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { AccountModel } from '@store/models';
 
@@ -28,6 +28,8 @@ import { ListEmpty } from '@components/Modules/AssetsList/NFTokens/ListEmpty';
 
 import Localize from '@locale';
 
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+
 import { AppSizes } from '@theme';
 import styles from './styles';
 
@@ -43,14 +45,14 @@ interface Props {
 interface State {
     nfTokens: NFTokenData[];
     dataSource: NFTokenData[];
-    filterText: string;
+    filterText?: string;
     isLoading: boolean;
     isRefreshing: boolean;
 }
 
 /* Component ==================================================================== */
 class NFTokensList extends Component<Props, State> {
-    private readonly searchInputRef: React.RefObject<SearchBar | null>;
+    private readonly searchInputRef: React.RefObject<SearchBar>;
 
     constructor(props: Props) {
         super(props);
@@ -106,7 +108,7 @@ class NFTokensList extends Component<Props, State> {
             [isRefreshing ? 'isRefreshing' : 'isLoading']: true,
         } as unknown as Pick<State, keyof State>);
 
-        let nfTokenIds = undefined as string[];
+        let nfTokenIds: string[] | undefined;
 
         // fetch account NFTokens from ledger
         await LedgerService.getAccountNFTs(account.address)
@@ -211,7 +213,7 @@ class NFTokensList extends Component<Props, State> {
     onNFTItemPress = (item: NFTokenData) => {
         const { token } = item;
 
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
                 identifier: AppConfig.xappIdentifiers.nftInfo,

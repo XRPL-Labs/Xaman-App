@@ -1,3 +1,3 @@
-export { default as PaymentChannelCreate } from './PaymentChannelCreateClass';
-export { default as PaymentChannelCreateValidation } from './PaymentChannelCreateValidation';
-export { default as PaymentChannelCreateInfo } from './PaymentChannelCreateInfo';
+export { default as PaymentChannelCreate } from './PaymentChannelCreate.class';
+export { default as PaymentChannelCreateValidation } from './PaymentChannelCreate.validation';
+export { default as PaymentChannelCreateInfo } from './PaymentChannelCreate.info';

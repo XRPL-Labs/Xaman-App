@@ -1,4 +1,4 @@
-const { Then } = require('cucumber');
+const { Then } = require('@cucumber/cucumber');
 const { element, by, waitFor } = require('detox');
 
 Then('I agree all disclaimers', async () => {

@@ -29,7 +29,7 @@ interface State {
     balance: string;
     favorite: boolean;
     no_ripple: boolean;
-    limit: string;
+    limit?: string;
 }
 
 /* Component ==================================================================== */
@@ -41,13 +41,13 @@ class TokenItem extends PureComponent<Props, State> {
 
         this.state = {
             balance: props.token.balance,
-            favorite: props.token.favorite,
-            no_ripple: props.token.no_ripple,
+            favorite: !!props.token.favorite,
+            no_ripple: !!props.token.no_ripple,
             limit: props.token.limit,
         };
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): State | null {
         if (
             !isEqual(nextProps.token.balance, prevState.balance) ||
             !isEqual(nextProps.token.favorite, prevState.favorite) ||
@@ -56,8 +56,8 @@ class TokenItem extends PureComponent<Props, State> {
         ) {
             return {
                 balance: nextProps.token.balance,
-                favorite: nextProps.token.favorite,
-                no_ripple: nextProps.token.no_ripple,
+                favorite: !!nextProps.token.favorite,
+                no_ripple: !!nextProps.token.no_ripple,
                 limit: nextProps.token.limit,
             };
         }
@@ -164,7 +164,7 @@ class TokenItem extends PureComponent<Props, State> {
                     <TokenIcon
                         token={token}
                         containerStyle={styles.tokenIconContainer}
-                        style={discreetMode && AppStyles.imgColorGrey}
+                        style={discreetMode ? AppStyles.imgColorGrey : {}}
                     />
                 }
                 value={balance}

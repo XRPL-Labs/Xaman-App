@@ -25,7 +25,7 @@ export interface State {}
 /* Component ==================================================================== */
 class MnemonicAlertStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     openFAQ = () => {
         const url = 'https://xumm.app/redir/faq/security-hardware/en';

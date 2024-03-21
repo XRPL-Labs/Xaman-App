@@ -2,10 +2,11 @@
 /* eslint-disable max-len */
 import Localize from '@locale';
 
+import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { CheckCash, CheckCashInfo, CheckCashValidation } from '../CheckCash';
 import { CheckCreate } from '../CheckCreate';
-
-import { NormalizeCurrencyCode } from '../../../../../utils/amount';
 
 import checkCashTemplates from './fixtures/CheckCashTx.json';
 import checkCreateTemplate from './fixtures/CheckCreateTx.json';
@@ -21,8 +22,7 @@ describe('CheckCash', () => {
         });
 
         it('Should return right parsed values', () => {
-            // @ts-ignore
-            const { tx, meta } = checkCashTemplates;
+            const { tx, meta }: any = checkCashTemplates;
             const instance = new CheckCash(tx, meta);
 
             expect(instance.CheckID).toBe('6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B');
@@ -34,11 +34,10 @@ describe('CheckCash', () => {
         });
 
         it('Should set check object', () => {
-            // @ts-ignore
-            const { tx, meta } = checkCashTemplates;
+            const { tx, meta }: any = checkCashTemplates;
             const instance = new CheckCash(tx, meta);
 
-            instance.Check = new CheckCreate(checkCreateTemplate.tx);
+            instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
             expect(instance.Check).toBeDefined();
             expect(instance.isExpired).toBe(true);
@@ -47,8 +46,10 @@ describe('CheckCash', () => {
         it('Should set/get fields', () => {
             const instance = new CheckCash();
 
-            // @ts-ignore
-            instance.Amount = '100';
+            instance.Amount = {
+                currency: 'XRP',
+                value: '100',
+            };
             expect(instance.Amount).toStrictEqual({
                 currency: 'XRP',
                 value: '100',
@@ -65,8 +66,10 @@ describe('CheckCash', () => {
                 value: '1',
             });
 
-            // @ts-ignore
-            instance.DeliverMin = '100';
+            instance.DeliverMin = {
+                currency: 'XRP',
+                value: '100',
+            };
             expect(instance.DeliverMin).toStrictEqual({
                 currency: 'XRP',
                 value: '100',
@@ -85,33 +88,64 @@ describe('CheckCash', () => {
         });
 
         describe('Info', () => {
-            describe('getDescription()', () => {
-                it('should return the expected description', () => {
-                    const { tx, meta } = checkCashTemplates;
-                    const instance = new CheckCash(tx, meta);
+            const { tx, meta }: any = checkCashTemplates;
+            const Mixed = MutationsMixin(CheckCash);
+            const instance = new Mixed(tx, meta);
+            const info = new CheckCashInfo(instance, {} as any);
 
+            describe('generateDescription()', () => {
+                it('should return the expected description', () => {
                     const expectedDescription = Localize.t('events.itWasInstructedToDeliverByCashingCheck', {
-                        address: instance.Check?.Destination.address || 'address',
-                        amount: instance.Amount.value,
-                        currency: NormalizeCurrencyCode(instance.Amount.currency),
+                        address: instance.Check!.Destination,
+                        amount: instance.Amount!.value,
+                        currency: NormalizeCurrencyCode(instance.Amount!.currency),
                         checkId: tx.CheckID,
                     });
-
-                    expect(CheckCashInfo.getDescription(instance)).toEqual(expectedDescription);
+                    expect(info.generateDescription()).toEqual(expectedDescription);
                 });
             });
 
-            describe('getLabel()', () => {
+            describe('getEventsLabel()', () => {
                 it('should return the expected label', () => {
-                    expect(CheckCashInfo.getLabel()).toEqual(Localize.t('events.cashCheck'));
+                    expect(info.getEventsLabel()).toEqual(Localize.t('events.cashCheck'));
+                });
+            });
+
+            describe('getParticipants()', () => {
+                it('should return the expected participants', () => {
+                    expect(info.getParticipants()).toStrictEqual({
+                        start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                        end: { address: 'rrrrrrrrrrrrrrrrrrrrBZbvji', tag: undefined },
+                    });
+                });
+            });
+
+            describe('getMonetaryDetails()', () => {
+                it('should return the expected monetary details', () => {
+                    expect(info.getMonetaryDetails()).toStrictEqual({
+                        mutate: {
+                            sent: undefined,
+                            received: {
+                                issuer: undefined,
+                                currency: 'XRP',
+                                value: '2.499988',
+                                action: 1,
+                            },
+                        },
+                        factor: {
+                            currency: 'XRP',
+                            effect: 0,
+                            value: '100',
+                        },
+                    });
                 });
             });
         });
 
         describe('Validation', () => {
             it('should reject if Check is not assigned', async () => {
-                const { tx, meta } = checkCashTemplates;
-                const instance = new CheckCash(tx, meta);
+                const { tx }: any = checkCashTemplates;
+                const instance = new CheckCash(tx);
 
                 await expect(CheckCashValidation(instance)).rejects.toThrowError(
                     Localize.t('payload.unableToGetCheckObject'),
@@ -119,13 +153,16 @@ describe('CheckCash', () => {
             });
 
             it('should reject if no valid Amount or DeliverMin is provided', async () => {
-                const { tx, meta } = checkCashTemplates;
+                const { tx, meta }: any = checkCashTemplates;
                 const instance = new CheckCash({ ...tx }, meta);
 
-                instance.Check = new CheckCreate(checkCreateTemplate.tx);
+                instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
                 for await (const v of [
-                    '0',
+                    {
+                        currency: 'XRP',
+                        value: '0',
+                    },
                     undefined,
                     {
                         currency: 'USD',
@@ -133,9 +170,7 @@ describe('CheckCash', () => {
                         value: '0',
                     },
                 ]) {
-                    // @ts-ignore
                     instance.Amount = v;
-                    // @ts-ignore
                     instance.DeliverMin = v;
 
                     await expect(CheckCashValidation(instance)).rejects.toThrowError(
@@ -145,38 +180,38 @@ describe('CheckCash', () => {
             });
 
             it('should reject if Amount exceeds Check SendMax', async () => {
-                const { tx, meta } = checkCashTemplates;
+                const { tx, meta }: any = checkCashTemplates;
                 const instance = new CheckCash({ ...tx, ...{ Amount: checkCreateTemplate.tx.SendMax + 1 } }, meta);
 
-                instance.Check = new CheckCreate(checkCreateTemplate.tx);
+                instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
                 await expect(CheckCashValidation(instance)).rejects.toThrowError(
                     Localize.t('payload.insufficientCashAmount', {
-                        amount: instance.Check.SendMax.value,
-                        currency: NormalizeCurrencyCode(instance.Check.SendMax.currency),
+                        amount: instance.Check!.SendMax!.value,
+                        currency: NormalizeCurrencyCode(instance.Check!.SendMax!.currency),
                     }),
                 );
             });
 
             it('should reject if DeliverMin exceeds Check SendMax', async () => {
-                const { tx, meta } = checkCashTemplates;
+                const { tx, meta }: any = checkCashTemplates;
                 const instance = new CheckCash({ ...tx, ...{ DeliverMin: checkCreateTemplate.tx.SendMax + 1 } }, meta);
 
-                instance.Check = new CheckCreate(checkCreateTemplate.tx);
+                instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
                 await expect(CheckCashValidation(instance)).rejects.toThrowError(
                     Localize.t('payload.insufficientCashAmount', {
-                        amount: instance.Check.SendMax.value,
-                        currency: NormalizeCurrencyCode(instance.Check.SendMax.currency),
+                        amount: instance.Check!.SendMax!.value,
+                        currency: NormalizeCurrencyCode(instance.Check!.SendMax!.currency),
                     }),
                 );
             });
 
             it('should reject if Account address is not equal to Check Destination address', async () => {
-                const { tx, meta } = checkCashTemplates;
+                const { tx, meta }: any = checkCashTemplates;
                 const instance = new CheckCash({ ...tx, ...{ Account: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx' } }, meta);
 
-                instance.Check = new CheckCreate(checkCreateTemplate.tx);
+                instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
                 await expect(CheckCashValidation(instance)).rejects.toThrowError(
                     Localize.t('payload.checkCanOnlyCashByCheckDestination'),
@@ -184,7 +219,7 @@ describe('CheckCash', () => {
             });
 
             it('should resolve if all validations pass', async () => {
-                const { tx, meta } = checkCashTemplates;
+                const { tx, meta }: any = checkCashTemplates;
                 const instance = new CheckCash(
                     {
                         ...tx,
@@ -193,7 +228,7 @@ describe('CheckCash', () => {
                     meta,
                 );
 
-                instance.Check = new CheckCreate(checkCreateTemplate.tx);
+                instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
 
                 await expect(CheckCashValidation(instance)).resolves.toBeUndefined();
             });

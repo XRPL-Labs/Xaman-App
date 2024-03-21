@@ -4,9 +4,11 @@
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { SHA1 } from '@common/libs/crypto';
-import { TransactionJSONType } from '@common/libs/ledger/types';
 
 import Digest from './digest';
+
+/* Types  ==================================================================== */
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
 
 /* Class  ==================================================================== */
 class DigestSerializeWithSHA1 extends Digest {
@@ -45,11 +47,11 @@ class DigestSerializeWithSHA1 extends Digest {
     /**
      * Calculate the digest of a serialized object using the SHA-1 algorithm.
      *
-     * @param {TransactionJSONType} request_json - The JSON data to be serialized and hashed.
+     * @param {TransactionJson} request_json - The JSON data to be serialized and hashed.
      * @returns {Promise<string>} A promise that resolves with the SHA-1 hash.
      * @throws {Error} Throws an error if the input data is not a valid object.
      */
-    static digest = (request_json: TransactionJSONType): Promise<string> => {
+    static digest = (request_json: TransactionJson): Promise<string> => {
         return new Promise((resolve, reject) => {
             if (typeof request_json !== 'object' || !request_json) {
                 reject(new Error('digest `request_json` should be valid object!'));

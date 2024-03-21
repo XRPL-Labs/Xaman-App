@@ -7,7 +7,8 @@
 .PHONY: test help
 
 OS := $(shell sh -c 'uname -s 2>/dev/null')
-SIMULATOR = iPhone 11 Pro Max
+SIMULATOR = iPhone 15 Pro Max
+
 
 node_modules: package.json
 	@if ! [ $(shell which npm 2> /dev/null) ]; then \
@@ -15,10 +16,12 @@ node_modules: package.json
 		exit 1; \
 	fi
 
-	@echo Getting Javascript dependencies
-	@npm install
+	@if npm check | grep -Eq "from the root project|npm ERR! missing:"; then \
+		echo "Update/Install dependencies required, please run 'make npm-install'"; \
+		exit 1; \
+	fi
 
-npm-ci: package.json
+npm-install: package.json
 	@if ! [ $(shell which npm 2> /dev/null) ]; then \
 		echo "npm is not installed https://docs.npmjs.com/downloading-and-installing-node-js-and-npm"; \
 		exit 1; \
@@ -32,18 +35,18 @@ ifeq ($(OS), Darwin)
 	@echo "Required version of Cocoapods is not installed"
 	@echo Installing gems;
 	@bundle install
-	@echo Getting Cocoapods dependencies;
+	@echo Getting Cocoapods dependencies;w
 	@cd ios && bundle exec pod install;
 endif
 	@touch $@
 
 build-env:
-	@echo "Generating Google Services files"
+	@echo "Generating build environment"
 	@./scripts/build-env.sh
 
 pre-run: | node_modules .podinstall build-env ## Installs dependencies
 
-pre-build: | npm-ci .podinstall build-env ## Install dependencies before building
+pre-build: | node_modules .podinstall build-env ## Install dependencies before building
 
 validate-style: node_modules ## Runs eslint
 	@echo Checking for style guide compliance
@@ -89,54 +92,44 @@ check-device-android:
 		exit 1; \
 	fi
 
-	@echo "Connect your Android device or open the emulator"
-	@adb wait-for-device
-
 	@if ! [ $(shell which watchman 2> /dev/null) ]; then \
 		echo "watchman is not installed"; \
 		exit 1; \
 	fi
 
+	@while [ -z "$(shell adb devices | grep -w device)" ]; do \
+		echo "Waiting for Android device to be connected..."; \
+		sleep 5; \
+	done
 
 run: run-ios ## alias for run-ios
 
 run-ios: | check-device-ios pre-run ## Runs the app on an iOS simulator
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
 		echo Starting React Native packager server; \
-		npm start & echo Running iOS app in development; \
-		if [ ! -z "${SIMULATOR}" ]; then \
-			react-native run-ios --simulator="${SIMULATOR}"; \
-		else \
-			react-native run-ios; \
-		fi; \
-		wait; \
+		npm start;\
+	fi;\
+	echo Running iOS app in development; \
+	if [ ! -z "${SIMULATOR}" ]; then \
+		npx react-native run-ios --simulator="${SIMULATOR}"; \
 	else \
-		echo Running iOS app in development; \
-		if [ ! -z "${SIMULATOR}" ]; then \
-			react-native run-ios --simulator="${SIMULATOR}"; \
-		else \
-			react-native run-ios; \
-		fi; \
-	fi
+		npx react-native run-ios; \
+	fi; \
+
 
 run-android: | check-device-android pre-run ## Runs the app on an Android emulator or dev device
 	@if [ $(shell ps -ef | grep -i "cli.js start" | grep -civ grep) -eq 0 ]; then \
-        echo Starting React Native packager server; \
-    	npm start & echo Running Android app in development; \
-	if [ ! -z ${VARIANT} ]; then \
-    		react-native run-android --no-packager --variant=${VARIANT}; \
-    	else \
-    		react-native run-android --no-packager; \
-    	fi; \
-    	wait; \
-    else \
-    	echo Running Android app in development; \
-        if [ ! -z ${VARIANT} ]; then \
-			react-native run-android --no-packager --variant=${VARIANT}; \
-		else \
-			react-native run-android --no-packager; \
-		fi; \
-    fi
+		echo Starting React Native packager server; \
+		npm start; \
+	fi;\
+
+	VARIANT=${VARIANT:-debug}; \
+	echo Running Android app in ${VARIANT}; \
+
+	@for device in $(shell adb devices | tail -n +2 | cut -sf 1); do \
+		export ANDROID_SERIAL=$$device ; \
+		npx react-native run-android --main-activity LaunchActivity --no-packager --mode=${VARIANT}; \
+	done
 
 build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call start_packager)
@@ -146,14 +139,11 @@ build-ios: | stop pre-build validate-style ## Builds the iOS app
 	$(call stop_packager)
 
 build-android: | stop pre-build validate-style ## Build the Android app
-	$(call start_packager)
 	@echo "Building Android app"
-	@cd android
-	@./gradlew assembleRelease
-	$(call stop_packager)
+	@npx react-native build-android --mode=release
 
 pre-e2e: | pre-build  ## build for e2e test
-	@npx detox build e2e --configuration ios.sim.release
+	@npx detox build e2e --configuration ios.sim
 
 test: | pre-run validate-style ## Runs tests
 	@npm run test
@@ -161,7 +151,10 @@ test: | pre-run validate-style ## Runs tests
 test-e2e: ## Runs e2e tests
 	@npx detox clean-framework-cache
 	@npx detox build-framework-cache
-	@npx cucumber-js ./e2e --configuration ios.sim.release
+	@npx cucumber-js ./e2e --configuration android.attached
+	@#npx cucumber-js ./e2e --configuration ios.sim
+
+
 
 ## Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

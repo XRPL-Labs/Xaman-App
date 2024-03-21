@@ -1,7 +1,5 @@
 import { schemas } from './v15';
 
-export { migration, populate } from './v15';
-
 export const {
     CoreSchema,
     AccountSchema,

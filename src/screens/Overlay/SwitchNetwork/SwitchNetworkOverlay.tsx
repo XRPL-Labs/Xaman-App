@@ -34,7 +34,7 @@ export interface Props {
 
 export interface State {
     coreSettings: CoreModel;
-    networks: { [key: string]: NetworkModel[] };
+    networks?: { [key: string]: NetworkModel[] };
     contentHeight: number;
     paddingBottom: number;
 }
@@ -123,7 +123,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         }
 
         // slide down the panel
-        this.actionPanelRef?.current.slideDown();
+        this.actionPanelRef?.current?.slideDown();
     };
 
     onPanelSlideDown = () => {

@@ -19,7 +19,6 @@ class SignInTemplate extends Component<Props, State> {
         this.state = {};
     }
 
-    // @ts-ignore
     render() {
         return <View />;
     }

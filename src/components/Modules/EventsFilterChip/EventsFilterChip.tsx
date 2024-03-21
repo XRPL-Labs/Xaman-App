@@ -39,7 +39,7 @@ class EventsFilterChip extends Component<Props> {
         if (!filters) return null;
 
         return (
-            <View style={[styles.rowContainer]}>
+            <View style={styles.rowContainer}>
                 {Object.keys(filters).map((key) => {
                     if (!filters[key] || key === 'Amount') return null;
                     if (key === 'AmountIndicator' && !filters.Amount) return null;
@@ -78,8 +78,8 @@ class EventsFilterChip extends Component<Props> {
                             // eslint-disable-next-line react/jsx-no-bind
                             onPress={this.onRemovePress.bind(null, keyToRemove)}
                             roundedSmall
-                            style={[styles.filterButton]}
-                            textStyle={[styles.filterButtonText]}
+                            style={styles.filterButton}
+                            textStyle={styles.filterButtonText}
                             label={value}
                             iconStyle={AppStyles.imgColorWhite}
                             icon="IconX"

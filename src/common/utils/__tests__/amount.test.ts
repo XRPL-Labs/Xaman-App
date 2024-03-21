@@ -74,7 +74,7 @@ describe('Utils.Amount', () => {
 
     describe('ValueToIOU', () => {
         it('should raise error', () => {
-            expect(() => ValueToIOU(undefined)).toThrowError('Value is not valid string!');
+            expect(() => ValueToIOU(undefined as any)).toThrowError('Value is not valid string!');
             // @ts-ignore
             expect(() => ValueToIOU(0.1)).toThrowError('Value is not valid string!');
             // @ts-ignore

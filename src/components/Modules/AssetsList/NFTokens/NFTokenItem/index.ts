@@ -1,1 +1,1 @@
-export { default as NFTokenItem, NFTokenData } from './NFTokenItem';
+export { default as NFTokenItem, type NFTokenData } from './NFTokenItem';

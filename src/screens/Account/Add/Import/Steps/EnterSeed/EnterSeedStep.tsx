@@ -24,7 +24,7 @@ import { StepsContext } from '../../Context';
 export interface Props {}
 
 export interface State {
-    secret: string;
+    secret?: string;
     showSecret: boolean;
     keyboardType: KeyboardTypeOptions;
 }
@@ -32,13 +32,13 @@ export interface State {
 /* Component ==================================================================== */
 class EnterSeedStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            secret: null,
+            secret: undefined,
             showSecret: false,
             keyboardType: 'default',
         };
@@ -47,7 +47,12 @@ class EnterSeedStep extends Component<Props, State> {
     driveFamilySeed = () => {
         const { alternativeSeedAlphabet } = this.context;
         const { secret } = this.state;
+
         try {
+            if (!secret) {
+                throw new Error('Secret is required!');
+            }
+
             let xrplSecret = secret;
             // if alternative alphabet set then change
             if (alternativeSeedAlphabet) {
@@ -57,8 +62,9 @@ class EnterSeedStep extends Component<Props, State> {
                 }
             }
             const account = derive.familySeed(xrplSecret);
+
             this.goNext(account);
-        } catch (e) {
+        } catch (error) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
         }
     };
@@ -66,7 +72,12 @@ class EnterSeedStep extends Component<Props, State> {
     derivePrivateKey = () => {
         const { secret } = this.state;
         try {
+            if (!secret) {
+                throw new Error('Private key is required!');
+            }
+
             const account = derive.privatekey(secret);
+
             this.goNext(account);
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidHexPrivateKey'));
@@ -78,7 +89,7 @@ class EnterSeedStep extends Component<Props, State> {
 
         let keyboardType = 'default' as KeyboardTypeOptions;
 
-        if (Platform.OS === 'android' && showSecret === false) {
+        if (Platform.OS === 'android' && !showSecret) {
             keyboardType = 'visible-password';
         }
 
@@ -102,9 +113,9 @@ class EnterSeedStep extends Component<Props, State> {
 
         try {
             // normal family seed
-            if (secret.startsWith('s')) {
+            if (secret?.startsWith('s')) {
                 this.driveFamilySeed();
-            } else if (secret.length === 66 && (secret.startsWith('00') || secret.startsWith('ED'))) {
+            } else if (secret?.length === 66 && (secret.startsWith('00') || secret.startsWith('ED'))) {
                 // hex private key
                 this.derivePrivateKey();
             } else {

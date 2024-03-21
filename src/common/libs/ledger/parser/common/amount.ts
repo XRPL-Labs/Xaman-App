@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 /* Class ==================================================================== */
-class Amount {
+class AmountParser {
     amount: BigNumber;
 
     constructor(amount: string | number, drops = true) {
@@ -30,47 +30,36 @@ class Amount {
         this.amount = new BigNumber(newAmount);
     }
 
-    dropsToNative(toNumber = false): any {
-        const xrp = this.amount.dividedBy(1000000.0);
+    dropsToNative() {
+        this.amount = this.amount.dividedBy(1000000.0);
 
-        if (toNumber) {
-            return xrp.toNumber();
-        }
-
-        return xrp.toString(10);
+        return this;
     }
 
-    nativeToDrops(toNumber = false): any {
-        const drops = this.amount.times(1000000.0).decimalPlaces(0);
+    nativeToDrops() {
+        this.amount = this.amount.times(1000000.0).decimalPlaces(0);
 
-        if (toNumber) {
-            return drops.toNumber();
-        }
-
-        return drops.toString(10);
+        return this;
     }
 
-    withTransferRate(transferRate: number, toNumber = false): any {
-        const withRate = this.amount.plus(this.amount.multipliedBy(transferRate).dividedBy(100));
+    withTransferRate(transferRate: number) {
+        this.amount = this.amount.plus(this.amount.multipliedBy(transferRate).dividedBy(100));
 
-        if (toNumber) {
-            return withRate.toNumber();
-        }
-
-        return withRate.toString(10);
+        return this;
     }
 
-    toString(toFixed = true): string {
-        if (toFixed) {
-            return this.amount.toFixed();
-        }
-        return this.amount.toString();
+    toString(): string {
+        return this.amount.toString(10);
     }
 
     toNumber(): number {
         return this.amount.toNumber();
     }
+
+    toFixed(): string {
+        return this.amount.toFixed();
+    }
 }
 
 /* Export ==================================================================== */
-export default Amount;
+export default AmountParser;

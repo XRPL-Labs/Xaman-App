@@ -19,7 +19,11 @@ import { IsFlagSecure, SetFlagSecure } from '@common/helpers/app';
 import { TouchableDebounce, Header, Switch, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
-// style
+
+import { PickerModalProps } from '@screens/Global/Picker';
+import { ChangePasscodeViewProps } from '@screens/Settings/Security/ChangePasscode';
+import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -147,7 +151,7 @@ class SecuritySettingsView extends Component<Props, State> {
 
     onBiometricEnableChange = (enabled: boolean) => {
         // ask for passcode authentication before Enabling/Disabling the biometrics
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+        Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: () => {
                 this.changeBiometricStatus(enabled);
@@ -164,7 +168,7 @@ class SecuritySettingsView extends Component<Props, State> {
     showLogoutTimePicker = () => {
         const { coreSettings, timeItems } = this.state;
 
-        Navigator.push(AppScreens.Global.Picker, {
+        Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
             title: Localize.t('global.autoLock'),
             description: Localize.t('settings.autoLockAfter'),
             items: timeItems,
@@ -174,7 +178,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     onChangePasscodePress = () => {
-        Navigator.push(
+        Navigator.push<ChangePasscodeViewProps>(
             AppScreens.Settings.ChangePasscode,
             {},
             {

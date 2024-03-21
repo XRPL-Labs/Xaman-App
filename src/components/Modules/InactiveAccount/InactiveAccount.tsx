@@ -18,6 +18,8 @@ import { Button, Icon, InfoMessage, Spacer, TouchableDebounce } from '@component
 
 import Localize from '@locale';
 
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 /* Types ==================================================================== */
@@ -35,10 +37,10 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         // include card serial number if tangem card
         if (account.type === AccountTypes.Tangem) {
-            params = { cid: GetCardId(account.additionalInfo) };
+            params = { cid: GetCardId(account.additionalInfo!) };
         }
 
-        Navigator.showModal(
+        Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
                 identifier: AppConfig.xappIdentifiers.activateAccount,

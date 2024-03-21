@@ -16,43 +16,43 @@ class Core extends Realm.Object<Core> {
     public static schema: Realm.ObjectSchema = CoreSchema.schema;
 
     /** Indicates whether the app has been initialized. */
-    public initialized: boolean;
+    public declare initialized: boolean;
     /** hashed passcode. */
-    public passcode?: string;
+    public declare passcode?: string;
     /** Minutes after which auto-locking should occur. */
-    public minutesAutoLock: number;
+    public declare minutesAutoLock: number;
     /** Timestamp of the last failed passcode attempt. */
-    public lastPasscodeFailedTimestamp?: number;
+    public declare lastPasscodeFailedTimestamp?: number;
     /** Number of failed passcode attempts. */
-    public passcodeFailedAttempts: number;
+    public declare passcodeFailedAttempts: number;
     /** Timestamp of the last successful unlock event. */
-    public lastUnlockedTimestamp?: number;
+    public declare lastUnlockedTimestamp?: number;
     /** Flag to indicate whether to purge data on brute force attempts. */
-    public purgeOnBruteForce: boolean;
+    public declare purgeOnBruteForce: boolean;
     /** Type of biometric method used, if any. */
-    public biometricMethod?: BiometryType;
+    public declare biometricMethod: BiometryType;
     /** Indicates if fallback to passcode is allowed. */
-    public passcodeFallback: boolean;
+    public declare passcodeFallback: boolean;
     /** Selected language for the application. */
-    public language: string;
+    public declare language: string;
     /** Selected currency for the application. */
-    public currency: string;
+    public declare currency: string;
     /** Selected network for the application. */
-    public network: NetworkModel;
+    public declare network: NetworkModel;
     /** Default account for the application. */
-    public account: any;
+    public declare account: any;
     /** Indicates whether haptic feedback is enabled. */
-    public hapticFeedback: boolean;
+    public declare hapticFeedback: boolean;
     /** Indicates whether discreet mode is enabled. */
-    public discreetMode: boolean;
+    public declare discreetMode: boolean;
     /** Indicates whether the reserve panel should be displayed in home screen. */
-    public showReservePanel: boolean;
+    public declare showReservePanel: boolean;
     /** Indicates if system separators should be used. */
-    public useSystemSeparators: boolean;
+    public declare useSystemSeparators: boolean;
     /** Indicates if developer mode is enabled. */
-    public developerMode: boolean;
+    public declare developerMode: boolean;
     /** Selected theme for the application. */
-    public theme: Themes;
+    public declare theme: Themes;
 }
 
 export default Core;

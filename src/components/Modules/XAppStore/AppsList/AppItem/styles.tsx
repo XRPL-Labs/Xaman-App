@@ -14,9 +14,18 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
     },
+    appDescription: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.family,
+        color: '$textSecondary',
+    },
     appTitlePlaceholder: {
-        color: '$light',
-        backgroundColor: '$light',
+        color: StyleService.select({ dark: '$darkGrey', light: '$lightGrey' }),
+        backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$lightGrey' }),
+    },
+    appDescriptionPlaceholder: {
+        color: StyleService.select({ dark: '$darkGrey', light: '$lightGrey' }),
+        backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$lightGrey' }),
     },
     appIcon: {
         width: '80%',
@@ -24,7 +33,7 @@ const styles = StyleService.create({
         borderRadius: 10,
     },
     appIconPlaceholder: {
-        backgroundColor: '$silver',
+        backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$silver' }),
     },
     titleContainer: {
         flex: 1,
@@ -33,13 +42,6 @@ const styles = StyleService.create({
     },
     rightPanelContainer: {
         alignItems: 'flex-end',
-    },
-    categoryContainer: {
-        backgroundColor: '$tint',
-        paddingHorizontal: 3,
-        paddingVertical: 1,
-        borderRadius: 5,
-        alignSelf: 'flex-start',
     },
     categoryLabel: {
         fontFamily: AppFonts.base.familyBold,

@@ -1,3 +1,4 @@
-import PasscodeSetupContainer from './PasscodeView';
+import PasscodeSetupView, { Props as PasscodeSetupViewProps } from './PasscodeView';
 
-export default PasscodeSetupContainer;
+export type { PasscodeSetupViewProps };
+export default PasscodeSetupView;

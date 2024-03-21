@@ -52,8 +52,8 @@ const PrepareTxForHookFee = (txJson: any, definitions: any): string => {
  * @returns object
  */
 const NormalizeFeeDataSet = (feeDataSet: {
-    drops: { base_fee: number };
-    fee_hooks_feeunits: number;
+    drops: { base_fee: string };
+    fee_hooks_feeunits: string;
 }): {
     availableFees: {
         type: 'LOW' | 'MEDIUM' | 'HIGH';

@@ -1,5 +1,5 @@
 module.exports = {
-    presets: ['module:metro-react-native-babel-preset'],
+    presets: ['module:@react-native/babel-preset'],
     plugins: [
         [
             'rewrite-require',
@@ -31,6 +31,24 @@ module.exports = {
                 regenerator: false,
             },
         ],
+        [
+            'module-resolver',
+            {
+                root: ['./src'],
+                extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
+                alias: {
+                    '@components': ['./src/components'],
+                    '@common': ['./src/common'],
+                    '@locale': ['./src/locale'],
+                    '@screens': ['./src/screens'],
+                    '@services': ['./src/services'],
+                    '@store': ['./src/store'],
+                    '@theme': ['./src/theme'],
+                },
+            },
+        ],
+        ['@babel/plugin-transform-flow-strip-types', { allowDeclareFields: true }],
+        ['@babel/plugin-transform-class-static-block'],
     ],
     env: {
         production: {

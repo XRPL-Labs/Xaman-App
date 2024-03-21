@@ -1,3 +1,5 @@
-import LockModal from './LockModal';
+import LockOverlay from './LockOverlay';
+import { Props as LockOverlayProps } from './types';
 
-export default LockModal;
+export type { LockOverlayProps };
+export default LockOverlay;

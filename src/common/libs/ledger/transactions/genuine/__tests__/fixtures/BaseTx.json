@@ -25,7 +25,7 @@
     "SourceTag": 456,
     "TxnSignature": "304402204ED27C2D29F609772B0E67ACCFC8C205422A85D54C065437179032419",
     "NetworkID": 0,
-    "OperationLimit": 0,
+    "OperationLimit": 1337,
     "EmitDetails": {
       "EmitBurden": "1",
       "EmitGeneration": 1,

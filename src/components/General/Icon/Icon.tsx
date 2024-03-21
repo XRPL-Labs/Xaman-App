@@ -6,7 +6,7 @@
  */
 import React from 'react';
 
-import { Image } from 'react-native';
+import { Image, ImageStyle, StyleProp } from 'react-native';
 
 import { AppSizes } from '@theme';
 import { Images } from '@common/helpers/images';
@@ -15,7 +15,7 @@ import { Images } from '@common/helpers/images';
 interface Props {
     name: Extract<keyof typeof Images, string>;
     size?: number;
-    style?: any;
+    style?: StyleProp<ImageStyle>;
 }
 
 /* Component ==================================================================== */

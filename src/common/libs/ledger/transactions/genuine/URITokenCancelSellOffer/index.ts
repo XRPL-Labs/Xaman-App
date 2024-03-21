@@ -1,3 +1,3 @@
-export { default as URITokenCancelSellOffer } from './URITokenCancelSellOfferClass';
-export { default as URITokenCancelSellOfferValidation } from './URITokenCancelSellOfferValidation';
-export { default as URITokenCancelSellOfferInfo } from './URITokenCancelSellOfferInfo';
+export { default as URITokenCancelSellOffer } from './URITokenCancelSellOffer.class';
+export { default as URITokenCancelSellOfferValidation } from './URITokenCancelSellOffer.validation';
+export { default as URITokenCancelSellOfferInfo } from './URITokenCancelSellOffer.info';

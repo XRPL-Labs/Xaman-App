@@ -1,3 +1,4 @@
-import AuthenticateModal from './AuthenticateModal';
+import AuthenticateOverlay, { Props as AuthenticateOverlayProps } from './AuthenticateOverlay';
 
-export default AuthenticateModal;
+export type { AuthenticateOverlayProps };
+export default AuthenticateOverlay;

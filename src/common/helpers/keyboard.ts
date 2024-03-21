@@ -20,11 +20,13 @@ class Keyboard {
                 return Platform.select({
                     android: 'KeyboardShow',
                     ios: 'keyboardWillShow',
+                    default: eventName,
                 });
             case 'keyboardWillHide':
                 return Platform.select({
                     android: 'KeyboardHide',
                     ios: 'keyboardWillHide',
+                    default: eventName,
                 });
             default:
                 return eventName;
@@ -75,7 +77,7 @@ class Keyboard {
     addListener = (eventType: EventTypes, handler: any) => {
         const eventName = this.getEventName(eventType);
 
-        let subscription = undefined as EmitterSubscription;
+        let subscription;
 
         switch (Platform.OS) {
             case 'android':

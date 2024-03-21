@@ -1,3 +1,4 @@
-import ExplainBalanceModal from './ExplainBalanceModal';
+import ExplainBalanceOverlay, { Props as ExplainBalanceOverlayProps } from './ExplainBalanceOverlay';
 
-export default ExplainBalanceModal;
+export type { ExplainBalanceOverlayProps };
+export default ExplainBalanceOverlay;

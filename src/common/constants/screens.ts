@@ -59,7 +59,7 @@ const screens = {
         ExplainBalance: 'overlay.ExplainBalance',
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
-        RecipientMenu: 'overlay.RecipientMenu',
+        ParticipantMenu: 'overlay.ParticipantMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
         SelectCurrency: 'overlay.SelectCurrency',
@@ -103,6 +103,6 @@ const screens = {
         Picker: 'app.global.Picker',
         Placeholder: 'app.global.Placeholder',
     },
-};
+} as const;
 
 export default screens;

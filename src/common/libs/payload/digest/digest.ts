@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
-import { PseudoTransactionTypes, TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /**
  * Abstract Class Digest.
@@ -15,7 +15,7 @@ abstract class Digest {
     }
 
     static digest = (
-        request_json: TransactionJSONType,
+        request_json: TransactionJson,
         tx_type?: TransactionTypes | PseudoTransactionTypes,
     ): Promise<string> => {
         throw new Error('Method digest() must be implemented.');

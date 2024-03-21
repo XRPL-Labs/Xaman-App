@@ -66,6 +66,8 @@
     "offer": "ఆఫర్",
     "check": "పరిశీలించు",
     "nft": "NFT",
+    "amm": "AMM",
+    "uritoken": "URIToken",
     "other": "ఇతర",
     "filter": "ఫిల్టర్",
     "favorite": "Favorite",
@@ -134,6 +136,7 @@
     "signing": "సంతకం చెయ్యిము",
     "paymentChannelAuthorize": "Payment Channel Authorize",
     "issuer": "జారీచేసేవాడు",
+    "inform": "Inform",
     "accept": "అంగీకరించు",
     "slideToAccept": "అంగీకరించటానికి స్లైడ్ చెయాండి",
     "decline": "అంగీకరించవద్దు",
@@ -261,6 +264,7 @@
     "unableOpenReturnURL": "రిటర్న్ url తెరవడం సాధ్యం కాలేదు!\r\n",
     "noAccountConfigured": "ఖాతా కాన్ఫిగర్ చేయబడలేదు\r\n",
     "pleaseAddAccountToSignTheTransaction": "లావాదేవీపై సంతకం చేయడానికి దయచేసి ఒక ఖాతాను జోడించండి\r\n",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "చెల్లింపులు పంపడానికి ఖర్చు చేయదగిన ఖాతా అందుబాటులో లేదు.\r\n",
     "doNotRemindMe": "నాకు మళ్ళీ గుర్తు చేయవద్దు",
     "invalidPayload": "చెల్లని పేలోడ్\r\n",
@@ -358,7 +362,8 @@
     "stillWorkingOnIt": "Still working on it",
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
-    "theme": "Theme"
+    "theme": "Theme",
+    "searchTokens": "Search tokens"
   },
   "onboarding": {
     "slideOne_title": "చెల్లింపులు మరియు చెల్లింపు అభ్యర్థనలు XRP లెడ్జర్‌లో",
@@ -502,6 +507,25 @@
     "createNFTOffer": "NFT ఆఫర్‌ని సృష్టించండి",
     "createURITokenSellOffer": "Create URI Token Sell offer",
     "cancelURITokenSellOffer": "Cancel URI Token Sell offer",
+    "ammBid": "AMM Bid",
+    "ammCreate": "AMM Create",
+    "ammDelete": "AMM Delete",
+    "ammDeposit": "AMM Deposit",
+    "ammVote": "AMM Vote",
+    "ammWithdraw": "AMM Withdraw",
+    "remit": "Remit",
+    "amounts": "Amounts",
+    "uriTokenIDs": "URIToken IDs",
+    "asset": "Asset",
+    "asset2": "Asset 2",
+    "amount2": "Amount 2",
+    "bidMin": "Bid Min",
+    "bidMax": "Bid Max",
+    "ePrice": "EPrice",
+    "lpTokenOut": "LP Token Out",
+    "lpTokenIn": "LP Token In",
+    "tradingFee": "Trading Fee",
+    "authAccounts": "Auth Accounts",
     "genesisMint": "Genesis Mint",
     "enableAmendment": "Enable Amendment",
     "cancelNFTOffer": "NFT ఆఫర్‌ని రద్దు చేయండి",
@@ -636,16 +660,22 @@
     "thisURITokenOfferMayOnlyBeAcceptedBy": "This offer may only be accepted by %{address}",
     "theTransactionWillCancelURITokenOffer": "The transaction will cancel %{address}'s sell offer for URI token with ID %{tokenId}",
     "importTransactionExplain": "This is an Import transaction",
-    "theIssuerIs": "The issuer address set to ${issuer}",
+    "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
     "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
   },
   "xapp": {
     "popular": "Popular",
+    "recent": "Recent",
+    "ADashZ": "A-Z",
+    "categories": "Categories",
+    "openXapp": "Open",
+    "aboutXapp": "About",
     "recentlyUsed": "Recently used",
     "ourSuggestions": "Our suggestions",
     "all": "All",
+    "seeAll": "See all",
     "theXAppLoaderHasNotBeenResolved": "The xApp loader has not yet been resolved",
     "theXAppHasNotBeenFullyLoaded": "The xApp has not been fully loaded (yet). If you run into trouble using this xApp, please contact the xApp developer",
     "forceShowXApp": "Force show xApp",
@@ -1033,7 +1063,8 @@
     "addingTrustLineWarning": "XRPL Labs/Xaman ఏదైనా టోకెన్ లేదా టోకెన్ జారీని దోహదించదు. మీరు టోకెన్ జారీని విశ్వసించండి ఉంటే మాత్రమే కదిలించాలి.\nటోకెన్ (ట్రస్ట్ లైన్) గురించి ప్రశ్నలు లేదా సమస్యలు లేదా సమస్యలు విషయంలో మీరు టోకెన్ జారీని సంప్రదించవలసి ఉంటుంది.\n\nమీ సొంత ప్రమాదంలో కొనసాగించు.",
     "trustLineIsAlreadyExist": "ఈ టోకెన్ ఇప్పటికే వుంది. మీరు మళ్ళీ అదే టోకెన్ను జతచేయలేరు.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
-    "unableToLoadListOfTokens": "Unable to load the list of tokens!"
+    "unableToLoadListOfTokens": "Unable to load the list of tokens!",
+    "selectCurrency": "Please select a token first"
   },
   "exchange": {
     "exchanging": "మార్పిడి",
@@ -1111,14 +1142,15 @@
     "theIssuerCanBurnThisToken": "Note: The issuer can burn this token.",
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
-    "pathDryError": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
-    "tecPartialError": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
     "blobCopiedToClipboard": "Blob copied to clipboard"
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",
     "unableToLoadCredits": "Oops! Unable to Retrieve Credits",
-    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs"
+    "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
+    "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
+    "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
   },
   "moment": {
     "calendar": {

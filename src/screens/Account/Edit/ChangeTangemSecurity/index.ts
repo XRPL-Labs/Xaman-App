@@ -1,3 +1,4 @@
-import ChangeTangemSecurity from './ChangeTangemSecurity';
+import ChangeTangemSecurityView, { Props as ChangeTangemSecurityViewProps } from './ChangeTangemSecurity';
 
-export default ChangeTangemSecurity;
+export type { ChangeTangemSecurityViewProps };
+export default ChangeTangemSecurityView;

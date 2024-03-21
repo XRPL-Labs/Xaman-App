@@ -3,7 +3,7 @@
  */
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
-import { Animated, View, ScrollView, Text, Keyboard, InteractionManager } from 'react-native';
+import { Animated, InteractionManager, Keyboard, ScrollView, Text, View } from 'react-native';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
@@ -14,28 +14,29 @@ import { Navigator } from '@common/helpers/navigator';
 
 import NetworkService from '@services/NetworkService';
 
-import { TrustLineModel, AccountModel } from '@store/models';
+import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
 import {
-    AmountText,
     AmountInput,
-    Header,
-    Spacer,
+    AmountText,
     Button,
+    Header,
+    HorizontalLine,
     InfoMessage,
     LoadingIndicator,
-    HorizontalLine,
+    Spacer,
     TokenAvatar,
 } from '@components/General';
 
@@ -43,8 +44,10 @@ import { AmountValueType } from '@components/General/AmountInput';
 
 import Localize from '@locale';
 
+import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
+
 // style
-import { AppStyles, AppColors } from '@theme';
+import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -59,7 +62,7 @@ export interface State {
     expectedOutcome: string;
     minimumOutcome: string;
     exchangeRate: string;
-    liquidity: LiquidityResult;
+    liquidity?: LiquidityResult;
     isLoading: boolean;
     isExchanging: boolean;
 }
@@ -68,12 +71,12 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    private timeout: any;
+    private timeout?: ReturnType<typeof setTimeout>;
     private sequence: number;
     private ledgerExchange: LedgerExchange;
     private amountInput: React.RefObject<typeof AmountInput | null>;
     private animatedOpacity: Animated.Value;
-    private mounted: boolean;
+    private mounted = false;
 
     static options() {
         return {
@@ -103,9 +106,7 @@ class ExchangeView extends Component<Props, State> {
 
         this.amountInput = React.createRef();
         this.animatedOpacity = new Animated.Value(1);
-        this.timeout = null;
         this.sequence = 0;
-        this.mounted = true;
     }
 
     componentDidMount() {
@@ -225,10 +226,7 @@ class ExchangeView extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.back'),
-
-                    onPress: () => {
-                        Navigator.pop();
-                    },
+                    onPress: Navigator.pop,
                 },
             ],
             { type: 'default' },
@@ -326,6 +324,7 @@ class ExchangeView extends Component<Props, State> {
 
         // create offerCreate transaction
         const offer = new OfferCreate({
+            TransactionType: TransactionTypes.OfferCreate,
             Account: account.address,
         });
 
@@ -338,13 +337,16 @@ class ExchangeView extends Component<Props, State> {
             offer.TakerPays = { currency: NetworkService.getNativeAsset(), value: minimumOutcome };
         }
 
-        // ImmediateOrCancel & Sell flag
-        offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
+        // set ImmediateOrCancel & Sell flag
+        offer.Flags = {
+            ImmediateOrCancel: true,
+            Sell: true,
+        };
 
         // generate payload
-        const payload = Payload.build(offer.Json);
+        const payload = Payload.build(offer.JsonForSigning);
 
-        Navigator.showModal(
+        Navigator.showModal<ReviewTransactionModalProps<OfferCreate>>(
             AppScreens.Modal.ReviewTransaction,
             {
                 payload,
@@ -361,7 +363,7 @@ class ExchangeView extends Component<Props, State> {
         });
     };
 
-    onReviewScreenResolve = (offer: OfferCreate) => {
+    onReviewScreenResolve = (offer: OfferCreate & SignMixinType & MutationsMixinType) => {
         const { account } = this.props;
 
         this.setState({
@@ -379,9 +381,11 @@ class ExchangeView extends Component<Props, State> {
         }
 
         if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(offer.GetOfferStatus(account.address)) > -1) {
+            const balanceChanges = offer.BalanceChange(account.address);
+
             // calculate delivered amounts
-            const takerGot = offer.TakerGot(account.address);
-            const takerPaid = offer.TakerPaid(account.address);
+            const takerGot = balanceChanges?.sent!;
+            const takerPaid = balanceChanges?.received!;
 
             this.showResultAlert(
                 Localize.t('global.success'),
@@ -392,9 +396,8 @@ class ExchangeView extends Component<Props, State> {
                     getCurrency: NormalizeCurrencyCode(takerPaid.currency),
                 }),
             );
-        } else {
-            this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
         }
+        this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
     };
 
     onAmountChange = (amount: string) => {
@@ -427,7 +430,7 @@ class ExchangeView extends Component<Props, State> {
         const { account, trustLine } = this.props;
         const { direction } = this.state;
 
-        let availableBalance = '0';
+        let availableBalance: string;
 
         if (direction === MarketDirection.SELL) {
             availableBalance = new BigNumber(CalculateAvailableBalance(account)).toString();
@@ -443,7 +446,7 @@ class ExchangeView extends Component<Props, State> {
 
         let errorsText = '';
 
-        liquidity.errors.forEach((e, i) => {
+        liquidity?.errors.forEach((e, i) => {
             errorsText += `* ${this.ledgerExchange.errors[e]}`;
             if (i + 1 < liquidity.errors.length) {
                 errorsText += '\n';
@@ -542,9 +545,7 @@ class ExchangeView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: () => {
-                            Navigator.pop();
-                        },
+                        onPress: Navigator.pop,
                     }}
                     centerComponent={{
                         text: Localize.t('global.exchange'),

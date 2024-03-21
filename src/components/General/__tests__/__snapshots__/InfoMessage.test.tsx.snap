@@ -214,12 +214,10 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
   >
     <View
       style={
-        [
-          {
-            "alignItems": "center",
-            "paddingRight": 10,
-          },
-        ]
+        {
+          "alignItems": "center",
+          "paddingRight": 10,
+        }
       }
     >
       <Image
@@ -307,12 +305,10 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
   >
     <View
       style={
-        [
-          {
-            "alignItems": "center",
-            "paddingRight": 10,
-          },
-        ]
+        {
+          "alignItems": "center",
+          "paddingRight": 10,
+        }
       }
     >
       <Image
@@ -400,12 +396,10 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
   >
     <View
       style={
-        [
-          {
-            "alignItems": "center",
-            "paddingRight": 10,
-          },
-        ]
+        {
+          "alignItems": "center",
+          "paddingRight": 10,
+        }
       }
     >
       <Image

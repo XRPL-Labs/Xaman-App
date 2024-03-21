@@ -35,8 +35,8 @@ class NetworkRepository extends BaseRepository<NetworkModel> {
 
     update = (object: Partial<NetworkModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.model.schema.primaryKey)) {
-            throw new Error(`Update require primary key ${this.model.schema.primaryKey} to be set`);
+        if (!has(object, this.model.schema?.primaryKey ?? '')) {
+            throw new Error(`Update require primary key ${this.model.schema?.primaryKey} to be set`);
         }
         return this.create(object, true);
     };

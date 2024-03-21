@@ -7,6 +7,13 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
     },
+    contentBoxSecondary: {
+        paddingTop: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        borderRadius: AppSizes.borderRadius,
+        backgroundColor: '$tint',
+        marginBottom: AppSizes.paddingSml,
+    },
     nfTokenContainer: {
         paddingHorizontal: 0,
     },
@@ -150,6 +157,12 @@ const styles = StyleService.create({
     copyButton: {
         flexDirection: 'row',
         paddingHorizontal: AppSizes.paddingExtraSml,
+    },
+    jsonTreeContainer: {
+        backgroundColor: StyleService.select({ light: '$light', dark: '$tint' }),
+        borderRadius: AppSizes.borderRadius,
+        padding: AppSizes.paddingExtraSml,
+        marginBottom: AppSizes.paddingSml,
     },
 });
 

@@ -1,3 +1,3 @@
-export { default as EscrowCancel } from './EscrowCancelClass';
-export { default as EscrowCancelValidation } from './EscrowCancelValidation';
-export { default as EscrowCancelInfo } from './EscrowCancelInfo';
+export { default as EscrowCancel } from './EscrowCancel.class';
+export { default as EscrowCancelValidation } from './EscrowCancel.validation';
+export { default as EscrowCancelInfo } from './EscrowCancel.info';

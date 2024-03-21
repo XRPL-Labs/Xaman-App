@@ -71,18 +71,6 @@ const CoreSchema = {
             }
         }
     },
-
-    populate: (realm: Realm) => {
-        // get all networks
-        const networks = realm.objects('Network') as any;
-
-        const { defaultNetworkId } = NetworkConfig;
-        const selectedNetwork = networks.find((n: any) => n.id === defaultNetworkId);
-
-        realm.create('Core', {
-            network: selectedNetwork,
-        });
-    },
 };
 
 export default <ExtendedSchemaType>CoreSchema;

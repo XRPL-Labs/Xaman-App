@@ -10,13 +10,13 @@ global.process = require('process');
 global.process.env.NODE_ENV = __DEV__ ? 'development' : 'production';
 
 /* Global crypto ==================================================================== */
-
+// @ts-ignore
 if (!window.crypto) {
     // @ts-ignore
     window.crypto = {};
 }
 
-// set getRandomValues with native module for security porpose
+// set getRandomValues with native module for security purpose
 // @ts-ignore
 window.crypto.getRandomValues = function (byteArray: any[]) {
     const useBuffer = Buffer.from(CryptoModule.randomKeySync(byteArray.length), 'hex');

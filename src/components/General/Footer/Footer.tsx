@@ -31,7 +31,7 @@ class Footer extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            hidden: props.hidden,
+            hidden: !!props.hidden,
         };
     }
 
@@ -59,7 +59,7 @@ class Footer extends PureComponent<Props, State> {
             <View
                 style={[
                     styles.container,
-                    { paddingBottom: safeArea && (HasBottomNotch() ? 34 : 10) + AppSizes.paddingExtraSml },
+                    { paddingBottom: safeArea ? (HasBottomNotch() ? 34 : 10) + AppSizes.paddingExtraSml : undefined },
                     style,
                 ]}
             >

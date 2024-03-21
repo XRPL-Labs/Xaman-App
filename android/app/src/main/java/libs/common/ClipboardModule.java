@@ -7,16 +7,19 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.bridge.ContextBaseJavaModule;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.module.annotations.ReactModule;
 
 @ReactModule(name = ClipboardModule.NAME)
-public class ClipboardModule extends ContextBaseJavaModule {
+public class ClipboardModule extends ReactContextBaseJavaModule {
+    protected final ReactApplicationContext reactContext;
 
-    public ClipboardModule(ReactApplicationContext reactContext) {
+    public ClipboardModule(ReactApplicationContext reactContext)
+    {
         super(reactContext);
+        this.reactContext = reactContext;
     }
 
     public static final String NAME = "ClipboardModule";
@@ -28,7 +31,7 @@ public class ClipboardModule extends ContextBaseJavaModule {
     }
 
     private ClipboardManager getClipboardService() {
-        return (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        return (ClipboardManager) reactContext.getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     @ReactMethod

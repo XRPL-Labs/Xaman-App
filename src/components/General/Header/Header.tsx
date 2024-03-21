@@ -126,19 +126,21 @@ const Children = ({
 
 /* Component ==================================================================== */
 class Header extends PureComponent<Props> {
-    static Height = AppSizes.heightPercentageToDP(9) + (Platform.OS === 'ios' ? AppSizes.statusBarHeight : 0);
+    static Height = AppSizes.heightPercentageToDP(9);
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Header.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         placement: 'center',
     };
 
-    getChildStyle = (position: 'left' | 'right' | 'center') => {
+    getChildStyle = (position: 'left' | 'right' | 'center'): ViewStyle => {
         const { placement, centerComponent } = this.props;
 
         const positions = ['left', 'center', 'right'];
 
         if (placement !== 'center' && !centerComponent && position === 'center') {
-            return null;
+            return {};
         }
 
         if (positions.filter((p) => p !== placement).indexOf(position) === -1) {
@@ -152,7 +154,14 @@ class Header extends PureComponent<Props> {
             this.props;
 
         return (
-            <View style={[styles.container, backgroundColor && { backgroundColor }, containerStyle]}>
+            <View
+                style={[
+                    styles.container,
+                    backgroundColor ? { backgroundColor } : {},
+                    { height: Header.Height },
+                    containerStyle,
+                ]}
+            >
                 <Children style={this.getChildStyle('left')} placement="left">
                     {leftComponent}
                 </Children>
@@ -160,12 +169,14 @@ class Header extends PureComponent<Props> {
                 <Children
                     style={[
                         this.getChildStyle('center'),
-                        placement !== 'center' && {
-                            paddingHorizontal: Platform.select({
-                                android: 16,
-                                default: 15,
-                            }),
-                        },
+                        placement !== 'center'
+                            ? {
+                                  paddingHorizontal: Platform.select({
+                                      android: 16,
+                                      default: 15,
+                                  }),
+                              }
+                            : {},
                     ]}
                     placement="center"
                 >

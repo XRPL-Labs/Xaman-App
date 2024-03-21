@@ -11,13 +11,13 @@ Feature: Linking
 
 
     Scenario: Launch the app with sign request link
-        Then I launch the app with url 'https://xumm.app/sign/511dc0b7-ef5c-4cc6-8eb5-7071133a86b4'
+        Then I launch the app with url 'https://xumm.app/sign/2d87bba7-12f8-4b69-a9ac-8bccfbd3d04b'
         Given I should see alert with content 'Payload handled by another client'
         Then I tap alert button with label 'OK'
 
 
-    Scenario: Open the sign requst link in foreground
-        Then I open the url 'https://xumm.app/sign/511dc0b7-ef5c-4cc6-8eb5-7071133a86b4'
+    Scenario: Open the sign request link in foreground
+        Then I open the url 'https://xumm.app/sign/2d87bba7-12f8-4b69-a9ac-8bccfbd3d04b'
         Given I should see alert with content 'Payload handled by another client'
         Then I tap alert button with label 'OK'
 

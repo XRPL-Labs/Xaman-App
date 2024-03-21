@@ -13,9 +13,10 @@ export interface PayIDInfo {
 }
 
 export interface AccountNameType {
-    address?: string;
-    name: string;
-    source: string;
+    address: string;
+    tag?: number;
+    name?: string;
+    source?: string;
     kycApproved?: boolean;
 }
 
@@ -29,10 +30,11 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string, tag = '', internal = false): Promise<AccountNameType> => {
+    (address: string, tag?: number, internal = false): Promise<AccountNameType> => {
         return new Promise((resolve) => {
             const notFound = {
                 address,
+                tag,
                 name: '',
                 source: '',
             };
@@ -44,12 +46,15 @@ const getAccountName = memoize(
 
             // check address  book
             try {
-                const filter = { address, destinationTag: tag };
-                const contact = ContactRepository.findOne(filter);
+                const contact = ContactRepository.findOne({
+                    address,
+                    destinationTag: `${tag ?? ''}`,
+                });
 
                 if (contact) {
                     resolve({
                         address,
+                        tag,
                         name: contact.name,
                         source: 'contacts',
                     });
@@ -65,6 +70,7 @@ const getAccountName = memoize(
                 if (account) {
                     resolve({
                         address,
+                        tag,
                         name: account.label,
                         source: 'accounts',
                     });
@@ -86,6 +92,7 @@ const getAccountName = memoize(
                     if (res) {
                         resolve({
                             address,
+                            tag,
                             name: res.name,
                             source: res.source?.replace('internal:', '').replace('.com', ''),
                             kycApproved: res.kycApproved,
@@ -99,7 +106,7 @@ const getAccountName = memoize(
                 });
         });
     },
-    (address: string, tag = '') => `${address}${tag}`,
+    (address: string, tag) => `${address}${tag ?? ''}`,
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
@@ -133,7 +140,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             const accountInfo = await LedgerService.getAccountInfo(address);
 
             // account doesn't exist, no need to check account risk
-            if (has(accountInfo, 'error')) {
+            if ('error' in accountInfo) {
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     resolve(assign(info, { exist: false }));
                     return;
@@ -146,7 +153,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
             // if balance is more than 1m possibly exchange account
             if (has(account_data, ['Balance'])) {
-                if (new Amount(account_data.Balance, true).dropsToNative(true) > 1000000) {
+                if (new Amount(account_data.Balance, true).dropsToNative().toNumber() > 1000000) {
                     assign(info, { possibleExchange: true });
                 }
             }
@@ -154,33 +161,36 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             // check for black hole
             if (has(account_data, ['RegularKey'])) {
                 if (
-                    account_flags.disableMasterKey &&
-                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
+                    account_flags?.disableMasterKey &&
+                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(
+                        account_data.RegularKey ?? '',
+                    ) > -1
                 ) {
                     assign(info, { blackHole: true });
                 }
             }
 
             // check for disallow incoming XRP
-            if (account_flags.disallowIncomingXRP) {
+            if (account_flags?.disallowIncomingXRP) {
                 assign(info, { disallowIncomingXRP: true });
             }
 
             if (get(accountAdvisory, 'force_dtag')) {
                 // first check on account advisory
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
-            } else if (account_flags.requireDestinationTag) {
+            } else if (account_flags?.requireDestinationTag) {
                 // check if account have the required destination tag flag set
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
             } else {
                 // scan the most recent transactions of the account for the destination tags
-                const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
+                const transactionsResp = await LedgerService.getTransactions(address, undefined, 200);
                 if (
-                    typeof accountTXS.transactions !== 'undefined' &&
-                    accountTXS.transactions &&
-                    accountTXS.transactions.length > 0
+                    !('error' in transactionsResp) &&
+                    typeof transactionsResp.transactions !== 'undefined' &&
+                    transactionsResp.transactions &&
+                    transactionsResp.transactions.length > 0
                 ) {
-                    const incomingTXS = accountTXS.transactions.filter((tx) => {
+                    const incomingTXS = transactionsResp.transactions.filter((tx) => {
                         return tx.tx.Destination === address;
                     });
 
@@ -192,7 +202,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                         );
                     }).length;
 
-                    const senders = accountTXS.transactions.map((tx) => {
+                    const senders = transactionsResp.transactions.map((tx) => {
                         return tx.tx.Account || '';
                     });
 
@@ -215,7 +225,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     });
 };
 
-const getPayIdInfo = (payId: string): Promise<PayIDInfo> => {
+const getPayIdInfo = (payId: string): Promise<PayIDInfo | undefined> => {
     return new Promise((resolve) => {
         BackendService.lookup(payId)
             .then((res: any) => {

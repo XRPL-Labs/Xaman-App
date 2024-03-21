@@ -1,3 +1,3 @@
-export { default as GenesisMint } from './GenesisMintClass';
-export { default as GenesisMintValidation } from './GenesisMintValidation';
-export { default as GenesisMintInfo } from './GenesisMintInfo';
+export { default as GenesisMint } from './GenesisMint.class';
+export { default as GenesisMintValidation } from './GenesisMint.validation';
+export { default as GenesisMintInfo } from './GenesisMint.info';

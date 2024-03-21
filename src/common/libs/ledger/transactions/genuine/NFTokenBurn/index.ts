@@ -1,3 +1,3 @@
-export { default as NFTokenBurn } from './NFTokenBurnClass';
-export { default as NFTokenBurnValidation } from './NFTokenBurnValidation';
-export { default as NFTokenBurnInfo } from './NFTokenBurnInfo';
+export { default as NFTokenBurn } from './NFTokenBurn.class';
+export { default as NFTokenBurnValidation } from './NFTokenBurn.validation';
+export { default as NFTokenBurnInfo } from './NFTokenBurn.info';

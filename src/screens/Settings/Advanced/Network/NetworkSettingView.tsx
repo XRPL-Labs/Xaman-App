@@ -21,14 +21,23 @@ import { NodeList } from '@components/Modules';
 
 import Localize from '@locale';
 
-// style
+import { NetworkRailsSyncOverlayProps } from '@screens/Overlay/NetworkRailsSync';
+
 import styles from './styles';
+import { NetworkType } from '@store/types';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
-    dataSource: any;
+    dataSource: {
+        key: string;
+        title: string;
+        color: string;
+        defaultNode: NodeModel;
+        type: NetworkType;
+        data: NodeModel[];
+    }[];
 }
 
 /* Component ==================================================================== */
@@ -56,7 +65,7 @@ class NetworkSettingView extends Component<Props, State> {
     updateDataSource = () => {
         const networks = NetworkRepository.getNetworks();
 
-        const dataSource = [] as any[];
+        const dataSource: any[] = [];
 
         networks.forEach((network: NetworkModel) => {
             dataSource.push({
@@ -77,6 +86,10 @@ class NetworkSettingView extends Component<Props, State> {
     onNodePress = async (node: NodeModel) => {
         // get network
         const network = first(node.linkingObjects<NetworkModel>('Network', 'nodes'));
+
+        if (!network) {
+            throw new Error('Node does not have linked network object');
+        }
 
         // if this is the only node for this network then show a message
         if (network.nodes.length === 1) {
@@ -120,7 +133,7 @@ class NetworkSettingView extends Component<Props, State> {
     };
 
     showNetworkRailsSync = async () => {
-        Navigator.showOverlay(AppScreens.Overlay.NetworkRailsSync, {
+        Navigator.showOverlay<NetworkRailsSyncOverlayProps>(AppScreens.Overlay.NetworkRailsSync, {
             onSuccessSync: this.onSuccessSync,
         });
     };

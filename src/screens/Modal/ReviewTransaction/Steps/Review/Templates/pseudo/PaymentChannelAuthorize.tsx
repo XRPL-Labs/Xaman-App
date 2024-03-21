@@ -25,7 +25,6 @@ class PaymentChannelAuthorizeTemplate extends Component<Props, State> {
         this.state = {};
     }
 
-    // @ts-ignore
     render() {
         const { transaction } = this.props;
 
@@ -34,8 +33,8 @@ class PaymentChannelAuthorizeTemplate extends Component<Props, State> {
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>
                 <View style={styles.contentBox}>
                     <AmountText
-                        value={transaction.Amount.value}
-                        currency={transaction.Amount.currency}
+                        value={transaction.Amount!.value}
+                        currency={transaction.Amount!.currency}
                         style={styles.amount}
                         immutable
                     />

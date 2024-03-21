@@ -1,3 +1,3 @@
-export { default as SetRegularKey } from './SetRegularKeyClass';
-export { default as SetRegularKeyValidation } from './SetRegularKeyValidation';
-export { default as SetRegularKeyInfo } from './SetRegularKeyInfo';
+export { default as SetRegularKey } from './SetRegularKey.class';
+export { default as SetRegularKeyValidation } from './SetRegularKey.validation';
+export { default as SetRegularKeyInfo } from './SetRegularKey.info';
