@@ -9,6 +9,7 @@ export default StyleService.create({
     },
     webView: {
         backgroundColor: '$background',
+        opacity: 0.99,
     },
     loadingStyle: {
         zIndex: 999999,

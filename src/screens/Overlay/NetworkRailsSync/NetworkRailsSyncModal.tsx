@@ -82,7 +82,7 @@ class NetworkRailsSyncModal extends Component<Props, State> {
         this.onDismissPress();
 
         // show error
-        Alert.alert(Localize.t('global.unexpectedErrorOccurred'), error?.message);
+        Alert.alert(Localize.t('global.error'), error?.message);
 
         // callback
         if (typeof onError === 'function') {
@@ -185,9 +185,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
         switch (type) {
             case NetworkRailsChangesType.RemovedNetwork:
                 return (
-                    <View style={[styles.changesRow, styles.changesRowRed]}>
+                    <View key={`${type}-${value}`} style={[styles.changesRow, styles.changesRowRed]}>
                         <View style={AppStyles.flex1}>
-                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesRemoved]}>
+                            <Text style={[styles.changesText, styles.changesRemoved]}>
                                 {Localize.t('settings.removeNetwork')}
                             </Text>
                         </View>
@@ -196,9 +196,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                 );
             case NetworkRailsChangesType.AddedNode:
                 return (
-                    <View style={[styles.changesRow, styles.changesRowGreen]}>
+                    <View key={`${type}-${value}`} style={[styles.changesRow, styles.changesRowGreen]}>
                         <View style={AppStyles.flex1}>
-                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesAdded]}>
+                            <Text style={[styles.changesText, styles.changesAdded]}>
                                 {Localize.t('settings.addedNode')}: <Text style={styles.changesValue}>{value}</Text>
                             </Text>
                         </View>
@@ -207,9 +207,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                 );
             case NetworkRailsChangesType.RemovedNode:
                 return (
-                    <View style={[styles.changesRow, styles.changesRowRed]}>
+                    <View key={`${type}-${value}`} style={[styles.changesRow, styles.changesRowRed]}>
                         <View style={AppStyles.flex1}>
-                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesRemoved]}>
+                            <Text style={[styles.changesText, styles.changesRemoved]}>
                                 {Localize.t('settings.removedNode')}: <Text style={styles.changesValue}>{value}</Text>
                             </Text>
                         </View>
@@ -218,9 +218,9 @@ class NetworkRailsSyncModal extends Component<Props, State> {
                 );
             case NetworkRailsChangesType.ChangedProperty:
                 return (
-                    <View style={[styles.changesRow, styles.changesRowOrange]}>
+                    <View key={`${type}-${value}`} style={[styles.changesRow, styles.changesRowOrange]}>
                         <View style={AppStyles.flex1}>
-                            <Text key={`${type}-${value}`} style={[styles.changesText, styles.changesModified]}>
+                            <Text style={[styles.changesText, styles.changesModified]}>
                                 {Localize.t('settings.changedProperty')}:{' '}
                                 <Text style={styles.changesValue}>{value}</Text>
                             </Text>

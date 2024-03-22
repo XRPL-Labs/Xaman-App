@@ -17,6 +17,7 @@ import Localize from '@locale';
 
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
+import BigNumber from 'bignumber.js';
 
 /* Types ==================================================================== */
 interface Props {
@@ -178,7 +179,7 @@ class NativeItem extends Component<Props, State> {
         let prefix: any;
 
         if (showFiatRate && fiatRate) {
-            balance = Number(availableBalance) * Number(fiatRate.rate);
+            balance = new BigNumber(availableBalance).multipliedBy(fiatRate.rate).decimalPlaces(2).toNumber();
             prefix = `${fiatRate.symbol} `;
         } else {
             balance = availableBalance;
@@ -226,7 +227,7 @@ class NativeItem extends Component<Props, State> {
         const accountReserve = CalculateTotalReserve(account);
 
         if (showFiatRate && fiatRate) {
-            totalReserve = Number(accountReserve) * Number(fiatRate.rate);
+            totalReserve = new BigNumber(accountReserve).multipliedBy(fiatRate.rate).decimalPlaces(2).toNumber();
             prefix = `${fiatRate.symbol} `;
         } else {
             totalReserve = accountReserve;

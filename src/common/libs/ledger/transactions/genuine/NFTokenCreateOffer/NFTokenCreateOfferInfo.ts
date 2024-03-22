@@ -7,6 +7,7 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import Localize from '@locale';
 
 import NFTokenCreateOffer from './NFTokenCreateOfferClass';
+import { isUndefined } from 'lodash';
 
 /* Descriptor ==================================================================== */
 const NFTokenCreateOfferInfo = {
@@ -17,7 +18,7 @@ const NFTokenCreateOfferInfo = {
     getDescription: (tx: NFTokenCreateOffer): string => {
         let content = '';
 
-        if (tx.Flags.SellToken) {
+        if (tx.Flags?.SellToken) {
             content += Localize.t('events.nftOfferSellExplain', {
                 address: tx.Account.address,
                 tokenID: tx.NFTokenID,
@@ -33,12 +34,12 @@ const NFTokenCreateOfferInfo = {
             });
         }
 
-        if (tx.Owner) {
+        if (!isUndefined(tx.Owner)) {
             content += '\n';
             content += Localize.t('events.theNftOwnerIs', { address: tx.Owner });
         }
 
-        if (tx.Destination) {
+        if (!isUndefined(tx.Destination?.address)) {
             content += '\n';
             content += Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: tx.Destination.address });
         }

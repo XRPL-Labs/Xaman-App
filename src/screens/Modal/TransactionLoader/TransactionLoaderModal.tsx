@@ -3,8 +3,6 @@
  * A Modal to load transaction base on the transaction hash and redirect to details screen
  */
 
-import { get } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Text, InteractionManager, ImageBackground } from 'react-native';
 
@@ -125,15 +123,12 @@ class TransactionLoaderModal extends Component<Props, State> {
                 return;
             }
 
-            if (get(resp, 'error')) {
+            if ('error' in resp) {
                 this.setState({
                     error: true,
                 });
                 return;
             }
-
-            // separate transaction meta
-            const { meta } = resp;
 
             // cleanup
             delete resp.meta;
@@ -144,7 +139,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             delete resp.inLedger;
 
             // build transaction instance
-            const tx = TransactionFactory.fromLedger({ tx: resp, meta });
+            const transactionInstance = TransactionFactory.fromJson(resp);
 
             // switch to the right account if necessary
             const coreSettings = CoreRepository.getSettings();
@@ -160,13 +155,18 @@ class TransactionLoaderModal extends Component<Props, State> {
 
             // redirect to details screen with a little-bit delay
             setTimeout(() => {
-                Navigator.showModal(AppScreens.Transaction.Details, { tx, account, asModal: true });
+                Navigator.showModal(AppScreens.Transaction.Details, {
+                    tx: transactionInstance,
+                    account,
+                    asModal: true,
+                });
             }, 500);
         } catch (error) {
             if (!this.mounted) {
                 return;
             }
             this.setState({
+                isLoading: false,
                 error: true,
             });
         }

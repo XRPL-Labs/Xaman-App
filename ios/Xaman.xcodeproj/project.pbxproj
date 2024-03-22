@@ -23,6 +23,7 @@
 		A22A151A28C0BECA001A632E /* Cipher.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151928C0BECA001A632E /* Cipher.m */; };
 		A22A151E28C20014001A632E /* V2+AesGcm.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151D28C20014001A632E /* V2+AesGcm.m */; };
 		A22A152028C61E97001A632E /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22A151F28C61E97001A632E /* Crypto.swift */; };
+		A23194142BA8E22A0023B466 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A23194132BA8E22A0023B466 /* PrivacyInfo.xcprivacy */; };
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
 		A2771FC229828E33008A95E3 /* security.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2771FC129828E33008A95E3 /* security.txt */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
@@ -106,6 +107,7 @@
 		A22A151C28C20014001A632E /* V2+AesGcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "V2+AesGcm.h"; sourceTree = "<group>"; };
 		A22A151D28C20014001A632E /* V2+AesGcm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "V2+AesGcm.m"; sourceTree = "<group>"; };
 		A22A151F28C61E97001A632E /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
+		A23194132BA8E22A0023B466 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
 		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
 		A2771FC129828E33008A95E3 /* security.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = security.txt; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 		13B07FAE1A68108700A75B9A /* Xaman */ = {
 			isa = PBXGroup;
 			children = (
+				A23194132BA8E22A0023B466 /* PrivacyInfo.xcprivacy */,
 				A2771FC129828E33008A95E3 /* security.txt */,
 				A2B145CC243F734600E952B6 /* Xaman.entitlements */,
 				A2AFF109243E79C30007005E /* Fonts */,
@@ -649,6 +652,7 @@
 				A2AFF133243E79C30007005E /* Proxima Nova Extrabold.otf in Resources */,
 				A2AFF12F243E79C30007005E /* UbuntuMono-BoldItalic.ttf in Resources */,
 				A2AFF131243E79C30007005E /* Proxima Nova Alt Bold.otf in Resources */,
+				A23194142BA8E22A0023B466 /* PrivacyInfo.xcprivacy in Resources */,
 				A2AFF136243E79C30007005E /* Proxima Nova Black.otf in Resources */,
 				A2AFF130243E79C30007005E /* UbuntuMono-Bold.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
@@ -1106,7 +1110,7 @@
 				CODE_SIGN_ENTITLEMENTS = Xaman/Xaman.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -1117,7 +1121,7 @@
 				INFOPLIST_FILE = Xaman/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.6.0;
+				MARKETING_VERSION = 2.8.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1142,13 +1146,13 @@
 				CODE_SIGN_ENTITLEMENTS = Xaman/Xaman.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LK5BBJNJZ6;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = Xaman/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.6.0;
+				MARKETING_VERSION = 2.8.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

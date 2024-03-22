@@ -56,7 +56,7 @@ class AppService extends EventEmitter {
         this.prevAppState = undefined;
         this.currentAppState = AppStateStatus.Active;
 
-        this.logger = LoggerService.createLogger('AppState');
+        this.logger = LoggerService.createLogger('AppService');
     }
 
     initialize = () => {
@@ -75,7 +75,7 @@ class AppService extends EventEmitter {
     };
 
     // check if we need to show the App change log
-    // this log will be show after user update the app
+    // this screen will be shown after user update the app to the new version
     checkShowChangeLog = async () => {
         const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
@@ -131,7 +131,8 @@ class AppService extends EventEmitter {
                     );
                 }
             })
-            .catch(() => {
+            .catch((error: Error) => {
+                this.logger.warn('checkAppUpdate', error);
                 // ignore
             });
     };

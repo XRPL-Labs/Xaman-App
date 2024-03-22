@@ -9,7 +9,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 
-import { TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { AccountModel } from '@store/models';
 

@@ -8,14 +8,15 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class URITokenMint extends BaseTransaction {
     public static Type = TransactionTypes.URITokenMint as const;
     public readonly Type = URITokenMint.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set
@@ -35,9 +36,7 @@ class URITokenMint extends BaseTransaction {
     }
 
     get Amount(): AmountType {
-        let amount = undefined as AmountType;
-
-        amount = get(this, ['tx', 'Amount']);
+        const amount = get(this, ['tx', 'Amount']);
 
         if (isUndefined(amount)) return undefined;
 

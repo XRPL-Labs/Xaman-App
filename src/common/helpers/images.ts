@@ -47,6 +47,8 @@ export const Images = {
     ImageCoinWalletLight: buildImageSource('ImageCoinWalletLight', 'image_coin_wallet_light'),
     ImageUnknownTrustLine: buildImageSource('ImageUnknownTrustLine', 'image_unknown_trustline'),
     ImageUnknownTrustLineLight: buildImageSource('ImageUnknownTrustLineLight', 'image_unknown_trustline_light'),
+    ImageUnknownAMM: buildImageSource('ImageUnknownAMM', 'image_unknown_amm'),
+    ImageUnknownAMMLight: buildImageSource('ImageUnknownAMMLight', 'image_unknown_amm_light'),
     ImageUnknownNFT: buildImageSource('ImageUnknownNFT', 'image_unknown_nft'),
     ImageTriangle: buildImageSource('ImageTriangle', 'image_triangle'),
     ImageSuccessCheckMark: buildImageSource('ImageSuccessCheckMark', 'image_success_check_mark'),

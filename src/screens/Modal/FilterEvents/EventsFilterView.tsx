@@ -31,6 +31,8 @@ export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
     NFT = 'NFT',
+    URIToken = 'URIToken',
+    AMM = 'AMM',
     Other = 'Other',
 }
 
@@ -237,6 +239,16 @@ class EventsFilterView extends Component<Props, State> {
                                 'TransactionType',
                                 Localize.t(`global.${TransactionTypes.NFT.toLowerCase()}`),
                                 TransactionTypes.NFT,
+                            )}
+                            {this.renderButton(
+                                'TransactionType',
+                                Localize.t(`global.${TransactionTypes.URIToken.toLowerCase()}`),
+                                TransactionTypes.URIToken,
+                            )}
+                            {this.renderButton(
+                                'TransactionType',
+                                Localize.t(`global.${TransactionTypes.AMM.toLowerCase()}`),
+                                TransactionTypes.AMM,
                             )}
                             {this.renderButton(
                                 'TransactionType',

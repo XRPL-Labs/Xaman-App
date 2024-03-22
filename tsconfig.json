@@ -40,7 +40,7 @@
     "noUnusedLocals": false,
     "strict": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "typings/**/*.d.ts"],
   "exclude": ["node_modules", "**/*.test.tsx", "**/*.test.ts", "**/*.stories.tsx","**/*.stories.ts", "**/*.spec.ts", "**/__mocks__/*.ts"],
   "types": ["typePatches"]
 }

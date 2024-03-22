@@ -1,35 +1,45 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
 import BigNumber from 'bignumber.js';
-import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues } from 'lodash';
+import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues, first, filter } from 'lodash';
 
 import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
-import { BalanceChangeType, OfferStatus, OwnerCountChangeType, ClaimRewardStatus } from './types';
+import { BalanceChangeType, OfferStatus, OwnerCountChangeType, OperationActions } from './types';
+import { HookExecution } from '../types/common';
 
 /* Class ==================================================================== */
 class Meta {
     nodes: any[];
+    hookExecutions: HookExecution[];
 
     constructor(meta: any) {
-        if (!meta.AffectedNodes) {
-            this.nodes = [];
-        }
-        this.nodes = meta.AffectedNodes?.map(this.normalizeNode) || [];
+        this.nodes =
+            meta?.AffectedNodes?.map((affectedNode: any) => {
+                const diffType = Object.keys(affectedNode)[0];
+                const node = affectedNode[diffType];
+                return {
+                    ...node,
+                    diffType,
+                    entryType: node.LedgerEntryType,
+                    ledgerIndex: node.LedgerIndex,
+                    newFields: node.NewFields || {},
+                    finalFields: node.FinalFields || {},
+                    previousFields: node.PreviousFields || {},
+                };
+            }) || [];
+
+        this.hookExecutions = meta?.HookExecutions?.map((execution: any) => execution.HookExecution) || [];
     }
 
-    private normalizeNode = (affectedNode: any) => {
-        const diffType = Object.keys(affectedNode)[0];
-        const node = affectedNode[diffType];
-        return {
-            ...node,
-            diffType,
-            entryType: node.LedgerEntryType,
-            ledgerIndex: node.LedgerIndex,
-            newFields: node.NewFields || {},
-            finalFields: node.FinalFields || {},
-            previousFields: node.PreviousFields || {},
-        };
+    private getOperationAction = (value: BigNumber): OperationActions => {
+        if (value.isGreaterThan(0)) {
+            return OperationActions.INC;
+        }
+        if (value.isLessThan(0)) {
+            return OperationActions.DEC;
+        }
+        return OperationActions.INC;
     };
 
     private combineChanges = (group: any) => {
@@ -37,16 +47,15 @@ class Meta {
             groupBy(group, (node) => [node.balance.action, node.balance.currency]),
             (changes) => {
                 const change = changes[0].balance;
-                // must of the case this applies
+                // in most of the case's this applies
                 if (changes.length === 1) {
                     return change;
                 }
                 // in some case's like applied path multiple of same currency can be transferred
-                // so we need to combine the values with out considering the issuer
+                // we need to combine the values without considering the issuer
                 return {
                     currency: change.currency,
                     issuer: change.issuer,
-                    // @ts-ignore
                     value: BigNumber.sum(...flatMap(changes, 'balance.value'))
                         .decimalPlaces(8)
                         .toString(10),
@@ -104,7 +113,7 @@ class Meta {
         return {
             address: node.finalFields.Account || node.newFields.Account,
             value: valueNumber.absoluteValue().toNumber(),
-            action: valueNumber.isNegative() ? 'DEC' : 'INC',
+            action: this.getOperationAction(valueNumber),
         };
     };
 
@@ -120,9 +129,11 @@ class Meta {
         return {
             address: node.finalFields.Account || node.newFields.Account,
             balance: {
+                // @ts-ignore
+                issuer: undefined,
                 currency: NetworkService.getNativeAsset(),
                 value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
-                action: valueNumber.isNegative() ? 'DEC' : 'INC',
+                action: this.getOperationAction(valueNumber),
             },
         };
     };
@@ -136,7 +147,7 @@ class Meta {
                 issuer: quantity.address,
                 currency: quantity.balance.currency,
                 value: negatedBalance.absoluteValue().decimalPlaces(8).toString(10),
-                action: negatedBalance.isNegative() ? 'DEC' : 'INC',
+                action: this.getOperationAction(negatedBalance),
             },
         };
     };
@@ -162,7 +173,7 @@ class Meta {
                 issuer: fields.HighLimit.issuer,
                 currency: fields.Balance.currency,
                 value: value.absoluteValue().decimalPlaces(8).toString(10),
-                action: value.isNegative() ? 'DEC' : 'INC',
+                action: this.getOperationAction(value),
             },
         };
 
@@ -234,7 +245,6 @@ class Meta {
             return [];
         });
 
-        // @ts-ignore
         return this.groupByAddress(compact(flatten(values)));
     };
 
@@ -260,24 +270,29 @@ class Meta {
         return compact(values);
     };
 
-    // TODO: fix me
-    parseClaimRewardStatus = (): ClaimRewardStatus => {
-        // if there is an emitted transaction from "ADDRESS_ONE", it means the reward has been claimed
-        const ADDRESS_ONE = 'rrrrrrrrrrrrrrrrrrrrBZbvji';
-
-        const emittedTx = find(this.nodes, (node) => {
-            return (
-                node.entryType === 'EmittedTxn' &&
-                get(node, 'newFields.EmittedTxn.Account') === ADDRESS_ONE &&
-                get(node, 'newFields.EmittedTxn.TransactionType') === 'GenesisMint'
-            );
-        });
-
-        if (emittedTx) {
-            return ClaimRewardStatus.OptIn;
+    parseHookExecutions = (): HookExecution[] => {
+        // if hook executions already in the meta return
+        if (this.hookExecutions) {
+            return this.hookExecutions;
         }
 
-        return ClaimRewardStatus.OptOut;
+        // calculate from created nodes
+        const executions = this.nodes.map((node) => {
+            if (node.diffType === 'CreatedNode' && node.entryType === 'EmittedTxn') {
+                return node.CreatedNode.NewFields.EmittedTxn;
+            }
+            return undefined;
+        });
+
+        return compact(executions);
+    };
+
+    parseAMMAccountID = () => {
+        const account = first(filter(this.nodes, (node: any) => node.entryType === 'AMM'));
+
+        if (account) return account.FinalFields?.Account || account.NewFields?.Account;
+
+        return undefined;
     };
 }
 

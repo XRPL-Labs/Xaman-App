@@ -2,10 +2,10 @@
  * Add Token Screen
  */
 
-import { first, get, values, find, isEmpty } from 'lodash';
+import { find, first, get, isEmpty, values } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, Alert, InteractionManager } from 'react-native';
+import { Alert, Image, InteractionManager, ScrollView, Text, View } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
@@ -15,6 +15,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { Payload } from '@common/libs/payload';
 import { AccountRepository } from '@store/repositories';
@@ -22,19 +23,19 @@ import { AccountModel } from '@store/models';
 
 // components
 import {
-    TouchableDebounce,
+    ActionPanel,
     Button,
     Footer,
-    ActionPanel,
+    InfoMessage,
     LoadingIndicator,
     Spacer,
-    InfoMessage,
+    TouchableDebounce,
 } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -170,6 +171,7 @@ class AddTokenModal extends Component<Props, State> {
         }
 
         const trustSet = new TrustSet({
+            TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             Flags: 131072, // tfSetNoRipple
             LimitAmount: {

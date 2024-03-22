@@ -105,6 +105,9 @@ public class AppUpdateModule extends ReactContextBaseJavaModule implements Insta
                     promise.resolve(false);
                 }
             });
+            appUpdateInfoTask.addOnFailureListener(
+                    promise::reject
+            );
         } catch (Exception e) {
             promise.reject(e);
         }

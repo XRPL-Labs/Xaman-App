@@ -1,3 +1,5 @@
+import { isUndefined } from 'lodash';
+
 import Localize from '@locale';
 
 import NFTokenMint from './NFTokenMintClass';
@@ -13,12 +15,12 @@ const NFTokenMintInfo = {
 
         content += Localize.t('events.theTokenIdIs', { tokenID: tx.NFTokenID });
 
-        if (typeof tx.TransferFee === 'number') {
+        if (!isUndefined(tx.TransferFee)) {
             content += '\n';
             content += Localize.t('events.theTokenHasATransferFee', { transferFee: tx.TransferFee });
         }
 
-        if (typeof tx.NFTokenTaxon === 'number') {
+        if (!isUndefined(tx.NFTokenTaxon)) {
             content += '\n';
             content += Localize.t('events.theTokenTaxonForThisTokenIs', { taxon: tx.NFTokenTaxon });
         }

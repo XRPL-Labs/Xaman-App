@@ -4,14 +4,15 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 
 /* Types ==================================================================== */
 import { SignerEntry } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class SignerListSet extends BaseTransaction {
     public static Type = TransactionTypes.SignerListSet as const;
     public readonly Type = SignerListSet.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set

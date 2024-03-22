@@ -15,14 +15,9 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 
 import { EncodeCTID } from '@common/utils/codec';
+import { StringTypeCheck } from '@common/utils/string';
 
-import {
-    SignedObjectType,
-    SubmitResultType,
-    TransactionJSONType,
-    TransactionTypes,
-    VerifyResultType,
-} from '@common/libs/ledger/types';
+import { SignedObjectType, SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import LedgerDate from '@common/libs/ledger/parser/common/date';
@@ -31,20 +26,31 @@ import Flag from '@common/libs/ledger/parser/common/flag';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
 /* Types ==================================================================== */
-import { Account, AmountType, MemoType, Signer, TransactionResult } from '@common/libs/ledger/parser/types';
-import { StringTypeCheck } from '@common/utils/string';
+import {
+    Account,
+    AmountType,
+    MemoType,
+    OperationActions,
+    Signer,
+    TransactionResult,
+} from '@common/libs/ledger/parser/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class BaseTransaction {
-    protected tx: TransactionJSONType;
-    protected meta: any;
+    protected tx: TransactionJson;
+    protected meta: TransactionMetadata;
     protected fields: string[];
 
     private submitResult?: SubmitResultType;
     private verifyResult?: VerifyResultType;
     private isAborted: boolean;
     private isSubmitted: boolean;
+
+    private hookExecutions: any[];
     private balanceChanges: Map<string, any>;
+    private lPTokenChanges: Map<string, any>;
     private ownerCountChanges: Map<string, any>;
 
     public SignedBlob: string;
@@ -52,13 +58,13 @@ class BaseTransaction {
     public SignMethod: 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
     public SignerAccount: any;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         if (!isUndefined(tx)) {
             this.tx = tx;
             this.meta = meta;
         } else {
-            this.tx = {};
-            this.meta = {};
+            this.tx = {} as any;
+            this.meta = {} as any;
         }
 
         this.fields = [
@@ -83,6 +89,7 @@ class BaseTransaction {
         // memorize balance and owner count changes
         this.balanceChanges = new Map();
         this.ownerCountChanges = new Map();
+        this.lPTokenChanges = new Map();
     }
 
     /**
@@ -363,7 +370,7 @@ class BaseTransaction {
      * get transaction balance changes
      * @returns changes
      */
-    BalanceChange(owner?: string) {
+    BalanceChange(owner?: string, unfiltered?: boolean) {
         if (!owner) {
             owner = this.Account.address;
         }
@@ -375,17 +382,24 @@ class BaseTransaction {
 
         const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
 
+        if (unfiltered) {
+            return balanceChanges;
+        }
+
         // if cross currency remove fee from changes
-        if (size(filter(balanceChanges, { action: 'DEC' })) > 1) {
-            const decreaseNative = find(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
+        if (size(filter(balanceChanges, { action: OperationActions.DEC })) > 1) {
+            const decreaseNative = find(balanceChanges, {
+                action: OperationActions.DEC,
+                currency: NetworkService.getNativeAsset(),
+            });
             if (decreaseNative.value === this.Fee) {
-                remove(balanceChanges, { action: 'DEC', currency: NetworkService.getNativeAsset() });
+                remove(balanceChanges, { action: OperationActions.DEC, currency: NetworkService.getNativeAsset() });
             }
         }
 
         const changes = {
-            sent: find(balanceChanges, (o) => o.action === 'DEC'),
-            received: find(balanceChanges, (o) => o.action === 'INC'),
+            sent: find(balanceChanges, (o) => o.action === OperationActions.DEC),
+            received: find(balanceChanges, (o) => o.action === OperationActions.INC),
         } as { sent: AmountType; received: AmountType };
 
         // remove fee from transaction owner balance changes
@@ -428,6 +442,34 @@ class BaseTransaction {
     }
 
     /**
+     * get transaction lp token balance changes
+     * @returns changes
+     */
+    LPTokenChanges(owner?: string) {
+        if (!owner) {
+            owner = this.Account.address;
+        }
+
+        // if already calculated return value
+        if (this.lPTokenChanges.has(owner)) {
+            return this.lPTokenChanges.get(owner);
+        }
+
+        const balanceChanges = get(new Meta(this.meta).parseBalanceChanges(), owner);
+
+        // find in balance changes the currency which starts with 03
+        const changes = {
+            sent: find(balanceChanges, (o) => o.action === OperationActions.DEC && o.currency.startsWith('03')),
+            received: find(balanceChanges, (o) => o.action === OperationActions.INC && o.currency.startsWith('03')),
+        } as { sent: AmountType; received: AmountType };
+
+        // memorize the changes for this account
+        this.lPTokenChanges.set(owner, changes);
+
+        return changes;
+    }
+
+    /**
      * get transaction balance changes
      * @returns changes
      */
@@ -447,6 +489,24 @@ class BaseTransaction {
         this.ownerCountChanges.set(owner, ownerChanges);
 
         return ownerChanges;
+    }
+
+    /**
+     * get transaction hook executions
+     * @returns changes
+     */
+    HookExecutions() {
+        // if value is already set return
+        if (this.hookExecutions) {
+            return this.hookExecutions;
+        }
+
+        const hookExecutions = new Meta(this.meta).parseHookExecutions();
+
+        // memorize hook executions
+        this.hookExecutions = hookExecutions;
+
+        return hookExecutions;
     }
 
     /**
@@ -595,7 +655,7 @@ class BaseTransaction {
     }
 
     // serialize transaction object to rippled tx json
-    get Json(): TransactionJSONType {
+    get Json(): TransactionJson {
         // shallow copy
         const tx = { ...this.tx };
         Object.getOwnPropertyNames(this.tx).forEach((k: string) => {
@@ -644,7 +704,8 @@ class BaseTransaction {
     }
 
     get Signers(): Array<Signer> {
-        const signers = get(this, ['tx', 'Signers']) as any;
+        const signers = get(this, ['tx', 'Signers']);
+
         return flatMap(signers, (item) => {
             return {
                 account: item.Signer.Account,

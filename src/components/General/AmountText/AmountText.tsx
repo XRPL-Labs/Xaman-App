@@ -5,18 +5,17 @@
     <AmountText />
  *
  */
-
+import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
+
 import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
-import BigNumber from 'bignumber.js';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
 import styles from './styles';
-
 /* Types ==================================================================== */
 interface Props {
     testID?: string;
@@ -286,7 +285,11 @@ class AmountText extends Component<Props, State> {
         }
 
         if (currency.length > 4 && truncateCurrency) {
-            currency = `${currency.slice(0, 4)}…`;
+            if (currency.startsWith('LP')) {
+                currency = `LP ${currency.slice(3, 7)}`;
+            } else {
+                currency = `${currency.slice(0, 4)}…`;
+            }
         }
 
         return (

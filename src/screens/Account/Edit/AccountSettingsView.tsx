@@ -379,7 +379,6 @@ class AccountSettingsView extends Component<Props, State> {
                                             : account.encryptionLevel}
                                     </Text>
                                 </View>
-
                                 {/* Change passphrase */}
                                 {account.encryptionLevel === EncryptionLevels.Passphrase && (
                                     <TouchableDebounce
@@ -388,6 +387,8 @@ class AccountSettingsView extends Component<Props, State> {
                                         onPress={this.showChangePassphrase}
                                     >
                                         <Text style={styles.label}>{Localize.t('account.changePassword')}</Text>
+                                        <Text style={styles.value} />
+                                        <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                                     </TouchableDebounce>
                                 )}
                             </Fragment>

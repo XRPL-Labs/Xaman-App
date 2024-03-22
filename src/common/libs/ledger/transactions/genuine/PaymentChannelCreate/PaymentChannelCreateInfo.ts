@@ -1,10 +1,11 @@
+import { isUndefined } from 'lodash';
 import moment from 'moment-timezone';
+
+import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
-import { LedgerObjectTypes, TransactionTypes } from '@common/libs/ledger/types';
-
-import Localize from '@locale';
+import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 import PaymentChannelCreate from './PaymentChannelCreateClass';
 
@@ -19,7 +20,7 @@ const PaymentChannelCreateInfo = {
 
         content += Localize.t(
             // @ts-ignore
-            tx.Type === LedgerObjectTypes.PayChannel
+            tx.Type === LedgerEntryTypes.PayChannel
                 ? 'events.accountCreatedAPaymentChannelTo'
                 : 'events.accountWillCreateAPaymentChannelTo',
             {
@@ -31,7 +32,7 @@ const PaymentChannelCreateInfo = {
 
         content += Localize.t('events.theChannelIdIs', {
             // @ts-ignore
-            channel: tx.Type === LedgerObjectTypes.PayChannel ? tx.Index : tx.ChannelID,
+            channel: tx.Type === LedgerEntryTypes.PayChannel ? tx.Index : tx.ChannelID,
         });
         content += '\n';
 
@@ -43,24 +44,24 @@ const PaymentChannelCreateInfo = {
             content += '\n';
         }
 
-        if (tx.Account.tag !== undefined) {
+        if (!isUndefined(tx.Account?.tag)) {
             content += Localize.t('events.theASourceTagIs', { tag: tx.Account.tag });
             content += ' \n';
         }
 
-        if (tx.Destination.tag !== undefined) {
+        if (!isUndefined(tx.Destination?.tag)) {
             content += Localize.t('events.theDestinationTagIs', { tag: tx.Destination.tag });
             content += ' \n';
         }
 
         // @ts-ignore
-        if (tx.Type === LedgerObjectTypes.PayChannel && tx.Expiration) {
+        if (tx.Type === LedgerEntryTypes.PayChannel && tx.Expiration) {
             // @ts-ignore
-            content += Localize.t('events.theChannelExpiresAt', { cancelAfter: tx.Expiration });
+            content += Localize.t('events.theChannelExpiresAt', { expiration: moment(tx.Expiration).format('LLLL') });
             content += ' \n';
         }
 
-        if (tx.SettleDelay) {
+        if (!isUndefined(tx.SettleDelay)) {
             content += Localize.t('events.theChannelHasASettlementDelay', { delay: tx.SettleDelay });
             content += ' \n';
         }

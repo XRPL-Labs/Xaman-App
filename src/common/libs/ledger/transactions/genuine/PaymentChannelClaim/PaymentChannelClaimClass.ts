@@ -8,14 +8,15 @@ import BaseTransaction from '@common/libs/ledger/transactions/genuine/BaseTransa
 
 /* Types ==================================================================== */
 import { AmountType } from '@common/libs/ledger/parser/types';
-import { TransactionJSONType, TransactionTypes } from '@common/libs/ledger/types';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class PaymentChannelClaim extends BaseTransaction {
     public static Type = TransactionTypes.PaymentChannelClaim as const;
     public readonly Type = PaymentChannelClaim.Type;
 
-    constructor(tx?: TransactionJSONType, meta?: any) {
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
 
         // set transaction type if not set

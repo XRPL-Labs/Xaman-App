@@ -133,7 +133,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             const accountInfo = await LedgerService.getAccountInfo(address);
 
             // account doesn't exist, no need to check account risk
-            if (has(accountInfo, 'error')) {
+            if ('error' in accountInfo) {
                 if (get(accountInfo, 'error') === 'actNotFound') {
                     resolve(assign(info, { exist: false }));
                     return;
@@ -174,13 +174,14 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
             } else {
                 // scan the most recent transactions of the account for the destination tags
-                const accountTXS = await LedgerService.getTransactions(address, undefined, 200);
+                const transactionsResp = await LedgerService.getTransactions(address, undefined, 200);
                 if (
-                    typeof accountTXS.transactions !== 'undefined' &&
-                    accountTXS.transactions &&
-                    accountTXS.transactions.length > 0
+                    !('error' in transactionsResp) &&
+                    typeof transactionsResp.transactions !== 'undefined' &&
+                    transactionsResp.transactions &&
+                    transactionsResp.transactions.length > 0
                 ) {
-                    const incomingTXS = accountTXS.transactions.filter((tx) => {
+                    const incomingTXS = transactionsResp.transactions.filter((tx) => {
                         return tx.tx.Destination === address;
                     });
 
@@ -192,7 +193,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
                         );
                     }).length;
 
-                    const senders = accountTXS.transactions.map((tx) => {
+                    const senders = transactionsResp.transactions.map((tx) => {
                         return tx.tx.Account || '';
                     });
 

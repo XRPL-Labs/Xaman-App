@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "2.6.0",
+  "version": "2.8.0",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -19,7 +19,7 @@
     "@react-native-firebase/app": "18.6.2",
     "@react-native-firebase/crashlytics": "18.6.2",
     "@react-native-firebase/messaging": "18.6.2",
-    "@veriff/react-native-sdk": "5.1.0",
+    "@veriff/react-native-sdk": "6.0.0",
     "bignumber.js": "9.1.2",
     "fuse.js": "6.6.2",
     "i18n-js": "4.3.2",
@@ -31,12 +31,10 @@
     "react-native-camera": "4.2.1",
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.37.0",
-    "realm": "12.3.1",
-    "ripple-binary-codec": "npm:xrpl-binary-codec-prerelease@7.0.1",
+    "realm": "12.6.0",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "9.0.1",
-    "xrpl-accountlib": "3.2.1",
-    "xrpl-client": "2.3.1",
+    "xrpl-accountlib": "3.2.9",
     "xrpl-orderbook-reader": "0.4.0",
     "xumm-string-decode": "0.6.2"
   },
@@ -88,6 +86,6 @@
     "typescript": "5.2.2"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }

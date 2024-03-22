@@ -10,20 +10,21 @@ import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CurrencyRepository } from '@store/repositories';
 
 import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';
-import { PathOption } from '@common/libs/ledger/types';
 
 import { AmountType } from '@common/libs/ledger/parser/types';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { PathFindPathOption } from '@common/libs/ledger/types/methods';
+
 /* Types ==================================================================== */
 interface Props {
-    item: PathOption;
+    item: PathFindPathOption;
     index: number;
     amount: AmountType;
     selected?: boolean;
-    onPress?: (item: PathOption) => void;
+    onPress?: (item: PathFindPathOption) => void;
 }
 
 /* Component ==================================================================== */
@@ -107,7 +108,7 @@ class PaymentOptionItem extends Component<Props> {
         }
     };
 
-    renderNative = (item: PathOption) => {
+    renderNative = (item: PathFindPathOption) => {
         const { source_amount } = item;
 
         if (typeof source_amount !== 'string') {
@@ -131,7 +132,7 @@ class PaymentOptionItem extends Component<Props> {
         );
     };
 
-    renderIOU = (item: PathOption) => {
+    renderIOU = (item: PathFindPathOption) => {
         const { amount } = this.props;
         const { source_amount, paths_computed } = item;
 
@@ -146,8 +147,8 @@ class PaymentOptionItem extends Component<Props> {
         if (Array.isArray(paths_computed) && paths_computed.length === 0 && typeof amount === 'object') {
             issuer = amount.issuer;
         } else {
-            const typeOneStep = find(flatMap(paths_computed), (o) => {
-                return o.type === 1;
+            const typeOneStep = find(flatMap(paths_computed), (computed) => {
+                return computed.type === 1;
             });
 
             if (typeOneStep) {

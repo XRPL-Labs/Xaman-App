@@ -10,11 +10,11 @@ import BaseLedgerObject from '@common/libs/ledger/objects/BaseLedgerObject';
 
 /* Types ==================================================================== */
 import { AmountType, Destination } from '@common/libs/ledger/parser/types';
-import { LedgerObjectTypes } from '@common/libs/ledger/types';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Class ==================================================================== */
 class Check extends BaseLedgerObject {
-    public static Type = LedgerObjectTypes.Check as const;
+    public static Type = LedgerEntryTypes.Check as const;
     public readonly Type = Check.Type;
 
     constructor(object?: any) {

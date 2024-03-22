@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 
 import NetworkService from '@services/NetworkService';
 
-import { HexEncoding } from './string';
+import { HexEncoding, Truncate } from './string';
 
 /**
  * normalize value to IOU value
@@ -63,6 +63,11 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
         let decoded = '';
 
+        // LP Token
+        if (currencyCode.startsWith('03')) {
+            // remove the first two letters and return the rest
+            return `LP ${Truncate(currencyCode.slice(2), 10)}`;
+        }
         // check for XLS15d
         if (currencyCode.startsWith('02')) {
             try {

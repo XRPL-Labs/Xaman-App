@@ -1,9 +1,6 @@
-/* eslint-disable spellcheck/spell-checker */
-/* eslint-disable no-console */
 /**
  * Logger Service
  */
-
 import { ErrorMessages } from '@common/constants';
 
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -15,19 +12,26 @@ export enum LogEvents {
     EncryptionMigrationException = 'encryption_migration_exception',
 }
 
-type levels = 'debug' | 'warn' | 'error';
+export type Levels = 'debug' | 'warn' | 'error';
 
-type methods = {
-    debug: { (message: any, data?: any): void };
-    warn: { (message: any, data?: any): void };
-    error: { (message: any, data?: any): void };
+export type LoggerInstance = {
+    debug: { (message: string, data?: any): void };
+    warn: { (message: string, data?: any): void };
+    error: { (message: string, data?: any): void };
+};
+
+export type LogEntry = {
+    timestamp: string;
+    level: Levels;
+    message: string;
+    data: any;
 };
 
 /* Service  ==================================================================== */
 class LoggerService {
-    entries: any[];
-    isDEV: boolean;
-    levels: any;
+    private entries: Array<LogEntry>;
+    private readonly isDEV: boolean;
+    private readonly levels: any;
 
     static MAX_LOG_SIZE = 500;
 
@@ -102,11 +106,10 @@ class LoggerService {
         return `${hours}:${minutes}:${secs}.${miliSecs}`;
     };
 
-    createLogger = (namespace: string): methods => {
+    createLogger = (namespace: string): LoggerInstance => {
         const logger = {};
 
-        // eslint-disable-next-line
-        const log = (level: levels) => {
+        const log = (level: Levels) => {
             return (message: string, data: any) => {
                 if (data instanceof Error) {
                     data = this.normalizeError(data);
@@ -117,8 +120,8 @@ class LoggerService {
                 }
 
                 if (this.isDEV) {
-                    const output = `[${namespace}] ${message}`;
-                    console[level](output, data);
+                    // eslint-disable-next-line no-console
+                    console[level](`[${namespace}] ${message}`, data);
                 }
 
                 // add the log to entries list
@@ -137,7 +140,7 @@ class LoggerService {
         return logger;
     };
 
-    addLogMessage(level: string, message: string, data: any) {
+    addLogMessage(level: Levels, message: string, data: any) {
         this.entries.push({
             timestamp: this.getTimeStamp(),
             level,

@@ -7,6 +7,13 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
     },
+    contentBoxSecondary: {
+        paddingTop: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        borderRadius: AppSizes.borderRadius,
+        backgroundColor: '$tint',
+        marginBottom: AppSizes.paddingSml,
+    },
     nfTokenContainer: {
         paddingHorizontal: 0,
     },
@@ -93,6 +100,10 @@ const styles = StyleService.create({
         alignSelf: 'center',
         margin: 0,
         padding: 0,
+    },
+    amountInputUneffected: {
+        fontSize: AppFonts.h5.size,
+        color: '$textSecondary',
     },
     alertBox: {
         flexDirection: 'row',

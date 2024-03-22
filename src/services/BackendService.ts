@@ -14,6 +14,7 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
 import { CurrencyModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
@@ -26,6 +27,8 @@ import { Payload, PayloadType } from '@common/libs/payload';
 
 import { LedgerObjectFactory } from '@common/libs/ledger/factory';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
+import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
@@ -70,19 +73,13 @@ class BackendService {
     };
 
     /**
-    On Ledger submit transaction
-    */
-    onLedgerTransactionSubmit = ({
-        hash,
-        network,
-    }: {
-        hash: string;
-        network: {
-            node: string;
-            type: string;
-            key: string;
-        };
-    }) => {
+     On Ledger submit transaction
+     */
+    onLedgerTransactionSubmit = (
+        blob: string,
+        hash: string,
+        network: { id: number; node: string; type: NetworkType; key: string },
+    ) => {
         // only if hash is provided
         if (!hash) {
             return;
@@ -478,10 +475,15 @@ class BackendService {
                 const ledgerOffers = await Promise.all(
                     flatMap(res, async (offer) => {
                         const { OfferID } = offer;
-                        return LedgerService.getLedgerEntry({ index: OfferID })
+                        return LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: OfferID })
                             .then((resp) => {
+                                // something went wrong ?
+                                if ('error' in resp) {
+                                    return null;
+                                }
+
                                 const { node } = resp;
-                                if (node?.LedgerEntryType === 'NFTokenOffer') {
+                                if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer) {
                                     // combine ledger time with the object
                                     return Object.assign(resp.node, {
                                         LedgerTime: get(offer, 'ledger_close_time'),
