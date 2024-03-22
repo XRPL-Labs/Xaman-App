@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Unable to open return URL!",
     "noAccountConfigured": "No account configured",
     "pleaseAddAccountToSignTheTransaction": "Please add an account to sign the transaction",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "There is currently no available balance for sending payments.",
     "doNotRemindMe": "Don't remind me again",
     "invalidPayload": "Invalid payload",

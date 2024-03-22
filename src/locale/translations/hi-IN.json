@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "वापसी url खोलने में असमर्थ!",
     "noAccountConfigured": "कोई खाता कॉन्फ़िगर नहीं किया गया",
     "pleaseAddAccountToSignTheTransaction": "लेन-देन पर हस्ताक्षर करने के लिए कृपया एक खाता जोड़ें",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "भुगतान भेजने के लिए कोई खर्च करने योग्य खाता उपलब्ध नहीं है।",
     "doNotRemindMe": "मुझे फिर से याद न दिलाएं",
     "invalidPayload": "अवैध पेलोड",

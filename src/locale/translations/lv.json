@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Nav iespējams atvērt tīmekļa adresi!",
     "noAccountConfigured": "Konts nav konfigurēts",
     "pleaseAddAccountToSignTheTransaction": "Lūdzu, pievienojiet kontu, lai parakstītu darījumu",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Maksājumu sūtīšanai nav pievienots izmaksu konts.",
     "doNotRemindMe": "Neatgādināt vēlreiz",
     "invalidPayload": "Nederīga datu ielāde",

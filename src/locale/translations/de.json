@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Rückgabe-URL kann nicht geöffnet werden!",
     "noAccountConfigured": "Kein Konto konfiguriert",
     "pleaseAddAccountToSignTheTransaction": "Bitte füge einen Account hinzu, um die Transaktion zu bestätigen.",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Es ist kein ausgabefähiger Account verfügbar um Zahlungen zu senden.",
     "doNotRemindMe": "Erinnere mich nicht noch einmal",
     "invalidPayload": "Ungültige Nutzdaten",

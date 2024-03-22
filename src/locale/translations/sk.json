@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Spätnú webovú adresu sa nepodarilo otvoriť!",
     "noAccountConfigured": "Nie je priradený žiadny účet",
     "pleaseAddAccountToSignTheTransaction": "Pridajte účet aby ste mohli podpísať transakciu",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Na odosielanie platieb nie je k dispozícii žiadny účet.",
     "doNotRemindMe": "Nepripomínať znovu",
     "invalidPayload": "Neplatné zaťaženie",

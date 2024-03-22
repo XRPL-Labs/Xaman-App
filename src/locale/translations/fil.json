@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Hindi mabuksan ang url ng pagbalik!",
     "noAccountConfigured": "Walang account isinaayos",
     "pleaseAddAccountToSignTheTransaction": "Mangyaring magdagdag ng isang account upang lagdaan ang transaksyon",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Kasalukuyang walang magagamit na balanse para sa pagpapadala ng mga pagbabayad.",
     "doNotRemindMe": "Huwag ipaalala sa akin muli",
     "invalidPayload": "Di-wastong kargada",

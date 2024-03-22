@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "રીટર્ન યુઆરએલ ખોલવામાં અસમર્થ!",
     "noAccountConfigured": "કોઈ એકાઉન્ટ ગોઠવેલ નથી",
     "pleaseAddAccountToSignTheTransaction": "ટ્રાંઝેક્શન પર સહી કરવા માટે કૃપા કરીને એક એકાઉન્ટ ઉમેરો",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "ચુકવણી મોકલવા માટે કોઈ ખર્ચ કરવા યોગ્ય એકાઉન્ટ ઉપલબ્ધ નથી.",
     "doNotRemindMe": "મને ફરીથી યાદ રાખો નહિં",
     "invalidPayload": "અમાન્ય પેલોડ",

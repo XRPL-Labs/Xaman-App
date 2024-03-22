@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "రిటర్న్ url తెరవడం సాధ్యం కాలేదు!\r\n",
     "noAccountConfigured": "ఖాతా కాన్ఫిగర్ చేయబడలేదు\r\n",
     "pleaseAddAccountToSignTheTransaction": "లావాదేవీపై సంతకం చేయడానికి దయచేసి ఒక ఖాతాను జోడించండి\r\n",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "చెల్లింపులు పంపడానికి ఖర్చు చేయదగిన ఖాతా అందుబాటులో లేదు.\r\n",
     "doNotRemindMe": "నాకు మళ్ళీ గుర్తు చేయవద్దు",
     "invalidPayload": "చెల్లని పేలోడ్\r\n",

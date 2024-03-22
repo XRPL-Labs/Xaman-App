@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "לא ניתן לפתוח את כתובת האתר החוזרת!",
     "noAccountConfigured": "לא הוגדר חשבון",
     "pleaseAddAccountToSignTheTransaction": "יש להוסיף חשבון כדי לחתום על הטרנזקציה",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "כרגע אין יתרה זמינה למשלוח תשלומים.",
     "doNotRemindMe": "אל תזכיר לי שוב את זה",
     "invalidPayload": "מטען לא חוקי",

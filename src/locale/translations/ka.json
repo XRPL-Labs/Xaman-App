@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "ჩაშენებული ვებ-გვერდის მისამართის გახსნა ვერ ხერხდება! ",
     "noAccountConfigured": "ანგარიში არ არის კონფიგურირებული",
     "pleaseAddAccountToSignTheTransaction": "გთხოვთ დაამატეთ ანგარიში ტრანზაქციის დასადასტურებლად ",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "სახარჯო ანგარიში არ არის ხელმისაწვდომი გზავნილის განსახორციელებლად.",
     "doNotRemindMe": "შემდეგში აღარ შემახსენო ",
     "invalidPayload": "არასწორი გადაცემული მონაცემი ",

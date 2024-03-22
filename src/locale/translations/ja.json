@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "URLを開くことができません！",
     "noAccountConfigured": "アカウントが設定されていません",
     "pleaseAddAccountToSignTheTransaction": "取引に署名するためにアカウントを追加してください",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "送金するための十分な残高がありません。",
     "doNotRemindMe": "再通知しない",
     "invalidPayload": "無効なペイロード",

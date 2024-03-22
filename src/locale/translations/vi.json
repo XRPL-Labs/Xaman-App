@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Không thể mở URL trả lại!",
     "noAccountConfigured": "Không có tài khoản cấu hình",
     "pleaseAddAccountToSignTheTransaction": "Vui lòng thêm tài khoản để ký giao dịch",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Hiện không có số dư khả dụng để gửi thanh toán.",
     "doNotRemindMe": "Đừng nhắc tôi nữa",
     "invalidPayload": "Trọng tải không hợp lệ",

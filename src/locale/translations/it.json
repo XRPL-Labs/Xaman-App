@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Impossibile aprire l'URL di ritorno!",
     "noAccountConfigured": "Nessun account configurato",
     "pleaseAddAccountToSignTheTransaction": "Per cortesia aggiungi un account per firmare la transazione",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Non c'è alcun account spendibile per l'invio di pagamenti.",
     "doNotRemindMe": "Non ricordarmelo più",
     "invalidPayload": "Ammontare non corretto",

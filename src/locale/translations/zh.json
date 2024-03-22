@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "无法打开返回网址！",
     "noAccountConfigured": "未配置帐户",
     "pleaseAddAccountToSignTheTransaction": "请添加一个帐户以签署交易",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "没有可用的可支出帐户用于发送付款。",
     "doNotRemindMe": "不要再提醒我",
     "invalidPayload": "有效载荷无效",

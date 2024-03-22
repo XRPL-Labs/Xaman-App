@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Det går inte att öppna returlänken.",
     "noAccountConfigured": "Inget konto konfigurerat",
     "pleaseAddAccountToSignTheTransaction": "Lägg till ett konto för att signera transaktionen",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Det finns inga tillgängliga medel för att kunna utföra betalningar.",
     "doNotRemindMe": "Påminn mig inte igen",
     "invalidPayload": "Ogiltig data",

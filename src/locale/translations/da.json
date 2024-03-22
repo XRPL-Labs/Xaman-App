@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Kan ikke åbne retur-URL!",
     "noAccountConfigured": "Ingen konto konfigureret",
     "pleaseAddAccountToSignTheTransaction": "Tilføj venligst en konto for at underskrive transaktionen",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Der er ingen tilgængelig saldo til afsendelse af betalinger.",
     "doNotRemindMe": "Påmind mig ikke igen",
     "invalidPayload": "Ugyldig data i overførsel",

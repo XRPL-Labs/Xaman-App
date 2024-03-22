@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Ezin da itzulera url ireki!",
     "noAccountConfigured": "Ez dago konturik konfiguratuta",
     "pleaseAddAccountToSignTheTransaction": "Mesedez gehitu kontu bat transakzioa sinatzeko",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Ordainketak bidaltzeko ez dago gastatzeko konturik erabilgarri.",
     "doNotRemindMe": "Ez nazazu berriro gogoratu",
     "invalidPayload": "Karga baliogabea",
