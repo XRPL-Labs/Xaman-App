@@ -1,6 +1,8 @@
 name: Android CI
 
-on: [pull_request]
+on:
+  push:
+    branches: [ github-actions-test ]
 
 jobs:
   test:
