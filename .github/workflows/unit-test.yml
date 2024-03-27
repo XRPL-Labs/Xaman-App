@@ -1,10 +1,11 @@
-name: test
+name: Unit Test
 
-on: [pull_request]
+on: [ pull_request ]
 
 jobs:
   unit-test:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
 
     steps:
       - name: Checkout
@@ -36,3 +37,4 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
