@@ -696,6 +696,17 @@ class NetworkService extends EventEmitter {
 
                 // if endpoint is not in the white listed network list then use custom proxy for it
                 if (!find(NetworkConfig.networks, (network) => network.nodes.includes(node.endpoint))) {
+                    // check if we need to add ws/ to the endpoint
+                    const isUnsecureEndpoint = normalizedEndpoint.startsWith('ws://');
+
+                    // remove ws:// or wss:// from the endpoint
+                    normalizedEndpoint = normalizedEndpoint.replace('ws://', '').replace('wss://', '');
+
+                    // by default custom node proxy uses wss but if the endpoint is unsecure then we need to add ws
+                    if (isUnsecureEndpoint) {
+                        normalizedEndpoint = `ws/${normalizedEndpoint}`;
+                    }
+
                     normalizedEndpoint = `${NetworkConfig.customNodeProxy}/${normalizedEndpoint}`;
                 }
 

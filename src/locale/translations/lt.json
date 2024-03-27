@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Nepavyko atidaryti grąžinimo URL!",
     "noAccountConfigured": "Nėra sukonfigūruota paskyra",
     "pleaseAddAccountToSignTheTransaction": "Prašome pridėti sąskaitą norint pasirašyti pavedimą",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Šiuo metu nėra galimo mokėjimų balanso",
     "doNotRemindMe": "Daugiau nepriminti",
     "invalidPayload": "Neteisinga naudingoji apkrova",

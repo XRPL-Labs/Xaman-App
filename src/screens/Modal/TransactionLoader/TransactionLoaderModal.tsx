@@ -130,16 +130,22 @@ class TransactionLoaderModal extends Component<Props, State> {
                 return;
             }
 
-            // cleanup
+            // extract meta from response
+            const { meta, ...tx } = resp;
+
+            // remove some unnecessary fields
             delete resp.meta;
-            // eslint-disable-next-line no-underscore-dangle
             delete resp.__replyMs;
-            // eslint-disable-next-line no-underscore-dangle
             delete resp.__command;
             delete resp.inLedger;
 
             // build transaction instance
-            const transactionInstance = TransactionFactory.fromJson(resp);
+            const transactionInstance = TransactionFactory.fromLedger({
+                ledger_index: resp.ledger_index,
+                validated: resp.validated,
+                tx,
+                meta,
+            });
 
             // switch to the right account if necessary
             const coreSettings = CoreRepository.getSettings();

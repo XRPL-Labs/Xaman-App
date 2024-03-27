@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Не може да се отвори return url адрес!",
     "noAccountConfigured": "Няма конфигуриран акаунт",
     "pleaseAddAccountToSignTheTransaction": "Моля, добавете акаунт за подписване на транзакцията",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Няма налична сметка за изпращане на плащания.",
     "doNotRemindMe": "Не ми напомняйте отново",
     "invalidPayload": "Невалиден payload",

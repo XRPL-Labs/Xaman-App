@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Non se puido abri-la ligazón de retorno.",
     "noAccountConfigured": "Non hai contas configuradas",
     "pleaseAddAccountToSignTheTransaction": "Por favor engada unha conta para asina-la transacción",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Non hai contas dispoñibles con saldo gastable para enviar pagos.",
     "doNotRemindMe": "Non lembrar de novo",
     "invalidPayload": "Carga non válida",

@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Није могуће отворити повратну URL адресу!",
     "noAccountConfigured": "Ниједан налог није подешен",
     "pleaseAddAccountToSignTheTransaction": "Додајте налог да бисте потписали трансакцију",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Није доступан налог за слање плаћања.",
     "doNotRemindMe": "Не подсећај ме поново",
     "invalidPayload": "Неважећи терет",

@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "മടക്കം url തുറക്കാനാവുന്നില്ല!",
     "noAccountConfigured": "അക്കൗണ്ടുകളൊന്നും കോൺഫിഗർ ചെയ്‌തിട്ടില്ല",
     "pleaseAddAccountToSignTheTransaction": "ഇടപാടിൽ ഒപ്പിടാൻ ദയവായി ഒരു അക്കൗണ്ട് ചേർക്കുക",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "പേയ്‌മെന്റുകൾ അയയ്‌ക്കുന്നതിന് ചെലവഴിക്കാവുന്ന അക്കൗണ്ടുകളൊന്നും ലഭ്യമല്ല.",
     "doNotRemindMe": "എന്നെ വീണ്ടും ഓര്മ്മിപ്പിക്കരുത്",
     "invalidPayload": "പേലോഡ് അസാധുവാണ്",

@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "واپسی کا URL کھولنے سے قاصر ہے!",
     "noAccountConfigured": "کوئی اکاؤنٹ تشکیل نہیں دیا گیا ہے",
     "pleaseAddAccountToSignTheTransaction": "براہ کرم سودے پر دستخط کرنے کے لئے ایک اکاؤنٹ شامل کریں",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "ادائیگی بھیجنے کے لئے فی الحال کوئی دستیاب بیلنس موجود نہیں ہے۔",
     "doNotRemindMe": "مجھے دوبارہ یاد دلانا نہیں",
     "invalidPayload": "غلط پے لوڈ",

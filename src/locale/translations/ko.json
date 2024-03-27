@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "사이트에 연결할 수 없음!",
     "noAccountConfigured": "형성된 계정이 없습니다",
     "pleaseAddAccountToSignTheTransaction": "거래에 서명하려면 계정을 추가하십시오.",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "지불 가능한 계좌가 없습니다.",
     "doNotRemindMe": "다시 알림 창을 표시하지 않습니다.",
     "invalidPayload": "유효하지 않은 페이로드",

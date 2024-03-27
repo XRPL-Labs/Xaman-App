@@ -9,6 +9,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { Icon, TouchableDebounce } from '@components/General';
 
+import Locale from '@locale';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -73,6 +75,16 @@ class AccountSwitchElement extends Component<Props, State> {
     render() {
         const { account, discreet, containerStyle } = this.props;
         const { isSwitcherOpen } = this.state;
+
+        if (!account) {
+            return (
+                <View style={styles.container}>
+                    <Text style={styles.accountLabelText} numberOfLines={1}>
+                        {Locale.t('global.noAccountConfigured')}
+                    </Text>
+                </View>
+            );
+        }
 
         return (
             <TouchableDebounce activeOpacity={0.7} onPress={this.onPress} style={[styles.container, containerStyle]}>

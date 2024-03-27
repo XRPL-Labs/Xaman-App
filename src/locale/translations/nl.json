@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Kan de URL om naar terug te keren niet openen!",
     "noAccountConfigured": "Geen account geconfigureerd",
     "pleaseAddAccountToSignTheTransaction": "Voeg een account toe om de transactie te ondertekenen",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Er is geen rekening beschikbaar waarmee betaald kan worden.",
     "doNotRemindMe": "Herinner me niet meer",
     "invalidPayload": "Ongeldige payload",

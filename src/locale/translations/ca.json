@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "No es pot obrir l'URL de retorn.",
     "noAccountConfigured": "No s'ha configurat cap compte",
     "pleaseAddAccountToSignTheTransaction": "Si us plau, afegiu un compte per signar la transacció",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "No hi ha cap compte amb saldo des del qual enviar pagaments.",
     "doNotRemindMe": "No m'ho tornis a recordar",
     "invalidPayload": "Càrrega útil no vàlida",

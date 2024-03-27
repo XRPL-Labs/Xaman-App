@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "Nie in staat om terugkeer na URL!",
     "noAccountConfigured": "Geen rekening ingestel",
     "pleaseAddAccountToSignTheTransaction": "Voeg n rekening by om die transaksie te onderteken.",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "Geen bestedende rekening is beskikbaar vir die stuur  van betalings nie.",
     "doNotRemindMe": "Moet my nie weer herinner nie.",
     "invalidPayload": "Ongeldige loonvrag",

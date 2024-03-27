@@ -264,6 +264,7 @@
     "unableOpenReturnURL": "ਵਾਪਸੀ ਦਾ URL ਖੋਲ੍ਹਣ ਵਿੱਚ ਅਸਮਰੱਥ!",
     "noAccountConfigured": "ਕੋਈ ਖਾਤਾ ਕੌਂਫਿਗਰ ਨਹੀਂ ਕੀਤਾ ਗਿਆ",
     "pleaseAddAccountToSignTheTransaction": "ਟ੍ਰਾਂਜੈਕਸ਼ਨ ਤੇ ਦਸਤਖਤ ਕਰਨ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਖਾਤਾ ਸ਼ਾਮਲ ਕਰੋ",
+    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "ਭੁਗਤਾਨ ਭੇਜਣ ਲਈ ਕੋਈ ਖਰਚਯੋਗ ਖਾਤਾ ਉਪਲਬਧ ਨਹੀਂ ਹੈ.",
     "doNotRemindMe": "ਮੈਨੂੰ ਦੁਬਾਰਾ ਯਾਦ ਨਾ ਕਰਾਓ",
     "invalidPayload": "ਅਵੈਧ ਪੇਲੋਡ",
