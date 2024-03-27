@@ -29,7 +29,7 @@ export class ApiError extends Error {
     public code: number;
     public reference?: string;
 
-    constructor(message: string, code?: number, reference?: 'string') {
+    constructor(message: string, code?: number, reference?: string) {
         super(message);
         this.name = 'ApiError';
         this.code = code || -1;
@@ -49,6 +49,7 @@ class ApiService {
     private uniqueDeviceIdentifier?: string;
     private isRefreshingToken: boolean;
     private logger: LoggerInstance;
+
     [index: string]: any;
 
     constructor() {
@@ -411,7 +412,6 @@ class ApiService {
                     }
 
                     // handle error
-
                     if (typeof jsonRes === 'object' && Object.prototype.hasOwnProperty.call(jsonRes, 'error')) {
                         throw new ApiError(
                             `Api error ${rawRes.status}`,

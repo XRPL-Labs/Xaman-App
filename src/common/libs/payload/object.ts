@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { get, has, isObject, isString, isUndefined } from 'lodash';
+import { get, isObject, isString, isUndefined } from 'lodash';
 
-import ApiService from '@services/ApiService';
+import ApiService, { ApiError } from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
 import CoreRepository from '@store/repositories/core';
@@ -29,7 +29,7 @@ import { MixingTypes } from '@common/libs/ledger/mixin/types';
 import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
-import errors from './errors';
+import { PayloadErrors } from './errors';
 
 // create logger
 const logger = LoggerService.createLogger('Payload');
@@ -176,9 +176,9 @@ export class Payload {
                 .get({ uuid, from: this.getOrigin() }, undefined, {
                     'X-Xaman-Digest': DigestSerializeWithSHA1.DIGEST_HASH_ALGO,
                 })
-                .then(async (res: PayloadType) => {
+                .then(async (response: PayloadType) => {
                     // get verification status
-                    const verified = await this.verify(res.payload);
+                    const verified = await this.verify(response.payload);
 
                     // if not verified then
                     if (!verified) {
@@ -186,33 +186,32 @@ export class Payload {
                         return;
                     }
 
-                    if (get(res, 'response.resolved_at')) {
+                    if (get(response, 'response.resolved_at')) {
                         reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
                         return;
                     }
 
-                    if (get(res, 'meta.expired')) {
+                    if (get(response, 'meta.expired')) {
                         reject(new Error(Localize.t('payload.payloadExpired')));
                         return;
                     }
 
-                    resolve(res);
+                    resolve(response);
                 })
-                .catch((response: any) => {
-                    if (has(response, 'error')) {
-                        const { error } = response;
-
-                        const code = get(error, 'code');
-                        const reference = get(error, 'reference');
-
-                        // known error message's
-                        if (code && has(errors, code)) {
-                            const errorMessage = get(errors, error.code);
-                            return reject(new Error(errorMessage));
-                        }
-
-                        return reject(new Error(Localize.t('payload.unexpectedErrorOccurred', { reference })));
+                .catch((error: ApiError) => {
+                    // known error
+                    if (error.code && error.code in PayloadErrors) {
+                        return reject(new Error(PayloadErrors[error.code]));
                     }
+
+                    // unknown error
+                    if (error.reference) {
+                        return reject(
+                            new Error(Localize.t('payload.unexpectedErrorOccurred', { reference: error.reference })),
+                        );
+                    }
+
+                    // unexpected error
                     return reject(new Error(Localize.t('global.unexpectedErrorOccurred')));
                 });
         });
@@ -234,8 +233,8 @@ export class Payload {
                 origintype: this.getOrigin(),
             });
 
-            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((e: any) => {
-                logger.debug('Patch error', e);
+            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((error: ApiError) => {
+                logger.error(`Patch ${this.getPayloadUUID()}`, error);
             });
 
             return true;
@@ -263,8 +262,8 @@ export class Payload {
                     origintype: this.getOrigin(),
                 },
             )
-            .catch((e: any) => {
-                logger.debug('Reject error', e);
+            .catch((error: ApiError) => {
+                logger.error(`Patch reject ${this.getPayloadUUID()}`, error);
             });
     };
 

@@ -1,6 +1,6 @@
 /* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
-import ApiService from '@services/ApiService';
+import ApiService, { ApiError } from '@services/ApiService';
 
 import { PseudoTransactionTypes } from '../../ledger/types/enums';
 
@@ -194,6 +194,22 @@ describe('Payload', () => {
         }
 
         payloadFetchSpy2.mockClear();
+    });
+
+    it('Should throw error if payload is handled by other user', async () => {
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
+
+        const payloadFetchSpy = jest
+            .spyOn(ApiService.payload, 'get')
+            .mockImplementation(() => Promise.reject(new ApiError('message', 403, 'refrence')));
+
+        try {
+            await Payload.from(AccountSetPayload.meta.uuid);
+        } catch (error: any) {
+            expect(error.message).toEqual('Payload handled by another client');
+        }
+
+        payloadFetchSpy.mockClear();
     });
 
     it('Should throw error if transaction types are mismatch', async () => {
