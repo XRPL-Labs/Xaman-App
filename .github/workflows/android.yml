@@ -34,6 +34,10 @@ jobs:
             ${{ runner.OS }}-npm-cache-
       - run: npm ci
 
+      - name: Prepare
+        run: |
+          make build-env
+
       - name: Build tests
         run: |
           pushd android
