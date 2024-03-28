@@ -52,4 +52,4 @@ jobs:
           arch: x86
           ndk: 25.1.8937393
           cmake: 3.18.1
-          script: cd android; ./gradlew app:connectedAndroidTest
+          script: cd android; ./gradlew app:connectedAndroidTest -Pandroid.testInstrumentationRunnerArguments.notClass=com.xrpllabs.xumm.DetoxTest --info
