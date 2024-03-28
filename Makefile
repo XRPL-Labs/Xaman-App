@@ -154,7 +154,8 @@ test-e2e: ## Runs e2e tests
 	@npx cucumber-js ./e2e --configuration android.attached
 	@#npx cucumber-js ./e2e --configuration ios.sim
 
-
+bump-build-number: ## Bump build number for Android and iOS
+	@./scripts/bump-build-number.sh
 
 ## Help documentation https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
