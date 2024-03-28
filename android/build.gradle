@@ -48,28 +48,4 @@ allprojects {
     }
 }
 
-
-subprojects { subproject ->
-   ext {
-        def npmVersion = getNpmVersionArray()
-        versionMajor = npmVersion[0]
-        versionMinor = npmVersion[1]
-        versionPatch = npmVersion[2]
-        buildNumber = 3
-    }
-}
-
-
-
-def getNpmVersion() {
-    def inputFile = new File("../package.json")
-    def packageJson = new JsonSlurper().parseText(inputFile.text)
-    return packageJson["version"]
-}
-
-def getNpmVersionArray() { // major [0], minor [1], patch [2]
-    def (major, minor, patch) = getNpmVersion().tokenize('.')
-    return [Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch)] as int[]
-}
-
 apply plugin: "com.facebook.react.rootproject"
