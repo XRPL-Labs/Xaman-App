@@ -11,11 +11,6 @@ module.exports = {
     coverageReporters: ['lcov'],
     globals: {
         window: {},
-        'ts-jest': {
-            tsJestConfig: {
-                allowJs: true,
-            },
-        },
     },
     transform: {
         '^.+\\.(js|jsx)$': '<rootDir>/node_modules/babel-jest',
