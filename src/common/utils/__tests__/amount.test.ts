@@ -65,6 +65,10 @@ describe('Utils.Amount', () => {
                     value: '4A65727279436F696E0000000000000000000000',
                     output: 'JerryCoin',
                 },
+                {
+                    value: '039C99CD9AB0B70B32ECDA51EAAE471625608EA2',
+                    output: 'LP 9C99...EA2',
+                },
             ];
             tests.forEach((v) => {
                 expect(NormalizeCurrencyCode(v.value)).toBe(v.output);
