@@ -90,6 +90,7 @@ export enum LedgerEntryTypes {
     PayChannel = 'PayChannel',
     RippleState = 'RippleState',
     SignerList = 'SignerList',
+    EmittedTxn = 'EmittedTxn',
 }
 
 /**

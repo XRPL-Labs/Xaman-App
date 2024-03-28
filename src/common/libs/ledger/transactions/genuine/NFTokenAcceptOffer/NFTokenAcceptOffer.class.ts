@@ -5,7 +5,7 @@ import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/bas
 import { Hash256, Amount } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
-import { DeletedNode, TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
@@ -47,15 +47,12 @@ class NFTokenAcceptOffer extends BaseGenuineTransaction {
         const affectedNodes = this._meta?.AffectedNodes;
         const deletedNFTokenOfferNode = affectedNodes?.find(
             (node) => 'DeletedNode' in node && node?.DeletedNode?.LedgerEntryType === 'NFTokenOffer',
-        ) as DeletedNode;
+        )?.DeletedNode;
 
-        const offer: any = deletedNFTokenOfferNode?.DeletedNode?.FinalFields;
+        // cache
+        this._offerObject = new NFTokenOffer(deletedNFTokenOfferNode?.FinalFields as any);
 
-        if (offer) {
-            this.Offer = new NFTokenOffer(offer);
-        }
-
-        return this.Offer;
+        return this._offerObject;
     }
 }
 

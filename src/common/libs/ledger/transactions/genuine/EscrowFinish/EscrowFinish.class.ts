@@ -5,7 +5,7 @@ import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/bas
 import { AccountID, UInt32, Blob, Hash256 } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
-import { DeletedNode, TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
+import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { FieldConfig, FieldReturnType } from '@common/libs/ledger/parser/fields/types';
 
@@ -46,8 +46,9 @@ class EscrowFinish extends BaseGenuineTransaction {
 
         const deletedEscrowNode = affectedNodes.find(
             (node) => 'DeletedNode' in node && node?.DeletedNode?.LedgerEntryType === 'Escrow',
-        ) as DeletedNode;
-        this._escrowObject = new EscrowCreate(deletedEscrowNode?.DeletedNode.FinalFields as any);
+        )?.DeletedNode;
+
+        this._escrowObject = new EscrowCreate(deletedEscrowNode?.FinalFields as any);
 
         return this._escrowObject!;
     }
