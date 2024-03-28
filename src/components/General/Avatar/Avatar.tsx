@@ -158,6 +158,7 @@ class Avatar extends PureComponent<Props> {
                     source={source}
                     style={[
                         styles.image,
+                        border && styles.border,
                         { height: AppSizes.scale(size) * imageScale, width: AppSizes.scale(size) * imageScale },
                     ]}
                 />
