@@ -347,6 +347,22 @@ class Meta {
             return hookExecutions;
         }, [] as HookExecution[]);
     };
+
+    /*
+     * Parse the Account ID of the AMM account
+     */
+    parseAMMAccountID = () => {
+        const ammNode = this.nodes.find((node) => node.LedgerEntryType === LedgerEntryTypes.AMM);
+
+        if (ammNode && ammNode.diffType === DiffType.CreatedNode) {
+            return ammNode.NewFields?.Account;
+        }
+        if (ammNode && ammNode.diffType === DiffType.ModifiedNode) {
+            return ammNode.FinalFields?.Account;
+        }
+
+        return undefined;
+    };
 }
 
 export default Meta;

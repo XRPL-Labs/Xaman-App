@@ -2,6 +2,8 @@ import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
+import Meta from '@common/libs/ledger/parser/meta';
+
 import AMMBid from './AMMBid.class';
 
 /* Types ==================================================================== */
@@ -10,8 +12,12 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class AMMBidInfo extends ExplainerAbstract<AMMBid, MutationsMixinType> {
+    private readonly AmmAccountId: string;
+
     constructor(item: AMMBid & MutationsMixinType, account: AccountModel) {
         super(item, account);
+
+        this.AmmAccountId = new Meta(this.item.MetaData).parseAMMAccountID();
     }
 
     getEventsLabel(): string {
@@ -25,6 +31,7 @@ class AMMBidInfo extends ExplainerAbstract<AMMBid, MutationsMixinType> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
+            end: { address: this.AmmAccountId, tag: undefined },
         };
     }
 
