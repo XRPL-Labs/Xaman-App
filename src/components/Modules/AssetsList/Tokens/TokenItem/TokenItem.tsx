@@ -117,7 +117,7 @@ class TokenItem extends PureComponent<Props, State> {
         }
 
         // show alert on top of avatar if rippling set
-        if ((no_ripple === false || Number(limit) === 0) && !token.obligation) {
+        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLPToken()) {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 
