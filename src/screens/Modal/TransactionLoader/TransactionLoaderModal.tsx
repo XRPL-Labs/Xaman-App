@@ -133,7 +133,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             }
 
             // eslint-disable-next-line no-underscore-dangle
-            // @ts-ignore
+            // @ts-expect-error
             delete resp.__replyMs;
             // eslint-disable-next-line no-underscore-dangle
             delete resp.__command;

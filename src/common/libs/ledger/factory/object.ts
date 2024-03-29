@@ -19,7 +19,7 @@ const LedgerObjectFactory = {
         }
 
         // get the class object base on the object type
-        // @ts-ignore
+        // @ts-expect-error
         const LedgerObject = LedgerObjects[type];
 
         if (typeof LedgerObject !== 'undefined') {

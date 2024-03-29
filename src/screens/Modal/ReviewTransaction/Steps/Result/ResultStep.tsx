@@ -147,8 +147,7 @@ class ResultStep extends Component<Props, State> {
                         style={AppStyles.stretchSelf}
                         onPress={() => {
                             Clipboard.setString(
-                                // @ts-ignore
-                                transaction.TransactionResult?.message || transaction.TransactionResult?.code,
+                                transaction!.TransactionResult?.message || transaction!.TransactionResult?.code,
                             );
                             Toast(Localize.t('send.resultCopiedToClipboard'));
                         }}

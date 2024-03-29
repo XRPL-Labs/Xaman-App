@@ -15,7 +15,7 @@ import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
 import NetworkRepository from '@store/repositories/network';
-import { CoreModel, NetworkModel, NodeModel } from '@store/models';
+import { CoreModel, NetworkModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -613,7 +613,7 @@ class NetworkService extends EventEmitter {
      * Logs socket errors
      * @param error
      */
-    onError = (error: any) => {
+    onError = (error?: any) => {
         // set connection status
         this.setConnectionStatus(NetworkStateStatus.Disconnected);
 
@@ -686,31 +686,30 @@ class NetworkService extends EventEmitter {
         this.setConnectionStatus(NetworkStateStatus.Connecting);
 
         // get default node for selected network
-        const { defaultNode } = this.getNetwork();
+        const { defaultNode, nodes } = this.getNetwork();
 
-        const nodes = this.getNetwork()
-            .nodes.toJSON()
+        const normalizedEndpoints = nodes
+            .flatMap((node) => node.endpoint)
             .sort((x, y) => {
-                return x.endpoint === defaultNode.endpoint ? -1 : y.endpoint === defaultNode.endpoint ? 1 : 0;
+                return x === defaultNode.endpoint ? -1 : y === defaultNode.endpoint ? 1 : 0;
             })
-            // @ts-ignore
-            .map((node: NodeModel) => {
-                let normalizedEndpoint = node.endpoint;
+            .map((endpoint) => {
+                let normalizedEndpoint = endpoint;
 
                 // for cluster endpoints, we add origin
-                if (NetworkConfig.clusterEndpoints.includes(node.endpoint)) {
-                    normalizedEndpoint = `${node.endpoint}${NetworkService.ORIGIN}`;
+                if (NetworkConfig.clusterEndpoints.includes(endpoint)) {
+                    normalizedEndpoint = `${endpoint}${NetworkService.ORIGIN}`;
                 }
 
                 // if endpoint is not in the white listed network list then use custom proxy for it
-                if (!find(NetworkConfig.networks, (network) => network.nodes.includes(node.endpoint))) {
+                if (!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint))) {
                     normalizedEndpoint = `${NetworkConfig.customNodeProxy}/${normalizedEndpoint}`;
                 }
 
                 return normalizedEndpoint;
             });
 
-        this.connection = new XrplClient(nodes, {
+        this.connection = new XrplClient(normalizedEndpoints, {
             maxConnectionAttempts: 3,
             assumeOfflineAfterSeconds: 9,
             connectAttemptTimeoutSeconds: 3,
@@ -719,7 +718,6 @@ class NetworkService extends EventEmitter {
         this.connection.on('online', this.onConnect);
         this.connection.on('offline', this.onClose);
         this.connection.on('error', this.onError);
-        // @ts-ignore
         this.connection.on('round', this.onError);
     };
 }

@@ -451,7 +451,7 @@ class ScanModal extends Component<Props, State> {
         if (type && !fallback) {
             let message;
 
-            switch (type) {
+            switch (+type) {
                 case StringType.XrplDestination:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainXamanPayload')
@@ -459,7 +459,6 @@ class ScanModal extends Component<Props, State> {
                               nativeAsset: NetworkService.getNativeAsset(),
                           });
                     break;
-                // @ts-ignore
                 case StringType.XummPayloadReference:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainAccountAddress', {

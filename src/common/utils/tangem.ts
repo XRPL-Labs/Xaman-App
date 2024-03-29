@@ -66,7 +66,7 @@ const GetWalletPublicKey = (card: Card): string => {
 
     // older version of tangem SDK
     if (has(card, 'walletPublicKey')) {
-        // @ts-ignore
+        // @ts-expect-error
         const { walletPublicKey } = card;
         return walletPublicKey;
     }
@@ -86,7 +86,7 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         const wallet = first(wallets);
         const derivedKeys = get(wallet, 'derivedKeys');
 
-        // response from android SDK is different than iOS
+        // response from android SDK is different from iOS
         let derivedKey;
 
         // android
@@ -103,7 +103,7 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         }
 
         // ios
-        // @ts-ignore
+        // @ts-expect-error
         if (Array.isArray(derivedKeys) && derivedKeys.length === 2 && first(derivedKeys) === DefaultDerivationPaths) {
             derivedKey = get(derivedKeys, '[1]');
         }
@@ -145,7 +145,7 @@ const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
     }
 
     // older version of tangem sdk
-    // @ts-ignore
+    // @ts-expect-error
     if (has(card, 'isPin2Default') && !card.isPin2Default) {
         return TangemSecurity.Passcode;
     }

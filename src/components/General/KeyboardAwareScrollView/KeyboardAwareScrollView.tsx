@@ -126,8 +126,7 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
                 duration: 200,
             }).start(() => {
                 this.scrollToTimeout = setTimeout(() => {
-                    // @ts-ignore
-                    responder.scrollTo({
+                    this.scrollViewRef?.current?.scrollTo({
                         x: 0,
                         y: this.scrollPosition.y + textInputBottomPosition - keyboardPosition + DEFAULT_EXTRA_OFFSET,
                         animated: true,

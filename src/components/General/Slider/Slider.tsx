@@ -139,17 +139,19 @@ export default class Slider extends Component<Props, State> {
     }
 
     renderPage = (page: any, index: number) => {
-        const { width, height } = this.state;
-        let { progress } = this.state;
+        const { progress, width, height } = this.state;
         const { children } = this.props;
 
         const pages = Children.count(children);
 
         /* Adjust progress by page index */
-        // @ts-ignore
-        progress = Animated.add(progress, -index);
+        const adjustedProgress = Animated.add(progress, -index);
 
-        return <View style={[{ width, height }]}>{React.cloneElement(page, { index, pages, progress })}</View>;
+        return (
+            <View style={[{ width, height }]}>
+                {React.cloneElement(page, { index, pages, progress: adjustedProgress })}
+            </View>
+        );
     };
 
     renderIndicator = (pager: any) => {
@@ -159,9 +161,19 @@ export default class Slider extends Component<Props, State> {
             return null;
         }
 
-        return (
+        let indicatorStyle: ViewStyle | undefined;
+
+        if (indicatorPosition in styles) {
             // @ts-ignore
-            <View style={styles[indicatorPosition]}>
+            indicatorStyle = styles[indicatorPosition];
+        }
+
+        if (typeof indicatorStyle === 'undefined') {
+            return null;
+        }
+
+        return (
+            <View style={indicatorStyle}>
                 {/* eslint-disable-next-line */}
                 <Indicator {...pager} scrollTo={this.scrollToPage} />
             </View>

@@ -2,9 +2,9 @@
  * Add Currency Screen
  */
 
-import { sortBy, filter, countBy, forEach } from 'lodash';
+import { countBy, filter, forEach, sortBy } from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, ScrollView, InteractionManager } from 'react-native';
+import { InteractionManager, ScrollView, Text, View } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
@@ -22,13 +22,14 @@ import { DecodeAccountId } from '@common/utils/codec';
 import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
 // components
-import { Button, Icon, Spacer, LoadingIndicator, ActionPanel, TokenAvatar, TokenIcon } from '@components/General';
+import { ActionPanel, Button, Icon, LoadingIndicator, Spacer, TokenAvatar, TokenIcon } from '@components/General';
 
 import Localize from '@locale';
 
 // style
-import { AppStyles, AppSizes } from '@theme';
+import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* types ==================================================================== */
 export interface Props {
@@ -93,14 +94,11 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             // ignore incoming objects
             const filtered = filter(account_objects, (o) => {
                 return (
-                    o.LedgerEntryType !== 'RippleState' &&
-                    // @ts-ignore
-                    o.LedgerEntryType !== 'NFTokenPage' &&
-                    // @ts-ignore
-                    (o.Account === account ||
-                        // @ts-ignore
-                        o.Owner === account ||
-                        ['SignerList', 'PayChannel'].includes(o.LedgerEntryType))
+                    o.LedgerEntryType !== LedgerEntryTypes.RippleState &&
+                    o.LedgerEntryType !== LedgerEntryTypes.NFTokenPage &&
+                    (('Account' in o && o.Account === account) ||
+                        ('Owner' in o && o.Owner === account) ||
+                        [LedgerEntryTypes.SignerList, LedgerEntryTypes.PayChannel].includes(o.LedgerEntryType))
                 );
             });
             if (_marker && _marker !== marker) {

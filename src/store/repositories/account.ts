@@ -273,7 +273,6 @@ class AccountRepository extends BaseRepository<AccountModel> {
 
         // remove account trust lines
         for (const line of account.lines ?? []) {
-            // @ts-ignore
             await this.delete(line);
         }
 

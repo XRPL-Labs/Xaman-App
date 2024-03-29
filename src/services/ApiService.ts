@@ -234,12 +234,11 @@ class ApiService {
      *   {foo: 'hi there', bar: { blah: 123, blah: [1, 2, 3] }}
      *   foo=hi there&bar[blah]=123&bar[blah][0]=1&bar[blah][1]=2&bar[blah][2]=3
      */
-    private serialize = (obj: Object, prefix: string): string => {
+    private serialize = (obj: Record<string, any>, prefix: string): string => {
         const str: Array<string> = [];
 
         Object.keys(obj).forEach((p) => {
             const k = prefix ? `${prefix}[${p}]` : p;
-            // @ts-ignore
             const v = obj[p];
 
             str.push(

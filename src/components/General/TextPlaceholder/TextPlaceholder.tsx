@@ -119,7 +119,6 @@ class TextPlaceholder extends PureComponent<Props> {
         const ContainerProps = isPressable ? { activeOpacity: 0.8, onPress: this.onPress } : {};
 
         return (
-            // @ts-ignore
             // eslint-disable-next-line react/jsx-props-no-spreading
             <ContainerComponent {...ContainerProps} style={{ opacity: this.animatedFadeIn }}>
                 <Text selectable={selectable} numberOfLines={numberOfLines} style={style}>

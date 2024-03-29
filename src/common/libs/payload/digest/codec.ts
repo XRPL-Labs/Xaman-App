@@ -31,7 +31,7 @@ class DigestCodecWithSHA1 extends Digest {
      */
     static digest = (request_json: TransactionJson): Promise<string> => {
         return new Promise((resolve, reject) => {
-            let hashEncodingMethod = 'encode';
+            let hashEncodingMethod: 'encode' | 'encodeForSigningClaim' = 'encode';
             let normalizedRequestJson: Object = request_json;
             const tx_type = request_json.TransactionType;
 
@@ -44,7 +44,6 @@ class DigestCodecWithSHA1 extends Digest {
             }
 
             // calculate checksum
-            // @ts-ignore
             const checksum = AccountLibBinary[hashEncodingMethod](normalizedRequestJson);
 
             // calculate digest SHA1{checksum}+{deviceId}

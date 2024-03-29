@@ -88,7 +88,6 @@ export default class Storage {
                     }
 
                     // migrate and create database instance
-                    // @ts-ignore
                     const migrationRealm = new Realm({
                         ...config,
                         schema: flatMap(current.schemas, 'schema'),
@@ -113,7 +112,6 @@ export default class Storage {
      * Open the Database
      */
     open = async (config: Realm.Configuration, latestSchemaVersion: number): Promise<Realm> => {
-        // @ts-ignore
         return new Realm({
             ...config,
             schema: values(require('./models')),

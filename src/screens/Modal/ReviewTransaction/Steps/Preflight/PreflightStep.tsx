@@ -195,11 +195,7 @@ class PreflightStep extends Component<Props, State> {
                 if (payload.isMultiSign()) {
                     // only accounts with full access
                     availableAccounts = AccountRepository.getFullAccessAccounts();
-                } else if (
-                    payload.isPseudoTransaction() ||
-                    // @ts-ignore
-                    [TransactionTypes.Import].includes(payload.getTransactionType())
-                ) {
+                } else if (payload.isPseudoTransaction() || payload.getTransactionType() === TransactionTypes.Import) {
                     // account's that can sign the transaction
                     // NOTE: for Import transaction, the transaction can be signed with not activated accounts
                     availableAccounts = AccountRepository.getSignableAccounts();

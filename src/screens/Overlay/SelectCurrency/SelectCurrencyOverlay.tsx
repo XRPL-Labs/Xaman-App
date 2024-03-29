@@ -122,12 +122,23 @@ class SelectCurrencyOverlay extends Component<Props, State> {
         this.actionPanelRef?.current?.slideDown();
     };
 
+    isItemSelected = (item: TrustLineModel | string, selectedItem: TrustLineModel | string | undefined): boolean => {
+        if (typeof item === 'string' && typeof selectedItem === 'string') {
+            return selectedItem === item;
+        }
+
+        if (typeof item !== 'string' && typeof selectedItem !== 'string') {
+            return item.id === selectedItem?.id;
+        }
+
+        return false;
+    };
+
     renderItem = ({ item, index }: { item: TrustLineModel | string; index: number }) => {
         const { account, selectedItem } = this.props;
 
-        const isSelected =
-            // @ts-ignore
-            typeof item === 'string' ? selectedItem === item : item.id === selectedItem?.id;
+        const isSelected = this.isItemSelected(item, selectedItem);
+
         return (
             <TouchableDebounce
                 key={index}

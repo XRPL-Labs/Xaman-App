@@ -139,7 +139,6 @@ const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): str
         throw new Error(`networkId must not be greater than 65535 or less than 0, got ${networkId}`);
     }
 
-    // @ts-ignore
     return (((BigInt(0xc0000000) + BigInt(ledgerSeq)) << 32n) + (BigInt(txnIndex) << 16n) + BigInt(networkId))
         .toString(16)
         .toUpperCase();

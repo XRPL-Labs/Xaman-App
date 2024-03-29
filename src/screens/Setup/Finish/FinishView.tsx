@@ -86,12 +86,11 @@ class FinishView extends Component<Props, State> {
 
             // navigate to default root
             Navigator.startDefault();
-        } catch (e) {
+        } catch (error: any) {
             this.setState({
                 isLoading: false,
             });
-            // @ts-ignore
-            Alert.alert('Error', e.message || e);
+            Alert.alert('Error', error.message || error);
         }
     };
 

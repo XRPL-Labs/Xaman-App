@@ -131,10 +131,9 @@ class VerifySignatureStep extends Component<Props, State> {
             } else {
                 Alert.alert(Localize.t('global.error'), Localize.t('account.unableToVerifyTheSignature'));
             }
-        } catch (e) {
+        } catch (error: any) {
             // ignore use cancel operation
-            // @ts-ignore
-            if (e?.message && e?.message === 'The user cancelled the operation') {
+            if (error?.message && error?.message === 'The user cancelled the operation') {
                 return;
             }
             Alert.alert(Localize.t('global.error'), Localize.t('account.unableToVerifyTheSignature'));

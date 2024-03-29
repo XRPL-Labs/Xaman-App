@@ -134,7 +134,6 @@ class SearchBar extends PureComponent<Props, State> {
             return;
         }
 
-        // @ts-ignore
         if (value) {
             this.showClearButton();
         } else if (!value) {

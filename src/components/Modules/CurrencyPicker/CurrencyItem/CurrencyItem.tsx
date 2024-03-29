@@ -80,7 +80,6 @@ class CurrencyItem extends Component<Props> {
             return this.renderNative();
         }
         // IOU
-        // @ts-ignore
         return this.renderIOU(item);
     }
 }
