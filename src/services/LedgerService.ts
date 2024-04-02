@@ -42,6 +42,8 @@ import {
     SubmitRequest,
     AccountNFTsResponse,
     SubmitResponse,
+    AMMInfoRequest,
+    AMMInfoResponse,
 } from '@common/libs/ledger/types/methods';
 import { LedgerEntry, RippleState } from '@common/libs/ledger/types/ledger';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
@@ -205,6 +207,18 @@ class LedgerService extends EventEmitter {
             return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
         }
         return account_nfts.concat(combined);
+    };
+
+    /**
+     * Retrieves the AMM information for a given amm account.
+     *
+     * @param {string} issuer - The AMM account address.
+     */
+    getAMMInfo = (issuer: string) => {
+        return NetworkService.send<AMMInfoRequest, AMMInfoResponse>({
+            command: 'amm_info',
+            amm_account: issuer,
+        });
     };
 
     /**

@@ -97,6 +97,12 @@ const styles = StyleService.create({
         justifyContent: 'center',
         color: '$textPrimary',
     },
+    currencyItemCounterPartyLabel: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.family,
+        color: '$textSecondary',
+    },
+
     amountInput: {
         padding: 0,
         margin: 0,

@@ -667,9 +667,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                     <TokenAvatar token={trustLine} border size={35} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={styles.currencyItemLabelSmall}>
-                                        {trustLine.currency.name || NormalizeCurrencyCode(trustLine.currency.currency)}
-                                    </Text>
+                                    <Text style={styles.currencyItemLabelSmall}>{trustLine.getReadableCurrency()}</Text>
                                     <TouchableDebounce
                                         onPress={this.copyIssuerAddress}
                                         style={AppStyles.row}
@@ -695,7 +693,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
                         {(!trustLine.no_ripple || Number(trustLine.limit) === 0) &&
                             !trustLine.obligation &&
-                            !trustLine.isLPToken() && (
+                            !trustLine.isLiquidityPoolToken() && (
                                 <>
                                     <Spacer />
                                     <InfoMessage
@@ -750,10 +748,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         icon="IconCoins"
                                         iconSize={22}
                                         iconStyle={styles.depositButtonIcon}
-                                        label={`${Localize.t('global.add')} ${
-                                            trustLine.currency.name ||
-                                            NormalizeCurrencyCode(trustLine.currency.currency)
-                                        }`}
+                                        label={`${Localize.t('global.add')} ${trustLine.getReadableCurrency()}`}
                                         textStyle={styles.depositButtonText}
                                         onPress={this.onDepositPress}
                                     />
@@ -766,10 +761,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         iconPosition="left"
                                         iconSize={22}
                                         iconStyle={styles.withdrawButtonIcon}
-                                        label={`${Localize.t('global.withdraw')} ${
-                                            trustLine.currency.name ||
-                                            NormalizeCurrencyCode(trustLine.currency.currency)
-                                        }`}
+                                        label={`${Localize.t('global.withdraw')} ${trustLine.getReadableCurrency()}`}
                                         textStyle={styles.withdrawButtonText}
                                         onPress={this.onWithdrawPress}
                                     />

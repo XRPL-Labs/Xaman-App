@@ -8,8 +8,9 @@
 import Realm from 'realm';
 
 import { Truncate } from '@common/utils/string';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
-import CounterPartyModel from './counterParty';
+import CounterPartyModel from '@store/models/objects/counterParty';
 import CurrencyModel from '@store/models/objects/currency';
 
 import { TrustLineSchema } from '@store/models/schemas/latest';
@@ -60,8 +61,9 @@ class TrustLine extends Realm.Object<TrustLine> {
      *
      * @returns {object} An object containing name, avatar, and domain of the counterparty.
      */
-    get counterParty() {
+    get counterParty(): { name: string; avatar: string; domain: string } {
         const counterParties = this.currency.linkingObjects<CounterPartyModel>('CounterParty', 'currencies');
+
         if (!counterParties.isEmpty()) {
             const { name, avatar, domain } = counterParties[0];
             return { name, avatar, domain };
@@ -79,9 +81,42 @@ class TrustLine extends Realm.Object<TrustLine> {
      *
      * @returns {boolean}
      */
-    // TODO: improve this by adding an linked object to this line
-    isLPToken(): boolean {
+    isLiquidityPoolToken(): boolean {
+        // TODO: improve this check for LP token
         return !!this.currency.currency.startsWith('03');
+    }
+
+    /**
+     * Retrieves the array of AMM pairs.
+     *
+     * @returns {Array<string | CurrencyModel>} - The array of AMM pairs.
+     */
+    getAssetPairs(): any | undefined {
+        const assetPair = this.linkingObjects('AmmPair', 'line');
+
+        if (!assetPair.isEmpty()) {
+            return assetPair[0];
+        }
+
+        return undefined;
+    }
+
+    getReadableCurrency(): string {
+        // if there is a name for currency return the name
+        if (this.currency.name) {
+            return `${this.currency.name}`;
+        }
+
+        // LP token
+        if (this.isLiquidityPoolToken()) {
+            return this.getAssetPairs()
+                ?.pairs.map((pair: string | CurrencyModel) =>
+                    typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currency),
+                )
+                .join('/');
+        }
+
+        return NormalizeCurrencyCode(this.currency.currency);
     }
 }
 

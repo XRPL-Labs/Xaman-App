@@ -7,7 +7,8 @@ import { Appearance, StyleSheet } from 'react-native';
 import { Images } from '@common/helpers/images';
 
 import CoreRepository from '@store/repositories/core';
-import { CoreModel } from '@store/models';
+import CoreModel from '@store/models/objects/core';
+
 import { Themes } from '@store/types';
 
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';

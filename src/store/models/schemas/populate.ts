@@ -60,8 +60,7 @@ export const populateNodes = (realm: Realm): void => {
         }
 
         // set the created nodes to the network
-        // @ts-ignore
-        network.nodes = createdNodes;
+        network.nodes = createdNodes as unknown as Realm.List<NodeModel>;
         // eslint-disable-next-line prefer-destructuring
         network.defaultNode = createdNodes[0];
     }

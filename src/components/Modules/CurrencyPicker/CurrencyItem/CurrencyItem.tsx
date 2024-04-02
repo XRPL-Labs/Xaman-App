@@ -5,7 +5,6 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountModel, TrustLineModel } from '@store/models';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import { AmountText, TokenAvatar } from '@components/General';
@@ -44,7 +43,7 @@ class CurrencyItem extends Component<Props> {
         );
     };
 
-    renderIOU = (item: TrustLineModel) => {
+    renderToken = (item: TrustLineModel) => {
         const { selected } = this.props;
 
         return (
@@ -54,13 +53,13 @@ class CurrencyItem extends Component<Props> {
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                     <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
-                        {NormalizeCurrencyCode(item.currency.currency)}
-                        {item.currency.name && (
-                            <Text style={[AppStyles.subtext, selected && styles.currencyItemLabelSelected]}>
-                                {' '}
-                                - {item.currency.name}
-                            </Text>
-                        )}
+                        {item.getReadableCurrency()}
+
+                        <Text
+                            style={[styles.currencyItemCounterPartyLabel, selected && styles.currencyItemLabelSelected]}
+                        >
+                            &nbsp;-&nbsp;{item.counterParty.name}
+                        </Text>
                     </Text>
 
                     <AmountText
@@ -79,8 +78,9 @@ class CurrencyItem extends Component<Props> {
         if (typeof item === 'string') {
             return this.renderNative();
         }
-        // IOU
-        return this.renderIOU(item);
+
+        // token
+        return this.renderToken(item);
     }
 }
 

@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import { has } from 'lodash';
 
-import { NodeModel } from '@store/models';
+import NodeModel from '@store/models/objects/node';
 
 import BaseRepository from './base';
 

@@ -59,7 +59,7 @@ class TokenAvatar extends PureComponent<Props, State> {
             return counterParty.avatar;
         }
 
-        if (token.isLPToken()) {
+        if (token.isLiquidityPoolToken()) {
             return StyleService.getImage('ImageUnknownAMM').uri;
         }
 

@@ -15,7 +15,10 @@ import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
 import NetworkRepository from '@store/repositories/network';
-import { CoreModel, NetworkModel } from '@store/models';
+
+import CoreModel from '@store/models/objects/core';
+import NetworkModel from '@store/models/objects/network';
+
 import { NetworkType } from '@store/types';
 
 import { Navigator } from '@common/helpers/navigator';

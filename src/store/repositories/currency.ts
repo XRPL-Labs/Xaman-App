@@ -13,14 +13,6 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
         this.model = CurrencyModel;
     }
 
-    include = (data: any): Promise<any> => {
-        // assign id if not applied
-        if (this.model?.schema?.primaryKey && !has(data, this.model.schema.primaryKey)) {
-            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
-        }
-        return this.upsert(data);
-    };
-
     update = (object: CurrencyModel) => {
         // the primary key should be in the object
         if (this.model?.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {

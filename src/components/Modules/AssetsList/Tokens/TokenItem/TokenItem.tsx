@@ -95,11 +95,7 @@ class TokenItem extends PureComponent<Props, State> {
     getCurrencyName = () => {
         const { token } = this.props;
 
-        if (token.currency.name) {
-            return `${token.currency.name}`;
-        }
-
-        return NormalizeCurrencyCode(token.currency.currency);
+        return token.getReadableCurrency();
     };
 
     getTokenAvatar = () => {
@@ -117,7 +113,7 @@ class TokenItem extends PureComponent<Props, State> {
         }
 
         // show alert on top of avatar if rippling set
-        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLPToken()) {
+        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLiquidityPoolToken()) {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 
@@ -148,7 +144,6 @@ class TokenItem extends PureComponent<Props, State> {
                     light
                     isDisabled
                     style={styles.reorderButton}
-                    disabledStyle={{}}
                 />
             </View>
         );

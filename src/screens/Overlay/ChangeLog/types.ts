@@ -1,4 +1,4 @@
-import { CoreModel } from '@store/models';
+import CoreModel from '@store/models/objects/core';
 
 export interface Props {
     version: string;

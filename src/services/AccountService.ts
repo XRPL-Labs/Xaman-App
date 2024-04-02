@@ -5,10 +5,10 @@
  */
 
 import EventEmitter from 'events';
-import { map, isEmpty, flatMap, forEach, get, keys } from 'lodash';
+import { map, isEmpty, forEach, get, keys } from 'lodash';
 
-import { TrustLineModel } from '@store/models';
-import { AccountRepository, CurrencyRepository } from '@store/repositories';
+import { CurrencyModel, TrustLineModel } from '@store/models';
+import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import { AmountParser } from '@common/libs/ledger/parser/common';
@@ -51,7 +51,7 @@ class AccountService extends EventEmitter {
         this.logger = LoggerService.createLogger('Account');
     }
 
-    initialize = () => {
+    initialize = (): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // load accounts
@@ -122,6 +122,7 @@ class AccountService extends EventEmitter {
      * Load accounts from data store
      */
     loadAccounts = () => {
+        // fetch accounts from store
         const accounts = AccountRepository.getAccounts();
 
         // no account is present in the app
@@ -141,69 +142,65 @@ class AccountService extends EventEmitter {
             )}`,
         );
 
-        this.accounts = flatMap(accounts, (a) => a.address);
+        this.accounts = accounts.flatMap((account) => account.address);
     };
 
     /**
      * Update account info, contain balance etc ...
      */
     updateAccountInfo = async (account: string) => {
-        try {
-            // fetch account info from ledger
-            const accountInfo = await LedgerService.getAccountInfo(account);
+        // fetch account info from ledger
+        const accountInfo = await LedgerService.getAccountInfo(account);
 
-            if (!accountInfo) {
-                this.logger.warn(`Fetch account info [${account}]: got empty response`);
-            }
-
-            // if there is any error in the response return and ignore fetching the account lines
-            if ('error' in accountInfo) {
-                // account not found reset account to default state
-                if (get(accountInfo, 'error') === 'actNotFound') {
-                    // reset account details to default
-                    await AccountRepository.updateDetails(account, {
-                        id: `${account}.${NetworkService.getNetworkId()}`,
-                        network: NetworkService.getNetwork(),
-                        ownerCount: 0,
-                        sequence: 0,
-                        balance: 0,
-                        flagsString: JSON.stringify({}),
-                        regularKey: '',
-                        domain: '',
-                        emailHash: '',
-                        messageKey: '',
-                        lines: [] as any,
-                    });
-                }
-
-                // log the error and return
-                this.logger.warn(`Fetch account info [${account}]:`, accountInfo?.error);
-                return;
-            }
-
-            // fetch the normalized account lines
-            const normalizedAccountLines = (await this.getNormalizedAccountLines(account)) as TrustLineModel[];
-
-            // if account FOUND and no error
-            const { account_data, account_flags } = accountInfo;
-
-            // update account info
-            await AccountRepository.updateDetails(account, {
-                id: `${account}.${NetworkService.getNetworkId()}`,
-                network: NetworkService.getNetwork(),
-                ownerCount: account_data.OwnerCount,
-                sequence: account_data.Sequence,
-                balance: new AmountParser(account_data.Balance).dropsToNative().toNumber(),
-                flagsString: JSON.stringify(account_flags),
-                regularKey: get(account_data, 'RegularKey', ''),
-                domain: get(account_data, 'Domain', ''),
-                emailHash: get(account_data, 'EmailHash', ''),
-                messageKey: get(account_data, 'MessageKey', ''),
-                lines: normalizedAccountLines as unknown as Realm.Results<TrustLineModel>,
-            });
-        } catch (e: any) {
-            throw new Error(e);
+        if (!accountInfo) {
+            this.logger.warn(`Fetch account info [${account}]: got empty response`);
         }
+
+        // if there is any error in the response return and ignore fetching the account lines
+        if ('error' in accountInfo) {
+            // account not found reset account to default state
+            if (get(accountInfo, 'error') === 'actNotFound') {
+                // reset account details to default
+                await AccountRepository.updateDetails(account, {
+                    id: `${account}.${NetworkService.getNetworkId()}`,
+                    network: NetworkService.getNetwork(),
+                    ownerCount: 0,
+                    sequence: 0,
+                    balance: 0,
+                    flagsString: JSON.stringify({}),
+                    regularKey: '',
+                    domain: '',
+                    emailHash: '',
+                    messageKey: '',
+                    lines: [] as any,
+                });
+            }
+
+            // log the error and return
+            this.logger.warn(`Fetch account info [${account}]:`, accountInfo?.error);
+            return;
+        }
+
+        // fetch the normalized account lines
+        const normalizedAccountLines = await this.getNormalizedAccountLines(account);
+
+        // if account FOUND and no error
+        const { account_data, account_flags } = accountInfo;
+
+        // update account info
+        await AccountRepository.updateDetails(account, {
+            id: `${account}.${NetworkService.getNetworkId()}`,
+            network: NetworkService.getNetwork(),
+            ownerCount: account_data.OwnerCount,
+            sequence: account_data.Sequence,
+            balance: new AmountParser(account_data.Balance).dropsToNative().toNumber(),
+            flagsString: JSON.stringify(account_flags),
+            regularKey: get(account_data, 'RegularKey', ''),
+            domain: get(account_data, 'Domain', ''),
+            emailHash: get(account_data, 'EmailHash', ''),
+            messageKey: get(account_data, 'MessageKey', ''),
+            lines: normalizedAccountLines as unknown as Realm.Results<TrustLineModel>,
+        });
     };
 
     /**
@@ -228,7 +225,7 @@ class AccountService extends EventEmitter {
         await Promise.all(
             map(accountLines, async (line) => {
                 // upsert currency object in the store
-                const currency = await CurrencyRepository.include({
+                const currency = await CurrencyRepository.upsert({
                     id: `${line.account}.${line.currency}`,
                     issuer: line.account,
                     currency: line.currency,
@@ -257,25 +254,86 @@ class AccountService extends EventEmitter {
         return normalizedList;
     };
 
+    updateAMMPairs = async (address: string) => {
+        const account = AccountRepository.findOne({ address });
+
+        if (!account || !account.lines || account.lines.length === 0) {
+            return;
+        }
+
+        await Promise.all(
+            account.lines
+                .filter((line) => line.isLiquidityPoolToken())
+                .map(async (line) => {
+                    const ammInfoResp = await LedgerService.getAMMInfo(line.currency.issuer);
+
+                    if ('error' in ammInfoResp) {
+                        // just ignore
+                        return;
+                    }
+
+                    const { amount, amount2, lp_token } = ammInfoResp.amm;
+
+                    // check if we are setting correct amm pair
+                    if (lp_token.currency !== line.currency.currency || lp_token.issuer !== line.currency.issuer) {
+                        throw new Error('Mismatch on lp_token data!');
+                    }
+
+                    const pairs: Array<string | CurrencyModel> = [];
+
+                    for (const pair of [amount, amount2]) {
+                        // native currency
+                        if (typeof pair === 'string') {
+                            pairs.push(NetworkService.getNativeAsset());
+                        } else if (typeof pair === 'object') {
+                            // IOU
+                            pairs.push(
+                                await CurrencyRepository.upsert({
+                                    id: `${pair.issuer}.${pair.currency}`,
+                                    issuer: pair.issuer,
+                                    currency: pair.currency,
+                                }),
+                            );
+                        }
+                    }
+
+                    // no pair found ??
+                    if (pairs.length === 0) {
+                        return;
+                    }
+
+                    await AmmPairRepository.upsert({
+                        id: lp_token.currency, // using lp token currency as pair identifier
+                        pairs: pairs as unknown as Realm.List<string | CurrencyModel>,
+                        line,
+                    });
+                }),
+        );
+    };
+
     /**
      * Update accounts details through socket request
      * this will contain account trustLines etc ...
      */
     updateAccountsDetails = (include?: string[]) => {
-        forEach(this.accounts, (account) => {
+        forEach(this.accounts, async (account) => {
             // check if include present
             if (Array.isArray(include) && include.length > 0) {
                 if (include.indexOf(account) === -1) return;
             }
 
-            this.updateAccountInfo(account).catch((error: Error) => {
+            await this.updateAccountInfo(account).catch((error: Error) => {
                 this.logger.error(`Update account info [${account}] `, error);
+            });
+
+            await this.updateAMMPairs(account).catch((error: Error) => {
+                this.logger.error(`Update amm pairs [${account}] `, error);
             });
         });
     };
 
     /**
-     * Watch for any account change in store
+     * Watch for any account added or removed in store
      */
     onAccountsChange = () => {
         // unsubscribe from old list

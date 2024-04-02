@@ -122,7 +122,7 @@ class BackendService {
 
                     await Promise.all(
                         map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.include({
+                            const currency = await CurrencyRepository.upsert({
                                 id: `${c.issuer}.${c.currency}`,
                                 issuer: c.issuer,
                                 currency: c.currency,

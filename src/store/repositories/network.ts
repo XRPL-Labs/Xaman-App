@@ -1,7 +1,9 @@
 import Realm from 'realm';
 import { get, has } from 'lodash';
 
-import { NetworkModel, NodeModel } from '@store/models';
+import NodeModel from '@store/models/objects/node';
+import NetworkModel from '@store/models/objects/network';
+
 import { NetworkRailsChanges, NetworkRailsChangesType, NetworkType } from '@store/types';
 
 import NodeRepository from './node';

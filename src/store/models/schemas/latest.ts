@@ -1,4 +1,4 @@
-import { schemas } from './v15';
+import { schemas } from './v16';
 
 export const {
     CoreSchema,
@@ -11,4 +11,5 @@ export const {
     TrustLineSchema,
     CurrencySchema,
     ContactSchema,
+    AmmPairSchema,
 } = schemas;

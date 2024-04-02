@@ -15,7 +15,6 @@ import { Navigator } from '@common/helpers/navigator';
 
 import Preferences from '@common/libs/preferences';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
@@ -267,8 +266,8 @@ class SummaryStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={styles.currencyItemLabel}>
-                            {NormalizeCurrencyCode(item.currency.currency)}
-                            {item.currency.name && <Text style={AppStyles.subtext}> - {item.currency.name}</Text>}
+                            {item.getReadableCurrency()}
+                            <Text style={styles.currencyItemCounterPartyLabel}> - {item.counterParty.name}</Text>
                         </Text>
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
