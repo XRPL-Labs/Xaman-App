@@ -12,4 +12,5 @@ export const {
     CurrencySchema,
     ContactSchema,
     AmmPairSchema,
+    UserInteractionSchema,
 } = schemas;

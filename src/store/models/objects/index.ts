@@ -9,6 +9,7 @@ import AccountDetailsModel from './accountDetails';
 import NodeModel from './node';
 import NetworkModel from './network';
 import AmmPairModel from './ammPair';
+import UserInteractionModel from './userInteraction';
 
 export {
     ContactModel,
@@ -22,4 +23,5 @@ export {
     NodeModel,
     NetworkModel,
     AmmPairModel,
+    UserInteractionModel,
 };

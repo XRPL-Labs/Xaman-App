@@ -2,6 +2,7 @@ import { schemas as v15Schemas } from '@store/models/schemas/v15';
 
 // = ADDED
 import AmmPairSchema from '@store/models/schemas/v16/ammPair';
+import UserInteractionSchema from '@store/models/schemas/v16/userInteraction';
 
 // = NOT CHANGED
 const {
@@ -34,4 +35,5 @@ export const schemas = {
     AccountDetailsSchema,
     TrustLineSchema,
     AmmPairSchema,
+    UserInteractionSchema,
 };
