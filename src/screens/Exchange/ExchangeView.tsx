@@ -23,6 +23,7 @@ import { OfferCreate } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
+import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
@@ -101,7 +102,7 @@ class ExchangeView extends Component<Props, State> {
         // create new ledger exchange instance base on pair
         this.ledgerExchange = new LedgerExchange({
             issuer: props.trustLine.currency.issuer,
-            currency: props.trustLine.currency.currency,
+            currency: props.trustLine.currency.currencyCode,
         });
 
         this.amountInput = React.createRef();
@@ -252,7 +253,7 @@ class ExchangeView extends Component<Props, State> {
                     currency:
                         direction === MarketDirection.SELL
                             ? NetworkService.getNativeAsset()
-                            : NormalizeCurrencyCode(trustLine.currency.currency),
+                            : NormalizeCurrencyCode(trustLine.currency.currencyCode),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
@@ -275,11 +276,11 @@ class ExchangeView extends Component<Props, State> {
                 payCurrency:
                     direction === MarketDirection.SELL
                         ? NetworkService.getNativeAsset()
-                        : NormalizeCurrencyCode(trustLine.currency.currency),
+                        : NormalizeCurrencyCode(trustLine.currency.currencyCode),
                 getAmount: Localize.formatNumber(Number(expectedOutcome)),
                 getCurrency:
                     direction === MarketDirection.SELL
-                        ? NormalizeCurrencyCode(trustLine.currency.currency)
+                        ? NormalizeCurrencyCode(trustLine.currency.currencyCode)
                         : NetworkService.getNativeAsset(),
             }),
             [
@@ -320,7 +321,10 @@ class ExchangeView extends Component<Props, State> {
 
         this.setState({ isExchanging: true });
 
-        const pair = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
+        const pair: IssuedCurrency = {
+            issuer: trustLine.currency.issuer,
+            currency: trustLine.currency.currencyCode,
+        };
 
         // create offerCreate transaction
         const offer = new OfferCreate({
@@ -490,7 +494,7 @@ class ExchangeView extends Component<Props, State> {
                             <AmountText
                                 value={exchangeRate}
                                 currency={`${NormalizeCurrencyCode(
-                                    trustLine.currency.currency,
+                                    trustLine.currency.currencyCode,
                                 )}/${NetworkService.getNativeAsset()}`}
                                 style={[styles.detailsValue, AppStyles.textRightAligned]}
                                 immutable
@@ -504,7 +508,7 @@ class ExchangeView extends Component<Props, State> {
                                 value={minimumOutcome}
                                 currency={
                                     direction === MarketDirection.SELL
-                                        ? trustLine.currency.currency
+                                        ? trustLine.currency.currencyCode
                                         : NetworkService.getNativeAsset()
                                 }
                                 style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
@@ -569,7 +573,7 @@ class ExchangeView extends Component<Props, State> {
                                         {direction === MarketDirection.SELL
                                             ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currency)}
+                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
                                     </Text>
                                     <Text style={styles.subLabel}>
                                         {Localize.t('global.spendable')}:{' '}
@@ -639,12 +643,12 @@ class ExchangeView extends Component<Props, State> {
                                         {direction === MarketDirection.BUY
                                             ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currency)}
+                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
                                     </Text>
                                     {direction === MarketDirection.SELL && (
                                         <Text style={styles.subLabel}>
                                             {trustLine.counterParty.name}{' '}
-                                            {NormalizeCurrencyCode(trustLine.currency.currency)}
+                                            {NormalizeCurrencyCode(trustLine.currency.currencyCode)}
                                         </Text>
                                     )}
                                 </View>

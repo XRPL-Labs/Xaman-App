@@ -3,8 +3,9 @@ import Realm from 'realm';
 
 import { CurrencyModel, CounterPartyModel } from '@store/models';
 
-import BaseRepository from './base';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
+
+import BaseRepository from './base';
 
 /* Repository  ==================================================================== */
 class CurrencyRepository extends BaseRepository<CurrencyModel> {
@@ -22,7 +23,7 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
     };
 
     isVettedCurrency = (issuedCurrency: IssuedCurrency): boolean => {
-        const currency = this.findOne({ issuer: issuedCurrency.issuer, currency: issuedCurrency.currency });
+        const currency = this.findOne({ issuer: issuedCurrency.issuer, currencyCode: issuedCurrency.currency });
         if (!currency) {
             return false;
         }

@@ -1,10 +1,12 @@
 import Realm from 'realm';
 import { flatMap, has, filter, find } from 'lodash';
 
-import { AccountModel, AccountDetailsModel, CurrencyModel, TrustLineModel } from '@store/models';
+import Vault from '@common/libs/vault';
+
+import { AccountModel, AccountDetailsModel, TrustLineModel } from '@store/models';
 import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
 
-import Vault from '@common/libs/vault';
+import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 import BaseRepository from './base';
 
@@ -211,11 +213,14 @@ class AccountRepository extends BaseRepository<AccountModel> {
     /**
      * check if account has currency
      */
-    hasCurrency = (account: AccountModel, currency: Partial<CurrencyModel>): boolean => {
+    hasCurrency = (account: AccountModel, issuedCurrency: IssuedCurrency): boolean => {
         let found = false;
 
         account.lines?.forEach((line: TrustLineModel) => {
-            if (line.currency.issuer === currency.issuer && line.currency.currency === currency.currency) {
+            if (
+                line.currency.issuer === issuedCurrency.issuer &&
+                line.currency.currencyCode === issuedCurrency.currency
+            ) {
                 found = true;
             }
         });

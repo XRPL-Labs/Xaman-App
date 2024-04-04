@@ -121,7 +121,7 @@ class ResultStep extends Component<Props, State> {
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
                     currency={
-                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currency
+                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currencyCode
                     }
                     immutable
                 />

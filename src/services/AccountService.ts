@@ -228,7 +228,7 @@ class AccountService extends EventEmitter {
                 const currency = await CurrencyRepository.upsert({
                     id: `${line.account}.${line.currency}`,
                     issuer: line.account,
-                    currency: line.currency,
+                    currencyCode: line.currency,
                 });
 
                 // convert trust line to the normalized format
@@ -275,7 +275,7 @@ class AccountService extends EventEmitter {
                     const { amount, amount2, lp_token } = ammInfoResp.amm;
 
                     // check if we are setting correct amm pair
-                    if (lp_token.currency !== line.currency.currency || lp_token.issuer !== line.currency.issuer) {
+                    if (lp_token.currency !== line.currency.currencyCode || lp_token.issuer !== line.currency.issuer) {
                         throw new Error('Mismatch on lp_token data!');
                     }
 
@@ -291,7 +291,7 @@ class AccountService extends EventEmitter {
                                 await CurrencyRepository.upsert({
                                     id: `${pair.issuer}.${pair.currency}`,
                                     issuer: pair.issuer,
-                                    currency: pair.currency,
+                                    currencyCode: pair.currency,
                                 }),
                             );
                         }

@@ -160,7 +160,7 @@ class PaymentOptionItem extends Component<Props> {
             // check for vetted currency details
             currency = CurrencyRepository.findOne({
                 issuer,
-                currency: source_amount.currency,
+                currencyCode: source_amount.currency,
             });
         }
 

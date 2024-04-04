@@ -125,7 +125,7 @@ class BackendService {
                             const currency = await CurrencyRepository.upsert({
                                 id: `${c.issuer}.${c.currency}`,
                                 issuer: c.issuer,
-                                currency: c.currency,
+                                currencyCode: c.currency,
                                 name: c.name,
                                 avatar: c.avatar || '',
                                 shortlist: c.shortlist === 1,

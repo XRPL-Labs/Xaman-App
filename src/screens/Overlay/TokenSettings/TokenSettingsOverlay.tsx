@@ -135,7 +135,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
         if (trustLine.obligation) return Promise.resolve();
 
         return new Promise((resolve) => {
-            LedgerService.getFilteredAccountLine(account.address, trustLine.currency)
+            LedgerService.getFilteredAccountLine(account.address, {
+                issuer: trustLine.currency.issuer,
+                currency: trustLine.currency.currencyCode,
+            })
                 .then((line) => {
                     if (line) {
                         const balance = new BigNumber(line.balance);
@@ -174,7 +177,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 Destination: trustLine.currency.issuer,
                 DestinationTag: 0,
                 Amount: {
-                    currency: trustLine.currency.currency,
+                    currency: trustLine.currency.currencyCode,
                     issuer: trustLine.currency.issuer,
                     value: String(latestLineBalance),
                 },
@@ -265,7 +268,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     Localize.t('global.warning'),
                     Localize.t('asset.trustLineDustRemoveWarning', {
                         balance: new BigNumber(latestLineBalance).toFixed(),
-                        currency: NormalizeCurrencyCode(trustLine.currency.currency),
+                        currency: NormalizeCurrencyCode(trustLine.currency.currencyCode),
                     }),
                     [
                         { text: Localize.t('global.cancel') },
@@ -299,7 +302,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 TransactionType: TransactionTypes.TrustSet,
                 Account: account.address,
                 LimitAmount: {
-                    currency: trustLine.currency.currency,
+                    currency: trustLine.currency.currencyCode,
                     issuer: trustLine.currency.issuer,
                     value: 0,
                 },
@@ -447,7 +450,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     identifier: trustLine.currency.xapp_identifier!,
                     params: {
                         issuer: trustLine.currency.issuer,
-                        asset: trustLine.currency.currency,
+                        asset: trustLine.currency.currencyCode,
                         action: 'DEPOSIT',
                     },
                     origin: XAppOrigin.XUMM,
@@ -470,7 +473,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     identifier: trustLine.currency.xapp_identifier!,
                     params: {
                         issuer: trustLine.currency.issuer,
-                        asset: trustLine.currency.currency,
+                        asset: trustLine.currency.currencyCode,
                         action: 'WITHDRAW',
                     },
                     origin: XAppOrigin.XUMM,
@@ -504,7 +507,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
-                currency: trustLine.currency.currency,
+                currency: trustLine.currency.currencyCode,
                 issuer: trustLine.currency.issuer,
                 value: trustLine.limit,
             },
@@ -536,7 +539,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
         try {
             // set the trustline limit by gateway balance if it's more than our default value
             const resp = await LedgerService.getGatewayBalances(trustLine.currency.issuer);
-            const gatewayBalances = get(resp, ['obligations', trustLine.currency.currency]);
+            const gatewayBalances = get(resp, ['obligations', trustLine.currency.currencyCode]);
 
             if (gatewayBalances && Number(gatewayBalances) > Number(lineLimit)) {
                 lineLimit = gatewayBalances;
@@ -553,7 +556,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
-                currency: trustLine.currency.currency,
+                currency: trustLine.currency.currencyCode,
                 issuer: trustLine.currency.issuer,
                 value: lineLimit,
             },
@@ -581,7 +584,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         if (trustLine.no_ripple === false) {
             explanation = Localize.t('asset.ripplingMisconfigurationWarning', {
-                token: NormalizeCurrencyCode(trustLine.currency.currency),
+                token: NormalizeCurrencyCode(trustLine.currency.currencyCode),
             });
             fixMethod = this.disableRippling;
         } else if (Number(trustLine.limit) === 0) {
@@ -676,7 +679,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         <Text style={styles.issuerLabel}>
                                             {trustLine.counterParty.name}{' '}
                                             {trustLine.currency.name
-                                                ? NormalizeCurrencyCode(trustLine.currency.currency)
+                                                ? NormalizeCurrencyCode(trustLine.currency.currencyCode)
                                                 : ''}
                                         </Text>
                                         <Icon style={styles.copyIcon} name="IconCopy" size={15} />

@@ -145,8 +145,8 @@ class EventsFilterModal extends Component<Props, State> {
         const { account } = this.state;
 
         const currencies = flatMap(
-            uniqBy(account.lines, 'currency.currency'),
-            (l: TrustLineModel) => l.currency.currency,
+            uniqBy(account.lines, 'currency.currencyCode'),
+            (line: TrustLineModel) => line.currency.currencyCode,
         );
 
         return map(currencies, (value: string) => {

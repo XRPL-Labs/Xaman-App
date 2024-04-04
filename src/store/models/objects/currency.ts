@@ -23,9 +23,9 @@ class Currency extends Realm.Object<Currency> {
      */
     public declare issuer: string;
     /**
-     * The standardized code or symbol of the currency (ex: EUR),
+     * The currency code of the currency (ex: EUR),
      */
-    public declare currency: string;
+    public declare currencyCode: string;
     /**
      * A descriptive, user-friendly name for the currency (ex: Euro) ,
      */

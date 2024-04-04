@@ -536,10 +536,10 @@ class RecipientStep extends Component<Props, State> {
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
             if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
-                const destinationLine = await LedgerService.getFilteredAccountLine(
-                    destination.address,
-                    currency.currency,
-                );
+                const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
+                    currency: currency.currency.currencyCode,
+                    issuer: currency.currency.issuer,
+                });
 
                 // recipient does not have the proper trustline
                 if (
@@ -594,7 +594,7 @@ class RecipientStep extends Component<Props, State> {
                             currency:
                                 typeof currency === 'string'
                                     ? NetworkService.getNativeAsset()
-                                    : NormalizeCurrencyCode(currency.currency.currency),
+                                    : NormalizeCurrencyCode(currency.currency.currencyCode),
                         }),
                         buttons: [
                             {

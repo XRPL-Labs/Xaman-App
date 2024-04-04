@@ -92,7 +92,7 @@ class OfferCreateTemplate extends Component<Props, State> {
         } else {
             // sell IOU
             const line = source.lines?.find(
-                (l: TrustLineModel) => l.currency.issuer === issuer && l.currency.currency === currency,
+                (l: TrustLineModel) => l.currency.issuer === issuer && l.currency.currencyCode === currency,
             );
 
             if (line) {

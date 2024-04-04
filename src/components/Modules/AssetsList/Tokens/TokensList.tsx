@@ -154,7 +154,7 @@ class TokensList extends Component<Props, State> {
                 return (
                     toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
                     toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
-                    toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) > -1
+                    toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) > -1
                 );
             });
         }

@@ -83,7 +83,7 @@ class TrustLine extends Realm.Object<TrustLine> {
      */
     isLiquidityPoolToken(): boolean {
         // TODO: improve this check for LP token
-        return !!this.currency.currency.startsWith('03');
+        return !!this.currency.currencyCode.startsWith('03');
     }
 
     /**
@@ -111,12 +111,12 @@ class TrustLine extends Realm.Object<TrustLine> {
         if (this.isLiquidityPoolToken()) {
             return this.getAssetPairs()
                 ?.pairs.map((pair: string | CurrencyModel) =>
-                    typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currency),
+                    typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currencyCode),
                 )
                 .join('/');
         }
 
-        return NormalizeCurrencyCode(this.currency.currency);
+        return NormalizeCurrencyCode(this.currency.currencyCode);
     }
 }
 

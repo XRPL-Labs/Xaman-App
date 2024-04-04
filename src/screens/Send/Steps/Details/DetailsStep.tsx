@@ -104,7 +104,7 @@ class DetailsStep extends Component<Props, State> {
                 // we fetch the IOU directly from Ledger
                 LedgerService.getFilteredAccountLine(source.address, {
                     issuer: currency.currency.issuer,
-                    currency: currency.currency.currency,
+                    currency: currency.currency.currencyCode,
                 })
                     .then((line) => {
                         if (line) {
@@ -190,7 +190,7 @@ class DetailsStep extends Component<Props, State> {
             return NetworkService.getNativeAsset();
         }
 
-        return NormalizeCurrencyCode(currency.currency.currency);
+        return NormalizeCurrencyCode(currency.currency.currencyCode);
     };
 
     applyAllBalance = async () => {

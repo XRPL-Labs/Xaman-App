@@ -123,7 +123,7 @@ class ActionButtons extends PureComponent<Props, State> {
                     if (item.DeliveredAmount?.currency !== NetworkService.getNativeAsset()) {
                         const trustLine = account.lines?.find(
                             (line) =>
-                                line.currency.currency === item.DeliveredAmount?.currency &&
+                                line.currency.currencyCode === item.DeliveredAmount?.currency &&
                                 line.currency.issuer === item.DeliveredAmount?.issuer &&
                                 Number(line.balance) > 0,
                         );
@@ -187,7 +187,7 @@ class ActionButtons extends PureComponent<Props, State> {
             if (item.DeliveredAmount!.currency !== NetworkService.getNativeAsset()) {
                 const trustLine = account.lines?.find(
                     (line) =>
-                        line.currency.currency === item.DeliveredAmount?.currency &&
+                        line.currency.currencyCode === item.DeliveredAmount?.currency &&
                         line.currency.issuer === item.DeliveredAmount?.issuer &&
                         Number(line.balance) > 0,
                 );

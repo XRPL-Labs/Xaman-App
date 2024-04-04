@@ -98,14 +98,14 @@ class SelectCurrencyOverlay extends Component<Props, State> {
 
         const normalizedSearch = toLower(text);
 
-        const filtered = filter(currencies, (item: any) => {
+        const filtered = filter(currencies, (item) => {
             if (typeof item === 'string') {
                 return toLower(item).indexOf(text) !== -1;
             }
             return (
                 toLower(item.currency.name).indexOf(normalizedSearch) !== -1 ||
                 toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
-                toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) !== -1
+                toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) !== -1
             );
         });
 

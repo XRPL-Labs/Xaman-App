@@ -86,7 +86,7 @@ class TokenItem extends PureComponent<Props, State> {
         if (selfIssued) return Localize.t('home.selfIssued');
 
         if (token.currency.name) {
-            return `${token.counterParty.name} ${NormalizeCurrencyCode(token.currency.currency)}`;
+            return `${token.counterParty.name} ${NormalizeCurrencyCode(token.currency.currencyCode)}`;
         }
 
         return `${token.counterParty.name}`;

@@ -54,7 +54,7 @@ class TrustSetTemplate extends Component<Props, State> {
         // check if trustLine is setting to the default state
         const line = source.lines?.find(
             (token: TrustLineModel) =>
-                token.currency.issuer === transaction.Issuer && token.currency.currency === transaction.Currency,
+                token.currency.issuer === transaction.Issuer && token.currency.currencyCode === transaction.Currency,
         );
 
         if (!line) {

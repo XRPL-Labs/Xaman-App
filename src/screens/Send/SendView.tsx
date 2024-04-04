@@ -165,7 +165,7 @@ class SendView extends Component<Props, State> {
         } else {
             Object.assign(txJson, {
                 Amount: {
-                    currency: currency.currency.currency,
+                    currency: currency.currency.currencyCode,
                     issuer: currency.currency.issuer,
                     value: amount,
                 },
@@ -278,7 +278,7 @@ class SendView extends Component<Props, State> {
 
                 // set the amount
                 payment.Amount = {
-                    currency: currency.currency.currency,
+                    currency: currency.currency.currencyCode,
                     issuer: currency.currency.issuer,
                     value: amount,
                 };

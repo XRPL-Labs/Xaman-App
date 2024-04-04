@@ -228,7 +228,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={styles.rowLabel}>
                             {Localize.t('global.asset')}
                             <Text style={styles.rowLabelSmall}>
-                                {` (${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currency)})`}
+                                {` (${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currencyCode)})`}
                             </Text>
                         </Text>
                     </View>
