@@ -39,7 +39,7 @@ class EnterAddressStep extends Component<Props, State> {
 
         this.state = {
             isLoading: false,
-            address: 'rwN4wMsM87vJrFG3fqpzFriL1gMyqzjhg9',
+            address: undefined,
         };
     }
 
