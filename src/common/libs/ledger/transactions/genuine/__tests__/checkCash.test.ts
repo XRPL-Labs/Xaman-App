@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import Localize from '@locale';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '../../../../../utils/monetary';
 import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { CheckCash, CheckCashInfo, CheckCashValidation } from '../CheckCash';

@@ -7,7 +7,7 @@ import { TrustLineModel } from '@store/models';
 
 import { TrustSet } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AmountText } from '@components/General';
 import { AccountElement } from '@components/Modules';

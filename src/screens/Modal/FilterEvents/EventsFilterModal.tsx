@@ -11,7 +11,7 @@ import { NetworkService } from '@services';
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';

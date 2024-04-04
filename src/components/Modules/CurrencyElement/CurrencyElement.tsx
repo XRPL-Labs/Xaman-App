@@ -6,7 +6,7 @@ import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-nati
 import NetworkService from '@services/NetworkService';
 
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Images } from '@common/helpers/images';
 
 import { Avatar, LoadingIndicator } from '@components/General';

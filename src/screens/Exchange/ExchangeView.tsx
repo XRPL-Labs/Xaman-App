@@ -25,7 +25,7 @@ import { OfferStatus } from '@common/libs/ledger/parser/types';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components

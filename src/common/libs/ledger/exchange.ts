@@ -15,7 +15,7 @@ import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
 import BackendService from '@services/BackendService';
 
-import { ValueToIOU } from '@common/utils/amount';
+import { ValueToIOU } from '@common/utils/monetary';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 /* types ==================================================================== */

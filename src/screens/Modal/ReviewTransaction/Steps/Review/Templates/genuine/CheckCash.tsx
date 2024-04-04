@@ -6,7 +6,7 @@ import { LedgerService, NetworkService, StyleService } from '@services';
 
 import { CheckCash, CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';

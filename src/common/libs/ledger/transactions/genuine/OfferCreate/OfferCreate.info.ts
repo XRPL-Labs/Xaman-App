@@ -4,7 +4,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountModel } from '@store/models';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { OfferStatus } from '@common/libs/ledger/parser/types';
 
 import Localize from '@locale';

@@ -1,5 +1,5 @@
 /* eslint-disable spellcheck/spell-checker */
-import { NormalizeAmount, NormalizeCurrencyCode, ValueToIOU } from '../amount';
+import { NormalizeAmount, NormalizeCurrencyCode, ValueToIOU } from '../monetary';
 
 jest.mock('@services/NetworkService');
 

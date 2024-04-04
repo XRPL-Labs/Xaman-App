@@ -6,7 +6,7 @@ import { LedgerService } from '@services';
 
 import { CheckCancel, CheckCreate } from '@common/libs/ledger/transactions';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AccountElement } from '@components/Modules';
 

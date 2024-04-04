@@ -16,7 +16,7 @@ import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';

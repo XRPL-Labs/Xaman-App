@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import Localize from '@locale';
 

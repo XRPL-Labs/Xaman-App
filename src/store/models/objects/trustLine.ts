@@ -8,7 +8,7 @@
 import Realm from 'realm';
 
 import { Truncate } from '@common/utils/string';
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import CounterPartyModel from '@store/models/objects/counterParty';
 import CurrencyModel from '@store/models/objects/currency';

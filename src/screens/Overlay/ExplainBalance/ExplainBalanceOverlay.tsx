@@ -15,7 +15,7 @@ import { AccountModel, TrustLineModel } from '@store/models';
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
 

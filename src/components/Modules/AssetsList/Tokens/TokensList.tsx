@@ -4,7 +4,7 @@ import { View, ViewStyle } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Navigator } from '@common/helpers/navigator';
 

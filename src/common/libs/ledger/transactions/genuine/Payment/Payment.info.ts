@@ -1,6 +1,6 @@
 import Localize from '@locale';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AccountModel } from '@store/models';
 

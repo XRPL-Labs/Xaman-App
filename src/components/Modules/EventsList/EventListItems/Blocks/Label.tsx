@@ -5,7 +5,7 @@ import { OfferStatus } from '@common/libs/ledger/parser/types';
 
 import { TextPlaceholder } from '@components/General';
 
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Truncate } from '@common/utils/string';
 
 import Localize from '@locale';

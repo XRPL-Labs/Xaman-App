@@ -6,7 +6,7 @@ import { NetworkService, StyleService } from '@services';
 
 import { Images } from '@common/helpers/images';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CurrencyRepository } from '@store/repositories';
 
 import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';

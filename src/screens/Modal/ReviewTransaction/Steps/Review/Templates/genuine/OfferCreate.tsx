@@ -14,7 +14,7 @@ import { AmountText, InfoMessage } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';

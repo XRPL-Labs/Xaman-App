@@ -17,7 +17,7 @@ import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components

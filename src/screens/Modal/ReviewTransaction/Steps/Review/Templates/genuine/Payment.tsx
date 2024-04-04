@@ -9,7 +9,7 @@ import { CoreRepository } from '@store/repositories';
 import { Payment } from '@common/libs/ledger/transactions';
 import { PathFindPathOption } from '@common/libs/ledger/types/methods';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';

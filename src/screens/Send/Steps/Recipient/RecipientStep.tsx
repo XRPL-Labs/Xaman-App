@@ -18,7 +18,7 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';

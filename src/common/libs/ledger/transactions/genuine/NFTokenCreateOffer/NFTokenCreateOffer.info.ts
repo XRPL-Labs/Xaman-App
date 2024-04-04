@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AccountModel } from '@store/models';
 

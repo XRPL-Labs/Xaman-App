@@ -3,7 +3,7 @@ import LedgerService from '@services/LedgerService';
 
 import { ErrorMessages } from '@common/constants';
 import { AmountType } from '@common/libs/ledger/parser/types';
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import Localize from '@locale';
 

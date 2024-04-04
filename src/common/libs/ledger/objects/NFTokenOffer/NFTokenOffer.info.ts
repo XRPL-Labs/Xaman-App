@@ -3,7 +3,7 @@ import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import NFTokenOffer from '@common/libs/ledger/objects/NFTokenOffer/NFTokenOffer.class';
 

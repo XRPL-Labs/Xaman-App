@@ -9,7 +9,7 @@ import { View, Text, FlatList } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AccountModel, TrustLineModel } from '@store/models';
 

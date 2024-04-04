@@ -2,7 +2,7 @@ import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import TrustSet from './TrustSet.class';
 

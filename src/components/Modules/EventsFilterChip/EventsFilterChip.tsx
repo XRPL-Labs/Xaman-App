@@ -5,7 +5,7 @@ import { View } from 'react-native';
 
 import { Button } from '@components/General';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import Localize from '@locale';
 
