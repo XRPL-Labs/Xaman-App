@@ -4,6 +4,7 @@ import NetworkService from '@services/NetworkService';
 
 import { HexEncoding, Truncate } from './string';
 
+/* Monetary utils  ==================================================================== */
 /**
  * normalize value to IOU value
  * @param value string

@@ -126,7 +126,6 @@ describe('CheckCash', () => {
                         mutate: {
                             sent: undefined,
                             received: {
-                                issuer: undefined,
                                 currency: 'XRP',
                                 value: '2.499988',
                                 action: 1,

@@ -33,7 +33,7 @@ describe('AccountDelete', () => {
     describe('Info', () => {
         const { tx, meta }: any = txTemplates;
         const instance = new MixedAccountDelete(tx, meta);
-        const infoInstance = new AccountDeleteInfo(instance, {} as any);
+        const infoInstance = new AccountDeleteInfo(instance, { address: tx.Account } as any);
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
@@ -67,7 +67,11 @@ describe('AccountDelete', () => {
             it('should return the expected monetary details', () => {
                 expect(infoInstance.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: { issuer: undefined, currency: 'XRP', value: '15.00102', action: 0 },
+                        sent: {
+                            currency: 'XRP',
+                            value: '15.00102',
+                            action: 0,
+                        },
                         received: undefined,
                     },
                     factor: {

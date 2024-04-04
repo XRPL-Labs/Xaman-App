@@ -61,7 +61,11 @@ describe('PaymentChannelFund tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: { issuer: undefined, currency: 'XRP', value: '1', action: 0 },
+                        sent: {
+                            currency: 'XRP',
+                            value: '1',
+                            action: 0,
+                        },
                         received: undefined,
                     },
                     factor: { currency: 'XRP', value: '1', effect: 0 },

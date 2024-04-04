@@ -64,7 +64,6 @@ describe('NFTokenAcceptOffer', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
                         sent: {
-                            issuer: undefined,
                             currency: 'XRP',
                             value: '0.000102',
                             action: 0,

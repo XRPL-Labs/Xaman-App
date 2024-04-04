@@ -44,7 +44,6 @@ describe('OfferCreate tx', () => {
                 value: '500',
             });
             // expect(instance.TakerGot()).toStrictEqual({
-            //     issuer: undefined,
             //     action: OperationActions.DEC,
             //     currency: 'XRP',
             //     value: '500',
@@ -65,7 +64,6 @@ describe('OfferCreate tx', () => {
                 value: '484.553386',
             });
             // expect(instance.TakerPaid()).toStrictEqual({
-            //     issuer: undefined,
             //     action: OperationActions.INC,
             //     currency: 'XRP',
             //     value: '501.44754',
@@ -147,7 +145,6 @@ describe('OfferCreate tx', () => {
                 value: '38.076',
             });
             // expect(instance.TakerPaid('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ')).toStrictEqual({
-            //     issuer: undefined,
             //     action: OperationActions.INC,
             //     currency: 'XRP',
             //     value: '100',
@@ -220,7 +217,6 @@ describe('OfferCreate tx', () => {
                             action: 0,
                         },
                         received: {
-                            issuer: undefined,
                             currency: 'XRP',
                             value: '501.44754',
                             action: 1,

@@ -71,7 +71,11 @@ describe('EscrowCreate', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: { issuer: undefined, currency: 'XRP', value: '997.5', action: 0 },
+                        sent: {
+                            currency: 'XRP',
+                            value: '997.5',
+                            action: 0,
+                        },
                         received: undefined,
                     },
                     factor: { currency: 'XRP', value: '997.5', effect: 1 },

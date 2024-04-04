@@ -47,7 +47,6 @@ describe('Payment tx', () => {
                 received: {
                     action: OperationActions.INC,
                     currency: 'XRP',
-                    issuer: undefined,
                     value: '0.999988',
                 },
                 sent: {
@@ -171,7 +170,6 @@ describe('Payment tx', () => {
                             action: 0,
                         },
                         received: {
-                            issuer: undefined,
                             currency: 'XRP',
                             value: '0.999988',
                             action: 1,

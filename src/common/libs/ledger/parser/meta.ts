@@ -45,19 +45,20 @@ class Meta {
     hookExecutions: HookExecution[];
 
     constructor(meta: TransactionMetadata | Record<string, never>) {
-        this.nodes = meta?.AffectedNodes?.reduce((nodesWithDiffType, affectedNode) => {
-            if (typeof affectedNode === 'object' && Object.keys(affectedNode)[0]) {
-                const diffType = Object.keys(affectedNode)[0] as DiffType;
-                const node = affectedNode[diffType] as any;
+        this.nodes =
+            meta?.AffectedNodes?.reduce((nodesWithDiffType, affectedNode) => {
+                if (typeof affectedNode === 'object' && Object.keys(affectedNode)[0]) {
+                    const diffType = Object.keys(affectedNode)[0] as DiffType;
+                    const node = affectedNode[diffType] as any;
 
-                nodesWithDiffType.push({
-                    ...node,
-                    diffType,
-                });
-            }
+                    nodesWithDiffType.push({
+                        ...node,
+                        diffType,
+                    });
+                }
 
-            return nodesWithDiffType;
-        }, [] as NodeWithDiffType[]);
+                return nodesWithDiffType;
+            }, [] as NodeWithDiffType[]) ?? [];
 
         this.hookExecutions = meta?.HookExecutions?.map((execution) => execution.HookExecution) || [];
     }
@@ -118,6 +119,10 @@ class Meta {
         }
 
         if (node.diffType === DiffType.ModifiedNode && node.FinalFields?.Balance && node.PreviousFields?.Balance) {
+            value = this.parseValue(node.FinalFields?.Balance).minus(this.parseValue(node.PreviousFields?.Balance));
+        }
+
+        if (node.diffType === DiffType.DeletedNode && node.FinalFields?.Balance && node.PreviousFields?.Balance) {
             value = this.parseValue(node.FinalFields?.Balance).minus(this.parseValue(node.PreviousFields?.Balance));
         }
 

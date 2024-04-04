@@ -61,7 +61,6 @@ describe('EscrowCancel tx', () => {
                     mutate: {
                         sent: undefined,
                         received: {
-                            issuer: undefined,
                             currency: 'XRP',
                             value: '135.78999',
                             action: 1,

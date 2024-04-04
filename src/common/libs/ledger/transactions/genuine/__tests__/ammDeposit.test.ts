@@ -63,7 +63,14 @@ describe('AMMDeposit tx', () => {
         describe('getParticipants()', () => {
             it('should return the expected participants', () => {
                 expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rUwaiErsYE5kibUUtaPczXZVVd73VNy4R9', tag: undefined },
+                    start: {
+                        address: 'rUwaiErsYE5kibUUtaPczXZVVd73VNy4R9',
+                        tag: undefined,
+                    },
+                    end: {
+                        address: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                        tag: undefined,
+                    },
                 });
             });
         });
@@ -75,7 +82,6 @@ describe('AMMDeposit tx', () => {
                         sent: {
                             action: 0,
                             currency: 'XRP',
-                            issuer: undefined,
                             value: '10997.290462',
                         },
                         received: {

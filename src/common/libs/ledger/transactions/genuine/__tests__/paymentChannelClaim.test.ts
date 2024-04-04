@@ -66,7 +66,6 @@ describe('PaymentChannelClaim tx', () => {
                     mutate: {
                         sent: undefined,
                         received: {
-                            issuer: undefined,
                             currency: 'XRP',
                             value: '9.659988',
                             action: 1,

@@ -107,7 +107,7 @@ describe('AccountSet', () => {
 
                 const expectedDescription = `This is an AccountSet transaction${'\n'}It sets the account domain to example.com${'\n'}It sets the account's email hash to 0bc83cb571cd1c50ba6f3e8a78ef1346${'\n'}It sets the account message key to 03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB${'\n'}It sets the account transfer rate to 0.2${'\n'}It sets the account minter to rMinterxxxxxxxxxxxxxxxxxxxxxxxxxx${'\n'}It set the account flag asfAccountTxnID${'\n'}It clears the account flag asfDisableMaster${'\n'}It sets the account wallet locator to ABCDEF123456789${'\n'}It sets the account wallet size to 1337`;
                 expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
-                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.accountSettings'));
+                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
             });
 
             it('Clear', () => {
@@ -121,7 +121,7 @@ describe('AccountSet', () => {
                 const expectedDescription = `This is an AccountSet transaction${'\n'}It removes the account domain${'\n'}It removes the account's email hash${'\n'}It removes the account message key${'\n'}It removes the account transfer rate${'\n'}It removes the account minter${'\n'}It removes the account's wallet locator${'\n'}It removes the account's wallet size`;
 
                 expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
-                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.accountSettings'));
+                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
             });
         });
 
