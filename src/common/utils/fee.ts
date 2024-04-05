@@ -6,14 +6,15 @@ import { sign, derive, XrplDefinitions } from 'xrpl-accountlib';
  * Prepare transaction for getting hook tx fee
  * @param txJson
  * @param definitions
+ * @param networkId
  * @returns string
  */
-const PrepareTxForHookFee = (txJson: any, definitions: any): string => {
+const PrepareTxForHookFee = (txJson: any, definitions: any, networkId: number): string => {
     if (!txJson || typeof txJson !== 'object') {
         throw new Error('PrepareTxForHookFee requires a json transaction to calculate the fee for');
     }
 
-    // normalize the transaction
+    // Shallow copy txJson
     // Fee and SigningPubKey should be empty
     const transaction = {
         ...txJson,
@@ -23,14 +24,24 @@ const PrepareTxForHookFee = (txJson: any, definitions: any): string => {
 
     // check if we need to populate the transaction with dummy details
     // set the Sequence if not set
-    if (!Object.prototype.hasOwnProperty.call(txJson, 'Sequence')) {
+    if (!Object.prototype.hasOwnProperty.call(transaction, 'Sequence')) {
         Object.assign(transaction, {
             Sequence: 0,
         });
     }
 
+    // include Network ID if necessary
+    if (!Object.prototype.hasOwnProperty.call(transaction, 'NetworkID')) {
+        // legacy networks have ids less than 1024, these networks cannot specify NetworkID in txn
+        if (networkId > 1024) {
+            Object.assign(transaction, {
+                NetworkID: networkId,
+            });
+        }
+    }
+
     // Payment payloads can have no amount set
-    if (txJson.TransactionType === 'Payment' && !txJson.Amount) {
+    if (transaction.TransactionType === 'Payment' && !transaction.Amount) {
         Object.assign(transaction, {
             Amount: '0',
         });
