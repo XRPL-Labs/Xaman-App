@@ -8,21 +8,11 @@ const { startRecordingVideo, stopRecordingVideo } = require('../helpers/artifact
 const { startDeviceLogStream } = require('../helpers/simulator');
 
 BeforeAll(async () => {
-    let configuration;
-
-    const argv = process.argv.slice(2);
-    argv.forEach((arg, index) => {
-        if (arg === '--configuration') {
-            configuration = argv[index + 1];
-        }
+    await detox.init({
+        argv: {
+            reuse: false,
+        },
     });
-
-    const config = {
-        configuration,
-        reuse: true,
-    };
-
-    await detox.init({ argv: config });
 
     // start device log
     startDeviceLogStream();
@@ -31,6 +21,7 @@ BeforeAll(async () => {
     startRecordingVideo();
 
     await device.launchApp({
+        newInstance: true,
         permissions: { notifications: 'YES', camera: 'YES' },
         disableTouchIndicators: false,
     });

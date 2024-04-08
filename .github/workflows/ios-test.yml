@@ -1,0 +1,36 @@
+name: ios-test
+
+on:
+  push:
+    branches: [ develop, master ]
+  pull_request:
+    branches: [ develop, master ]
+
+jobs:
+  build-test:
+    if: github.event.pull_request.draft == false
+    runs-on: [ self-hosted, macOS, ARM64 ]
+    strategy:
+      matrix:
+        ios: [ 17.4 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Prepare Environment
+        uses: ./.github/actions/prepare-env
+        with:
+          cocoapods: 'true'
+
+      - name: Run tests
+        working-directory: ios
+        run: |
+          xcodebuild -workspace Xaman.xcworkspace -scheme Xaman -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=${{ matrix.ios }}' -resultBundlePath TestResults test
+
+      - name: Test Summary
+        uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: ios/TestResults.xcresult
+        if: success() || failure()

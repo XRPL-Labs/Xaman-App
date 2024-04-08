@@ -1,0 +1,20 @@
+name: prepare-cocoapods
+description: Prepare Cocoapods
+
+runs:
+  using: composite
+  steps:
+    - name: Cache Pods
+      uses: actions/cache@v1
+      id: podcache
+      with:
+        path: ios/Pods
+        key: pods-${{ hashFiles('**/Podfile.lock') }}
+
+    - name: Install Pods dependencies
+      env:
+        LC_ALL: en_US.UTF-8
+      shell: bash
+      run: |
+        cd ios && \
+        pod install

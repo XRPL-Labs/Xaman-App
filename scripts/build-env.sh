@@ -95,11 +95,11 @@ GOOGLESERVICE_INFO_CONTENT='
 
 
 if [ ! -f $GOOGLESERVICE_INFO_PATH ]; then
-  echo "Warning: No GoogleService-Info.plist file in ios app directory, creating placeholder..."
+  echo "Note: No GoogleService-Info.plist file in ios app directory, creating placeholder..."
   echo $GOOGLESERVICE_INFO_CONTENT > $GOOGLESERVICE_INFO_PATH
 fi
 
 if [ ! -f $GOOGLESERVICE_JSON_PATH ]; then
-  echo "Warning: No google-services.json file in android app directory,  creating placeholder..."
+  echo "Note: No google-services.json file in android app directory,  creating placeholder..."
   echo $GOOGLESERVICE_JSON_CONTENT > $GOOGLESERVICE_JSON_PATH
 fi

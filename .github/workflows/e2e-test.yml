@@ -1,0 +1,42 @@
+name: e2e-test
+
+on:
+  push:
+    branches: [ develop, master ]
+  pull_request:
+    branches: [ develop, master ]
+
+jobs:
+  build-run:
+    if: github.event.pull_request.draft == false
+    runs-on: [ self-hosted, macOS, ARM64 ]
+    env:
+      DETOX_CONFIGURATION: ios.simulator+xaman.ios
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Prepare Environment
+        uses: ./.github/actions/prepare-env
+        with:
+          cocoapods: 'true'
+
+      - name: Rebuild detox
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: npx detox clean-framework-cache && npx detox build-framework-cache
+
+      - name: Build app for detox
+        run: npx detox build e2e --configuration ${DETOX_CONFIGURATION} --if-missing
+
+      - name: Run e2e tests
+        run: npx cucumber-js ./e2e test
+
+      - name: Upload artifact files
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: e2e/artifacts/

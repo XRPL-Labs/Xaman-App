@@ -10,7 +10,7 @@
     "test": "jest --forceExit --detectOpenHandles",
     "sync-locals": "node scripts/locales.js --sync",
     "update-snapshots": "jest --updateSnapshot",
-    "postinstall": "make post-install",
+    "postinstall": "scripts/post-install.sh",
     "cosmos": "cosmos-native --config .cosmos/cosmos.config.json"
   },
   "dependencies": {

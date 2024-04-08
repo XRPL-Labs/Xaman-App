@@ -1,11 +1,11 @@
 //
 //  CipherTest.m
-//  XUMMTests
+//  XamanTests
 //
 
 #import <XCTest/XCTest.h>
 
-#import "../XUMM/Libs/Security/Vault/Cipher/Cipher.h"
+#import "../Xaman/Libs/Security/Vault/Cipher/Cipher.h"
 
 #import "PerformanceLogger.h"
 
