@@ -1,21 +1,22 @@
-name: e2e-test
+name: e2e
+env:
+  CI: true
+  DETOX_CONFIGURATION: ios.simulator+xaman.ios
 
 on:
   push:
-    branches: [ develop, master ]
+    branches: [ master ]
   pull_request:
     branches: [ develop, master ]
 
 jobs:
-  build-run:
+  build-test:
     if: github.event.pull_request.draft == false
     runs-on: [ self-hosted, macOS, ARM64 ]
-    env:
-      DETOX_CONFIGURATION: ios.simulator+xaman.ios
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -25,8 +26,9 @@ jobs:
           cocoapods: 'true'
 
       - name: Rebuild detox
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: npx detox clean-framework-cache && npx detox build-framework-cache
+        run: |
+          npx detox clean-framework-cache
+          npx detox build-framework-cache
 
       - name: Build app for detox
         run: npx detox build e2e --configuration ${DETOX_CONFIGURATION} --if-missing
@@ -36,7 +38,7 @@ jobs:
 
       - name: Upload artifact files
         if: ${{ always() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: artifact
+          name: e2e artifact
           path: e2e/artifacts/
