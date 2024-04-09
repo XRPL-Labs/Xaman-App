@@ -169,7 +169,10 @@ android {
     }
 
     // building in CI, change the singing config for release to debug
-    if (System.getenv("CI") === "true"){
+    if (System.getenv("CI")){
+        println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
+        println '!!! Replacing the release config with debug as build is running inside CI !!!'
+        println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
         buildTypes.release.signingConfig = signingConfigs.debug
     }
 
