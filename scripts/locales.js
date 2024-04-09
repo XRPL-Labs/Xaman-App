@@ -3,6 +3,7 @@
 
 /*
    Add missing translation keys to languages
+   Check if local files needs to be synced with English translation file
 */
 
 const fs = require('fs');
@@ -103,7 +104,7 @@ const check = () => {
 
         if (missMatched) {
             console.error(
-                `Error: translations missing key "${missMatched}" in ${dir[i]}, please run "npm run sync-locals" command!`,
+                `translations missing key "${missMatched}" in ${dir[i]}, please run "npm run sync-locals" command!`,
             );
             process.exit(1);
             return;

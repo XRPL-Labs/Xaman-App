@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 files=$(git diff --cached --name-only --diff-filter=ACM | grep -E  '\.(js|ts|tsx)$')
 if [ -z "$files" ]; then
     exit 0
@@ -27,9 +28,10 @@ fi
 
 
 # checking for any translations mismatch
-translationsError=$(node scripts/locales.js --check)
+translationsError=$(node scripts/locales.js --check 2>&1)
+echo $translationsError
 if [[ -n "$translationsError" ]]; then
-    echo "ERROR: Check Translations hints."
+    echo "ERROR: Check translation files hints."
     echo "$translationsError"
-    exit 1 # reject
+    exit 1
 fi
