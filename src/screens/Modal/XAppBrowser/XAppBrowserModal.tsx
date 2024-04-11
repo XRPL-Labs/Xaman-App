@@ -19,6 +19,7 @@ import {
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
+import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
@@ -44,12 +45,12 @@ import { BackendService, NavigationService, PushNotificationsService, StyleServi
 import {
     Avatar,
     Button,
-    LoadingIndicator,
     HeartBeatAnimation,
-    Spacer,
-    WebView,
     Icon,
     InfoMessage,
+    LoadingIndicator,
+    Spacer,
+    WebView,
 } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
@@ -66,7 +67,7 @@ import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { Props, State, XAppMethods, XAppSpecialPermissions, IEvent } from './types';
+import { IEvent, Props, State, XAppMethods, XAppSpecialPermissions } from './types';
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
@@ -179,7 +180,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     onResolve: this.onPayloadResolve,
                     onDecline: this.onPayloadDecline,
                 },
-                { modalPresentationStyle: 'fullScreen' },
+                { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
             );
         } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });

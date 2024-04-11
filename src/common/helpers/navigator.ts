@@ -336,7 +336,7 @@ const Navigator = {
     showModal<P extends object>(
         modal: AppScreenKeys,
         passProps: EnforcedProps<P>,
-        options = {},
+        options: Options = {},
     ): Promise<string | boolean> {
         const currentScreen = NavigationService.getCurrentModal();
         if (currentScreen !== modal) {

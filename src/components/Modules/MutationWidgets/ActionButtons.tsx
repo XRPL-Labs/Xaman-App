@@ -1,5 +1,6 @@
 import React, { PureComponent, useMemo } from 'react';
 import { InteractionManager, View } from 'react-native';
+import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
 
@@ -296,7 +297,7 @@ class ActionButtons extends PureComponent<Props, State> {
                         Navigator.pop();
                     },
                 },
-                { modalPresentationStyle: 'fullScreen' },
+                { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
             );
         }
     };

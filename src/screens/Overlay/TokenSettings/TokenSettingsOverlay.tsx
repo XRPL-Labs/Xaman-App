@@ -219,7 +219,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 onResolve: this.onClearDustResolve,
                                 onClose: this.onReviewScreenClose,
                             },
-                            { modalPresentationStyle: 'fullScreen' },
+                            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
                         );
                     },
                 );
@@ -335,7 +335,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 onResolve: this.onRemoveLineResolve,
                                 onClose: this.onReviewScreenClose,
                             },
-                            { modalPresentationStyle: 'overCurrentContext' },
+                            { modalPresentationStyle: OptionsModalPresentationStyle.overCurrentContext },
                         );
                     },
                 );
@@ -523,7 +523,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
             {
                 payload,
             },
-            { modalPresentationStyle: 'fullScreen' },
+            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
         );
     };
 
@@ -572,7 +572,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
             {
                 payload,
             },
-            { modalPresentationStyle: 'fullScreen' },
+            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
         );
     };
 

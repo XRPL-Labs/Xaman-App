@@ -6,6 +6,7 @@ import { find, first, get, isEmpty, values } from 'lodash';
 
 import React, { Component } from 'react';
 import { Alert, Image, InteractionManager, ScrollView, Text, View } from 'react-native';
+import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import LedgerService from '@services/LedgerService';
 import NetworkService from '@services/NetworkService';
@@ -193,7 +194,7 @@ class AddTokenOverlay extends Component<Props, State> {
                 {
                     payload,
                 },
-                { modalPresentationStyle: 'fullScreen' },
+                { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
             );
         }, 800);
     };

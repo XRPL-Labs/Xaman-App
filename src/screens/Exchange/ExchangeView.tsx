@@ -4,6 +4,7 @@
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { Animated, InteractionManager, Keyboard, ScrollView, Text, View } from 'react-native';
+import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
@@ -357,7 +358,7 @@ class ExchangeView extends Component<Props, State> {
                 onResolve: this.onReviewScreenResolve,
                 onClose: this.onReviewScreenClose,
             },
-            { modalPresentationStyle: 'fullScreen' },
+            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
         );
     };
 

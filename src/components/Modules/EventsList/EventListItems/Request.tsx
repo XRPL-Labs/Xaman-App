@@ -111,7 +111,7 @@ class RequestItem extends Component<Props, State> {
         Navigator.showModal<ReviewTransactionModalProps>(
             AppScreens.Modal.ReviewTransaction,
             { payload: item },
-            { modalPresentationStyle: 'fullScreen' },
+            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
         );
     };
 

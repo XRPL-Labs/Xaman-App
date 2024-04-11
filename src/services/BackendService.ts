@@ -6,6 +6,7 @@
 import { compact, flatMap, get, isEmpty, map, reduce } from 'lodash';
 import moment from 'moment-timezone';
 import { Platform } from 'react-native';
+import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
 
@@ -280,7 +281,7 @@ class BackendService {
                             AppScreens.Settings.TermOfUse,
                             { asModal: true },
                             {
-                                modalPresentationStyle: 'fullScreen',
+                                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                                 modal: {
                                     swipeToDismiss: false,
                                 },
