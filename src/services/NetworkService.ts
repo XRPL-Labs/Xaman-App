@@ -300,7 +300,7 @@ class NetworkService extends EventEmitter {
             try {
                 const resp = await this.send<FeeRequest, FeeResponse>({
                     command: 'fee',
-                    tx_blob: PrepareTxForHookFee(txJson, this.network.definitions),
+                    tx_blob: PrepareTxForHookFee(txJson, this.network.definitions, this.network.networkId),
                 });
 
                 if ('error' in resp) {
@@ -308,8 +308,8 @@ class NetworkService extends EventEmitter {
                 }
 
                 resolve(NormalizeFeeDataSet(resp));
-            } catch (e) {
-                this.logger.warn('Unable to calculate available network fees:', e);
+            } catch (error: any) {
+                this.logger.warn('Unable to calculate available network fees:', error);
                 reject(new Error('Unable to calculate available network fees!'));
             }
         });

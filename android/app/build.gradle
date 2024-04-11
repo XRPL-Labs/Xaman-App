@@ -5,8 +5,8 @@ apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
-def canonicalVersionName = "2.8.1"
-def canonicalVersionCode = 30_007
+def canonicalVersionName = "2.8.2"
+def canonicalVersionCode = 30_008
 
 /**
  * This is the configuration block to customize your React Native Android app.
