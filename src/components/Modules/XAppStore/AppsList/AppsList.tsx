@@ -10,11 +10,11 @@ import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import { XAppOrigin } from '@common/libs/payload';
 
 /* Types ==================================================================== */
 interface Props {
     dataSource: any;
-    onAppPress: (app: any) => void;
     visible: boolean;
     onRefresh?: () => void;
     refreshing?: boolean;
@@ -30,14 +30,6 @@ class AppsList extends Component<Props, State> {
 
         this.state = {};
     }
-
-    onAppPress = (app: any) => {
-        const { onAppPress } = this.props;
-
-        if (typeof onAppPress === 'function') {
-            onAppPress(app);
-        }
-    };
 
     onRefresh = () => {
         const { onRefresh } = this.props;
@@ -63,7 +55,7 @@ class AppsList extends Component<Props, State> {
     };
 
     renderItem = ({ item }: { item: XamanBackend.AppCategory }): React.ReactElement => {
-        return <AppItem item={item} onPress={this.onAppPress} action={AppActions.OPEN_ABOUT} />;
+        return <AppItem item={item} action={AppActions.OPEN_ABOUT} origin={XAppOrigin.XAPP_STORE} />;
     };
 
     renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => {
@@ -84,8 +76,20 @@ class AppsList extends Component<Props, State> {
         return <HorizontalLine />;
     };
 
+    renderRefreshControl = () => {
+        const { refreshing } = this.props;
+
+        return (
+            <RefreshControl
+                refreshing={!!refreshing}
+                onRefresh={this.onRefresh}
+                tintColor={StyleService.value('$contrast')}
+            />
+        );
+    };
+
     render() {
-        const { dataSource, refreshing, visible, containerStyle } = this.props;
+        const { dataSource, visible, containerStyle } = this.props;
 
         if (!visible) {
             return null;
@@ -101,13 +105,7 @@ class AppsList extends Component<Props, State> {
                 ListEmptyComponent={this.renderEmpty}
                 SectionSeparatorComponent={this.renderSeparator}
                 stickySectionHeadersEnabled
-                refreshControl={
-                    <RefreshControl
-                        refreshing={!!refreshing}
-                        onRefresh={this.onRefresh}
-                        tintColor={StyleService.value('$contrast')}
-                    />
-                }
+                refreshControl={this.renderRefreshControl()}
                 indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
             />
         );

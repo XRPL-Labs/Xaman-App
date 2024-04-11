@@ -135,10 +135,11 @@ class HeaderMessage extends Component<Props, State> {
         const { message } = this.props;
 
         const { content, app } = message!;
-        // in v3.0 we introduced the xapp button, so by order xapp || content
+
+        // in v3.0 we introduced the xapp button, so by order app || content
 
         if (app) {
-            return <AppItem item={app} onPress={this.onXAppPress} action={AppActions.LUNCH_APP} />;
+            return <AppItem item={app} action={AppActions.LUNCH_APP} origin={XAppOrigin.XAPP_STORE_MESSAGE} />;
         }
 
         return <Text style={AppStyles.subtext}>{content}</Text>;

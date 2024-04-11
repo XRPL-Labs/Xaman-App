@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, Share } from 'react-native';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+
+import { AppScreens } from '@common/constants';
+import { XAppOrigin } from '@common/libs/payload';
+
+import { Navigator } from '@common/helpers/navigator';
+import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
 
 import StyleService from '@services/StyleService';
 
-import { AppStyles } from '@theme';
 import { TouchableDebounce, Avatar, Button } from '@components/General';
 
-import styles from './styles';
+import { XAppInfoOverlayProps, DisplayButtonTypes } from '@screens/Overlay/XAppInfo';
+
 import Locale from '@locale';
 
+import { AppStyles } from '@theme';
+import styles from './styles';
+
 /* types ==================================================================== */
+
 export type AppType = {
     title: string;
     description: string;
@@ -26,8 +37,8 @@ export enum AppActions {
 
 export interface Props {
     item?: AppType;
-    onPress: (app: AppType) => void;
     action: AppActions;
+    origin: XAppOrigin;
 }
 
 /* Component ==================================================================== */
@@ -84,11 +95,66 @@ class AppItem extends Component<Props> {
         ]).start(this.startPlaceholderAnimation);
     };
 
-    onPress = () => {
-        const { item, onPress } = this.props;
+    openXApp = () => {
+        const { item, origin } = this.props;
 
-        if (typeof onPress === 'function') {
-            onPress(item!);
+        const { identifier, title, icon } = item!;
+
+        // open xApp browser
+        Navigator.showModal<XAppBrowserModalProps>(
+            AppScreens.Modal.XAppBrowser,
+            {
+                identifier,
+                title,
+                icon,
+                origin,
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+            },
+        );
+    };
+
+    shareXApp = () => {
+        const { item } = this.props;
+
+        const { identifier, title } = item!;
+
+        Share.share({
+            title,
+            message: `https://xumm.app/detect/xapp:${identifier}`,
+            url: undefined,
+        });
+    };
+
+    openXAppInfo = () => {
+        const { item } = this.props;
+
+        const { identifier, title, icon } = item!;
+
+        Navigator.showOverlay<XAppInfoOverlayProps>(AppScreens.Overlay.XAppInfo, {
+            identifier,
+            title: title!,
+            icon: icon!,
+            displayButtonTypes: [DisplayButtonTypes.OPEN, DisplayButtonTypes.SHARE],
+            onOpenPress: this.openXApp,
+            onSharePress: this.shareXApp,
+        });
+    };
+
+    onActionPress = () => {
+        const { action } = this.props;
+
+        switch (action) {
+            case AppActions.LUNCH_APP:
+                this.openXApp();
+                break;
+            case AppActions.OPEN_ABOUT:
+                this.openXAppInfo();
+                break;
+            default:
+                break;
         }
     };
 
@@ -151,7 +217,7 @@ class AppItem extends Component<Props> {
 
         return (
             <View style={styles.rightPanelContainer}>
-                <Button onPress={this.onPress} light roundedMini label={actionLabel} />
+                <Button onPress={this.onActionPress} light roundedMini label={actionLabel} />
             </View>
         );
     };
@@ -164,7 +230,7 @@ class AppItem extends Component<Props> {
         }
 
         return (
-            <TouchableDebounce onPress={this.onPress} activeOpacity={0.9}>
+            <TouchableDebounce onPress={this.openXApp} activeOpacity={0.9}>
                 <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
                     <Avatar
                         size={40}

@@ -20,6 +20,12 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+export enum DisplayButtonTypes {
+    OPEN = 'OPEN',
+    SHARE = 'SHARE',
+    DONATION = 'DONATION',
+}
+
 type XAppInfo = {
     description: string;
     supportUrl: string;
@@ -27,11 +33,15 @@ type XAppInfo = {
     donation: boolean;
     donateAmountsInNativeAsset?: number[];
 };
+
 export interface Props {
     title: string;
     icon: string;
     identifier: string;
-    onDonationPress: (amount?: number) => void;
+    displayButtonTypes: Array<DisplayButtonTypes>;
+    onDonationPress?: (amount?: number) => void;
+    onOpenPress?: () => void;
+    onSharePress?: () => void;
 }
 
 export interface State {
@@ -114,17 +124,79 @@ class XAppInfoOverlay extends Component<Props, State> {
 
         // callback
         if (typeof onDonationPress === 'function') {
-            onDonationPress(amount);
+            setTimeout(() => {
+                onDonationPress(amount);
+            }, 300);
         }
     };
 
-    renderDonationButton = () => {
-        const { info } = this.state;
+    onOpenPress = () => {
+        const { onOpenPress } = this.props;
 
-        if (!info?.donation) {
+        // close the overlay and call the callback
+        this.onClosePress();
+
+        // callback
+        if (typeof onOpenPress === 'function') {
+            setTimeout(onOpenPress, 300);
+        }
+    };
+
+    onSharePress = () => {
+        const { onSharePress } = this.props;
+
+        // close the overlay and call the callback
+        this.onClosePress();
+
+        // callback
+        if (typeof onSharePress === 'function') {
+            setTimeout(onSharePress, 300);
+        }
+    };
+
+    renderShareOpenButton = () => {
+        const { displayButtonTypes } = this.props;
+
+        if (
+            !displayButtonTypes?.includes(DisplayButtonTypes.OPEN) ||
+            !displayButtonTypes?.includes(DisplayButtonTypes.SHARE)
+        ) {
             return null;
         }
 
+        return (
+            <View style={styles.openShareButtonsContainer}>
+                {displayButtonTypes.includes(DisplayButtonTypes.OPEN) && (
+                    <Button
+                        style={AppStyles.flex1}
+                        rounded
+                        label={Localize.t('xapp.openXapp')}
+                        onPress={this.onOpenPress}
+                    />
+                )}
+                {displayButtonTypes.includes(DisplayButtonTypes.SHARE) && (
+                    <Button
+                        style={AppStyles.flex1}
+                        rounded
+                        light
+                        label={Localize.t('global.share')}
+                        onPress={this.onSharePress}
+                    />
+                )}
+            </View>
+        );
+    };
+
+    renderDonationButton = () => {
+        const { displayButtonTypes } = this.props;
+        const { info } = this.state;
+
+        // only display the donation button if enabled in the backend and also it's been provided as prop
+        if (!info?.donation || !displayButtonTypes?.includes(DisplayButtonTypes.DONATION)) {
+            return null;
+        }
+
+        // amounts from backend or default to 2,5,10 in native asset
         const donationAmounts = info?.donateAmountsInNativeAsset ?? [2, 5, 10];
 
         return (
@@ -232,6 +304,7 @@ class XAppInfoOverlay extends Component<Props, State> {
                     {this.renderDetails()}
                     {this.renderDonationButton()}
                 </ScrollView>
+                <View style={styles.footer}>{this.renderShareOpenButton()}</View>
             </ActionPanel>
         );
     }

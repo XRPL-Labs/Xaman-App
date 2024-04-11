@@ -58,7 +58,7 @@ import Localize from '@locale';
 
 import { AccountAddViewProps } from '@screens/Account/Add';
 import { TransactionLoaderModalProps } from '@screens/Modal/TransactionLoader';
-import { XAppInfoOverlayProps } from '@screens/Overlay/XAppInfo';
+import { DisplayButtonTypes, XAppInfoOverlayProps } from '@screens/Overlay/XAppInfo';
 import { ScanModalProps } from '@screens/Modal/Scan';
 import { DestinationPickerModalProps } from '@screens/Modal/DestinationPicker';
 import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
@@ -809,6 +809,7 @@ class XAppBrowserModal extends Component<Props, State> {
             identifier,
             title: title!,
             icon: icon!,
+            displayButtonTypes: [DisplayButtonTypes.DONATION],
             onDonationPress: this.openDonation,
         });
     };

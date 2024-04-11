@@ -8,16 +8,9 @@ import { get, flatMap, sortBy, countBy } from 'lodash';
 import React, { Component } from 'react';
 import { View, InteractionManager } from 'react-native';
 
-import {
-    Navigation,
-    EventSubscription,
-    OptionsModalPresentationStyle,
-    OptionsModalTransitionStyle,
-} from 'react-native-navigation';
+import { Navigation, EventSubscription } from 'react-native-navigation';
 
-import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
-import { XAppOrigin } from '@common/libs/payload/types';
 
 import BackendService from '@services/BackendService';
 
@@ -28,8 +21,6 @@ import { AppsList, HeaderMessage, CategoryChips, MessageType } from '@components
 import { CategoryChipItem } from '@components/Modules/XAppStore/CategoryChips/ChipButton';
 
 import Localize from '@locale';
-
-import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -214,25 +205,6 @@ class XAppsView extends Component<Props, State> {
         }
     };
 
-    openXApp = (app: XamanBackend.AppCategory) => {
-        const { identifier, title, icon } = app;
-
-        // open xApp browser
-        Navigator.showModal<XAppBrowserModalProps>(
-            AppScreens.Modal.XAppBrowser,
-            {
-                identifier,
-                title,
-                icon,
-                origin: XAppOrigin.XAPP_STORE,
-            },
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
-            },
-        );
-    };
-
     toggleSearchBar = () => {
         const { categories, searchEnabled } = this.state;
 
@@ -392,13 +364,7 @@ class XAppsView extends Component<Props, State> {
                         placeholder={Localize.t('global.search')}
                         containerStyle={styles.searchBarContainer}
                     />
-                    <AppsList
-                        visible
-                        searching
-                        onAppPress={this.openXApp}
-                        dataSource={dataSource}
-                        containerStyle={styles.appListContainer}
-                    />
+                    <AppsList visible searching dataSource={dataSource} containerStyle={styles.appListContainer} />
                 </>
             );
         }
@@ -432,7 +398,6 @@ class XAppsView extends Component<Props, State> {
                         )
                     }
                     dataSource={dataSource}
-                    onAppPress={this.openXApp}
                     onRefresh={this.fetchStoreListings}
                     refreshing={isLoading}
                     containerStyle={styles.appListContainer}

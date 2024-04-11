@@ -18,6 +18,7 @@ const styles = StyleService.create({
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.family,
         color: '$textSecondary',
+        paddingRight: AppSizes.paddingSml,
     },
     appTitlePlaceholder: {
         color: StyleService.select({ dark: '$darkGrey', light: '$lightGrey' }),
