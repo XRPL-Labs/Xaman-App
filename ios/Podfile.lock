@@ -9,35 +9,35 @@ PODS:
     - React-Core (= 0.73.6)
     - React-jsi (= 0.73.6)
     - ReactCommon/turbomodule/core (= 0.73.6)
-  - Firebase/AnalyticsWithoutAdIdSupport (10.23.1):
+  - Firebase/AnalyticsWithoutAdIdSupport (10.24.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics/WithoutAdIdSupport (~> 10.23.1)
-  - Firebase/CoreOnly (10.23.1):
-    - FirebaseCore (= 10.23.1)
-  - Firebase/Crashlytics (10.23.1):
+    - FirebaseAnalytics/WithoutAdIdSupport (~> 10.24.0)
+  - Firebase/CoreOnly (10.24.0):
+    - FirebaseCore (= 10.24.0)
+  - Firebase/Crashlytics (10.24.0):
     - Firebase/CoreOnly
-    - FirebaseCrashlytics (~> 10.23.0)
-  - Firebase/Messaging (10.23.1):
+    - FirebaseCrashlytics (~> 10.24.0)
+  - Firebase/Messaging (10.24.0):
     - Firebase/CoreOnly
-    - FirebaseMessaging (~> 10.23.0)
-  - FirebaseAnalytics/WithoutAdIdSupport (10.23.1):
+    - FirebaseMessaging (~> 10.24.0)
+  - FirebaseAnalytics/WithoutAdIdSupport (10.24.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
-    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.23.1)
+    - GoogleAppMeasurement/WithoutAdIdSupport (= 10.24.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
     - "GoogleUtilities/NSData+zlib (~> 7.11)"
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - FirebaseCore (10.23.1):
+  - FirebaseCore (10.24.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
   - FirebaseCoreExtension (10.22.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.23.0):
+  - FirebaseCoreInternal (10.24.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseCrashlytics (10.23.0):
+  - FirebaseCrashlytics (10.24.0):
     - FirebaseCore (~> 10.5)
     - FirebaseInstallations (~> 10.0)
     - FirebaseRemoteConfigInterop (~> 10.23)
@@ -46,12 +46,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (~> 2.1)
-  - FirebaseInstallations (10.23.0):
+  - FirebaseInstallations (10.24.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - PromisesObjC (~> 2.1)
-  - FirebaseMessaging (10.23.0):
+  - FirebaseMessaging (10.24.0):
     - FirebaseCore (~> 10.0)
     - FirebaseInstallations (~> 10.0)
     - GoogleDataTransport (~> 9.3)
@@ -60,8 +60,8 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - FirebaseRemoteConfigInterop (10.23.0)
-  - FirebaseSessions (10.23.0):
+  - FirebaseRemoteConfigInterop (10.24.0)
+  - FirebaseSessions (10.24.0):
     - FirebaseCore (~> 10.5)
     - FirebaseCoreExtension (~> 10.0)
     - FirebaseInstallations (~> 10.0)
@@ -71,7 +71,7 @@ PODS:
     - PromisesSwift (~> 2.1)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - GoogleAppMeasurement/WithoutAdIdSupport (10.23.1):
+  - GoogleAppMeasurement/WithoutAdIdSupport (10.24.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 7.11)
     - GoogleUtilities/MethodSwizzler (~> 7.11)
     - GoogleUtilities/Network (~> 7.11)
@@ -1190,20 +1190,20 @@ PODS:
     - React-RCTText
   - RealmJS (12.6.2):
     - React
-  - RNFBAnalytics (19.1.2):
-    - Firebase/AnalyticsWithoutAdIdSupport (= 10.23.1)
+  - RNFBAnalytics (19.2.0):
+    - Firebase/AnalyticsWithoutAdIdSupport (= 10.24.0)
     - React-Core
     - RNFBApp
-  - RNFBApp (19.1.2):
-    - Firebase/CoreOnly (= 10.23.1)
+  - RNFBApp (19.2.0):
+    - Firebase/CoreOnly (= 10.24.0)
     - React-Core
-  - RNFBCrashlytics (19.1.2):
-    - Firebase/Crashlytics (= 10.23.1)
+  - RNFBCrashlytics (19.2.0):
+    - Firebase/Crashlytics (= 10.24.0)
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
-  - RNFBMessaging (19.1.2):
-    - Firebase/Messaging (= 10.23.1)
+  - RNFBMessaging (19.2.0):
+    - Firebase/Messaging (= 10.24.0)
     - FirebaseCoreExtension
     - React-Core
     - RNFBApp
@@ -1430,19 +1430,19 @@ SPEC CHECKSUMS:
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   FBLazyVector: f64d1e2ea739b4d8f7e4740cde18089cd97fe864
   FBReactNativeSpec: 9f2b8b243131565335437dba74923a8d3015e780
-  Firebase: cf09623f98ae25a3ad484e23c7e0e5f464152d80
-  FirebaseAnalytics: fd35d51e6da86ef1aa2c3fe1f64ab2482cc01ba5
-  FirebaseCore: c43f9f0437b50a965e930cac4ad243200d12a984
+  Firebase: 91fefd38712feb9186ea8996af6cbdef41473442
+  FirebaseAnalytics: b5efc493eb0f40ec560b04a472e3e1a15d39ca13
+  FirebaseCore: 11dc8a16dfb7c5e3c3f45ba0e191a33ac4f50894
   FirebaseCoreExtension: 6394c00b887d0bebadbc7049c464aa0cbddc5d41
-  FirebaseCoreInternal: 6a292e6f0bece1243a737e81556e56e5e19282e3
-  FirebaseCrashlytics: b7aca2d52dd2440257a13741d2909ad80745ac6c
-  FirebaseInstallations: 42d6ead4605d6eafb3b6683674e80e18eb6f2c35
-  FirebaseMessaging: 1b2270e66c81bbf184f70184db1d6a736ad0def5
-  FirebaseRemoteConfigInterop: cbc87ffa4932719a7911a08e94510f18f026f5a7
-  FirebaseSessions: f06853e30f99fe42aa511014d7ee6c8c319f08a3
+  FirebaseCoreInternal: bcb5acffd4ea05e12a783ecf835f2210ce3dc6af
+  FirebaseCrashlytics: af38ea4adfa606f6e63fcc22091b61e7938fcf66
+  FirebaseInstallations: 8f581fca6478a50705d2bd2abd66d306e0f5736e
+  FirebaseMessaging: 4d52717dd820707cc4eadec5eb981b4832ec8d5d
+  FirebaseRemoteConfigInterop: 6c349a466490aeace3ce9c091c86be1730711634
+  FirebaseSessions: 2651b464e241c93fd44112f995d5ab663c970487
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: c5d68082e772fa1c511173d6b30a9de2c05a69a2
-  GoogleAppMeasurement: 794d1d2f71fdf77a077a3986258a5c2dac0f9d48
+  GoogleAppMeasurement: f3abf08495ef2cba7829f15318c373b8d9226491
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   hermes-engine: 9cecf9953a681df7556b8cc9c74905de8f3293c0
@@ -1498,10 +1498,10 @@ SPEC CHECKSUMS:
   ReactCommon: e168ee1704806f10f47ee8c7f825b5850b18eaea
   ReactNativeNavigation: 86a23855d2ccc74ad3e59bff1595c2d4b76ed8cc
   RealmJS: 385df5ee940d96f1de26b1dab153e325633d3052
-  RNFBAnalytics: ec87fa98926bd66747db880d47a18ccebbef097f
-  RNFBApp: 7b51b55651e3b84a4d14869f1e7eee40d69ffd15
-  RNFBCrashlytics: b23b08f663078c14adbeb0153f0affc3d94a441e
-  RNFBMessaging: 9b651adae36c6e2d320ede34d720950785cbc2d5
+  RNFBAnalytics: 08d1e3cd2e2ba9ac75543f5014b687947114b841
+  RNFBApp: aeac0f8c1c886ed2e38f5ea7e22221353697e920
+  RNFBCrashlytics: fc28fe0ba5a8f2ad1217647e7aeae4dd844a530d
+  RNFBMessaging: ec71e42daa9edad7202664872586e95a544bd631
   RNTangemSdk: b4a4c91c617daca427a69cc7f784425c6789acd7
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
