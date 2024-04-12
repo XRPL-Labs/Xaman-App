@@ -650,7 +650,6 @@ class XAppBrowserModal extends Component<Props, State> {
         } catch (error: any) {
             this.setState({
                 ott: undefined,
-                app: undefined,
                 isLaunchingApp: false,
                 error: error?.message,
             });
@@ -1034,7 +1033,7 @@ class XAppBrowserModal extends Component<Props, State> {
             }
         }
 
-        if ((isLaunchingApp || isLoadingApp || !isAppReady) && !isRequiredNetworkSwitch) {
+        if ((isLaunchingApp || isLoadingApp) && !isAppReady && !isRequiredNetworkSwitch) {
             stateView = this.renderLoading();
         } else if (error) {
             stateView = this.renderError();
