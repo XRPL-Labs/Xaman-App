@@ -9,6 +9,7 @@ import AccountDelete from './AccountDelete.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 export class AccountDeleteInfo extends ExplainerAbstract<AccountDelete, MutationsMixinType> {
@@ -23,8 +24,8 @@ export class AccountDeleteInfo extends ExplainerAbstract<AccountDelete, Mutation
     generateDescription(): string {
         const { Account, SourceTag, Destination, DestinationTag } = this.item;
 
-        const BalanceChanges = this.item.BalanceChange(Account);
-        const Amount = BalanceChanges.received || BalanceChanges.sent;
+        const balanceChanges = this.item.BalanceChange(Account);
+        const Amount = balanceChanges[OperationActions.INC].at(0) ?? balanceChanges[OperationActions.DEC].at(0);
 
         const content = [
             Localize.t('events.itDeletedAccount', { address: Account }),

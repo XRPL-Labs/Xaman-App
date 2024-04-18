@@ -12,6 +12,7 @@ import Offer from './Offer.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class OfferInfo extends ExplainerAbstract<Offer> {
@@ -84,7 +85,10 @@ class OfferInfo extends ExplainerAbstract<Offer> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: {
                 currency: this.item.TakerPays!.currency,
                 value: this.item.TakerPays!.value,

@@ -11,5 +11,5 @@ export { default as MemoWidget } from './Memo';
 export { default as ReserveChangeWidget } from './ReserveChange';
 export { default as ValidatedLedgerWidget } from './ValidatedLedger';
 export { default as WarningsWidget } from './Warnings';
-export { default as TransferredAssetsWidget } from './TransferredAssets';
+export { default as AssetsMutationsWidget } from './AssetsMutations';
 export { default as AdvisoryAlertWidget } from './AdvisoryAlert';

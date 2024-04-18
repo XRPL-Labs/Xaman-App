@@ -9,6 +9,7 @@ import Check from '@common/libs/ledger/objects/Check/Check.class';
 /* Types ==================================================================== */
 
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class CheckInfo extends ExplainerAbstract<Check> {
@@ -57,7 +58,10 @@ class CheckInfo extends ExplainerAbstract<Check> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: {
                 currency: this.item.SendMax!.currency,
                 value: this.item.SendMax!.value,

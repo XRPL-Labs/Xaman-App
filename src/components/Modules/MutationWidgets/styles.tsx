@@ -54,6 +54,9 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
 
+    amountGroupContainer: {
+        gap: AppSizes.paddingExtraSml,
+    },
     amountContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -89,7 +92,7 @@ const styles = StyleService.create({
         flexWrap: 'wrap',
         flexShrink: 1,
         fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.h4.size,
+        fontSize: AppFonts.h5.size,
         textAlign: 'center',
         color: '$blue',
     },

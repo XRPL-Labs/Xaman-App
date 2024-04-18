@@ -1,19 +1,17 @@
 import { AccountModel } from '@store/models';
 
 import { Account, AmountType } from '@common/libs/ledger/parser/types';
+import { BalanceChanges } from '@common/libs/ledger/mixin/types';
 
 export enum MonetaryStatus {
-    IMMEDIATE_EFFECT,
-    POTENTIAL_EFFECT,
-    NO_EFFECT,
+    IMMEDIATE_EFFECT = 'IMMEDIATE_EFFECT',
+    POTENTIAL_EFFECT = 'POTENTIAL_EFFECT',
+    NO_EFFECT = 'NO_EFFECT',
 }
 
 export type MonetaryDetails =
     | {
-          mutate?: {
-              sent?: AmountType;
-              received?: AmountType;
-          };
+          mutate: BalanceChanges;
           factor?: AmountType & {
               effect: MonetaryStatus;
           };

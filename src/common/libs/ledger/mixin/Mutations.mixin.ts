@@ -10,26 +10,26 @@ import LedgerDate from '@common/libs/ledger/parser/common/date';
 import Meta from '@common/libs/ledger/parser/meta';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
-import { OperationActions, TransactionResult } from '@common/libs/ledger/parser/types';
+import { OperationActions, OwnerCountChangeType, TransactionResult } from '@common/libs/ledger/parser/types';
 import { HookExecution } from '@common/libs/ledger/types/common';
 
 /* Types ==================================================================== */
-import { Constructor, MutationsMixinType } from './types';
+import { Constructor, MutationsMixinType, BalanceChanges } from './types';
 
 /* Mixin ==================================================================== */
 export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
     return class extends Base implements MutationsMixinType {
-        private BalanceChanges: Map<string, any>;
-        private OwnerCountChanges: Map<string, any>;
-        private HookExecutions: HookExecution[];
+        private _BalanceChanges: Map<string, BalanceChanges>;
+        private _OwnerCountChanges: Map<string, OwnerCountChangeType | undefined>;
+        private _HookExecutions: HookExecution[] | undefined;
 
         constructor(...args: any[]) {
             super(...args);
 
             // memorize balance and owner count changes
-            this.BalanceChanges = new Map();
-            this.OwnerCountChanges = new Map();
-            this.HookExecutions = [];
+            this._BalanceChanges = new Map();
+            this._OwnerCountChanges = new Map();
+            this._HookExecutions = undefined;
         }
 
         /**
@@ -42,26 +42,35 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             }
 
             // if already calculated return value
-            if (this.BalanceChanges.has(owner)) {
-                return this.BalanceChanges.get(owner);
+            if (this._BalanceChanges.has(owner)) {
+                return this._BalanceChanges.get(owner)!;
             }
 
+            // try to parse the balance changes from meta-data
             let balanceChanges = new Meta(this._meta).parseBalanceChanges()[owner];
 
-            // no balance changes
-            if (!balanceChanges) {
-                this.BalanceChanges.set(owner, undefined);
-                return undefined;
+            // no balance changes, just cache the value and return
+            if (!balanceChanges || balanceChanges.length === 0) {
+                return this._BalanceChanges
+                    .set(owner, {
+                        [OperationActions.DEC]: [],
+                        [OperationActions.INC]: [],
+                    })
+                    .get(owner)!;
             }
 
-            // if cross currency remove fee from changes
-            if (balanceChanges?.filter((changes) => changes.action === OperationActions.DEC).length > 1) {
-                const decreaseNative = balanceChanges.find(
-                    (change) =>
-                        change.action === OperationActions.DEC && change.currency === NetworkService.getNativeAsset(),
+            // we have multiple balance decrease, one them can be the fee,
+            // as we don't want to show the fee as balance change, we remove it from the list of changes
+            // example: [{ currency: 'USD', value: '1337'}, { currency: 'XRP', value: '0.0000015'}]
+            const deductedBalanceChanges = balanceChanges?.filter((changes) => changes.action === OperationActions.DEC);
+
+            if (deductedBalanceChanges.length > 1) {
+                const deductedNative = deductedBalanceChanges.find(
+                    (change) => change.currency === NetworkService.getNativeAsset(),
                 );
 
-                if (decreaseNative?.value === this.Fee?.value) {
+                if (deductedNative?.value === this.Fee?.value) {
+                    // remove the fee change from the list
                     balanceChanges = balanceChanges.filter(
                         (item) =>
                             !(
@@ -72,50 +81,60 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
                 }
             }
 
-            const changes = {
-                sent: balanceChanges.find((change) => change.action === OperationActions.DEC),
-                received: balanceChanges.find((change) => change.action === OperationActions.INC),
-            };
-
-            // remove fee from transaction owner balance changes
+            // deduct fee from transaction owners native balance change
             // this should apply for NFTokenAcceptOffer and OfferCreate transactions as well
-            let feeFieldKey = undefined as unknown as 'sent' | 'received';
+            let feeIncludedBalanceIndex = -1;
+            // only apply for when the owner of transaction
             if (owner === this.Account!) {
-                if (changes.sent?.currency === NetworkService.getNativeAsset()) {
-                    feeFieldKey = 'sent';
-                } else if (
+                // first check native asset decrease
+                feeIncludedBalanceIndex = balanceChanges.findIndex(
+                    (change) =>
+                        change.action === OperationActions.DEC && change.currency === NetworkService.getNativeAsset(),
+                );
+
+                // if not decrease then we should look for increase values
+                if (
+                    feeIncludedBalanceIndex === -1 &&
                     (this.TransactionType === TransactionTypes.NFTokenAcceptOffer ||
-                        this.TransactionType === TransactionTypes.OfferCreate) &&
-                    changes.received?.currency === NetworkService.getNativeAsset()
+                        this.TransactionType === TransactionTypes.OfferCreate)
                 ) {
-                    feeFieldKey = 'received';
+                    feeIncludedBalanceIndex = balanceChanges.findIndex(
+                        (change) =>
+                            change.action === OperationActions.INC &&
+                            change.currency === NetworkService.getNativeAsset(),
+                    );
                 }
             }
 
-            if (feeFieldKey) {
-                const afterFee = new BigNumber(changes[feeFieldKey]!.value).minus(new BigNumber(this.Fee!.value));
+            if (feeIncludedBalanceIndex > -1) {
+                const afterFee = new BigNumber(balanceChanges[feeIncludedBalanceIndex].value).minus(this.Fee!.value);
                 if (afterFee.isZero()) {
-                    changes[feeFieldKey] = undefined;
+                    // remove the item from balanceChanges
+                    balanceChanges.splice(feeIncludedBalanceIndex, 1);
                 } else if (
                     afterFee.isNegative() &&
                     this.TransactionType === TransactionTypes.NFTokenAcceptOffer &&
-                    feeFieldKey === 'sent'
+                    balanceChanges[feeIncludedBalanceIndex].action === OperationActions.DEC
                 ) {
-                    changes.sent = undefined;
-                    changes.received = {
-                        action: OperationActions.INC,
-                        currency: NetworkService.getNativeAsset(),
-                        value: afterFee.absoluteValue().decimalPlaces(8).toString(10),
-                    };
+                    // replace the action with Increase and positive the afterFee
+                    balanceChanges[feeIncludedBalanceIndex].action = OperationActions.INC;
+                    balanceChanges[feeIncludedBalanceIndex].value = afterFee
+                        .absoluteValue()
+                        .decimalPlaces(8)
+                        .toString(10);
                 } else {
-                    changes[feeFieldKey]!.value = afterFee.decimalPlaces(8).toString(10);
+                    // change the fee included balance change to after fee value
+                    balanceChanges[feeIncludedBalanceIndex].value = afterFee.decimalPlaces(8).toString(10);
                 }
             }
 
-            // memorize the changes for this account
-            this.BalanceChanges.set(owner, changes);
-
-            return changes;
+            // memorize the changes for this owner
+            return this._BalanceChanges
+                .set(owner, {
+                    [OperationActions.DEC]: balanceChanges?.filter((c) => c.action === OperationActions.DEC) ?? [],
+                    [OperationActions.INC]: balanceChanges?.filter((c) => c.action === OperationActions.INC) ?? [],
+                })
+                .get(owner)!;
         }
 
         /**
@@ -128,8 +147,8 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             }
 
             // if value is already set return
-            if (this.OwnerCountChanges.has(owner)) {
-                return this.OwnerCountChanges.get(owner);
+            if (this._OwnerCountChanges.has(owner)) {
+                return this._OwnerCountChanges.get(owner);
             }
 
             const ownerChanges = new Meta(this._meta)
@@ -137,7 +156,7 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
                 .find((change) => change.address === owner);
 
             // memorize owner count changes
-            this.OwnerCountChanges.set(owner, ownerChanges);
+            this._OwnerCountChanges.set(owner, ownerChanges);
 
             return ownerChanges;
         }
@@ -148,14 +167,14 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
          */
         HookExecution() {
             // if value is already set return
-            if (this.HookExecutions) {
-                return this.HookExecutions;
+            if (this._HookExecutions) {
+                return this._HookExecutions;
             }
 
             const hookExecutions = new Meta(this._meta).parseHookExecutions();
 
             // memorize hook executions
-            this.HookExecutions = hookExecutions;
+            this._HookExecutions = hookExecutions;
 
             return hookExecutions;
         }

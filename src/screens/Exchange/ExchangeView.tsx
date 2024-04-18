@@ -22,7 +22,7 @@ import { Payload } from '@common/libs/payload';
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
-import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
@@ -389,8 +389,8 @@ class ExchangeView extends Component<Props, State> {
             const balanceChanges = offer.BalanceChange(account.address);
 
             // calculate delivered amounts
-            const takerGot = balanceChanges?.sent!;
-            const takerPaid = balanceChanges?.received!;
+            const takerGot = balanceChanges[OperationActions.DEC].at(0)!;
+            const takerPaid = balanceChanges[OperationActions.INC].at(0)!;
 
             this.showResultAlert(
                 Localize.t('global.success'),

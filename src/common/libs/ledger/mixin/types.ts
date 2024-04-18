@@ -2,16 +2,23 @@ import { AccountModel } from '@store/models';
 
 import { BaseTransaction } from '@common/libs/ledger/transactions/common';
 
-import { AmountType, OwnerCountChangeType, TransactionResult } from '@common/libs/ledger/parser/types';
+import {
+    BalanceChangeType,
+    OperationActions,
+    OwnerCountChangeType,
+    TransactionResult,
+} from '@common/libs/ledger/parser/types';
 import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 import { HookExecution } from '@common/libs/ledger/types/common';
 
+export type BalanceChanges = {
+    [OperationActions.INC]: BalanceChangeType[];
+    [OperationActions.DEC]: BalanceChangeType[];
+};
+
 export interface MutationsMixinType {
-    BalanceChange(owner?: string): {
-        sent?: AmountType;
-        received?: AmountType;
-    };
-    OwnerCountChange(owner?: string): OwnerCountChangeType;
+    BalanceChange(owner?: string): BalanceChanges;
+    OwnerCountChange(owner?: string): OwnerCountChangeType | undefined;
     HookExecution(): HookExecution[];
     getXappIdentifier(): string | undefined;
     EmitDetails: any;

@@ -1,6 +1,6 @@
 export enum OperationActions {
-    DEC,
-    INC,
+    DEC = 'DEC',
+    INC = 'INC',
 }
 
 export enum OfferStatus {

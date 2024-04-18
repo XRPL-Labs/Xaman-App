@@ -6,6 +6,7 @@ import Ticket from './Ticket.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class TicketInfo extends ExplainerAbstract<Ticket> {
@@ -29,7 +30,10 @@ class TicketInfo extends ExplainerAbstract<Ticket> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: undefined,
         };
     }

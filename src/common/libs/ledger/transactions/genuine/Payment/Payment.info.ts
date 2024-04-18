@@ -9,6 +9,7 @@ import Payment from './Payment.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
@@ -17,18 +18,25 @@ class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
     }
 
     getEventsLabel(): string {
-        if ([this.item.Account, this.item.Destination].indexOf(this.account.address) === -1) {
-            const balanceChanges = this.item.BalanceChange(this.account.address);
-            if (balanceChanges?.sent && balanceChanges?.received) {
-                return Localize.t('events.exchangedAssets');
-            }
+        const balanceChanges = this.item.BalanceChange(this.account.address);
+
+        if (!balanceChanges) {
             return Localize.t('global.payment');
         }
-        if (this.item.Destination === this.account.address) {
+
+        if (balanceChanges[OperationActions.INC].length > 0 && balanceChanges[OperationActions.DEC].length > 0) {
+            return Localize.t('events.exchangedAssets');
+        }
+
+        if (balanceChanges[OperationActions.INC].length > 0 && balanceChanges[OperationActions.DEC].length === 0) {
             return Localize.t('events.paymentReceived');
         }
 
-        return Localize.t('events.paymentSent');
+        if (balanceChanges[OperationActions.DEC].length > 0 && balanceChanges[OperationActions.INC].length === 0) {
+            return Localize.t('events.paymentSent');
+        }
+
+        return Localize.t('global.payment');
     }
 
     generateDescription(): string {

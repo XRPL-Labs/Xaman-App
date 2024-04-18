@@ -8,6 +8,7 @@ import PayChannel from '@common/libs/ledger/objects/PayChannel/PayChannel.class'
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class PayChannelInfo extends ExplainerAbstract<PayChannel> {
@@ -80,7 +81,10 @@ class PayChannelInfo extends ExplainerAbstract<PayChannel> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: {
                 currency: this.item.Amount!.currency,
                 value: this.item.Amount!.value,

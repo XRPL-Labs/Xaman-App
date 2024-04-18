@@ -168,7 +168,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
 
         const widgetsList: WidgetKey[] = [
             'LabelWidget',
-            'TransferredAssetsWidget',
+            'AssetsMutationsWidget',
             'MemoWidget',
             'ReserveChangeWidget',
             'ParticipantsWidget',

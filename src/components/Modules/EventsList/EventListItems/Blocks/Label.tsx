@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 
 import { TextPlaceholder } from '@components/General';
 
@@ -45,8 +45,8 @@ class LabelBlock extends PureComponent<IProps, State> {
             if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                const takerGot = balanceChanges?.sent!;
-                const takerPaid = balanceChanges?.received!;
+                const takerGot = balanceChanges[OperationActions.DEC].at(0)!;
+                const takerPaid = balanceChanges[OperationActions.INC].at(0)!;
 
                 return `${Localize.formatNumber(NormalizeAmount(takerGot.value))} ${NormalizeCurrencyCode(
                     takerGot.currency,
@@ -57,14 +57,18 @@ class LabelBlock extends PureComponent<IProps, State> {
             )}/${NormalizeCurrencyCode(item.TakerPays!.currency)}`;
         }
 
+        // Swap exchange payment
         if (item.Type === TransactionTypes.Payment) {
             if ([item.Account, item.Destination].indexOf(account.address) === -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                if (balanceChanges?.sent && balanceChanges?.received) {
-                    return `${Localize.formatNumber(Number(balanceChanges.sent.value))} ${NormalizeCurrencyCode(
-                        balanceChanges.sent.currency,
-                    )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
+                const received = balanceChanges[OperationActions.INC].at(0);
+                const sent = balanceChanges[OperationActions.DEC].at(0);
+
+                if (sent && received) {
+                    return `${Localize.formatNumber(Number(sent.value))} ${NormalizeCurrencyCode(
+                        sent.currency,
+                    )}/${NormalizeCurrencyCode(received.currency)}`;
                 }
             }
         }

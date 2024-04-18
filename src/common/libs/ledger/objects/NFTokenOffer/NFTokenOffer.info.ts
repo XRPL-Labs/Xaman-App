@@ -9,6 +9,7 @@ import NFTokenOffer from '@common/libs/ledger/objects/NFTokenOffer/NFTokenOffer.
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
@@ -82,7 +83,10 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: {
                 currency: this.item.Amount!.currency,
                 value: this.item.Amount!.value,

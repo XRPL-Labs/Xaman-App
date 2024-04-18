@@ -8,6 +8,7 @@ import Escrow from './Escrow.class';
 
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class EscrowInfo extends ExplainerAbstract<Escrow> {
@@ -60,7 +61,10 @@ class EscrowInfo extends ExplainerAbstract<Escrow> {
 
     getMonetaryDetails() {
         return {
-            mutate: undefined,
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: {
                 currency: this.item.Amount!.currency,
                 value: this.item.Amount!.value,

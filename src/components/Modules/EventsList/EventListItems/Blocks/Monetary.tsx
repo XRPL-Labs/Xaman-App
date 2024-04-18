@@ -4,6 +4,7 @@ import { TextStyle } from 'react-native';
 import { AmountText } from '@components/General';
 
 import { MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 import styles from './styles';
 
@@ -31,34 +32,6 @@ class Monetary extends PureComponent<IProps, State> {
         };
     }
 
-    static assembleStateProps(mutateReceived: any, mutateSent: any, factor: any) {
-        if (mutateReceived) {
-            return {
-                ...mutateReceived,
-                prefix: undefined,
-                style: undefined,
-            };
-        }
-
-        if (mutateSent) {
-            return {
-                ...mutateSent,
-                prefix: '-',
-                style: styles.outgoingColor,
-            };
-        }
-
-        if (factor) {
-            return {
-                value: factor?.value,
-                currency: factor?.currency,
-                style: factor?.effect === MonetaryStatus.POTENTIAL_EFFECT ? styles.pendingColor : styles.naturalColor,
-            };
-        }
-
-        return null;
-    }
-
     static getDerivedStateFromProps(nextProps: IProps): Partial<State> | null {
         const { explainer } = nextProps;
 
@@ -75,18 +48,39 @@ class Monetary extends PureComponent<IProps, State> {
 
         const { mutate, factor } = monetaryDetails;
 
-        const stateProps = Monetary.assembleStateProps(mutate?.received, mutate?.sent, factor);
+        // first check for actions INC and then DEC
+        // if not any return the factor
+        if (mutate) {
+            const mutateReceived = mutate[OperationActions.INC].at(0);
+            const mutateSent = mutate[OperationActions.DEC].at(0);
 
-        if (!stateProps) {
-            return null;
+            if (mutateReceived) {
+                return {
+                    ...mutateReceived,
+                    prefix: undefined,
+                    style: undefined,
+                };
+            }
+
+            if (mutateSent) {
+                return {
+                    ...mutateSent,
+                    prefix: '-',
+                    style: styles.outgoingColor,
+                };
+            }
         }
 
-        return {
-            value: stateProps.value,
-            currency: stateProps.currency,
-            style: stateProps.style,
-            prefix: stateProps.prefix,
-        };
+        if (factor) {
+            return {
+                prefix: undefined,
+                value: factor?.value,
+                currency: factor?.currency,
+                style: factor?.effect === MonetaryStatus.POTENTIAL_EFFECT ? styles.pendingColor : styles.naturalColor,
+            };
+        }
+
+        return null;
     }
 
     render() {
