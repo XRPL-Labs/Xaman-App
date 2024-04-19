@@ -13,8 +13,9 @@ import { AppScreens } from '@common/constants';
 
 import NetworkService from '@services/NetworkService';
 
-import { NetworkRepository } from '@store/repositories';
+import { NetworkRepository, CoreRepository } from '@store/repositories';
 import { NetworkModel, NodeModel } from '@store/models';
+import { NetworkType } from '@store/types';
 
 import { Header, InfoMessage } from '@components/General';
 import { NodeList } from '@components/Modules';
@@ -24,8 +25,6 @@ import Localize from '@locale';
 import { NetworkRailsSyncOverlayProps } from '@screens/Overlay/NetworkRailsSync';
 
 import styles from './styles';
-import { NetworkType } from '@store/types';
-
 /* types ==================================================================== */
 export interface Props {}
 
@@ -63,7 +62,16 @@ class NetworkSettingView extends Component<Props, State> {
     }
 
     updateDataSource = () => {
-        const networks = NetworkRepository.getNetworks();
+        const coreSettings = CoreRepository.getSettings();
+
+        let networks;
+        // if developer mode activated then show all networks
+        if (coreSettings.developerMode) {
+            networks = NetworkRepository.getNetworks();
+        } else {
+            // otherwise only show MainNet networks
+            networks = NetworkRepository.getNetworks({ type: NetworkType.Main });
+        }
 
         const dataSource: any[] = [];
 
