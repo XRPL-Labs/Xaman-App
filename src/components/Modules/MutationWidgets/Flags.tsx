@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
-
 import Localize from '@locale';
 
 import styles from './styles';
@@ -20,8 +18,8 @@ class Flags extends PureComponent<Props> {
         }
 
         const flags = [];
-        for (const [key, value] of Object.entries(item.Flags)) {
-            if (!(key in txFlags.Universal) && value) {
+        for (const [key, value] of Object.entries(item.Flags).filter(Boolean)) {
+            if (value) {
                 flags.push(
                     <Text key={key} style={styles.detailsValueText}>
                         {key}

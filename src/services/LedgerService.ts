@@ -15,7 +15,7 @@ import { NetworkType } from '@store/types';
 import { AmountParser } from '@common/libs/ledger/parser/common';
 import { RippleStateToTrustLine } from '@common/libs/ledger/parser/entry';
 
-import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { LedgerEntryFlags } from '@common/constants/flags';
 
 import NetworkService from '@services/NetworkService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
@@ -435,7 +435,7 @@ class LedgerService extends EventEmitter {
                     !node ||
                     !(
                         node.Flags &
-                        objectFlags[LedgerEntryTypes.RippleState]![
+                        LedgerEntryFlags[LedgerEntryTypes.RippleState]![
                             node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
                         ]
                     )
@@ -474,7 +474,7 @@ class LedgerService extends EventEmitter {
             const notInDefaultState = account_objects.filter((node) => {
                 return (
                     node.Flags &
-                    objectFlags[LedgerEntryTypes.RippleState]![
+                    LedgerEntryFlags[LedgerEntryTypes.RippleState]![
                         node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
                     ]
                 );

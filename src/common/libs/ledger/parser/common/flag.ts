@@ -1,100 +1,91 @@
 import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
-import { txFlagIndices, txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
-import { objectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { LedgerEntryFlags } from '@common/constants/flags';
 
-import { Flag } from '@common/libs/ledger/parser/common/flags/types';
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export type ParsedFlags = {
     [key: string]: boolean;
 };
 
+export type Flag = {
+    [key: string]: number;
+};
+
+export type TransactionFlags = {
+    [key in TransactionTypes]?: Flag;
+};
+
 /* Class ==================================================================== */
 class FlagParser {
     private readonly type: TransactionTypes | LedgerEntryTypes;
-    private readonly txFlagsList?: Flag;
-    private flagsInt?: number;
+    private bitFlags?: number;
 
-    constructor(type: TransactionTypes | LedgerEntryTypes, flagsInt?: number) {
+    private readonly _flags?: Flag;
+    private readonly _indicesFlags?: Flag;
+
+    constructor(type: TransactionTypes | LedgerEntryTypes, bitFlags?: number) {
         this.type = type;
-        this.flagsInt = flagsInt;
-        this.txFlagsList = this.getFlagsList(type);
+        this.bitFlags = bitFlags;
+
+        // set the flags from definitions
+        const definitions = NetworkService.getNetworkDefinitions();
+
+        // transaction flags
+        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(definitions.transactionFlags, type)) {
+            this._flags = definitions.transactionFlags[type];
+        }
+
+        // ledger entry flags
+        if (type in LedgerEntryTypes && Object.prototype.hasOwnProperty.call(LedgerEntryFlags, type)) {
+            this._flags = LedgerEntryFlags[type as keyof typeof LedgerEntryFlags];
+        }
+
+        // indices flag
+        if (
+            type in TransactionTypes &&
+            Object.prototype.hasOwnProperty.call(definitions.transactionFlagsIndices, type)
+        ) {
+            this._indicesFlags = definitions.transactionFlagsIndices[type];
+        }
     }
-
-    private getFlagsList = (type: TransactionTypes | LedgerEntryTypes): Flag | undefined => {
-        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(txFlags, type)) {
-            return txFlags[type as keyof typeof txFlags];
-        }
-
-        if (type in LedgerEntryTypes && Object.prototype.hasOwnProperty.call(objectFlags, type)) {
-            return objectFlags[type as keyof typeof objectFlags];
-        }
-
-        return undefined;
-    };
-
-    private getFlagIndices = (type: TransactionTypes | LedgerEntryTypes): Flag | undefined => {
-        switch (type) {
-            case TransactionTypes.AccountSet:
-                return txFlagIndices.AccountSet;
-            case TransactionTypes.AMMDeposit:
-                return txFlags.AMMDeposit;
-            case TransactionTypes.AMMWithdraw:
-                return txFlags.AMMWithdraw;
-            default:
-                return undefined;
-        }
-    };
 
     getIndices() {
-        const indices = this.getFlagIndices(this.type);
-
-        if (typeof indices === 'undefined') {
+        if (typeof this._indicesFlags === 'undefined') {
             throw new Error(`type ${this.type} does not include flag indices`);
         }
 
-        const flag = Object.keys(indices).find((flagName) => this.flagsInt === indices[flagName]);
-
-        return flag ?? '';
+        return (
+            Object.keys(this._indicesFlags).find((flagName) => this.bitFlags === this._indicesFlags![flagName]) ?? ''
+        );
     }
 
-    setIndices(value: string) {
-        const indices = this.getFlagIndices(this.type);
-
-        if (typeof indices === 'undefined') {
+    setIndices(flagName: string) {
+        if (typeof this._indicesFlags === 'undefined') {
             throw new Error(`type ${this.type} does not include flag indices`);
         }
 
-        const flagKey = Object.keys(indices).find((flagName) => flagName === value);
+        const flagKey = Object.keys(this._indicesFlags).find((name) => name === flagName);
 
         if (typeof flagKey === 'undefined') {
-            throw new Error(`flag indices ${value} not found!`);
+            throw new Error(`flag indices ${flagName} not found!`);
         }
 
-        return indices[flagKey];
+        return this._indicesFlags[flagKey];
     }
 
     get(): ParsedFlags {
         // no flag for this transaction type, just return empty object
-        if (typeof this.txFlagsList === 'undefined' || typeof this.flagsInt === 'undefined') {
+        if (typeof this._flags === 'undefined' || typeof this.bitFlags === 'undefined') {
             return {};
         }
 
         const settings: ParsedFlags = {};
 
         // parse transaction flags
-        for (const flagName in this.txFlagsList) {
-            if (this.flagsInt & this.txFlagsList[flagName]) {
-                settings[flagName] = true;
-            } else {
-                settings[flagName] = false;
-            }
-        }
-
-        // parse universal flags
-        for (const flagName in txFlags.Universal) {
-            if (this.flagsInt & txFlags.Universal[flagName]) {
+        for (const flagName in this._flags) {
+            if (this.bitFlags & this._flags[flagName]) {
                 settings[flagName] = true;
             } else {
                 settings[flagName] = false;
@@ -107,30 +98,30 @@ class FlagParser {
     /**
      * Sets the flags of the transaction.
      *
-     * @param {ParsedFlags} value - The flags to be set. (Object)
+     * @param {ParsedFlags} flags - The flags to be set. (Object)
      * @throws {Error} - Throws an error if the transaction type does not support setting flags.
      * @returns {number} - The newly set flags value in UInt32.
      */
-    set(value: ParsedFlags): number {
-        if (typeof this.txFlagsList === 'undefined') {
+    set(flags: ParsedFlags): number {
+        if (typeof this._flags === 'undefined') {
             throw new Error(`type ${this.type} doesn't not support setting flags!`);
         }
 
-        // TODO: check if the flags are belong to the transaction
+        // reset the flags
+        this.bitFlags = 0;
 
-        // reset the flags in
-        this.flagsInt = 0;
-
-        for (const flagName in value) {
-            if (flagName in this.txFlagsList && value[flagName]) {
-                this.flagsInt |= this.txFlagsList[flagName];
+        for (const flagName in flags) {
+            if (flagName in this._flags && flags[flagName]) {
+                this.bitFlags |= this._flags[flagName];
                 // JavaScript converts operands to 32-bit signed Int before doing Bit-wise
                 // operations. We need to convert it back to an unsigned int.
-                this.flagsInt >>>= 0;
+                this.bitFlags >>>= 0;
+            } else {
+                throw new Error(`flag ${flagName} does not exist in flags list!`);
             }
         }
 
-        return this.flagsInt;
+        return this.bitFlags;
     }
 }
 

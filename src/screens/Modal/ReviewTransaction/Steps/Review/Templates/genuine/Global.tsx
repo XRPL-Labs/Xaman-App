@@ -5,7 +5,6 @@ import { InteractionManager, Text, View } from 'react-native';
 import { Transactions } from '@common/libs/ledger/transactions/types';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
-import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import NetworkService from '@services/NetworkService';
@@ -94,7 +93,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         const flags = [];
         for (const [key, value] of Object.entries(transaction.Flags)) {
-            if (!(key in txFlags.Universal) && value) {
+            if (value) {
                 flags.push(
                     <Text key={key} style={styles.value}>
                         {key}

@@ -1,10 +1,13 @@
 /* eslint-disable spellcheck/spell-checker */
 
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/types';
 
 /* Constants ==================================================================== */
-const objectFlags: LedgerObjectFlags = {
+const LedgerEntryFlags: {
+    [key in LedgerEntryTypes]?: {
+        [key: string]: number;
+    };
+} = {
     [LedgerEntryTypes.AccountRoot]: {
         AllowTrustLineClawback: 0x80000000,
         DefaultRipple: 0x00800000,
@@ -43,4 +46,4 @@ const objectFlags: LedgerObjectFlags = {
     },
 };
 
-export { objectFlags };
+export { LedgerEntryFlags };
