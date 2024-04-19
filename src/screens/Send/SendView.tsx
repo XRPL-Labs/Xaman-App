@@ -49,6 +49,12 @@ class SendView extends Component<Props, State> {
 
     private closeTimeout: ReturnType<typeof setTimeout> | undefined;
 
+    static options() {
+        return {
+            bottomTabs: { visible: false },
+        };
+    }
+
     constructor(props: Props) {
         super(props);
 
