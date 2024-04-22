@@ -19,7 +19,6 @@ interface IProps extends Omit<Props, 'explainer'> {}
 interface State {
     descriptionLabel?: string;
 }
-
 /* Component ==================================================================== */
 class LabelBlock extends PureComponent<IProps, State> {
     constructor(props: IProps) {
@@ -45,13 +44,16 @@ class LabelBlock extends PureComponent<IProps, State> {
             if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
                 const balanceChanges = item.BalanceChange(account.address);
 
-                const takerGot = balanceChanges[OperationActions.DEC].at(0)!;
-                const takerPaid = balanceChanges[OperationActions.INC].at(0)!;
+                const takerGot = balanceChanges[OperationActions.DEC].at(0);
+                const takerPaid = balanceChanges[OperationActions.INC].at(0);
 
-                return `${Localize.formatNumber(NormalizeAmount(takerGot.value))} ${NormalizeCurrencyCode(
-                    takerGot.currency,
-                )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
+                if (takerGot && takerPaid) {
+                    return `${Localize.formatNumber(NormalizeAmount(takerGot.value))} ${NormalizeCurrencyCode(
+                        takerGot.currency,
+                    )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
+                }
             }
+
             return `${Localize.formatNumber(NormalizeAmount(item.TakerGets!.value))} ${NormalizeCurrencyCode(
                 item.TakerGets!.currency,
             )}/${NormalizeCurrencyCode(item.TakerPays!.currency)}`;
