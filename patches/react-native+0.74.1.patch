@@ -1,46 +1,36 @@
 diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-index 9b9c127..bc42b35 100644
+index 0eae618..8fc0ef8 100644
 --- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 +++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-@@ -19,6 +19,9 @@
-
- #import "RCTNetworkPlugins.h"
-
-+// Define the allowed endpoints
-+static NSSet *allowedEndpoints = [NSSet setWithObjects:@"clients3.google.com", @"xumm.app", nil];
-+
- typedef RCTURLRequestCancellationBlock (^RCTHTTPQueryResult)(NSError *error, NSDictionary<NSString *, id> *result);
-
- NSString *const RCTNetworkingPHUploadHackScheme = @"ph-upload";
-@@ -553,6 +556,15 @@ - (void)sendRequest:(NSURLRequest *)request
+@@ -571,6 +571,15 @@ - (void)sendRequest:(NSURLRequest *)request
          responseSender:(RCTResponseSenderBlock)responseSender
  {
-   RCTAssertThread(_methodQueue, @"sendRequest: must be called on method queue");
-+
+   RCTAssertThread([self requestQueue], @"sendRequest: must be called on request queue");
++  // Define the allowed endpoints
++  NSSet *allowedEndpoints = [NSSet setWithObjects:@"clients3.google.com", @"xumm.app", nil];
 +  #if DEBUG
 +    // Debug build, skip the check
 +  #else
 +    // Production build, perform the check
 +    NSString* host = [request.URL host];
-+    NSAssert([allowedEndpoints containsObject: host], [@"Fetch endpoint have unsecure domain: " stringByAppendingString:domain]);
++    NSAssert([allowedEndpoints containsObject: host], [@"fetch() unsecure endpoint " stringByAppendingString:domain]);
 +  #endif
-+
    __weak __typeof(self) weakSelf = self;
    __block RCTNetworkTask *task;
    RCTURLRequestProgressBlock uploadProgressBlock = ^(int64_t progress, int64_t total) {
 diff --git a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
-index 4451b94..2f68e6f 100644
+index 3fd7238..2268e5e 100644
 --- a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
 +++ b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
 @@ -16,6 +16,9 @@
-
+ 
  #import "CoreModulesPlugins.h"
-
+ 
 +// Define the allowed endpoints
 +static NSSet *allowedEndpoints = [NSSet setWithObjects:@"xrplcluster.com", @"xahau.network", @"xahau-test.net", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
 +
  @implementation SRWebSocket (React)
-
+ 
  - (NSNumber *)reactTag
 @@ -68,6 +71,19 @@ - (void)invalidate
                    : (JS::NativeWebSocketModule::SpecConnectOptions &)options socketID
@@ -60,5 +50,5 @@ index 4451b94..2f68e6f 100644
 +  #endif
 +
    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
-
+ 
    // We load cookies from sharedHTTPCookieStorage (shared with XHR and
