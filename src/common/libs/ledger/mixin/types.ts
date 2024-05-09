@@ -16,6 +16,12 @@ export type BalanceChanges = {
     [OperationActions.DEC]: BalanceChangeType[];
 };
 
+export type SignMethodType = 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
+
+/**
+ * Interface definition for the MutationsMixinType class.
+ * @interface MutationsMixinType
+ */
 export interface MutationsMixinType {
     BalanceChange(owner?: string): BalanceChanges;
     OwnerCountChange(owner?: string): OwnerCountChangeType | undefined;
@@ -29,8 +35,9 @@ export interface MutationsMixinType {
     TransactionIndex: number;
 }
 
-export type SignMethodType = 'PIN' | 'BIOMETRIC' | 'PASSPHRASE' | 'TANGEM' | 'OTHER';
-
+/**
+ * Interface definition for the SignMixinType class.
+ */
 export interface SignMixinType {
     SignedBlob?: string;
     SignerPubKey?: string;
@@ -53,8 +60,18 @@ export interface SignMixinType {
     abort(): void;
 }
 
+/**
+ * Represents a constructor for creating instances of mixing class.
+ *
+ * @typeParam T - The base transaction type which the constructor creates.
+ */
 export type Constructor<T = BaseTransaction> = new (...args: any[]) => T;
 
+/**
+ * Enum representing various mixing types.
+ * @enum {string}
+ * @readonly
+ */
 export enum MixingTypes {
     Mutation = 'Mutation',
     Sign = 'Sign',

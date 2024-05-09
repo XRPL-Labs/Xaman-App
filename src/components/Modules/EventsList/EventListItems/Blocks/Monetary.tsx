@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 import { TextStyle } from 'react-native';
 
 import { AmountText } from '@components/General';
-
-import { MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { OperationActions } from '@common/libs/ledger/parser/types';
 
 import styles from './styles';
@@ -71,12 +69,12 @@ class Monetary extends PureComponent<IProps, State> {
             }
         }
 
-        if (factor) {
+        if (factor && factor.length > 0) {
             return {
                 prefix: undefined,
-                value: factor?.value,
-                currency: factor?.currency,
-                style: factor?.effect === MonetaryStatus.POTENTIAL_EFFECT ? styles.pendingColor : styles.naturalColor,
+                value: factor.at(0)?.value,
+                currency: factor.at(0)?.currency,
+                style: factor.at(0)?.action === OperationActions.INC ? styles.pendingIncColor : styles.pendingDecColor,
             };
         }
 

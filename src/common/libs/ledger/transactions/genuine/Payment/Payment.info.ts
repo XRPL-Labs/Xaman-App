@@ -88,11 +88,13 @@ class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.DeliveredAmount!.currency,
-                value: this.item.DeliveredAmount!.value,
-                effect: MonetaryStatus.IMMEDIATE_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.DeliveredAmount!.currency,
+                    value: this.item.DeliveredAmount!.value,
+                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                },
+            ],
         };
     }
 }

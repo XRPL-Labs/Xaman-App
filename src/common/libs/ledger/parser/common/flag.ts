@@ -1,3 +1,5 @@
+import { binary } from 'xrpl-accountlib';
+
 import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import { LedgerEntryFlags } from '@common/constants/flags';
@@ -32,9 +34,14 @@ class FlagParser {
         // set the flags from definitions
         const definitions = NetworkService.getNetworkDefinitions();
 
+        // if the transaction flags is not present in the definitions use default flags
+        const transactionFlags = definitions.transactionFlags ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS;
+        const indicesFlags =
+            definitions.transactionFlagsIndices ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS_INDICES;
+
         // transaction flags
-        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(definitions.transactionFlags, type)) {
-            this._flags = definitions.transactionFlags[type];
+        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(transactionFlags, type)) {
+            this._flags = transactionFlags[type];
         }
 
         // ledger entry flags
@@ -43,11 +50,8 @@ class FlagParser {
         }
 
         // indices flag
-        if (
-            type in TransactionTypes &&
-            Object.prototype.hasOwnProperty.call(definitions.transactionFlagsIndices, type)
-        ) {
-            this._indicesFlags = definitions.transactionFlagsIndices[type];
+        if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(indicesFlags, type)) {
+            this._indicesFlags = indicesFlags[type];
         }
     }
 

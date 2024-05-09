@@ -199,10 +199,19 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             return undefined;
         }
 
+        /**
+         * Retrieves the hooks emit details.
+         * @returns {any | undefined} The emit details, or undefined if not available.
+         */
         get EmitDetails(): any | undefined {
             return this._tx.EmitDetails;
         }
 
+        /**
+         * Retrieve the transaction date as a string in ISO 8601 format.
+         *
+         * @return {string | undefined} The date in ISO 8601 format or undefined if the date is not available.
+         */
         get Date(): string | undefined {
             const date = this._tx?.date as string | undefined;
             if (typeof date === 'undefined') return undefined;
@@ -210,6 +219,11 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             return ledgerDate.toISO8601();
         }
 
+        /**
+         * Retrieve the transaction result.
+         *
+         * @return {TransactionResult} The transaction result object.
+         */
         get TransactionResult(): TransactionResult {
             const transactionResult = this._meta?.TransactionResult;
 
@@ -220,6 +234,12 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             };
         }
 
+        /**
+         * Returns the CTID (Concise Transaction ID) for the transaction.
+         * https://github.com/XRPLF/XRPL-Standards/tree/master/XLS-0037d-concise-transaction-identifier-ctid
+         *
+         * @returns {string} The CTID for the transaction.
+         */
         get CTID(): string {
             // check if CTID is already in the transaction response
             const ctid = this._tx?.ctid as string | undefined;
@@ -232,10 +252,20 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
             return ctid;
         }
 
+        /**
+         * Retrieves the validated ledger index associated with the current instance.
+         *
+         * @return {number} The ledger index.
+         */
         get LedgerIndex(): number {
             return this._tx.ledger_index as number;
         }
 
+        /**
+         * Retrieves the transaction index from the metadata.
+         *
+         * @returns {number} The transaction index.
+         */
         get TransactionIndex(): number {
             return this._meta.TransactionIndex;
         }

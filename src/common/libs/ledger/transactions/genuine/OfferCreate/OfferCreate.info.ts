@@ -5,7 +5,7 @@ import NetworkService from '@services/NetworkService';
 import { AccountModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
-import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 
 import Localize from '@locale';
 
@@ -92,11 +92,18 @@ class OfferCreateInfo extends ExplainerAbstract<OfferCreate, MutationsMixinType>
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.TakerPays!.currency,
-                value: this.item.TakerPays!.value,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    ...this.item.TakerPays!,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions.INC,
+                },
+                {
+                    ...this.item.TakerGets!,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions.DEC,
+                },
+            ],
         };
     }
 }

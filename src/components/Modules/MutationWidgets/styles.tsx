@@ -26,7 +26,6 @@ const styles = StyleService.create({
         paddingBottom: 25,
         paddingHorizontal: 25,
     },
-
     detailContainer: {
         paddingBottom: AppSizes.padding,
         paddingHorizontal: 25,
@@ -54,9 +53,10 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
 
-    amountGroupContainer: {
+    itemContainerGap: {
         gap: AppSizes.paddingExtraSml,
     },
+
     amountContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -129,6 +129,15 @@ const styles = StyleService.create({
     iconArrow: {
         marginTop: 12,
         marginBottom: -12,
+    },
+
+    nfTokenContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '$tint',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 50,
     },
 });
 

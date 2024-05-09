@@ -51,14 +51,16 @@ class EscrowFinishInfo extends ExplainerAbstract<EscrowFinish, MutationsMixinTyp
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.Escrow!.Amount!.currency,
-                value: this.item.Escrow!.Amount!.value,
-                effect:
-                    this.item.Account === this.account.address
-                        ? MonetaryStatus.IMMEDIATE_EFFECT
-                        : MonetaryStatus.NO_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.Escrow!.Amount!.currency,
+                    value: this.item.Escrow!.Amount!.value,
+                    effect:
+                        this.item.Account === this.account.address
+                            ? MonetaryStatus.IMMEDIATE_EFFECT
+                            : MonetaryStatus.NO_EFFECT,
+                },
+            ],
         };
     }
 }

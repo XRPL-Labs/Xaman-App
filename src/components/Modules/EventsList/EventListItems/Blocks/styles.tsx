@@ -57,10 +57,10 @@ const styles = StyleService.create({
     outgoingColor: {
         color: '$red',
     },
-    pendingColor: {
+    pendingDecColor: {
         color: '$orange',
     },
-    naturalColor: {
+    pendingIncColor: {
         color: '$grey',
     },
 });

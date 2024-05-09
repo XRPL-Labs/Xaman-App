@@ -57,11 +57,15 @@ export class AccountDeleteInfo extends ExplainerAbstract<AccountDelete, Mutation
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.DeliveredAmount!.currency,
-                value: this.item.DeliveredAmount!.value,
-                effect: MonetaryStatus.IMMEDIATE_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.DeliveredAmount!.currency,
+                    value: this.item.DeliveredAmount!.value,
+                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                    action:
+                        this.account.address === this.item.Destination ? OperationActions.INC : OperationActions.DEC,
+                },
+            ],
         };
     }
 }

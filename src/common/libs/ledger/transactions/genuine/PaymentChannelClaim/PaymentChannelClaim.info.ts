@@ -49,11 +49,13 @@ class PaymentChannelClaimInfo extends ExplainerAbstract<PaymentChannelClaim, Mut
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: (this.item.Amount ?? this.item.Balance)!.currency,
-                value: (this.item.Amount ?? this.item.Balance)!.value,
-                effect: MonetaryStatus.IMMEDIATE_EFFECT,
-            },
+            factor: [
+                {
+                    currency: (this.item.Amount ?? this.item.Balance)!.currency,
+                    value: (this.item.Amount ?? this.item.Balance)!.value,
+                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                },
+            ],
         };
     }
 }

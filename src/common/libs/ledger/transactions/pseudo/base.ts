@@ -15,7 +15,7 @@ class BasePseudoTransaction extends BaseTransaction {
     public static InstanceType = InstanceTypes.PseudoTransaction as const;
     public readonly InstanceType = BasePseudoTransaction.InstanceType;
 
-    // common fields are similar to Genuine transaction except Pseudo transactions does not have TransactionType fields
+    // common fields are similar to Genuine transaction except Pseudo transactions does not have TransactionType field
     public static CommonFields: { [key: string]: FieldConfig } = omit(BaseTransaction.CommonFields, 'TransactionType');
 
     declare TransactionType: never;
@@ -38,7 +38,7 @@ class BasePseudoTransaction extends BaseTransaction {
         });
 
         // make sure the TransactionType is not in the json
-
+        // NOTE: PSEUDO transaction DOESN'T have transaction type field
         if ('TransactionType' in tx) {
             throw new Error('Invalid operation: pseudo transactions should not include a TransactionType.');
         }

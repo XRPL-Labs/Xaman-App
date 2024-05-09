@@ -9,6 +9,7 @@ import CheckCreate from './CheckCreate.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class CheckCreateInfo extends ExplainerAbstract<CheckCreate, MutationsMixinType> {
@@ -58,11 +59,14 @@ class CheckCreateInfo extends ExplainerAbstract<CheckCreate, MutationsMixinType>
     getMonetaryDetails = () => {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.SendMax!.currency,
-                value: this.item.SendMax!.currency,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.SendMax!.currency,
+                    value: this.item.SendMax!.currency,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: this.account.address === this.item.Account ? OperationActions.DEC : OperationActions.INC,
+                },
+            ],
         };
     };
 }

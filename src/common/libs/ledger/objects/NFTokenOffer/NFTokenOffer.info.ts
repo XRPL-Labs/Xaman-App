@@ -8,7 +8,7 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import NFTokenOffer from '@common/libs/ledger/objects/NFTokenOffer/NFTokenOffer.class';
 
 /* Types ==================================================================== */
-import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { AssetDetails, AssetTypes, ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
@@ -87,12 +87,18 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
                 [OperationActions.INC]: [],
                 [OperationActions.DEC]: [],
             },
-            factor: {
-                currency: this.item.Amount!.currency,
-                value: this.item.Amount!.value,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.Amount!.currency,
+                    value: this.item.Amount!.value,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                },
+            ],
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.NFToken, nfTokenId: this.item.NFTokenID }];
     }
 }
 

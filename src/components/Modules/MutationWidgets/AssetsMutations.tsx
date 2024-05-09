@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 
 import { AmountText, Icon } from '@components/General';
+import { NFTokenElement } from '@components/Modules/NFTokenElement';
 
+import { AssetDetails, AssetTypes, MonetaryFactorType, MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { BalanceChangeType, OperationActions } from '@common/libs/ledger/parser/types';
 
 import { AppStyles } from '@theme';
@@ -12,8 +14,11 @@ import { Props } from './types';
 
 /* Types ==================================================================== */
 interface State {
-    sentAssets?: BalanceChangeType[];
-    receivedAssets?: BalanceChangeType[];
+    mutatedDec: BalanceChangeType[];
+    mutatedInc: BalanceChangeType[];
+    factorDec: MonetaryFactorType[];
+    factorInc: MonetaryFactorType[];
+    assets: AssetDetails[];
 }
 
 /* Component ==================================================================== */
@@ -22,104 +27,122 @@ class AssetsMutations extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            sentAssets: undefined,
-            receivedAssets: undefined,
+            mutatedDec: [],
+            mutatedInc: [],
+            factorDec: [],
+            factorInc: [],
+            assets: [],
         };
     }
 
     static getDerivedStateFromProps(props: Props): Partial<State> | null {
-        if (props.explainer) {
-            const monetaryDetails = props.explainer.getMonetaryDetails();
+        const { explainer } = props;
+        if (typeof explainer !== 'undefined') {
+            const monetaryDetails = explainer.getMonetaryDetails();
+            const assetDetails = explainer.getAssetDetails();
+
             return {
-                sentAssets: monetaryDetails?.mutate[OperationActions.DEC],
-                receivedAssets: monetaryDetails?.mutate[OperationActions.INC],
+                mutatedDec: monetaryDetails?.mutate[OperationActions.DEC],
+                mutatedInc: monetaryDetails?.mutate[OperationActions.INC],
+                factorDec: monetaryDetails?.factor?.filter((f) => f.action === OperationActions.DEC) ?? [],
+                factorInc: monetaryDetails?.factor?.filter((f) => f.action === OperationActions.INC) ?? [],
+                assets: assetDetails,
             };
         }
 
         return null;
     }
 
-    renderSentAssets = () => {
-        const { sentAssets } = this.state;
+    renderAssetElement = (asset: AssetDetails) => {
+        const { account } = this.props;
 
-        if (sentAssets && sentAssets.length > 0) {
-            return (
-                <View style={styles.amountGroupContainer}>
-                    {sentAssets.map((asset, index) => {
-                        return (
-                            <View key={`${asset.action}-${index}`} style={styles.amountContainer}>
-                                <Icon
-                                    name="IconCornerLeftUp"
-                                    size={22}
-                                    style={[{ tintColor: styles.outgoingColor.tintColor }, AppStyles.marginRightSml]}
-                                />
-                                <AmountText
-                                    value={asset.value}
-                                    currency={asset.currency}
-                                    prefix="-"
-                                    style={[styles.amountText, { color: styles.outgoingColor.color }]}
-                                />
-                            </View>
-                        );
-                    })}
-                </View>
-            );
+        switch (asset.type) {
+            case AssetTypes.NFToken:
+                return (
+                    <NFTokenElement
+                        key={asset.nfTokenId}
+                        account={account.address}
+                        nfTokenId={asset.nfTokenId}
+                        containerStyle={styles.nfTokenContainer}
+                    />
+                );
+            default:
+                return null;
         }
-
-        return null;
     };
 
-    renderReceivedAssets = () => {
-        const { receivedAssets } = this.state;
-
-        if (receivedAssets && receivedAssets.length > 0) {
-            return (
-                <View style={styles.amountGroupContainer}>
-                    {receivedAssets.map((asset, index) => {
-                        return (
-                            <View key={`${asset.action}-${index}`} style={styles.amountContainer}>
-                                <Icon
-                                    name="IconCornerRightDown"
-                                    size={22}
-                                    style={[{ tintColor: styles.incomingColor.tintColor }, AppStyles.marginRightSml]}
-                                />
-                                <AmountText
-                                    value={asset.value}
-                                    currency={asset.currency}
-                                    style={[styles.amountText, { color: styles.incomingColor.color }]}
-                                />
-                            </View>
-                        );
-                    })}
-                </View>
-            );
-        }
-
-        return null;
+    renderMonetaryElement = (change: BalanceChangeType | MonetaryFactorType, effect: MonetaryStatus) => {
+        return (
+            <View key={`monetary-${change.action}-${change.value}-${change.currency}`} style={styles.amountContainer}>
+                {effect === MonetaryStatus.IMMEDIATE_EFFECT && (
+                    <Icon
+                        name={change.action === OperationActions.DEC ? 'IconCornerRightUp' : 'IconCornerRightDown'}
+                        size={22}
+                        style={[
+                            {
+                                tintColor:
+                                    effect === MonetaryStatus.IMMEDIATE_EFFECT
+                                        ? change.action === OperationActions.DEC
+                                            ? styles.outgoingColor.tintColor
+                                            : styles.incomingColor.tintColor
+                                        : change.action === OperationActions.DEC
+                                          ? styles.orangeColor.tintColor
+                                          : styles.naturalColor.tintColor,
+                            },
+                            AppStyles.marginRightSml,
+                        ]}
+                    />
+                )}
+                <AmountText
+                    value={change.value}
+                    currency={change.currency}
+                    prefix={change.action === OperationActions.DEC && '-'}
+                    style={[
+                        styles.amountText,
+                        {
+                            color:
+                                effect === MonetaryStatus.IMMEDIATE_EFFECT
+                                    ? change.action === OperationActions.DEC
+                                        ? styles.outgoingColor.color
+                                        : styles.incomingColor.color
+                                    : change.action === OperationActions.DEC
+                                      ? styles.orangeColor.color
+                                      : styles.naturalColor.color,
+                        },
+                    ]}
+                />
+            </View>
+        );
     };
 
     renderIcon = () => {
-        const { sentAssets, receivedAssets } = this.state;
-
-        if (sentAssets && sentAssets.length > 0 && receivedAssets && receivedAssets?.length > 0) {
-            return (
-                <Icon
-                    size={22}
-                    style={[AppStyles.imgColorGrey, AppStyles.paddingVerticalSml]}
-                    name="IconSwitchAccount"
-                />
-            );
-        }
-
-        return null;
+        return (
+            <Icon size={22} style={[AppStyles.imgColorGrey, AppStyles.paddingVerticalSml]} name="IconSwitchAccount" />
+        );
     };
 
     render() {
+        const { mutatedDec, mutatedInc, factorInc, factorDec, assets } = this.state;
+
         return (
-            <View style={styles.itemContainer}>
-                {this.renderSentAssets()}
-                {this.renderIcon()}
-                {this.renderReceivedAssets()}
+            <View style={[styles.itemContainer, styles.itemContainerGap]}>
+                {assets.map(this.renderAssetElement)}
+                {assets.length > 0 &&
+                    ((mutatedDec.length > 0 && mutatedInc.length === 0) ||
+                        (mutatedInc.length > 0 && mutatedDec.length === 0) ||
+                        (!mutatedDec?.length && !mutatedInc?.length && (factorInc?.length || factorDec?.length))) &&
+                    this.renderIcon()}
+                {mutatedDec.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+                {mutatedDec.length > 0 && mutatedInc.length > 0 && this.renderIcon()}
+                {mutatedInc.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+
+                {!mutatedDec?.length && !mutatedInc?.length && (factorInc?.length || factorDec?.length) && (
+                    <>
+                        {factorDec?.map((factor) => this.renderMonetaryElement(factor, factor.effect))}
+                        {factorDec?.length > 0 && factorInc?.length > 0 && this.renderIcon()}
+                        {factorInc?.map((factor) => this.renderMonetaryElement(factor, factor.effect))}
+                    </>
+                )}
             </View>
         );
     }

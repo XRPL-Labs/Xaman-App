@@ -6,7 +6,7 @@ import NFTokenMint from './NFTokenMint.class';
 
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { AssetDetails, AssetTypes, ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class NFTokenMintInfo extends ExplainerAbstract<NFTokenMint, MutationsMixinType> {
@@ -47,6 +47,10 @@ class NFTokenMintInfo extends ExplainerAbstract<NFTokenMint, MutationsMixinType>
             mutate: this.item.BalanceChange(this.account.address),
             factor: undefined,
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.NFToken, nfTokenId: this.item.NFTokenID }];
     }
 }
 

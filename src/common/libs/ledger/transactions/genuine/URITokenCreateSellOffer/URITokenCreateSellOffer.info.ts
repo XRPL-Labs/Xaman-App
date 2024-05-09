@@ -52,11 +52,13 @@ class URITokenCreateSellOfferInfo extends ExplainerAbstract<URITokenCreateSellOf
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.Amount!.currency,
-                value: this.item.Amount!.value,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.Amount!.currency,
+                    value: this.item.Amount!.value,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                },
+            ],
         };
     }
 }

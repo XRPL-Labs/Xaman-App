@@ -65,11 +65,13 @@ class EscrowInfo extends ExplainerAbstract<Escrow> {
                 [OperationActions.INC]: [],
                 [OperationActions.DEC]: [],
             },
-            factor: {
-                currency: this.item.Amount!.currency,
-                value: this.item.Amount!.value,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.Amount!.currency,
+                    value: this.item.Amount!.value,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                },
+            ],
         };
     }
 }

@@ -17,15 +17,15 @@ class SignInInfo extends ExplainerAbstract<SignIn> {
     }
 
     generateDescription(): never {
-        throw new Error('SignIn Pseudo transactions do not contain description!');
+        throw new Error('SignIn Pseudo transaction do not contain description!');
     }
 
     getParticipants(): never {
-        throw new Error('SignIn Pseudo transactions do not contain recipient!');
+        throw new Error('SignIn Pseudo transaction do not contain participants!');
     }
 
     getMonetaryDetails(): never {
-        throw new Error('SignIn Pseudo transactions do not contain monetary details!');
+        throw new Error('SignIn Pseudo transaction do not contain monetary details!');
     }
 }
 

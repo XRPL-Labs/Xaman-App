@@ -62,11 +62,13 @@ class CheckInfo extends ExplainerAbstract<Check> {
                 [OperationActions.INC]: [],
                 [OperationActions.DEC]: [],
             },
-            factor: {
-                currency: this.item.SendMax!.currency,
-                value: this.item.SendMax!.value,
-                effect: MonetaryStatus.POTENTIAL_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.SendMax!.currency,
+                    value: this.item.SendMax!.value,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                },
+            ],
         };
     }
 }

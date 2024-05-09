@@ -65,7 +65,7 @@ export enum PseudoTransactionTypes {
  * @enum {string}
  */
 export enum FallbackTypes {
-    FallbackTransaction = '__falback_transactions',
+    FallbackTransaction = '__fallback_transactions',
 }
 
 /**

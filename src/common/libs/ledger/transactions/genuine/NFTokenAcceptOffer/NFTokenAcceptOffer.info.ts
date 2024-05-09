@@ -8,7 +8,8 @@ import NFTokenAcceptOffer from './NFTokenAcceptOffer.class';
 
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { ExplainerAbstract, MonetaryStatus, AssetDetails, AssetTypes } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, MutationsMixinType> {
@@ -75,12 +76,19 @@ class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, Mutat
     getMonetaryDetails() {
         return {
             mutate: this.item.BalanceChange(this.account.address),
-            factor: {
-                currency: this.item.Offer.Amount!.currency,
-                value: this.item.Offer.Amount!.value,
-                effect: MonetaryStatus.IMMEDIATE_EFFECT,
-            },
+            factor: [
+                {
+                    currency: this.item.Offer.Amount!.currency,
+                    value: this.item.Offer.Amount!.value,
+                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                    action: this.item.Offer.Flags?.SellToken ? OperationActions.INC : OperationActions.DEC,
+                },
+            ],
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.NFToken, nfTokenId: this.item.Offer.NFTokenID }];
     }
 }
 
