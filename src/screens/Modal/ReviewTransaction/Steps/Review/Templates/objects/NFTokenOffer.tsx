@@ -6,10 +6,12 @@ import LedgerService from '@services/LedgerService';
 import { NFTokenMint } from '@common/libs/ledger/transactions';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
 import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
-import Flag from '@common/libs/ledger/parser/common/flag';
+import FlagParser from '@common/libs/ledger/parser/common/flag';
+
+import { AccountModel } from '@store/models';
 
 import { AmountText, LoadingIndicator, InfoMessage } from '@components/General';
-import { AccountElement } from '@components/Modules';
+import { AccountElement, NFTokenElement } from '@components/Modules';
 
 import { FormatDate } from '@common/utils/date';
 import { DecodeNFTokenID } from '@common/utils/codec';
@@ -20,6 +22,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
+    source: AccountModel;
     nfTokenOffer: string;
 }
 
@@ -101,7 +104,7 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
         const { Flags: FlagsInt } = DecodeNFTokenID(object.NFTokenID);
 
-        const flags = new Flag(NFTokenMint.Type, FlagsInt);
+        const flags = new FlagParser(NFTokenMint.Type, FlagsInt);
         const parsedFlags = flags.get();
 
         if (parsedFlags?.Burnable) {
@@ -112,6 +115,7 @@ class NFTokenOfferTemplate extends Component<Props, State> {
     };
 
     render() {
+        const { source } = this.props;
         const { object, isTokenBurnable, isLoading } = this.state;
 
         if (isLoading) {
@@ -121,8 +125,8 @@ class NFTokenOfferTemplate extends Component<Props, State> {
         if (!isLoading && !object) {
             return (
                 <InfoMessage
-                    type="error"
                     flat
+                    type="error"
                     label={Localize.t('payload.unableToFindTheOfferObject')}
                     actionButtonLabel={Localize.t('global.tryAgain')}
                     actionButtonIcon="IconRefresh"
@@ -169,9 +173,14 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
                 {object!.NFTokenID && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.tokenID')}</Text>
+                        <Text style={styles.label}>{Localize.t('global.nft')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{object!.NFTokenID}</Text>
+                            <NFTokenElement
+                                account={source.address}
+                                nfTokenId={object!.NFTokenID}
+                                truncate={false}
+                                containerStyle={styles.nfTokenContainer}
+                            />
                         </View>
                     </>
                 )}

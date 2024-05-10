@@ -6,7 +6,7 @@ import { NFTokenCreateOffer } from '@common/libs/ledger/transactions';
 import { FormatDate } from '@common/utils/date';
 
 import { AmountText } from '@components/General';
-import { AccountElement } from '@components/Modules';
+import { AccountElement, NFTokenElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -30,7 +30,7 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
     }
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
 
         return (
             <>
@@ -76,11 +76,16 @@ class NFTokenCreateOfferTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {transaction.NFTokenID && (
+                {transaction!.NFTokenID && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.tokenID')}</Text>
+                        <Text style={styles.label}>{Localize.t('global.nft')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.NFTokenID}</Text>
+                            <NFTokenElement
+                                account={source.address}
+                                nfTokenId={transaction!.NFTokenID}
+                                truncate={false}
+                                containerStyle={styles.nfTokenContainer}
+                            />
                         </View>
                     </>
                 )}

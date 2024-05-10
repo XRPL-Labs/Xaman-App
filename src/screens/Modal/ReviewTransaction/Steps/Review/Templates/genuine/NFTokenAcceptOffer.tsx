@@ -21,7 +21,7 @@ export interface State {}
 /* Component ==================================================================== */
 class NFTokenAcceptOfferTemplate extends Component<Props, State> {
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
 
         return (
             <>
@@ -35,7 +35,7 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                             containerStyle={styles.objectTemplateContainer}
                             contentContainerStyle={styles.objectTemplateChildContainer}
                         >
-                            <NFTokenOfferTemplate nfTokenOffer={transaction.NFTokenSellOffer} />
+                            <NFTokenOfferTemplate source={source} nfTokenOffer={transaction.NFTokenSellOffer} />
                         </ExpandableView>
                     </>
                 )}
@@ -50,7 +50,7 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                             containerStyle={styles.objectTemplateContainer}
                             contentContainerStyle={styles.objectTemplateChildContainer}
                         >
-                            <NFTokenOfferTemplate nfTokenOffer={transaction.NFTokenBuyOffer} />
+                            <NFTokenOfferTemplate source={source} nfTokenOffer={transaction.NFTokenBuyOffer} />
                         </ExpandableView>
                     </>
                 )}

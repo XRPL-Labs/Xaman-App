@@ -28,7 +28,7 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
     }
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
 
         return (
             <>
@@ -46,7 +46,7 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
                         containerStyle={styles.objectTemplateContainer}
                         contentContainerStyle={styles.objectTemplateChildContainer}
                     >
-                        <NFTokenOfferTemplate nfTokenOffer={tokenOffer} />
+                        <NFTokenOfferTemplate source={source} nfTokenOffer={tokenOffer} />
                     </ExpandableView>
                 ))}
             </>
