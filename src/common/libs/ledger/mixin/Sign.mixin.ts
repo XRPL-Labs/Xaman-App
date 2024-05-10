@@ -133,8 +133,8 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
             }
 
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
-            // offset default to 10
-            const LastLedgerOffset = lastLedgerOffset || 10;
+            // Offset default to 20
+            const LastLedgerOffset = lastLedgerOffset || 20;
 
             // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
             // update with LastLedger + 10
