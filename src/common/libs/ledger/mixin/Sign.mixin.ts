@@ -194,9 +194,11 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
 
                     // check transaction can be signed by the network user is connected to
                     // before triggering the sign flow
+                    // NOTE: skip for pseudo transactions
                     const definitions = NetworkService.getNetworkDefinitions();
 
                     if (
+                        this.TransactionType &&
                         Array.isArray(definitions.transactionNames) &&
                         !definitions.transactionNames.includes(this.TransactionType)
                     ) {
