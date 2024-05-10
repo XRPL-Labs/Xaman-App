@@ -11,7 +11,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository } from '@store/repositories';
 
-import { InfoMessage } from '@components/General';
+import { InfoMessage, ReadMore } from '@components/General';
 import { FeePicker, AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -239,17 +239,15 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 <Text style={styles.label}>{Localize.t('global.memo')}</Text>
                 <View style={styles.contentBox}>
-                    {transaction.Memos.map((m, index: number) => {
-                        let memo = '';
-                        memo += m.MemoType ? `${m.MemoType}\n` : '';
-                        memo += m.MemoFormat ? `${m.MemoFormat}\n` : '';
-                        memo += m.MemoData ? `${m.MemoData}` : '';
-                        return (
-                            <Text key={`memo-${index}`} style={styles.value}>
-                                {memo}
-                            </Text>
-                        );
-                    })}
+                    <ReadMore numberOfLines={3} textStyle={styles.value}>
+                        {transaction.Memos.map((m) => {
+                            let memo = '';
+                            memo += m.MemoType ? `${m.MemoType}\n` : '';
+                            memo += m.MemoFormat ? `${m.MemoFormat}\n` : '';
+                            memo += m.MemoData ? `${m.MemoData}` : '';
+                            return memo;
+                        })}
+                    </ReadMore>
                 </View>
             </>
         );
