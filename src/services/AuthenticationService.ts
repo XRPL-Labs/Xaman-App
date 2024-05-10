@@ -61,7 +61,7 @@ class AuthenticationService extends EventEmitter {
 
         // list of methods that needs to run after success auth
         this.postSuccess = [
-            AppService.checkShowChangeLog,
+            AppService.checkVersionChange,
             AppService.checkAppUpdate,
             BackendService.sync,
             LinkingService.checkInitialDeepLink,

@@ -49,7 +49,7 @@ describe('AuthenticationService', () => {
 
         const promiseFn = () => Promise.resolve();
         const spyList = [
-            jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
+            jest.spyOn(AppService, 'checkVersionChange').mockImplementationOnce(promiseFn),
             jest.spyOn(AppService, 'checkAppUpdate').mockImplementationOnce(promiseFn),
             jest.spyOn(BackendService, 'ping').mockImplementationOnce(promiseFn),
             jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementationOnce(promiseFn),

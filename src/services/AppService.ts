@@ -8,17 +8,13 @@ import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter }
 import NetInfo from '@react-native-community/netinfo';
 
 import Localize from '@locale';
-import { AppScreens } from '@common/constants';
 
-import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
-
-import { Props as ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog/types';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
@@ -82,13 +78,15 @@ class AppService extends EventEmitter {
 
     // check if we need to show the App change log
     // this screen will be shown after user update the app to the new version
-    checkShowChangeLog = async () => {
+    checkVersionChange = async () => {
         const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
             // showChangeLogModal
-            Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
+            // Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, {
+            //     version: currentVersionCode,
+            // });
 
             // update the latest version code
             await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
