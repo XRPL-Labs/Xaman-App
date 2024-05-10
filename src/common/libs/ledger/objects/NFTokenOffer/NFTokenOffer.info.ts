@@ -82,6 +82,15 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
     }
 
     getMonetaryDetails() {
+        let action = OperationActions.DEC;
+
+        // incoming offer for your NFT
+        if (this.item.Owner !== this.account.address) {
+            action = OperationActions.INC;
+        } else if (this.item.Flags?.SellNFToken) {
+            action = OperationActions.INC;
+        }
+
         return {
             mutate: {
                 [OperationActions.INC]: [],
@@ -89,9 +98,9 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
             },
             factor: [
                 {
-                    currency: this.item.Amount!.currency,
-                    value: this.item.Amount!.value,
+                    ...this.item.Amount!,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action,
                 },
             ],
         };

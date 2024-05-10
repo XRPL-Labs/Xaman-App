@@ -66,7 +66,7 @@ class OfferInfo extends ExplainerAbstract<Offer> {
             content.push(Localize.t('events.theTransactionHasAOfferId', { offerId: OfferID }));
         }
 
-        if (Expiration) {
+        if (typeof Expiration !== 'undefined') {
             content.push(
                 Localize.t('events.theOfferExpiresAtUnlessCanceledOrConsumed', {
                     expiration: moment(Expiration).format('LLLL'),

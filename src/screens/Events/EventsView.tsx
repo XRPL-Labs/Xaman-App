@@ -246,19 +246,23 @@ class EventsView extends Component<Props, State> {
         const momentDate = moment(date);
         const reference = moment();
 
-        if (momentDate.isSame(reference, 'day')) {
-            return Localize.t('global.today');
-        }
-        if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
-            return Localize.t('global.yesterday');
+        if (momentDate.isValid()) {
+            if (momentDate.isSame(reference, 'day')) {
+                return Localize.t('global.today');
+            }
+            if (momentDate.isSame(reference.subtract(1, 'days'), 'day')) {
+                return Localize.t('global.yesterday');
+            }
+
+            // same year, don't show year
+            if (momentDate.isSame(reference, 'year')) {
+                return momentDate.format('DD MMM');
+            }
+
+            return momentDate.format('DD MMM, Y');
         }
 
-        // same year, don't show year
-        if (momentDate.isSame(reference, 'year')) {
-            return momentDate.format('DD MMM');
-        }
-
-        return momentDate.format('DD MMM, Y');
+        return 'N/A';
     };
 
     fetchPlannedObjects = async (
@@ -460,7 +464,7 @@ class EventsView extends Component<Props, State> {
                 });
 
                 const grouped = groupBy(plannedItems, (item) => {
-                    return moment(item.Date).format('YYYY-MM-DD');
+                    return item.Date ? moment(item.Date).format('YYYY-MM-DD') : '';
                 });
 
                 map(grouped, (v, k) => {
@@ -480,7 +484,7 @@ class EventsView extends Component<Props, State> {
         }
 
         // group items by month name and then get the name for each month
-        const grouped = groupBy(items, (item) => (item.Date ? moment(item.Date).format('YYYY-MM-DD') : undefined));
+        const grouped = groupBy(items, (item) => (item.Date ? moment(item.Date).format('YYYY-MM-DD') : ''));
 
         const dataSource: DataSourceItem[] = [];
 

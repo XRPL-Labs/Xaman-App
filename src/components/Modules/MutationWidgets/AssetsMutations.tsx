@@ -119,7 +119,7 @@ class AssetsMutations extends PureComponent<Props, State> {
         );
     };
 
-    renderIcon = () => {
+    renderSwitchIcon = () => {
         return (
             <Icon size={22} style={[AppStyles.imgColorGrey, AppStyles.paddingVerticalSml]} name="IconSwitchAccount" />
         );
@@ -128,22 +128,29 @@ class AssetsMutations extends PureComponent<Props, State> {
     render() {
         const { mutatedDec, mutatedInc, factorInc, factorDec, assets } = this.state;
 
+        // Extract complex conditions to variables
+        const hasMutatedDec = mutatedDec?.length > 0;
+        const hasMutatedInc = mutatedInc?.length > 0;
+        const hasEitherMutation = (hasMutatedDec && !hasMutatedInc) || (!hasMutatedDec && hasMutatedInc);
+        const hasBothMutation = hasMutatedDec && hasMutatedInc;
+        const hasNoMutations = !hasMutatedDec && !hasMutatedInc;
+        const hasEitherFactors = !!factorInc?.length || !!factorDec?.length;
+        const hasBothFactors = factorInc?.length > 0 && factorDec?.length > 0;
+
         return (
             <View style={[styles.itemContainer, styles.itemContainerGap]}>
-                {assets.map(this.renderAssetElement)}
-                {assets.length > 0 &&
-                    ((mutatedDec.length > 0 && mutatedInc.length === 0) ||
-                        (mutatedInc.length > 0 && mutatedDec.length === 0) ||
-                        (!mutatedDec?.length && !mutatedInc?.length && (factorInc?.length || factorDec?.length))) &&
-                    this.renderIcon()}
-                {mutatedDec.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
-                {mutatedDec.length > 0 && mutatedInc.length > 0 && this.renderIcon()}
-                {mutatedInc.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
-                {!mutatedDec?.length && !mutatedInc?.length && (factorInc?.length || factorDec?.length) && (
+                {assets?.map(this.renderAssetElement)}
+                {assets?.length > 0 &&
+                    (hasEitherMutation || (hasNoMutations && hasEitherFactors)) &&
+                    this.renderSwitchIcon()}
+                {mutatedDec?.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+                {hasBothMutation && this.renderSwitchIcon()}
+                {mutatedInc?.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+                {hasNoMutations && hasEitherFactors && (
                     <>
-                        {factorDec?.map((factor) => this.renderMonetaryElement(factor, factor.effect))}
-                        {factorDec?.length > 0 && factorInc?.length > 0 && this.renderIcon()}
-                        {factorInc?.map((factor) => this.renderMonetaryElement(factor, factor.effect))}
+                        {factorDec?.map((factor) => this.renderMonetaryElement(factor, factor?.effect))}
+                        {hasBothFactors && this.renderSwitchIcon()}
+                        {factorInc?.map((factor) => this.renderMonetaryElement(factor, factor?.effect))}
                     </>
                 )}
             </View>

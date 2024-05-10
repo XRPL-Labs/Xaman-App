@@ -114,7 +114,7 @@ class ActionButtons extends PureComponent<Props, State> {
             return;
         }
 
-        const availableActions: string[] = [];
+        const availableActions: ActionTypes[] = [];
 
         switch (item.Type) {
             case TransactionTypes.Payment:
@@ -172,6 +172,10 @@ class ActionButtons extends PureComponent<Props, State> {
             default:
                 break;
         }
+
+        this.setState({
+            availableActions,
+        });
     };
 
     onActionButtonPress = (actionType: ActionTypes) => {
@@ -222,6 +226,11 @@ class ActionButtons extends PureComponent<Props, State> {
                     Object.assign(craftedTxJson, {
                         TransactionType: TransactionTypes.OfferCancel,
                         OfferSequence: item.Sequence,
+                    });
+                } else if (item.Type === LedgerEntryTypes.NFTokenOffer) {
+                    Object.assign(craftedTxJson, {
+                        TransactionType: TransactionTypes.NFTokenCancelOffer,
+                        NFTokenOffers: [item.Index],
                     });
                 }
                 break;
@@ -282,7 +291,7 @@ class ActionButtons extends PureComponent<Props, State> {
                 break;
         }
 
-        if (typeof craftedTxJson !== 'undefined') {
+        if (typeof craftedTxJson !== 'undefined' && craftedTxJson.TransactionType) {
             // assign current account for crafted transaction
             Object.assign(craftedTxJson, { Account: account.address });
 
