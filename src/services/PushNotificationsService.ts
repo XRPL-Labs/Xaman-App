@@ -11,7 +11,7 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
-import { AccountRepository } from '@store/repositories';
+import { AccountRepository, NetworkRepository } from '@store/repositories';
 
 import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -368,13 +368,13 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /**
-     * Handle opening transaction details
+     * Handle opening transaction details modal screen
      * @param notification
      */
     handleOpenTx = async (notification: FirebaseMessagingTypes.RemoteMessage) => {
         const hash = get(notification, ['data', 'tx']);
         const address = get(notification, ['data', 'account']);
-        const network = get(notification, ['data', 'network']);
+        const networkKey = get(notification, ['data', 'network']);
 
         // validate inputs
         if (
@@ -386,11 +386,21 @@ class PushNotificationsService extends EventEmitter {
             return;
         }
 
-        // check if account exist in Xaman
         const account = AccountRepository.findOne({ address });
 
-        // account is not present in the app, just return
-        if (!account) return;
+        // check if account exist in the app
+        if (!account) {
+            // account is not present in the app, just return
+            return;
+        }
+
+        // forced network, check if we support this network
+        const network = NetworkRepository.findOne({ key: networkKey });
+
+        if (networkKey && !network) {
+            // we couldn't find the network object, just return
+            return;
+        }
 
         let delay = 0;
 
