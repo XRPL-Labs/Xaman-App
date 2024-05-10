@@ -28,6 +28,7 @@ import { Props } from './types';
 interface State {
     visibleMemo: boolean;
     xAppIdentifier?: string;
+    ownUpdate: boolean;
 }
 
 /* Component ==================================================================== */
@@ -36,6 +37,7 @@ class Memos extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
+            ownUpdate: false,
             visibleMemo: true,
             xAppIdentifier: undefined,
         };
@@ -45,8 +47,14 @@ class Memos extends PureComponent<Props, State> {
         InteractionManager.runAfterInteractions(this.checkXAppIdentifier);
     }
 
-    static getDerivedStateFromProps(nextProps: Props): Partial<State> | null {
-        if (nextProps.advisory !== 'UNKNOWN') {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+        if (prevState.ownUpdate) {
+            return {
+                ownUpdate: false,
+            };
+        }
+
+        if (nextProps.advisory && nextProps.advisory !== 'UNKNOWN') {
             return {
                 visibleMemo: false,
             };
@@ -98,7 +106,7 @@ class Memos extends PureComponent<Props, State> {
 
         // possible danger, do not show open xApp button
         // presented as modal, also hide the button
-        if (advisory !== 'UNKNOWN' || !xAppIdentifier || componentType === ComponentTypes.Modal) {
+        if ((advisory && advisory !== 'UNKNOWN') || !xAppIdentifier || componentType === ComponentTypes.Modal) {
             return null;
         }
 
@@ -112,6 +120,7 @@ class Memos extends PureComponent<Props, State> {
     onShowMemoPress = () => {
         this.setState({
             visibleMemo: true,
+            ownUpdate: true,
         });
     };
 
@@ -134,7 +143,7 @@ class Memos extends PureComponent<Props, State> {
                 textStyle={[
                     styles.memoText,
                     AppStyles.textCenterAligned,
-                    advisory !== 'UNKNOWN' ? AppStyles.colorRed : {},
+                    advisory && advisory !== 'UNKNOWN' ? AppStyles.colorRed : {},
                 ]}
             >
                 {(item as BaseTransaction).Memos!.map((m) => {

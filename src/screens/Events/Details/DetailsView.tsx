@@ -208,6 +208,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                             item,
                             account,
                             explainer,
+                            advisory,
                             componentType,
                         });
                     })}
