@@ -91,9 +91,14 @@ class OfferInfo extends ExplainerAbstract<Offer> {
             },
             factor: [
                 {
-                    currency: this.item.TakerPays!.currency,
-                    value: this.item.TakerPays!.value,
+                    ...this.item.TakerPays!,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions.INC,
+                },
+                {
+                    ...this.item.TakerGets!,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions.DEC,
                 },
             ],
         };

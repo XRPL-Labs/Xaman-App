@@ -72,6 +72,10 @@ class AssetsMutations extends PureComponent<Props, State> {
     };
 
     renderMonetaryElement = (change: BalanceChangeType | MonetaryFactorType, effect: MonetaryStatus) => {
+        if (!change) {
+            return null;
+        }
+
         return (
             <View key={`monetary-${change.action}-${change.value}-${change.currency}`} style={styles.amountContainer}>
                 {effect === MonetaryStatus.IMMEDIATE_EFFECT && (
@@ -135,7 +139,6 @@ class AssetsMutations extends PureComponent<Props, State> {
                 {mutatedDec.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
                 {mutatedDec.length > 0 && mutatedInc.length > 0 && this.renderIcon()}
                 {mutatedInc.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
-
                 {!mutatedDec?.length && !mutatedInc?.length && (factorInc?.length || factorDec?.length) && (
                     <>
                         {factorDec?.map((factor) => this.renderMonetaryElement(factor, factor.effect))}
