@@ -51,8 +51,9 @@ declare interface PushNotificationsService {
 
 /* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
-    initialized: boolean;
-    initialNotification: FirebaseMessagingTypes.RemoteMessage | undefined;
+    private initialized: boolean;
+    private initialNotification: FirebaseMessagingTypes.RemoteMessage | undefined;
+    private lastOpenedMessageId: string | undefined;
     private logger: LoggerInstance;
 
     constructor() {
@@ -62,6 +63,8 @@ class PushNotificationsService extends EventEmitter {
         this.initialized = false;
         // first app cold lunch notifications
         this.initialNotification = undefined;
+        // remember last processed messageId
+        this.lastOpenedMessageId = undefined;
 
         this.logger = LoggerService.createLogger('Push');
     }
@@ -190,7 +193,7 @@ class PushNotificationsService extends EventEmitter {
      * @param notification - FirebaseMessagingTypes.RemoteMessage
      * @returns {NotificationType}
      */
-    getType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType | undefined => {
+    getNotificationType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType | undefined => {
         const category = get(notification, ['data', 'category']) as 'SIGNTX' | 'OPENXAPP' | 'TXPUSH';
 
         switch (category) {
@@ -211,7 +214,7 @@ class PushNotificationsService extends EventEmitter {
      * @returns {boolean}
      */
     isSignRequest = (notification: FirebaseMessagingTypes.RemoteMessage): boolean => {
-        return this.getType(notification) === NotificationType.SignRequest;
+        return this.getNotificationType(notification) === NotificationType.SignRequest;
     };
 
     /**
@@ -428,9 +431,15 @@ class PushNotificationsService extends EventEmitter {
      * @param notification
      */
     handleNotificationOpen = (notification: FirebaseMessagingTypes.RemoteMessage) => {
-        if (!notification) return;
+        // check if we already handled this notification
+        if (!notification || notification.messageId === this.lastOpenedMessageId) {
+            return;
+        }
 
-        switch (this.getType(notification)) {
+        // assign last message id
+        this.lastOpenedMessageId = notification.messageId;
+
+        switch (this.getNotificationType(notification)) {
             case NotificationType.SignRequest:
                 this.handleSingRequest(notification);
                 break;
