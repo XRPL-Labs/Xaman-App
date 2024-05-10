@@ -27,6 +27,7 @@ import { AppStyles, AppSizes } from '@theme';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import NavigationService from '@services/NavigationService';
 
 /* Component ==================================================================== */
 class ParticipantMenuOverlay extends Component<Props, State> {
@@ -50,7 +51,7 @@ class ParticipantMenuOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            recipientName: undefined,
+            participantName: undefined,
             contactExist: false,
         };
 
@@ -82,22 +83,30 @@ class ParticipantMenuOverlay extends Component<Props, State> {
     onRecipientInfoUpdate = (info: AccountNameType) => {
         if (info?.name) {
             this.setState({
-                recipientName: info.name,
+                participantName: info.name,
             });
         }
     };
 
     addContact = () => {
         const { address, tag } = this.props;
-        const { recipientName } = this.state;
+        const { participantName } = this.state;
 
+        // slide down the action panel
         this.actionPanelRef?.current?.slideDown();
+
+        // check if there is any modal open
+        InteractionManager.runAfterInteractions(() => {
+            if (NavigationService.getCurrentModal()) {
+                Navigator.dismissModal();
+            }
+        });
 
         setTimeout(() => {
             Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {
                 address,
                 tag: `${tag ?? ''}`,
-                name: recipientName,
+                name: participantName,
             });
         }, 500);
     };

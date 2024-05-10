@@ -5,6 +5,6 @@ export interface Props {
 }
 
 export interface State {
-    recipientName?: string;
+    participantName?: string;
     contactExist: boolean;
 }

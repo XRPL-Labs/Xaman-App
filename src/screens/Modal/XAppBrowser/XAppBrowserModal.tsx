@@ -399,7 +399,7 @@ class XAppBrowserModal extends Component<Props, State> {
             Navigator.showModal<TransactionLoaderModalProps>(AppScreens.Modal.TransactionLoader, {
                 hash,
                 account,
-                network: network.key,
+                network,
             });
         }, delay);
     };
