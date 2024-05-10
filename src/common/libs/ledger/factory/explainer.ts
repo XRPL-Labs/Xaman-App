@@ -59,7 +59,7 @@ const ExplainerFactory = {
             Explainer = (Transactions as any)[ExplainerKeyName];
         }
 
-        if (item.Type in PseudoTransactionTypes && Object.keys(PseudoTransactionTypes).includes(ExplainerKeyName)) {
+        if (item.Type in PseudoTransactionTypes && Object.keys(PseudoTransactions).includes(ExplainerKeyName)) {
             Explainer = (PseudoTransactions as any)[ExplainerKeyName];
         }
 
