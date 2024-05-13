@@ -31,8 +31,37 @@ index 4cc09eb..a80c522 100644
              }
          });
      }
+diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/ReactTypefaceUtils.java b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/ReactTypefaceUtils.java
+index 834d734..fe0336d 100644
+--- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/ReactTypefaceUtils.java
++++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/ReactTypefaceUtils.java
+@@ -18,8 +18,8 @@ import android.graphics.Typeface;
+ import android.text.TextUtils;
+ import androidx.annotation.Nullable;
+ import com.facebook.react.bridge.ReadableArray;
++import com.facebook.react.common.ReactConstants;
+ import com.facebook.react.views.text.ReactFontManager;
+-import com.facebook.react.views.text.ReactTextShadowNode;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
+@@ -96,12 +96,12 @@ public class ReactTypefaceUtils {
+ 
+     int want = 0;
+     if ((weight == Typeface.BOLD)
+-        || ((oldStyle & Typeface.BOLD) != 0 && weight == ReactTextShadowNode.UNSET)) {
++        || ((oldStyle & Typeface.BOLD) != 0 && weight == ReactConstants.UNSET)) {
+       want |= Typeface.BOLD;
+     }
+ 
+     if ((style == Typeface.ITALIC)
+-        || ((oldStyle & Typeface.ITALIC) != 0 && style == ReactTextShadowNode.UNSET)) {
++        || ((oldStyle & Typeface.ITALIC) != 0 && style == ReactConstants.UNSET)) {
+       want |= Typeface.ITALIC;
+     }
+ 
 diff --git a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
-index 89665d1..0682c9c 100644
+index 89665d1..03eb03f 100644
 --- a/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
 +++ b/node_modules/react-native-navigation/lib/android/app/src/main/java/com/reactnativenavigation/utils/SystemUiUtils.kt
 @@ -25,7 +25,7 @@ object SystemUiUtils {
