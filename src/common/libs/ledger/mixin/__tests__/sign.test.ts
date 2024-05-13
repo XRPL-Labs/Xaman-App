@@ -16,7 +16,7 @@ describe('Sign Mixin', () => {
         // @ts-ignore
         instance._meta.TransactionResult = 'tesSUCCESS';
 
-        expect(instance.TransactionResult).toStrictEqual({
+        expect(instance.FinalResult).toStrictEqual({
             success: true,
             code: 'tesSUCCESS',
             message: undefined,
@@ -24,7 +24,7 @@ describe('Sign Mixin', () => {
 
         // transaction is not verified by network and failed
         // @ts-ignore
-        instance._meta.TransactionResult = 'tecNO_LINE_INSUF_RESERVE';
+        instance._meta.TransactionResult = undefined;
 
         instance.SubmitResult = {
             success: true,
@@ -42,7 +42,7 @@ describe('Sign Mixin', () => {
             success: false,
         };
 
-        expect(instance.TransactionResult).toStrictEqual({
+        expect(instance.FinalResult).toStrictEqual({
             success: false,
             code: 'tecNO_LINE_INSUF_RESERVE',
             message: 'No such line. Too little reserve to create it.',
@@ -68,7 +68,7 @@ describe('Sign Mixin', () => {
             success: false,
         };
 
-        expect(instance.TransactionResult).toStrictEqual({
+        expect(instance.FinalResult).toStrictEqual({
             success: false,
             code: 'temBAD_FEE',
             message: 'temBAD_FEE description',

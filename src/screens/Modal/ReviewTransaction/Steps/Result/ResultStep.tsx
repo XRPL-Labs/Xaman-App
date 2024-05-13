@@ -51,7 +51,7 @@ class ResultStep extends Component<Props, State> {
             return 'Pseudo transactions should never submit to the network!';
         }
 
-        switch (transaction!.TransactionResult?.code) {
+        switch (transaction!.FinalResult?.code) {
             case 'tecPATH_PARTIAL':
                 return Localize.t('errors.tecPATH_PARTIAL');
             case 'tecPATH_DRY':
@@ -63,7 +63,7 @@ class ResultStep extends Component<Props, State> {
                 });
             }
             default:
-                return transaction!.TransactionResult?.message || 'No Description';
+                return transaction!.FinalResult?.message || 'No Description';
         }
     };
 
@@ -126,7 +126,7 @@ class ResultStep extends Component<Props, State> {
                 <View style={[AppStyles.flex2, styles.detailsCard, AppStyles.marginBottom]}>
                     <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                     <Spacer />
-                    <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction!.TransactionResult?.code}</Text>
+                    <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction!.FinalResult?.code}</Text>
 
                     <Spacer />
                     <View style={AppStyles.hr} />
@@ -146,9 +146,7 @@ class ResultStep extends Component<Props, State> {
                         label={Localize.t('global.copy')}
                         style={AppStyles.stretchSelf}
                         onPress={() => {
-                            Clipboard.setString(
-                                transaction!.TransactionResult?.message || transaction!.TransactionResult?.code,
-                            );
+                            Clipboard.setString(transaction!.FinalResult?.message || transaction!.FinalResult?.code);
                             Toast(Localize.t('send.resultCopiedToClipboard'));
                         }}
                     />
@@ -270,7 +268,7 @@ class ResultStep extends Component<Props, State> {
             return this.renderSigned();
         }
 
-        if (transaction!.TransactionResult?.success) {
+        if (transaction!.FinalResult?.success) {
             // submitted successfully but cannot verify
             if (transaction!.VerifyResult?.success === false) {
                 return this.renderVerificationFailed();

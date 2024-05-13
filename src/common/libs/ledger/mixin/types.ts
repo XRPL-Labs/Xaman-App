@@ -50,7 +50,7 @@ export interface SignMixinType {
     get VerifyResult(): VerifyResultType | undefined;
     set VerifyResult(result: VerifyResultType);
 
-    get TransactionResult(): TransactionResult;
+    get FinalResult(): TransactionResult;
 
     prepare(account: AccountModel): Promise<void>;
     populateFields(options?: { lastLedgerOffset?: number }): void;

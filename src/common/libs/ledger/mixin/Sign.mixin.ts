@@ -57,8 +57,8 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
             this._verifyResult = result;
         }
 
-        get TransactionResult(): TransactionResult {
-            // check for the result in meta data first
+        get FinalResult(): TransactionResult {
+            // check for the result in meta data first, as we may find something there
             const transactionResult = (this._meta as any)?.TransactionResult;
 
             // this transaction already verified by network

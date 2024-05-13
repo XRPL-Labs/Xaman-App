@@ -216,7 +216,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    payment.TransactionResult?.message || payment.TransactionResult?.code || 'Error',
+                                    payment.FinalResult?.message || payment.FinalResult?.code || 'Unexpected Error',
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}
@@ -271,8 +271,8 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { payment } = this.context;
 
-        if (payment.TransactionResult?.success) {
-            // submitted successfully but cannot verified
+        if (payment.FinalResult?.success) {
+            // submitted successfully but cannot be verified
             if (payment.VerifyResult?.success === false) {
                 return this.renderVerificationFailed();
             }
