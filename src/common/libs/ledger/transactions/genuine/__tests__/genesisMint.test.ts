@@ -53,8 +53,8 @@ describe('EnableAmendment', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: undefined,
-                        received: undefined,
+                        DEC: [],
+                        INC: [],
                     },
                     factor: undefined,
                 });

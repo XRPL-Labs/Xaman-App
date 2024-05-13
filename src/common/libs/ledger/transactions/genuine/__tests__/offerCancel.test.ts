@@ -56,7 +56,13 @@ describe('OfferCancel tx', () => {
 
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({ mutate: undefined, factor: undefined });
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

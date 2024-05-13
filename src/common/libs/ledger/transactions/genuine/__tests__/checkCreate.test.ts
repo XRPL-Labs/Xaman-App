@@ -100,8 +100,18 @@ describe('CheckCreate', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: 'XRP', effect: 1 },
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
+                    factor: [
+                        {
+                            action: 'INC',
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: 'XRP',
+                        },
+                    ],
                 });
             });
         });

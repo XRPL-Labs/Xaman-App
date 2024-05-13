@@ -6,7 +6,6 @@ import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { AccountDelete, AccountDeleteInfo, AccountDeleteValidation } from '../AccountDelete';
 import txTemplates from './fixtures/AccountDeleteTx.json';
-import { MonetaryStatus } from '../../../factory/types';
 
 jest.mock('@services/LedgerService');
 jest.mock('@services/NetworkService');
@@ -66,18 +65,23 @@ describe('AccountDelete', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(infoInstance.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        sent: {
+                    factor: [
+                        {
+                            action: 'DEC',
                             currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
                             value: '15.00102',
-                            action: 0,
                         },
-                        received: undefined,
-                    },
-                    factor: {
-                        currency: 'XRP',
-                        value: '15.00102',
-                        effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'XRP',
+                                value: '15.00102',
+                            },
+                        ],
+                        INC: [],
                     },
                 });
             });

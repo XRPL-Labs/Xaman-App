@@ -148,7 +148,10 @@ describe('AccountSet', () => {
                 const instance = new MixedAccountSet(tx);
                 const accountSetInfo = new AccountSetInfo(instance, {} as any);
                 expect(accountSetInfo.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

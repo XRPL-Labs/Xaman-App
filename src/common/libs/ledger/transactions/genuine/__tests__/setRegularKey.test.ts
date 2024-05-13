@@ -74,7 +74,10 @@ describe('SetRegularKey tx', () => {
             it('should return the expected monetary details', () => {
                 const info = new SetRegularKeyInfo(setInstance, {} as any);
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

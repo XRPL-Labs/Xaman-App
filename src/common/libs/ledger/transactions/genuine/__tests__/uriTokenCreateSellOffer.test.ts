@@ -50,8 +50,17 @@ describe('URITokenCreateSellOffer tx', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: { sent: undefined, received: undefined },
-                    factor: { currency: 'XRP', value: '10', effect: 1 },
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '10',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

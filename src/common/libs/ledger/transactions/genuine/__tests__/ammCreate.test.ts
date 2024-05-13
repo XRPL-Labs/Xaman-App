@@ -68,18 +68,27 @@ describe('AMMCreate tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: {
-                            action: 0,
-                            currency: 'USD',
-                            issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
-                            value: '10000',
-                        },
-                        received: {
-                            action: 1,
-                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
-                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
-                            value: '10000000',
-                        },
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'USD',
+                                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                                value: '10000',
+                            },
+                            {
+                                action: 'DEC',
+                                currency: 'XRP',
+                                value: '10000',
+                            },
+                        ],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                                issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                                value: '10000000',
+                            },
+                        ],
                     },
                     factor: undefined,
                 });

@@ -10,8 +10,6 @@ import { MutationsMixin } from '@common/libs/ledger/mixin';
 import { Payment, PaymentInfo, PaymentValidation } from '../Payment';
 import paymentTemplate from './fixtures/PaymentTx.json';
 
-import { OperationActions } from '../../../parser/types';
-
 jest.mock('@services/NetworkService');
 
 describe('Payment tx', () => {
@@ -44,17 +42,21 @@ describe('Payment tx', () => {
             const instance = new Mixed(tx, meta);
 
             expect(instance.BalanceChange(tx.Account)).toStrictEqual({
-                received: {
-                    action: OperationActions.INC,
-                    currency: 'XRP',
-                    value: '0.999988',
-                },
-                sent: {
-                    action: OperationActions.DEC,
-                    currency: 'USD',
-                    issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-                    value: '1.23905437',
-                },
+                DEC: [
+                    {
+                        action: 'DEC',
+                        currency: 'USD',
+                        issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                        value: '1.23905437',
+                    },
+                ],
+                INC: [
+                    {
+                        action: 'INC',
+                        currency: 'XRP',
+                        value: '0.999988',
+                    },
+                ],
             });
         });
 
@@ -146,7 +148,7 @@ describe('Payment tx', () => {
 
         describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.paymentReceived'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.exchangedAssets'));
             });
         });
 
@@ -162,20 +164,30 @@ describe('Payment tx', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        sent: {
-                            currency: 'USD',
-                            issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-                            value: '1.23905437',
-                            action: 0,
-                        },
-                        received: {
+                    factor: [
+                        {
                             currency: 'XRP',
-                            value: '0.999988',
-                            action: 1,
+                            effect: 'IMMEDIATE_EFFECT',
+                            value: '1',
                         },
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'USD',
+                                issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                                value: '1.23905437',
+                            },
+                        ],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '0.999988',
+                            },
+                        ],
                     },
-                    factor: { currency: 'XRP', value: '1', effect: 0 },
                 });
             });
         });

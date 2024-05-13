@@ -57,7 +57,10 @@ describe('SetHook tx', () => {
             it('should return the expected monetary details', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: { sent: undefined, received: undefined },
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

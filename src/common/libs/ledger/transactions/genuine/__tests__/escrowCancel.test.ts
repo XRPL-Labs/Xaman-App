@@ -59,12 +59,14 @@ describe('EscrowCancel tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: undefined,
-                        received: {
-                            currency: 'XRP',
-                            value: '135.78999',
-                            action: 1,
-                        },
+                        DEC: [],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '135.78999',
+                            },
+                        ],
                     },
                     factor: undefined,
                 });

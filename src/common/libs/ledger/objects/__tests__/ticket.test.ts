@@ -50,7 +50,10 @@ describe('Ticket object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

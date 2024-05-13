@@ -72,8 +72,17 @@ describe('EscrowFinish', () => {
             it('should return the expected monetary details', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: { sent: undefined, received: undefined },
-                    factor: { currency: 'XRP', value: '500000000', effect: 2 },
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'NO_EFFECT',
+                            value: '500000000',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

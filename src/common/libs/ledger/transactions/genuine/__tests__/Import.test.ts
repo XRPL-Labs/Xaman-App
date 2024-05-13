@@ -64,12 +64,14 @@ describe('Import ', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: undefined,
-                        received: {
-                            currency: 'XRP',
-                            value: '12',
-                            action: 1,
-                        },
+                        DEC: [],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '12',
+                            },
+                        ],
                     },
                     factor: undefined,
                 });

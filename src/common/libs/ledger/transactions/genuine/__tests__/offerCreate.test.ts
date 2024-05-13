@@ -209,20 +209,38 @@ describe('OfferCreate tx', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        sent: {
-                            issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-                            currency: 'BTC',
-                            value: '0.01257026',
-                            action: 0,
-                        },
-                        received: {
+                    factor: [
+                        {
+                            action: 'INC',
                             currency: 'XRP',
-                            value: '501.44754',
-                            action: 1,
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '484.553386',
                         },
+                        {
+                            action: 'DEC',
+                            currency: 'BTC',
+                            effect: 'POTENTIAL_EFFECT',
+                            issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                            value: '0.01257',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'BTC',
+                                issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                                value: '0.01257026',
+                            },
+                        ],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '501.44754',
+                            },
+                        ],
                     },
-                    factor: { currency: 'XRP', value: '484.553386', effect: 1 },
                 });
             });
         });

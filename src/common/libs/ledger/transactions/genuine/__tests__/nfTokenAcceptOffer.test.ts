@@ -62,15 +62,24 @@ describe('NFTokenAcceptOffer', () => {
             it('should return the expected monetary details', () => {
                 // TODO: check me
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        sent: {
+                    factor: [
+                        {
+                            action: 'DEC',
                             currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
                             value: '0.000102',
-                            action: 0,
                         },
-                        received: undefined,
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'XRP',
+                                value: '0.000102',
+                            },
+                        ],
+                        INC: [],
                     },
-                    factor: { currency: 'XRP', value: '0.000102', effect: 0 },
                 });
             });
         });

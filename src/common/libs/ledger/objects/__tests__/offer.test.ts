@@ -65,8 +65,25 @@ describe('Offer object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '79550', effect: 1 },
+                    factor: [
+                        {
+                            action: 'INC',
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '79550',
+                        },
+                        {
+                            action: 'DEC',
+                            currency: 'XAG',
+                            effect: 'POTENTIAL_EFFECT',
+                            issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
+                            value: '37',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

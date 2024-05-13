@@ -60,8 +60,17 @@ describe('Check object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '100', effect: 1 },
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '100',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

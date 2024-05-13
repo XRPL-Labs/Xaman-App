@@ -77,13 +77,12 @@ describe('BaseGenuineTransaction', () => {
             instance.Signers = tx.Signers.map((item: any) => item.Signer);
             expect(instance.Signers).toStrictEqual(tx.Signers.map((item: any) => item.Signer));
 
-            instance.Flags = { PartialPayment: true, LimitQuality: false };
+            instance.Flags = { tfPartialPayment: true };
 
             expect(instance.Flags).toStrictEqual({
-                PartialPayment: true,
-                FullyCanonicalSig: false,
-                LimitQuality: false,
-                NoRippleDirect: false,
+                tfPartialPayment: true,
+                tfLimitQuality: false,
+                tfNoRippleDirect: false,
             });
         });
 

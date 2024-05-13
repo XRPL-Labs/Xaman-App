@@ -51,7 +51,10 @@ describe('URITokenCancelSellOffer tx', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: { sent: undefined, received: undefined },
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

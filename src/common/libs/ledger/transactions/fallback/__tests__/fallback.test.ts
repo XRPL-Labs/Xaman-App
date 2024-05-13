@@ -41,7 +41,12 @@ describe('Fallback tx', () => {
 
         describe('getParticipants()', () => {
             it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({});
+                expect(info.getParticipants()).toStrictEqual({
+                    start: {
+                        address: 'rfbXNzwdcXDJfrTzS7vNBj7NA3beAGf7bv',
+                        tag: undefined,
+                    },
+                });
             });
         });
 

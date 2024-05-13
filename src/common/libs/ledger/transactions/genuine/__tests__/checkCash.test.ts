@@ -123,18 +123,22 @@ describe('CheckCash', () => {
             describe('getMonetaryDetails()', () => {
                 it('should return the expected monetary details', () => {
                     expect(info.getMonetaryDetails()).toStrictEqual({
-                        mutate: {
-                            sent: undefined,
-                            received: {
+                        factor: [
+                            {
                                 currency: 'XRP',
-                                value: '2.499988',
-                                action: 1,
+                                effect: 'IMMEDIATE_EFFECT',
+                                value: '100',
                             },
-                        },
-                        factor: {
-                            currency: 'XRP',
-                            effect: 0,
-                            value: '100',
+                        ],
+                        mutate: {
+                            DEC: [],
+                            INC: [
+                                {
+                                    action: 'INC',
+                                    currency: 'XRP',
+                                    value: '2.499988',
+                                },
+                            ],
                         },
                     });
                 });

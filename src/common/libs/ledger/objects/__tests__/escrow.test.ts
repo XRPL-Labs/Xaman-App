@@ -63,8 +63,17 @@ describe('Escrow object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '0.01', effect: 1 },
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '0.01',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

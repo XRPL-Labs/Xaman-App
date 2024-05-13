@@ -78,13 +78,15 @@ describe('AMMBid tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: {
-                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
-                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
-                            value: '191.73965',
-                            action: 0,
-                        },
-                        received: undefined,
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                                issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                                value: '191.73965',
+                            },
+                        ],
+                        INC: [],
                     },
                     factor: undefined,
                 });

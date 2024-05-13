@@ -82,17 +82,27 @@ describe('AMMWithdraw tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: {
-                            action: 0,
-                            currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
-                            issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
-                            value: '3829663.63131411',
-                        },
-                        received: {
-                            action: 1,
-                            currency: 'XRP',
-                            value: '3666.580872',
-                        },
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: '03930D02208264E2E40EC1B0C09E4DB96EE197B1',
+                                issuer: 'rMEdVzU8mtEArzjrN9avm3kA675GX7ez8W',
+                                value: '3829663.63131411',
+                            },
+                        ],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '3666.580872',
+                            },
+                            {
+                                action: 'INC',
+                                currency: 'USD',
+                                issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
+                                value: '4000',
+                            },
+                        ],
                     },
                     factor: undefined,
                 });

@@ -57,8 +57,8 @@ describe('TicketCreate tx', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     mutate: {
-                        sent: undefined,
-                        received: undefined,
+                        DEC: [],
+                        INC: [],
                     },
                     factor: undefined,
                 });

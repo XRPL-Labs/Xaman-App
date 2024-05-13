@@ -10,7 +10,17 @@ import { ClaimReward, ClaimRewardInfo } from '../ClaimReward';
 
 import claimRewardTemplates from './fixtures/ClaimRewardTx.json';
 
-jest.mock('@services/NetworkService');
+jest.mock('@services/NetworkService', () => ({
+    network: {},
+    getNativeAsset: jest.fn().mockReturnValue('XAH'),
+    getNetworkDefinitions: jest.fn().mockReturnValue({
+        transactionFlags: {
+            ClaimReward: {
+                tfOptOut: 1,
+            },
+        },
+    }),
+}));
 
 describe('ClaimReward', () => {
     describe('Class', () => {
@@ -89,7 +99,10 @@ describe('ClaimReward', () => {
                 // TODO: check me
                 const info = new ClaimRewardInfo(emittedInstance, {} as any);
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: { sent: undefined, received: undefined },
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });

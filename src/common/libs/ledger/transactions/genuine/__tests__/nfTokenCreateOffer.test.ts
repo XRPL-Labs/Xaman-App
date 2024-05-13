@@ -88,16 +88,36 @@ describe('NFTokenCreateOffer tx', () => {
             it('should return the expected monetary details for buy offer', () => {
                 const info = new NFTokenCreateOfferInfo(buyInstance, {} as any);
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                    factor: [
+                        {
+                            action: 'DEC',
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '1',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
 
             it('should return the expected monetary details for sell offer', () => {
                 const info = new NFTokenCreateOfferInfo(sellInstance, {} as any);
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                    factor: [
+                        {
+                            action: 'INC',
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '1',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

@@ -82,15 +82,23 @@ describe('PaymentChannelCreate tx', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        sent: {
+                    factor: [
+                        {
                             currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
                             value: '1',
-                            action: 0,
                         },
-                        received: undefined,
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'XRP',
+                                value: '1',
+                            },
+                        ],
+                        INC: [],
                     },
-                    factor: { currency: 'XRP', value: '1', effect: 0 },
                 });
             });
         });

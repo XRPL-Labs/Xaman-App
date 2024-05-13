@@ -60,8 +60,17 @@ describe('PayChannel object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '4.3258', effect: 0 },
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
+                            value: '4.3258',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

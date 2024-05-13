@@ -96,8 +96,18 @@ describe('NFTokenOffer object', () => {
         describe('getMonetaryDetails()', () => {
             it('should return the expected monetary details', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
-                    factor: { currency: 'XRP', value: '1', effect: 1 },
+                    factor: [
+                        {
+                            action: 'INC',
+                            currency: 'XRP',
+                            effect: 'POTENTIAL_EFFECT',
+                            value: '1',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                 });
             });
         });

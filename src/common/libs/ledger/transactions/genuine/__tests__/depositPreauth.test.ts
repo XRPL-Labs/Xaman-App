@@ -72,7 +72,10 @@ describe('DepositPreauth', () => {
             it('should return the expected monetary details', () => {
                 const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
                 expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: undefined,
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
                     factor: undefined,
                 });
             });
