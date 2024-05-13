@@ -131,12 +131,12 @@ describe('Sign Mixin', () => {
         } as any);
 
         instance.populateFields();
-        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+        expect(instance.LastLedgerSequence).toBe(LastLedger + instance.DefaultLastLedgerOffset);
 
         // should update LastLedgerSequence if sequence is passed
         instance.LastLedgerSequence = LastLedger - 500;
         instance.populateFields();
-        expect(instance.LastLedgerSequence).toBe(LastLedger + 10);
+        expect(instance.LastLedgerSequence).toBe(LastLedger + instance.DefaultLastLedgerOffset);
 
         // should update LastLedgerSequence if sequence is less than 32570
         instance.LastLedgerSequence = 50;

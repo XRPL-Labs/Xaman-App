@@ -44,6 +44,8 @@ export interface SignMixinType {
     SignMethod?: SignMethodType;
     SignerAccount?: string;
 
+    DefaultLastLedgerOffset: number;
+
     get SubmitResult(): SubmitResultType | undefined;
     set SubmitResult(result: SubmitResultType);
 

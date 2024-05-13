@@ -33,6 +33,8 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
         public SignMethod?: SignMethodType;
         public SignerAccount?: string;
 
+        readonly DefaultLastLedgerOffset: number = 20;
+
         get SubmitResult(): SubmitResultType | undefined {
             return this._submitResult;
         }
@@ -133,8 +135,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
             }
 
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
-            // Offset default to 20
-            const LastLedgerOffset = lastLedgerOffset || 20;
+            const LastLedgerOffset = lastLedgerOffset || this.DefaultLastLedgerOffset;
 
             // if no LastLedgerSequence or LastLedgerSequence is already pass the threshold
             // update with LastLedger + 10
