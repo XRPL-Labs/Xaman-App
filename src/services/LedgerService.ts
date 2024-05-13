@@ -436,7 +436,7 @@ class LedgerService extends EventEmitter {
                     !(
                         node.Flags &
                         LedgerEntryFlags[LedgerEntryTypes.RippleState]![
-                            node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
+                            node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
                         ]
                     )
                 ) {
@@ -475,7 +475,7 @@ class LedgerService extends EventEmitter {
                 return (
                     node.Flags &
                     LedgerEntryFlags[LedgerEntryTypes.RippleState]![
-                        node.HighLimit.issuer === account ? 'HighReserve' : 'LowReserve'
+                        node.HighLimit.issuer === account ? 'lsfHighReserve' : 'lsfLowReserve'
                     ]
                 );
             });

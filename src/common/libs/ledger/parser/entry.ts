@@ -11,10 +11,10 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
     const [self, counterparty] = ledgerEntry.HighLimit.issuer === account ? parties : parties.reverse();
 
     const ripplingFlags = [
-        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.HighNoRipple & ledgerEntry.Flags) ===
-            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.HighNoRipple,
-        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.LowNoRipple & ledgerEntry.Flags) ===
-            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.LowNoRipple,
+        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfHighNoRipple & ledgerEntry.Flags) ===
+            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfHighNoRipple,
+        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple & ledgerEntry.Flags) ===
+            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple,
     ];
     const [no_ripple, no_ripple_peer] =
         ledgerEntry.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();

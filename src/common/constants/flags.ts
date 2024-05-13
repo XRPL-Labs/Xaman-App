@@ -3,11 +3,7 @@
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Constants ==================================================================== */
-const LedgerEntryFlags: {
-    [key in LedgerEntryTypes]?: {
-        [key: string]: number;
-    };
-} = {
+const LedgerEntryFlags = {
     [LedgerEntryTypes.AccountRoot]: {
         lsfAllowTrustLineClawback: 0x80000000,
         lsfDefaultRipple: 0x00800000,
