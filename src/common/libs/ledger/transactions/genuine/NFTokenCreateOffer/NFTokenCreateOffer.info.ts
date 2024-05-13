@@ -26,7 +26,7 @@ class NFTokenCreateOfferInfo extends ExplainerAbstract<NFTokenCreateOffer, Mutat
     generateDescription(): string {
         const content = [];
 
-        if (this.item.Flags?.SellToken) {
+        if (this.item.Flags?.tfSellToken) {
             content.push(
                 Localize.t('events.nftOfferSellExplain', {
                     address: this.item.Account,
@@ -80,7 +80,7 @@ class NFTokenCreateOfferInfo extends ExplainerAbstract<NFTokenCreateOffer, Mutat
                     currency: this.item.Amount!.currency,
                     value: this.item.Amount!.value,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
-                    action: this.item.Flags?.SellToken ? OperationActions.INC : OperationActions.DEC,
+                    action: this.item.Flags?.tfSellToken ? OperationActions.INC : OperationActions.DEC,
                 },
             ],
         };

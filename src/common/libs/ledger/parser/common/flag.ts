@@ -35,9 +35,9 @@ class FlagParser {
         const definitions = NetworkService.getNetworkDefinitions();
 
         // if the transaction flags is not present in the definitions use default flags
-        const transactionFlags = definitions.transactionFlags ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS;
+        const transactionFlags = definitions?.transactionFlags ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS;
         const indicesFlags =
-            definitions.transactionFlagsIndices ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS_INDICES;
+            definitions?.transactionFlagsIndices ?? binary.DEFAULT_DEFINITIONS.TRANSACTION_FLAGS_INDICES;
 
         // transaction flags
         if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(transactionFlags, type)) {

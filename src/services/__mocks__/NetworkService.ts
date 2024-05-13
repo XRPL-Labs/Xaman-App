@@ -5,7 +5,7 @@ class NetworkService {
     public network = {
         baseReserve: 10,
         ownerReserve: 2,
-        isFeatureEnabled: () => {},
+        isFeatureEnabled: jest.fn(),
         definitions: {},
         nativeAsset: {
             asset: 'XRP',

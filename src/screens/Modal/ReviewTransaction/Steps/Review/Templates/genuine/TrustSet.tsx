@@ -62,9 +62,9 @@ class TrustSetTemplate extends Component<Props, State> {
         }
 
         if (
-            ((source.flags?.defaultRipple && transaction.Flags?.ClearNoRipple) ||
-                (!source.flags?.defaultRipple && transaction.Flags?.SetNoRipple)) &&
-            (!line.freeze || (line.freeze && transaction.Flags?.ClearFreeze)) &&
+            ((source.flags?.defaultRipple && transaction.Flags?.tfClearNoRipple) ||
+                (!source.flags?.defaultRipple && transaction.Flags?.tfSetNoRipple)) &&
+            (!line.freeze || (line.freeze && transaction.Flags?.tfClearFreeze)) &&
             transaction.Limit === 0
         ) {
             this.setState({

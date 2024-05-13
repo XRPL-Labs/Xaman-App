@@ -138,7 +138,7 @@ class OfferCreateTemplate extends Component<Props, State> {
                 </View>
 
                 <Text style={styles.label}>
-                    {transaction.Flags?.Sell
+                    {transaction.Flags?.tfSell
                         ? Localize.t('global.inExchangeForAtLeastReceive')
                         : Localize.t('global.inExchangeForReceive')}
                 </Text>

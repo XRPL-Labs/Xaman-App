@@ -344,8 +344,8 @@ class ExchangeView extends Component<Props, State> {
 
         // set ImmediateOrCancel & Sell flag
         offer.Flags = {
-            ImmediateOrCancel: true,
-            Sell: true,
+            tfImmediateOrCancel: true,
+            tfSell: true,
         };
 
         // generate payload

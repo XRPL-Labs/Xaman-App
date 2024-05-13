@@ -278,7 +278,7 @@ class SendView extends Component<Props, State> {
                     destination!.address !== currency.currency.issuer
                 ) {
                     payment.Flags = {
-                        PartialPayment: true,
+                        tfPartialPayment: true,
                     };
                 }
 

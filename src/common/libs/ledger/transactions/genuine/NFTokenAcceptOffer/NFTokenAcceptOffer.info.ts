@@ -27,7 +27,7 @@ class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, Mutat
         const content = [];
 
         if (this.item.Offer) {
-            if (this.item.Offer.Flags?.SellToken) {
+            if (this.item.Offer.Flags?.tfSellToken) {
                 content.push(
                     Localize.t('events.nftAcceptOfferBuyExplanation', {
                         address: this.item.Account,
@@ -65,7 +65,7 @@ class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, Mutat
     getParticipants() {
         const seller = this.item.Offer.Owner;
         const buyer = this.item.Account;
-        const isSellOffer = this.item.Offer.Flags?.SellToken;
+        const isSellOffer = this.item.Offer.Flags?.tfSellToken;
 
         return {
             start: { address: isSellOffer ? buyer : seller },
@@ -81,7 +81,7 @@ class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, Mutat
                     currency: this.item.Offer.Amount!.currency,
                     value: this.item.Offer.Amount!.value,
                     effect: MonetaryStatus.IMMEDIATE_EFFECT,
-                    action: this.item.Offer.Flags?.SellToken ? OperationActions.INC : OperationActions.DEC,
+                    action: this.item.Offer.Flags?.tfSellToken ? OperationActions.INC : OperationActions.DEC,
                 },
             ],
         };

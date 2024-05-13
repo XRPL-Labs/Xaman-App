@@ -50,7 +50,7 @@ describe('FlagParser', () => {
             const parser = new FlagParser(LedgerEntryTypes.NFTokenOffer, 1);
 
             expect(parser.get()).toEqual({
-                SellNFToken: true,
+                lsfSellNFToken: true,
             });
         });
 

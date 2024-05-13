@@ -32,7 +32,7 @@ class ClaimReward extends BaseGenuineTransaction {
      * @returns {ClaimRewardStatus} The claim status for the reward.
      */
     get ClaimStatus(): ClaimRewardStatus {
-        if (this.Flags?.OptOut) {
+        if (this.Flags?.tfOptOut) {
             return ClaimRewardStatus.OptOut;
         }
 

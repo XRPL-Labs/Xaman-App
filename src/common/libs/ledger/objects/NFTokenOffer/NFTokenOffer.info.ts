@@ -20,13 +20,13 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
     getEventsLabel(): string {
         // incoming offers
         if (this.item.Owner !== this.account.address) {
-            if (this.item.Flags?.SellNFToken) {
+            if (this.item.Flags?.lsfSellNFToken) {
                 return Localize.t('events.nftOfferedToYou');
             }
             return Localize.t('events.offerOnYouNFT');
         }
         // outgoing offers
-        if (this.item.Flags?.SellNFToken) {
+        if (this.item.Flags?.lsfSellNFToken) {
             return Localize.t('events.sellNFToken');
         }
         return Localize.t('events.buyNFToken');
@@ -35,7 +35,7 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
     generateDescription(): string {
         const content: string[] = [];
 
-        if (this.item.Flags?.SellNFToken) {
+        if (this.item.Flags?.lsfSellNFToken) {
             content.push(
                 Localize.t('events.nftOfferSellExplain', {
                     address: this.item.Owner,
@@ -87,7 +87,7 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
         // incoming offer for your NFT
         if (this.item.Owner !== this.account.address) {
             action = OperationActions.INC;
-        } else if (this.item.Flags?.SellNFToken) {
+        } else if (this.item.Flags?.lsfSellNFToken) {
             action = OperationActions.INC;
         }
 
