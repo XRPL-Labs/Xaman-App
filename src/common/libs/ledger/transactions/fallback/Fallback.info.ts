@@ -21,7 +21,9 @@ class FallbackInfo extends ExplainerAbstract<Fallback, MutationsMixinType> {
     }
 
     getParticipants() {
-        return {};
+        return {
+            start: { address: this.item.Account, tag: this.item.SourceTag },
+        };
     }
 
     getMonetaryDetails() {

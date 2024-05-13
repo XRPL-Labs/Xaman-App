@@ -3,13 +3,13 @@ import { Text, View } from 'react-native';
 
 import { Payload } from '@common/libs/payload';
 
-import { PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
+import { InstanceTypes, PseudoTransactionTypes } from '@common/libs/ledger/types/enums';
 import { SignableMutatedTransaction } from '@common/libs/ledger/transactions/types';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { AccountModel } from '@store/models';
 
-import { Avatar } from '@components/General';
+import { Avatar, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -90,8 +90,11 @@ class AppInfo extends Component<Props, State> {
         return (
             <>
                 <Text style={styles.descriptionLabel}>{Localize.t('global.type')}</Text>
-                <View style={styles.transactionTypeContainer}>
+                <View style={[styles.transactionTypeContainer]}>
                     <Text style={styles.transactionTypeLabel}>{transactionLabel}</Text>
+                    {transaction.InstanceType === InstanceTypes.FallbackTransaction ? (
+                        <Icon name="IconFlaskConical" size={15} style={styles.fallbackIcon} />
+                    ) : null}
                 </View>
             </>
         );

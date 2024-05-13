@@ -160,7 +160,7 @@ class TransactionItem extends Component<Props, State> {
                 style={[styles.container, { height: TransactionItem.Height }]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Blocks.AvatarBlock participant={participant} />
+                    <Blocks.AvatarBlock participant={participant} item={item} />
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Blocks.LabelBlock item={item} account={account} participant={participant} />

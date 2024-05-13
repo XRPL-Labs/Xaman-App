@@ -23,9 +23,14 @@ const styles = StyleService.create({
         color: StyleService.select({ light: '$blue', dark: '$white' }),
     },
     transactionTypeContainer: {
+        flexDirection: 'row',
         backgroundColor: '$lightGrey',
-        padding: 5,
         borderRadius: AppSizes.borderRadius,
+        padding: 5,
+        gap: 5,
+    },
+    fallbackIcon: {
+        tintColor: '$orange',
     },
     descriptionLabel: {
         fontSize: AppFonts.small.size,
@@ -42,11 +47,6 @@ const styles = StyleService.create({
         textAlign: 'center',
         marginBottom: 15,
         paddingHorizontal: 10,
-    },
-    fallbackIconContainer: {
-        backgroundColor: '$purple',
-        borderRadius: AppSizes.borderRadius,
-        padding: 5,
     },
 });
 
