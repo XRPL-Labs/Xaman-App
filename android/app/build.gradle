@@ -10,7 +10,7 @@ def canonicalVersionName = "3.0.0"
 def canonicalVersionCode = 9
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
-def postFixSize = 3000
+def postFixSize = 30_000
 
 /**
  * This is the configuration block to customize your React Native Android app.
