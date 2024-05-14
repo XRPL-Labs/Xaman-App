@@ -706,6 +706,8 @@ class NetworkService extends EventEmitter {
 
                 // if endpoint is not in the white listed network list then use custom proxy for it
                 if (!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint))) {
+                    // remove 'ws://' and 'wss://' from custom endpoint
+                    normalizedEndpoint = normalizedEndpoint.replace(/^wss?:\/\//, '');
                     normalizedEndpoint = `${NetworkConfig.customNodeProxy}/${normalizedEndpoint}`;
                 }
 
