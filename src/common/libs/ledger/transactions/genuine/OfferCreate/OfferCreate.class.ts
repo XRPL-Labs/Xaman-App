@@ -63,47 +63,18 @@ class OfferCreate extends BaseGenuineTransaction {
         return undefined;
     }
 
-    // TakerGot(owner?: string): AmountType {
-    //     if (!owner) {
-    //         owner = this.Account.address;
-    //     }
-    //
-    //     const balanceChanges = this.BalanceChange(owner);
-    //
-    //     if (!balanceChanges?.sent) {
-    //         return {
-    //             ...this.TakerGets,
-    //             value: '0',
-    //         };
-    //     }
-    //
-    //     return balanceChanges.sent;
-    // }
-    //
-    // TakerPaid(owner?: string): AmountType {
-    //     if (!owner) {
-    //         owner = this.Account.address;
-    //     }
-    //
-    //     const balanceChanges = this.BalanceChange(owner);
-    //
-    //     if (!balanceChanges?.received) {
-    //         return {
-    //             ...this.TakerPays,
-    //             value: '0',
-    //         };
-    //     }
-    //
-    //     return balanceChanges.received;
-    // }
-    //
     GetOfferStatus(owner?: string): OfferStatus {
         // if already calculated return the value
         if (this._offerStatus) {
             return this._offerStatus;
         }
 
-        // offer effected by another offer we assume it's partially filled
+        // transaction has not been executed
+        if (typeof this._meta === 'undefined' || typeof this.Sequence === 'undefined') {
+            return OfferStatus.UNKNOWN;
+        }
+
+        // offer effected by another offer we assume it's partially filledGetOfferStatus
         if (owner !== this.Account) {
             this._offerStatus = OfferStatus.PARTIALLY_FILLED;
             return this._offerStatus;

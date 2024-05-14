@@ -11,6 +11,12 @@ import { HexEncoding } from '@common/utils/string';
  * @returns encoded offer index in hex
  */
 const EncodeLedgerIndex = (account: string, sequence: number) => {
+    if (typeof account !== 'string') {
+        throw new Error(`EncodeLedgerIndex, account param is required, got ${typeof account} instead!`);
+    }
+    if (typeof sequence !== 'number') {
+        throw new Error(`EncodeLedgerIndex, sequence param is required, got ${typeof account} instead!`);
+    }
     let sequenceHex = sequence.toString(16);
     if (sequenceHex.length > 8) return false;
     sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
