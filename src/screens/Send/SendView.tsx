@@ -259,7 +259,7 @@ class SendView extends Component<Props, State> {
             payment.Destination = destination!.address;
 
             if (typeof destination?.tag !== 'undefined') {
-                payment.DestinationTag = destination.tag;
+                payment.DestinationTag = Number(destination.tag);
             }
 
             // set the amount
