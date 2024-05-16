@@ -6,7 +6,12 @@ import { FallbackTransaction } from '@common/libs/ledger/transactions';
 import { Clipboard } from '@common/helpers/clipboard';
 import { Toast } from '@common/helpers/interface';
 
+import { AmountParser } from '@common/libs/ledger/parser/common';
+
+import { FeePicker } from '@components/Modules';
 import { Button, JsonTree } from '@components/General';
+
+import NetworkService from '@services/NetworkService';
 
 import Localize from '@locale';
 
@@ -14,9 +19,7 @@ import { AppFonts, AppStyles } from '@theme';
 import styles from '../styles';
 
 import { TemplateProps } from '../types';
-import { FeePicker } from '@components/Modules';
-import NetworkService from '@services/NetworkService';
-import { AmountParser } from '@common/libs/ledger/parser/common';
+
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: FallbackTransaction;
@@ -37,18 +40,10 @@ class FallbackTemplate extends Component<Props, State> {
         };
     }
 
-    static getJsonData(transaction: FallbackTransaction) {
-        // remove `Account` from the json as we are showing it in more proper way
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { Account, ...jsonData } = transaction.JsonForSigning;
-
-        return jsonData;
-    }
-
     static getDerivedStateFromProps(nextProps: Props): Partial<State> | null {
         if (nextProps.transaction) {
             return {
-                transactionJsonData: FallbackTemplate.getJsonData(nextProps.transaction),
+                transactionJsonData: nextProps.transaction.JsonForSigning,
             };
         }
 
@@ -73,11 +68,21 @@ class FallbackTemplate extends Component<Props, State> {
         };
 
         this.setState({
-            transactionJsonData: FallbackTemplate.getJsonData(transaction),
+            transactionJsonData: transaction.JsonForSigning,
         });
     };
 
+    getJsonDataFoeViewer = () => {
+        const { transactionJsonData } = this.state;
+        // remove `Account` from the json as we are showing it in more proper way
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { Account, ...jsonData } = transactionJsonData!;
+
+        return jsonData;
+    };
+
     render() {
+        const { transaction } = this.props;
         const { transactionJsonData, showFeePicker } = this.state;
 
         if (!transactionJsonData) {
@@ -105,7 +110,7 @@ class FallbackTemplate extends Component<Props, State> {
 
                 {/* Transaction JSON */}
                 <View style={styles.jsonTreeContainer}>
-                    <JsonTree data={transactionJsonData} />
+                    <JsonTree data={this.getJsonDataFoeViewer()} />
                 </View>
 
                 {/* Fee picker  */}
@@ -113,7 +118,7 @@ class FallbackTemplate extends Component<Props, State> {
                     <>
                         <Text style={styles.label}>{Localize.t('global.fee')}</Text>
                         <FeePicker
-                            txJson={transactionJsonData}
+                            txJson={transaction.JsonForSigning}
                             onSelect={this.setTransactionFee}
                             containerStyle={styles.contentBox}
                             textStyle={styles.feeText}
