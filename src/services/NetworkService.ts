@@ -310,7 +310,7 @@ class NetworkService extends EventEmitter {
                 });
 
                 if ('error' in resp) {
-                    throw new Error(resp.error);
+                    throw new Error(`got error from network ${resp.error}`);
                 }
 
                 resolve(NormalizeFeeDataSet(resp));
