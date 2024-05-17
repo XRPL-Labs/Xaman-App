@@ -338,7 +338,7 @@ class EventsView extends Component<Props, State> {
 
             // only load XLS20 offers on requests section
             if (activeSection === EventSections.REQUESTS) {
-                promises.push(BackendService.getXLS20Offered(account.address));
+                promises.push(BackendService.getNFTOffered(account.address));
             }
 
             Promise.all(promises).then((result) => {

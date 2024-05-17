@@ -45,7 +45,7 @@ import {
     AMMInfoRequest,
     AMMInfoResponse,
 } from '@common/libs/ledger/types/methods';
-import { LedgerEntry, RippleState } from '@common/libs/ledger/types/ledger';
+import { LedgerEntry, RippleState, URIToken } from '@common/libs/ledger/types/ledger';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
@@ -181,9 +181,22 @@ class LedgerService extends EventEmitter {
     };
 
     /**
-     * Get account XLS20 NFTs
+     * Retrieves the NFTs associated with the specified account.
      */
-    getAccountNFTs = async (
+    getAccountNFTs = (account: string) => {
+        const network = NetworkService.getNetwork();
+
+        if (network.isFeatureEnabled('URIToken')) {
+            return this.getAccountURITokens(account);
+        }
+
+        return this.getAccountNFTokens(account);
+    };
+
+    /**
+     * Get account XLS20 NFTokens
+     */
+    getAccountNFTokens = async (
         account: string,
         marker?: string,
         combined = [] as AccountNFToken[],
@@ -204,9 +217,32 @@ class LedgerService extends EventEmitter {
 
         const { account_nfts, marker: _marker } = resp;
         if (_marker && _marker !== marker) {
-            return this.getAccountNFTs(account, _marker, account_nfts.concat(combined));
+            return this.getAccountNFTokens(account, _marker, account_nfts.concat(combined));
         }
         return account_nfts.concat(combined);
+    };
+
+    /**
+     * Get account URI tokens
+     */
+    getAccountURITokens = async (
+        account: string,
+        marker?: string,
+        combined = [] as URIToken[],
+    ): Promise<URIToken[]> => {
+        const resp = await this.getAccountObjects(account, { type: 'uri_token', marker });
+
+        if ('error' in resp) {
+            this.logger.error('Unable to get account URI Tokens', resp.error);
+            return combined;
+        }
+
+        const { account_objects, marker: _marker } = resp as { account_objects: URIToken[]; marker: string };
+
+        if (_marker && _marker !== marker) {
+            return this.getAccountURITokens(account, _marker, account_objects.concat(combined));
+        }
+        return account_objects.concat(combined);
     };
 
     /**

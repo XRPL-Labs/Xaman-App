@@ -453,13 +453,13 @@ class BackendService {
     };
 
     /**
-     * Gets details about an XLS20 token.
+     * Gets details about a list of NFT tokens.
      * @param {string} account - The account associated with the XLS20 token.
      * @param {string[]} tokens - An array of XLS20 token IDs.
      * @returns {Promise} A promise that resolves with details about the XLS20 tokens.
      */
-    getXLS20Details = (account: string, tokens: string[]): Promise<any> => {
-        return ApiService.xls20Details.post(null, { account, tokens });
+    getNFTDetails = (account: string, tokens: string[]): Promise<any> => {
+        return ApiService.nftDetails.post(null, { account, tokens });
     };
 
     /**
@@ -467,7 +467,7 @@ class BackendService {
      * @param {string} account - The account of the user offering XLS20 tokens.
      * @returns {Promise} A promise that resolves with the list of offered XLS20 tokens.
      */
-    getXLS20Offered = (account: string): Array<NFTokenOffer> => {
+    getNFTOffered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
             .get({ account })
             .then(async (res: Array<any>) => {

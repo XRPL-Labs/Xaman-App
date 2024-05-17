@@ -62,10 +62,10 @@ class NFTokenElement extends PureComponent<Props, State> {
         this.startPlaceholderAnimation();
 
         // fetch details from backend
-        BackendService.getXLS20Details(account, [nfTokenId])
+        BackendService.getNFTDetails(account, [nfTokenId])
             .then((resp: any) => {
                 const { tokenData } = resp;
-                if (typeof tokenData === 'object' && Object.prototype.hasOwnProperty.call(tokenData, nfTokenId)) {
+                if (typeof tokenData === 'object' && 'nfTokenId' in tokenData) {
                     const { image, name } = tokenData[nfTokenId];
 
                     this.setState({

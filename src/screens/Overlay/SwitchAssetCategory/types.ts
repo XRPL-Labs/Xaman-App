@@ -1,6 +1,6 @@
 export enum ASSETS_CATEGORY {
     Tokens = 'Tokens',
-    NFTokens = 'NFTokens',
+    NFTs = 'NFTs',
 }
 
 export interface Props {

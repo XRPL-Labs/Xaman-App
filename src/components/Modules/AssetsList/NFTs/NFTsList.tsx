@@ -17,14 +17,15 @@ import BackendService from '@services/BackendService';
 import AccountService from '@services/AccountService';
 import LedgerService from '@services/LedgerService';
 import StyleService from '@services/StyleService';
+import NetworkService from '@services/NetworkService';
 
 import { LoadingIndicator, SearchBar } from '@components/General';
 
 import { XAppOrigin } from '@common/libs/payload';
 
-import { ListHeader } from '@components/Modules/AssetsList/NFTokens/ListHeader';
-import { NFTokenData, NFTokenItem } from '@components/Modules/AssetsList/NFTokens/NFTokenItem';
-import { ListEmpty } from '@components/Modules/AssetsList/NFTokens/ListEmpty';
+import { ListHeader } from '@components/Modules/AssetsList/NFTs/ListHeader';
+import { NFTData, ListItem } from '@components/Modules/AssetsList/NFTs/ListItem';
+import { ListEmpty } from '@components/Modules/AssetsList/NFTs/ListEmpty';
 
 import Localize from '@locale';
 
@@ -43,22 +44,22 @@ interface Props {
 }
 
 interface State {
-    nfTokens: NFTokenData[];
-    dataSource: NFTokenData[];
+    nfts: NFTData[];
+    dataSource: NFTData[];
     filterText?: string;
     isLoading: boolean;
     isRefreshing: boolean;
 }
 
 /* Component ==================================================================== */
-class NFTokensList extends Component<Props, State> {
+class NFTsList extends Component<Props, State> {
     private readonly searchInputRef: React.RefObject<SearchBar>;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            nfTokens: [],
+            nfts: [],
             dataSource: [],
             filterText: undefined,
             isLoading: true,
@@ -74,17 +75,25 @@ class NFTokensList extends Component<Props, State> {
 
         // list of ledger transaction
         AccountService.on('transaction', this.onTransactionReceived);
+
+        // listen for network switch
+        NetworkService.on('networkChange', this.onNetworkChange);
     }
 
     componentWillUnmount() {
         // remove listeners
         AccountService.off('transaction', this.onTransactionReceived);
+        NetworkService.off('networkChange', this.onNetworkChange);
     }
+
+    onNetworkChange = () => {
+        InteractionManager.runAfterInteractions(this.fetchNFTokens);
+    };
 
     onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
         const { account } = this.props;
 
-        // update the list if
+        // update the list if we received one of the transactions associated with NFTs including NFToken and URIToken
         if (account?.isValid() && effectedAccounts.includes(account.address)) {
             const { TransactionType } = transaction;
             if (
@@ -94,6 +103,11 @@ class NFTokensList extends Component<Props, State> {
                     TransactionTypes.NFTokenCreateOffer,
                     TransactionTypes.NFTokenAcceptOffer,
                     TransactionTypes.NFTokenCancelOffer,
+                    TransactionTypes.URITokenMint,
+                    TransactionTypes.URITokenBurn,
+                    TransactionTypes.URITokenCreateSellOffer,
+                    TransactionTypes.URITokenCancelSellOffer,
+                    TransactionTypes.URITokenBuy,
                 ].includes(TransactionType)
             ) {
                 this.fetchNFTokens();
@@ -108,51 +122,50 @@ class NFTokensList extends Component<Props, State> {
             [isRefreshing ? 'isRefreshing' : 'isLoading']: true,
         } as unknown as Pick<State, keyof State>);
 
-        let nfTokenIds: string[] | undefined;
+        let nftIds: string[] | undefined;
 
         // fetch account NFTokens from ledger
         await LedgerService.getAccountNFTs(account.address)
-            .then((nfTokens) => {
-                nfTokenIds = flatMap(nfTokens, 'NFTokenID');
+            .then((items) => {
+                nftIds = items.map((item) => ('NFTokenID' in item ? item.NFTokenID : item.index));
             })
             .catch(() => {
                 Toast(Localize.t('account.unableToFetchAccountNFTokens'));
             });
 
         // an error happened
-        if (typeof nfTokenIds === 'undefined') {
+        if (typeof nftIds === 'undefined') {
             return;
         }
 
         // temporary set the list as we are fetching the details we can show a placeholder
-
-        const tempNFTokens = flatMap(nfTokenIds, (n) => {
+        const tempNFTokens = flatMap(nftIds, (n) => {
             return { token: n };
         });
 
         this.setState({
-            nfTokens: tempNFTokens,
+            nfts: tempNFTokens,
             dataSource: tempNFTokens,
             [isRefreshing ? 'isRefreshing' : 'isLoading']: false,
         } as unknown as Pick<State, keyof State>);
 
         // account doesn't have any token
-        if (isEmpty(nfTokenIds)) {
+        if (isEmpty(nftIds)) {
             return;
         }
 
         // load the token details from backend and update the list
-        BackendService.getXLS20Details(account.address, nfTokenIds)
-            .then((details: any) => {
+        BackendService.getNFTDetails(account.address, nftIds)
+            .then((details) => {
                 const { tokenData } = details;
 
-                const nfTokens = flatMap(tokenData, (data) => {
+                const nfts = flatMap(tokenData, (data) => {
                     return data;
                 });
 
                 this.setState({
-                    nfTokens,
-                    dataSource: nfTokens,
+                    nfts,
+                    dataSource: nfts,
                 });
             })
             .catch(() => {
@@ -188,16 +201,16 @@ class NFTokensList extends Component<Props, State> {
     };
 
     onFilterChange = () => {
-        const { filterText, nfTokens } = this.state;
+        const { filterText, nfts } = this.state;
 
         if (!filterText) {
             this.setState({
-                dataSource: nfTokens,
+                dataSource: nfts,
             });
             return;
         }
 
-        const tokensFilter = new Fuse(nfTokens, {
+        const tokensFilter = new Fuse(nfts, {
             keys: ['issuer', 'name', 'token'],
             shouldSort: false,
             includeScore: false,
@@ -210,7 +223,7 @@ class NFTokensList extends Component<Props, State> {
         });
     };
 
-    onNFTItemPress = (item: NFTokenData) => {
+    onNFTItemPress = (item: NFTData) => {
         const { token } = item;
 
         Navigator.showModal<XAppBrowserModalProps>(
@@ -229,21 +242,21 @@ class NFTokensList extends Component<Props, State> {
         );
     };
 
-    renderItem = ({ item, index }: { item: NFTokenData; index: number }) => {
+    renderItem = ({ item, index }: { item: NFTData; index: number }) => {
         const { discreetMode } = this.props;
-        const { nfTokens } = this.state;
+        const { nfts } = this.state;
 
         const { token, name, image, issuer } = item;
 
         return (
-            <NFTokenItem
+            <ListItem
                 index={index}
                 token={token}
                 name={name}
                 image={image}
                 issuer={issuer}
                 discreetMode={discreetMode}
-                totalTokens={nfTokens.length}
+                totalTokens={nfts.length}
                 onPress={this.onNFTItemPress}
             />
         );
@@ -259,7 +272,7 @@ class NFTokensList extends Component<Props, State> {
         return <ListEmpty />;
     };
 
-    keyExtractor = (item: NFTokenData) => {
+    keyExtractor = (item: NFTData) => {
         return `nfToken-${item.token}`;
     };
 
@@ -302,4 +315,4 @@ class NFTokensList extends Component<Props, State> {
     }
 }
 
-export default NFTokensList;
+export default NFTsList;

@@ -14,6 +14,7 @@ import RippleState from './RippleState';
 import SignerList from './SignerList';
 import Ticket from './Ticket';
 import NFTokenOffer from './NFTokenOffer';
+import URIToken from './URIToken';
 
 type LedgerEntry =
     | AccountRoot
@@ -31,7 +32,8 @@ type LedgerEntry =
     | RippleState
     | SignerList
     | Ticket
-    | NFTokenOffer;
+    | NFTokenOffer
+    | URIToken;
 
 type LedgerEntryFilter =
     | 'account'
@@ -50,6 +52,7 @@ type LedgerEntryFilter =
     | 'payment_channel'
     | 'signer_list'
     | 'state'
-    | 'ticket';
+    | 'ticket'
+    | 'uri_token';
 
 export type { LedgerEntry, LedgerEntryFilter };

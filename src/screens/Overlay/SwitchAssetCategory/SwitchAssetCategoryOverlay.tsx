@@ -107,9 +107,9 @@ class SwitchAssetCategoryOverlay extends Component<Props, State> {
                         <Button
                             light
                             label={Localize.t('global.nfts')}
-                            style={selected === ASSETS_CATEGORY.NFTokens ? styles.selectedButton : {}}
+                            style={selected === ASSETS_CATEGORY.NFTs ? styles.selectedButton : {}}
                             /* eslint-disable-next-line react/jsx-no-bind */
-                            onPress={this.onAssetPress.bind(null, ASSETS_CATEGORY.NFTokens)}
+                            onPress={this.onAssetPress.bind(null, ASSETS_CATEGORY.NFTs)}
                         />
                     </View>
                 </Animated.View>

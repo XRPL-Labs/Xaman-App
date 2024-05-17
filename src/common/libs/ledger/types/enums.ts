@@ -84,6 +84,7 @@ export enum LedgerEntryTypes {
     LedgerHashes = 'LedgerHashes',
     NegativeUNL = 'NegativeUNL',
     NFTokenOffer = 'NFTokenOffer',
+    URIToken = 'URIToken',
     NFTokenPage = 'NFTokenPage',
     Offer = 'Offer',
     Ticket = 'Ticket',

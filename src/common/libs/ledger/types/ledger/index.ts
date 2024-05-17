@@ -17,6 +17,7 @@ import PayChannel from './PayChannel';
 import RippleState, { RippleStateFlags } from './RippleState';
 import SignerList from './SignerList';
 import Ticket from './Ticket';
+import URIToken from './URIToken';
 
 export type {
     AccountRoot,
@@ -45,4 +46,5 @@ export type {
     SignerList,
     Ticket,
     VoteSlot,
+    URIToken,
 };

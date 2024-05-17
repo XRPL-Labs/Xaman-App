@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 import { ASSETS_CATEGORY, Props as SwitchAssetCategoryOverlayProps } from '@screens/Overlay/SwitchAssetCategory/types';
 
 import { TokensList } from './Tokens';
-import { NFTokensList } from './NFTokens';
+import { NFTsList } from './NFTs';
 
 /* Types ==================================================================== */
 
@@ -76,8 +76,8 @@ class AssetsList extends Component<Props, State> {
             case ASSETS_CATEGORY.Tokens:
                 AssetListComponent = TokensList;
                 break;
-            case ASSETS_CATEGORY.NFTokens:
-                AssetListComponent = NFTokensList;
+            case ASSETS_CATEGORY.NFTs:
+                AssetListComponent = NFTsList;
                 break;
             default:
                 return null;

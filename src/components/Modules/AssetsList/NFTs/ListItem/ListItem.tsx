@@ -13,24 +13,24 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
-export interface NFTokenData {
+export interface NFTData {
     token: string;
     issuer?: string;
     name?: string;
     image?: string;
 }
 
-interface Props extends NFTokenData {
+interface Props extends NFTData {
     index: number;
     discreetMode: boolean;
     totalTokens: number;
-    onPress: (item: NFTokenData) => void;
+    onPress: (item: NFTData) => void;
 }
 
 interface State {}
 
 /* Component ==================================================================== */
-class NFTokenItem extends PureComponent<Props, State> {
+class ListItem extends PureComponent<Props, State> {
     static Height = AppSizes.scale(55);
 
     private readonly animatedFade: Animated.Value;
@@ -147,7 +147,7 @@ class NFTokenItem extends PureComponent<Props, State> {
 
     renderPlaceHolder = () => {
         return (
-            <View style={[styles.container, { height: NFTokenItem.Height }]}>
+            <View style={[styles.container, { height: ListItem.Height }]}>
                 <Animated.View style={[styles.tokenImageContainer, { opacity: this.animatedPlaceholder }]}>
                     <Avatar source={Images.ImageBlankNFTLight} border size={35} />
                 </Animated.View>
@@ -186,7 +186,7 @@ class NFTokenItem extends PureComponent<Props, State> {
                 <TouchableDebounce
                     onPress={this.onItemPress}
                     activeOpacity={0.6}
-                    style={[styles.container, { height: NFTokenItem.Height }]}
+                    style={[styles.container, { height: ListItem.Height }]}
                 >
                     <View style={styles.tokenImageContainer}>
                         <Avatar source={this.getImageSource()} border size={35} />
@@ -205,4 +205,4 @@ class NFTokenItem extends PureComponent<Props, State> {
     }
 }
 
-export default NFTokenItem;
+export default ListItem;
