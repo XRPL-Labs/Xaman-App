@@ -1,7 +1,10 @@
 /**
  * IAP
  *
- * In App Purchase module helper
+ * In-App Purchase module helper
+ * Notes: after a success purchase and enabling the product for user we need to call finalizePurchase, otherwise
+ * the amount will be refunded to the user.
+ * If user doesn't have the permission to make payments, the purchase will be rejected by clear error message
  *
  */
 import { NativeModules, Platform } from 'react-native';
@@ -9,101 +12,63 @@ import { NativeModules, Platform } from 'react-native';
 /* Const ==================================================================== */
 const { InAppPurchaseModule } = NativeModules;
 
-enum ERRORS {
-    // noinspection JSUnusedGlobalSymbols
-    E_UNABLE_TO_INIT_MODULE = 'E_UNABLE_TO_INIT_MODULE',
-    E_PLAYSERVICE_NO_AVAILABLE = 'E_PLAYSERVICE_NO_AVAILABLE',
+enum ErrorCode {
     E_CLIENT_IS_NOT_READY = 'E_CLIENT_IS_NOT_READY',
     E_PRODUCT_IS_NOT_AVAILABLE = 'E_PRODUCT_IS_NOT_AVAILABLE',
-    E_PURCHAES_CANCELED = 'E_PURCHAES_CANCELED',
-    E_PURCHAES_FALIED = 'E_PURCHAES_FALIED',
+    E_NO_PENDING_PURCHASE = 'E_NO_PENDING_PURCHASE',
+    E_PURCHASE_CANCELED = 'E_PURCHASE_CANCELED',
+    E_PURCHASE_FAILED = 'E_PURCHASE_FAILED',
+    E_FINISH_TRANSACTION_FAILED = 'E_FINISH_TRANSACTION_FAILED',
     E_ALREADY_PURCHASED = 'E_ALREADY_PURCHASED',
-    E_NO_PURCHASE_HISTORY = 'E_NO_PURCHASE_HISTORY',
     E_UNEXPECTED_ERROR = 'E_UNEXPECTED_ERROR',
 }
 
-const SUCCESS_PURCHASE_CODE = 'SUCCESS_PURCHASE';
-
 /* Lib ==================================================================== */
 const IAP = {
-    ERRORS,
-    SUCCESS_PURCHASE_CODE,
+    ErrorCode,
 
     /**
-     * Initialize the module/connection
+     * Restore any old purchases
      */
-    init: async (): Promise<boolean> => {
-        return InAppPurchaseModule.init();
+    restorePurchases: async () => {
+        return InAppPurchaseModule.restorePurchases();
     },
 
     /**
-     * close any left connection
+     * Start purchasing flow for productId
      */
-    close: async (): Promise<boolean> => {
+    purchase: async (productId: string) => {
+        // for Android, we need to make sure the connection to google play is established before triggering billing flow
         if (Platform.OS === 'android') {
-            return InAppPurchaseModule.close();
+            await InAppPurchaseModule.startConnection();
         }
-        return true;
+
+        return InAppPurchaseModule.purchase(productId);
     },
 
     /**
-     * Restore any old purchase
+     * Finalize a purchase with transaction receipt identifier
      */
-    restorePurchase: async (): Promise<string> => {
-        return InAppPurchaseModule.restorePurchase();
+    finalizePurchase: async (transactionReceiptIdentifier: string) => {
+        return InAppPurchaseModule.finalizePurchase(transactionReceiptIdentifier);
     },
 
     /**
-     * Purchase the product
+     * Normalizes an error by returning its code, string representation, or a default error code.
+     * @param {any} error - The error to be normalized.
+     * @returns {string} - The normalized error code, string representation, or a default error code.
      */
-    startPurchaseFlow: async (): Promise<string> => {
-        return InAppPurchaseModule.purchase();
-    },
-
-    /**
-     * Verify receipt with backend
-     */
-    verify: async (receipt: string): Promise<boolean> => {
-        return !!receipt;
-    },
-    /**
-     * Check if user already bought the pro subscription
-     */
-    status: async (): Promise<string> => {
-        return new Promise((resolve) => {
-            [IAP.init, IAP.restorePurchase, IAP.verify, IAP.close]
-                .reduce((accumulator: any, callback) => {
-                    return accumulator.then(callback);
-                }, Promise.resolve())
-                .then(() => {
-                    return resolve(SUCCESS_PURCHASE_CODE);
-                })
-                .catch((e: any) => resolve(IAP.normalizeError(e)));
-        });
-    },
-
-    purchase: async (): Promise<string> => {
-        return new Promise((resolve) => {
-            [IAP.init, IAP.startPurchaseFlow, IAP.verify, IAP.close]
-                .reduce((accumulator: any, callback) => {
-                    return accumulator.then(callback);
-                }, Promise.resolve())
-                .then(() => {
-                    return resolve(SUCCESS_PURCHASE_CODE);
-                })
-                .catch((e: any) => resolve(IAP.normalizeError(e)));
-        });
-    },
-
-    normalizeError: (e: any) => {
-        if (e.code) {
-            return e.code;
+    normalizeError: (error: any) => {
+        switch (true) {
+            case error.code:
+                return error.code;
+            case typeof error.toString === 'function':
+                return error.toString();
+            default:
+                return ErrorCode.E_UNEXPECTED_ERROR;
         }
-        if (typeof e.toString === 'function') {
-            return e.toString();
-        }
-        return ERRORS.E_UNEXPECTED_ERROR;
     },
 };
 
+/* Export ==================================================================== */
 export default IAP;

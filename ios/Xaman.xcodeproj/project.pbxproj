@@ -59,6 +59,8 @@
 		A2AFF143243E79C30007005E /* DeviceUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AFF12D243E79C30007005E /* DeviceUtils.m */; };
 		A2B145CB243E935F00E952B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2B145CA243E935F00E952B6 /* LaunchScreen.storyboard */; };
 		A2B9D13E2449BAA400259841 /* SharedPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B9D13D2449B83C00259841 /* SharedPreferences.m */; };
+		A2BE295B2C0C977600F66E10 /* InAppPurchase+ProductRequestHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = A2BE295A2C0C977600F66E10 /* InAppPurchase+ProductRequestHandler.m */; };
+		A2BE295E2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = A2BE295D2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m */; };
 		A2D856C02880166A003717BC /* AppUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = A2D856BF2880166A003717BC /* AppUtils.m */; };
 		A2D856C428802622003717BC /* HapticFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = A2D856C328802622003717BC /* HapticFeedback.m */; };
 		A2ED1312252DC717002AFC09 /* InAppPurchase.m in Sources */ = {isa = PBXBuildFile; fileRef = A2ED1311252DC717002AFC09 /* InAppPurchase.m */; };
@@ -164,6 +166,10 @@
 		A2B145CC243F734600E952B6 /* Xaman.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Xaman.entitlements; path = Xaman/Xaman.entitlements; sourceTree = "<group>"; };
 		A2B9D13C2449B83900259841 /* SharedPreferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedPreferences.h; sourceTree = "<group>"; };
 		A2B9D13D2449B83C00259841 /* SharedPreferences.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedPreferences.m; sourceTree = "<group>"; };
+		A2BE295A2C0C977600F66E10 /* InAppPurchase+ProductRequestHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "InAppPurchase+ProductRequestHandler.m"; sourceTree = "<group>"; };
+		A2BE295C2C0D013B00F66E10 /* InAppPurchase+ProductRequestHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InAppPurchase+ProductRequestHandler.h"; sourceTree = "<group>"; };
+		A2BE295D2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "InAppPurchase+TransactionObserver.m"; sourceTree = "<group>"; };
+		A2BE295F2C0D029F00F66E10 /* InAppPurchase+TransactionObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "InAppPurchase+TransactionObserver.h"; sourceTree = "<group>"; };
 		A2D856BE28801643003717BC /* AppUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppUtils.h; sourceTree = "<group>"; };
 		A2D856BF2880166A003717BC /* AppUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppUtils.m; sourceTree = "<group>"; };
 		A2D856C228802614003717BC /* HapticFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HapticFeedback.h; sourceTree = "<group>"; };
@@ -501,8 +507,7 @@
 		A2B9D13B2449B81800259841 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				A2ED1311252DC717002AFC09 /* InAppPurchase.m */,
-				A2ED1310252DC6FE002AFC09 /* InAppPurchase.h */,
+				A2BE29592C0C973300F66E10 /* InAppPurchase */,
 				A20C141E2524C8A000686A2A /* AppUpdate.h */,
 				A20C141F2524C8A000686A2A /* AppUpdate.m */,
 				A2B9D13D2449B83C00259841 /* SharedPreferences.m */,
@@ -511,6 +516,19 @@
 				A2F4F397288168CB00444302 /* Clipboard.m */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		A2BE29592C0C973300F66E10 /* InAppPurchase */ = {
+			isa = PBXGroup;
+			children = (
+				A2ED1311252DC717002AFC09 /* InAppPurchase.m */,
+				A2ED1310252DC6FE002AFC09 /* InAppPurchase.h */,
+				A2BE295A2C0C977600F66E10 /* InAppPurchase+ProductRequestHandler.m */,
+				A2BE295C2C0D013B00F66E10 /* InAppPurchase+ProductRequestHandler.h */,
+				A2BE295D2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m */,
+				A2BE295F2C0D029F00F66E10 /* InAppPurchase+TransactionObserver.h */,
+			);
+			path = InAppPurchase;
 			sourceTree = "<group>";
 		};
 		A2F4F390288029BD00444302 /* Security */ = {
@@ -951,6 +969,7 @@
 				A2AFF13C243E79C30007005E /* UIView+QRCode.m in Sources */,
 				A2805CE224D1982400B5552E /* LocalNotification.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				A2BE295B2C0C977600F66E10 /* InAppPurchase+ProductRequestHandler.m in Sources */,
 				A2AFF13B243E79C30007005E /* QRCode.m in Sources */,
 				A2A9F32728A12C4C009AE778 /* RNCWKProcessPoolManager.m in Sources */,
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
@@ -964,6 +983,7 @@
 				A2AFF13E243E79C30007005E /* QRCodeGenerator.m in Sources */,
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
 				A22A151A28C0BECA001A632E /* Cipher.m in Sources */,
+				A2BE295E2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m in Sources */,
 				A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1046,7 +1066,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
@@ -1130,7 +1150,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;

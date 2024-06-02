@@ -3,6 +3,8 @@ package com.xrpllabs.xumm;
 import android.content.Intent;
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
 
@@ -28,8 +30,8 @@ import libs.ui.UIPackage;
 import java.util.List;
 
 public class ApplicationLoader extends NavigationApplication {
-    private static ApplicationLoader applicationLoaderInstance;
     public static volatile Context applicationContext;
+    private static ApplicationLoader applicationLoaderInstance;
 
     private final ReactNativeHost mReactNativeHost =
             new NavigationReactNativeHost(this) {
@@ -57,6 +59,7 @@ public class ApplicationLoader extends NavigationApplication {
                 }
             };
 
+    @NonNull
     @Override
     public ReactNativeHost getReactNativeHost() {
         return mReactNativeHost;
@@ -66,16 +69,18 @@ public class ApplicationLoader extends NavigationApplication {
     public void onCreate() {
         // cache crated instance
         applicationLoaderInstance = this;
+
         // cache application context
         try {
             applicationContext = getApplicationContext();
         } catch (Throwable ignore) {
 
         }
+
         // super
         super.onCreate();
 
-        // try again
+        // try again to assign applicationContext if not set yet
         if (applicationContext == null) {
             applicationContext = getApplicationContext();
         }

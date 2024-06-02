@@ -393,6 +393,56 @@ interface KeyboardModuleInterface extends NativeModule {
     stopKeyboardListen(): void;
 }
 
+interface GooglePlayPurchase {
+    purchaseToken: string;
+    products: Array<string>;
+    quantity: number;
+    orderId?: string;
+}
+
+interface AppStorePayment {
+    transactionIdentifier: string;
+    productIdentifier: string;
+    quantity: number;
+    applicationUsername?: string;
+}
+
+type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
+
+/**
+ * Interface for the In-App Purchase module.
+ * @interface
+ * @extends NativeModule
+ */
+interface InAppPurchaseModuleInterface extends NativeModule {
+    /**
+     * Starts a connection with Google BillingClient
+     *
+     * @return {Promise<boolean>}
+     * Android specific
+     */
+    startConnection(): Promise<boolean>;
+    /**
+     * Checks if there are any previous purchases
+     * that have been made but not yet finalize
+     *
+     * @returns {Promise<Array<string>>}
+     */
+    restorePurchases(): Promise<Array<InAppPurchaseReceipt>>;
+    /**
+     * Launches the billing flow for specific product ID.
+     *
+     * @return {Promise<Array<string>>}
+     */
+    purchase(productId: string): Promise<Array<InAppPurchaseReceipt>>;
+    /**
+     * finalize a purchase, indicating that the product has been provided to the user.
+     *
+     * @return {Promise<string>}
+     */
+    finalizePurchase(transactionReceiptIdentifier: string): Promise<string>;
+}
+
 /**
  * Represents prompt android module interface.
  * @interface
@@ -456,6 +506,7 @@ declare module 'react-native' {
         CryptoModule: CryptoModuleInterface;
         AppUtilsModule: AppUtilsModuleInterface;
         LocalNotificationModule: LocalNotificationModuleInterface;
+        InAppPurchaseModule: InAppPurchaseModuleInterface;
         KeyboardModule: KeyboardModuleInterface;
         PromptAndroid: PromptAndroidInterface;
     }

@@ -217,7 +217,7 @@ dependencies {
     // WebView
     implementation 'androidx.webkit:webkit:1.4.0'
     // inApp purchase and inApp update
-    implementation 'com.android.billingclient:billing:6.1.0'
+    implementation 'com.android.billingclient:billing:7.0.0'
     implementation 'com.google.android.play:app-update:2.1.0'
     // Other
     implementation 'com.google.android.gms:play-services-base:18.1.0'
