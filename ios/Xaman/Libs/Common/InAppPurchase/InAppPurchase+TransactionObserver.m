@@ -14,14 +14,12 @@
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
   NSMutableArray *result=[self transactionsToResult:queue.transactions];
-  if([result count] > 0){
-    [self callCompletionHandlerWithResult:result];
-  }
+  [self callCompletionHandlerWithResult:result];
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
-  // just return an empty result
+  // No purchase history, just return an empty result
   [self callCompletionHandlerWithResult:[[NSMutableArray alloc] init]];
 }
 

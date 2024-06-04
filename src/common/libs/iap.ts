@@ -27,10 +27,18 @@ enum ErrorCode {
 const IAP = {
     ErrorCode,
 
+    // for Android, we need to make sure the connection to google play is established before triggering billing flow
+    startConnectionIfAndroid: async () => {
+        if (Platform.OS === 'android') {
+            await InAppPurchaseModule.startConnection();
+        }
+    },
+
     /**
      * Restore any old purchases
      */
     restorePurchases: async () => {
+        await IAP.startConnectionIfAndroid();
         return InAppPurchaseModule.restorePurchases();
     },
 
@@ -38,11 +46,7 @@ const IAP = {
      * Start purchasing flow for productId
      */
     purchase: async (productId: string) => {
-        // for Android, we need to make sure the connection to google play is established before triggering billing flow
-        if (Platform.OS === 'android') {
-            await InAppPurchaseModule.startConnection();
-        }
-
+        await IAP.startConnectionIfAndroid();
         return InAppPurchaseModule.purchase(productId);
     },
 
@@ -50,6 +54,7 @@ const IAP = {
      * Finalize a purchase with transaction receipt identifier
      */
     finalizePurchase: async (transactionReceiptIdentifier: string) => {
+        await IAP.startConnectionIfAndroid();
         return InAppPurchaseModule.finalizePurchase(transactionReceiptIdentifier);
     },
 

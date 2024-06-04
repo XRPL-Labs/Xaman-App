@@ -138,16 +138,9 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                         for (Purchase purchase : purchases) {
                             // PURCHASED but not consumed
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                                // FIX_ME: duplicated
-                                final WritableMap purchaseMap = Arguments.createMap();
-                                purchaseMap.putString("purchaseToken", purchase.getPurchaseToken());
-                                purchaseMap.putInt("quantity", purchase.getQuantity());
-                                purchaseMap.putString("orderId", purchase.getOrderId());
-                                purchaseMap.putArray("products", Arguments.fromArray(purchase.getProducts()));
-                                productsToBeConsumed.pushMap(purchaseMap);
+                                productsToBeConsumed.pushMap(purchaseToMap(purchase));
                             }
                         }
-
                         promise.resolve(productsToBeConsumed);
                     } else {
                         promise.reject(E_NO_PENDING_PURCHASE, String.valueOf(billingResult.getResponseCode()));
@@ -251,12 +244,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
         for (Purchase purchase : list) {
             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                final WritableMap purchaseMap = Arguments.createMap();
-                purchaseMap.putString("purchaseToken", purchase.getPurchaseToken());
-                purchaseMap.putInt("quantity", purchase.getQuantity());
-                purchaseMap.putString("orderId", purchase.getOrderId());
-                purchaseMap.putArray("products", Arguments.fromArray(purchase.getProducts()));
-                productsToBeConsumed.pushMap(purchaseMap);
+                productsToBeConsumed.pushMap(purchaseToMap(purchase));
             }
         }
 
@@ -296,6 +284,15 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                         ))
                         .build()
         );
+    }
+
+    private WritableMap purchaseToMap(Purchase purchase) {
+        final WritableMap purchaseMap = Arguments.createMap();
+        purchaseMap.putString("purchaseToken", purchase.getPurchaseToken());
+        purchaseMap.putInt("quantity", purchase.getQuantity());
+        purchaseMap.putString("orderId", purchase.getOrderId());
+        purchaseMap.putArray("products", Arguments.fromList(purchase.getProducts()));
+        return purchaseMap;
     }
 
 
