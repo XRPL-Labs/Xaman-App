@@ -4,8 +4,7 @@
       "@typescript-eslint",
       "react-native",
       "prettier",
-      "jest",
-      "spellcheck"
+      "jest"
     ],
     "extends": [
       "airbnb",
