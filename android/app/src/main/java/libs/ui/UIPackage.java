@@ -23,7 +23,8 @@ public class UIPackage implements ReactPackage {
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         return Arrays.<ViewManager>asList(
                 new QRCodeModule(),
-                new BlurViewModule()
+                new BlurViewModule(),
+                new PayButtonModule()
         );
     }
 }

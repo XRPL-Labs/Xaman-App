@@ -93,16 +93,16 @@ def reactNativeArchitectures() {
 }
 
 def getPassword(String keyChain) {
-   def stdout = new ByteArrayOutputStream()
-   def stderr = new ByteArrayOutputStream()
-   exec {
-       commandLine 'security', '-q', 'find-generic-password', '-a', System.getenv("USER"), '-s', keyChain, '-w'
-       standardOutput = stdout
-       errorOutput = stderr
-       ignoreExitValue true
-   }
-   //noinspection GroovyAssignabilityCheck
-  stdout.toString().trim()
+    def stdout = new ByteArrayOutputStream()
+    def stderr = new ByteArrayOutputStream()
+    exec {
+        commandLine 'security', '-q', 'find-generic-password', '-a', System.getenv("USER"), '-s', keyChain, '-w'
+        standardOutput = stdout
+        errorOutput = stderr
+        ignoreExitValue true
+    }
+    //noinspection GroovyAssignabilityCheck
+    stdout.toString().trim()
 }
 
 android {
@@ -128,7 +128,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include (*reactNativeArchitectures())
+            include(*reactNativeArchitectures())
         }
     }
     signingConfigs {
@@ -169,7 +169,7 @@ android {
     }
 
     // building in CI, change the singing config for release to debug
-    if (System.getenv("CI")){
+    if (System.getenv("CI")) {
         println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
         println '!!! Replacing the release config with debug as build is running inside CI !!!'
         println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
@@ -194,7 +194,7 @@ android {
 }
 
 dependencies {
-  // The version of react-native is set by the React Native Gradle Plugin
+    // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
     // For animated GIF support
@@ -216,8 +216,10 @@ dependencies {
     implementation 'com.github.Dimezis:BlurView:version-2.0.2'
     // WebView
     implementation 'androidx.webkit:webkit:1.11.0'
-    // inApp purchase and inApp update
+    // inApp purchase
     implementation 'com.android.billingclient:billing:7.0.0'
+    implementation 'com.google.android.gms:play-services-wallet:19.4.0'
+    // inApp update
     implementation 'com.google.android.play:app-update:2.1.0'
     // Other
     implementation 'com.google.android.gms:play-services-base:18.4.0'

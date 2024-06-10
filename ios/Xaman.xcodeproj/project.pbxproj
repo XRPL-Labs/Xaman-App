@@ -24,6 +24,8 @@
 		A22A151E28C20014001A632E /* V2+AesGcm.m in Sources */ = {isa = PBXBuildFile; fileRef = A22A151D28C20014001A632E /* V2+AesGcm.m */; };
 		A22A152028C61E97001A632E /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22A151F28C61E97001A632E /* Crypto.swift */; };
 		A248635D28229379004633C9 /* BiometricModule.m in Sources */ = {isa = PBXBuildFile; fileRef = A248635C28229379004633C9 /* BiometricModule.m */; };
+		A25A02522C13109300CE40B3 /* PayButton+View.m in Sources */ = {isa = PBXBuildFile; fileRef = A25A02512C13109300CE40B3 /* PayButton+View.m */; };
+		A25A02552C131B4500CE40B3 /* PayButton+Manager.m in Sources */ = {isa = PBXBuildFile; fileRef = A25A02542C131B4500CE40B3 /* PayButton+Manager.m */; };
 		A2771FC229828E33008A95E3 /* security.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2771FC129828E33008A95E3 /* security.txt */; };
 		A27996282BB5AFCE00998100 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A27996272BB5AFCE00998100 /* PrivacyInfo.xcprivacy */; };
 		A2805CE224D1982400B5552E /* LocalNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = A2805CE124D1982400B5552E /* LocalNotification.m */; };
@@ -111,6 +113,10 @@
 		A22A151F28C61E97001A632E /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crypto.swift; sourceTree = "<group>"; };
 		A248635C28229379004633C9 /* BiometricModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BiometricModule.m; sourceTree = "<group>"; };
 		A248635E2822939E004633C9 /* BiometricModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BiometricModule.h; sourceTree = "<group>"; };
+		A25A02512C13109300CE40B3 /* PayButton+View.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PayButton+View.m"; sourceTree = "<group>"; };
+		A25A02532C1310B900CE40B3 /* PayButton+View.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PayButton+View.h"; sourceTree = "<group>"; };
+		A25A02542C131B4500CE40B3 /* PayButton+Manager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PayButton+Manager.m"; sourceTree = "<group>"; };
+		A25A02562C131B6800CE40B3 /* PayButton+Manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PayButton+Manager.h"; sourceTree = "<group>"; };
 		A2771FC129828E33008A95E3 /* security.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = security.txt; sourceTree = "<group>"; };
 		A27996272BB5AFCE00998100 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A2805CE124D1982400B5552E /* LocalNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocalNotification.m; sourceTree = "<group>"; };
@@ -323,6 +329,17 @@
 			path = Authentication;
 			sourceTree = "<group>";
 		};
+		A25A02502C13106200CE40B3 /* PayButton */ = {
+			isa = PBXGroup;
+			children = (
+				A25A02512C13109300CE40B3 /* PayButton+View.m */,
+				A25A02532C1310B900CE40B3 /* PayButton+View.h */,
+				A25A02542C131B4500CE40B3 /* PayButton+Manager.m */,
+				A25A02562C131B6800CE40B3 /* PayButton+Manager.h */,
+			);
+			path = PayButton;
+			sourceTree = "<group>";
+		};
 		A266857724EEAD42000430B7 /* Notification */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,6 +479,7 @@
 		A2AFF118243E79C30007005E /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				A25A02502C13106200CE40B3 /* PayButton */,
 				A2A9F31C28859AB0009AE778 /* HapticFeedback */,
 				A2A9F31B28859A98009AE778 /* BlurView */,
 				A2A9F31A28859A6B009AE778 /* ToastView */,
@@ -973,6 +991,7 @@
 				A2AFF13B243E79C30007005E /* QRCode.m in Sources */,
 				A2A9F32728A12C4C009AE778 /* RNCWKProcessPoolManager.m in Sources */,
 				A2AFF13F243E79C30007005E /* CIColor+QRCode.m in Sources */,
+				A25A02522C13109300CE40B3 /* PayButton+View.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				A2D856C428802622003717BC /* HapticFeedback.m in Sources */,
 				A2A9F31E28859AF4009AE778 /* BlurEffectWithAmount.m in Sources */,
@@ -984,6 +1003,7 @@
 				A2AFF140243E79C30007005E /* NSString+Utils.m in Sources */,
 				A22A151A28C0BECA001A632E /* Cipher.m in Sources */,
 				A2BE295E2C0D028E00F66E10 /* InAppPurchase+TransactionObserver.m in Sources */,
+				A25A02552C131B4500CE40B3 /* PayButton+Manager.m in Sources */,
 				A2A9F32928A12C4C009AE778 /* RNCWebView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1066,7 +1086,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
@@ -1150,7 +1170,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
+					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
