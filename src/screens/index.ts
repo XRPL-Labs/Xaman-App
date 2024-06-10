@@ -61,6 +61,7 @@ import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
 import XAppInfo from './Overlay/XAppInfo';
 import NetworkRailsSync from './Overlay/NetworkRailsSync';
+import PurchaseProduct from './Overlay/PurchaseProduct';
 
 // Transaction
 import Send from './Send';
@@ -152,6 +153,7 @@ export {
     SwitchNetwork,
     XAppInfo,
     NetworkRailsSync,
+    PurchaseProduct,
     Send,
     Request,
     Exchange,

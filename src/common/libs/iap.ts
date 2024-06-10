@@ -23,8 +23,24 @@ enum ErrorCode {
     E_UNEXPECTED_ERROR = 'E_UNEXPECTED_ERROR',
 }
 
+/* Types ==================================================================== */
+interface GooglePlayPurchase {
+    purchaseToken: string;
+    products: Array<string>;
+    quantity: number;
+    orderId?: string;
+}
+
+interface AppStorePayment {
+    transactionIdentifier: string;
+    productIdentifier: string;
+    quantity: number;
+    applicationUsername?: string;
+}
+
+export type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
 /* Lib ==================================================================== */
-const IAP = {
+const InAppPurchase = {
     ErrorCode,
 
     // for Android, we need to make sure the connection to google play is established before triggering billing flow
@@ -38,7 +54,7 @@ const IAP = {
      * Restore any old purchases
      */
     restorePurchases: async () => {
-        await IAP.startConnectionIfAndroid();
+        await InAppPurchase.startConnectionIfAndroid();
         return InAppPurchaseModule.restorePurchases();
     },
 
@@ -46,7 +62,7 @@ const IAP = {
      * Start purchasing flow for productId
      */
     purchase: async (productId: string) => {
-        await IAP.startConnectionIfAndroid();
+        await InAppPurchase.startConnectionIfAndroid();
         return InAppPurchaseModule.purchase(productId);
     },
 
@@ -54,7 +70,7 @@ const IAP = {
      * Finalize a purchase with transaction receipt identifier
      */
     finalizePurchase: async (transactionReceiptIdentifier: string) => {
-        await IAP.startConnectionIfAndroid();
+        await InAppPurchase.startConnectionIfAndroid();
         return InAppPurchaseModule.finalizePurchase(transactionReceiptIdentifier);
     },
 
@@ -76,4 +92,4 @@ const IAP = {
 };
 
 /* Export ==================================================================== */
-export default IAP;
+export { InAppPurchase };

@@ -20,6 +20,7 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import NetworkService from '@services/NetworkService';
+import Localize from '@locale';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -28,12 +29,30 @@ type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 export class ApiError extends Error {
     public code: number;
     public reference?: string;
+    private originalMessage: string;
 
     constructor(message: string, code?: number, reference?: string) {
-        super(message);
+        super();
         this.name = 'ApiError';
+        this.originalMessage = message;
         this.code = code || -1;
         this.reference = reference;
+    }
+
+    /**
+     * Retrieves the message associated with the current error response.
+     *
+     * @return {string} The error message.
+     */
+    get message() {
+        switch (this.code) {
+            // generic errors
+            // we got a payment required error from backend
+            case 402:
+                return Localize.t('monetization.monetizationRequiredForThisFeature');
+            default:
+                return this.originalMessage;
+        }
     }
 }
 

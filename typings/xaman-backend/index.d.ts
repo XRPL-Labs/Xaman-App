@@ -51,6 +51,11 @@ declare namespace XamanBackend {
         accessToken: string;
         locked: boolean;
     }
+    enum MonetizationStatus {
+        NONE = 'NONE',
+        COMING_UP = 'COMING_UP',
+        REQUIRED = 'REQUIRED',
+    }
     interface PingResponse {
         pong: boolean;
         env: {
@@ -62,6 +67,11 @@ declare namespace XamanBackend {
         tosAndPrivacyPolicyVersion: number;
         railsVersion: number;
         badge: number;
+        monetization: {
+            monetizationStatus: MonetizationStatus;
+            productForPurchase: string;
+            monetizationType: string;
+        };
         auth: {
             user: {
                 uuidv4: string;

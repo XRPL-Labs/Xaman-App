@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+// noinspection JSUnusedGlobalSymbols
 
 import { NativeModule } from 'react-native';
 
@@ -393,22 +394,6 @@ interface KeyboardModuleInterface extends NativeModule {
     stopKeyboardListen(): void;
 }
 
-interface GooglePlayPurchase {
-    purchaseToken: string;
-    products: Array<string>;
-    quantity: number;
-    orderId?: string;
-}
-
-interface AppStorePayment {
-    transactionIdentifier: string;
-    productIdentifier: string;
-    quantity: number;
-    applicationUsername?: string;
-}
-
-type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
-
 /**
  * Interface for the In-App Purchase module.
  * @interface
@@ -424,17 +409,19 @@ interface InAppPurchaseModuleInterface extends NativeModule {
     startConnection(): Promise<boolean>;
     /**
      * Checks if there are any previous purchases
-     * that have been made but not yet finalize
+     * that have been made but not yet finalized
      *
-     * @returns {Promise<Array<string>>}
+     * @returns {Promise<Array<string>>} A promise that resolves to an array of purchase details representing the previous purchases that have not been finalized yet.
      */
-    restorePurchases(): Promise<Array<InAppPurchaseReceipt>>;
+    restorePurchases(): Promise<Array<T>>;
     /**
-     * Launches the billing flow for specific product ID.
+     * Launches the billing flow for a specific product ID.
      *
-     * @return {Promise<Array<string>>}
+     * @param {string} productId - The ID of the product to purchase.
+     * @return {Promise<Array<string>>} A promise resolved with an array of successful purchases,
+     *                                representing the data of the purchase.
      */
-    purchase(productId: string): Promise<Array<InAppPurchaseReceipt>>;
+    purchase(productId: string): Promise<Array<T>>;
     /**
      * finalize a purchase, indicating that the product has been provided to the user.
      *

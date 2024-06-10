@@ -20,7 +20,14 @@ import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
 import { Button, RaisedButton } from '@components/General';
-import { ProBadge, NetworkSwitchButton, AccountSwitchElement, InactiveAccount, AssetsList } from '@components/Modules';
+import {
+    MonetizationElement,
+    ProBadge,
+    NetworkSwitchButton,
+    AccountSwitchElement,
+    InactiveAccount,
+    AssetsList,
+} from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -235,6 +242,8 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    renderMonetization = () => {};
+
     renderAssets = () => {
         const { timestamp } = this.props;
         const { account, discreetMode, isSpendable } = this.state;
@@ -368,6 +377,12 @@ class HomeView extends Component<Props, State> {
             <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
                 <View style={styles.headerContainer}>{this.renderHeader()}</View>
+
+                {/* Monetization */}
+                <Fragment key="monetization">
+                    <MonetizationElement style={styles.monetizationContainer} />
+                </Fragment>
+
                 {/* Content */}
                 <View style={AppStyles.contentContainer}>
                     {this.renderNetworkDetails()}

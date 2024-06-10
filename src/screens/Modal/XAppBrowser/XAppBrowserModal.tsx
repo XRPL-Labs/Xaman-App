@@ -1037,6 +1037,7 @@ class XAppBrowserModal extends Component<Props, State> {
             stateView = this.renderLoading();
         } else if (error) {
             stateView = this.renderError();
+            appView = null;
         }
 
         return (

@@ -14,6 +14,14 @@ const styles = StyleService.create({
         paddingRight: Sizes.paddingSml,
         paddingLeft: Sizes.paddingSml,
     },
+    monetizationContainer: {
+        backgroundColor: '$transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        marginHorizontal: Sizes.paddingSml,
+        marginBottom: Sizes.paddingSml,
+    },
     tokenListContainer: {
         flex: 6,
     },

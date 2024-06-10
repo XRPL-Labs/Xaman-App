@@ -40,5 +40,6 @@ export default {
         ['nftDetails', '/v1/app/nft-details'],
         ['nftOffered', '/v1/app/nft-offered/{account}'],
         ['networkRails', '/v1/app/rails'],
+        ['verifyPurchase', '/v1/app/verify-purchase'],
     ]),
 };

@@ -41,7 +41,7 @@ import NetworkService from '@services/NetworkService';
 import Localize from '@locale';
 
 import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
-
+import { InAppPurchaseReceipt } from '@common/libs/iap';
 /* Types  ==================================================================== */
 export interface RatesType {
     rate: number;
@@ -256,11 +256,12 @@ class BackendService {
                 devicePushToken: await PushNotificationsService.getToken(),
             })
             .then((res: XamanBackend.PingResponse) => {
-                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
+                const { auth, badge, env, monetization, tosAndPrivacyPolicyVersion } = res;
 
                 if (auth) {
                     const { user, device } = auth;
                     const { hasPro } = env;
+                    const { monetizationType, monetizationStatus, productForPurchase } = monetization;
 
                     // update the profile
                     ProfileRepository.saveProfile({
@@ -270,6 +271,11 @@ class BackendService {
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                         hasPro,
+                        monetization: {
+                            monetizationStatus,
+                            monetizationType,
+                            productForPurchase,
+                        },
                     });
 
                     // check for tos version
@@ -570,6 +576,14 @@ class BackendService {
                 })
                 .catch(reject);
         });
+    };
+
+    verifyPurchase = (purchases: InAppPurchaseReceipt) => {
+        return ApiService.verifyPurchase.post(null, purchases);
+    };
+
+    acknowledgePurchase = (purchases: InAppPurchaseReceipt) => {
+        return ApiService.verifyPurchase.patch(null, purchases);
     };
 }
 

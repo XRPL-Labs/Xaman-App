@@ -1146,6 +1146,16 @@
     "blobCopiedToClipboard": "Blob copied to clipboard",
     "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
   },
+  "monetization": {
+    "payWithApplePay": "Pay with Apple Pay",
+    "payWithGooglePay": "Pay with Google Pay",
+    "restorePurchase": "Restore purchase",
+    "comingPaymentWarning": "Thank you for using Xaman! You are still using Xaman for free, but you may be prompted for a small in-app payment to allow us to keep building to secure your assets.",
+    "paymentRequired": "You have reached the free usage threshold. While you can still send payments for free, there is a small fee required to continue using xApps and for receiving Sign Requests. If you choose not to extend your usage limits, they will reset on the first of every month, at which time Xaman will be free to use again.",
+    "prePurchaseMessage" : "Thank you for your support. We really appreciate it! Your payment has now unlocked a full month of unrestricted Xaman use, and helps us to continue developing Xaman, provide support & keep your funds safe. \uD83E\uDD17",
+    "paymentCTA": "Payment CTA",
+    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again."
+  },
   "errors": {
     "unableToLoadTermOfService":"Oops! Unable to Retrieve Terms of Service",
     "unableToLoadCredits":"Oops! Unable to Retrieve Credits",

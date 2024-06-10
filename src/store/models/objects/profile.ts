@@ -8,6 +8,14 @@
 import Realm from 'realm';
 
 import { ProfileSchema } from '@store/models/schemas/latest';
+import { MonetizationStatus } from '@store/types';
+
+/* Dictionary  ==================================================================== */
+interface Monetization {
+    monetizationStatus: MonetizationStatus;
+    productForPurchase?: string;
+    monetizationType?: string;
+}
 
 /* Model  ==================================================================== */
 class Profile extends Realm.Object<Profile> {
@@ -33,12 +41,14 @@ class Profile extends Realm.Object<Profile> {
     public declare bearerHash: string;
     /** Unique number generated for ensuring idempotent requests. */
     public declare idempotency: number;
+    /** Indicates if the user has a Pro membership. */
+    public declare hasPro: boolean;
+    /** Info about monetization for the current user. */
+    public declare monetization: Monetization;
     /** Date when the user initially registered their profile. */
     public declare registerAt: Date;
     /** Date when the user's profile data was last synchronized with the backend. */
     public declare lastSync: Date;
-    /** Indicates if the user has a Pro membership or subscription. */
-    public declare hasPro: boolean;
 }
 
 export default Profile;
