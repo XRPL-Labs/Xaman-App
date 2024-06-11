@@ -15,10 +15,6 @@ const styles = StyleService.create({
         paddingLeft: Sizes.paddingSml,
     },
     monetizationContainer: {
-        backgroundColor: '$transparent',
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'stretch',
         marginHorizontal: Sizes.paddingSml,
         marginBottom: Sizes.paddingSml,
     },
