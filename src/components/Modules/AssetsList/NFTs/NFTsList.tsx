@@ -71,7 +71,7 @@ class NFTsList extends Component<Props, State> {
 
     componentDidMount() {
         // fetch NFTokens
-        InteractionManager.runAfterInteractions(this.fetchNFTokens);
+        InteractionManager.runAfterInteractions(this.fetchAccountNFTs);
 
         // list of ledger transaction
         AccountService.on('transaction', this.onTransactionReceived);
@@ -87,7 +87,7 @@ class NFTsList extends Component<Props, State> {
     }
 
     onNetworkChange = () => {
-        InteractionManager.runAfterInteractions(this.fetchNFTokens);
+        InteractionManager.runAfterInteractions(this.fetchAccountNFTs);
     };
 
     onTransactionReceived = (transaction: any, effectedAccounts: Array<string>) => {
@@ -110,12 +110,12 @@ class NFTsList extends Component<Props, State> {
                     TransactionTypes.URITokenBuy,
                 ].includes(TransactionType)
             ) {
-                this.fetchNFTokens();
+                this.fetchAccountNFTs();
             }
         }
     };
 
-    fetchNFTokens = async (isRefreshing = false) => {
+    fetchAccountNFTs = async (isRefreshing = false) => {
         const { account } = this.props;
 
         this.setState({
@@ -156,16 +156,21 @@ class NFTsList extends Component<Props, State> {
 
         // load the token details from backend and update the list
         BackendService.getNFTDetails(account.address, nftIds)
-            .then((details) => {
-                const { tokenData } = details;
-
-                const nfts = flatMap(tokenData, (data) => {
-                    return data;
-                });
+            .then((resp) => {
+                const dataSource = [];
+                for (const id of nftIds!) {
+                    const details = resp?.tokenData[id];
+                    dataSource.push({
+                        token: id,
+                        issuer: details?.issuer ?? '',
+                        name: details?.name ?? '',
+                        image: details?.image ?? '',
+                    });
+                }
 
                 this.setState({
-                    nfts,
-                    dataSource: nfts,
+                    nfts: dataSource,
+                    dataSource,
                 });
             })
             .catch(() => {
@@ -174,7 +179,7 @@ class NFTsList extends Component<Props, State> {
     };
 
     onRefresh = () => {
-        this.fetchNFTokens(true);
+        this.fetchAccountNFTs(true);
     };
 
     onCategoryChangePress = () => {
