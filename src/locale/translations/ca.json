@@ -353,6 +353,8 @@
     "connected": "Connected",
     "hooks": "Hooks",
     "blob": "Blob",
+    "data": "Data",
+    "didDocument": "DID Document",
     "digest": "Digest",
     "uriTokeId": "URI Token Id",
     "hookParameters": "Hook Parameters",
@@ -535,6 +537,9 @@
     "claimRewardOptOut": "Claim Reward (Opt Out)",
     "invoke": "Invoke",
     "import": "Import",
+    "clawback": "Clawback",
+    "didSet": "DID Set",
+    "didDelete": "DID Delete",
     "canNotFetchTransactions": "No es poden obtenir les transaccions del compte.",
     "canNotFetchSignRequests": "No s'han pogut recuperar les peticions de signatura del compte!",
     "unableToLoadTheTransaction": "No s'ha pogut carregar la transacció, si us plau, assegura't que estàs connectat a Internet!",
@@ -1143,6 +1148,9 @@
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
     "blobCopiedToClipboard": "Blob copied to clipboard",
+    "dataCopiedToClipboard": "Data copied to clipboard",
+    "didDocumentCopiedToClipboard": "DID Document copied to clipboard",
+    "uriCopiedToClipboard": "URI copied to clipboard",
     "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
   },
   "monetization": {

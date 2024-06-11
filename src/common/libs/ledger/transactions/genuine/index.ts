@@ -41,3 +41,6 @@ export * from './AMMDeposit';
 export * from './AMMVote';
 export * from './AMMWithdraw';
 export * from './Remit';
+export * from './Clawback';
+export * from './DIDSet';
+export * from './DIDDelete';

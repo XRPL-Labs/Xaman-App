@@ -353,6 +353,8 @@
     "connected": "接続中",
     "hooks": "Hooks",
     "blob": "Blob",
+    "data": "Data",
+    "didDocument": "DID Document",
     "digest": "Digest",
     "uriTokeId": "URI Token Id",
     "hookParameters": "Hook Parameters",
@@ -535,6 +537,9 @@
     "claimRewardOptOut": "報酬の請求(オプトアウト)",
     "invoke": "Invoke",
     "import": "インポート",
+    "clawback": "Clawback",
+    "didSet": "DID Set",
+    "didDelete": "DID Delete",
     "canNotFetchTransactions": "アカウントのトランザクションを取得できません！",
     "canNotFetchSignRequests": "アカウントのサインリクエストを取得できません！",
     "unableToLoadTheTransaction": "トランザクションをロードできません。インターネットに接続されていることを確認してください！",
@@ -1143,6 +1148,9 @@
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
     "blobCopiedToClipboard": "Blob copied to clipboard",
+    "dataCopiedToClipboard": "Data copied to clipboard",
+    "didDocumentCopiedToClipboard": "DID Document copied to clipboard",
+    "uriCopiedToClipboard": "URI copied to clipboard",
     "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
   },
   "monetization": {

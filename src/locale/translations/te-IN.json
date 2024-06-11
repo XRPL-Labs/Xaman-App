@@ -353,6 +353,8 @@
     "connected": "Connected",
     "hooks": "Hooks",
     "blob": "Blob",
+    "data": "Data",
+    "didDocument": "DID Document",
     "digest": "Digest",
     "uriTokeId": "URI Token Id",
     "hookParameters": "Hook Parameters",
@@ -535,6 +537,9 @@
     "claimRewardOptOut": "Claim Reward (Opt Out)",
     "invoke": "Invoke",
     "import": "Import",
+    "clawback": "Clawback",
+    "didSet": "DID Set",
+    "didDelete": "DID Delete",
     "canNotFetchTransactions": "ఖాతా లావాదేవీలను పొందలేరు!\r\n",
     "canNotFetchSignRequests": "ఖాతా సైన్ అభ్యర్థనలను పొందడం సాధ్యం కాదు!",
     "unableToLoadTheTransaction": "లావాదేవీని లోడ్ చేయడం సాధ్యం కాలేదు, దయచేసి మీరు ఇంటర్నెట్‌కు కనెక్ట్ అయ్యారని నిర్ధారించుకోండి!",
@@ -1143,6 +1148,9 @@
     "payloadForceNetworkError": "This payload is not available on the network you are connected with",
     "pleaseSwitchToNetworkAndTryAgain": "Please switch to %{network} and try again",
     "blobCopiedToClipboard": "Blob copied to clipboard",
+    "dataCopiedToClipboard": "Data copied to clipboard",
+    "didDocumentCopiedToClipboard": "DID Document copied to clipboard",
+    "uriCopiedToClipboard": "URI copied to clipboard",
     "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
   },
   "monetization": {
