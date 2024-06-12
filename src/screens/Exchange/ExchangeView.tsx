@@ -402,7 +402,6 @@ class ExchangeView extends Component<Props, State> {
                 }),
             );
         }
-        this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
     };
 
     onAmountChange = (amount: string) => {
