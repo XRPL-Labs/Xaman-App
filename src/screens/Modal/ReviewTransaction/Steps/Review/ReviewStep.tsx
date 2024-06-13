@@ -91,6 +91,8 @@ class ReviewStep extends Component<Props, State> {
             setReady,
         } as any;
 
+        // TODO: add logic for checking if template is exist before calling React.createElement
+
         switch (transaction.InstanceType) {
             case InstanceTypes.PseudoTransaction:
                 Components.push(

@@ -39,6 +39,9 @@ import AMMDeposit from './AMMDeposit';
 import AMMVote from './AMMVote';
 import AMMWithdraw from './AMMWithdraw';
 import Remit from './Remit';
+import Clawback from './Clawback';
+import DIDSet from './DIDSet';
+import DIDDelete from './DIDDelete';
 
 export {
     Global,
@@ -82,4 +85,7 @@ export {
     AMMVote,
     AMMWithdraw,
     Remit,
+    Clawback,
+    DIDSet,
+    DIDDelete,
 };
