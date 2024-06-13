@@ -21,10 +21,10 @@ describe('Clawback tx', () => {
             const { tx, meta }: any = clawbackTemplate;
             const instance = new Clawback(tx, meta);
 
-            expect(instance.Amount).toBe({
-                currency: 'FOO',
-                issuer: 'rsA2LpzuawewSBQXkiju3YQTMzW13pAAdW',
-                value: '314.159',
+            expect(instance.Amount).toStrictEqual({
+                currency: '594F494E4B000000000000000000000000000000',
+                issuer: 'r3CAQrWrJCFFnNf6mbUtCBUPtuqAb4odbC',
+                value: '1',
             });
         });
     });
