@@ -59,15 +59,17 @@ class DIDSetTemplate extends Component<Props, State> {
                         <View style={AppStyles.row}>
                             <Text style={styles.label}>{Localize.t('global.uri')}</Text>
                             <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                <TouchableDebounce style={styles.copyButton} onPress={this.copyURIField}>
-                                    <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
-                                    <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
-                                </TouchableDebounce>
+                                {!!transaction.URI && (
+                                    <TouchableDebounce style={styles.copyButton} onPress={this.copyURIField}>
+                                        <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
+                                        <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
+                                    </TouchableDebounce>
+                                )}
                             </View>
                         </View>
                         <View style={styles.contentBox}>
                             <ReadMore numberOfLines={3} textStyle={styles.value}>
-                                {transaction.URI}
+                                {transaction.URI || Localize.t('global.empty')}
                             </ReadMore>
                         </View>
                     </>
@@ -77,16 +79,18 @@ class DIDSetTemplate extends Component<Props, State> {
                     <>
                         <View style={AppStyles.row}>
                             <Text style={styles.label}>{Localize.t('global.didDocument')}</Text>
-                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                <TouchableDebounce style={styles.copyButton} onPress={this.copyDIDDocumentField}>
-                                    <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
-                                    <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
-                                </TouchableDebounce>
-                            </View>
+                            {!!transaction.DIDDocument && (
+                                <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                                    <TouchableDebounce style={styles.copyButton} onPress={this.copyDIDDocumentField}>
+                                        <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
+                                        <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
+                                    </TouchableDebounce>
+                                </View>
+                            )}
                         </View>
                         <View style={styles.contentBox}>
                             <ReadMore numberOfLines={3} textStyle={styles.value}>
-                                {transaction.DIDDocument}
+                                {transaction.DIDDocument || Localize.t('global.empty')}
                             </ReadMore>
                         </View>
                     </>
@@ -96,16 +100,18 @@ class DIDSetTemplate extends Component<Props, State> {
                     <>
                         <View style={AppStyles.row}>
                             <Text style={styles.label}>{Localize.t('global.data')}</Text>
-                            <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                                <TouchableDebounce style={styles.copyButton} onPress={this.copyDataField}>
-                                    <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
-                                    <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
-                                </TouchableDebounce>
-                            </View>
+                            {!!transaction.Data && (
+                                <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                                    <TouchableDebounce style={styles.copyButton} onPress={this.copyDataField}>
+                                        <Text style={styles.copyText}>{Localize.t('global.copy')}</Text>
+                                        <Icon size={18} name="IconClipboard" style={AppStyles.imgColorGrey} />
+                                    </TouchableDebounce>
+                                </View>
+                            )}
                         </View>
                         <View style={styles.contentBox}>
                             <ReadMore numberOfLines={3} textStyle={styles.value}>
-                                {transaction.Data}
+                                {transaction.Data || Localize.t('global.empty')}
                             </ReadMore>
                         </View>
                     </>

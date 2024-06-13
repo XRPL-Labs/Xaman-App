@@ -1151,7 +1151,9 @@
     "dataCopiedToClipboard": "Data copied to clipboard",
     "didDocumentCopiedToClipboard": "DID Document copied to clipboard",
     "uriCopiedToClipboard": "URI copied to clipboard",
-    "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard"
+    "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard",
+    "didDeleteWarning": "Warning: You are about to delete the Decentralized Identifier (DID) tied to the selected account. Keep in mind, this action cannot be undone."
+
   },
   "monetization": {
     "payWithApplePay": "Pay with Apple Pay",

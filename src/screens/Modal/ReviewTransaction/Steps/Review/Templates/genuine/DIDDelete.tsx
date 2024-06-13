@@ -1,9 +1,15 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
+import { View } from 'react-native';
 
 import { DIDDelete } from '@common/libs/ledger/transactions';
 
-import { TemplateProps } from '../types';
+import { InfoMessage } from '@components/General';
 
+import Localize from '@locale';
+
+import styles from '../styles';
+
+import { TemplateProps } from '../types';
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: DIDDelete;
@@ -20,7 +26,11 @@ class DIDDeleteTemplate extends Component<Props, State> {
     }
 
     render() {
-        return null;
+        return (
+            <View style={styles.contentBox}>
+                <InfoMessage type="warning" label={Localize.t('payload.didDeleteWarning')} />
+            </View>
+        );
     }
 }
 
