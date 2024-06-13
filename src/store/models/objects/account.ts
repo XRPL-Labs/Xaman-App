@@ -95,6 +95,10 @@ class Account extends Realm.Object<Account> {
         return this.getDetails()?.lines ?? undefined;
     }
 
+    get reward() {
+        return this.getDetails()?.reward ?? {};
+    }
+
     /**
      * Calculates and retrieves the state version of the account based on its details.
      * @returns {number} The state version identifier.

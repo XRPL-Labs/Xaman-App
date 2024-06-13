@@ -11,6 +11,14 @@ import { AccountDetailsSchema } from '@store/models/schemas/latest';
 
 import TrustLineModel from './trustLine';
 
+/* Dictionary  ==================================================================== */
+export interface RewardInformation extends Realm.Dictionary {
+    rewardAccumulator?: string;
+    rewardLgrFirst?: number;
+    rewardLgrLast?: number;
+    rewardTime?: number;
+}
+
 /* Model  ==================================================================== */
 class AccountDetails extends Realm.Object<AccountDetails> {
     public static schema: Realm.ObjectSchema = AccountDetailsSchema.schema;
@@ -25,7 +33,10 @@ class AccountDetails extends Realm.Object<AccountDetails> {
     public declare emailHash?: string;
     public declare messageKey?: string;
     public declare flagsString?: string;
+    public declare accountIndex?: string;
+    public declare importSequence?: number;
     public declare lines: Realm.Results<TrustLineModel>;
+    public declare reward?: RewardInformation;
     public declare registerAt?: Date;
     public declare updatedAt?: Date;
 

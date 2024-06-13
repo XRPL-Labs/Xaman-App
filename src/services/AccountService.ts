@@ -9,6 +9,7 @@ import { map, isEmpty, forEach, get, keys } from 'lodash';
 
 import { CurrencyModel, TrustLineModel } from '@store/models';
 import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
+import { RewardInformation } from '@store/models/objects/accountDetails';
 
 import Meta from '@common/libs/ledger/parser/meta';
 import { AmountParser } from '@common/libs/ledger/parser/common';
@@ -172,6 +173,8 @@ class AccountService extends EventEmitter {
                     domain: '',
                     emailHash: '',
                     messageKey: '',
+                    importSequence: 0,
+                    reward: {} as any,
                     lines: [] as any,
                 });
             }
@@ -191,15 +194,22 @@ class AccountService extends EventEmitter {
         await AccountRepository.updateDetails(account, {
             id: `${account}.${NetworkService.getNetworkId()}`,
             network: NetworkService.getNetwork(),
-            ownerCount: account_data.OwnerCount,
-            sequence: account_data.Sequence,
-            balance: new AmountParser(account_data.Balance).dropsToNative().toNumber(),
+            ownerCount: account_data?.OwnerCount ?? 0,
+            sequence: account_data?.Sequence ?? 0,
+            balance: new AmountParser(account_data?.Balance).dropsToNative().toNumber(),
             flagsString: JSON.stringify(account_flags),
-            regularKey: get(account_data, 'RegularKey', ''),
-            domain: get(account_data, 'Domain', ''),
-            emailHash: get(account_data, 'EmailHash', ''),
-            messageKey: get(account_data, 'MessageKey', ''),
+            regularKey: account_data?.RegularKey ?? '',
+            domain: account_data?.Domain ?? '',
+            emailHash: account_data?.EmailHash ?? '',
+            messageKey: account_data?.MessageKey ?? '',
             lines: normalizedAccountLines as unknown as Realm.Results<TrustLineModel>,
+            accountIndex: account_data?.AccountIndex,
+            reward: {
+                rewardAccumulator: account_data?.RewardAccumulator,
+                rewardLgrFirst: account_data?.RewardLgrFirst,
+                rewardLgrLast: account_data?.RewardLgrLast,
+                rewardTime: account_data?.RewardTime,
+            } as unknown as RewardInformation,
         });
     };
 
