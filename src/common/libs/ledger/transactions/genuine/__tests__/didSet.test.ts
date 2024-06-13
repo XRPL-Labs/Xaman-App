@@ -21,8 +21,8 @@ describe('DIDSet tx', () => {
             const { tx, meta }: any = didSetTemplate;
             const instance = new DIDSet(tx, meta);
 
-            expect(instance.Data).toBe('6479727A74357');
-            expect(instance.DIDDocument).toBe('6266336F6');
+            expect(instance.Data).toBe('');
+            expect(instance.DIDDocument).toBe(undefined);
             expect(instance.URI).toBe(
                 '697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469',
             );
@@ -51,7 +51,7 @@ describe('DIDSet tx', () => {
         describe('getParticipants()', () => {
             it('should return the expected participants', () => {
                 expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', tag: undefined },
+                    start: { address: 'rwgsEwhLs6dLxTFdLdmmX1x6pZro8UZoqR', tag: undefined },
                 });
             });
         });

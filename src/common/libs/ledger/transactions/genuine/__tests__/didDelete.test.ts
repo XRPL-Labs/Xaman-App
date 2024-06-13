@@ -20,7 +20,7 @@ describe('DIDDelete tx', () => {
         it('Should return right parsed values', () => {
             const { tx, meta }: any = didDeleteTemplate;
             const instance = new DIDDelete(tx, meta);
-            expect(instance.Account).toBe('rp4pqYgrTAtdPHuZd1ZQWxrzx45jxYcZex');
+            expect(instance.Account).toBe('rwgsEwhLs6dLxTFdLdmmX1x6pZro8UZoqR');
         });
     });
 
@@ -46,7 +46,7 @@ describe('DIDDelete tx', () => {
         describe('getParticipants()', () => {
             it('should return the expected participants', () => {
                 expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rp4pqYgrTAtdPHuZd1ZQWxrzx45jxYcZex', tag: undefined },
+                    start: { address: 'rwgsEwhLs6dLxTFdLdmmX1x6pZro8UZoqR', tag: undefined },
                 });
             });
         });

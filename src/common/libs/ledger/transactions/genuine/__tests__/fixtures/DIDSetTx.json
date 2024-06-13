@@ -1,12 +1,44 @@
 {
   "tx": {
+    "Account": "rwgsEwhLs6dLxTFdLdmmX1x6pZro8UZoqR",
+    "Data": "",
+    "Fee": "12",
+    "LastLedgerSequence": 1517746,
+    "Sequence": 656432,
+    "SigningPubKey": "ED0F9C9C7C0AC3CF0A539A552EA1A5CF88D1304F0E82612DC6F8FEEBB538E1E5E1",
     "TransactionType": "DIDSet",
-    "Account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
-    "Fee": "10",
-    "Sequence": 391,
-    "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469",
-    "Data": "6479727A74357",
-    "DIDDocument": "6266336F6",
-    "SigningPubKey":"0330E7FC9D56BB25D6893BA3F317AE5BCF33B3291BD63DB32654A313222F7FD020"
-  }
+    "TxnSignature": "52CD6A9489A49EE528BD0085A5C9A0E805F0E91C3E2B68FEE3F0B1D9AED260DC7B124D8D7F4FB693C3EC10CB55F61AE9FA7FB31644C73989D6A6F5B69F616B0C",
+    "URI": "697066733A2F2F62616679626569676479727A74357366703775646D37687537367568377932366E6634646675796C71616266336F636C67747179353566627A6469"
+  },
+  "ctid": "C01728A000030002",
+  "date": 771551171,
+  "hash": "C0AE43A2B4BB968FE97F35463A0D10499182F0E29A8E46FAC32F07056698A975",
+  "inLedger": 1517728,
+  "ledger_index": 1517728,
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rwgsEwhLs6dLxTFdLdmmX1x6pZro8UZoqR",
+            "Balance": "99999976",
+            "Flags": 0,
+            "OwnerCount": 1,
+            "Sequence": 656433
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "F2D590C6AE5C5232809B53A0CCB434239553ED2D97AE74FACFDDCD4034D519F5",
+          "PreviousFields": {
+            "Balance": "99999988",
+            "Sequence": 656432
+          },
+          "PreviousTxnID": "30DE8FD3B7F1D5BC4D5ED8CC9741AD2A7A198A80AD8802E7CF30FF1985307AD4",
+          "PreviousTxnLgrSeq": 656447
+        }
+      }
+    ],
+    "TransactionIndex": 3,
+    "TransactionResult": "tesSUCCESS"
+  },
+  "validated": true
 }
