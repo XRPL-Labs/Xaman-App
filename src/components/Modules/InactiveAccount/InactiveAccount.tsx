@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
@@ -11,25 +11,44 @@ import { GetCardId } from '@common/utils/tangem';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AccountModel } from '@store/models';
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
-import { Button, Icon, InfoMessage, Spacer, TouchableDebounce } from '@components/General';
+import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 
 import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
 
+import RegularKeyItem from '@components/Modules/InactiveAccount/RegularKeyItem';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     account: AccountModel;
 }
 
-interface State {}
+interface State {
+    regularKeyAccounts?: AccountModel[];
+}
 /* Component ==================================================================== */
 class InactiveAccount extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            regularKeyAccounts: undefined,
+        };
+    }
+
+    static getDerivedStateFromProps(nextProps: Props): Partial<State> | null {
+        return {
+            regularKeyAccounts: AccountRepository.getRegularKeys(nextProps.account?.address),
+        };
+    }
+
     openActivateAccountXApp = () => {
         const { account } = this.props;
 
@@ -55,44 +74,49 @@ class InactiveAccount extends PureComponent<Props, State> {
         );
     };
 
-    switchToRegularKey = (account: AccountModel) => {
-        CoreRepository.setDefaultAccount(account);
+    renderRegularKeyItem = ({ item }: { item: AccountModel }) => {
+        return <RegularKeyItem account={item} />;
     };
 
-    renderRegularKey = (accounts: AccountModel[]) => {
+    renderRegularKeys = () => {
+        const { regularKeyAccounts } = this.state;
+
+        // no regular key account
+        if (!regularKeyAccounts || regularKeyAccounts.length === 0) {
+            return null;
+        }
+
         return (
-            <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]}>
-                <InfoMessage icon="IconKey" type="success" label={Localize.t('account.regularKeyFor')} />
-                <Spacer />
-                {accounts.map((account, index) => {
-                    return (
-                        <TouchableDebounce
-                            key={index}
-                            style={[AppStyles.row, AppStyles.centerAligned, styles.accountRow]}
-                            /* eslint-disable-next-line react/jsx-no-bind */
-                            onPress={this.switchToRegularKey.bind(null, account)}
-                            activeOpacity={0.9}
-                        >
-                            <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                                <Icon size={25} style={styles.iconAccount} name="IconAccount" />
-                                <View>
-                                    <Text style={AppStyles.pbold}>{account.label}</Text>
-                                    <Text style={[AppStyles.subtext, AppStyles.mono, AppStyles.colorBlue]}>
-                                        {account.address}
-                                    </Text>
-                                </View>
-                            </View>
-                        </TouchableDebounce>
-                    );
-                })}
+            <View style={styles.regularKeyContainer} testID="not-activated-account-container-regular-key">
+                <View style={[AppStyles.row, AppStyles.gapExtraSml, AppStyles.paddingLeftSml]}>
+                    <Icon name="IconKey" size={20} style={AppStyles.imgColorGreen} />
+                    <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGreen]}>
+                        {Localize.t('account.regularKeyFor')}
+                    </Text>
+                </View>
+                <FlatList
+                    data={regularKeyAccounts}
+                    renderItem={this.renderRegularKeyItem}
+                    keyExtractor={(item) => item.address}
+                />
             </View>
         );
     };
 
     renderActivateAccount = () => {
+        const { regularKeyAccounts } = this.state;
+
         return (
-            <View style={[AppStyles.flex6, AppStyles.paddingHorizontalSml]} testID="not-activated-account-container">
-                <InfoMessage type="error" label={Localize.t('account.yourAccountIsNotActivated')} />
+            <View style={styles.messageContainer} testID="not-activated-account-container">
+                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorRed]}>
+                    {Localize.t('account.yourAccountIsNotActivated')}
+                </Text>
+                {regularKeyAccounts && regularKeyAccounts?.length > 0 && (
+                    <Text style={[AppStyles.smalltext, AppStyles.textCenterAligned, AppStyles.colorRed]}>
+                        {Localize.t('account.activateRegularKeyAccountWarning')}
+                    </Text>
+                )}
+
                 <Button
                     roundedSmall
                     style={AppStyles.marginTopSml}
@@ -104,15 +128,12 @@ class InactiveAccount extends PureComponent<Props, State> {
     };
 
     render() {
-        const { account } = this.props;
-
-        const regularKeyAccounts = AccountRepository.getRegularKeys(account.address);
-
-        if (Array.isArray(regularKeyAccounts) && regularKeyAccounts.length > 0) {
-            return this.renderRegularKey(regularKeyAccounts);
-        }
-
-        return this.renderActivateAccount();
+        return (
+            <View style={AppStyles.flex1}>
+                {this.renderRegularKeys()}
+                {this.renderActivateAccount()}
+            </View>
+        );
     }
 }
 

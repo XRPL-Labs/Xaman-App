@@ -913,6 +913,7 @@
     "accountTrustLines": "TrustLines de conta",
     "youDoNotHaveAnyTrustLine": "Você não tem nenhuma linha de confiança (trustline)",
     "yourAccountIsNotActivated": "A sua conta não está ativada!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "A conta selecionada não está ativa. Para conseguir assinar esta transação tem de o fazer a partir de uma conta ativa!",
     "accountAlreadyExist": "Esta conta já existe!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

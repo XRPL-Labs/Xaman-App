@@ -913,6 +913,7 @@
     "accountTrustLines": "اکاؤنٹ ٹرسٹ لائنز",
     "youDoNotHaveAnyTrustLine": "آپ کے پاس کوئی ٹرسٹ لائنز نہیں ہیں",
     "yourAccountIsNotActivated": "آپ کا اکاؤنٹ چالو نہیں ہوا ہے!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "منتخب کردہ اکاؤنٹ چالو نہیں کیا گیا ہے۔ اس لین دین پر دستخط کرنے کے لئے آپ کو ایک چالو اکاؤنٹ منتخب کرنے کی ضرورت ہے!",
     "accountAlreadyExist": "اکاؤنٹ پہلے ہی موجود ہے!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

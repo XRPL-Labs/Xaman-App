@@ -913,6 +913,7 @@
     "accountTrustLines": "アカウントトラストライン",
     "youDoNotHaveAnyTrustLine": "トラストラインはありません",
     "yourAccountIsNotActivated": "アカウントが有効化されていません！",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "選択したアカウントは有効化されていません。このトランザクションに署名するには、有効化されたアカウントを選択する必要があります！",
     "accountAlreadyExist": "このアカウントは既に使われています",
     "importingSecretAccountExist": "入力したアカウントシークレットは、次のrアドレスに紐づいており、全権アカウントとしてXamanにインポート済みです。\n\n%{address}",

@@ -913,6 +913,7 @@
     "accountTrustLines": "கணக்கு அறக்கட்டளை",
     "youDoNotHaveAnyTrustLine": "உங்களிடம் எந்த டிரஸ்ட்லைன்களும் இல்லை",
     "yourAccountIsNotActivated": "உங்கள் கணக்கு செயல்படுத்தப்படவில்லை!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "தேர்ந்தெடுக்கப்பட்ட கணக்கு செயல்படுத்தப்படவில்லை. இந்த பரிவர்த்தனையில் கையொப்பமிட நீங்கள் செயல்படுத்தப்பட்ட கணக்கைத் தேர்ந்தெடுக்க வேண்டும்!",
     "accountAlreadyExist": "கணக்கு ஏற்கனவே உள்ளது!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

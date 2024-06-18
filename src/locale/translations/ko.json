@@ -913,6 +913,7 @@
     "accountTrustLines": "계좌 트러스트라인",
     "youDoNotHaveAnyTrustLine": "TrustLine 이 없습니다",
     "yourAccountIsNotActivated": "계좌가 활성화되지 않았습니다!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "선택한 계정이 활성화되지 않았습니다. 이 거래에 서명하려면 활성화된 계정을 선택해야 합니다.",
     "accountAlreadyExist": "계정이 이미 존재합니다!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

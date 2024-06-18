@@ -913,6 +913,7 @@
     "accountTrustLines": "ანგარიშის TrustLine-ები",
     "youDoNotHaveAnyTrustLine": "თქვენ არ გყავთ TrustLine-ები",
     "yourAccountIsNotActivated": "თქვენი ანგარიში არ არის გააქტიურებული!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "არჩეული ანგარიში არ არის გააქტიურებული. ტრანზაქციის დასადასტურებლად უნდა აირჩიოთ გააქტიურებული ანგარიში!",
     "accountAlreadyExist": "ასეთი ანგარიში უკვე არსებობს!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

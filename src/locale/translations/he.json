@@ -913,6 +913,7 @@
     "accountTrustLines": "קווי TrustLines",
     "youDoNotHaveAnyTrustLine": "אין לך TrustLines",
     "yourAccountIsNotActivated": "המשתמש שלך לא מופעל!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "החשבון שנבחר אינו מופעל. כדי לחתום על עסקה זו עליך לבחור חשבון מופעל!",
     "accountAlreadyExist": "חשבון כבר קיים!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

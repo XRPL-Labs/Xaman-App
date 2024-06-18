@@ -913,6 +913,7 @@
     "accountTrustLines": "खाता ट्रस्टलाइन्स",
     "youDoNotHaveAnyTrustLine": "आपके पास कोई ट्रस्टलाइन नहीं है",
     "yourAccountIsNotActivated": "आपका खाता सक्रिय नहीं है!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "चयनित खाता सक्रिय नहीं है। इस लेनदेन पर हस्ताक्षर करने के लिए आपको एक सक्रिय खाते का चयन करना होगा!",
     "accountAlreadyExist": "खाता पहले से मौजूद है!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

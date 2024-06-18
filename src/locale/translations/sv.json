@@ -913,6 +913,7 @@
     "accountTrustLines": "Konto TrustLines",
     "youDoNotHaveAnyTrustLine": "Du har inga TrustLines.",
     "yourAccountIsNotActivated": "Ditt konto är inte aktiverat!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Vald konto är inte aktiverat. Om du vill signera den här transaktionen måste du välja ett aktiverat konto!",
     "accountAlreadyExist": "Kontot finns redan!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",

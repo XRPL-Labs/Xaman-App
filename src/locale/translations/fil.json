@@ -913,6 +913,7 @@
     "accountTrustLines": "Mga Linya ng Trust ng Account",
     "youDoNotHaveAnyTrustLine": "Wala kang anumang Trustlines",
     "yourAccountIsNotActivated": "Ang iyong account ay hindi naaktibo!",
+    "activateRegularKeyAccountWarning": "If you want to use this account as Regular key only, you DO NOT have to activate the account.\n\nHowever, if you want to use this account also to transact, you can activate this account.",
     "selectedAccountIsNotActivatedPleaseChooseAnotherOne": "Ang napiling account ay hindi naaktibo. Upang pirmahan ang transaksyong ito kailangan mong pumili ng isang aktibong account!",
     "accountAlreadyExist": "Account ay mayroon na!",
     "importingSecretAccountExist": "The account secret that you have entered belongs to this r-address and has already been imported into Xaman as a full access account.\n\n%{address}",
