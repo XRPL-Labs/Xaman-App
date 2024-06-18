@@ -1069,7 +1069,8 @@
     "trustLineIsAlreadyExist": "Этот маркер уже существует. Нельзя повторно добавить один и тот же маркер.",
     "issuerAddressCopiedToClipboard": "Issuer address copied to the clipboard",
     "unableToLoadListOfTokens": "Unable to load the list of tokens!",
-    "selectCurrency": "Please select a token first"
+    "selectCurrency": "Please select a token first",
+    "copyIssuerAddressWarning": "%{issuerAddress}\n\nYou are about to copy the Issuer Address. The Issuer Address for an asset should only be used to verify the legitimacy of the asset. While you can copy the issuer address, please note that sending assets to the issuer address will PERMANENTLY BURN THE TOKENS."
   },
   "exchange": {
     "exchanging": "Обменивающий",

@@ -618,6 +618,30 @@ class TokenSettingsOverlay extends Component<Props, State> {
         Toast(Localize.t('asset.issuerAddressCopiedToClipboard'));
     };
 
+    onCopyIssuerAddressPress = () => {
+        const { trustLine } = this.props;
+
+        Navigator.showAlertModal({
+            type: 'warning',
+            text: Localize.t('asset.copyIssuerAddressWarning', {
+                issuerAddress: trustLine.currency.issuer,
+            }),
+            buttons: [
+                {
+                    text: Localize.t('global.cancel'),
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: Localize.t('global.IUnderstand'),
+                    onPress: this.copyIssuerAddress,
+                    type: 'continue',
+                    light: false,
+                },
+            ],
+        });
+    };
+
     canSend = () => {
         const { trustLine } = this.props;
         return Number(trustLine.balance) >= 0.00000001 || trustLine.obligation;
@@ -672,7 +696,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
                                     <Text style={styles.currencyItemLabelSmall}>{trustLine.getReadableCurrency()}</Text>
                                     <TouchableDebounce
-                                        onPress={this.copyIssuerAddress}
+                                        onPress={this.onCopyIssuerAddressPress}
                                         style={AppStyles.row}
                                         activeOpacity={1}
                                     >
