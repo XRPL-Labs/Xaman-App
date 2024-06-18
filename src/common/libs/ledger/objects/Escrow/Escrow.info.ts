@@ -70,6 +70,7 @@ class EscrowInfo extends ExplainerAbstract<Escrow> {
                     currency: this.item.Amount!.currency,
                     value: this.item.Amount!.value,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions[this.item.Destination === this.account.address ? 'INC' : 'DEC'],
                 },
             ],
         };

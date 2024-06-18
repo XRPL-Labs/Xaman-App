@@ -90,6 +90,7 @@ class PayChannelInfo extends ExplainerAbstract<PayChannel> {
                     currency: this.item.Amount!.currency,
                     value: this.item.Amount!.value,
                     effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                    action: OperationActions[this.item.Destination === this.account.address ? 'INC' : 'DEC'],
                 },
             ],
         };

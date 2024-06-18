@@ -67,6 +67,7 @@ class CheckInfo extends ExplainerAbstract<Check> {
                     currency: this.item.SendMax!.currency,
                     value: this.item.SendMax!.value,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions[this.item.Destination === this.account.address ? 'INC' : 'DEC'],
                 },
             ],
         };
