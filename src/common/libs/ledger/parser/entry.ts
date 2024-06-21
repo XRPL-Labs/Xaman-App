@@ -16,6 +16,7 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
         (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple & ledgerEntry.Flags) ===
             LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple,
     ];
+
     const [no_ripple, no_ripple_peer] =
         ledgerEntry.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
 
@@ -24,9 +25,14 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
             ? ledgerEntry.Balance.value.slice(1)
             : ledgerEntry.Balance.value;
 
+    const locked_balance = ledgerEntry.LockedBalance?.value;
+    const lock_count = ledgerEntry.LockCount;
+
     return {
         account: counterparty.issuer,
         balance,
+        lock_count,
+        locked_balance,
         currency: self.currency,
         limit: self.value,
         limit_peer: counterparty.value,

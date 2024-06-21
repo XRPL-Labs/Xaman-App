@@ -5,7 +5,7 @@
  */
 
 import EventEmitter from 'events';
-import { map, isEmpty, forEach, get, keys } from 'lodash';
+import { map, forEach, get, keys } from 'lodash';
 
 import { CurrencyModel, TrustLineModel } from '@store/models';
 import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
@@ -27,6 +27,7 @@ import {
     UnsubscribeRequest,
     UnsubscribeResponse,
 } from '@common/libs/ledger/types/methods';
+import BigNumber from 'bignumber.js';
 
 /* Events  ==================================================================== */
 export type AccountServiceEvent = {
@@ -217,50 +218,45 @@ class AccountService extends EventEmitter {
      * Get normalized account lines
      */
     getNormalizedAccountLines = async (account: string): Promise<Partial<TrustLineModel>[]> => {
-        // fetch filtered account lines from ledger
-        let accountLines = await LedgerService.getFilteredAccountLines(account);
+        const [accountLines, accountObligations] = await Promise.all([
+            LedgerService.getFilteredAccountLines(account),
+            LedgerService.getAccountObligations(account),
+        ]);
 
-        // fetch account obligations lines
-        const accountObligations = await LedgerService.getAccountObligations(account);
+        const combinedLines = [...accountLines, ...accountObligations];
 
-        // if there is any obligations lines combine result
-        if (!isEmpty(accountObligations)) {
-            accountLines = accountLines.concat(accountObligations);
-        }
-
-        // create empty list base on TrustLineModel
-        const normalizedList = [] as Partial<TrustLineModel>[];
-
-        // process every line exist in the accountLines
-        await Promise.all(
-            map(accountLines, async (line) => {
-                // upsert currency object in the store
+        const normalizedList = await Promise.all(
+            combinedLines.map(async (line) => {
                 const currency = await CurrencyRepository.upsert({
                     id: `${line.account}.${line.currency}`,
                     issuer: line.account,
                     currencyCode: line.currency,
                 });
 
-                // convert trust line to the normalized format
-                normalizedList.push({
+                let { balance } = line;
+                // in case of IOU Escrow we deduct the locked balance from actual balance
+                if (line.locked_balance) {
+                    balance = new BigNumber(balance).minus(new BigNumber(line.locked_balance)).toString();
+                }
+
+                return {
                     id: `${account}.${currency.id}}`,
                     currency,
-                    balance: line.balance,
-                    no_ripple: get(line, 'no_ripple', false),
-                    no_ripple_peer: get(line, 'no_ripple_peer', false),
+                    balance,
+                    no_ripple: line.no_ripple ?? false,
+                    no_ripple_peer: line.no_ripple_peer ?? false,
                     limit: line.limit,
                     limit_peer: line.limit_peer,
-                    quality_in: get(line, 'quality_in', 0),
-                    quality_out: get(line, 'quality_out', 0),
-                    authorized: get(line, 'authorized', false),
-                    peer_authorized: get(line, 'peer_authorized', false),
-                    freeze: get(line, 'freeze', false),
-                    obligation: get(line, 'obligation', false),
-                });
+                    quality_in: line.quality_in ?? 0,
+                    quality_out: line.quality_out ?? 0,
+                    authorized: line.authorized ?? false,
+                    peer_authorized: line.peer_authorized ?? false,
+                    freeze: line.freeze ?? false,
+                    obligation: line.obligation ?? false,
+                };
             }),
         );
 
-        // return normalized list
         return normalizedList;
     };
 
