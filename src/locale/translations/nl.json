@@ -939,6 +939,7 @@
     "walletReserve": "Verplicht gereserveerd",
     "accountBalance": "Account saldo",
     "availableForSpending": "Beschikbaar om uit te geven",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Dit is een transactie voor het verwijderen van accounts. Bij het ondertekenen zal uw account worden verwijderd, en uw volledige resterende saldo (behalve de laatste %{ownerReserve}  gereserveerde XRP, als vergoeding aan de  XRP ledger voor het verwijderen van een account) zullen worden verzonden naar het geconfigureerde account. Controleer het account twee keer, en ga alleen door als u ECHT ZEKER uw account wil verwijderen van de XRP ledger",
     "deleteAccountObjectsExistError": "U kunt dit account niet verwijderen omdat uw account specifieke XRP-ledger-objecten bevat, zoals andere activa, Decentralized Exchange-aanbiedingen, Escrows (als maker of begunstigde)",
     "deleteAccountSequenceIsNotEnoughError": "Dit account kan (nog) niet worden verwijderd. Het duurt %{remainingSequence} meer grootboeken om te sluiten voordat dit account kan worden verwijderd.",

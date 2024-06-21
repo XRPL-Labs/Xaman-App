@@ -939,6 +939,7 @@
     "walletReserve": "ਵਾਲਿਟ ਰਿਜ਼ਰਵ",
     "accountBalance": "ਖਾਤੇ ਦਾ ਬਕਾਇਆ",
     "availableForSpending": "ਖਰਚ ਕਰਨ ਲਈ ਉਪਲਬਧ ਹੈ",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "ਇਹ ਇਕ ਖਾਤਾ ਮਿਟਾਉਣ ਵਾਲਾ ਲੈਣ-ਦੇਣ ਹੈ. ਜਦੋਂ ਤੁਹਾਡੇ ਖਾਤੇ ਤੇ ਹਸਤਾਖਰ ਕਰਨਾ ਮਿਟਾ ਦਿੱਤਾ ਜਾਏਗਾ, ਅਤੇ ਤੁਹਾਡੇ ਬਾਕੀ ਸਾਰੇ ਫੰਡਾਂ (ਅਖੀਰਲੇ %{ownerReserve}  ਰਾਖਵੇਂ  XRP ਨੂੰ ਛੱਡ ਕੇ, ਜਿਵੇਂ ਕਿ ਇੱਕ ਖਾਤਾ ਮਿਟਾਉਣ ਲਈ ਐਕਸਆਰਪੀ ਲੀਜਰ ਤੇ ਫੀਸ %{ownerReserve} XRP ਹੈ) ਨੂੰ ਨਿਰਧਾਰਤ ਮੰਜ਼ਿਲ ਤੇ ਭੇਜਿਆ ਜਾਵੇਗਾ. ਕਿਰਪਾ ਕਰਕੇ ਦੋ ਵਾਰ ਮੰਜ਼ਲ ਦੀ ਜਾਂਚ ਕਰੋ, ਅਤੇ ਸਿਰਫ ਤਾਂ ਹੀ ਜਾਰੀ ਰੱਖੋ ਜੇ ਤੁਸੀਂ ਅਸਲ ਵਿੱਚ ਐਕਸਆਰਪੀ ਲੀਜਰ ਤੇ ਆਪਣਾ ਖਾਤਾ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ.",
     "deleteAccountObjectsExistError": "ਤੁਸੀਂ ਇਸ ਖਾਤੇ ਨੂੰ ਮਿਟਾ ਨਹੀਂ ਸਕਦੇ, ਕਿਉਂਕਿ ਤੁਹਾਡੇ ਖਾਤੇ ਵਿੱਚ ਵਿਸ਼ੇਸ਼ ਐਕਸਆਰਪੀ ਲੇਜਰ ਆਬਜੈਕਟਸ ਸ਼ਾਮਲ ਹਨ, ਜਿਵੇਂ ਕਿ ਹੋਰ ਸੰਪੱਤੀਆਂ, ਡੀਨਟਰਲਾਈਜ਼ਡ ਐਕਸਚੇਂਜ ਪੇਸ਼ਕਸ਼ਾਂ, ਐੱਸਕਰੋ (ਇੱਕ ਸਿਰਜਣਹਾਰ ਜਾਂ ਲਾਭਪਾਤਰੀ ਵਜੋਂ)",
     "deleteAccountSequenceIsNotEnoughError": "ਇਹ ਖਾਤਾ ਹਾਲੇ ਮਿਟਾਇਆ ਨਹੀਂ ਜਾ ਸਕਦਾ. ਇਸ ਖਾਤੇ ਨੂੰ ਮਿਟਾਏ ਜਾਣ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ %{remainingSequence} ਹੋਰ ਲੀਜਰਸ ਨੂੰ ਬੰਦ ਕਰਨ ਵਿੱਚ ਲੈਂਦਾ ਹੈ.",

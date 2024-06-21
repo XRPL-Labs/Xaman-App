@@ -939,6 +939,7 @@
     "walletReserve": "Piniginės rezervas",
     "accountBalance": "Sąskaitos likutis",
     "availableForSpending": "Galima išleisti.",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Tai sąskaitos ištrynimo operacija. Po pasirašymo ji bus ištrinta, o visos Jūsų likusios lėšos, išskyrus %{ownerReserve}  rezervuotus XRP, nes  XRP sąskaitos knygos ištrynimas kainuoja %{ownerReserve} XRP, bus nusiųstos į sukonfiguruotą galutinę vietą. Pasitikrinkite galutinę vietą dar kartą ir tęskite tik tuo atveju, jei tikrai norite ištrinti sąskaitą iš XRP sąskaitos knygos.",
     "deleteAccountObjectsExistError": "Negalite ištrinti šios paskyros, nes joje yra tam tikrų XRP sąskaitos knygos objektų, tokių kaip kitas turtas, decentralizuotų mainų pasiūlymų, dalinio indėlio (kaip kūrėjo ar naudos gavėjo)",
     "deleteAccountSequenceIsNotEnoughError": "Šios paskyros dar negalima ištrinti. Tai užtrunka %{remainingSequence} Daugiau sąskaitų knygas uždaryti prieš ši sąskaita gali būti ištrintas.",

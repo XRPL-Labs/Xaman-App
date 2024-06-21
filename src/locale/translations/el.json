@@ -939,6 +939,7 @@
     "walletReserve": "Κλειδωμένο ποσό λογαριασμού",
     "accountBalance": "Υπόλοιπο λογαριασμού",
     "availableForSpending": "Διαθέσιμο για δαπάνες",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Προσοχή! Διαγραφή λογαριασμού. Ο λογαριασμός σας θα διαγραφεί, και όλα τα νομίσματά (εκτός από τα τελευταία %{ownerReserve}  δεσμευμένα  XRP, όπου κρατούνται για τη διαγραφή του λογαριασμού) θα σταλθούν στον καθορισμένο προορισμό. Ελέγξτε τον προορισμό δύο φορές και συνεχίστε αν θέλετε να διαγράψετε το λογαριασμό σας.",
     "deleteAccountObjectsExistError": "Δεν μπορείτε να διαγράψετε αυτό το λογαριασμό, καθώς ο λογαριασμός σας περιέχει συγκεκριμένα αρχεία XRP, καθώς και άλλα νομίσματα, προσφορές αποκεντρωμένων ανταλλακτηρίων και Escrows (ως κάτοχος ή δικαιούχος)",
     "deleteAccountSequenceIsNotEnoughError": "Αυτός ο λογαριασμός δεν μπορεί να διαγραφεί ακόμα. Χρειάζεται %{remainingSequence} επιπλέον καθολικά για να κλείσει προτού διαγραφεί αυτός ο λογαριασμός.",

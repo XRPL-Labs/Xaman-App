@@ -939,6 +939,7 @@
     "walletReserve": "মানিব্যাগ রিজার্ভ",
     "accountBalance": "হিসাবের পরিমান",
     "availableForSpending": "ব্যয়ের জন্য উপলব্ধ",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "এটি একটি অ্যাকাউন্ট মোছার লেনদেন। যখন সাইন ইন আপনার অ্যাকাউন্ট মুছে ফেলা হবে, এবং আপনার সমস্ত অবশিষ্ট তহবিল (শেষ %{ownerReserve}  সংরক্ষিত  XRP ছাড়া, যেমন একটি অ্যাকাউন্ট মুছে ফেলার জন্য XRP খতিয়ান উপর ফি %{ownerReserve} XRP হয়) কনফিগার করা গন্তব্যে পাঠানো হবে। দয়া করে দু'বার গন্তব্যটি পরীক্ষা করে দেখুন এবং কেবলমাত্র যদি আপনি XRP খাতায় আপনার অ্যাকাউন্টটি মুছতে চান তবে কেবল চালিয়ে যান",
     "deleteAccountObjectsExistError": "আপনি এই অ্যাকাউন্টের মুছতে পারবেন না, আপনার অ্যাকাউন্টের (ক স্রষ্টা বা সুবিধাভোগী হিসাবে) নির্দিষ্ট XRP খতিয়ান বস্তু, অন্যান্য সম্পদ, বিকেন্দ্রীভূত এক্সচেঞ্জ অফার, Escrows মত ধারণ করে",
     "deleteAccountSequenceIsNotEnoughError": "এই অ্যাকাউন্টটি এখনও মুছা যায় না। এটা আগে এই অ্যাকাউন্টের মুছে ফেলা যাবে বন্ধ করতে %{remainingSequence} আরো লেজার লাগে।",

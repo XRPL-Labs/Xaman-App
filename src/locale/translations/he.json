@@ -939,6 +939,7 @@
     "walletReserve": "רזרבה בארנק",
     "accountBalance": "יתרת חשבון",
     "availableForSpending": "זמין להוצאות",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "זוהי עסקת מחיקת חשבון. בעת חתימת חשבונך יימחק, וכל הכספים הנותרים שלך (למעט %{ownerReserve} XRP השמורים האחרונים, שכן העמלה על ספר החשבון XRP למחיקת חשבון היא %{ownerReserve} XRP) תישלח ליעד שהוגדר. אנא בדוק את היעד פעמיים ורק המשך אם ברצונך למחוק את חשבונך בפנקס ה- XRP בפועל",
     "deleteAccountObjectsExistError": "אינך יכול למחוק חשבון זה מכיוון שהוא מכיל אובייקטים ספציפיים של ספר XRP, כמו אסימונים (שאינם XRP), הצעות חילופי מבחר (DEX), נאמנות (כיוצר או כמוטב)",
     "deleteAccountSequenceIsNotEnoughError": "עדיין לא ניתן למחוק חשבון זה. נדרשים %{remainingSequence} ספרים נוספים להיסגר לפני שניתן למחוק חשבון זה.",

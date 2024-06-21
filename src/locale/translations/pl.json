@@ -939,6 +939,7 @@
     "walletReserve": "Rezerwa portfela",
     "accountBalance": "Saldo konta",
     "availableForSpending": "Dostępne do wydania",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "To jest transakcja usunięcia konta. Po podpisaniu konto zostanie usunięte, a wszystkie pozostałe środki (z wyjątkiem ostatnich %{ownerReserve}  zarezerwowanych  XRP, ponieważ opłata w księdze XRP za usunięcie konta wynosi %{ownerReserve} XRP) zostaną przesłane do skonfigurowanego miejsca docelowego. Proszę dwukrotnie sprawdzić miejsce docelowe i kontynuować TYLKO, jeśli AKTUALNIE chcesz usunąć swoje konto w księdze XRP",
     "deleteAccountObjectsExistError": "Nie możesz usunąć tego konta, ponieważ Twoje konto zawiera określone obiekty księgi XRP, takie jak inne aktywa, oferty zdecentralizowanych kantorów, Depozyty (jako twórca lub beneficjent)",
     "deleteAccountSequenceIsNotEnoughError": "To konto nie może zostać usunięte (jeszcze). Zanim możliwe będzie usunięcie tego konta, należy %{remainingSequence} więcej ledów zamknąć.",

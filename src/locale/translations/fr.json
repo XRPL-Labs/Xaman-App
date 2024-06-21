@@ -939,6 +939,7 @@
     "walletReserve": "Réserve du portefeuille",
     "accountBalance": "Solde du compte",
     "availableForSpending": "Disponible pour les dépenses",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Il s'agit d'une transaction de suppression de compte. Lors de la signature, votre compte sera supprimé et tous vos fonds restants (à l'exception des %{ownerReserve}  derniers  XRP réservés, puisque les frais sur le grand livre XRP pour la suppression d'un compte est de %{ownerReserve} XRP) seront envoyés à la destination configurée. Veuillez vérifier la destination deux fois et continuer SEULEMENT si vous voulez RÉELLEMENT supprimer votre compte sur le grand livre XRP",
     "deleteAccountObjectsExistError": "Vous ne pouvez pas supprimer ce compte car il contient des objets du grand livre XRP spécifiques, comme des jetons (non-XRP), des offres des échanges décentralisées (DEX), des comptes d'entiercement (en tant que créateur ou bénéficiaire)",
     "deleteAccountSequenceIsNotEnoughError": "Ce compte ne peut pas encore être supprimé. Il faut %{remainingSequence} grands livres de plus qui se ferment avant de pouvoir supprimer ce compte.",

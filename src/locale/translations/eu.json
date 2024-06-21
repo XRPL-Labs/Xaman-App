@@ -939,6 +939,7 @@
     "walletReserve": "Zorro erreserba",
     "accountBalance": "Kontuaren saldoa",
     "availableForSpending": "Gastatzeko erabilgarri",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Hau kontua ezabatzeko transakzioa da. Zure kontua sinatzerakoan ezabatu egingo da eta geratzen zaizkizun funts guztiak (azken %{ownerReserve}  erreserbatutako XRP izan ezik,  XRP liburuan kontua ezabatzearen kuota %{ownerReserve} XRP baitira) konfiguratutako helmugara bidaliko dira. Mesedez, egiaztatu helmuga bi aldiz, eta jarraitu BAKARRIK XRP liburuko zure kontua EGIAZ ezabatu nahi baduzu",
     "deleteAccountObjectsExistError": "Ezin duzu kontu hau ezabatu, XRP liburu handiko objektu zehatzak dituelako, hala nola tokenak (XRP ez direnak), Truke Deszentralizatua (DEX) eskaintzak, Idazkariak (sortzaile edo onuradun gisa)",
     "deleteAccountSequenceIsNotEnoughError": "Kontu hau ezin da oraindik ezabatu. Hartzen du %{remainingSequence} kontu gehiago ezabatu aurretik itxi beharreko liburu gehiago ixteko.",

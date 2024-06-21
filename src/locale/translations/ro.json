@@ -939,6 +939,7 @@
     "walletReserve": "Rezervă în portofel",
     "accountBalance": "Sold cont",
     "availableForSpending": "Disponibil pentru cheltuieli",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Aceasta este o acțiune de Ștergere Cont. Când veți aproba, contul va fi şters şi toate fondurile rămase (cu excepţia ultimelor %{ownerReserve} XRP rezervate, deoarece taxa pe registrul XRP pentru ştergerea unui cont este %{ownerReserve} XRP) vor fi transferate la destinaţia indicată. Vă rugăm să verificaţi de două ori destinaţia şi continuați NUMAI dacă doriţi să ştergeţi contul dvs. din registrul XRP !!!",
     "deleteAccountObjectsExistError": "Nu puteţi şterge acest cont, deoarece contul dvs. conţine obiecte specifice registrului XRP, alte active și oferte (ca creator sau beneficiar).",
     "deleteAccountSequenceIsNotEnoughError": "Acest cont nu poate fi încă șters. Sunt necesare încă %{remainingSequence} de registre închise înainte ca acest cont să poată fi șters.",

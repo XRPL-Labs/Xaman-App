@@ -939,6 +939,7 @@
     "walletReserve": "والٽ جو رزرو",
     "accountBalance": "اڪائونٽ جو بيلنس",
     "availableForSpending": "لاءِ دستياب خرچ",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "هي کاتو ختم ڪرڻ وارو اڪائونٽ آهي. جڏهن توهان جي اڪائونٽ تي دستخط ختم ٿي ويندي ، ۽ توهان جا سمورا پيسا (باقي %{ownerReserve}  محفوظ  XRP کان ، جئين هڪ اڪائونٽ ختم ڪرڻ لاءِ ايڪس آر پي ليجر تي فيس %{ownerReserve} XRP) موڪلي وئي ترتيب ڏنل منزل ڏانهن. مهرباني ڪري ٻه ڀيرا منزل چيڪ ڪريو ، ۽ صرف جاري رکو جيڪڏهن توهان واقعي سان XRP ليزر تي پنهنجو اڪائونٽ ختم ڪرڻ چاهيو ٿا",
     "deleteAccountObjectsExistError": "توهان اهو اڪائونٽ حذف نٿا ڪري سگهو ، ڇاڪاڻ ته اهو مخصوص ايڪس آر پي ليجر جي شين تي مشتمل آهي ، جهڙوڪ ٽوڪن (غير ايڪس آر پي) ، غير معياري ايڪسچينج (ڊيڪس) پيشيون ، ايسڪرو (هڪ تخليقڪار يا فائدوڪار جي طور تي)",
     "deleteAccountSequenceIsNotEnoughError": "هي کاتو اڃا حذف نه ٿي سگهيو آهي. اهو اڪائونٽ حذف ڪرڻ کان پهريان بند ٿيڻ لاءِ %{remainingSequence} وڌيڪ ليڊر لڳن ٿا.",

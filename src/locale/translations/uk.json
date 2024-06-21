@@ -939,6 +939,7 @@
     "walletReserve": "Резерв акаунта",
     "accountBalance": "Баланс акаунта",
     "availableForSpending": "Доступно для витрат",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Це транзакція видалення акаунта з XRPL. Після підписання ваш акаунт буде видалено, а всі ваші залишки коштів (крім останніх %{ownerReserve}  зарезервованих  XRP, оскільки комісія книги XRP за видалення акаунта становить %{ownerReserve} XRP) будуть надіслані до налаштованого акаунта призначення. Будь ласка, двічі перевірте акаунт призначення та продовжуйте ТІЛЬКИ, якщо ДІЙСНО хочете видалити даний акаунт з XRPL",
     "deleteAccountObjectsExistError": "Ви не можете видалити цей акаунт з XRPL, оскільки Ваш акаунт містить специфічні об'єкти XRP Ledger, такі як і інші активи, пропозиції DEX, ескроу.",
     "deleteAccountSequenceIsNotEnoughError": "Цей акаунт поки що не можна видалити. Перш ніж цей обліковий запис можна буде видалити, потрібно закрити ще %{remainingSequence} ledgers.",

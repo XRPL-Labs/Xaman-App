@@ -939,6 +939,7 @@
     "walletReserve": "बटुआ आरक्षित",
     "accountBalance": "खाते में शेष",
     "availableForSpending": "खर्च के लिए उपलब्ध",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "यह एक खाता हटाना लेनदेन है। हस्ताक्षर करते समय आपका खाता हटा दिया जाएगा, और आपके सभी शेष धन (अंतिम 5 आरक्षित एक्सआरपी को छोड़कर, क्योंकि खाता हटाने के लिए एक्सआरपी खाता बही पर शुल्क 5 एक्सआरपी है) को कॉन्फ़िगर गंतव्य पर भेजा जाएगा। कृपया गंतव्य को दो बार जांचें, और केवल तब ही जारी रखें जब आप ACTUALLY को XRP खाता बही पर अपना खाता हटाना चाहते हैं",
     "deleteAccountObjectsExistError": "आप इस खाते को नहीं हटा सकते हैं, क्योंकि आपके खाते में विशिष्ट XRP खाता बही वस्तुएं हैं, जैसे अन्य संपत्ति, विकेंद्रीकृत विनिमय ऑफ़र, Escrows (एक निर्माता या लाभार्थी के रूप में)",
     "deleteAccountSequenceIsNotEnoughError": "यह खाता अभी तक हटाया नहीं जा सकता है। इस खाते को हटाए जाने से पहले इसे बंद करने के लिए %{remainingSequence} अधिक लीडर लेता है।",

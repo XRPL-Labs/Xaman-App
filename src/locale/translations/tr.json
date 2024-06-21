@@ -939,6 +939,7 @@
     "walletReserve": "Cüzdan rezervi",
     "accountBalance": "Hesap bakiyesi",
     "availableForSpending": "Harcanabilir durumda",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Bu bir Hesap Silme işlemi. İmzalandığında Hesabınız silinecek ve kalan tüm fonlar (son %{ownerReserve}  ayrılmış  XRP dışında, bir hesabın silinmesi için XRP defterinin ücreti %{ownerReserve} XRP), yapılandırılan hedefe gönderilecektir. Lütfen hedefi iki kez denetleyin ve YALNIZCA XRP defterindeki hesabınızı gerçekten silmek istiyorsanız devam edin",
     "deleteAccountObjectsExistError": "Hesabınızın belirli XRP defteri nesnelerini, diğer varlıklar, merkeziyetsiz borsa teklifleri, Rehinler (bir yaratıcı olarak ya da lehdar olarak) içerdiği için bu hesabı silemezsiniz",
     "deleteAccountSequenceIsNotEnoughError": "Bu hesap silinemez (henüz). Bu hesabın silinebilmesi için önce %{remainingSequence} defterin kapatılması gerekiyor.",

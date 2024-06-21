@@ -939,6 +939,7 @@
     "walletReserve": "Rezerva peněženky",
     "accountBalance": "Zůstatek účtu",
     "availableForSpending": "K dispozici pro výdaje",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Jedná se o transakci odstranění účtu. Při podpisu dojde ke smazání účtu a všechny zbývající prostředky (kromě posledních %{ownerReserve}  vyhrazených  XRP, jelikož poplatek za odstranění účtu v síti XRP je %{ownerReserve} XRP) budou odeslány na nastavenou adresu. Zkontrolujte prosím tu adresu dvakrát a pokračujte, POUZE pokud opravdu chcete smazat svůj účet v síti XRP.",
     "deleteAccountObjectsExistError": "Tento účet nemůžete odstranit, protože váš účet obsahuje specifické objekty sítě XRP, jako jsou jiná aktiva, obchodní příkazy na decentralizované burze nebo Escrows (jako tvůrce nebo příjemce).",
     "deleteAccountSequenceIsNotEnoughError": "Tento účet prozatím nelze vymazat. Účet bude možné smazat za %{remainingSequence} zápisů v XRPL.",

@@ -939,6 +939,7 @@
     "walletReserve": "Beursie reserwe",
     "accountBalance": "Rekening saldo",
     "availableForSpending": "Beskikbaar vir besteding",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Dit is 'n rekening-verwyder transaksie. Wanneer u rekening onderteken word, sal dit verwyder word en al u geld wat oorbly (behalwe die laaste %{ownerReserve}  gereserveerde XRP, aangesien die fooi op die  XRP-grootboek vir die verwydering van 'n rekening %{ownerReserve} XRP is) na die gekose bestemming gestuur word. Gaan die bestemming twee keer na, en gaan SLEGS voort as u u rekening op die XRP-grootboek WIL verwyder",
     "deleteAccountObjectsExistError": "U kan nie hierdie rekening verwyder nie, omdat dit spesifieke XRP-grootboekvoorwerpe bevat, soos tokens (nie-XRP), gedesentraliseerde Exchange (DEX) -aanbiedings, Escrows (as skepper of begunstigde)",
     "deleteAccountSequenceIsNotEnoughError": "Hierdie rekening kan nie nog verwyder word. Dit neem %{remainingSequence} meer grootboeke om te sluit voordat hierdie rekening verwyder kan word.",

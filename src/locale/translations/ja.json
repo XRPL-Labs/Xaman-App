@@ -939,6 +939,7 @@
     "walletReserve": "アカウント準備金",
     "accountBalance": "残高",
     "availableForSpending": "利用可能",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "これはアカウント削除トランザクションです。アカウントに署名すると、アカウントが削除され、残りのすべての資金（XRP Ledgerでアカウントを削除するための料金は%{ownerReserve} XRPであるため、最後の%{ownerReserve} つの準備金のXRPを除く）が指定した宛先に送られます。宛先を2回確認し、XRP Ledgerでアカウントを実際に削除する場合にのみ続行してください",
     "deleteAccountObjectsExistError": "他の資産、分散型取引所のオファー、エスクロー(作成者、受取者として)などの特定のXRPレジャーのオブジェクトが含まれているため、アカウントを削除することができません。",
     "deleteAccountSequenceIsNotEnoughError": "このアカウントはまだ削除できません。このアカウントを削除するには、さらに %{remainingSequence} 個のレジャーを閉じる必要があります。",

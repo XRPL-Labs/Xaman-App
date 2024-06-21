@@ -939,6 +939,7 @@
     "walletReserve": "Reserva de la cartera ",
     "accountBalance": "Saldo de la cuenta",
     "availableForSpending": "Disponible para gastar",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Esta es una transacción de eliminación de cuenta. Al firmar, tu cuenta se eliminará y todos tus fondos restantes (excepto los últimos %{ownerReserve} XRP reservados, ya que la tarifa del XRPL por eliminar una cuenta es de %{ownerReserve} XRP) se enviarán a la cuenta de destino que has configurado. Verifica el destino dos veces y SÓLO continúa si REALMENTE deseas eliminar tu cuenta del XRPL.",
     "deleteAccountObjectsExistError": "No puedes eliminar esta cuenta, ya que contiene objetos específicos del XRPL como: Otros activos, Ofertas de Exchange descentralizado y Escrows (como creador o beneficiario).",
     "deleteAccountSequenceIsNotEnoughError": "Esta cuenta todavía no se puede eliminar. Se necesitan cerrar %{remainingSequence} registros más para poder eliminar la cuenta.",

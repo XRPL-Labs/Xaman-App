@@ -939,6 +939,7 @@
     "walletReserve": "بٹوے کا ریزرو",
     "accountBalance": "اکاؤنٹ بیلنس",
     "availableForSpending": "اخراجات کے لئے دستیاب ہے",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "یہ اکاؤنٹ ڈیلیٹ ٹرانزیکشن ہے۔ جب آپ کے اکاؤنٹ پر دستخط کریں تب حذف ہوجائے گا ، اور آپ کے باقی تمام فنڈز (سوائے آخری %{ownerReserve}  محفوظ  XRP کے ، جیسے کہ اکاؤنٹ کو حذف کرنے کے لئے XRP لیجر پر فیس %{ownerReserve} XRP ہے) کو تشکیل شدہ منزل پر بھیجا جائے گا۔ براہ کرم منزل کو دو بار چیک کریں ، اور صرف اسی صورت میں جاری رکھیں اگر آپ واقعی میں XRP لیجر پر اپنا اکاؤنٹ حذف کرنا چاہتے ہیں۔",
     "deleteAccountObjectsExistError": "آپ اس اکاؤنٹ کو حذف نہیں کرسکتے ہیں ، کیوں کہ آپ کے اکاؤنٹ میں مخصوص اثاثوں کی طرح اکاؤنٹ شامل ہے ، جیسے دوسرے اثاثوں کی طرح ، ڈیینٹرالائزڈ ایکسچینج آفرز ، یسکرو (بطور تخلیق کار یا فائدہ اٹھانے والے)",
     "deleteAccountSequenceIsNotEnoughError": "ابھی تک اس اکاؤنٹ کو حذف نہیں کیا جاسکتا۔ اس اکاؤنٹ کو حذف ہونے سے قبل اس میں %{remainingSequence} مزید لیجرز کو بند کرنا پڑتا ہے۔",

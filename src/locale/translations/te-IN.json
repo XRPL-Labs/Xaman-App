@@ -939,6 +939,7 @@
     "walletReserve": "వాలెట్ రిజర్వ్",
     "accountBalance": "ఖాతా నిలువ\r\n",
     "availableForSpending": "ఖర్చు చేయడానికి అందుబాటులో ఉంది\r\n",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "ఇది ఖాతా తొలగించు లావాదేవీ. సంతకం చేసినప్పుడు మీ ఖాతా తొలగించబడుతుంది మరియు మీ మిగిలిన నిధులన్నీ (చివరి %{ownerReserve}  రిజర్వు చేసిన  XRP మినహా, ఖాతాను తొలగించడానికి XRP లెడ్జర్‌పై రుసుము %{ownerReserve} XRP గా ఉంటుంది) కాన్ఫిగర్ చేయబడిన గమ్యానికి పంపబడుతుంది. దయచేసి గమ్యాన్ని రెండుసార్లు తనిఖీ చేయండి మరియు మీరు XRP లెడ్జర్‌లో మీ ఖాతాను తొలగించాలనుకుంటే మాత్రమే కొనసాగించండి",
     "deleteAccountObjectsExistError": "మీ ఖాతాలో ఇతర ఆస్తులు, వికేంద్రీకృత ఎక్స్ఛేంజ్ ఆఫర్లు, ఎస్క్రోలు (సృష్టికర్త లేదా లబ్ధిదారుడిగా) వంటి నిర్దిష్ట XRP లెడ్జర్ వస్తువులు ఉన్నందున మీరు ఈ ఖాతాను తొలగించలేరు.\r\n",
     "deleteAccountSequenceIsNotEnoughError": "ఈ ఖాతా ఇంకా తొలగించబడదు. ఈ ఖాతాను తొలగించే ముందు మూసివేయడానికి %{remainingSequence} మరిన్ని లెడ్జర్‌లు పడుతుంది.",

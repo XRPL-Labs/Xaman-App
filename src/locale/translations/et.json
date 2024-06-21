@@ -939,6 +939,7 @@
     "walletReserve": "Rahakoti reserv",
     "accountBalance": "Konto saldo",
     "availableForSpending": "Kulutamiseks",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "See on konto Kustuta tehing. Konto allkirjastamisel kustutatakse ja kõik ülejäänud fondid (välja arvatud viimase %{ownerReserve}  reserveeritud XRP, kui tasu on  XRP pearaamatu kustutamine konto on %{ownerReserve} XRP) saadetakse määratud sihtkohta. Palun kontrollige sihtkohta kaks korda ja jätkake ainult siis, kui te tegelikult soovite kustutada oma konto XRP pearaamatu",
     "deleteAccountObjectsExistError": "Sa ei saa kustutada seda kontot, sest teie konto sisaldab konkreetseid XRP pearaamatu objekte, nagu muud varad, detsentraliseeritud vahetuse pakkumisi ja tingdeponeerimist (kui looja või saaja).",
     "deleteAccountSequenceIsNotEnoughError": "Seda kontot ei saa kustutada (veel). See võtab %{remainingSequence} rohkem ledgers sulgeda enne seda konto saab kustutada.",

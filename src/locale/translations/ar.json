@@ -939,6 +939,7 @@
     "walletReserve": "احتياطي المحفظة",
     "accountBalance": "رصيد الحساب",
     "availableForSpending": "متاح للإنفاق",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "هذه معاملة حذف الحساب. عند التوقيع ، سيتم حذف حسابك ، وسيتم إرسال جميع أموالك المتبقية (باستثناء آخر %{ownerReserve} XRP محجوزة ، حيث أن الرسوم على دفتر الأستاذ XRP لحذف الحساب هي %{ownerReserve} XRP) إلى الوجهة التي تم تكوينها. يرجى التحقق من الوجهة مرتين ، والمتابعة فقط إذا كنت تريد بالفعل حذف حسابك على دفتر الأستاذ XRP",
     "deleteAccountObjectsExistError": "لا يمكنك حذف هذا الحساب ، حيث أن الحساب الخاص بك يحتوي على عناصر سجلات XRP محددة ، مثل الأصول الأخرى ، عروض أسعار الصرف اللامركزي ، ودائع (باعتباره القائم بالتكوين أو المستفيد)",
     "deleteAccountSequenceIsNotEnoughError": "لا يمكن حذف هذا الحساب بعد. يستغرق إغلاق %{remainingSequence} دفاتر أستاذ أخرى قبل أن يتم حذف هذا الحساب.",

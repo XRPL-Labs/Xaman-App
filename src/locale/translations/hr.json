@@ -939,6 +939,7 @@
     "walletReserve": "Rezerva novčanika",
     "accountBalance": "Stanje računa",
     "availableForSpending": "Raspoloživo za trošenje",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Ovo je transakcija za brisanje računa. Nakon potpisa, račun će biti izbrisan i sva preostala sredstva (osim troškova brisanja računa u iznosu od %{ownerReserve} XRP-a) bit će poslana na postavljeno odredište. Provjerite postavljeno odredište i nastavite samo ako ste sigurni da su svi podaci točni te želite izbrisati svoj XRP račun.",
     "deleteAccountObjectsExistError": "Račun ne može biti izbrisan jer sadrži određene objekte XRP ledger-a kao što su sredstva, decentralizirane ponude mjenjačnica, escrow račun (kao tvorac ili korisnik)",
     "deleteAccountSequenceIsNotEnoughError": "Ovaj račun se još uvijek ne može izbrisati. Potrebno je %{remainingSequence} više potvrda ledgera prije nego što se ovaj račun može izbrisati.",

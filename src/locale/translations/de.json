@@ -939,6 +939,7 @@
     "walletReserve": "Wallet Reserve",
     "accountBalance": "Kontostand",
     "availableForSpending": "Verfügbar zum Ausgeben",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Dies ist eine Account-Löschen-Transaktion. Durch signieren dieser Transaktion wird Ihr Account gelöscht und alle verbleibenden Guthaben (außer der letzten, reservierten %{ownerReserve} XRP, die als Gebühr für das löschen eines Accounts benötigt werden) an das konfigurierte Ziel gesendet. Bitte überprüfen Sie das Ziel sorgfältig und fahren Sie nur dann fort, wenn Sie Ihren Account auf dem XRP-Ledger unwiderruflich löschen möchten.",
     "deleteAccountObjectsExistError": "Sie können dieses Konto nicht löschen, da Ihr Konto bestimmte XRP-Hauptbuchobjekte enthält, wie andere Assets (Vermögenswerte), Dezentrale Austauschangebote, Escrows (als Ersteller oder Begünstigter)",
     "deleteAccountSequenceIsNotEnoughError": "Dieses Konto kann noch nicht gelöscht werden. Es dauert %{remainingSequence} mehr Ledger, um geschlossen zu werden, bevor dieses Konto gelöscht werden kann.",

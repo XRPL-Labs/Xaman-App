@@ -939,6 +939,7 @@
     "walletReserve": "지갑 준비금",
     "accountBalance": "계정 잔액",
     "availableForSpending": "지출 가능",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "이것은 계정을 삭제하는 트랜잭션입니다. 계정에 서명하면 계정이 삭제되고 남은 자금 (마지막으로 묶인 %{ownerReserve} XRP는 계정 삭제를 위한 XRP 원장 수수료로 제외) 은 선택한 주소로 보내집니다. 목적지를 다시 확인하고, 확실히 XRP 원장에서 계정을 삭제하려는 경우에만 계속 하십시오.",
     "deleteAccountObjectsExistError": "귀하의 계정에는 다른 자산, 탈 중앙화 거래소 오퍼, 에스크로 (발행자 또는 수혜자로서) 와 같은 특정 XRP 원장 항목들이 있으므로 계정을 삭제할 수 없습니다.",
     "deleteAccountSequenceIsNotEnoughError": "이 계정을 삭제할 수 없습니다. 이 계정을 삭제하기 전에 %{remainingSequence} 의 원장이 더 있습니다.",

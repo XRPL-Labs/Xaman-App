@@ -939,6 +939,7 @@
     "walletReserve": "Hamyon zaxirasi",
     "accountBalance": "Hisob balansi",
     "availableForSpending": "Pul sarflash mumkin",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Bu hisobni o'chirish operatsiyasi. Imzolanishda sizning hisob qaydnomangiz o'chiriladi va qolgan barcha mablag'lar (oxirgi %{ownerReserve}  ta saqlangan  XRPdan tashqari, chunki hisobni o'chirish uchun XRP daftaridagi to'lov %{ownerReserve} XRP), tuzilgan manzilga yuboriladi. Iltimos, manzilni ikki marta tekshiring va agar siz XRP daftaridagi hisobingizni o'chirishni xohlasangiz, FAQAT davom eting.",
     "deleteAccountObjectsExistError": "Siz ushbu hisobni o'chira olmaysiz, chunki sizning hisobingizda boshqa XRP daftar ob'ektlari mavjud, masalan, boshqa aktivlar, Markazlashtirilmagan Exchange takliflari, Escrows (yaratuvchi yoki benefitsiar sifatida)",
     "deleteAccountSequenceIsNotEnoughError": "Ushbu hisobni o'chirib bo'lmaydi (hali). Ushbu hisobni o'chirishdan oldin uni yopish uchun %{remainingSequence} ko'proq daftar kerak.",

@@ -939,6 +939,7 @@
     "walletReserve": "Запазено в портфейл",
     "accountBalance": "Салдо по сметка",
     "availableForSpending": "Наличен баланс",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Това е транзакция за изтриване на сметка. При подписване сметката ви ще бъде изтрита и всичките ви останали средства (с изключение на последните %{ownerReserve}  запазени  XRP, тъй като таксата в XRP регистъра за изтриване на акаунт е %{ownerReserve} XRP) ще бъдат изпратени до конфигурираната дестинация. Моля, проверете дестинацията два пъти и продължете САМО, ако НАИСТИНА искате да изтриете акаунта си в XRP ledger",
     "deleteAccountObjectsExistError": "Не можете да изтриете тази сметка, защото акаунтът ви съдържа конкретни обекти на XRP Ledger като: Други активи, Децентрализирани оферти за Exchange и Escrows (като създател или бенефициент).",
     "deleteAccountSequenceIsNotEnoughError": "Тази сметка не може да бъде изтрита (все още). Трябва %{remainingSequence} повече книги, за да затворите, преди тази сметка да може да бъде изтрита.",

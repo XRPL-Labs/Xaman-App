@@ -939,6 +939,7 @@
     "walletReserve": "Balettreserv",
     "accountBalance": "Kontobalans",
     "availableForSpending": "Tillgänglig för utgifter",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Det här är en kontoborttagningstransaktion. När du skriver under ditt konto kommer du att tas bort och alla återstående medel (med undantag av de %{ownerReserve}  senaste reserverade  XRP-avgifterna, eftersom avgiften på XRP-liggaren för borttagning av ett konto är %{ownerReserve} XRP) kommer att skickas till den konfigurerade destinationen. Kontrollera målet två gånger, och ENDLY fortsätter om du vill ta bort ditt konto på XRP-liggaren",
     "deleteAccountObjectsExistError": "Du kan inte ta bort det här kontot eftersom ditt konto innehåller specifika XRP liggerobjekt, som andra tillgångar, Decentraliserade Exchange-erbjudanden, Escrows (som skapare eller förmånstagare)",
     "deleteAccountSequenceIsNotEnoughError": "Det här kontot kan inte tas bort (ännu). Det tar %{remainingSequence} fler liggare att stänga innan det här kontot kan tas bort.",

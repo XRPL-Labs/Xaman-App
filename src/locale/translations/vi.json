@@ -939,6 +939,7 @@
     "walletReserve": "Dự trữ ví",
     "accountBalance": "Số dư tài khoản",
     "availableForSpending": "Có sẵn để chi tiêu",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Đây là một giao dịch Xóa tài khoản. Khi ký tài khoản của bạn sẽ bị xóa và tất cả số tiền còn lại của bạn (ngoại trừ %{ownerReserve} XRP dự trữ cuối cùng, vì phí trên sổ cái XRP để xóa tài khoản là %{ownerReserve} XRP) sẽ được gửi đến đích đã định cấu hình. Vui lòng kiểm tra điểm đến hai lần và CHỈ tiếp tục nếu bạn THỰC SỰ muốn xóa tài khoản của mình trên sổ cái XRP",
     "deleteAccountObjectsExistError": "Bạn không thể xóa tài khoản này vì nó chứa các đối tượng sổ cái XRP cụ thể, như mã thông báo (không phải XRP), phiếu mua hàng Sàn giao dịch phi tập trung (DEX), Người ký quỹ (với tư cách là người tạo hoặc người thụ hưởng)",
     "deleteAccountSequenceIsNotEnoughError": "Tài khoản này chưa thể bị xóa. Cần thêm %{remainingSequence} sổ cái để đóng trước khi tài khoản này có thể bị xóa.",

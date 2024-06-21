@@ -939,6 +939,7 @@
     "walletReserve": "Zaloga denarnice",
     "accountBalance": "Stanje računa",
     "availableForSpending": "Na voljo za porabo",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "To je transakcija za brisanje računa. Ob podpisu bo vaš račun izbrisan in vsa preostala sredstva (razen zadnjih %{ownerReserve}  rezerviranih  XRP-jev - kar je provizija v glavni knjigi XRP za izbris računa), bo poslan na izbran naslov. Dvakrat preverite cilj in nadaljujte samo, če dejansko želite izbrisati svoj račun v glavni knjigi XRP",
     "deleteAccountObjectsExistError": "Tega računa ni mogoče izbrisati, saj vsebuje posebne objekte glavne knjige XRP, kot so: druga sredstva, ponudbe decentraliziranih menjalnic, hramba (kot ustvarjalec ali upravičenec)",
     "deleteAccountSequenceIsNotEnoughError": "Tega računa še ni mogoče izbrisati. Za izbris tega računa je potrebno zapreti %{remainingSequence} preostalih zaporedij v glavni knjigi.",

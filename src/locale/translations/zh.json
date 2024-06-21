@@ -939,6 +939,7 @@
     "walletReserve": "钱包预留",
     "accountBalance": "账户余额",
     "availableForSpending": "可用",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "这是一个账户删除交易。签名后，您的账户将被删除，所有剩余资金将被发送到您配置的目的地地址（除最后%{ownerReserve} 个保留的XRP外，因为在 XRP分布式账本上删除账户的费用为%{ownerReserve} XRP）。请再次检查目的地地址，并且仅在您真正想删除您在XRP分布式账本上的账户时才继续。",
     "deleteAccountObjectsExistError": "您无法删除此账户，因为您的账户中包含特定的XRP分布式账本对象，例如其他资产，去中心化交易所委托单，托管（创建者或受益人）",
     "deleteAccountSequenceIsNotEnoughError": "This account cannot be deleted yet. It takes %{remainingSequence} more ledgers to close before this account can be deleted.",

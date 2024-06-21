@@ -939,6 +939,7 @@
     "walletReserve": "ವಾಲೆಟ್ ಮೀಸಲು",
     "accountBalance": "ಖಾತೆ ಬಾಕಿ",
     "availableForSpending": "ಖರ್ಚು ಮಾಡಲು ಲಭ್ಯವಿದೆ",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "ಇದು ಖಾತೆ ಅಳಿಸುವ ವ್ಯವಹಾರವಾಗಿದೆ. ನಿಮ್ಮ ಖಾತೆಗೆ ಸಹಿ ಮಾಡುವಾಗ ಅಳಿಸಲಾಗುತ್ತದೆ, ಮತ್ತು ನಿಮ್ಮ ಉಳಿದ ಎಲ್ಲಾ ಹಣವನ್ನು (ಕೊನೆಯ %{ownerReserve}  ಕಾಯ್ದಿರಿಸಿದ  XRP ಹೊರತುಪಡಿಸಿ, ಖಾತೆಯನ್ನು ಅಳಿಸಲು XRP ಲೆಡ್ಜರ್‌ನಲ್ಲಿನ ಶುಲ್ಕ %{ownerReserve} XRP ಆಗಿರುವುದರಿಂದ) ಕಾನ್ಫಿಗರ್ ಮಾಡಿದ ಗಮ್ಯಸ್ಥಾನಕ್ಕೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. ದಯವಿಟ್ಟು ಗಮ್ಯಸ್ಥಾನವನ್ನು ಎರಡು ಬಾರಿ ಪರಿಶೀಲಿಸಿ, ಮತ್ತು XRP ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಅಳಿಸಲು ನೀವು ಬಯಸಿದರೆ ಮಾತ್ರ ಮುಂದುವರಿಸಿ",
     "deleteAccountObjectsExistError": "ನಿಮ್ಮ ಖಾತೆಯು ಇತರ ಸ್ವತ್ತುಗಳು, ವಿಕೇಂದ್ರೀಕೃತ ವಿನಿಮಯ ಕೊಡುಗೆಗಳು, ಎಸ್ಕ್ರೊಗಳು (ಸೃಷ್ಟಿಕರ್ತ ಅಥವಾ ಫಲಾನುಭವಿಗಳಾಗಿ) ನಿರ್ದಿಷ್ಟ XRP ಲೆಡ್ಜರ್ ಆಬ್ಜೆಕ್ಟ್‌ಗಳನ್ನು ಒಳಗೊಂಡಿರುವುದರಿಂದ ನೀವು ಈ ಖಾತೆಯನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
     "deleteAccountSequenceIsNotEnoughError": "ಈ ಖಾತೆಯನ್ನು ಇನ್ನೂ ಅಳಿಸಲಾಗುವುದಿಲ್ಲ. ಈ ಖಾತೆಯನ್ನು ಅಳಿಸುವ ಮೊದಲು ಮುಚ್ಚಲು %{remainingSequence} ಹೆಚ್ಚಿನ ಲೆಡ್ಜರ್‌ಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ.",

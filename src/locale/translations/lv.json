@@ -939,6 +939,7 @@
     "walletReserve": "Maka rezerve",
     "accountBalance": "Konta atlikums",
     "availableForSpending": "Pieejamie izdevumi",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Šī ir Dzēst kontu transakcija. Pierakstoties konts tiks dzēsts, un visi jūsu atlikušie līdzekļi (izņemot pēdējās %{ownerReserve}  rezervētās  XRP kriptovalūtas monētas, jo maksa par XRP virsgrāmatas konta dzēšanu ir %{ownerReserve} XRP kriptovalūtas monētas) tiks nosūtīti uz konfigurēto galamērķi. Lūdzu pārbaudiet galamērķi divreiz, un turpiniet TIKAI tad, ja jūs FAKTISKI vēlaties dzēst savu kontu XRP virsgrāmatā",
     "deleteAccountObjectsExistError": "Jūs nevarat izdzēst šo kontu, jo jūsu konts satur konkrētus XRP virsgrāmatas priekšmetus, tāpat kā citus aktīvus, Decentralizētas Kriptobiržas piedāvājumus, Darījuma kontus (kā izveidotājs vai saņēmējs)",
     "deleteAccountSequenceIsNotEnoughError": "Konts nav (vēl) dzēšams. Jānoslēdz vairāki %{remainingSequence} grāmatojumi pirms kontu var dzēst.",

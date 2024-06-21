@@ -939,6 +939,7 @@
     "walletReserve": "वॉलेट राखीव",
     "accountBalance": "खात्यातील शिल्लक",
     "availableForSpending": "खर्च करण्यासाठी उपलब्ध",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "हा अकाउंट डिलीट ट्रान्झॅक्शन आहे. साइन इन करताना आपले खाते हटविले जाईल, आणि आपले उर्वरित सर्व निधी (खाते हटविण्याकरिता एक्सआरपी लेजरवर फी 5 एक्सआरपी असेल म्हणून शेवटच्या 5 आरक्षित एक्सआरपी वगळता) कॉन्फिगर केलेल्या गंतव्यावर पाठविली जाईल. कृपया दोनदा गंतव्यस्थान तपासा आणि आपण फक्त XRP खातेवरील खाते हटवू इच्छित असाल तर फक्त सुरू ठेवा",
     "deleteAccountObjectsExistError": "आपण हे खाते हटवू शकत नाही, कारण आपल्या खात्यात इतर मालमत्तांप्रमाणेच विकेंद्रित एक्सचेंज ऑफर, एस्क्रो (निर्माता किंवा लाभार्थी म्हणून) विशिष्ट एक्सआरपी लेजर ऑब्जेक्ट्स आहेत",
     "deleteAccountSequenceIsNotEnoughError": "हे खाते अद्याप हटविले जाऊ शकत नाही. हे खाते हटविण्यापूर्वी ते %{remainingSequence}. अधिक लेजर बंद करण्यास लागतात.",

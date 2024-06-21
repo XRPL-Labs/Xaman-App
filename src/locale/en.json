@@ -939,6 +939,7 @@
     "walletReserve": "Wallet reserve",
     "accountBalance": "Account balance",
     "availableForSpending": "Available for spending",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "This is an Account Delete transaction. When signing your account will be deleted, and all your remaining funds (except for the last %{ownerReserve} reserved %{nativeAsset}, as the fee on the XRP ledger for deleting an account is %{ownerReserve} %{nativeAsset}) will be sent to the configured destination. Please check the destination twice, and ONLY continue if you ACTUALLY want to delete your account on the XRP ledger",
     "deleteAccountObjectsExistError": "You cannot delete this account, because it contains specific XRP ledger objects, like tokens (non-XRP), Decentralized Exchange (DEX) offers, Escrows (as a creator or beneficiary)",
     "deleteAccountSequenceIsNotEnoughError": "This account cannot be deleted yet. It takes %{remainingSequence} more ledgers to close before this account can be deleted.",

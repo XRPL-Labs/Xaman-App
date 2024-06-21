@@ -939,6 +939,7 @@
     "walletReserve": "საფულის რეზერვი",
     "accountBalance": "ანგარიშის ბალანსი",
     "availableForSpending": "ხელმისაწვდომია ხარჯვისთვის",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "ეს არის ანგარიშის წაშლის ტრანზაქცია. როდესაც დაადასტურებთ, ანგარიში იქნება წაშლილი და მასზე არსებული სახსრები (გარდა %{ownerReserve} XRP-ისა რეზერვიდან, როგორც გადასახადი XRP ლეჯერზე ანგარიშის წაშლისთვის) იქნება გაგზავნილი მითითებულ მიმღებთან. გთხოვთ შეამოწმოთ მიმღების მისამართი ორჯერ და გააგრძელეთ მხოლოდ იმ შემთხვევაში, თუ ნამდვილად გსურთ ანგარიშის წაშლა XRP ლეჯერზე.",
     "deleteAccountObjectsExistError": "ამ ანგარიშის წაშლა შეუძლებელია, რადგან ის მოიცავს XRP ლეჯერის კონკრეტულ ობიექტებს, როგორიც არის სხვა აქტივები (არა XRP-ტოკენები), დეცენტრალიზებული ბირჟების (DEX) შემოთავაზებები, შემნახველი სეიფები (როგორც ავტორი ან ბენეფიციარი-მიმღები) ",
     "deleteAccountSequenceIsNotEnoughError": "ანგარიშის წაშლა შეგეძლებათ, დარჩენილი %{remainingSequence} ლეჯერის დახურვის შემდგომ.",

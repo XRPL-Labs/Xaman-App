@@ -939,6 +939,7 @@
     "walletReserve": "Reservasi dompet",
     "accountBalance": "Saldo rekening",
     "availableForSpending": "Tersedia untuk dibelanjakan",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Ini adalah transaksi Penghapusan Akun. Saat menandatangani akun Anda akan dihapus, dan semua dana Anda yang tersisa (kecuali untuk %{ownerReserve} XRP terakhir yang dipesan, karena biaya pada buku besar XRP untuk menghapus akun adalah %{ownerReserve} XRP) akan dikirim ke tujuan yang telah dikonfigurasi. Silakan periksa tujuan dua kali, dan HANYA lanjutkan jika Anda BENAR-BENAR ingin menghapus akun Anda di buku besar XRP",
     "deleteAccountObjectsExistError": "Anda tidak dapat menghapus akun ini, karena berisi objek buku besar XRP tertentu, seperti token (non-XRP), penawaran Bursa Terdesentralisasi (DEX), Escrow (sebagai pembuat atau penerima)",
     "deleteAccountSequenceIsNotEnoughError": "Akun ini belum bisa dihapus. Diperlukan %{remainingSequence} buku besar untuk ditutup sebelum akun ini dapat dihapus.",

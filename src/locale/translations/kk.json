@@ -939,6 +939,7 @@
     "walletReserve": "Сақтық көшірме әмиян",
     "accountBalance": "Шот балансы",
     "availableForSpending": "Шығындар үшін қол жетімді",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Бұл есептік жазбаны жою операциясы. Қол қою кезінде сіздің шотыңыз жойылады және қалған барлық қаражатыңыз (сақталған соңғы %{ownerReserve} XRP қоспағанда, шотты жою үшін XRP кітабындағы төлем %{ownerReserve} XRP болғандықтан) теңшелген жерге жіберіледі. Межелі жерді екі рет тексеріп, XRP тізіліміндегі шотыңызды шынымен жойғыңыз келсе ғана жалғастырыңыз",
     "deleteAccountObjectsExistError": "Сіз бұл есептік жазбаны жоя алмайсыз, өйткені сіздің шотыңызда XRP тізілімінің белгілі бір нысандары бар, мысалы: басқа активтер, орталықтандырылмаған биржалық ұсыныстар және шартты салымдар (жасаушы немесе алушы ретінде).",
     "deleteAccountSequenceIsNotEnoughError": "Бұл есептік жазбаны жою мүмкін емес (әлі). Бұл есептік жазбаны жоймас бұрын оларды жабу үшін %{remainingSequence} айнымалысы қажет.",

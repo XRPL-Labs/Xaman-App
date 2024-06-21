@@ -20,16 +20,26 @@ import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
 
 import { LedgerEntry } from '@common/libs/ledger/types/ledger';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // components
-import { ActionPanel, Button, Icon, LoadingIndicator, Spacer, TokenAvatar, TokenIcon } from '@components/General';
+import {
+    ActionPanel,
+    Button,
+    Icon,
+    InfoMessage,
+    LoadingIndicator,
+    Spacer,
+    TokenAvatar,
+    TokenIcon,
+} from '@components/General';
 
 import Localize from '@locale';
 
 // style
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
-import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+import { AccessLevels } from '@store/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -40,7 +50,7 @@ export interface State {
     isLoading: boolean;
     accountObjects: any;
     nfTokenPageCount: number;
-    networkReserve: any;
+    networkReserve: { BaseReserve: number; OwnerReserve: number };
 }
 
 /* Component ==================================================================== */
@@ -422,6 +432,16 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Spacer size={30} />
 
                         <Text style={styles.rowTitle}>{Localize.t('account.availableForSpending')}</Text>
+                        {account.accessLevel === AccessLevels.Readonly && (
+                            <>
+                                <Spacer size={10} />
+                                <InfoMessage
+                                    type="error"
+                                    label={Localize.t('account.readOnlyAccountSpendableBalanceWarning')}
+                                    labelStyle={styles.readonlyInfoMessageLabel}
+                                />
+                            </>
+                        )}
                         <View style={styles.objectItemCard}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
                                 <TokenIcon size={20} token="Native" containerStyle={styles.iconContainer} />

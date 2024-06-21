@@ -939,6 +939,7 @@
     "walletReserve": "Reserveret til konto",
     "accountBalance": "Saldo",
     "availableForSpending": "Tilgængelige midler",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Dette er en transaktion, der sletter din konto. Når du skriver under, bliver din konto slettet, og alle resterende midler (bortset fra de sidste %{ownerReserve}  reserverede XRP, som  XRP-ledgeren tager i gebyr for sletning af en konto), vil blive sendt til den angivne modtager. Kontrollér derfor modtager-destinationen to gange, og fortsæt KUN, hvis du vil slette din konto på XRP-ledgeren",
     "deleteAccountObjectsExistError": "Du kan ikke slette denne konto, da din konto indeholder specifikke XRP-ledningsobjekter, f.eks. andre aktiver, Decentraliserede Exchange-tilbud, Escrows",
     "deleteAccountSequenceIsNotEnoughError": "Denne konto kan ikke slettes (endnu). Det kræver at %{remainingSequence} flere sekvenser afsluttes, før denne konto kan slettes.",

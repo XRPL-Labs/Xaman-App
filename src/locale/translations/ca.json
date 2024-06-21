@@ -939,6 +939,7 @@
     "walletReserve": "Reserva del moneder",
     "accountBalance": "Saldo del compte",
     "availableForSpending": "Disponible per gastar",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Aquesta transacció és per eliminar un compte. Signant-la, el compte serà eliminat i els fons existents (excepte els últims %{ownerReserve} XRP reservats, que són la comissió de l'XRPL per eliminar un compte) enviats a la destinació estipulada. Si us plau, comprova la destinació dues vegades, i NOMÉS continua si DE FET vols eliminar el compte de l'XRPL.",
     "deleteAccountObjectsExistError": "No pots suprimir aquest compte perquè conté elements de l'XRPL com ara: altres actius, ofertes de l'Exchange descentralitzat, fideïcomisos (com a creador o beneficiari).",
     "deleteAccountSequenceIsNotEnoughError": "Aquest compte encara no es pot suprimir.  Cal que es tanquin %{remainingSequence} registres més abans de poder ser eliminat.",

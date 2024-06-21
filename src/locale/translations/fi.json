@@ -939,6 +939,7 @@
     "walletReserve": "Lompakon reservi",
     "accountBalance": "Tilin saldo",
     "availableForSpending": "Käytettävissä käytettäväksi",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Tämä on tilin poistotapahtuma. Kun allekirjoitat tapahtuman niin tilin kaikki jäljellä olevat varat (lukuun ottamatta viimeistä viittä varattua XRP :tä, mikä käytetään tilin lopettamiseen) lähetetään määritettyyn kohdeosoitteeseen. Tarkista kohdeosoite kahdesti, ja JATKA AINOASTAAN JOS OLET VARMA, että haluat poistaa tilisi XRP-tilikirjasta.",
     "deleteAccountObjectsExistError": "Et voi poistaa tätä tiliä, koska tililläsi on erityisiä XRP-tilikirjan osia, kuten muita omaisuuseriä, hajautettuja vaihtotarjouksia, sulkutilejä (luojana tai edunsaajana)",
     "deleteAccountSequenceIsNotEnoughError": "Tätä tiliä ei voi poistaa (vielä). Vie %{remainingSequence} lisää tilikirjoja, ennen kuin tämä tili voidaan poistaa.",

@@ -939,6 +939,7 @@
     "walletReserve": "Резервни новчаник",
     "accountBalance": "Стање на рачуну",
     "availableForSpending": "Доступно за потрошњу",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Ово је трансакција за брисање рачуна. Приликом потписивања ваш рачун ће бити избрисан, а сва ваша преостала средства (осим последњих %{ownerReserve}  резервисаних  XRP, јер је накнада на XRP књизи за брисање рачуна) биће послата на конфигурисано одредиште. Проверите одредиште два пута и наставите САМО ако ЗАПРАВО желите да избришете свој рачунна XRP књизи",
     "deleteAccountObjectsExistError": "Не можете избрисати овај рачун, јер ваш рачун садржи одређене предмете у XRP књизи, попут остале имовине, децентрализованих понуда за Децентрализоване мењачнице, Есцровс (као творац или корисник)",
     "deleteAccountSequenceIsNotEnoughError": "Овај налог још увек није могуће избрисати. Потребно је затворити још %{remainingSequence} трансакција пре него што овај налог може бити избрисан.",

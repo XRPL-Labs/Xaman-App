@@ -939,6 +939,7 @@
     "walletReserve": "Riserva portafoglio",
     "accountBalance": "Saldo dell'account",
     "availableForSpending": "Disponibile per i pagamenti",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Questa è una transazione di eliminazione dell'account. Al momento della firma il tuo account verrà eliminato e tutti i tuoi fondi rimanenti (ad eccezione degli ultimi %{ownerReserve} XRP vincolati, visto che la commissione sul registro XRP per l'eliminazione di un account è di %{ownerReserve} XRP) verranno inviati alla destinazione indicata. Si prega di controllare DUE volte la destinazione e continuare SOLO se si desidera VERAMENTE eliminare il proprio account nel registro XRP",
     "deleteAccountObjectsExistError": "Non puoi eliminare questo account, poiché contiene oggetti particolari del registro XRP come ad esempio: altre risorse digitali, offerte di scambio decentralizzato, e i cosiddetti escrow cioè i depositi in garanzia (di creatori o di beneficiari)",
     "deleteAccountSequenceIsNotEnoughError": "Questo account non può essere eliminato (ancora). Ci vogliono %{remainingSequence} più ledgers da chiudere prima che questo account possa essere cancellato.",

@@ -939,6 +939,7 @@
     "walletReserve": "Pitaka reserba",
     "accountBalance": "Balanse ng account",
     "availableForSpending": "Magagamit para sa paggastos",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Ito ay isang transaksyon sa pag-tanggal ng Account. Kapag pumirma ka ang iyong account ay tatanggalin,  at lahat ng iyong natitirang mga pondo (maliban sa huling %{ownerReserve} nakareserba sa XRP bilang bayad sa XRP Ledger sa pag tanggal ng account ay %{ownerReserve} XRP) ay ipapadala sa nka-configure na patutunguhan. Mangyaring suriin ang patutunguhan ng dalawang beses, at ipagpatuloy LAMANG kung TALAGANG nais mong tanggalin ang iyong account sa XRP ledger.",
     "deleteAccountObjectsExistError": "Hindi mo matatanggal ang account na ito, dahil naglalaman ito ng tukoy na mga bagay na ledger ng XRP, tulad ng mga token (hindi XRP), alok ng Desentralisadong Exchange (DEX), Escrows (bilang isang tagalikha o beneficiary)",
     "deleteAccountSequenceIsNotEnoughError": "Ang account na ito ay hindi pa matatanggal. Tumatagal %{remainingSequence} mas maraming mga ledger upang isara bago matanggal ang account na ito.",

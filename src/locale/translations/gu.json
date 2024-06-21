@@ -939,6 +939,7 @@
     "walletReserve": "વોલેટ અનામત",
     "accountBalance": "એકાઉન્ટ બેલેન્સ",
     "availableForSpending": "ખર્ચ માટે ઉપલબ્ધ છે",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "આ એક એકાઉન્ટ ડિલીટ ટ્રાંઝેક્શન છે. જ્યારે તમારું એકાઉન્ટ સાઇન ઇન કરવું તે કા deletedી નાખવામાં આવશે, અને તમારા બાકીના તમામ ભંડોળ (છેલ્લા %{ownerReserve}  આરક્ષિત  XRP સિવાય, એકાઉન્ટ કાtingી નાખવા માટેની XRP ખાતા પરની ફી %{ownerReserve} XRP છે) રૂપરેખાંકિત ગંતવ્ય પર મોકલવામાં આવશે. કૃપા કરીને બે વાર લક્ષ્યસ્થાન તપાસો, અને જો તમે ખરેખર XRP ખાતા પર તમારું ખાતું કા deleteી નાખવા માંગતા હોવ તો ફક્ત ચાલુ રાખો.",
     "deleteAccountObjectsExistError": "તમે આ એકાઉન્ટ કાઢી શકતા નથી, કારણ કે તમારા એકાઉન્ટ (એક સર્જક અથવા લાભાર્થી તરીકે) ચોક્કસ XRP ખાતાવહી પદાર્થો, અન્ય અસ્કયામતોના વિકેન્દ્રિત એક્સચેન્જ ઓફર, Escrows જેમ સમાવે",
     "deleteAccountSequenceIsNotEnoughError": "આ એકાઉન્ટ હજી સુધી કાઢી શકાતી નથી. તે પહેલાં આ એકાઉન્ટ કાઢી શકાય બંધ કરવા%{remainingSequence} વધુ ખાતાવહી લે છે.",

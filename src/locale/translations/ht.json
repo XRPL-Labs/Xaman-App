@@ -939,6 +939,7 @@
     "walletReserve": "Rezèv bous",
     "accountBalance": "Balans kont",
     "availableForSpending": "Disponib pou depans",
+    "readOnlyAccountSpendableBalanceWarning": "Please note: The access level for this account is Read-Only. There is currently no way to sign transactions that can affect the account state in any form.",
     "deleteAccountWarning": "Sa a se yon tranzaksyon Kont efase. Lè w ap siyen kont ou yo pral efase, ak tout lajan ki rete ou (eksepte pou dènye %{ownerReserve}  rezève XRP a, kòm frè a sou Ledger  XRP pou efase yon kont se %{ownerReserve} XRP) yo pral voye nan destinasyon an configuré. Tanpri tcheke destinasyon an de fwa, epi kontinye sèlman si ou aktyèlman vle efase kont ou sou liv XRP la",
     "deleteAccountObjectsExistError": "Ou pa ka efase kont sa a, paske li gen espesifik objè XRP Ledger, tankou marqueur (ki pa XRP), Dezentralize Echanj (DEX) ofri, kondisyonèl (kòm yon kreyatè oswa benefisyè)",
     "deleteAccountSequenceIsNotEnoughError": "Kont sa poko ka efase. Li pran %{remainingSequence} plis liv pou fèmen anvan kont sa a ka efase.",
