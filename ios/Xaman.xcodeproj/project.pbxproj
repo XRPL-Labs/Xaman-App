@@ -763,6 +763,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesSwift/Promises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/RCTI18nStrings.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RealmJS/RealmJS.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb_Privacy.bundle",
 			);
@@ -779,6 +780,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FBLPromises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Promises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCTI18nStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RealmJS.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/nanopb_Privacy.bundle",
 			);
@@ -864,6 +866,7 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesSwift/Promises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/RCTI18nStrings.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/RealmJS/RealmJS.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb_Privacy.bundle",
 			);
@@ -880,6 +883,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FBLPromises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Promises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCTI18nStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RealmJS.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/nanopb_Privacy.bundle",
 			);
@@ -1086,7 +1090,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
+					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
@@ -1170,7 +1174,7 @@
 					"${PODS_ROOT}/Firebase/CoreOnly/Sources",
 					"\"$(PODS_ROOT)/boost\"",
 					"\"$(PODS_ROOT)/Headers/Private/React-Core\"",
-					$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources,
+					"$CONFIGURATION_TEMP_DIR/Xaman.build/DerivedSources",
 				);
 				INFOPLIST_FILE = XamanTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
