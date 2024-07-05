@@ -11,19 +11,38 @@ export default StyleService.create({
         alignSelf: 'stretch',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: AppSizes.padding,
+        gap: AppSizes.paddingSml,
     },
     containerRequired: {
-        borderWidth: 1,
-        borderColor: '$grey',
+        backgroundColor: '$lightGrey',
     },
     containerComingUp: {
+        backgroundColor: '$lightOrange',
+    },
+    okButton: {
         backgroundColor: '$orange',
     },
-    messageText: {
+    okButtonText: {
+        color: '$black',
+        fontFamily: AppFonts.base.familyExtraBold,
+    },
+    messageTitle: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
         textAlign: 'center',
+    },
+    messageText: {
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textPrimary',
+        textAlign: 'center',
+    },
+    actionButtonContainer: {
+        backgroundColor: '$contrast',
+    },
+    actionButtonLabel: {
+        color: '$textContrast',
+        fontSize: AppFonts.subtext.size,
     },
 });

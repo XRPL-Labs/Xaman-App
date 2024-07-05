@@ -4,32 +4,44 @@ import { InteractionManager, StyleProp, Text, View, ViewStyle } from 'react-nati
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { ProfileRepository } from '@store/repositories';
+import { ProfileRepository, UserInteractionRepository } from '@store/repositories';
 import { MonetizationStatus } from '@store/types';
+import { InteractionTypes } from '@store/models/objects/userInteraction';
 
 import { PurchaseProductOverlayProps } from '@screens/Overlay/PurchaseProduct';
 
-import { Button } from '@components/General';
+import { Button, RaisedButton } from '@components/General';
 
 import Localize from '@locale';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
+
 /* Types ==================================================================== */
 interface Props {
     style: StyleProp<ViewStyle> | undefined;
+    canSuppressWarnings?: boolean;
 }
 
 interface State {
+    suppressComingUpWarning: boolean;
     monetizationStatus: MonetizationStatus;
     productForPurchase?: string;
     monetizationType?: string;
 }
 /* Component ==================================================================== */
 class MonetizationElement extends PureComponent<Props, State> {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof MonetizationElement.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
+        canSuppressWarnings: true,
+    };
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
+            suppressComingUpWarning: false,
             monetizationStatus: MonetizationStatus.NONE,
             productForPurchase: undefined,
             monetizationType: undefined,
@@ -50,6 +62,10 @@ class MonetizationElement extends PureComponent<Props, State> {
 
     getMonetizationStatus = () => {
         const profile = ProfileRepository.getProfile();
+        const suppressComingUpWarning = UserInteractionRepository.getInteractionValue(
+            InteractionTypes.MONETIZATION,
+            'suppress_warning_on_home_screen',
+        );
 
         // no profile found
         if (!profile) {
@@ -59,15 +75,21 @@ class MonetizationElement extends PureComponent<Props, State> {
         const { monetization } = profile;
 
         this.setState({
+            suppressComingUpWarning,
             monetizationStatus: monetization.monetizationStatus,
             productForPurchase: monetization.productForPurchase,
             monetizationType: monetization.monetizationType,
         });
     };
 
-    onSuccessPurchase = () => {};
-
-    onPurchaseProductClose = () => {};
+    onSuccessPurchase = () => {
+        // purchase was successful clear the monetization status
+        ProfileRepository.saveProfile({
+            monetization: {
+                monetizationStatus: MonetizationStatus.NONE,
+            },
+        });
+    };
 
     purchaseProduct = () => {
         const { productForPurchase, monetizationType } = this.state;
@@ -76,17 +98,40 @@ class MonetizationElement extends PureComponent<Props, State> {
             productId: productForPurchase!,
             productDescription: monetizationType!,
             onSuccessPurchase: this.onSuccessPurchase,
-            onClose: this.onPurchaseProductClose,
+        });
+    };
+
+    suppressWarningMessage = () => {
+        UserInteractionRepository.updateInteraction(InteractionTypes.MONETIZATION, {
+            suppress_warning_on_home_screen: true,
+        });
+
+        this.setState({
+            suppressComingUpWarning: true,
         });
     };
 
     renderPaymentComingUp = () => {
-        const { style } = this.props;
+        const { canSuppressWarnings, style } = this.props;
+        const { suppressComingUpWarning } = this.state;
+
+        if (canSuppressWarnings && suppressComingUpWarning) {
+            return null;
+        }
 
         return (
             <View style={[styles.container, styles.containerComingUp, style]}>
+                <Text style={styles.messageTitle}>{Localize.t('monetization.thankYouForUsingXaman')}</Text>
                 <Text style={styles.messageText}>{Localize.t('monetization.comingPaymentWarning')}</Text>
-                <Button roundedSmallBlock contrast label="Pay now" onPress={this.purchaseProduct} />
+                {canSuppressWarnings && (
+                    <Button
+                        roundedSmallBlock
+                        style={styles.okButton}
+                        textStyle={styles.okButtonText}
+                        label={Localize.t('global.ok')}
+                        onPress={this.suppressWarningMessage}
+                    />
+                )}
             </View>
         );
     };
@@ -97,7 +142,15 @@ class MonetizationElement extends PureComponent<Props, State> {
         return (
             <View style={[styles.container, styles.containerRequired, style]}>
                 <Text style={styles.messageText}>{Localize.t('monetization.paymentRequired')}</Text>
-                <Button roundedSmallBlock contrast label="Payment CTA" onPress={this.purchaseProduct} />
+                <View style={AppStyles.row}>
+                    <RaisedButton
+                        small
+                        onPress={this.purchaseProduct}
+                        label={Localize.t('monetization.learnMore')}
+                        containerStyle={styles.actionButtonContainer}
+                        textStyle={styles.actionButtonLabel}
+                    />
+                </View>
             </View>
         );
     };

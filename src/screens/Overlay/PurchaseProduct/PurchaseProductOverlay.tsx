@@ -9,32 +9,27 @@ import LoggerService from '@services/LoggerService';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { ProfileRepository } from '@store/repositories';
-import { MonetizationStatus } from '@store/types';
-
 import { InAppPurchase, InAppPurchaseReceipt } from '@common/libs/iap';
 
 import { AppScreens } from '@common/constants';
 
-import { Button, ActionPanel, Spacer, NativePaymentButton } from '@components/General';
+import { ActionPanel, Spacer, NativePaymentButton } from '@components/General';
 
 import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes } from '@theme';
-import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
     productId: string;
     productDescription: string;
-    onSuccessPurchase: () => void;
-    onClose: () => void;
+    onSuccessPurchase?: () => void;
+    onClose?: () => void;
 }
 
 export interface State {
     isPurchasing: boolean;
-    isRestoring: boolean;
 }
 
 /* Component ==================================================================== */
@@ -48,7 +43,6 @@ class PurchaseProductOverlay extends Component<Props, State> {
 
         this.state = {
             isPurchasing: false,
-            isRestoring: false,
         };
 
         this.actionPanel = React.createRef();
@@ -79,13 +73,6 @@ class PurchaseProductOverlay extends Component<Props, State> {
 
     onSuccessPurchase = async () => {
         const { onSuccessPurchase } = this.props;
-
-        // payment was successful, set the monetization status to NONE
-        ProfileRepository.saveProfile({
-            monetization: {
-                monetizationStatus: MonetizationStatus.NONE,
-            },
-        });
 
         if (typeof onSuccessPurchase === 'function') {
             onSuccessPurchase();
@@ -147,36 +134,12 @@ class PurchaseProductOverlay extends Component<Props, State> {
         }
     };
 
-    restorePurchase = async () => {
-        try {
-            this.setState({
-                isRestoring: true,
-            });
-            const receipts = await InAppPurchase.restorePurchases();
-            if (Array.isArray(receipts) && receipts.length > 0) {
-                // start the verifying process
-                await this.verifyPurchase(receipts[0]);
-            }
-        } catch (error) {
-            LoggerService.recordError('restorePurchase: ', error);
-        } finally {
-            this.setState({
-                isRestoring: false,
-            });
-        }
-    };
-
-    render() {
+    renderContent = () => {
         const { productDescription } = this.props;
-        const { isPurchasing, isRestoring } = this.state;
+        const { isPurchasing } = this.state;
 
         return (
-            <ActionPanel
-                height={AppSizes.moderateScale(360)}
-                onSlideDown={Navigator.dismissOverlay}
-                extraBottomInset
-                ref={this.actionPanel}
-            >
+            <>
                 <Text
                     style={[
                         AppStyles.centerContent,
@@ -187,23 +150,27 @@ class PurchaseProductOverlay extends Component<Props, State> {
                 >
                     {productDescription}
                 </Text>
+                <Spacer size={20} />
                 <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                     {Localize.t('monetization.prePurchaseMessage')}
                 </Text>
                 <Spacer size={50} />
                 <View style={AppStyles.flex1}>
                     <NativePaymentButton onPress={this.lunchPurchaseFlow} isLoading={isPurchasing} />
-                    <View style={styles.separatorContainer}>
-                        <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
-                    </View>
-                    <Button
-                        roundedMini
-                        light
-                        isLoading={isRestoring}
-                        label={Localize.t('monetization.restorePurchase')}
-                        onPress={this.restorePurchase}
-                    />
                 </View>
+            </>
+        );
+    };
+
+    render() {
+        return (
+            <ActionPanel
+                height={AppSizes.moderateScale(300)}
+                onSlideDown={Navigator.dismissOverlay}
+                extraBottomInset
+                ref={this.actionPanel}
+            >
+                {this.renderContent()}
             </ActionPanel>
         );
     }

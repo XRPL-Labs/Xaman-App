@@ -9,8 +9,10 @@ import { LoadingIndicator } from '@components/General/LoadingIndicator';
 import { AppSizes } from '@theme';
 
 import styles from './styles';
+import StyleService from '@services/StyleService';
 /* Types ==================================================================== */
 interface Props {
+    buttonStyle?: 'light' | 'dark';
     testID?: string;
     onPress?: () => void;
     isLoading?: boolean;
@@ -37,11 +39,12 @@ export default class NativePaymentButton extends PureComponent<Props> {
     onPress = debounce(this.debouncedOnPress, 500, { leading: true, trailing: false });
 
     render() {
-        const { testID, style, isLoading } = this.props;
+        const { buttonStyle, testID, style, isLoading } = this.props;
         return (
             <>
                 <NativePayButton
-                    height={AppSizes.scale(33)}
+                    buttonStyle={buttonStyle ?? StyleService.isDarkMode() ? 'light' : 'dark'}
+                    height={AppSizes.scale(37)}
                     testID={testID}
                     onPress={this.onPress}
                     style={[style, isLoading ? styles.payButtonLoading : {}]}

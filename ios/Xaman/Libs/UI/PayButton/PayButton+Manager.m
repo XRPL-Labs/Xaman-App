@@ -13,6 +13,12 @@
 RCT_EXPORT_MODULE(NativePayButton)
 
 RCT_EXPORT_VIEW_PROPERTY(onPress, RCTBubblingEventBlock)
+RCT_CUSTOM_VIEW_PROPERTY(buttonStyle, NSString, PayButtonView)
+{
+  if (json) {
+    [view initWithPaymentButtonStyle:[RCTConvert NSString:json]];
+  }
+}
 
 - (UIView *) view
 {

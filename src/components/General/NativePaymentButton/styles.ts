@@ -4,7 +4,7 @@ const styles = StyleService.create({
     loadingIndicator: {
         position: 'absolute',
         alignSelf: 'center',
-        top: '7%',
+        top: '14%',
     },
     payButtonLoading: {
         opacity: 0.5,

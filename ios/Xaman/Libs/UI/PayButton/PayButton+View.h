@@ -9,6 +9,8 @@
 #import <PassKit/PassKit.h>
 
 @interface PayButtonView : RCTView
+- (void)initWithPaymentButtonStyle:(NSString *)style;
 @property (nonatomic, readonly) PKPaymentButton *button;
 @property (nonatomic, copy) RCTBubblingEventBlock onPress;
+@property (strong, nonatomic) NSString *buttonStyle;
 @end
