@@ -1,6 +1,7 @@
 import { get } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
-import { Navigation, Options } from 'react-native-navigation';
+
+import { Navigation, Options, LayoutTabsChildren } from 'react-native-navigation';
 
 import { GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
 
@@ -27,7 +28,7 @@ const getDefaultOptions = (): Options => {
         layout: {
             backgroundColor: StyleService.value('$background'),
             componentBackgroundColor: StyleService.value('$background'),
-            orientation: ['portrait'] as any,
+            orientation: ['portrait'],
             adjustResize: false,
         },
         topBar: {
@@ -48,8 +49,8 @@ const getDefaultOptions = (): Options => {
             translucent: false,
             animate: false,
             drawBehind: false,
-            tabsAttachMode: 'onSwitchToTab' as any,
-            titleDisplayMode: 'alwaysShow' as any,
+            tabsAttachMode: 'onSwitchToTab',
+            titleDisplayMode: 'alwaysShow',
             elevation: 10,
             hideShadow: Platform.OS === 'android',
             shadow: Platform.select({
@@ -132,7 +133,7 @@ const Navigator = {
 
         const TabBarIcons = getTabBarIcons();
 
-        const bottomTabsChildren: any = [];
+        const bottomTabsChildren: LayoutTabsChildren[] = [];
 
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
@@ -422,9 +423,9 @@ const Navigator = {
      * @param {EnforcedProps<P>} props - The new props to apply to the screen.
      * @return {void}
      */
-    updateProps<P>(screen: AppScreenKeys, props: EnforcedProps<P>): void {
+    updateProps<P extends object>(screen: AppScreenKeys, props: EnforcedProps<P>): void {
         const currentScreen = screen || NavigationService.getCurrentScreen();
-        Navigation.updateProps(currentScreen, props as any);
+        Navigation.updateProps(currentScreen, props);
     },
 
     /**
