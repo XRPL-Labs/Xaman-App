@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Kont lan chwazi pa sipòte siy la chwazi.",
     "memoPublicWarning": "Enfòmasyon sou memo yo pral piblik pou tout moun",
     "destinationNotExistTooLittleToCreate": "Kont destinasyon an pa te itilize anvan, epi li pa gen yon balans. Pou aktive yon kont sou Ledger XRP a, yo mande yon premye depo omwen %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "Kont destinasyon an pa te itilize anvan, epi li pa gen okenn balans. Si ou kontinye voye kont sa a, %{baseReserve} %{nativeAsset} nan %{amount} XRP a pral itilize pou aktive kont lan sou Ledger XRP a, sa vle di %{baseReserve} %{nativeAsset} pap depanse. Èske ou sèten ou vle kontinye?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Kont lan destinasyon pa aktive kòm li pa kenbe Ledger XRP fè respekte restriksyon balans minimòm de %{baseReserve} %{nativeAsset}. Pou aktive yon kont sou Ledger XRP a, yo dwe voye yon premye depo omwen %{baseReserve} %{nativeAsset} nan kont lan. Ki pa Peye-XRP marqueur pa ka itilize pou depo inisyal la.",
     "destinationTagIsRequired": "se tag nan destinasyon obligatwa pou voye peman sa a.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Kapab jwenn enfòmasyon kont moun k ap resevwa a tanpri eseye ankò.",

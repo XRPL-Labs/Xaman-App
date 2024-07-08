@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Вибраний акаунт не підтримує вибраний актив.",
     "memoPublicWarning": "Примітка буде загальнодоступною",
     "destinationNotExistTooLittleToCreate": "Цільовий акаунт раніше не використовувався і не має балансу. Для активації акаунта в книзі XRP, потрібен початковий депозит щонайменше %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "Акаунт призначення раніше не використовувався і не має залишку. Якщо Ви продовжите надсилати на цю адресу, %{baseReserve} %{nativeAsset} від %{amount} %{nativeAsset} буде використано для активації акаунта в книзі XRP, тобто %{baseReserve} %{nativeAsset} Ви не зможете витратити. Ви впевнені, що хочете продовжити?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Цільовий акаунт раніше не використовувався і не має залишку. Для активації акаунта в книзі XRP на акаунт потрібно надіслати початковий депозит щонайменше %{baseReserve} %{nativeAsset}. Активи, що не належать до %{nativeAsset}, не можуть бути використані для початкового депозиту.",
     "destinationTagIsRequired": "Для відправлення цього платежу необхідний тег призначення.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Не вдається отримати інформацію про акаунт отримувача, спробуйте ще раз.",

@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Odabran račun ne podržava izabrano sredstvo.",
     "memoPublicWarning": "Memo će biti javno dostupan",
     "destinationNotExistTooLittleToCreate": "Odredišni račun nije bio korišten prije, i nema saldo. Za aktiviranje računa na XRP knjigi, potreban je početni depozit od najmanje %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "Račun primatelja dosad nije korišten i na njemu nema sredstava. Ako nastavite sa slanjem na ovaj račun, %{baseReserve} XRP od ukupno %{amount}, biti će iskorišteno za aktivaciju računa, što znači da %{baseReserve} XRP-a neće biti rasploživo za korištenje. Jeste li sigurni da želite nastaviti?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Račun primatelja dosad nije korišten i na njemu nema sredstava. Za aktivaciju računa potreban je inicijalni depozit od minimalno %{baseReserve} %{nativeAsset}-a. Druga sredstva se ne mogu koristiti za aktivaciju/inicijalni depozit (samo %{nativeAsset}). ",
     "destinationTagIsRequired": "Odredišna oznaka (destination tag) je potrebna za slanje uplate.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Nemogućnost dobivanja informacija o računu primatelja, molimo vas pokušajte ponovno.",

@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "所选帐户不支持所选资产。",
     "memoPublicWarning": "备注信息将向所有人公开",
     "destinationNotExistTooLittleToCreate": "目标账户尚未使用过，并且没有任何余额。想要在XRP分布式账本上激活账户，您需要存入至少%{baseReserve} %{nativeAsset}作为初始存款。",
-    "destinationNotExistCreationWarning": "目标帐户以前没有使用过，并且没有任何余额。如果您继续发送到该帐户，则%{baseReserve} XRP %{amount} %{nativeAsset}将用于在XRP分类帐上激活帐户，这意味着%{baseReserve} %{nativeAsset}将不可用。你确定你要继续吗？",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "目标账户尚未使用，并且没有任何余额。想要在XRP分布式账本上激活账户，就必须发送至少%{baseReserve} %{nativeAsset}到该账户作为初始存款。非XRP资产不能用于初始存款。",
     "destinationTagIsRequired": "发送此付款需要提供目的地标签。",
     "unableGetRecipientAccountInfoPleaseTryAgain": "无法获取接收帐户信息，请重试。",

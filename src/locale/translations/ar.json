@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "الحساب المحدد لا يدعم الرمز المميز المحدد.",
     "memoPublicWarning": "ستكون معلومات المذكرة عامة للجميع",
     "destinationNotExistTooLittleToCreate": "لم يتم استخدام حساب الوجهة من قبل ، وليس به رصيد. لتنشيط حساب في دفتر الأستاذ XRP ، يلزم إيداع مبدئي لا يقل عن %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "لم يتم استخدام حساب الوجهة من قبل ، وليس به أي رصيد. إذا واصلت الإرسال إلى هذا الحساب ، فسيتم استخدام %{baseReserve} %{nativeAsset} من %{amount} %{nativeAsset} لتنشيط الحساب على دفتر الأستاذ XRP ، مما يعني أن %{baseReserve} %{nativeAsset} لن تكون قابلة للإنفاق. هل أنت متأكد أنك تريد الاستمرار؟",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "لم يتم تنشيط الحساب الوجهة لأنه لا يحتوي على حد أدنى من الرصيد المفروض في دفتر الأستاذ %{nativeAsset} وهو %{baseReserve} %{nativeAsset}. لتنشيط حساب في دفتر الأستاذ XRP ، يجب إرسال إيداع أولي لا يقل عن %{baseReserve} %{nativeAsset} إلى الحساب. لا يمكن استخدام الرموز المميزة بخلاف XRP للإيداع الأولي.",
     "destinationTagIsRequired": "علامة الوجهة مطلوبة لإرسال هذه الدفعة.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "تعذر الحصول على معلومات حساب المستلم. يرجى المحاولة مرة أخرى.",

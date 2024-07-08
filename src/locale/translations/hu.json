@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "A kiválasztott fiók nem támogatja a kiválasztott eszközt.",
     "memoPublicWarning": "Memo info will be public for everyone",
     "destinationNotExistTooLittleToCreate": "A célszámlát még nem használták, és nincs egyensúlyban. Az XRP főkönyvi számla aktiválásához legalább %{baseReserve} %{nativeAsset} kezdeti letét szükséges.",
-    "destinationNotExistCreationWarning": "A célszámlát még nem használták, és nincs egyensúlyban. Ha folytatja ezt a fiókot, akkor a %{amount} %{nativeAsset} %{baseReserve} %{nativeAsset}-je kerül felhasználásra a fiók aktiválásához az XRP főkönyvben, ami azt jelenti, hogy a %{baseReserve} %{nativeAsset} nem lesz kiköthethető. Biztosan folytatni kívánja?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "A célszámlát még nem használták, és nincs egyensúlyban. Az XRP főkönyvi számla aktiválásához a fiókba legalább %{baseReserve} %{nativeAsset} kezdeti letétet kell küldeni. A nem %{nativeAsset}-eszközök nem használhatók az első letéthez.",
     "destinationTagIsRequired": "A fizetés elküldéséhez a cél címke szükséges.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "A címzett fiók adatai nem kérhetők le, próbálkozzon újra.",

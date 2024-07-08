@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "منتخب اڪائونٽ جي چونڊ ٽوڪن جي حمايت نه ڪندو آھي.",
     "memoPublicWarning": "ميمو معلومات هر لاء عوامي ٿيندو",
     "destinationNotExistTooLittleToCreate": "منزلن وارو اڪائونٽ اڳ ۾ استعمال نه ڪيو ويو آهي ، ۽ بيلنس ڪونهي. ايڪس آر پي ليجر تي اڪائونٽ چالو ڪرڻ لاءِ ، گهٽ ۾ گهٽ %{baseReserve} %{nativeAsset} جي ابتدائي جمع جي ضرورت هوندي آهي.\r\n",
-    "destinationNotExistCreationWarning": "منزل وارو کاتو اڳ ۾ استعمال نه ڪيو ويو آهي ، ۽ ڪوبه توازن نه آهي. جيڪڏهن توهان هن اڪائونٽ ڏانهن موڪلڻ جاري رکو ، %{amount} ايڪس آر پي جو %{baseReserve} %{nativeAsset} اڪائونٽ کي چالو ڪرڻ لاءِ استعمال ڪيو ويندو ايڪس آر پي ليجر ، مطلب ته %{baseReserve} %{nativeAsset} خرچ نه ٿيندو. ڇا توهان پڪ سان جاري رکڻ چاهيو ٿا؟",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "منزل جي حساب چالو نه آهي ۽ ناهي هڪ توازن. جي XRPL تي هڪ اڪائونٽ ايڪٽيويٽ کي، پهرين جمع گهٽ ۾ گهٽ %{baseReserve} %{nativeAsset} جنهن هڪ خرچ نه ڪرڻ رکيل طور تي منعقد ڪيو ويندو. غير ايڪس آر پي اثاثو ابتدائي ذخيرو لاءِ استعمال نه ٿي ڪري سگھجي.",
     "destinationTagIsRequired": "اها ادائيگي موڪلڻ لاءِ منزل جي ٽيگ گهربل هوندي آهي.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "وصول ڪندڙ کاتي جي معلومات حاصل ڪرڻ کان قاصر. مهرباني ڪري ٻيهر ڪوشش ڪريو. ",

@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "ਚੁਣਿਆ ਹੋਇਆ ਖਾਤਾ ਚੁਣੀ ਗਈ ਸੰਪਤੀ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦਾ.",
     "memoPublicWarning": "ਮੀਮੋ ਜਾਣਕਾਰੀ ਹਰੇਕ ਲਈ ਜਨਤਕ ਹੋਵੇਗੀ",
     "destinationNotExistTooLittleToCreate": "ਮੰਜ਼ਿਲ ਖਾਤਾ ਪਹਿਲਾਂ ਨਹੀਂ ਵਰਤਿਆ ਗਿਆ ਹੈ, ਅਤੇ ਇਸਦਾ ਸੰਤੁਲਨ ਨਹੀਂ ਹੈ. ਐਕਸਆਰਪੀ ਲੀਜਰ ਤੇ ਇੱਕ ਖਾਤਾ ਐਕਟੀਵੇਟ ਕਰਨ ਲਈ, ਘੱਟੋ ਘੱਟ %{baseReserve} %{nativeAsset} ਦੀ ਸ਼ੁਰੂਆਤੀ ਜਮ੍ਹਾ ਦੀ ਲੋੜ ਹੈ.",
-    "destinationNotExistCreationWarning": "ਮੰਜ਼ਿਲ ਖਾਤਾ ਪਹਿਲਾਂ ਨਹੀਂ ਵਰਤਿਆ ਗਿਆ ਹੈ, ਅਤੇ ਇਸਦਾ ਕੋਈ ਸੰਤੁਲਨ ਨਹੀਂ ਹੈ. ਜੇ ਤੁਸੀਂ ਇਸ ਖਾਤੇ ਨੂੰ ਭੇਜਣਾ ਜਾਰੀ ਰੱਖਦੇ ਹੋ, ਤਾਂ %{baseReserve} %{nativeAsset} %{amount} %{nativeAsset} ਦੀ ਵਰਤੋਂ ਐਕਸਆਰਪੀ ਲੀਜਰ ਤੇ ਖਾਤਾ ਐਕਟੀਵੇਟ ਕਰਨ ਲਈ ਕੀਤੀ ਜਾਏਗੀ, ਭਾਵ %{baseReserve} %{nativeAsset} ਖਰਚੇ ਯੋਗ ਨਹੀਂ ਹੋਣਗੇ. ਕੀ ਤੁਸੀਂ ਯਕੀਨਨ ਜਾਰੀ ਰੱਖਣਾ ਚਾਹੁੰਦੇ ਹੋ?\r\n",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "ਮੰਜ਼ਿਲ ਖਾਤਾ ਪਹਿਲਾਂ ਨਹੀਂ ਵਰਤਿਆ ਗਿਆ ਹੈ, ਅਤੇ ਇਸਦਾ ਕੋਈ ਸੰਤੁਲਨ ਨਹੀਂ ਹੈ. ਐਕਸਆਰਪੀ ਲੀਜਰ ਤੇ ਇੱਕ ਖਾਤਾ ਚਾਲੂ ਕਰਨ ਲਈ, ਘੱਟੋ ਘੱਟ %{baseReserve} %{nativeAsset} ਦੀ ਸ਼ੁਰੂਆਤੀ ਜਮ੍ਹਾ ਖਾਤੇ ਨੂੰ ਭੇਜਣੀ ਪਏਗੀ. ਗੈਰ ਐਕਸਆਰਪੀ ਜਾਇਦਾਦ %{nativeAsset} ਜਮ੍ਹਾਂ ਰਕਮ ਲਈ ਨਹੀਂ ਵਰਤੀ ਜਾ ਸਕਦੀ.",
     "destinationTagIsRequired": "ਇਸ ਭੁਗਤਾਨ ਨੂੰ ਭੇਜਣ ਲਈ ਮੰਜ਼ਿਲ ਦਾ ਟੈਗ ਲਾਜ਼ਮੀ ਹੈ.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "ਪ੍ਰਾਪਤਕਰਤਾ ਦੇ ਖਾਤੇ ਦੀ ਜਾਣਕਾਰੀ ਪ੍ਰਾਪਤ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ. ਮੁੜ ਕੋਸ਼ਿਸ ਕਰੋ ਜੀ.",

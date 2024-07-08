@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "A conta seleccionada non soporta o activo seleccionado",
     "memoPublicWarning": "A información do memo será pública para todo o mundo",
     "destinationNotExistTooLittleToCreate": "A conta de destino nunca foi empregada, e non ten un saldo. Para activa-la conta no XRP ledger, é requerido un depósito inicial de alomenos %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "A conta de destino nunca foi empregada, e non ten un saldo. Se continúa enviando a esta conta, %{baseReserve} %{nativeAsset} dos %{amount} %{nativeAsset} serán empregados para activa-la conta no XRP ledger, o que significa que %{baseReserve} %{nativeAsset} non serán gastables. ¿Está seguro de querer continuar?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "A conta de destino non foi empregada nunca antes, e non ten saldo. Para activar unha conta no XRP ledger, un depósito inicial de alomenos %{baseReserve} %{nativeAsset} ten que ser enviado á conta. Activos distintos de %{nativeAsset} non poden ser usados para o depósito inicial.",
     "destinationTagIsRequired": "A etiqueta de destino é obligatoria para enviar este pago.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Incapaz de recibir a información da conta, por favor inténteo de novo.",

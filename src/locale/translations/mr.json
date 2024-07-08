@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "निवडलेले खाते निवडलेल्या मालमत्तेस समर्थन देत नाही.",
     "memoPublicWarning": "मेमो माहिती प्रत्येकासाठी सार्वजनिक असेल",
     "destinationNotExistTooLittleToCreate": "गंतव्य खाते यापूर्वी वापरलेले नाही आणि शिल्लक नाही. एक्सआरपी लेजरवर खाते सक्रिय करण्यासाठी, कमीतकमी %{baseReserve} %{nativeAsset} प्रारंभिक ठेव आवश्यक आहे.",
-    "destinationNotExistCreationWarning": "गंतव्य खाते यापूर्वी वापरलेले नाही आणि कोणतेही शिल्लक नाही. आपण या खात्यावर पाठविणे सुरू ठेवल्यास, %{baseReserve} %{nativeAsset} %{amount} एक्सआरपीचा वापर एक्सआरपी लेजरवर खाते सक्रिय करण्यासाठी केला जाईल, म्हणजे %{baseReserve} %{nativeAsset} खर्च करण्यायोग्य होणार नाही. आपली खात्री आहे की आपण सुरू ठेवू इच्छिता?\r\n",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "गंतव्य खाते यापूर्वी वापरलेले नाही आणि कोणतेही शिल्लक नाही. एक्सआरपी लेजरवर खाते सक्रिय करण्यासाठी, किमान %{baseReserve} %{nativeAsset} प्रारंभिक रक्कम खात्यात पाठविली पाहिजे. प्रारंभिक ठेवीसाठी नॉन %{nativeAsset} मालमत्ता वापरली जाऊ शकत नाहीत.",
     "destinationTagIsRequired": "हे देयक पाठविण्यासाठी गंतव्य टॅग आवश्यक आहे.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "प्राप्तकर्ता खात्याची माहिती मिळविण्यात अक्षम. कृपया पुन्हा प्रयत्न करा.",

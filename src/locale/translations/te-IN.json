@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "ఎంచుకున్న ఖాతా ఎంచుకున్న ఆస్తికి మద్దతు ఇవ్వదు.",
     "memoPublicWarning": "మెమో సమాచారం అందరికీ పబ్లిక్‌గా ఉంటుంది",
     "destinationNotExistTooLittleToCreate": "గమ్యం ఖాతా ఇంతకు ముందు ఉపయోగించబడలేదు మరియు బ్యాలెన్స్ లేదు. XRP లెడ్జర్‌లో ఖాతాను క్రియాశీలత  చేయడానికి, కనీసం %{baseReserve} %{nativeAsset} యొక్క ప్రారంభ డిపాజిట్ అవసరం.",
-    "destinationNotExistCreationWarning": "గమ్యత ఖాతా ముందు ఉపయోగించబడలేదు, మరియు  క్రియాశీలంగా లేదు. మీరు ఈ ఖాతాకు పంపినట్లయితే %{amount} XRP యొక్క %{baseReserve} %{nativeAsset} ను XRP లెడ్జర్‌లో మీద ఖాతా క్రియాశీలంగా చేయడానికి ఉపయోగించబడుతుంది, అనగా %{baseReserve} %{nativeAsset} స్పెన్డబుల్ చేయబడదు. మీరు ఖచ్చితంగా కొనసాగించాలని అనుకొనుచున్నారా?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "గమ్యం ఖాతా ఇంతకు ముందు ఉపయోగించబడలేదు మరియు బ్యాలెన్స్ లేదు. XRP లెడ్జర్‌లో ఖాతాను సక్రియం చేయడానికి, కనీసం %{baseReserve} %{nativeAsset} యొక్క ప్రారంభ డిపాజిట్ ఖాతాకు పంపాలి. ప్రారంభ డిపాజిట్ కోసం %{nativeAsset} కాని ఆస్తులను ఉపయోగించలేరు.",
     "destinationTagIsRequired": "ఈ చెల్లింపును పంపడానికి గమ్యం ట్యాగ్ అవసరం.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "గ్రహీత ఖాతా సమాచారం పొందడం సాధ్యం కాలేదు దయచేసి మళ్ళీ ప్రయత్నించండి.",

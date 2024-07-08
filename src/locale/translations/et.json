@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Valitud konto ei toeta valitud vara.",
     "memoPublicWarning": "Memo info on kõigile avalik",
     "destinationNotExistTooLittleToCreate": "Sihtkontot pole varem kasutatud ja sellel kontol ei ole saldot. Selleks, et aktiveerida konto XRP pearaamatus, on nõutav vähemalt %{baseReserve} %{nativeAsset} deposiiti.",
-    "destinationNotExistCreationWarning": "Sihtkontot pole varem kasutatud ja sel ei ole saldot. Kui te jätkate selle konto saatmist, siis %{baseReserve} %{nativeAsset} %{amount} summast kasutatakse programmi aktiveerimiseks XRP pearaamatus. See tähendab, et %{baseReserve} %{nativeAsset}-d ei ole võimalik kasutada. Oled kindel, et tahad jätkata?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Sihtkontot pole varem kasutatud ja sel kontol ei ole saldot. Konto aktiveerimiseks XRP pearaamatus on vajalik %{baseReserve} %{nativeAsset} deposiidi saatmine antud kontole. Mitte %{nativeAsset} varasid ei saa kasutada algseks hoiustamiseks.",
     "destinationTagIsRequired": "Selle makse saatmiseks on vaja sihtmärgisilti.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Ei ole võimalik saada vastuvõtja konto infot. Proovi uuesti.",

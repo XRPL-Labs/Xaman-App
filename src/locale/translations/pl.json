@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Wybrane konto nie obsługuje wybranego aktywa.",
     "memoPublicWarning": "Notatka będzie widoczna dla wszystkich",
     "destinationNotExistTooLittleToCreate": "Konto docelowe nie było wcześniej używane i nie zawiera żadnych środków. Aby aktywować konto w sieci XRPL wymagany jest depozyt początkowy w wysokości co najmniej %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "Wybrane konto nie posiada środków i nie było wcześniej używane. Jeśli wyślesz środki na to konto, %{baseReserve} %{nativeAsset} z %{amount} %{nativeAsset} zostanie użyte do aktywacji tego konta w księdze XRP. Oznacza to, że %{baseReserve} %{nativeAsset} zostanie zablokowane. Czy jesteś pewny(a), że chcesz kontynuować?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Konto docelowe nie było wcześniej używane i nie ma żadnych środków. Aby aktywować konto w sieci XRP, na konto musi być wysłana wpłata początkowa w wysokości co najmniej %{baseReserve} %{nativeAsset}. Aktywa inne niż %{nativeAsset} nie mogą być wykorzystane jako początkowy depozyt.",
     "destinationTagIsRequired": "Do wysłania tej płatności wymagany jest tag docelowy. ",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Nie można uzyskać informacji o koncie odbiorcy, spróbuj ponownie.",

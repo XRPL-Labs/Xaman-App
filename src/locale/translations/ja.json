@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "選択したアカウントは、選択した通貨をサポートしていません。",
     "memoPublicWarning": "メモ情報はすべての人に公開されます",
     "destinationNotExistTooLittleToCreate": "送金先のアカウントは有効化されていません。XRPレジャーでアカウントを有効化するには、最低%{baseReserve} %{nativeAsset}の初回入金が必要です。",
-    "destinationNotExistCreationWarning": "送金先のアカウントは有効化されていません。このアカウントへの送金を続行すると、%{amount} XRPのうち%{baseReserve} %{nativeAsset}がレジャーのアカウントの有効化に使用され、%{baseReserve} %{nativeAsset}は使用不可となります。続行してもよろしいですか？",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "送金先のアカウントは有効化されていません。XRPレジャーでアカウントを有効化するには、最低%{baseReserve} %{nativeAsset}をアカウントに入金する必要があります。%{nativeAsset}以外の資産は初回の入金には使用できません。",
     "destinationTagIsRequired": "この支払いを送信するには宛先タグが必要です。",
     "unableGetRecipientAccountInfoPleaseTryAgain": "受信者のアカウント情報を取得できません。もう一度お試しください。",

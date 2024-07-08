@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "নির্বাচিত অ্যাকাউন্ট নির্বাচিত সম্পদ সমর্থন করে না।",
     "memoPublicWarning": "মেমো তথ্য সবার জন্য সর্বজনীন হবে",
     "destinationNotExistTooLittleToCreate": "গন্তব্য অ্যাকাউন্টটি আগে ব্যবহার করা হয়নি, এবং ভারসাম্য নেই। XRP খতিয়ান একটি একাউন্ট সক্রিয় করতে, কমপক্ষে %{baseReserve} %{nativeAsset} একটি প্রাথমিক আমানত প্রয়োজন হয়।",
-    "destinationNotExistCreationWarning": "গন্তব্য অ্যাকাউন্টটি আগে ব্যবহার করা হয়নি, এবং কোনও ভারসাম্য নেই। আপনি, এই অ্যাকাউন্টে পাঠানোর %{baseReserve} XRP চালিয়ে যান, তবে %{amount} %{nativeAsset} XRP খতিয়ান উপর অ্যাকাউন্ট সক্রিয় করতে ব্যবহার করা হবে, %{baseReserve} %{nativeAsset} অর্থ খরচ করা চলে এমন হবে না। আপনি কি নিশ্চিত যে আপনি চালিয়ে যেতে চান?\r\n",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "গন্তব্য অ্যাকাউন্টটি আগে ব্যবহার করা হয়নি, এবং কোনও ভারসাম্য নেই। XRP খতিয়ান একটি একাউন্ট সক্রিয় করতে, কমপক্ষে %{baseReserve} %{nativeAsset} একটি প্রাথমিক আমানত অ্যাকাউন্টে পাঠানো হবে। অ %{nativeAsset} সম্পদ প্রাথমিক আমানত জন্য ব্যবহার করা যেতে পারে।",
     "destinationTagIsRequired": "এই অর্থ প্রদানের জন্য গন্তব্য ট্যাগের প্রয়োজন।",
     "unableGetRecipientAccountInfoPleaseTryAgain": "প্রাপক অ্যাকাউন্ট সম্পর্কিত তথ্য পেতে অক্ষম। অনুগ্রহপূর্বক আবার চেষ্টা করুন.",

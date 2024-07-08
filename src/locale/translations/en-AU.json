@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "The selected account does not support the selected asset.",
     "memoPublicWarning": "Warning: Memo information is publicly accessible!",
     "destinationNotExistTooLittleToCreate": "The destination account hasn't been used before and doesn't have a balance. To activate an account on the XRPL, an initial deposit of at least %{baseReserve} %{nativeAsset} is required.",
-    "destinationNotExistCreationWarning": "The destination account hasn't been used before and doesn't have any balance. If you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be held as a non-spendable reserve used to activate the account on the XRPL. Sure you want to continue?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "The destination account hasn't been used before and doesn't have any balance. To activate an account on the XRPL, an initial deposit of at least %{baseReserve} %{nativeAsset} has to be sent to that account. Non-%{nativeAsset} assets cannot be used for the initial deposit.",
     "destinationTagIsRequired": "The destination tag is required to send this payment.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info. Please try again.",

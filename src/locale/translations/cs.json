@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Vybraný účet nepodporuje vybrané aktivum.",
     "memoPublicWarning": "Poznámka bude viditelná všem",
     "destinationNotExistTooLittleToCreate": "Cílový účet nebyl dosud nikdy použit a nemá žádný zůstatek. Chcete-li aktivovat účet v síti XRP, je vyžadován počáteční vklad alespoň %{baseReserve} %{nativeAsset}.",
-    "destinationNotExistCreationWarning": "Cílový účet nebyl nikdy dříve použit a nemá žádný zůstatek. Budete-li pokračovat v odesílání na tento účet, %{baseReserve} %{nativeAsset} z posílaných %{amount} se použije na aktivaci účtu, což znamená, že těchto %{baseReserve} %{nativeAsset} nebude možné utratit. Jste si jisti, že chcete pokračovat?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Cílový účet nebyl nikdy dříve použit a nemá žádný zůstatek. Chcete-li aktivovat účet v síti XRP, na účet musí být odeslán počáteční vklad alespoň %{baseReserve} %{nativeAsset}. Aktiva jiná než %{nativeAsset} nelze použít pro počáteční vklad.",
     "destinationTagIsRequired": "Pro odeslání této platby je požadována cílová značka (tag).",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Nelze získat informace o účtu příjemce. Zkuste to prosím znovu.",

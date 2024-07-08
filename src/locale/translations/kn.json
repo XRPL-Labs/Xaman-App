@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "ಆಯ್ದ ಖಾತೆಯು ಆಯ್ದ ಆಸ್ತಿಯನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.",
     "memoPublicWarning": "ಮೆಮೊ ಮಾಹಿತಿ ಎಲ್ಲರಿಗೂ ಸಾರ್ವಜನಿಕವಾಗಿರುತ್ತದೆ",
     "destinationNotExistTooLittleToCreate": "ಗಮ್ಯಸ್ಥಾನ ಖಾತೆಯನ್ನು ಈ ಮೊದಲು ಬಳಸಲಾಗಿಲ್ಲ ಮತ್ತು ಸಮತೋಲನವನ್ನು ಹೊಂದಿಲ್ಲ. XRP ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು, ಕನಿಷ್ಠ %{baseReserve} %{nativeAsset} ಆರಂಭಿಕ ಠೇವಣಿ ಅಗತ್ಯವಿದೆ.",
-    "destinationNotExistCreationWarning": "ಗಮ್ಯಸ್ಥಾನ ಖಾತೆಯನ್ನು ಈ ಮೊದಲು ಬಳಸಲಾಗಿಲ್ಲ ಮತ್ತು ಯಾವುದೇ ಬಾಕಿ ಇಲ್ಲ. ನೀವು ಈ ಖಾತೆಗೆ ಕಳುಹಿಸುವುದನ್ನು ಮುಂದುವರಿಸಿದರೆ, XRP ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು%{amount} %{nativeAsset} ಯ %{baseReserve} %{nativeAsset} ಅನ್ನು ಬಳಸಲಾಗುತ್ತದೆ, ಅಂದರೆ %{baseReserve} %{nativeAsset} ಖರ್ಚು ಮಾಡಲಾಗುವುದಿಲ್ಲ. ನೀವು ಮುಂದುವರಿಯಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "ಗಮ್ಯಸ್ಥಾನ ಖಾತೆಯನ್ನು ಈ ಮೊದಲು ಬಳಸಲಾಗಿಲ್ಲ ಮತ್ತು ಯಾವುದೇ ಬಾಕಿ ಇಲ್ಲ. XRP ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು, ಕನಿಷ್ಠ %{baseReserve} %{nativeAsset} ಆರಂಭಿಕ ಠೇವಣಿಯನ್ನು ಖಾತೆಗೆ ಕಳುಹಿಸಬೇಕಾಗುತ್ತದೆ. ಆರಂಭಿಕ ಠೇವಣಿಗಾಗಿ %{nativeAsset} ಅಲ್ಲದ ಸ್ವತ್ತುಗಳನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ.",
     "destinationTagIsRequired": "ಈ ಪಾವತಿಯನ್ನು ಕಳುಹಿಸಲು ಗಮ್ಯಸ್ಥಾನ ಟ್ಯಾಗ್ ಅಗತ್ಯವಿದೆ.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "ಸ್ವೀಕರಿಸುವವರ ಖಾತೆ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",

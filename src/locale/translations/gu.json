@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "પસંદ કરેલું એકાઉન્ટ પસંદ કરેલી સંપત્તિને ટેકો આપતું નથી.",
     "memoPublicWarning": "મેમો માહિતી દરેક માટે સાર્વજનિક રહેશે",
     "destinationNotExistTooLittleToCreate": "ગંતવ્ય એકાઉન્ટનો પહેલાં ઉપયોગ કરવામાં આવ્યો નથી, અને તેમાં બેલેન્સ નથી. XRP ખાતા પર ખાતું સક્રિય કરવા માટે, ઓછામાં ઓછી %{baseReserve} %{nativeAsset} ની પ્રારંભિક થાપણ આવશ્યક છે.",
-    "destinationNotExistCreationWarning": "ગંતવ્ય એકાઉન્ટનો પહેલાં ઉપયોગ કરવામાં આવ્યો નથી, અને તેમાં કોઈ બેલેન્સ નથી. તમે આ એકાઉન્ટમાં મોકલવાનું %{baseReserve} %{nativeAsset} ચાલુ રાખો, તો %{amount} %{nativeAsset} નો ઉપયોગ XRP ખાતા પરના એકાઉન્ટને સક્રિય કરવા માટે કરવામાં આવશે, એટલે કે %{baseReserve} %{nativeAsset} ખર્ચ કરવા યોગ્ય નહીં હોય. શું તમે ખરેખર ચાલુ રાખવા માંગો છો?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "ગંતવ્ય એકાઉન્ટનો પહેલાં ઉપયોગ કરવામાં આવ્યો નથી, અને તેમાં કોઈ બેલેન્સ નથી. XRP ખાતા પર ખાતું સક્રિય કરવા માટે, ઓછામાં ઓછી %{baseReserve} %{nativeAsset} ની પ્રારંભિક થાપણ ખાતામાં મોકલવાની રહેશે. પ્રારંભિક થાપણ માટે નોન %{nativeAsset} સંપત્તિનો ઉપયોગ કરી શકાતો નથી.",
     "destinationTagIsRequired": "આ ચુકવણી મોકલવા માટે ગંતવ્ય ટ tagગ આવશ્યક છે.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "પ્રાપ્તકર્તા એકાઉન્ટ માહિતી મેળવવા માટે અસમર્થ. મહેરબાની કરીને ફરીથી પ્રયતન કરો.",

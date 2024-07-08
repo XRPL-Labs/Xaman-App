@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "선택한 계정은 선택한 자산을 지원하지 않습니다.",
     "memoPublicWarning": "모든 사람에게 메모 정보가 공개됩니다.",
     "destinationNotExistTooLittleToCreate": "목적지 계정은 이전에 사용된 적이 없으며 잔액이 없습니다. XRP 원장에 계정을 활성화하려면 먼저 최소 %{baseReserve} %{nativeAsset}를 입금해야 합니다.",
-    "destinationNotExistCreationWarning": "전송 받을 계좌는 사용된 적이 없고, 잔액이 없습니다. 이 계좌로 전송을 하면 %{amount} %{nativeAsset} 중 %{baseReserve} %{nativeAsset}는 원장의 계좌을 활성화하는데 쓰이므로 사용할 수 없습니다. 계속 하시겠습니까?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "대상 계정은 이전에 사용되지 않았으며 잔액이 없습니다. XRP 원장에서 계정을 활성화하려면 최소 %{baseReserve} %{nativeAsset}의 초기 입금을 계정으로 보내야합니다. %{nativeAsset}가 아닌 자산은 초기 입금에 사용할 수 없습니다.",
     "destinationTagIsRequired": "이 결제를 전송하려면 대상 태그가 필요합니다.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "받는 사람 계정 정보를 가져올 수 없습니다. 다시 시도하십시오.",

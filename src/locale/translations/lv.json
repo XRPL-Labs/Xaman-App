@@ -1030,7 +1030,7 @@
     "selectedAccountDoNotSupportAsset": "Izvēlētais konts neatbalsta izvēlēto aktīvu.",
     "memoPublicWarning": "Memo-autentifikators būs publisks ikvienam",
     "destinationNotExistTooLittleToCreate": "Galamērķa konts nav iepriekš izmantots, un bez bilances. Lai aktivizētu kontu XRP virsgrāmatā, ir nepieciešams vismaz %{baseReserve} %{nativeAsset} monētu sākotnējais depozīts.",
-    "destinationNotExistCreationWarning": "Galamērķa konts iepriekš nav izmantots, un tam nav aktīvas bilances. Turpinot XRP monētu nosūtīšanu uz šo kontu, %{baseReserve} %{nativeAsset} monētas no %{amount} %{nativeAsset} monētām tiks izmantotas konta aktivizēšanai XRP virsgrāmatā, kas nozīmē, ka %{baseReserve} %{nativeAsset} monētas nebūs tērējamas. Vai tiešām vēlaties turpināt?",
+    "destinationNotExistCreationWarning": "Sending to the given destination account may be risky: it has never been used and has a zero balance, which is commonly seen in scams. We advise verifying the owner's authenticity to safeguard your assets. If you're confident in its safety but aware of the risks.\n\nIf you continue sending to this account, %{baseReserve} %{nativeAsset} of the %{amount} %{nativeAsset} will be used to activate the account on the XRP ledger.",
     "destinationCannotActivateWithIOU": "Konts iepriekš nav izmantots, un tam nav aktīvas bilances. Lai aktivizētu kontu XRP virsgrāmatā, uz kontu jānosūta vismaz %{baseReserve} %{nativeAsset} sākotnējais depozīts. Ne %{nativeAsset} aktīvus nevar izmantot sākotnējam noguldījumam.",
     "destinationTagIsRequired": "Nepieciešams saņēmēja autentifikators, lai nosūtītu maksājumu.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Nevar saņemt saņēmēja konta informāciju. Lūdzu, mēģiniet vēlreiz.",
