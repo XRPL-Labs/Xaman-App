@@ -69,17 +69,18 @@ class AmountText extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value: PropValue, currency, discreet, isLoading, style } = this.props;
+        const { value: PropValue, prefix, currency, discreet, isLoading, style } = this.props;
         const { showOriginalValue, value } = this.state;
 
         return (
-            !isEqual(nextProps.value, PropValue) ||
-            !isEqual(nextState.value, value) ||
-            !isEqual(nextProps.currency, currency) ||
-            !isEqual(nextState.showOriginalValue, showOriginalValue) ||
-            !isEqual(nextProps.discreet, discreet) ||
-            !isEqual(nextProps.style, style) ||
-            !isEqual(nextProps.isLoading, isLoading)
+            nextProps.value !== PropValue ||
+            nextProps.prefix !== prefix ||
+            nextState.value !== value ||
+            nextProps.currency !== currency ||
+            nextState.showOriginalValue !== showOriginalValue ||
+            nextProps.discreet !== discreet ||
+            nextProps.style !== style ||
+            nextProps.isLoading !== isLoading
         );
     }
 
