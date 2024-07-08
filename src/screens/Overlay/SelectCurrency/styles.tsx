@@ -38,9 +38,9 @@ const styles = StyleService.create({
         backgroundColor: '$background',
     },
     searchContainer: {
-        marginRight: 0,
-        marginLeft: 0,
-        marginBottom: AppSizes.paddingSml,
+        backgroundColor: '$background',
+
+        paddingBottom: AppSizes.paddingMid,
     },
     sectionHeader: {
         paddingHorizontal: 0,

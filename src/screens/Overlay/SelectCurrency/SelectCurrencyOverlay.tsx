@@ -168,12 +168,13 @@ class SelectCurrencyOverlay extends Component<Props, State> {
 
     renderListHeaderComponent = () => {
         return (
-            <SearchBar
-                ref={this.searchBarRef}
-                onChangeText={this.onFilter}
-                placeholder={Localize.t('global.searchTokens')}
-                containerStyle={styles.searchContainer}
-            />
+            <View style={styles.searchContainer}>
+                <SearchBar
+                    ref={this.searchBarRef}
+                    onChangeText={this.onFilter}
+                    placeholder={Localize.t('global.searchTokens')}
+                />
+            </View>
         );
     };
 
