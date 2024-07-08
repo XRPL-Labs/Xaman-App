@@ -7,7 +7,12 @@ import { first } from 'lodash';
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import {
+    Navigation,
+    EventSubscription,
+    OptionsModalPresentationStyle,
+    OptionsModalTransitionStyle,
+} from 'react-native-navigation';
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
@@ -43,8 +48,10 @@ class ScanModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
+    private screenVisible: boolean;
     private backHandler: NativeEventSubscription | undefined;
     private shouldReadTimeout: NodeJS.Timeout | undefined;
+    private navigationListener?: EventSubscription;
 
     static options() {
         return {
@@ -66,10 +73,14 @@ class ScanModal extends Component<Props, State> {
 
         // flag to check if we need to read the QR
         this.shouldRead = true;
+
+        // keep track of component visibility
+        this.screenVisible = false;
     }
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        this.navigationListener = Navigation.events().bindComponent(this);
     }
 
     componentWillUnmount() {
@@ -78,6 +89,19 @@ class ScanModal extends Component<Props, State> {
         }
 
         if (this.shouldReadTimeout) clearTimeout(this.shouldReadTimeout);
+
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
+    }
+
+    componentDidAppear() {
+        this.screenVisible = true;
+    }
+
+    componentDidDisappear() {
+        // disable qr code reading if component is not visible
+        this.screenVisible = false;
     }
 
     setShouldRead = (value: boolean) => {
@@ -531,7 +555,7 @@ class ScanModal extends Component<Props, State> {
 
         if (data) {
             // return if we don't need to read again
-            if (!this.shouldRead) return;
+            if (!this.shouldRead || !this.screenVisible) return;
 
             // should not read anymore until we decide about detect value
             this.setShouldRead(false);
