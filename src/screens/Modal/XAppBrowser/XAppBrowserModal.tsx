@@ -180,7 +180,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     onResolve: this.onPayloadResolve,
                     onDecline: this.onPayloadDecline,
                 },
-                { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                { modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen },
             );
         } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
