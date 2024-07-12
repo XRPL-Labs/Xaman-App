@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
@@ -109,7 +108,7 @@ describe('CheckCreate', () => {
                             action: 'INC',
                             currency: 'XRP',
                             effect: 'POTENTIAL_EFFECT',
-                            value: 'XRP',
+                            value: '100',
                         },
                     ],
                 });

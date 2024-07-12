@@ -62,7 +62,7 @@ class CheckCreateInfo extends ExplainerAbstract<CheckCreate, MutationsMixinType>
             factor: [
                 {
                     currency: this.item.SendMax!.currency,
-                    value: this.item.SendMax!.currency,
+                    value: this.item.SendMax!.value,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
                     action: this.account.address === this.item.Account ? OperationActions.DEC : OperationActions.INC,
                 },
