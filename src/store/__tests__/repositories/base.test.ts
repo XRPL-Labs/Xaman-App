@@ -1,5 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
-
 import Realm from 'realm';
 
 import BaseRepository from '../../repositories/base';

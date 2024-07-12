@@ -2,7 +2,6 @@
  * App Theme - Fonts
  */
 
-/* eslint-disable spellcheck/spell-checker */
 import { Platform } from 'react-native';
 import Sizes from './sizes';
 

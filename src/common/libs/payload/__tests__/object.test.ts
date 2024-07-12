@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 import ApiService, { ApiError } from '@services/ApiService';
 

@@ -1,5 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
-
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Constants ==================================================================== */

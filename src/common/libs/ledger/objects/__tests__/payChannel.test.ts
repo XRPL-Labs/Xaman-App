@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
@@ -62,6 +61,7 @@ describe('PayChannel object', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     factor: [
                         {
+                            action: 'DEC',
                             currency: 'XRP',
                             effect: 'IMMEDIATE_EFFECT',
                             value: '4.3258',

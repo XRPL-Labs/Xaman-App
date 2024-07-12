@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-/* eslint-disable spellcheck/spell-checker */
 
 // Supported networks
 // NOTE: any changes here should be applied in patches/react-native+VERSION.patch as well

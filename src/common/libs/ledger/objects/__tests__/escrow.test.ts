@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 import Localize from '@locale';
 
@@ -65,6 +64,7 @@ describe('Escrow object', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     factor: [
                         {
+                            action: 'DEC',
                             currency: 'XRP',
                             effect: 'POTENTIAL_EFFECT',
                             value: '0.01',

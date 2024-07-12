@@ -1,5 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
-
 import Localize from '@locale';
 import LedgerService from '@services/LedgerService';
 import { MutationsMixin } from '@common/libs/ledger/mixin';

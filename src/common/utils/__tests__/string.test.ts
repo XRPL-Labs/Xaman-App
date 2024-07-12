@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 import { Truncate, HexEncoding, Capitalize, StringTypeCheck, UUIDEncoding } from '../string';
 
 describe('Utils.String', () => {

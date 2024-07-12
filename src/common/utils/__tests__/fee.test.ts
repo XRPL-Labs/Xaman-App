@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 import { NormalizeFeeDataSet } from '../fee';
 
 describe('Utils.Fee', () => {

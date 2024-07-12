@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import { MutationsMixin } from '@common/libs/ledger/mixin';

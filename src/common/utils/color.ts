@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 const ColorLuminance = (hex: string, lum: number) => {
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');

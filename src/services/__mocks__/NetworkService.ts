@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-/* eslint-disable spellcheck/spell-checker */
 
 class NetworkService {
     public network = {
