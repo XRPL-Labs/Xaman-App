@@ -51,12 +51,10 @@ class Payment extends BaseGenuineTransaction {
             deliveredAmount = this._meta?.delivered_amount;
         }
 
-        // the delivered_amount will be unavailable in old transactions
-        if (deliveredAmount === 'unavailable' || deliveredAmount === null) {
-            deliveredAmount = undefined;
+        // the delivered_amount will be unavailable in old transactions, use Amount field instead
+        if (deliveredAmount === 'unavailable' || deliveredAmount === null || typeof deliveredAmount === 'undefined') {
+            return this.Amount;
         }
-
-        if (typeof deliveredAmount === 'undefined') return undefined;
 
         if (typeof deliveredAmount === 'string') {
             return {
