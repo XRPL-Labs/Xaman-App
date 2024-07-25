@@ -79,7 +79,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                         },
                         {
                             modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                            modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
                         },
                     );
                 }

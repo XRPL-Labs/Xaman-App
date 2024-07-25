@@ -126,6 +126,10 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // listen for authentication lock state changes
         AuthenticationService.on('lockStateChange', this.onLockStateChange);
+
+        setTimeout(() => {
+            PushNotificationsService.emit('signRequestUpdate');
+        }, 2000);
     }
 
     componentWillUnmount() {

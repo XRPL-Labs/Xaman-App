@@ -111,7 +111,7 @@ class AppItem extends Component<Props> {
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
             },
         );
     };
