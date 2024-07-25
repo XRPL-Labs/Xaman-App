@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Ver informe de cambios",
     "hideBalanceByDefault": "Ocultar saldo por defecto",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Bloquear capturas de pantalla",
     "unableToLoadListOfCurrencies": "Non se puido cargar a lista de moedas.",
     "pushNotifications": "Notificacións emerxentes",

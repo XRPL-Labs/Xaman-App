@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "ചേഞ്ചലോഗ് കാണുക",
     "hideBalanceByDefault": "സ്ഥിരമായി ബാലൻസ് മറയ്‌ക്കുക",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "സ്ക്രീൻഷോട്ടുകൾ എടുക്കുന്നത് തടയുക",
     "unableToLoadListOfCurrencies": "കറൻസികളുടെ പട്ടിക ലോഡുചെയ്യാനായില്ല!",
     "pushNotifications": "അറിയിപ്പുകൾ പുഷ് ചെയ്യുക",

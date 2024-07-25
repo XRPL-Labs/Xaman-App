@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Переглянути журнал змін",
     "hideBalanceByDefault": "Приховати баланс за замовчуванням",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Заборонити скріншот екрана",
     "unableToLoadListOfCurrencies": "Неможливо завантажити список валют!",
     "pushNotifications": "Push-сповіщення",

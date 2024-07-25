@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Ikusi aldaketen erregistroa",
     "hideBalanceByDefault": "Ezkutatu saldoa lehenespenez",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Blokeatu pantaila-argazkiak ateratzea",
     "unableToLoadListOfCurrencies": "Ezin da moneta zerrenda kargatu!",
     "pushNotifications": "bultzatu jakinarazpenak",

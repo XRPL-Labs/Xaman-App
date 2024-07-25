@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Tingnan ang pagbabago ng log",
     "hideBalanceByDefault": "itago ang balanse bilang default",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Ipagbawal ang pagkuha ng mga screenshot",
     "unableToLoadListOfCurrencies": "Hindi karga ang listahan ng mga pera!",
     "pushNotifications": "Itulak ang Mga Abiso",

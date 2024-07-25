@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "gade chanjman boutèy demi lit.",
     "hideBalanceByDefault": "Kache balans pa default",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Bloke pran Ekran",
     "unableToLoadListOfCurrencies": "Kapab chaje lis lajan!",
     "pushNotifications": "Pouse Notifikasyon",

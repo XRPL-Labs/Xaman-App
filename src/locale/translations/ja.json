@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "お使いのデバイスは、生体認証が利用不可能であるか推奨セキュリティレベルを満たしていないため、生体認証はご利用いただけません。",
     "viewChangeLog": "変更履歴を表示",
     "hideBalanceByDefault": "デフォルトで残高を非表示",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "スクリーンショットを無効にする",
     "unableToLoadListOfCurrencies": "通貨リストを読み込みできません！",
     "pushNotifications": "プッシュ通知",

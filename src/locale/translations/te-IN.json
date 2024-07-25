@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "చేంజ్ లాగ్ చూపుము",
     "hideBalanceByDefault": "అప్రమేయంగా బ్యాలెన్స్ దాచండి\r\n",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "స్క్రీన్షాట్లు తీసుకోవడాన్ని బ్లాక్ చేయండి\r\n",
     "unableToLoadListOfCurrencies": "కరెన్సీల జాబితాను లోడ్ చేయడం సాధ్యం కాలేదు!",
     "pushNotifications": "ప్రకటనలు ముందుకు నెట్టండి",

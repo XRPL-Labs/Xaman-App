@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "ਪਰਿਵਰਤਨ ਵੇਖੋ",
     "hideBalanceByDefault": "ਮੂਲ ਰੂਪ ਵਿੱਚ ਬੈਲੇਂਸ ਲੁਕਾਓ",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "ਸਕ੍ਰੀਨਸ਼ਾਟ ਲੈਣ ਨੂੰ ਰੋਕੋ",
     "unableToLoadListOfCurrencies": "ਮੁਦਰਾ ਦੀ ਸੂਚੀ ਲੋਡ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ!",
     "pushNotifications": "ਪੁਸ਼ ਸੂਚਨਾਵਾਂ",

@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Προβολή αρχείου καταγραφής",
     "hideBalanceByDefault": "Απόκρυψη υπολοίπου από προεπιλογή",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Μπλοκ λήψη screenshots",
     "unableToLoadListOfCurrencies": "Δεν είναι δυνατή η φόρτωση λίστας νομισμάτων!",
     "pushNotifications": "Ειδοποιήσεις προώθησης",

@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Skatīt Changelog",
     "hideBalanceByDefault": "Paslēpt bilanci",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Bloķēt ekrānuzņēmumu",
     "unableToLoadListOfCurrencies": "Neizdevās ielādēt valūtu sarakstu!",
     "pushNotifications": "Pašpiegādes paziņojumi",

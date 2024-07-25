@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Lihat log perubahan",
     "hideBalanceByDefault": "Sembunyikan saldo secara default",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Blokir pengambilan tangkapan layar",
     "unableToLoadListOfCurrencies": "Tidak dapat memuat daftar mata uang!",
     "pushNotifications": "Pemberitahuan Push",

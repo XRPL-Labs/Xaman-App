@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "იხილეთ ცვლილებების ჟურნალი",
     "hideBalanceByDefault": "აპლიკაციის გახსნისას ბალანსი იყოს დამალული ",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "სკრინშოტის გადაღების დაბლოკვა",
     "unableToLoadListOfCurrencies": "ვერ იტვირთება ვალუტის სია!",
     "pushNotifications": "Push შეტყობინებები ",

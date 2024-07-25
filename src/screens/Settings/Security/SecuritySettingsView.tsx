@@ -303,7 +303,7 @@ class SecuritySettingsView extends Component<Props, State> {
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.hideBalanceByDefault')}
+                                {Localize.t('settings.hideBalance')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>

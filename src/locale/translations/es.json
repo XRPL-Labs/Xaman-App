@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "La seguridad biométrica no está disponible en tu dispositivo porque tu dispositivo no ofrece el nivel requerido de seguridad biométrica necesario",
     "viewChangeLog": "Ver registro de cambios",
     "hideBalanceByDefault": "Ocultar saldo por defecto",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Bloquear las capturas de pantalla",
     "unableToLoadListOfCurrencies": "No se puede cargar la lista de divisas.",
     "pushNotifications": "Notificaciones push",

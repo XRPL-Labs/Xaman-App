@@ -748,6 +748,7 @@
     "biometricUnavailableDescription": "Biometric security is unavailable on your device because your device does not offer our requested biometric security level",
     "viewChangeLog": "Zobraziť zoznam zmien",
     "hideBalanceByDefault": "Predvolene skryť zostatok",
+    "hideBalance": "Hide balance",
     "blockTakingScreenshots": "Blokovať vytváranie snímok obrazovky",
     "unableToLoadListOfCurrencies": "Nie je možné načítať zoznam mien!",
     "pushNotifications": "Tlačiť Oznámenia",
