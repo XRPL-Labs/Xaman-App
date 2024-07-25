@@ -30,7 +30,7 @@ interface Props {
 }
 
 interface State {
-    paymentOptions: PathFindPathOption[];
+    ledgerOptions: PathFindPathOption[];
     localOption?: PathFindPathOption;
     selectedItem?: PathFindPathOption;
     isLoading: boolean;
@@ -45,7 +45,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         super(props);
 
         this.state = {
-            paymentOptions: Array(3).fill(undefined),
+            ledgerOptions: Array(3).fill(undefined),
             localOption: undefined,
             selectedItem: undefined,
             isLoading: false,
@@ -82,7 +82,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
     clearAndFetchOptions = () => {
         // clear prev state
         this.setState({
-            paymentOptions: Array(3).fill(undefined),
+            ledgerOptions: Array(3).fill(undefined),
             localOption: undefined,
             isExpired: false,
         });
@@ -98,15 +98,15 @@ class PaymentOptionsPicker extends Component<Props, State> {
     };
 
     onOptionsExpire = () => {
-        const { paymentOptions } = this.state;
+        const { ledgerOptions } = this.state;
 
-        if (!paymentOptions || paymentOptions.length === 0) {
+        if (!ledgerOptions || ledgerOptions.length === 0) {
             return;
         }
 
         this.setState({
             isExpired: true,
-            paymentOptions: [],
+            ledgerOptions: [],
         });
 
         this.onItemSelect(undefined);
@@ -123,23 +123,36 @@ class PaymentOptionsPicker extends Component<Props, State> {
             onLoad();
         }
 
-        Promise.all([this.fetchLocalOption(), this.fetchLedgerOptions()]).finally(() => {
-            this.setState({
-                isLoading: false,
-            });
+        Promise.all([this.fetchLocalOption(), this.fetchLedgerOptions()]).then(([localOption, ledgerOptions]) => {
+            this.setState(
+                {
+                    localOption,
+                    ledgerOptions,
+                    isExpired: false,
+                    isLoading: false,
+                },
+                () => {
+                    // try to set the selected option if only one option is available
+                    if (!localOption && ledgerOptions.length === 1) {
+                        this.onItemSelect(ledgerOptions[0]);
+                    } else if (localOption && ledgerOptions.length === 0) {
+                        this.onItemSelect(localOption);
+                    }
 
-            // callback
-            if (typeof onLoadEnd === 'function') {
-                onLoadEnd();
-            }
+                    // callback
+                    if (typeof onLoadEnd === 'function') {
+                        onLoadEnd();
+                    }
+                },
+            );
         });
     };
 
-    fetchLocalOption = () => {
+    fetchLocalOption = (): Promise<PathFindPathOption | undefined> => {
         const { source, amount } = this.props;
 
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise<void>(async (resolve) => {
+        return new Promise(async (resolve) => {
             let localOption: PathFindPathOption | undefined;
 
             try {
@@ -213,22 +226,14 @@ class PaymentOptionsPicker extends Component<Props, State> {
                 // ignore
             }
 
-            // set the result
-            this.setState(
-                {
-                    localOption,
-                },
-                () => {
-                    resolve();
-                },
-            );
+            resolve(localOption);
         });
     };
 
-    fetchLedgerOptions = () => {
+    fetchLedgerOptions = (): Promise<PathFindPathOption[]> => {
         const { amount, source, destination } = this.props;
 
-        return new Promise<void>((resolve) => {
+        return new Promise((resolve) => {
             this.pathFinding
                 .request(amount, source, destination)
                 .then((options) => {
@@ -239,30 +244,22 @@ class PaymentOptionsPicker extends Component<Props, State> {
                     });
 
                     // if paying with native currency is available in options, turn drops to native currency
-                    const paymentOptions = map(filteredOptions, (item) => {
-                        const { source_amount } = item;
-                        if (typeof source_amount === 'string') {
-                            return Object.assign(item, {
-                                source_amount: new AmountParser(source_amount).dropsToNative().toString(),
-                            });
-                        }
-                        return item;
-                    });
-
-                    this.setState({
-                        isExpired: false,
-                        paymentOptions,
-                    });
+                    resolve(
+                        map(filteredOptions, (item) => {
+                            const { source_amount } = item;
+                            if (typeof source_amount === 'string') {
+                                return Object.assign(item, {
+                                    source_amount: new AmountParser(source_amount).dropsToNative().toString(),
+                                });
+                            }
+                            return item;
+                        }),
+                    );
                 })
-                .catch((error: any) => {
+                .catch((error) => {
                     if (error.message !== 'CANCELED') {
-                        this.setState({
-                            paymentOptions: [],
-                        });
+                        resolve([]);
                     }
-                })
-                .finally(() => {
-                    resolve();
                 });
         });
     };
@@ -306,7 +303,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
 
     render() {
         const { containerStyle } = this.props;
-        const { isLoading, isExpired, paymentOptions, localOption } = this.state;
+        const { isLoading, isExpired, ledgerOptions, localOption } = this.state;
 
         // payment options are expired
         if (isExpired) {
@@ -326,7 +323,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         }
 
         // no payment option is available
-        if (!isLoading && !localOption && (!paymentOptions || paymentOptions.length === 0)) {
+        if (!isLoading && !localOption && (!ledgerOptions || ledgerOptions.length === 0)) {
             return (
                 <View style={styles.emptyContainer}>
                     <InfoMessage type="neutral" label={Locale.t('payload.noPaymentOptionsFound')} />
@@ -343,7 +340,7 @@ class PaymentOptionsPicker extends Component<Props, State> {
         }
 
         // render payment options
-        const options = localOption ? [localOption, ...paymentOptions] : paymentOptions;
+        const options = localOption ? [localOption, ...ledgerOptions] : ledgerOptions;
 
         return <View style={containerStyle}>{options.map(this.renderItem)}</View>;
     }
