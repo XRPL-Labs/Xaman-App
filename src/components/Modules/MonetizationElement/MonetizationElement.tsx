@@ -141,7 +141,7 @@ class MonetizationElement extends PureComponent<Props, State> {
 
         return (
             <View style={[styles.container, styles.containerRequired, style]}>
-                <Text style={styles.messageText}>{Localize.t('monetization.paymentRequired')}</Text>
+                <Text style={styles.messageText}>{Localize.t('monetization.paymentRequiredMessage')}</Text>
                 <View style={AppStyles.row}>
                     <RaisedButton
                         small

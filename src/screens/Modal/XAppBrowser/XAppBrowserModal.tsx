@@ -36,7 +36,7 @@ import { StringTypeCheck } from '@common/utils/string';
 import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
 import NetworkService from '@services/NetworkService';
 
-import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 import { AccessLevels } from '@store/types';
 
@@ -49,6 +49,7 @@ import {
     Icon,
     InfoMessage,
     LoadingIndicator,
+    RaisedButton,
     Spacer,
     WebView,
 } from '@components/General';
@@ -68,6 +69,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { IEvent, Props, State, XAppMethods, XAppSpecialPermissions } from './types';
+import { ApiError } from '@services/ApiService';
+import { PurchaseProductOverlayProps } from '@screens/Overlay/PurchaseProduct';
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
@@ -126,10 +129,6 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // listen for authentication lock state changes
         AuthenticationService.on('lockStateChange', this.onLockStateChange);
-
-        setTimeout(() => {
-            PushNotificationsService.emit('signRequestUpdate');
-        }, 2000);
     }
 
     componentWillUnmount() {
@@ -655,7 +654,7 @@ class XAppBrowserModal extends Component<Props, State> {
             this.setState({
                 ott: undefined,
                 isLaunchingApp: false,
-                error: error?.message,
+                error,
             });
         }
     };
@@ -805,6 +804,23 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
+    lunchMonetization = () => {
+        const profile = ProfileRepository.getProfile();
+
+        // no profile found
+        if (!profile) {
+            return;
+        }
+
+        const { monetization } = profile;
+
+        Navigator.showOverlay<PurchaseProductOverlayProps>(AppScreens.Overlay.PurchaseProduct, {
+            productId: monetization.productForPurchase!,
+            productDescription: monetization.monetizationType!,
+            onSuccessPurchase: this.lunchApp,
+        });
+    };
+
     onInfoPress = () => {
         const { identifier, title, icon } = this.props;
 
@@ -885,11 +901,31 @@ class XAppBrowserModal extends Component<Props, State> {
     renderError = () => {
         const { error } = this.state;
 
+        if (error instanceof ApiError && error.code === 402) {
+            return (
+                <View style={styles.stateContainer}>
+                    <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
+                    <View style={styles.paymentRequiredContainer}>
+                        <Text style={styles.paymentText}>{Localize.t('monetization.paymentRequiredMessage')}</Text>
+                        <View style={AppStyles.row}>
+                            <RaisedButton
+                                small
+                                onPress={this.lunchMonetization}
+                                label={Localize.t('monetization.learnMore')}
+                                containerStyle={styles.actionButtonContainer}
+                                textStyle={styles.actionButtonLabel}
+                            />
+                        </View>
+                    </View>
+                </View>
+            );
+        }
+
         return (
             <View style={styles.stateContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
                 <Spacer size={20} />
-                <Text style={[AppStyles.monoSubText, AppStyles.textCenterAligned]}>{error}</Text>
+                <Text style={[AppStyles.monoSubText, AppStyles.textCenterAligned]}>{error?.message}</Text>
                 <Spacer size={40} />
                 <Button
                     secondary

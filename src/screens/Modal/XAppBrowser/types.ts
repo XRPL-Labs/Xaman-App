@@ -29,7 +29,7 @@ export interface State {
     };
     account: AccountModel;
     network: NetworkModel;
-    error?: string;
+    error?: Error;
     isLaunchingApp: boolean;
     isLoadingApp: boolean;
     isAppReady: boolean;

@@ -1165,7 +1165,7 @@
     "restorePurchase": "Restore purchase",
     "thankYouForUsingXaman": "Thank you for using Xaman!",
     "comingPaymentWarning": "You are still using Xaman for free, but you may be prompted for a small in-app payment to allow us to keep building to secure your assets.",
-    "paymentRequired": "A small payment is required to keep unlimited access for 30 days. Alternatively Xaman will be in limited use mode until your monthly limits automatically reset.",
+    "paymentRequiredMessage": "A small payment is required to keep unlimited access for 30 days. Alternatively Xaman will be in limited use mode until your monthly limits automatically reset.",
     "prePurchaseMessage" : "Thank you for supporting us! By paying you unlock a full month of unrestricted Xaman use, and help us develop Xaman, provide support & keep your funds safe.",
     "learnMore": "Learn more",
     "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again."

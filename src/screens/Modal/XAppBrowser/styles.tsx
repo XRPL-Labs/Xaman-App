@@ -61,6 +61,30 @@ const styles = StyleService.create({
     actionContainer: {
         marginHorizontal: AppSizes.paddingSml,
     },
+    paymentRequiredContainer: {
+        backgroundColor: '$lightGrey',
+        marginTop: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingVertical: AppSizes.paddingSml,
+        borderRadius: AppSizes.borderRadius,
+        alignSelf: 'stretch',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: AppSizes.paddingSml,
+    },
+    actionButtonContainer: {
+        backgroundColor: '$contrast',
+    },
+    actionButtonLabel: {
+        color: '$textContrast',
+        fontSize: AppFonts.subtext.size,
+    },
+    paymentText: {
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textPrimary',
+        textAlign: 'center',
+    },
 });
 
 export default styles;

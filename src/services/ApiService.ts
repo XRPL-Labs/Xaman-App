@@ -20,7 +20,6 @@ import { GetDeviceUniqueId } from '@common/helpers/device';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import NetworkService from '@services/NetworkService';
-import Localize from '@locale';
 
 /* Types  ==================================================================== */
 type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -46,10 +45,10 @@ export class ApiError extends Error {
      */
     get message() {
         switch (this.code) {
-            // generic errors
-            // we got a payment required error from backend
-            case 402:
-                return Localize.t('monetization.monetizationRequiredForThisFeature');
+            // // generic errors
+            // // we got a payment required error from backend
+            // case 402:
+            //     return Localize.t('monetization.monetizationRequiredForThisFeature');
             default:
                 return this.originalMessage;
         }
