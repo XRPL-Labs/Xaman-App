@@ -649,7 +649,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
     canExchange = () => {
         const { trustLine } = this.props;
-        return !trustLine.obligation;
+        return !trustLine.obligation && !trustLine.isLiquidityPoolToken();
     };
 
     render() {
