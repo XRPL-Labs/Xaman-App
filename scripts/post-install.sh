@@ -13,7 +13,7 @@ ROOT=$(pwd)
 
 
 function _git_hook() {
-    echo -e "\n${GREEN}[-] Installing hooks... ${NC}"
+    echo -e "${GREEN}[-] Installing git hooks... ${NC}"
 
     GIT_DIR=$(git rev-parse --git-dir)
 
@@ -23,33 +23,21 @@ function _git_hook() {
     # this command creates symlink to our pre-commit script
     ln -s ../../scripts/pre-commit.sh $GIT_DIR/hooks/pre-commit
 
-    # excute permission
+    # execute permission
     chmod +x $GIT_DIR/hooks/pre-commit
 }
 
 function _patch(){
-    echo -e "\n${GREEN}[-] Patching packages... ${NC}"
+    echo -e "${GREEN}[-] Patching packages... ${NC}"
     # # patch packages
     npx patch-package
 }
-
-
-function _jetify(){
-    echo -e "\n${GREEN}[-] Fixing Android X... ${NC}"
-
-    cd $ROOT
-    npx jetify
-}
-
-
-
 
 #  Main ==================================================================== */
 echo -e "${CYAN}[*] Post Install.. ${NC}"
 
 _git_hook
 _patch
-_jetify
 
-echo -e "\n${GREEN}[*] Everythinh Done! ${NC}"
+echo -e "\n${GREEN}[*] Everything went well :) ${NC}"
 
