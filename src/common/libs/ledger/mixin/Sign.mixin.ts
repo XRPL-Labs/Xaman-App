@@ -236,17 +236,33 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                         onSign: (signedObject: SignedObjectType) => {
                             const { id, signedTransaction, signerPubKey, signMethod, signers } = signedObject;
 
-                            if (!id || !signedTransaction || !signerPubKey || !signMethod) {
+                            // verify the sign result
+                            if (!signedTransaction || !signerPubKey || !signMethod) {
                                 reject(
                                     new Error(
-                                        'Unable sign the transaction, missing required values for ' +
-                                            'hash, signedBlob, signerPubKey, signMethod',
+                                        'Unable sign the transaction, missing required values ' +
+                                            'signedBlob, signerPubKey, signMethod',
                                     ),
                                 );
                                 return;
                             }
 
-                            this.hash = id;
+                            // only pseudo transactions are allowed to not have a transaction id
+                            if (!id && this.InstanceType !== InstanceTypes.PseudoTransaction) {
+                                reject(
+                                    new Error(
+                                        'Unable sign the transaction, Non-Pseudo transactions requires transaction id.',
+                                    ),
+                                );
+                                return;
+                            }
+
+                            // set the transaction hash if exist
+                            if (id) {
+                                this.hash = id;
+                            }
+
+                            // set the sign variables
                             this.SignedBlob = signedTransaction;
                             this.SignMethod = signMethod;
                             this.SignerPubKey = signerPubKey;
