@@ -62,8 +62,9 @@ describe('PaymentChannelFund tx', () => {
                     factor: [
                         {
                             currency: 'XRP',
-                            effect: 'IMMEDIATE_EFFECT',
+                            effect: 'POTENTIAL_EFFECT',
                             value: '1',
+                            action: 'INC',
                         },
                     ],
                     mutate: {

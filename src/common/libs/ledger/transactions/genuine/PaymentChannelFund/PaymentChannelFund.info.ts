@@ -7,6 +7,7 @@ import PaymentChannelFund from './PaymentChannelFund.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class PaymentChannelFundInfo extends ExplainerAbstract<PaymentChannelFund, MutationsMixinType> {
@@ -47,7 +48,8 @@ class PaymentChannelFundInfo extends ExplainerAbstract<PaymentChannelFund, Mutat
                 {
                     currency: this.item.Amount!.currency,
                     value: this.item.Amount!.value,
-                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                    effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: OperationActions.INC,
                 },
             ],
         };
