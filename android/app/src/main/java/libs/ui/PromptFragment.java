@@ -8,48 +8,30 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.app.AlertDialog;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-
-import com.xrpllabs.xumm.R;
 
 import javax.annotation.Nullable;
 
+
+import com.xrpllabs.xumm.R;
+
+
 public class PromptFragment extends DialogFragment implements DialogInterface.OnClickListener {
-     static final String ARG_TITLE = "title";
-     static final String ARG_MESSAGE = "message";
-     static final String ARG_BUTTON_POSITIVE = "button_positive";
-     static final String ARG_BUTTON_NEGATIVE = "button_negative";
-     static final String ARG_BUTTON_NEUTRAL = "button_neutral";
-     static final String ARG_ITEMS = "items";
-     static final String ARG_TYPE = "type";
-     static final String ARG_STYLE = "style";
-     static final String ARG_DEFAULT_VALUE = "defaultValue";
-     static final String ARG_PLACEHOLDER = "placeholder";
+    static final String ARG_TITLE = "title";
+    static final String ARG_MESSAGE = "message";
+    static final String ARG_BUTTON_POSITIVE = "button_positive";
+    static final String ARG_BUTTON_NEGATIVE = "button_negative";
+    static final String ARG_BUTTON_NEUTRAL = "button_neutral";
+    static final String ARG_ITEMS = "items";
+    static final String ARG_TYPE = "type";
+    static final String ARG_USER_INTERFACE_STYLE = "userInterfaceStyle";
+    static final String ARG_DEFAULT_VALUE = "defaultValue";
+    static final String ARG_PLACEHOLDER = "placeholder";
 
     private EditText mInputText;
-
-    public enum PromptTypes {
-        TYPE_DEFAULT("default"),
-        PLAIN_TEXT("plain-text"),
-        SECURE_TEXT("secure-text"),
-        NUMERIC("numeric"),
-        EMAIL_ADDRESS("email-address"),
-        PHONE_PAD("phone-pad");
-
-        private final String mName;
-
-        PromptTypes(final String name) {
-            mName = name;
-        }
-
-        @Override
-        public String toString() {
-            return mName;
-        }
-    }
-
     private
     @Nullable
     PromptModule.PromptFragmentListener mListener;
@@ -64,9 +46,18 @@ public class PromptFragment extends DialogFragment implements DialogInterface.On
 
     public Dialog createDialog(Context activityContext, Bundle arguments) {
         AlertDialog.Builder builder;
-        // String style = arguments.containsKey(ARG_STYLE) ? arguments.getString(ARG_STYLE) : "default";
 
-        builder = new AlertDialog.Builder(activityContext, R.style.AlertDialogStyle);
+        String userInterfaceStyle = arguments.containsKey(ARG_USER_INTERFACE_STYLE) ? arguments.getString(ARG_USER_INTERFACE_STYLE) : "default";
+
+
+        switch (userInterfaceStyle) {
+            case "dark":
+                builder = new AlertDialog.Builder(activityContext, R.style.AlertDialogStyleDark);
+                break;
+            default:
+                builder = new AlertDialog.Builder(activityContext, R.style.AlertDialogStyle);
+                break;
+        }
 
         builder.setTitle(arguments.getString(ARG_TITLE));
 
@@ -92,33 +83,34 @@ public class PromptFragment extends DialogFragment implements DialogInterface.On
         AlertDialog alertDialog = builder.create();
 
         // input style
-        LayoutInflater inflater = LayoutInflater.from(activityContext);
+        LayoutInflater inflater = getLayoutInflater();
         final EditText input;
 
-        input = (EditText) inflater.inflate(R.layout.edit_text, null);
+
+        switch (userInterfaceStyle) {
+            case "dark":
+                input = (EditText) inflater.inflate(R.layout.edit_text_dark, null);
+                break;
+            default:
+                input = (EditText) inflater.inflate(R.layout.edit_text, null);
+                break;
+        }
+
 
         // input type
         int type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
         if (arguments.containsKey(ARG_TYPE)) {
             String typeString = arguments.getString(ARG_TYPE);
             if (typeString != null) {
-                switch (typeString) {
-                    case "secure-text":
-                        type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
-                        break;
-                    case "numeric":
-                        type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER;
-                        break;
-                    case "email-address":
-                        type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
-                        break;
-                    case "phone-pad":
-                        type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_PHONE;
-                        break;
-                    case "plain-text":
-                    default:
-                        type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
-                }
+                type = switch (typeString) {
+                    case "secure-text" ->
+                            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
+                    case "numeric" -> InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER;
+                    case "email-address" ->
+                            InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+                    case "phone-pad" -> InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_PHONE;
+                    default -> InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+                };
             }
         }
         input.setInputType(type);
@@ -141,6 +133,7 @@ public class PromptFragment extends DialogFragment implements DialogInterface.On
         return alertDialog;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = this.createDialog(getActivity(), getArguments());
@@ -158,10 +151,31 @@ public class PromptFragment extends DialogFragment implements DialogInterface.On
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if (mListener != null) {
             mListener.onDismiss(dialog);
+        }
+    }
+
+    public enum PromptTypes {
+        TYPE_DEFAULT("default"),
+        PLAIN_TEXT("plain-text"),
+        SECURE_TEXT("secure-text"),
+        NUMERIC("numeric"),
+        EMAIL_ADDRESS("email-address"),
+        PHONE_PAD("phone-pad");
+
+        private final String mName;
+
+        PromptTypes(final String name) {
+            mName = name;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return mName;
         }
     }
 }

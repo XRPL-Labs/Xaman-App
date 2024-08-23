@@ -37,7 +37,7 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
     static final String KEY_ITEMS = "items";
     static final String KEY_CANCELABLE = "cancelable";
     static final String KEY_TYPE = "type";
-    static final String KEY_STYLE = "style";
+    static final String KEY_USER_INTERFACE_STYLE = "userInterfaceStyle";
     static final String KEY_DEFAULT_VALUE = "defaultValue";
     static final String KEY_PLACEHOLDER = "placeholder";
 
@@ -47,14 +47,12 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
             KEY_BUTTON_POSITIVE, DialogInterface.BUTTON_POSITIVE,
             KEY_BUTTON_NEGATIVE, DialogInterface.BUTTON_NEGATIVE,
             KEY_BUTTON_NEUTRAL, DialogInterface.BUTTON_NEUTRAL);
-
+    static final String NAME = "PromptAndroid";
     private boolean mIsInForeground;
 
     public PromptModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
-
-    static final String NAME = "PromptAndroid";
 
     @Override
     public String getName() {
@@ -130,8 +128,8 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
         if (options.hasKey(KEY_TYPE)) {
             args.putString(KEY_TYPE, options.getString(KEY_TYPE));
         }
-        if (options.hasKey(KEY_STYLE)) {
-            args.putString(KEY_STYLE, options.getString(KEY_STYLE));
+        if (options.hasKey(KEY_USER_INTERFACE_STYLE)) {
+            args.putString(KEY_USER_INTERFACE_STYLE, options.getString(KEY_USER_INTERFACE_STYLE));
         }
         if (options.hasKey(KEY_DEFAULT_VALUE)) {
             args.putString(KEY_DEFAULT_VALUE, options.getString(KEY_DEFAULT_VALUE));
@@ -142,6 +140,20 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
         fragmentManagerHelper.showNewAlert(mIsInForeground, args, callback);
     }
 
+    @Override
+    public Map<String, Object> getConstants() {
+        return CONSTANTS;
+    }
+
+    private
+    @Nullable
+    FragmentManagerHelper getFragmentManagerHelper() {
+        Activity activity = getCurrentActivity();
+        if (activity == null || !(activity instanceof FragmentActivity)) {
+            return null;
+        }
+        return new FragmentManagerHelper(((FragmentActivity) activity).getSupportFragmentManager());
+    }
 
     private class FragmentManagerHelper {
 
@@ -230,20 +242,5 @@ public class PromptModule extends ReactContextBaseJavaModule implements Lifecycl
                 }
             }
         }
-    }
-
-    @Override
-    public Map<String, Object> getConstants() {
-        return CONSTANTS;
-    }
-
-    private
-    @Nullable
-    FragmentManagerHelper getFragmentManagerHelper() {
-        Activity activity = getCurrentActivity();
-        if (activity == null || !(activity instanceof FragmentActivity)) {
-            return null;
-        }
-        return new FragmentManagerHelper(((FragmentActivity) activity).getSupportFragmentManager());
     }
 }
