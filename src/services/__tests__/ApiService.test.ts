@@ -5,7 +5,7 @@ import fetch from 'fetch-mock';
 import { ApiService } from '../';
 import { ApiError } from '../ApiService';
 
-const API_ROOT = 'https://xumm.app/api';
+const API_ROOT = 'https://xaman.app/api';
 const ENDPOINT = '/v1/app/ping';
 const ENDPOINT_WITH_PARAM = '/v1/app/ping?foo=bar';
 const ENDPOINT_WITH_ARGS = '/v1/app/liquidity-boundaries/{issuer}/{currency}';

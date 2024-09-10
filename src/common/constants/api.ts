@@ -5,7 +5,7 @@
 
 export default {
     // The API URL we're connecting to
-    apiUrl: 'https://xumm.app/api',
+    apiUrl: 'https://xaman.app/api',
 
     // Map short names to the actual endpoints, so that we can
     // use them like so: AppAPI.ENDPOINT_NAME.METHOD()
