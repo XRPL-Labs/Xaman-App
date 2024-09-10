@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
-index 0eae618..8fc0ef8 100644
+index 0eae618..c21cd86 100644
 --- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 +++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
 @@ -571,6 +571,15 @@ - (void)sendRequest:(NSURLRequest *)request
@@ -7,7 +7,7 @@ index 0eae618..8fc0ef8 100644
  {
    RCTAssertThread([self requestQueue], @"sendRequest: must be called on request queue");
 +  // Define the allowed endpoints
-+  NSSet *allowedEndpoints = [NSSet setWithObjects:@"clients3.google.com", @"xumm.app", nil];
++  NSSet *allowedEndpoints = [NSSet setWithObjects:@"clients3.google.com", @"xaman.app", nil];
 +  #if DEBUG
 +    // Debug build, skip the check
 +  #else
