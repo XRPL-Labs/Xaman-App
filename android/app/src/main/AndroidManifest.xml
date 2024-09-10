@@ -1,156 +1,174 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.xrpllabs.xumm">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.xrpllabs.xumm">
 
     <!-- Access to internet  -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <!-- QR code scanning && Veriff KYC  -->
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <!-- Veriff KYC -->
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Firebase messaging + analytics -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <!-- Biometric authentication -->
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <!-- Network state -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!-- Tangem SDK && Veriff KYC-->
-    <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="android.permission.NFC" />
     <!-- in-app purchase -->
-    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
     <!-- in-app google play update && Veriff KYC -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- Google App measurement -->
-    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"/>
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
     <!-- Update app notification badges -->
-    <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
-    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
-    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
-    <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT"/>
-    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE"/>
-    <uses-permission android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE"/>
-    <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT"/>
-    <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE"/>
-    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
-    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS"/>
-    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.READ_APP_BADGE"/>
-    <uses-permission android:name="com.oppo.launcher.permission.READ_SETTINGS"/>
-    <uses-permission android:name="com.oppo.launcher.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_READ"/>
-    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_WRITE"/>
+    <uses-permission android:name="com.sec.android.provider.badge.permission.READ" />
+    <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE" />
+    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT" />
+    <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" />
+    <uses-permission android:name="com.sonymobile.home.permission.PROVIDER_INSERT_BADGE" />
+    <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT" />
+    <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_APP_BADGE" />
+    <uses-permission android:name="com.oppo.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.oppo.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_READ" />
+    <uses-permission android:name="me.everything.badger.permission.BADGE_COUNT_WRITE" />
 
     <queries>
-        <package android:name="com.google.android.apps.maps"/>
+        <package android:name="com.google.android.apps.maps" />
         <intent>
-            <action android:name="android.intent.action.VIEW"/>
-            <data android:scheme="ton"/>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="ton" />
         </intent>
     </queries>
 
     <application
-            android:name=".ApplicationLoader"
-            android:allowBackup="false"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:resizeableActivity="false"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:theme="@style/AppTheme">
+        android:name=".ApplicationLoader"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:resizeableActivity="false"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:theme="@style/AppTheme">
         <activity
-                android:name=".LaunchActivity"
-                android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
-                android:exported="true"
-                android:launchMode="singleTask"
-                android:screenOrientation="portrait"
-                android:taskAffinity=""
-                android:windowSoftInputMode="adjustNothing"
-                tools:ignore="LockedOrientationActivity">
+            android:name=".LaunchActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:taskAffinity=""
+            android:windowSoftInputMode="adjustNothing"
+            tools:ignore="LockedOrientationActivity">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                        android:host="xumm.app"
-                        android:pathPrefix="/detect"
-                        android:scheme="https"/>
+                    android:host="xumm.app"
+                    android:pathPrefix="/detect"
+                    android:scheme="https" />
                 <data
-                        android:host="xumm.app"
-                        android:pathPrefix="/tx"
-                        android:scheme="https"/>
+                    android:host="xumm.app"
+                    android:pathPrefix="/tx"
+                    android:scheme="https" />
                 <data
-                        android:host="xumm.app"
-                        android:pathPrefix="/pair"
-                        android:scheme="https"/>
+                    android:host="xumm.app"
+                    android:pathPrefix="/pair"
+                    android:scheme="https" />
                 <data
-                        android:host="xumm.app"
-                        android:pathPrefix="/sign"
-                        android:scheme="https"/>
+                    android:host="xumm.app"
+                    android:pathPrefix="/sign"
+                    android:scheme="https" />
+                <data
+                    android:host="xaman.app"
+                    android:pathPrefix="/detect"
+                    android:scheme="https" />
+                <data
+                    android:host="xaman.app"
+                    android:pathPrefix="/tx"
+                    android:scheme="https" />
+                <data
+                    android:host="xaman.app"
+                    android:pathPrefix="/pair"
+                    android:scheme="https" />
+                <data
+                    android:host="xaman.app"
+                    android:pathPrefix="/sign"
+                    android:scheme="https" />
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="xrpl"/>
-                <data android:scheme="xrp"/>
-                <data android:scheme="xumm"/>
+                <data android:scheme="xrpl" />
+                <data android:scheme="xrp" />
+                <data android:scheme="xumm" />
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
 
             <meta-data
-                    android:name="android.nfc.action.TECH_DISCOVERED"
-                    android:resource="@xml/nfc_tech_filter"/>
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
 
         </activity>
 
         <meta-data
-                android:name="com.google.firebase.messaging.default_notification_icon"
-                android:resource="@drawable/ic_stat_icon_xaman_android_notification"
-                tools:replace="android:resource"/>
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_icon_xaman_android_notification"
+            tools:replace="android:resource" />
         <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:resource="@string/default_notification_channel_id"
-                tools:replace="android:resource"/>
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:resource="@string/default_notification_channel_id"
+            tools:replace="android:resource" />
         <meta-data
-                android:name="com.google.firebase.messaging.default_notification_color"
-                android:resource="@color/push_notification"
-                tools:replace="android:resource"/>
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/push_notification"
+            tools:replace="android:resource" />
 
         <receiver
-                android:name="libs.notification.NotificationMessageReceiver"
-                android:exported="true"
-                android:permission="com.google.android.c2dm.permission.SEND">
+            android:name="libs.notification.NotificationMessageReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </receiver>
         <receiver
-                android:name="libs.notification.NotificationActionReceiver"
-                android:enabled="true"
-                android:exported="false">
+            android:name="libs.notification.NotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED"/>
+                <action android:name="com.xrpllabs.xumm.ACTION_NOTIFICATION_OPENED" />
             </intent-filter>
         </receiver>
 
