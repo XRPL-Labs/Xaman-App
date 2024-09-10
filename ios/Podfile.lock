@@ -1055,9 +1055,9 @@ PODS:
     - React-Core
   - react-native-netinfo (11.3.2):
     - React-Core
-  - react-native-sdk (6.2.0):
+  - react-native-sdk (7.1.0):
     - React
-    - VeriffSDK (= 6.32.0)
+    - VeriffSDK (= 7.4.0)
   - React-nativeconfig (0.74.2)
   - React-NativeModulesApple (0.74.2):
     - glog
@@ -1324,7 +1324,7 @@ PODS:
     - TangemSdk (= 3.4.0)
   - SocketRocket (0.7.0)
   - TangemSdk (3.4.0)
-  - VeriffSDK (6.32.0)
+  - VeriffSDK (7.4.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1603,7 +1603,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 86703e9e4f6522053568300827b436ccc01e1101
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
-  react-native-sdk: b7d35d9bdb3a40b0e8996c7eadc44600adf56ba3
+  react-native-sdk: f5e5134a8855b4b6d7e923c8332d236a5fd814b2
   React-nativeconfig: 5d452e509d6fbedc1522e21b566451fc673ac6b7
   React-NativeModulesApple: 6560431301ffdab8df6212cc8c8eff779396d8e0
   React-perflogger: 32ed45d9cee02cf6639acae34251590dccd30994
@@ -1636,7 +1636,7 @@ SPEC CHECKSUMS:
   RNTangemSdk: b4a4c91c617daca427a69cc7f784425c6789acd7
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
-  VeriffSDK: d0c6352694daf5e94d96bbe0e6add794e4827a33
+  VeriffSDK: 9c4e31693dfe772af8553209c4a6543bffc75d24
   Yoga: 45564236f670899c9739b1581a12b00ead5d391f
 
 PODFILE CHECKSUM: d570bd3dd1c9ff68463bd31cdebffd29014498b9
