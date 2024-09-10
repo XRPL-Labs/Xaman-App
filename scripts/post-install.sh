@@ -1,16 +1,9 @@
 #!/usr/bin/env bash
 
-# Let's exit on errors
-set -e
-
 CYAN='\033[1;36m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
-LIGHTGRAY='\033[0;37m'
 NC='\033[0m' # No Color
-
-ROOT=$(pwd)
-
 
 function _git_hook() {
     echo -e "${GREEN}[-] Installing git hooks... ${NC}"
@@ -33,11 +26,26 @@ function _patch(){
     npx patch-package
 }
 
+
+
+function _check_pod_install() {
+    # checking for pod install requirement
+    scripts/check-pod-install.sh
+    podInstallExitCode=$?
+    if [[ "$podInstallExitCode" -ne 0 ]]; then
+        echo -e ""
+        echo -e "${RED}[!] Warning: don't forget to run 'pod install' in '/ios' directory (｡◕‿‿◕｡) ${NC}"
+    fi
+}
+
+
+
 #  Main ==================================================================== */
 echo -e "${CYAN}[*] Post Install.. ${NC}"
 
 _git_hook
 _patch
+_check_pod_install
 
-echo -e "\n${GREEN}[*] Everything went well :) ${NC}"
+echo -e "\n${GREEN}[*] Everything went well! ${NC}"
 
