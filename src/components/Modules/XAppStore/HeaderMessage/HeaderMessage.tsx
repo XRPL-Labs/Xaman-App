@@ -1,11 +1,6 @@
 import { isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { InteractionManager, Text, View, ViewStyle } from 'react-native';
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
-
-import { Navigator } from '@common/helpers/navigator';
-
-import { AppScreens } from '@common/constants';
 
 import Preferences from '@common/libs/preferences';
 
@@ -14,8 +9,6 @@ import { XAppOrigin } from '@common/libs/payload';
 import { Icon, TouchableDebounce } from '@components/General';
 
 import { AppItem, AppType, AppActions } from '@components/Modules/XAppStore/AppsList/AppItem';
-
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -113,22 +106,6 @@ class HeaderMessage extends Component<Props, State> {
 
         // persist the decision on the store
         Preferences.set(Preferences.keys.XAPP_STORE_IGNORE_MESSAGE_ID, `${message.id}`);
-    };
-
-    onXAppPress = (app: AppType) => {
-        Navigator.showModal<XAppBrowserModalProps>(
-            AppScreens.Modal.XAppBrowser,
-            {
-                identifier: app.identifier,
-                title: app.title,
-                icon: app.icon,
-                origin: XAppOrigin.XAPP_STORE_MESSAGE,
-            },
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
-            },
-        );
     };
 
     renderContent = () => {
