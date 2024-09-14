@@ -4,8 +4,17 @@ import NetworkService from '../NetworkService';
 
 import * as FeeUtils from '@common/utils/fee';
 
+import { NetworkConfig } from '@common/constants';
+import ProfileRepository from '@store/repositories/profile';
+
 describe('NetworkService', () => {
     const networkService = NetworkService;
+
+    const coreSettings = {
+        network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
+    } as any;
+
+    const profile = { deviceUUID: 'MOCKED_UUID' } as any;
 
     beforeAll(() => {
         const logFn = console.warn;
@@ -23,9 +32,7 @@ describe('NetworkService', () => {
     });
 
     it('should properly initialize', async () => {
-        const coreSettings = {
-            network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
-        } as any;
+        ProfileRepository.getProfile = jest.fn(() => profile);
 
         await networkService.initialize(coreSettings);
 
@@ -36,7 +43,7 @@ describe('NetworkService', () => {
         });
     });
 
-    describe('Update network definitions', () => {
+    describe('update network definitions', () => {
         it('updates network definitions correctly', async () => {
             const returnedResponse = {
                 TYPES: {},
@@ -181,7 +188,7 @@ describe('NetworkService', () => {
         });
     });
 
-    describe('Calculate fee', () => {
+    describe('calculate fee', () => {
         describe('Not Hooks enabled network', () => {
             let isFeatureEnabledSpy: any;
             let prepareTxForHookFeeSpy: any;
@@ -189,11 +196,8 @@ describe('NetworkService', () => {
             beforeAll(() => {
                 // set the network as normal network without hooks amendment
                 isFeatureEnabledSpy = jest
-                    .spyOn(networkService.network, 'isFeatureEnabled')
+                    .spyOn(networkService.network!, 'isFeatureEnabled')
                     .mockImplementation(() => false);
-                isFeatureEnabledSpy = jest
-                    .spyOn(networkService.network, 'isFeatureEnabled')
-                    .mockImplementation(() => true);
                 prepareTxForHookFeeSpy = jest
                     .spyOn(FeeUtils, 'PrepareTxForHookFee')
                     .mockImplementation(() => 'SIGNED_TX');
@@ -235,7 +239,7 @@ describe('NetworkService', () => {
             beforeAll(() => {
                 // set the network as hook enabled network
                 isFeatureEnabledSpy = jest
-                    .spyOn(networkService.network, 'isFeatureEnabled')
+                    .spyOn(networkService.network!, 'isFeatureEnabled')
                     .mockImplementation(() => true);
                 prepareTxForHookFeeSpy = jest
                     .spyOn(FeeUtils, 'PrepareTxForHookFee')
@@ -274,6 +278,26 @@ describe('NetworkService', () => {
 
                 spy0.mockRestore();
             });
+        });
+    });
+    describe('normalize endpoint', () => {
+        test('Should append ORIGIN and userId for cluster endpoints', () => {
+            const endpoint = NetworkConfig.clusterEndpoints[0];
+            expect(networkService.normalizeEndpoint(endpoint)).toBe(
+                `${endpoint}${networkService.Origin}?user_id=${profile.deviceUUID}`,
+            );
+        });
+
+        test('Should use custom proxy for non-whitelisted endpoints and append userId', () => {
+            const endpoint = 'wss://mycustomnetwork.dev';
+            expect(networkService.normalizeEndpoint(endpoint)).toBe(
+                `${NetworkConfig.customNodeProxy}/${endpoint.replace('wss://', '')}?user_id=${profile.deviceUUID}`,
+            );
+        });
+
+        test('Should return the endpoint if it is in the whitelisted networks', () => {
+            const endpoint = 'wss://s2.ripple.com';
+            expect(networkService.normalizeEndpoint(endpoint)).toBe(endpoint);
         });
     });
 });

@@ -203,6 +203,12 @@ class BackendService {
                     if (!res) {
                         throw new Error('Cannot add the device to the Xaman');
                     }
+
+                    // set the user id to the network service for socket auth on cluster
+                    const { device } = res;
+                    NetworkService.setUserId(device.uuid);
+
+                    // resolve
                     return resolve(res);
                 })
                 .catch((e: any) => {

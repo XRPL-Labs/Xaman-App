@@ -15,6 +15,7 @@ import { XrplClient } from 'xrpl-client';
 
 import CoreRepository from '@store/repositories/core';
 import NetworkRepository from '@store/repositories/network';
+import ProfileRepository from '@store/repositories/profile';
 
 import CoreModel from '@store/models/objects/core';
 import NetworkModel from '@store/models/objects/network';
@@ -45,6 +46,7 @@ import {
     ServerInfoRequest,
     ServerInfoResponse,
 } from '@common/libs/ledger/types/methods';
+
 import { Amendments } from '@common/libs/ledger/types/ledger';
 
 /* Types  ==================================================================== */
@@ -69,15 +71,17 @@ declare interface NetworkService {
 class NetworkService extends EventEmitter {
     public network?: NetworkModel;
     public connection?: XrplClient;
+    private userId?: string;
     private status: NetworkStateStatus;
-    private networkReserve: any;
+    private networkReserve?: { base: number; owner: number };
     private lastNetworkErrorId?: Realm.BSON.ObjectId;
+
+    private static _ORIGIN = `/xaman/${GetAppVersionCode()}/${Platform.OS}`;
+    private static _TIMEOUT_SECONDS = 40;
 
     onEvent: (event: string, fn: any) => any;
     offEvent: (event: string, fn: any) => any;
 
-    static TIMEOUT_SECONDS = 40;
-    static ORIGIN = `/xaman/${GetAppVersionCode()}/${Platform.OS}`;
     private logger: LoggerInstance;
 
     constructor() {
@@ -87,6 +91,7 @@ class NetworkService extends EventEmitter {
         this.connection = undefined;
         this.status = NetworkStateStatus.Disconnected;
         this.networkReserve = undefined;
+        this.userId = undefined;
         this.lastNetworkErrorId = undefined;
 
         this.logger = LoggerService.createLogger('Network');
@@ -124,6 +129,12 @@ class NetworkService extends EventEmitter {
                     `Current Network Base/Owner reserve: ${this.networkReserve.base}/${this.networkReserve.owner}`,
                 );
 
+                // set the origin
+                const profile = ProfileRepository.getProfile();
+                if (profile && profile.deviceUUID) {
+                    this.setUserId(profile.deviceUUID);
+                }
+
                 // listen on navigation root change
                 NavigationService.on('setRoot', this.onRootChange);
 
@@ -134,6 +145,20 @@ class NetworkService extends EventEmitter {
             }
         });
     };
+
+    public get Origin(): string {
+        return NetworkService._ORIGIN;
+    }
+
+    /**
+     * Sets the user ID for the current instance.
+     *
+     * @param {string} userId - The user ID to set.
+     * @return {void}
+     */
+    public setUserId(userId: string) {
+        this.userId = userId;
+    }
 
     /**
      * on navigation root changed
@@ -282,7 +307,7 @@ class NetworkService extends EventEmitter {
      * Get current network base and owner reserve
      */
     getNetworkReserve = (): { BaseReserve: number; OwnerReserve: number } => {
-        const { base, owner } = this.networkReserve;
+        const { base, owner } = this.networkReserve!;
 
         return {
             BaseReserve: base,
@@ -468,7 +493,7 @@ class NetworkService extends EventEmitter {
         };
 
         const res = (await this.connection.send(payloadWithNetworkId, {
-            timeoutSeconds: NetworkService.TIMEOUT_SECONDS,
+            timeoutSeconds: NetworkService._TIMEOUT_SECONDS,
         })) as Response;
 
         const [resId, resNetworkId] = res.id?.split('.') || [];
@@ -588,7 +613,7 @@ class NetworkService extends EventEmitter {
                 }
 
                 const { reserve_base_xrp, reserve_inc_xrp } = resp.info.validated_ledger;
-                const { base, owner } = this.networkReserve;
+                const { base, owner } = this.networkReserve!;
 
                 if (reserve_base_xrp !== base || reserve_inc_xrp !== owner) {
                     this.logger.debug(`Network Base/Owner reserve changed to ${reserve_base_xrp}/${reserve_inc_xrp}`);
@@ -610,6 +635,32 @@ class NetworkService extends EventEmitter {
             .catch((error: any) => {
                 this.logger.error(error);
             });
+    };
+
+    /**
+     * Normalizes the given endpoint URL based on predefined network configurations.
+     *
+     * This function performs the following operations:
+     * - For cluster endpoints listed in the NetworkConfig, it appends the origin and user ID if they exist.
+     * - For endpoints not listed in the default network list, it uses a custom proxy and includes the user ID.
+     * - Otherwise, it returns the endpoint as is.
+     *
+     * @param {string} endpoint - The endpoint URL to be normalized.
+     * @returns {string} The normalized endpoint URL.
+     */
+    normalizeEndpoint = (endpoint: string): string => {
+        // for cluster endpoints, we add origin and userId if exist
+        if (NetworkConfig.clusterEndpoints.includes(endpoint)) {
+            return `${endpoint}${NetworkService._ORIGIN}${this.userId ? `?user_id=${this.userId}` : ''}`;
+        }
+
+        // if endpoint is not in the default white listed network list then use custom proxy for it
+        if (!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint))) {
+            // remove 'ws://' and 'wss://' from custom endpoint and add user id
+            return `${NetworkConfig.customNodeProxy}/${endpoint.replace(/^wss?:\/\//, '')}${this.userId ? `?user_id=${this.userId}` : ''}`;
+        }
+
+        return endpoint;
     };
 
     /**
@@ -636,17 +687,11 @@ class NetworkService extends EventEmitter {
         // fetch connected node from connection
         const { uri, publicKey } = this.connection!.getState().server;
 
-        let connectedNode = uri;
-
-        // remove proxy from url if present
-        if (connectedNode.startsWith(NetworkConfig.customNodeProxy)) {
-            connectedNode = connectedNode.replace(`${NetworkConfig.customNodeProxy}/`, '');
-        }
-
-        // remove path from cluster node
-        if (connectedNode.endsWith(NetworkService.ORIGIN)) {
-            connectedNode = connectedNode.replace(NetworkService.ORIGIN, '');
-        }
+        // clean up before print
+        const connectedNode = uri
+            .replace(`${NetworkConfig.customNodeProxy}/`, '')
+            .replace(NetworkService._ORIGIN, '')
+            .replace(`?user_id=${this.userId}`, '');
 
         // change network status
         this.setConnectionStatus(NetworkStateStatus.Connected);
@@ -691,30 +736,14 @@ class NetworkService extends EventEmitter {
         // get default node for selected network
         const { defaultNode, nodes } = this.getNetwork();
 
-        const normalizedEndpoints = nodes
+        const endpoints = nodes
             .flatMap((node) => node.endpoint)
             .sort((x, y) => {
                 return x === defaultNode.endpoint ? -1 : y === defaultNode.endpoint ? 1 : 0;
             })
-            .map((endpoint) => {
-                let normalizedEndpoint = endpoint;
+            .map(this.normalizeEndpoint);
 
-                // for cluster endpoints, we add origin
-                if (NetworkConfig.clusterEndpoints.includes(endpoint)) {
-                    normalizedEndpoint = `${endpoint}${NetworkService.ORIGIN}`;
-                }
-
-                // if endpoint is not in the white listed network list then use custom proxy for it
-                if (!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint))) {
-                    // remove 'ws://' and 'wss://' from custom endpoint
-                    normalizedEndpoint = normalizedEndpoint.replace(/^wss?:\/\//, '');
-                    normalizedEndpoint = `${NetworkConfig.customNodeProxy}/${normalizedEndpoint}`;
-                }
-
-                return normalizedEndpoint;
-            });
-
-        this.connection = new XrplClient(normalizedEndpoints, {
+        this.connection = new XrplClient(endpoints, {
             maxConnectionAttempts: 3,
             assumeOfflineAfterSeconds: 9,
             connectAttemptTimeoutSeconds: 3,

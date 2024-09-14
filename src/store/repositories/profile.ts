@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import assign from 'lodash/assign';
 
-import { ProfileModel } from '@store/models';
+import ProfileModel from '@store/models/objects/profile';
 
 import BaseRepository from './base';
 

@@ -13,6 +13,9 @@ class NetworkService {
         },
     };
 
+    static ORIGIN = '/xaman/0.0.01/ios';
+    private userId = 'MOCK_USER_ID';
+
     public getNativeAsset() {
         return 'XRP';
     }
