@@ -101,6 +101,10 @@ const styles = StyleService.create({
         margin: 0,
         padding: 0,
     },
+    amountInputUneffected: {
+        fontSize: AppFonts.h5.size,
+        color: '$textSecondary',
+    },
     alertBox: {
         flexDirection: 'row',
         alignItems: 'center',

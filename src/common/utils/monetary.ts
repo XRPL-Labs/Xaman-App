@@ -70,6 +70,11 @@ const NormalizeCurrencyCode = (currencyCode: string): string => {
             return `LP ${Truncate(currencyCode.slice(2), 10)}`;
         }
 
+        // LP Token
+        if (currencyCode.startsWith('03')) {
+            // remove the first two letters and return the rest
+            return `LP ${Truncate(currencyCode.slice(2), 10)}`;
+        }
         // check for XLS15d
         if (currencyCode.startsWith('02')) {
             try {

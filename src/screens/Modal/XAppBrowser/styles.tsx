@@ -29,6 +29,9 @@ const styles = StyleService.create({
         justifyContent: 'center',
         paddingHorizontal: AppSizes.paddingSml,
     },
+    actionContainer: {
+        marginHorizontal: AppSizes.paddingSml,
+    },
     errorContainer: {
         flex: 1,
         paddingHorizontal: AppSizes.paddingSml,
