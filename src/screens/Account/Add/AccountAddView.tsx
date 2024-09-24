@@ -27,9 +27,7 @@ import { Button, Header, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-import { Props as AccountGenerateViewProps } from '@screens/Account/Add/Generate/types';
-import { Props as AccountImportViewProps } from '@screens/Account/Add/Import/types';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -45,7 +43,7 @@ export interface State {
 class AccountAddView extends Component<Props, State> {
     static screenName = AppScreens.Account.Add;
 
-    private nfcChangeListener?: EventSubscription;
+    private nfcListener: EventSubscription;
 
     static options() {
         return {
@@ -65,7 +63,7 @@ class AccountAddView extends Component<Props, State> {
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             // on NFC state change (Android)
-            this.nfcChangeListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
+            this.nfcListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
 
             // get current NFC status
             RNTangemSdk.getNFCStatus().then((status) => {
@@ -80,8 +78,8 @@ class AccountAddView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        if (this.nfcChangeListener) {
-            this.nfcChangeListener.remove();
+        if (this.nfcListener) {
+            this.nfcListener.remove();
         }
 
         RNTangemSdk.stopSession().catch(() => {
@@ -95,12 +93,12 @@ class AccountAddView extends Component<Props, State> {
         });
     };
 
-    goToImport = (props: AccountImportViewProps = {}) => {
-        Navigator.push<AccountImportViewProps>(AppScreens.Account.Import, props);
+    goToImport = (props?: any) => {
+        Navigator.push(AppScreens.Account.Import, props);
     };
 
     goToGenerate = () => {
-        Navigator.push<AccountGenerateViewProps>(AppScreens.Account.Generate, {});
+        Navigator.push(AppScreens.Account.Generate);
     };
 
     validateAndImportCard = (card: Card) => {
@@ -154,12 +152,13 @@ class AccountAddView extends Component<Props, State> {
 
             // go to import section
             this.validateAndImportCard(card);
-        } catch (error: any) {
+        } catch (e) {
             // ignore use cancel operation
-            if (error?.message && error?.message === 'The user cancelled the operation') {
+            // @ts-ignore
+            if (e?.message && e?.message === 'The user cancelled the operation') {
                 return;
             }
-            LoggerService.recordError('Unexpected error in creating tangem wallet', error);
+            LoggerService.recordError('Unexpected error in creating tangem wallet', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -199,11 +198,12 @@ class AccountAddView extends Component<Props, State> {
                 ],
                 { type: 'default' },
             );
-        } catch (error: any) {
-            if (error?.message && error?.message === 'The user cancelled the operation') {
+        } catch (e) {
+            // @ts-ignore
+            if (e?.message && e?.message === 'The user cancelled the operation') {
                 return;
             }
-            LoggerService.recordError('Unexpected error in scanning tangem card', error);
+            LoggerService.recordError('Unexpected error in scanning tangem card', e);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),
@@ -211,7 +211,7 @@ class AccountAddView extends Component<Props, State> {
         }
     };
 
-    onAddTangemCardPress = async () => {
+    onAddTangemCardPress = () => {
         const { NFCSupported, NFCEnabled } = this.state;
 
         if (!NFCSupported) {
@@ -228,17 +228,19 @@ class AccountAddView extends Component<Props, State> {
         });
 
         if (NFCEnabled) {
-            await this.scanTangemCard();
+            this.scanTangemCard();
         }
     };
 
     render() {
         return (
-            <View testID="account-add-screen" style={AppStyles.container}>
+            <View testID="account-add-screen" style={[AppStyles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: Navigator.pop,
+                        onPress: () => {
+                            Navigator.pop();
+                        },
                     }}
                     centerComponent={{ text: Localize.t('account.addAccount') }}
                 />
@@ -254,7 +256,7 @@ class AccountAddView extends Component<Props, State> {
                                 source={StyleService.getImage('ImageAddAccount')}
                             />
                         </View>
-                        <View style={AppStyles.flexEnd}>
+                        <View style={[AppStyles.flexEnd]}>
                             <Text style={[AppStyles.emptyText, AppStyles.baseText]}>
                                 {Localize.t('account.addAccountDescription')}
                             </Text>
@@ -276,8 +278,8 @@ class AccountAddView extends Component<Props, State> {
                                     onPress={this.goToImport}
                                 />
 
-                                <View style={styles.separatorContainer}>
-                                    <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
+                                <View style={[styles.separatorContainer]}>
+                                    <Text style={[styles.separatorText]}>{Localize.t('global.or')}</Text>
                                 </View>
 
                                 <Button

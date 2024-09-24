@@ -1,9 +1,9 @@
 {
   "tx": {
     "TransactionType": "SetRegularKey",
-    "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+    "Account": "rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "Fee": "12",
-    "RegularKey": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "RegularKey": "rDestinationxxxxxxxxxxxxxxxxxxxxxx",
     "Flags": 0
   },
   "meta": {}

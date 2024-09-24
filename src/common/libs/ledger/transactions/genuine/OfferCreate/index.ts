@@ -1,3 +1,3 @@
-export { default as OfferCreate } from './OfferCreate.class';
-export { default as OfferCreateValidation } from './OfferCreate.validation';
-export { default as OfferCreateInfo } from './OfferCreate.info';
+export { default as OfferCreate } from './OfferCreateClass';
+export { default as OfferCreateValidation } from './OfferCreateValidation';
+export { default as OfferCreateInfo } from './OfferCreateInfo';

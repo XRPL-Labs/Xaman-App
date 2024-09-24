@@ -30,7 +30,7 @@ interface Props {
 interface State {
     showReservePanel: boolean;
     fiatCurrency: string;
-    fiatRate: RatesType | undefined;
+    fiatRate: RatesType;
     showFiatRate: boolean;
     isLoadingRate: boolean;
 }
@@ -153,7 +153,7 @@ class NativeItem extends Component<Props, State> {
             <TokenIcon
                 token="Native"
                 containerStyle={styles.tokenIconContainer}
-                style={[styles.tokenIcon, discreetMode ? AppStyles.imgColorGrey : {}]}
+                style={[styles.tokenIcon, discreetMode && AppStyles.imgColorGrey]}
             />
         );
     };

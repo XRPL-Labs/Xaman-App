@@ -14,15 +14,11 @@ import NetworkModel from '@store/models/objects/network';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
-export type CoreRepositoryEvent = {
-    updateSettings: (settings: CoreModel, changes: Partial<CoreModel>) => void;
-};
-
 declare interface CoreRepository {
-    on<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
-    off<U extends keyof CoreRepositoryEvent>(event: U, listener: CoreRepositoryEvent[U]): this;
-    emit<U extends keyof CoreRepositoryEvent>(event: U, ...args: Parameters<CoreRepositoryEvent[U]>): boolean;
+    on(event: 'updateSettings', listener: (settings: CoreModel, changes: Partial<CoreModel>) => void): this;
+    on(event: string, listener: Function): this;
 }
+
 /* Repository  ==================================================================== */
 class CoreRepository extends BaseRepository<CoreModel> {
     /**
@@ -72,7 +68,11 @@ class CoreRepository extends BaseRepository<CoreModel> {
     getSelectedNetwork = (): NetworkModel => {
         const settings = this.getSettings();
 
-        return settings.network;
+        if (settings && settings.network) {
+            return settings.network;
+        }
+
+        return undefined;
     };
 
     /**
@@ -121,17 +121,7 @@ class CoreRepository extends BaseRepository<CoreModel> {
             return result[0];
         }
 
-        throw new Error('Core settings object not found!');
-    };
-
-    /**
-     * Get true if developer mode is active in the app
-     * @returns {boolean} - The value of developer mode flag
-     */
-    isDeveloperModeEnabled = (): boolean => {
-        const settings = this.getSettings();
-
-        return !!settings.developerMode;
+        return undefined;
     };
 
     /**
@@ -163,7 +153,9 @@ class CoreRepository extends BaseRepository<CoreModel> {
 
             // hash the passcode
             const sha512Passcode = await SHA512(passcode);
-            return await HMAC256(sha512Passcode, deviceUniqueId);
+            const hashPasscode = await HMAC256(sha512Passcode, deviceUniqueId);
+
+            return hashPasscode;
         } catch (e) {
             return '';
         }

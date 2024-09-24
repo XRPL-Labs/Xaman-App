@@ -6,7 +6,6 @@
 import { compact, flatMap, get, isEmpty, map, reduce } from 'lodash';
 import moment from 'moment-timezone';
 import { Platform } from 'react-native';
-import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
 
@@ -34,14 +33,13 @@ import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 // services
 import PushNotificationsService from '@services/PushNotificationsService';
 import ApiService from '@services/ApiService';
-import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import LoggerService from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
+
+// Locale
+import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
 
-import Localize from '@locale';
-
-import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
-import { InAppPurchaseReceipt } from '@common/libs/iap';
 /* Types  ==================================================================== */
 export interface RatesType {
     rate: number;
@@ -52,9 +50,8 @@ export interface RatesType {
 
 /* Service  ==================================================================== */
 class BackendService {
+    private logger: any;
     private rates: Map<string, RatesType>;
-
-    private logger: LoggerInstance;
 
     constructor() {
         this.logger = LoggerService.createLogger('Backend');
@@ -76,8 +73,8 @@ class BackendService {
     };
 
     /**
-    On Ledger submit transaction
-    */
+     On Ledger submit transaction
+     */
     onLedgerTransactionSubmit = (
         blob: string,
         hash: string,
@@ -118,15 +115,15 @@ class BackendService {
             // update the list
             const updatedParties = await reduce(
                 details,
-                async (result: Promise<number[]>, value) => {
+                async (result, value) => {
                     const currenciesList = [] as CurrencyModel[];
 
                     await Promise.all(
                         map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.upsert({
+                            const currency = await CurrencyRepository.include({
                                 id: `${c.issuer}.${c.currency}`,
                                 issuer: c.issuer,
-                                currencyCode: c.currency,
+                                currency: c.currency,
                                 name: c.name,
                                 avatar: c.avatar || '',
                                 shortlist: c.shortlist === 1,
@@ -203,12 +200,6 @@ class BackendService {
                     if (!res) {
                         throw new Error('Cannot add the device to the Xaman');
                     }
-
-                    // set the user id to the network service for socket auth on cluster
-                    const { device } = res;
-                    NetworkService.setUserId(device.uuid);
-
-                    // resolve
                     return resolve(res);
                 })
                 .catch((e: any) => {
@@ -262,12 +253,11 @@ class BackendService {
                 devicePushToken: await PushNotificationsService.getToken(),
             })
             .then((res: XamanBackend.PingResponse) => {
-                const { auth, badge, env, monetization, tosAndPrivacyPolicyVersion } = res;
+                const { auth, badge, env, tosAndPrivacyPolicyVersion } = res;
 
                 if (auth) {
                     const { user, device } = auth;
                     const { hasPro } = env;
-                    const { monetizationType, monetizationStatus, productForPurchase } = monetization;
 
                     // update the profile
                     ProfileRepository.saveProfile({
@@ -277,23 +267,18 @@ class BackendService {
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                         hasPro,
-                        monetization: {
-                            monetizationStatus,
-                            monetizationType,
-                            productForPurchase,
-                        },
                     });
 
                     // check for tos version
                     const profile = ProfileRepository.getProfile();
 
-                    if (profile && profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
+                    if (profile.signedTOSVersion < Number(tosAndPrivacyPolicyVersion)) {
                         // show the modal to check new policy and confirm new agreement
-                        Navigator.showModal<TermOfUseViewProps>(
+                        Navigator.showModal(
                             AppScreens.Settings.TermOfUse,
                             { asModal: true },
                             {
-                                modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
+                                modalPresentationStyle: 'fullScreen',
                                 modal: {
                                     swipeToDismiss: false,
                                 },
@@ -465,13 +450,13 @@ class BackendService {
     };
 
     /**
-     * Gets details about a list of NFT tokens.
+     * Gets details about an XLS20 token.
      * @param {string} account - The account associated with the XLS20 token.
      * @param {string[]} tokens - An array of XLS20 token IDs.
      * @returns {Promise} A promise that resolves with details about the XLS20 tokens.
      */
-    getNFTDetails = (account: string, tokens: string[]): Promise<any> => {
-        return ApiService.nftDetails.post(null, { account, tokens });
+    getXLS20Details = (account: string, tokens: string[]): Promise<any> => {
+        return ApiService.xls20Details.post(null, { account, tokens });
     };
 
     /**
@@ -479,7 +464,7 @@ class BackendService {
      * @param {string} account - The account of the user offering XLS20 tokens.
      * @returns {Promise} A promise that resolves with the list of offered XLS20 tokens.
      */
-    getNFTOffered = (account: string): Array<NFTokenOffer> => {
+    getXLS20Offered = (account: string): Array<NFTokenOffer> => {
         return ApiService.xls20Offered
             .get({ account })
             .then(async (res: Array<any>) => {
@@ -500,7 +485,7 @@ class BackendService {
                                 const { node } = resp;
                                 if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer) {
                                     // combine ledger time with the object
-                                    return Object.assign(node, {
+                                    return Object.assign(resp.node, {
                                         LedgerTime: get(offer, 'ledger_close_time'),
                                     });
                                 }
@@ -558,11 +543,11 @@ class BackendService {
             // check the cached version before requesting from backend
             if (this.rates.has(cacheKey)) {
                 // calculate passed seconds from the latest sync
-                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey)!.lastSync), 'second');
+                const passedSeconds = moment().diff(moment.unix(this.rates.get(cacheKey).lastSync), 'second');
 
                 // if the latest rate fetch is already less than 60 second return cached value
                 if (passedSeconds <= 60) {
-                    resolve(this.rates.get(cacheKey)!);
+                    resolve(this.rates.get(cacheKey));
                     return;
                 }
             }
@@ -582,14 +567,6 @@ class BackendService {
                 })
                 .catch(reject);
         });
-    };
-
-    verifyPurchase = (purchases: InAppPurchaseReceipt) => {
-        return ApiService.verifyPurchase.post(null, purchases);
-    };
-
-    acknowledgePurchase = (purchases: InAppPurchaseReceipt) => {
-        return ApiService.verifyPurchase.patch(null, purchases);
     };
 }
 

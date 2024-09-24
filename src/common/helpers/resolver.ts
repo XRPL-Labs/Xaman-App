@@ -13,10 +13,9 @@ export interface PayIDInfo {
 }
 
 export interface AccountNameType {
-    address: string;
-    tag?: number;
-    name?: string;
-    source?: string;
+    address?: string;
+    name: string;
+    source: string;
     kycApproved?: boolean;
 }
 
@@ -30,11 +29,10 @@ export interface AccountInfoType {
 }
 
 const getAccountName = memoize(
-    (address: string, tag?: number, internal = false): Promise<AccountNameType> => {
+    (address: string, tag = '', internal = false): Promise<AccountNameType> => {
         return new Promise((resolve) => {
             const notFound = {
                 address,
-                tag,
                 name: '',
                 source: '',
             };
@@ -46,15 +44,12 @@ const getAccountName = memoize(
 
             // check address  book
             try {
-                const contact = ContactRepository.findOne({
-                    address,
-                    destinationTag: `${tag ?? ''}`,
-                });
+                const filter = { address, destinationTag: tag };
+                const contact = ContactRepository.findOne(filter);
 
                 if (contact) {
                     resolve({
                         address,
-                        tag,
                         name: contact.name,
                         source: 'contacts',
                     });
@@ -70,7 +65,6 @@ const getAccountName = memoize(
                 if (account) {
                     resolve({
                         address,
-                        tag,
                         name: account.label,
                         source: 'accounts',
                     });
@@ -92,7 +86,6 @@ const getAccountName = memoize(
                     if (res) {
                         resolve({
                             address,
-                            tag,
                             name: res.name,
                             source: res.source?.replace('internal:', '').replace('.com', ''),
                             kycApproved: res.kycApproved,
@@ -106,7 +99,7 @@ const getAccountName = memoize(
                 });
         });
     },
-    (address: string, tag) => `${address}${tag ?? ''}`,
+    (address: string, tag = '') => `${address}${tag}`,
 );
 
 const getAccountInfo = (address: string): Promise<AccountInfoType> => {
@@ -153,7 +146,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
 
             // if balance is more than 1m possibly exchange account
             if (has(account_data, ['Balance'])) {
-                if (new Amount(account_data.Balance, true).dropsToNative().toNumber() > 1000000) {
+                if (new Amount(account_data.Balance, true).dropsToNative(true) > 1000000) {
                     assign(info, { possibleExchange: true });
                 }
             }
@@ -161,24 +154,22 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
             // check for black hole
             if (has(account_data, ['RegularKey'])) {
                 if (
-                    account_flags?.disableMasterKey &&
-                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(
-                        account_data.RegularKey ?? '',
-                    ) > -1
+                    account_flags.disableMasterKey &&
+                    ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'].indexOf(account_data.RegularKey) > -1
                 ) {
                     assign(info, { blackHole: true });
                 }
             }
 
             // check for disallow incoming XRP
-            if (account_flags?.disallowIncomingXRP) {
+            if (account_flags.disallowIncomingXRP) {
                 assign(info, { disallowIncomingXRP: true });
             }
 
             if (get(accountAdvisory, 'force_dtag')) {
                 // first check on account advisory
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
-            } else if (account_flags?.requireDestinationTag) {
+            } else if (account_flags.requireDestinationTag) {
                 // check if account have the required destination tag flag set
                 assign(info, { requireDestinationTag: true, possibleExchange: true });
             } else {
@@ -225,7 +216,7 @@ const getAccountInfo = (address: string): Promise<AccountInfoType> => {
     });
 };
 
-const getPayIdInfo = (payId: string): Promise<PayIDInfo | undefined> => {
+const getPayIdInfo = (payId: string): Promise<PayIDInfo> => {
     return new Promise((resolve) => {
         BackendService.lookup(payId)
             .then((res: any) => {

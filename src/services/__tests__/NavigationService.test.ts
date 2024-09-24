@@ -12,14 +12,10 @@ describe('NavigationService', () => {
 
     afterEach(() => {
         // clear service history
-        // @ts-ignore
-        jest.replaceProperty(navigationService, 'currentRoot', '');
-        // @ts-ignore
-        jest.replaceProperty(navigationService, 'currentScreen', '');
-        // @ts-ignore
-        jest.replaceProperty(navigationService, 'modals', []); // @ts-ignore
-
-        jest.replaceProperty(navigationService, 'overlays', []);
+        navigationService.currentRoot = '';
+        navigationService.currentScreen = '';
+        navigationService.modals = [];
+        navigationService.overlays = [];
     });
 
     it('should return correct component type', () => {
@@ -46,14 +42,12 @@ describe('NavigationService', () => {
 
     it('should set/get current overlay', () => {
         navigationService.setCurrentOverlay(AppScreens.Overlay.Alert);
-        // @ts-ignore
         expect(navigationService.overlays).toEqual([AppScreens.Overlay.Alert]);
         expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.Alert);
     });
 
     it('should set/get current modal', () => {
         navigationService.setCurrentModal(AppScreens.Modal.Scan);
-        // @ts-ignore
         expect(navigationService.modals).toEqual([AppScreens.Modal.Scan]);
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.Scan);
     });
@@ -63,9 +57,8 @@ describe('NavigationService', () => {
         expect(navigationService.getCurrentRoot()).toBe(RootType.DefaultRoot);
     });
 
-    it('should handle long pressing on tabbar buttons', () => {
+    it('should show account switch overlay when longPress tabbar', () => {
         const showOverlaySpy = jest.spyOn(Navigation, 'showOverlay');
-        const showModalSpy = jest.spyOn(Navigation, 'showModal');
 
         navigationService.bottomTabLongPressedListener({ selectedTabIndex: 0 });
 
@@ -83,24 +76,6 @@ describe('NavigationService', () => {
                         handleKeyboardEvents: true,
                     },
                 },
-            },
-        });
-
-        navigationService.bottomTabLongPressedListener({ selectedTabIndex: 2 });
-
-        expect(showModalSpy).toBeCalledWith({
-            stack: {
-                id: AppScreens.Modal.Scan,
-                children: [
-                    {
-                        component: {
-                            name: AppScreens.Modal.Scan,
-                            id: AppScreens.Modal.Scan,
-                            options: {},
-                            passProps: { componentType: ComponentTypes.Modal },
-                        },
-                    },
-                ],
             },
         });
     });
@@ -146,7 +121,7 @@ describe('NavigationService', () => {
         });
 
         expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.Lock);
-        // @ts-ignore
+
         expect(navigationService.overlays).toEqual([AppScreens.Overlay.SwitchAccount, AppScreens.Overlay.Lock]);
     });
 
@@ -156,7 +131,6 @@ describe('NavigationService', () => {
     });
 
     it('should set current modal when shown', () => {
-        // @ts-ignore
         expect(navigationService.modals).toEqual([]);
 
         navigationService.componentDidAppear({
@@ -166,7 +140,6 @@ describe('NavigationService', () => {
             componentType: 'Component',
         });
 
-        // @ts-ignore
         expect(navigationService.modals).toEqual([AppScreens.Modal.XAppBrowser]);
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.XAppBrowser);
 
@@ -177,7 +150,6 @@ describe('NavigationService', () => {
             componentType: 'Component',
         });
 
-        // @ts-ignore
         expect(navigationService.modals).toEqual([AppScreens.Modal.XAppBrowser, AppScreens.Modal.DestinationPicker]);
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.DestinationPicker);
     });
@@ -191,7 +163,7 @@ describe('NavigationService', () => {
         navigationService.modalDismissedListener({
             componentId: AppScreens.Modal.DestinationPicker,
             componentName: '',
-            modalsDismissed: 1,
+            modalsDismissed: undefined,
         });
 
         expect(navigationService.getCurrentModal()).toBe(AppScreens.Modal.XAppBrowser);
@@ -199,13 +171,11 @@ describe('NavigationService', () => {
 
     it('should remove overlay from history list when dismissed', () => {
         navigationService.setCurrentOverlay(AppScreens.Overlay.Lock);
-        navigationService.setCurrentOverlay(AppScreens.Overlay.ParticipantMenu);
+        navigationService.setCurrentOverlay(AppScreens.Overlay.RecipientMenu);
 
-        expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.ParticipantMenu);
+        expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.RecipientMenu);
 
-        navigationService.navigatorCommandListener('dismissOverlay', {
-            componentId: AppScreens.Overlay.ParticipantMenu,
-        });
+        navigationService.navigatorCommandListener('dismissOverlay', { componentId: AppScreens.Overlay.RecipientMenu });
 
         expect(navigationService.getCurrentOverlay()).toBe(AppScreens.Overlay.Lock);
     });
@@ -248,20 +218,17 @@ describe('NavigationService', () => {
         expect(dismissOverlaySpy).toBeCalledTimes(0);
 
         // should close the overlay
-        // @ts-ignore
         navigationService.overlays = [];
         navigationService.setCurrentOverlay(AppScreens.Overlay.SwitchAccount);
         expect(navigationService.handleAndroidBackButton()).toBe(true);
         expect(dismissOverlaySpy).toBeCalledTimes(1);
 
         // should let os handle the close modal if any modal present
-        // @ts-ignore
         navigationService.overlays = [];
         navigationService.setCurrentModal(AppScreens.Modal.Help);
         expect(navigationService.handleAndroidBackButton()).toBe(false);
 
         // should let os handle the pop screen if not modal present and not in root screen
-        // @ts-ignore
         navigationService.modals = [];
         navigationService.setCurrentScreen(AppScreens.Account.Add);
         expect(navigationService.handleAndroidBackButton()).toBe(false);
@@ -270,13 +237,10 @@ describe('NavigationService', () => {
         const { AppUtilsModule } = NativeModules;
         const exitSpy = jest.spyOn(AppUtilsModule, 'exitApp');
 
-        // @ts-ignore
         navigationService.overlays = [];
-        // @ts-ignore
         navigationService.modals = [];
         navigationService.setCurrentScreen(AppScreens.TabBar.Home);
         expect(navigationService.handleAndroidBackButton()).toBe(true);
-        // @ts-ignore
         expect(navigationService.backHandlerClickCount).toBe(1);
         expect(navigationService.handleAndroidBackButton()).toBe(false);
         expect(exitSpy).toBeCalled();

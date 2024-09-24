@@ -1,5 +1,5 @@
-import AmountParser from './amount';
-import FlagParser from './flag';
-import LedgerDateParser from './date';
+import Amount from './amount';
+import Flag from './flag';
+import RippleDate from './date';
 
-export { AmountParser, FlagParser, LedgerDateParser };
+export { Amount, Flag, RippleDate };

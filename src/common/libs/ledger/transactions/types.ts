@@ -40,20 +40,11 @@ import {
     AMMBid,
     Remit,
     Clawback,
-    DIDSet,
-    DIDDelete,
     GenesisMint,
     EnableAmendment,
 } from '.';
 
-// Pseudo transactions
 import { SignIn, PaymentChannelAuthorize } from './pseudo';
-
-// Fallback transaction
-import { FallbackTransaction } from './fallback';
-
-// Mixing
-import { SignMixinType, MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 /**
  * Genuine Transactions types
@@ -100,8 +91,6 @@ export type Transactions =
     | AMMBid
     | Remit
     | Clawback
-    | DIDSet
-    | DIDDelete
     | GenesisMint
     | EnableAmendment;
 
@@ -109,20 +98,3 @@ export type Transactions =
  * Pseudo Transactions types
  */
 export type PseudoTransactions = SignIn | PaymentChannelAuthorize;
-
-/**
- * Fallback transaction
- */
-
-export { FallbackTransaction };
-/**
- * Genuine + Pseudo Transactions types
- */
-export type CombinedTransactions = Transactions | PseudoTransactions | FallbackTransaction;
-
-/**
- * Mixed Transactions
- */
-export type SignableTransaction = CombinedTransactions & SignMixinType;
-export type MutatedTransaction = CombinedTransactions & MutationsMixinType;
-export type SignableMutatedTransaction = CombinedTransactions & SignMixinType & MutationsMixinType;

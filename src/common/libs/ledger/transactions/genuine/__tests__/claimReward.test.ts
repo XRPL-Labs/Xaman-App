@@ -1,25 +1,15 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
 
-import { MutationsMixin } from '@common/libs/ledger/mixin';
-import { ClaimRewardStatus } from '@common/libs/ledger/parser/types';
-
 import { ClaimReward, ClaimRewardInfo } from '../ClaimReward';
+
+import { ClaimRewardStatus } from '@common/libs/ledger/parser/types';
 
 import claimRewardTemplates from './fixtures/ClaimRewardTx.json';
 
-jest.mock('@services/NetworkService', () => ({
-    network: {},
-    getNativeAsset: jest.fn().mockReturnValue('XAH'),
-    getNetworkDefinitions: jest.fn().mockReturnValue({
-        transactionFlags: {
-            ClaimReward: {
-                tfOptOut: 1,
-            },
-        },
-    }),
-}));
+jest.mock('@services/NetworkService');
 
 describe('ClaimReward', () => {
     describe('Class', () => {
@@ -30,7 +20,7 @@ describe('ClaimReward', () => {
         });
 
         it('Should return right parsed values [OptOut]', () => {
-            const { tx, meta }: any = claimRewardTemplates.Emitted;
+            const { tx, meta } = claimRewardTemplates.Emitted;
             const instance = new ClaimReward(tx, meta);
             expect(instance.TransactionType).toBe('ClaimReward');
             expect(instance.Issuer).toBe(claimRewardTemplates.Emitted.tx.Issuer);
@@ -38,7 +28,7 @@ describe('ClaimReward', () => {
         });
 
         it('Should return right parsed values [OptIn]', () => {
-            const { tx, meta }: any = claimRewardTemplates.OptIn;
+            const { tx, meta } = claimRewardTemplates.OptIn;
             const instance = new ClaimReward(tx, meta);
             expect(instance.TransactionType).toBe('ClaimReward');
             expect(instance.Issuer).toBe(claimRewardTemplates.Emitted.tx.Issuer);
@@ -47,63 +37,31 @@ describe('ClaimReward', () => {
     });
 
     describe('Info', () => {
-        const MixedClaimReward = MutationsMixin(ClaimReward);
-        const emittedInstance = new MixedClaimReward(
-            claimRewardTemplates.Emitted.tx as any,
-            claimRewardTemplates.Emitted.meta as any,
-        );
-        const optInInstance = new MixedClaimReward(
-            claimRewardTemplates.OptIn.tx as any,
-            claimRewardTemplates.OptIn.meta as any,
-        );
+        const emittedInstance = new ClaimReward(claimRewardTemplates.Emitted.tx, claimRewardTemplates.Emitted.meta);
+        const optInInstance = new ClaimReward(claimRewardTemplates.OptIn.tx, claimRewardTemplates.OptIn.meta);
 
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description [OptOut]', () => {
-                const info = new ClaimRewardInfo(emittedInstance, {} as any);
-                const expectedDescription = `This is a claim reward transaction${'\n'}This transaction opts out rrrrrrrrrrrrrrrrrrrrrhoLvTp to claim rewards in future`;
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const expectedDescription = `${Localize.t('events.claimRewardExplain')}\n${Localize.t(
+                    'events.claimRewardExplainOptOut',
+                    { address: emittedInstance.Account.address },
+                )}`;
+                expect(ClaimRewardInfo.getDescription(emittedInstance)).toEqual(expectedDescription);
             });
 
             it('should return the expected description [OptIn]', () => {
-                const info = new ClaimRewardInfo(optInInstance, {} as any);
-                const expectedDescription = 'This is a claim reward transaction';
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const expectedDescription = `${Localize.t('events.claimRewardExplain')}`;
+                expect(ClaimRewardInfo.getDescription(optInInstance)).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label [OptOut]', () => {
-                const info = new ClaimRewardInfo(emittedInstance, {} as any);
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.claimRewardOptOut'));
+                expect(ClaimRewardInfo.getLabel(emittedInstance)).toEqual(Localize.t('events.claimRewardOptOut'));
             });
 
             it('should return the expected label [OptIn]', () => {
-                const info = new ClaimRewardInfo(optInInstance, {} as any);
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.claimReward'));
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                // TODO: check me
-                const info = new ClaimRewardInfo(optInInstance, {} as any);
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrhoLvTp', tag: undefined },
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                // TODO: check me
-                const info = new ClaimRewardInfo(emittedInstance, {} as any);
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
+                expect(ClaimRewardInfo.getLabel(optInInstance)).toEqual(Localize.t('events.claimReward'));
             });
         });
     });

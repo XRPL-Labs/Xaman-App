@@ -17,13 +17,7 @@ const {
 /* Exports ==================================================================== */
 export const schemaVersion = 9;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    [TrustLineSchema].forEach((entry) => {
-        if (typeof entry.migration !== 'function') {
-            throw new Error(`migration method is required for schema ${entry.schema.name}`);
-        }
-
-        entry.migration(oldRealm, newRealm);
-    });
+    TrustLineSchema.migration(oldRealm, newRealm);
 };
 export const schemas = {
     ContactSchema,

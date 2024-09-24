@@ -1,7 +1,6 @@
-import { get } from 'lodash';
+import { get, assign } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
-
-import { Navigation, Options, LayoutTabsChildren } from 'react-native-navigation';
+import { Navigation } from 'react-native-navigation';
 
 import { GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
 
@@ -12,45 +11,36 @@ import Localize from '@locale';
 import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 import StyleService from '@services/StyleService';
 
-import { Props as AlertOverlayProps } from '@screens/Overlay/Alert/types';
-
 import AppFonts from '@theme/fonts';
-
-/* Types ==================================================================== */
-export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
-    L0 extends Record<string, any> ? AppScreenKeys<L0> : L0;
-
-type EnforcedProps<P extends { [K in keyof P]: any }> = P;
-
 /* Constants ==================================================================== */
-const getDefaultOptions = (): Options => {
-    return {
+const getDefaultOptions = () => {
+    return StyleService.create({
         layout: {
-            backgroundColor: StyleService.value('$background'),
-            componentBackgroundColor: StyleService.value('$background'),
-            orientation: ['portrait'],
+            backgroundColor: '$background',
+            componentBackgroundColor: '$background',
+            orientation: ['portrait'] as any,
             adjustResize: false,
         },
         topBar: {
             visible: false,
         },
         navigationBar: {
-            backgroundColor: StyleService.value('$tint'),
+            backgroundColor: '$tint',
         },
         statusBar: {
             style: Platform.select({
-                android: undefined,
+                android: 'default',
                 ios: StyleService.isDarkMode() ? 'light' : 'dark',
             }),
             drawBehind: false,
         },
         bottomTabs: {
-            backgroundColor: StyleService.value('$background'),
+            backgroundColor: '$background',
             translucent: false,
             animate: false,
             drawBehind: false,
-            tabsAttachMode: 'onSwitchToTab',
-            titleDisplayMode: 'alwaysShow',
+            tabsAttachMode: 'onSwitchToTab' as any,
+            titleDisplayMode: 'alwaysShow' as any,
             elevation: 10,
             hideShadow: Platform.OS === 'android',
             shadow: Platform.select({
@@ -62,7 +52,6 @@ const getDefaultOptions = (): Options => {
                 },
             }),
         },
-
         animations: {
             pop: {
                 enabled: Platform.OS === 'ios',
@@ -70,16 +59,10 @@ const getDefaultOptions = (): Options => {
         },
         popGesture: true,
         blurOnUnmount: true,
-    };
+    });
 };
 
-const getTabBarIcons = (): {
-    [k in string]: {
-        icon: { uri: string };
-        iconSelected: { uri: string };
-        scale: number;
-    };
-} => {
+const getTabBarIcons = () => {
     return {
         [AppScreens.TabBar.Home]: {
             icon: StyleService.getImage('IconTabBarHome'),
@@ -112,13 +95,7 @@ const getTabBarIcons = (): {
 /* Lib ==================================================================== */
 
 const Navigator = {
-    /**
-     * Initializes and sets the default configuration for the navigation tabs.
-     * This method starts the app in bottom tabs mode
-     *
-     * @return {void}
-     */
-    startDefault(): void {
+    startDefault() {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
@@ -133,7 +110,7 @@ const Navigator = {
 
         const TabBarIcons = getTabBarIcons();
 
-        const bottomTabsChildren: LayoutTabsChildren[] = [];
+        const bottomTabsChildren: any = [];
 
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
@@ -182,12 +159,7 @@ const Navigator = {
         });
     },
 
-    /**
-     * Starts the app navigation in onboarding screen
-     *
-     * @return {void}
-     */
-    startOnboarding(): void {
+    startOnboarding() {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
@@ -209,136 +181,79 @@ const Navigator = {
         });
     },
 
-    /**
-     * Pushes a new screen to the navigation stack.
-     *
-     * @template P - Props type
-     * @param nextScreen - The key of the screen to push.
-     * @param passProps - The props to pass to the pushed screen.
-     * @param options - The options for the pushed screen (default: {}).
-     * @returns Screen name if the screen was pushed, otherwise false.
-     */
-    push<P extends object>(
-        nextScreen: AppScreenKeys,
-        passProps: EnforcedProps<P>,
-        options: Options = {},
-    ): Promise<string | boolean> {
-        const currentScreen = NavigationService.getCurrentScreen() ?? '';
+    push(nextScreen: any, passProps = {}, options = {}) {
+        const currentScreen = NavigationService.getCurrentScreen();
         if (currentScreen !== nextScreen) {
             return Navigation.push(currentScreen, {
                 component: {
                     name: nextScreen,
                     id: nextScreen,
-                    passProps: Object.assign(passProps, { componentType: ComponentTypes.Screen }),
+                    passProps: assign(passProps, { componentType: ComponentTypes.Screen }),
                     options,
                 },
             });
         }
 
-        return Promise.resolve(false);
+        return false;
     },
 
-    /**
-     * Pops the current screen from the navigation stack.
-     *
-     * @param {Options} options - Optional configuration options for the pop operation.
-     * @return {Promise} - A promise that resolves when the pop operation is complete.
-     */
-    pop(options: Options = {}): Promise<string | boolean> {
+    pop(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
 
         if (currentScreen) {
             return Navigation.pop(currentScreen, options);
         }
 
-        return Promise.resolve(false);
+        return Promise.resolve();
     },
 
-    /**
-     * Pops to the root screen of the navigation stack.
-     *
-     * @param {Options} [options={}] - The options for popping to the root screen. (optional)
-     * @return {Promise<string | boolean>} - A promise that resolves with no value.
-     */
-    popToRoot(options: Options = {}): Promise<string | boolean> {
+    popToRoot(options = {}) {
         const currentScreen = NavigationService.getCurrentScreen();
 
         if (currentScreen) {
             return Navigation.popToRoot(currentScreen, options);
         }
 
-        return Promise.resolve(false);
+        return Promise.resolve();
     },
 
-    /**
-     * Displays the specified overlay screen.
-     *
-     * @template P - Type for the passProps argument
-     * @param {AppScreenKeys} overlay - The name of the overlay screen to display.
-     * @param {EnforcedProps<P>} passProps - The properties to pass to the overlay screen.
-     * @param {Options} [options={}] - Additional options for customizing the overlay's appearance and behavior.
-     * @returns {Promise<string | boolean>} - A Promise that resolves to either the overlay's id or false
-     */
-    showOverlay<P extends object>(
-        overlay: AppScreenKeys,
-        passProps: EnforcedProps<P>,
-        options: Options = {},
-    ): Promise<string | boolean> {
+    showOverlay(overlay: any, passProps = {}, options = {}) {
         const currentOverlay = NavigationService.getCurrentOverlay();
-
         if (currentOverlay !== overlay) {
             return Navigation.showOverlay({
                 component: {
                     name: overlay,
                     id: overlay,
-                    passProps: Object.assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options: {
-                        overlay: {
-                            handleKeyboardEvents: true,
+                    passProps: assign(passProps, { componentType: ComponentTypes.Overlay }),
+                    options: assign(
+                        {
+                            overlay: {
+                                handleKeyboardEvents: true,
+                            },
+                            layout: {
+                                backgroundColor: 'transparent',
+                                componentBackgroundColor: 'transparent',
+                            },
                         },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                        ...options,
-                    },
+                        options,
+                    ),
                 },
             });
         }
-
-        return Promise.resolve(false);
+        return false;
     },
 
-    /**
-     * Dismisses the specified overlay or current overlay.
-     *
-     * @param {AppScreenKeys} [overlay] - The overlay to dismiss. If not provided, the current overlay will be used.
-     * @return {Promise<string | boolean>} - A promise that resolves to a string or boolean value.
-     */
-    dismissOverlay(overlay?: AppScreenKeys): Promise<string | boolean> {
-        const overlayToDismiss = overlay ?? NavigationService.getCurrentOverlay();
+    dismissOverlay(overlay?: string) {
+        const currentOverlay = NavigationService.getCurrentOverlay();
 
-        if (overlayToDismiss) {
-            return Navigation.dismissOverlay(overlayToDismiss);
+        if (overlay || currentOverlay) {
+            return Navigation.dismissOverlay(overlay || currentOverlay);
         }
 
-        return Promise.resolve(false);
+        return Promise.resolve();
     },
 
-    /**
-     * Display a modal screen using React Navigation.
-     *
-     * @template P - Type parameter representing the props object for the modal screen.
-     * @param {string} modal - The key name of the modal screen component to be displayed.
-     * @param {P} passProps - The props object to be passed to the modal screen component.
-     * @param {object} [options={}] - Additional options for the modal screen component.
-     * @returns {boolean} - Returns `string` if the modal screen is shown successfully, otherwise `false`.
-     */
-    showModal<P extends object>(
-        modal: AppScreenKeys,
-        passProps: EnforcedProps<P>,
-        options: Options = {},
-    ): Promise<string | boolean> {
+    showModal(modal: any, passProps = {}, options = {}) {
         const currentScreen = NavigationService.getCurrentModal();
         if (currentScreen !== modal) {
             return Navigation.showModal({
@@ -350,7 +265,7 @@ const Navigator = {
                                 name: modal,
                                 id: modal,
                                 options,
-                                passProps: Object.assign(passProps, { componentType: ComponentTypes.Modal }),
+                                passProps: assign(passProps, { componentType: ComponentTypes.Modal }),
                             },
                         },
                     ],
@@ -358,32 +273,20 @@ const Navigator = {
             });
         }
 
-        return Promise.resolve(false);
+        return false;
     },
 
-    /**
-     * Dismisses the current modal.
-     *
-     * @return {Promise<string | boolean>} A promise that resolves to either string or false
-     */
-    dismissModal(): Promise<string | boolean> {
+    dismissModal() {
         const currentModal = NavigationService.getCurrentModal();
 
         if (currentModal) {
             return Navigation.dismissModal(currentModal);
         }
 
-        return Promise.resolve(false);
+        return Promise.resolve();
     },
 
-    /**
-     * Sets a badge to a specified tab.
-     *
-     * @param {string} tab - The tab to set the badge on.
-     * @param {string} badge - The badge value to set.
-     * @return {void}
-     */
-    setBadge(tab: string, badge: string): void {
+    setBadge(tab: string, badge: string) {
         Navigation.mergeOptions(tab, {
             bottomTab: {
                 badge,
@@ -391,49 +294,34 @@ const Navigator = {
         });
     },
 
-    /**
-     * Displays a modal overlay with an alert message and passed props.
-     *
-     * @param {AlertOverlayProps} props - The props for the alert overlay.
-     * @return {Promsie<string | boolean>}
-     */
-    showAlertModal(props: AlertOverlayProps): Promise<string | boolean> {
-        return Navigator.showOverlay<AlertOverlayProps>(AppScreens.Overlay.Alert, props);
+    showAlertModal(props: {
+        testID?: string;
+        type: 'success' | 'info' | 'warning' | 'error';
+        text: string;
+        title?: string;
+        buttons: {
+            testID?: string;
+            text: string;
+            onPress?: () => void;
+            type?: 'continue' | 'dismiss';
+            light?: boolean;
+        }[];
+        onDismissed?: () => void;
+    }) {
+        Navigator.showOverlay(AppScreens.Overlay.Alert, props);
     },
 
-    /**
-     * Merges the provided options object with the options of the current screen.
-     * If screen is not provided, the current screen is determined using NavigationService.
-     *
-     * @param {AppScreenKeys} screen - The screen for which to merge the options. defaults to the current screen.
-     * @param {Options} options - The options to merge with the current screen's options.
-     *
-     * @return {void}
-     */
-    mergeOptions(screen: AppScreenKeys, options: Options = {}): void {
-        const currentScreen = screen || NavigationService.getCurrentScreen();
+    mergeOptions(componentId?: string, options = {}) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.mergeOptions(currentScreen, options);
     },
 
-    /**
-     * Updates the props of a specific screen in the app.
-     *
-     * @template P - The type of the props being updated.
-     * @param {AppScreenKeys} screen - The key of the screen to update the props for or current screen
-     * @param {EnforcedProps<P>} props - The new props to apply to the screen.
-     * @return {void}
-     */
-    updateProps<P extends object>(screen: AppScreenKeys, props: EnforcedProps<P>): void {
-        const currentScreen = screen || NavigationService.getCurrentScreen();
+    updateProps(componentId?: string, props = {}) {
+        const currentScreen = componentId || NavigationService.getCurrentScreen();
         Navigation.updateProps(currentScreen, props);
     },
 
-    /**
-     * Updates the tabbar and re-renders the AppScreens.TabBar component.
-     *
-     * @return {void}
-     */
-    reRender(): void {
+    reRender() {
         // update the tabbar
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             Navigation.mergeOptions(`bottomTab-${tab}`, {

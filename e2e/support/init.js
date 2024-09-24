@@ -1,18 +1,28 @@
 const detox = require('detox/internals');
 
 const { device } = require('detox');
-const { Before, BeforeAll, AfterAll, After } = require('@cucumber/cucumber');
+const { Before, BeforeAll, AfterAll, After } = require('cucumber');
 const adapter = require('./adapter');
 
 const { startRecordingVideo, stopRecordingVideo } = require('../helpers/artifacts');
 const { startDeviceLogStream } = require('../helpers/simulator');
 
 BeforeAll(async () => {
-    await detox.init({
-        argv: {
-            reuse: false,
-        },
+    let configuration;
+
+    const argv = process.argv.slice(2);
+    argv.forEach((arg, index) => {
+        if (arg === '--configuration') {
+            configuration = argv[index + 1];
+        }
     });
+
+    const config = {
+        configuration,
+        reuse: false,
+    };
+
+    await detox.init({ argv: config });
 
     // start device log
     startDeviceLogStream();
@@ -21,7 +31,6 @@ BeforeAll(async () => {
     startRecordingVideo();
 
     await device.launchApp({
-        newInstance: true,
         permissions: { notifications: 'YES', camera: 'YES' },
         disableTouchIndicators: false,
     });

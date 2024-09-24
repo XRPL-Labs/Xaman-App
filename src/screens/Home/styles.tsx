@@ -1,6 +1,7 @@
 import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
+import Sizes from '@theme/sizes';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
@@ -9,13 +10,9 @@ const styles = StyleService.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        height: AppSizes.moderateScale(60),
-        paddingRight: AppSizes.paddingSml,
-        paddingLeft: AppSizes.paddingSml,
-    },
-    monetizationContainer: {
-        marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingSml,
+        height: Sizes.moderateScale(60),
+        paddingRight: Sizes.paddingSml,
+        paddingLeft: Sizes.paddingSml,
     },
     tokenListContainer: {
         flex: 6,
@@ -55,10 +52,10 @@ const styles = StyleService.create({
         alignItems: 'center',
         backgroundColor: '$contrast',
         borderRadius: 12,
-        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingHorizontal: Sizes.paddingExtraSml,
         paddingVertical: 5,
-        marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingExtraSml,
+        marginHorizontal: Sizes.paddingSml,
+        marginBottom: Sizes.paddingExtraSml,
     },
     networkTextLabel: {
         color: '$silver',

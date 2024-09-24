@@ -1,4 +1,3 @@
-import CurrencyPickerModal, { Props as CurrencyPickerModalProps } from './CurrencyPickerModal';
+import CurrencyPickerModal from './CurrencyPickerModal';
 
-export type { CurrencyPickerModalProps };
 export default CurrencyPickerModal;

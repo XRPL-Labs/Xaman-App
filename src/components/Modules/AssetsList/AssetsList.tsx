@@ -6,12 +6,14 @@ import { AccountModel } from '@store/models';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-import { ASSETS_CATEGORY, Props as SwitchAssetCategoryOverlayProps } from '@screens/Overlay/SwitchAssetCategory/types';
-
 import { TokensList } from './Tokens';
-import { NFTsList } from './NFTs';
+import { NFTokensList } from './NFTokens';
 
 /* Types ==================================================================== */
+export enum ASSETS_CATEGORY {
+    Tokens = 'Tokens',
+    NFTokens = 'NFTokens',
+}
 
 interface Props {
     timestamp?: number;
@@ -60,7 +62,7 @@ class AssetsList extends Component<Props, State> {
     onChangeCategoryPress = () => {
         const { category } = this.state;
 
-        Navigator.showOverlay<SwitchAssetCategoryOverlayProps>(AppScreens.Overlay.SwitchAssetCategory, {
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAssetCategory, {
             selected: category,
             onSelect: this.onAssetCategoryChange,
         });
@@ -76,8 +78,8 @@ class AssetsList extends Component<Props, State> {
             case ASSETS_CATEGORY.Tokens:
                 AssetListComponent = TokensList;
                 break;
-            case ASSETS_CATEGORY.NFTs:
-                AssetListComponent = NFTsList;
+            case ASSETS_CATEGORY.NFTokens:
+                AssetListComponent = NFTokensList;
                 break;
             default:
                 return null;

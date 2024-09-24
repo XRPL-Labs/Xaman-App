@@ -1,34 +1,29 @@
 import { isEqual } from 'lodash';
 import React, { Component } from 'react';
-import { InteractionManager, Text, View, ViewStyle } from 'react-native';
+import { View, Text, InteractionManager, ViewStyle } from 'react-native';
 
 import Preferences from '@common/libs/preferences';
 
-import { XAppOrigin } from '@common/libs/payload';
-
 import { Icon, TouchableDebounce } from '@components/General';
 
-import { AppItem, AppType, AppActions } from '@components/Modules/XAppStore/AppsList/AppItem';
-
 import { AppStyles } from '@theme';
+
 import styles from './styles';
 
 /* Types ==================================================================== */
-export type MessageType = {
+type Message = {
     id: number;
     title: string;
     content: string;
-    app: AppType;
 };
 
 interface Props {
-    visible: boolean;
-    message?: MessageType;
+    message: Message;
     containerStyle?: ViewStyle | ViewStyle[];
 }
 
 interface State {
-    message?: MessageType;
+    message: Message;
     showMessage: boolean;
 }
 /* Component ==================================================================== */
@@ -43,14 +38,9 @@ class HeaderMessage extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
-        const { visible } = this.props;
         const { message, showMessage } = this.state;
 
-        return (
-            !isEqual(nextState.message, message) ||
-            !isEqual(nextState.showMessage, showMessage) ||
-            !isEqual(nextProps.visible, visible)
-        );
+        return !isEqual(nextState.message, message) || !isEqual(nextState.showMessage, showMessage);
     }
 
     componentDidMount() {
@@ -60,7 +50,7 @@ class HeaderMessage extends Component<Props, State> {
     componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
         const { message } = this.state;
         if (!isEqual(prevState.message, message)) {
-            InteractionManager.runAfterInteractions(this.checkShouldShowMessage);
+            this.checkShouldShowMessage();
         }
     }
 
@@ -108,29 +98,15 @@ class HeaderMessage extends Component<Props, State> {
         Preferences.set(Preferences.keys.XAPP_STORE_IGNORE_MESSAGE_ID, `${message.id}`);
     };
 
-    renderContent = () => {
-        const { message } = this.props;
-
-        const { content, app } = message!;
-
-        // in v3.0 we introduced the xapp button, so by order app || content
-
-        if (app) {
-            return <AppItem item={app} action={AppActions.LUNCH_APP} origin={XAppOrigin.XAPP_STORE_MESSAGE} />;
-        }
-
-        return <Text style={AppStyles.subtext}>{content}</Text>;
-    };
-
     render() {
-        const { containerStyle, visible } = this.props;
+        const { containerStyle } = this.props;
         const { showMessage, message } = this.state;
 
-        if (!showMessage || !message || !visible) {
+        if (!showMessage) {
             return null;
         }
 
-        const { title } = message;
+        const { title, content } = message;
 
         return (
             <View style={[styles.container, containerStyle]}>
@@ -138,15 +114,13 @@ class HeaderMessage extends Component<Props, State> {
                     <View style={AppStyles.flex1}>
                         <Text style={styles.titleText}>{title}</Text>
                     </View>
-                    <TouchableDebounce
-                        hitSlop={{ left: 20, right: 20, top: 20, bottom: 20 }}
-                        onPress={this.onClosePress}
-                        style={styles.closeButton}
-                    >
-                        <Icon name="IconX" style={styles.closeButtonIcon} size={20} />
+                    <TouchableDebounce onPress={this.onClosePress} style={styles.closeButton}>
+                        <Icon name="IconX" style={styles.closeButtonIcon} size={23} />
                     </TouchableDebounce>
                 </View>
-                <View style={styles.contentContainer}>{this.renderContent()}</View>
+                <View style={styles.contentContainer}>
+                    <Text style={AppStyles.subtext}>{content}</Text>
+                </View>
             </View>
         );
     }

@@ -1,11 +1,6 @@
 /**
  * transaction types
  */
-
-/**
- * Genuine transaction types
- * @enum {string}
- */
 export enum TransactionTypes {
     Payment = 'Payment',
     TrustSet = 'TrustSet',
@@ -50,31 +45,16 @@ export enum TransactionTypes {
     AMMWithdraw = 'AMMWithdraw',
     Remit = 'Remit',
     Clawback = 'Clawback',
-    DIDDelete = 'DIDDelete',
-    DIDSet = 'DIDSet',
 }
 
 /**
  * Pseudo transaction types
- * @enum {string}
  */
 export enum PseudoTransactionTypes {
     SignIn = 'SignIn',
     PaymentChannelAuthorize = 'PaymentChannelAuthorize',
 }
 
-/**
- * Fallback enum types
- * @enum {string}
- */
-export enum FallbackTypes {
-    FallbackTransaction = '__fallback_transactions',
-}
-
-/**
- * Ledger entry object types
- * @enum {string}
- */
 export enum LedgerEntryTypes {
     AccountRoot = 'AccountRoot',
     Amendments = 'Amendments',
@@ -87,23 +67,10 @@ export enum LedgerEntryTypes {
     LedgerHashes = 'LedgerHashes',
     NegativeUNL = 'NegativeUNL',
     NFTokenOffer = 'NFTokenOffer',
-    URIToken = 'URIToken',
     NFTokenPage = 'NFTokenPage',
     Offer = 'Offer',
     Ticket = 'Ticket',
     PayChannel = 'PayChannel',
     RippleState = 'RippleState',
     SignerList = 'SignerList',
-    EmittedTxn = 'EmittedTxn',
-}
-
-/**
- * Enum representing various types of class instances.
- * @enum {string}
- */
-export enum InstanceTypes {
-    GenuineTransaction = 'GenuineTransaction', // know transaction type,
-    FallbackTransaction = 'FallbackTransaction', // any other transaction types
-    PseudoTransaction = 'PseudoTransaction', // pseudo transactions, which doesn't contain field TransactionType
-    LedgerObject = 'LedgerObject', // known Ledger object instances
 }

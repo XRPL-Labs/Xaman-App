@@ -5,7 +5,7 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, ViewStyle, TextStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -36,9 +36,7 @@ interface Props {
 
 /* Component ==================================================================== */
 class InfoMessage extends PureComponent<Props> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof InfoMessage.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         iconSize: 20,
     };
 
@@ -107,7 +105,7 @@ class InfoMessage extends PureComponent<Props> {
         }
 
         return (
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer]}>
                 <Icon size={iconSize} name={icon} style={style} />
             </View>
         );
@@ -117,13 +115,13 @@ class InfoMessage extends PureComponent<Props> {
         const { children, icon, label, labelStyle, type } = this.props;
 
         if (children && !label) {
-            return <View style={styles.labelContainer}>{children}</View>;
+            return <View style={[styles.labelContainer]}>{children}</View>;
         }
 
-        const style: TextStyle[] = [styles.label];
+        const style = [styles.label];
 
         if (labelStyle) {
-            style.push(StyleSheet.flatten(labelStyle));
+            style.push(labelStyle);
         } else {
             switch (type) {
                 case 'info':

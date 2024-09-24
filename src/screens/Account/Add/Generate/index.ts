@@ -1,5 +1,3 @@
-import AccountGenerateView from './AccountGenerateView';
-import { Props as AccountGenerateViewProps } from './types';
+import AccountGenerateContainer from './AccountGenerateView';
 
-export type { AccountGenerateViewProps };
-export default AccountGenerateView;
+export default AccountGenerateContainer;

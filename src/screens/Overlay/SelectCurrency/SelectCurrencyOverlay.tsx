@@ -9,7 +9,7 @@ import { View, Text, FlatList } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { AccountModel, TrustLineModel } from '@store/models';
 
@@ -40,8 +40,8 @@ export interface State {
 class SelectCurrencyOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectCurrency;
 
-    private actionPanelRef: React.RefObject<ActionPanel>;
-    private searchBarRef: React.RefObject<SearchBar>;
+    private actionPanel: ActionPanel;
+    private searchBar: SearchBar;
 
     static options() {
         return {
@@ -61,9 +61,6 @@ class SelectCurrencyOverlay extends Component<Props, State> {
         this.state = {
             dataSource: props.currencies,
         };
-
-        this.actionPanelRef = React.createRef();
-        this.searchBarRef = React.createRef();
     }
 
     onSelect = (currency: TrustLineModel | string) => {
@@ -73,7 +70,9 @@ class SelectCurrencyOverlay extends Component<Props, State> {
             onSelect(currency);
         }
 
-        this.actionPanelRef?.current?.slideDown();
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
+        }
     };
 
     onClose = () => {
@@ -98,14 +97,14 @@ class SelectCurrencyOverlay extends Component<Props, State> {
 
         const normalizedSearch = toLower(text);
 
-        const filtered = filter(currencies, (item) => {
+        const filtered = filter(currencies, (item: any) => {
             if (typeof item === 'string') {
                 return toLower(item).indexOf(text) !== -1;
             }
             return (
                 toLower(item.currency.name).indexOf(normalizedSearch) !== -1 ||
                 toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
-                toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) !== -1
+                toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) !== -1
             );
         });
 
@@ -115,30 +114,17 @@ class SelectCurrencyOverlay extends Component<Props, State> {
     };
 
     setDefaultDataSource = () => {
-        this.searchBarRef?.current?.clearText();
-    };
-
-    onCancelPress = () => {
-        this.actionPanelRef?.current?.slideDown();
-    };
-
-    isItemSelected = (item: TrustLineModel | string, selectedItem: TrustLineModel | string | undefined): boolean => {
-        if (typeof item === 'string' && typeof selectedItem === 'string') {
-            return selectedItem === item;
+        if (this.searchBar) {
+            this.searchBar.clearText();
         }
-
-        if (typeof item !== 'string' && typeof selectedItem !== 'string') {
-            return item.id === selectedItem?.id;
-        }
-
-        return false;
     };
 
     renderItem = ({ item, index }: { item: TrustLineModel | string; index: number }) => {
         const { account, selectedItem } = this.props;
 
-        const isSelected = this.isItemSelected(item, selectedItem);
-
+        const isSelected =
+            // @ts-ignore
+            typeof item === 'string' ? selectedItem === item : item.id === selectedItem?.id;
         return (
             <TouchableDebounce
                 key={index}
@@ -168,13 +154,14 @@ class SelectCurrencyOverlay extends Component<Props, State> {
 
     renderListHeaderComponent = () => {
         return (
-            <View style={styles.searchContainer}>
-                <SearchBar
-                    ref={this.searchBarRef}
-                    onChangeText={this.onFilter}
-                    placeholder={Localize.t('global.searchTokens')}
-                />
-            </View>
+            <SearchBar
+                ref={(r) => {
+                    this.searchBar = r;
+                }}
+                onChangeText={this.onFilter}
+                placeholder="Search tokens"
+                containerStyle={[styles.searchContainer]}
+            />
         );
     };
 
@@ -185,13 +172,13 @@ class SelectCurrencyOverlay extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={[AppStyles.flex1]}>
                         <Button
                             onPress={this.setDefaultDataSource}
                             style={styles.clearSearchButton}
-                            label={Localize.t('global.clearSearch')}
                             light
                             roundedSmall
+                            label={Localize.t('global.clearSearch')}
                         />
                     </View>
                 </View>
@@ -209,7 +196,9 @@ class SelectCurrencyOverlay extends Component<Props, State> {
             <ActionPanel
                 height={AppSizes.heightPercentageToDP(90)}
                 onSlideDown={this.onClose}
-                ref={this.actionPanelRef}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -223,7 +212,9 @@ class SelectCurrencyOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={this.onCancelPress}
+                            onPress={() => {
+                                this.actionPanel?.slideDown();
+                            }}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />

@@ -1,4 +1,4 @@
-import { LedgerAmount, Path } from '../common';
+import { Amount, Path } from '../common';
 
 import { BaseRequest, BaseResponse } from './baseMethod';
 
@@ -21,9 +21,9 @@ export interface PathFindCreateRequest extends BasePathFindRequest {
      * Currency Amount that the destination account would receive in a
      * transaction.
      */
-    destination_amount: LedgerAmount;
+    destination_amount: Amount;
     /** Currency amount that would be spent in the transaction. */
-    send_max?: LedgerAmount;
+    send_max?: Amount;
     /**
      * Array of arrays of objects, representing payment paths to check. You can
      * use this to keep updated on changes to particular paths you already know
@@ -59,12 +59,12 @@ export interface PathFindPathOption {
      * Currency Amount that the source would have to send along this path for the.
      * Destination to receive the desired amount.
      */
-    source_amount: LedgerAmount;
+    source_amount: Amount;
     /**
      * Destination Amount that the destination would receive along this path.
      * If the `send_max` field is set, this field will be set.
      */
-    destination_amount?: LedgerAmount;
+    destination_amount?: Amount;
 }
 
 /**
@@ -83,7 +83,7 @@ export interface PathFindResponse extends BaseResponse {
         /** Unique address of the account that would receive a transaction. */
         destination_account: string;
         /** Currency amount provided in the WebSocket request. */
-        destination_amount: LedgerAmount;
+        destination_amount: Amount;
         /** Unique address that would send a transaction. */
         source_account: string;
         /**

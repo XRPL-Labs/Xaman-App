@@ -1,4 +1,3 @@
-import SelectCurrencyOverlay, { Props as SelectCurrencyOverlayProps } from './SelectCurrencyOverlay';
+import SelectCurrencyOverlay from './SelectCurrencyOverlay';
 
-export type { SelectCurrencyOverlayProps };
 export default SelectCurrencyOverlay;

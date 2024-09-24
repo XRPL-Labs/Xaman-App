@@ -1,4 +1,3 @@
-import ShareAccountOverlay, { Props as ShareAccountOverlayProps } from './ShareAccountOverlay';
+import ShareAccountModal from './ShareAccountModal';
 
-export type { ShareAccountOverlayProps };
-export default ShareAccountOverlay;
+export default ShareAccountModal;

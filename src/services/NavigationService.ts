@@ -4,7 +4,7 @@
  */
 
 import EventEmitter from 'events';
-import { get, last, take, debounce } from 'lodash';
+import { get, last, take, values, debounce } from 'lodash';
 
 import { BackHandler } from 'react-native';
 
@@ -24,11 +24,7 @@ import { ExitApp } from '@common/helpers/app';
 import { AppScreens } from '@common/constants';
 
 import Locale from '@locale';
-
 /* Types  ==================================================================== */
-export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
-    L0 extends Record<string, any> ? AppScreenKeys<L0> : L0;
-
 export enum ComponentTypes {
     Screen = 'SCREEN',
     Modal = 'MODAL',
@@ -42,29 +38,20 @@ export enum RootType {
     DefaultRoot = 'DefaultRoot',
 }
 
-export type NavigationServiceEvent = {
-    setRoot: (root: RootType) => void;
-};
-
-declare interface NavigationService {
-    on<U extends keyof NavigationServiceEvent>(event: U, listener: NavigationServiceEvent[U]): this;
-    off<U extends keyof NavigationServiceEvent>(event: U, listener: NavigationServiceEvent[U]): this;
-    emit<U extends keyof NavigationServiceEvent>(event: U, ...args: Parameters<NavigationServiceEvent[U]>): boolean;
-}
 /* Service  ==================================================================== */
 class NavigationService extends EventEmitter {
-    private currentRoot?: RootType;
-    private currentScreen?: AppScreenKeys;
-    private modals: Array<AppScreenKeys>;
-    private overlays: Array<AppScreenKeys>;
+    private currentRoot: string;
+    private currentScreen: string;
+    private modals: Array<string>;
+    private overlays: Array<string>;
     private backHandlerClickCount: number;
-    private backHandlerClickCountTimeout?: ReturnType<typeof setTimeout>;
+    private backHandlerClickCountTimeout: any;
 
     constructor() {
         super();
 
-        this.currentRoot = undefined;
-        this.currentScreen = undefined;
+        this.currentRoot = '';
+        this.currentScreen = '';
         this.modals = [];
         this.overlays = [];
         this.backHandlerClickCount = 0;
@@ -98,8 +85,8 @@ class NavigationService extends EventEmitter {
      * Clear any prev navigation state
      */
     reinstate = () => {
-        this.currentRoot = undefined;
-        this.currentScreen = undefined;
+        this.currentRoot = '';
+        this.currentScreen = '';
         this.modals = [];
         this.overlays = [];
         this.backHandlerClickCount = 0;
@@ -111,57 +98,29 @@ class NavigationService extends EventEmitter {
     };
 
     bottomTabLongPressedListener = ({ selectedTabIndex }: BottomTabLongPressedEvent) => {
-        switch (selectedTabIndex) {
-            case 0:
-                if (this.getCurrentOverlay() === AppScreens.Overlay.SwitchAccount) {
-                    return;
-                }
-                // haptic vibrate
-                VibrateHapticFeedback('impactLight');
-                // show switch account overlay
-                Navigation.showOverlay({
-                    component: {
-                        name: AppScreens.Overlay.SwitchAccount,
-                        id: AppScreens.Overlay.SwitchAccount,
-                        passProps: { componentType: ComponentTypes.Overlay },
-                        options: {
-                            layout: {
-                                backgroundColor: 'transparent',
-                                componentBackgroundColor: 'transparent',
-                            },
-                            overlay: {
-                                handleKeyboardEvents: true,
-                            },
+        if (selectedTabIndex !== 0) return;
+
+        const currentOverlay = this.getCurrentOverlay();
+        if (currentOverlay !== AppScreens.Overlay.SwitchAccount) {
+            // haptic vibrate
+            VibrateHapticFeedback('impactLight');
+            // show switch account overlay
+            Navigation.showOverlay({
+                component: {
+                    name: AppScreens.Overlay.SwitchAccount,
+                    id: AppScreens.Overlay.SwitchAccount,
+                    passProps: { componentType: ComponentTypes.Overlay },
+                    options: {
+                        layout: {
+                            backgroundColor: 'transparent',
+                            componentBackgroundColor: 'transparent',
+                        },
+                        overlay: {
+                            handleKeyboardEvents: true,
                         },
                     },
-                });
-                break;
-            case 2:
-                if (this.getCurrentModal() === AppScreens.Modal.Scan) {
-                    return;
-                }
-                // haptic vibrate
-                VibrateHapticFeedback('impactLight');
-                // show scan modal
-                Navigation.showModal({
-                    stack: {
-                        id: AppScreens.Modal.Scan,
-                        children: [
-                            {
-                                component: {
-                                    name: AppScreens.Modal.Scan,
-                                    id: AppScreens.Modal.Scan,
-                                    options: {},
-                                    passProps: { componentType: ComponentTypes.Modal },
-                                },
-                            },
-                        ],
-                    },
-                });
-
-                break;
-            default:
-                break;
+                },
+            });
         }
     };
 
@@ -201,7 +160,7 @@ class NavigationService extends EventEmitter {
         }
     };
 
-    onOverlayDismissed = (componentName: AppScreenKeys) => {
+    onOverlayDismissed = (componentName: string) => {
         if (componentName === last(this.overlays)) {
             this.pullCurrentOverlay();
         }
@@ -210,21 +169,21 @@ class NavigationService extends EventEmitter {
     componentDidAppear = ({ componentName, passProps }: ComponentDidAppearEvent) => {
         switch (this.getComponentType(componentName)) {
             case ComponentTypes.Modal:
-                this.setCurrentModal(componentName as AppScreenKeys);
+                this.setCurrentModal(componentName);
                 break;
             case ComponentTypes.Overlay:
-                this.setCurrentOverlay(componentName as AppScreenKeys);
+                this.setCurrentOverlay(componentName);
                 break;
             case ComponentTypes.Screen:
                 // check if screen is presenting as modal
                 if (get(passProps, 'componentType') === ComponentTypes.Modal) {
-                    this.setCurrentModal(componentName as AppScreenKeys);
+                    this.setCurrentModal(componentName);
                 } else {
-                    this.setCurrentScreen(componentName as AppScreenKeys);
+                    this.setCurrentScreen(componentName);
                 }
                 break;
             case ComponentTypes.TabBar:
-                this.setCurrentScreen(componentName as AppScreenKeys);
+                this.setCurrentScreen(componentName);
                 break;
             default:
                 break;
@@ -302,52 +261,53 @@ class NavigationService extends EventEmitter {
         }
     };
 
-    getCurrentScreen = (): AppScreenKeys | undefined => {
+    getCurrentScreen = (): string => {
         return this.currentScreen;
     };
 
-    setCurrentScreen = (currentScreen: AppScreenKeys) => {
+    setCurrentScreen = (currentScreen: string) => {
         if (this.currentScreen !== currentScreen) {
             analytics().logScreenView({ screen_name: currentScreen });
             this.currentScreen = currentScreen;
         }
     };
 
-    setCurrentModal = (modal: AppScreenKeys) => {
+    setCurrentModal = (modal: string) => {
         if (!this.modals.includes(modal)) {
             analytics().logScreenView({ screen_name: modal });
             this.modals.push(modal);
         }
     };
 
-    getCurrentModal = (): string | undefined => {
+    getCurrentModal = (): string => {
         return last(this.modals);
     };
 
-    pullCurrentModal = (): string | undefined => {
-        const lastModal = last(this.modals);
+    pullCurrentModal = (): string => {
+        const l = last(this.modals);
         this.modals = take(this.modals, this.modals.length - 1);
-        return lastModal;
+
+        return l;
     };
 
-    setCurrentOverlay = (overlay: AppScreenKeys) => {
+    setCurrentOverlay = (overlay: string) => {
         if (last(this.overlays) !== overlay) {
             analytics().logScreenView({ screen_name: overlay });
             this.overlays.push(overlay);
         }
     };
 
-    getCurrentOverlay = (): string | undefined => {
+    getCurrentOverlay = (): string => {
         return last(this.overlays);
     };
 
-    pullCurrentOverlay = (): string | undefined => {
-        const lastOverlay = last(this.overlays);
+    pullCurrentOverlay = (): string => {
+        const l = last(this.overlays);
         this.overlays = take(this.overlays, this.overlays.length - 1);
-        return lastOverlay;
+        return l;
     };
 
-    onRootChange = (root: RootType) => {
+    onRootChange = (root: string) => {
         if (this.currentRoot !== root) {
             this.currentRoot = root;
         }
@@ -355,7 +315,7 @@ class NavigationService extends EventEmitter {
         this.emit('setRoot', root);
     };
 
-    getCurrentRoot = (): RootType | undefined => {
+    getCurrentRoot = (): string => {
         return this.currentRoot;
     };
 
@@ -377,8 +337,9 @@ class NavigationService extends EventEmitter {
         return ComponentTypes.Screen;
     };
 
-    isRootComponent = (component: any) => {
-        return [AppScreens.Onboarding, ...Object.values(AppScreens.TabBar)].indexOf(component) > -1;
+    isRootComponent = (component: string) => {
+        const rootComponents = [AppScreens.Onboarding, ...values(AppScreens.TabBar)];
+        return rootComponents.indexOf(component) > -1;
     };
 }
 

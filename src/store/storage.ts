@@ -8,17 +8,16 @@
 import Realm from 'realm';
 import { sortBy, values, flatMap } from 'lodash';
 
-import LoggerService, { LoggerInstance } from '@services/LoggerService';
-
 import Vault from '@common/libs/vault';
 
 import { AppConfig } from '@common/constants';
+
+import LoggerService from '@services/LoggerService';
 /* Module ==================================================================== */
 export default class Storage {
     private readonly compactionThreshold: number;
-    private logger: LoggerInstance;
-
-    public dataStore?: Realm;
+    private logger: any;
+    public dataStore: Realm;
 
     constructor() {
         this.compactionThreshold = 30;
@@ -64,7 +63,7 @@ export default class Storage {
         return new Promise((resolve, reject) => {
             try {
                 // get current version
-                const currentVersion = Realm.schemaVersion(config.path!, config.encryptionKey);
+                const currentVersion = Realm.schemaVersion(config.path, config.encryptionKey);
 
                 this.logger.debug(`Current schema version: v${currentVersion}`);
 
@@ -88,6 +87,7 @@ export default class Storage {
                     }
 
                     // migrate and create database instance
+                    // @ts-ignore
                     const migrationRealm = new Realm({
                         ...config,
                         schema: flatMap(current.schemas, 'schema'),
@@ -112,6 +112,7 @@ export default class Storage {
      * Open the Database
      */
     open = async (config: Realm.Configuration, latestSchemaVersion: number): Promise<Realm> => {
+        // @ts-ignore
         return new Realm({
             ...config,
             schema: values(require('./models')),
@@ -123,7 +124,7 @@ export default class Storage {
      * Close db instance
      */
     close = (): void => {
-        this.dataStore?.close();
+        this.dataStore.close();
     };
 
     /**
@@ -169,15 +170,16 @@ export default class Storage {
         return new Promise<void>((resolve, reject) => {
             try {
                 // data store is not empty
-                if (!this.dataStore?.isEmpty) {
+                if (!this.dataStore.isEmpty) {
                     resolve();
                     return;
                 }
 
-                const { populateDataStore } = require('./models/schemas/populate');
+                const { populate } = require('./models/schemas/latest');
 
-                // populate data store
-                populateDataStore(this.dataStore);
+                if (typeof populate === 'function') {
+                    populate(this.dataStore);
+                }
 
                 resolve();
             } catch (error) {

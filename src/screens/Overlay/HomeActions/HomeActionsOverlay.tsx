@@ -17,14 +17,13 @@ import { AppScreens } from '@common/constants';
 
 import { XAppOrigin } from '@common/libs/payload';
 
+// components
 import { Button, ActionPanel, Spacer } from '@components/General';
 import { XAppShortList } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { ScanModalProps } from '@screens/Modal/Scan';
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
-
+// style
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
@@ -106,7 +105,7 @@ class HomeActionsOverlay extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal<ScanModalProps>(
+            Navigator.showModal(
                 AppScreens.Modal.Scan,
                 {},
                 {
@@ -126,7 +125,7 @@ class HomeActionsOverlay extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal<XAppBrowserModalProps>(
+            Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier,
@@ -137,7 +136,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         }, 800);

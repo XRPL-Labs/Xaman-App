@@ -174,7 +174,7 @@ type Response =
     // AMM methods
     | AMMInfoResponse;
 
-export type {
+export {
     BaseRequest,
     BaseResponse,
     Request,

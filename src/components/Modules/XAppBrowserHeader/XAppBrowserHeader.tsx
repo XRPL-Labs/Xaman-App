@@ -15,9 +15,9 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    identifier?: string;
-    title?: string;
-    icon?: string;
+    identifier: string;
+    title: string;
+    icon: string;
     account: AccountModel;
     network: NetworkModel;
     onAccountChange?: (account: AccountModel) => void;

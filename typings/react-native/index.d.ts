@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-// noinspection JSUnusedGlobalSymbols
 
 import { NativeModule } from 'react-native';
 
@@ -374,113 +373,6 @@ interface VaultManagerModuleInterface extends NativeModule {
     }>;
 }
 
-/**
- * Represents keyboard module interface.
- * @interface
- */
-interface KeyboardModuleInterface extends NativeModule {
-    /**
-     * Starts the keyboard visibility listener.
-     *
-     * @returns {void}
-     */
-    startKeyboardListener(): void;
-    /**
-     * Stops listening for keyboard visibility events.
-     *
-     * @function stopKeyboardListen
-     * @returns {void}
-     */
-    stopKeyboardListen(): void;
-}
-
-/**
- * Interface for the In-App Purchase module.
- * @interface
- * @extends NativeModule
- */
-interface InAppPurchaseModuleInterface extends NativeModule {
-    /**
-     * Starts a connection with Google BillingClient
-     *
-     * @return {Promise<boolean>}
-     * Android specific
-     */
-    startConnection(): Promise<boolean>;
-    /**
-     * Checks if there are any previous purchases
-     * that have been made but not yet finalized
-     *
-     * @returns {Promise<Array<string>>} A promise that resolves to an array of purchase details representing the previous purchases that have not been finalized yet.
-     */
-    restorePurchases(): Promise<Array<T>>;
-    /**
-     * Launches the billing flow for a specific product ID.
-     *
-     * @param {string} productId - The ID of the product to purchase.
-     * @return {Promise<Array<string>>} A promise resolved with an array of successful purchases,
-     *                                representing the data of the purchase.
-     */
-    purchase(productId: string): Promise<Array<T>>;
-    /**
-     * finalize a purchase, indicating that the product has been provided to the user.
-     *
-     * @return {Promise<string>}
-     */
-    finalizePurchase(transactionReceiptIdentifier: string): Promise<string>;
-}
-
-/**
- * Represents prompt android module interface.
- * @interface
- */
-interface PromptAndroidInterface extends NativeModule {
-    /**
-     * Constants
-     */
-    buttonClicked: string;
-    dismissed: string;
-    buttonPositive: string;
-    buttonNegative: string;
-    buttonNeutral: string;
-
-    /**
-     * Displays a prompt with customizable options.
-     *
-     * @param {object} options - The options for configuring the prompt.
-     * @param callback
-     * @param {string} [options.title] - The title of the prompt.
-     * @param {string} [options.message] - The message displayed in the prompt.
-     * @param {string} [options.buttonPositive] - The text label for the positive button.
-     * @param {string} [options.buttonNegative] - The text label for the negative button.
-     * @param {string} [options.buttonNeutral] - The text label for the neutral button.
-     * @param {string[]} [options.items] - The list of items to display as options in a list prompt.
-     * @param {boolean} [options.cancelable] - A flag indicating whether the prompt can be canceled by the user.
-     * @param {string} [options.type] - The type of the prompt (e.g., "default", "numeric", "email").
-     * @param {string} [options.style] - The style of the prompt (e.g., "light", "dark").
-     * @param {string} [options.defaultValue] - The default value to prefill the input field with.
-     * @param {string} [options.placeholder] - The placeholder text for the input field.
-     *
-     * @return {void}
-     */
-    promptWithArgs(
-        options: {
-            title?: string;
-            message?: string;
-            buttonPositive?: string;
-            buttonNegative?: string;
-            buttonNeutral?: string;
-            items?: string[];
-            cancelable?: boolean;
-            type?: string;
-            style?: string;
-            defaultValue?: string;
-            placeholder?: string;
-        },
-        callback: (action: 'buttonClicked', buttonKey: string, input: string) => void,
-    ): void;
-}
-
 declare module 'react-native' {
     interface NativeModulesStatic {
         VaultManagerModule: VaultManagerModuleInterface;
@@ -493,8 +385,5 @@ declare module 'react-native' {
         CryptoModule: CryptoModuleInterface;
         AppUtilsModule: AppUtilsModuleInterface;
         LocalNotificationModule: LocalNotificationModuleInterface;
-        InAppPurchaseModule: InAppPurchaseModuleInterface;
-        KeyboardModule: KeyboardModuleInterface;
-        PromptAndroid: PromptAndroidInterface;
     }
 }

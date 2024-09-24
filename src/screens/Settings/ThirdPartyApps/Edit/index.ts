@@ -1,4 +1,3 @@
-import EditThirdPartyAppView, { Props as EditThirdPartyAppViewProps } from './EditThirdPartyAppView';
+import EditThirdPartyAppView from './EditThirdPartyAppView';
 
-export type { EditThirdPartyAppViewProps };
 export default EditThirdPartyAppView;

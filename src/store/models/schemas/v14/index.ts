@@ -17,12 +17,17 @@ const { ContactSchema, CounterPartySchema, CurrencySchema, ProfileSchema } = v13
 export const schemaVersion = 14;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
     // Note: The order is important for this schema version
-    [NetworkSchema, NodeSchema, CoreSchema, AccountSchema, TrustLineSchema].forEach((entry) => {
-        if (typeof entry.migration !== 'function') {
-            throw new Error(`migration method is required for schema ${entry.schema.name}`);
-        }
-
-        entry.migration(oldRealm, newRealm);
+    NetworkSchema.migration(oldRealm, newRealm);
+    NodeSchema.migration(oldRealm, newRealm);
+    CoreSchema.migration(oldRealm, newRealm);
+    AccountSchema.migration(oldRealm, newRealm);
+    TrustLineSchema.migration(oldRealm, newRealm);
+};
+export const populate = (realm: Realm) => {
+    [NetworkSchema, NodeSchema, CoreSchema].forEach((schema) => {
+        realm.write(() => {
+            schema.populate(realm);
+        });
     });
 };
 export const schemas = {

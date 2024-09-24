@@ -17,14 +17,13 @@ import { VibrateHapticFeedback, Toast, Prompt } from '@common/helpers/interface'
 
 import { PushNotificationsService, StyleService } from '@services';
 
+// components
 import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/General';
 
+// locale
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
-import { BiometrySetupViewProps } from '@screens/Setup/Biometry';
-import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -47,8 +46,7 @@ export interface State {
 /* Component ==================================================================== */
 class PasscodeSetupView extends Component<Props, State> {
     static screenName = AppScreens.Setup.Passcode;
-
-    private pinInputRef: React.RefObject<PinInput>;
+    pinInput: PinInput;
 
     static options() {
         return {
@@ -67,8 +65,6 @@ class PasscodeSetupView extends Component<Props, State> {
             currentStep: Steps.EXPLANATION,
             isLoading: false,
         };
-
-        this.pinInputRef = React.createRef();
     }
 
     onFinishStep = async () => {
@@ -93,7 +89,7 @@ class PasscodeSetupView extends Component<Props, State> {
             }
             // if biometric auth supported move to page
             if (await this.isBiometricSupported()) {
-                Navigator.push<BiometrySetupViewProps>(AppScreens.Setup.Biometric, {});
+                Navigator.push(AppScreens.Setup.Biometric);
                 return;
             }
 
@@ -103,12 +99,12 @@ class PasscodeSetupView extends Component<Props, State> {
             // if push notification already granted then go to last part
             const granted = await PushNotificationsService.checkPermission();
             if (granted) {
-                Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+                Navigator.push(AppScreens.Setup.Disclaimers);
                 return;
             }
 
             // go to the next step
-            Navigator.push<PushNotificationSetupViewProps>(AppScreens.Setup.PushNotification, {});
+            Navigator.push(AppScreens.Setup.PushNotification);
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
         } finally {
@@ -134,17 +130,14 @@ class PasscodeSetupView extends Component<Props, State> {
                 currentStep: Steps.ENTER_PASSCODE,
             });
         } else if (currentStep === Steps.ENTER_PASSCODE) {
-            this.setState(
-                {
-                    currentStep: Steps.CONFIRM_PASSCODE,
-                },
-                () => {
-                    if (this.pinInputRef?.current) {
-                        this.pinInputRef?.current.clean();
-                        this.pinInputRef?.current.focus();
-                    }
-                },
-            );
+            this.setState({
+                currentStep: Steps.CONFIRM_PASSCODE,
+            });
+
+            if (this.pinInput) {
+                this.pinInput.clean();
+                this.pinInput.focus();
+            }
         } else {
             this.onFinishStep();
         }
@@ -162,18 +155,14 @@ class PasscodeSetupView extends Component<Props, State> {
                 currentStep: Steps.EXPLANATION,
             });
         } else {
-            this.setState(
-                {
-                    passcode: '',
-                    passcodeConfirm: '',
-                    currentStep: Steps.ENTER_PASSCODE,
-                },
-                () => {
-                    if (this.pinInputRef?.current) {
-                        this.pinInputRef?.current.clean();
-                    }
-                },
-            );
+            this.setState({
+                passcode: '',
+                passcodeConfirm: '',
+                currentStep: Steps.ENTER_PASSCODE,
+            });
+            if (this.pinInput) {
+                this.pinInput.clean();
+            }
         }
     };
 
@@ -216,9 +205,9 @@ class PasscodeSetupView extends Component<Props, State> {
                     {
                         text: Localize.t('setupPasscode.changePasscode'),
                         onPress: () => {
-                            if (this.pinInputRef?.current) {
-                                this.pinInputRef?.current.clean();
-                                this.pinInputRef?.current.focus();
+                            if (this.pinInput) {
+                                this.pinInput.clean();
+                                this.pinInput.focus();
                             }
                         },
                     },
@@ -231,15 +220,15 @@ class PasscodeSetupView extends Component<Props, State> {
     checkPasscodeConfirm = (passcodeConfirm: string) => {
         const { passcode } = this.state;
 
-        // passcode doesn't match the confirmation pin
+        // pincode doesn't match the confirm pin
         if (passcode !== passcodeConfirm) {
             Toast(Localize.t('setupPasscode.passcodeDoNotMatch'));
             VibrateHapticFeedback('notificationError');
 
             // clean pin code
-            if (this.pinInputRef?.current) {
-                this.pinInputRef?.current.clean();
-                this.pinInputRef?.current.focus();
+            if (this.pinInput) {
+                this.pinInput.clean();
+                this.pinInput.focus();
             }
 
             // go back to entry step
@@ -261,7 +250,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
         switch (currentStep) {
             case Steps.ENTER_PASSCODE:
-                this.checkPasscode(code, isStrong!);
+                this.checkPasscode(code, isStrong);
                 break;
             case Steps.CONFIRM_PASSCODE:
                 this.checkPasscodeConfirm(code);
@@ -284,7 +273,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
         if (currentStep === Steps.EXPLANATION) {
             return (
-                <Footer style={AppStyles.paddingBottom}>
+                <Footer style={[AppStyles.paddingBottom]}>
                     <Button testID="go-button" onPress={this.onNext} label={Localize.t('global.go')} />
                 </Footer>
             );
@@ -302,7 +291,7 @@ class PasscodeSetupView extends Component<Props, State> {
                     />
                 </View>
 
-                <View style={AppStyles.flex4}>
+                <View style={[AppStyles.flex4]}>
                     <Button
                         testID="next-button"
                         isDisabled={
@@ -352,8 +341,10 @@ class PasscodeSetupView extends Component<Props, State> {
                     </Text>
                     <Spacer size={30} />
                     <PinInput
+                        ref={(r) => {
+                            this.pinInput = r;
+                        }}
                         autoFocus
-                        ref={this.pinInputRef}
                         checkStrength={currentStep === Steps.ENTER_PASSCODE}
                         codeLength={6}
                         onFinish={this.onPasscodeEnter}
@@ -367,7 +358,7 @@ class PasscodeSetupView extends Component<Props, State> {
 
     render() {
         return (
-            <SafeAreaView testID="setup-passcode-screen" style={AppStyles.container}>
+            <SafeAreaView testID="setup-passcode-screen" style={[AppStyles.container]}>
                 {this.renderHeader()}
                 {this.renderContent()}
                 {this.renderFooter()}

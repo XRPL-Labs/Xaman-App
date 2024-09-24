@@ -41,15 +41,6 @@ const styles = StyleService.create({
     donationButton: {
         marginLeft: AppSizes.paddingExtraSml,
     },
-    openShareButtonsContainer: {
-        flexDirection: 'row',
-        gap: AppSizes.paddingExtraSml,
-    },
-    footer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: AppSizes.paddingSml + AppSizes.safeAreaBottomInset,
-    },
 });
 
 export default styles;

@@ -9,8 +9,6 @@ import { AppScreens } from '@common/constants';
 
 import { TouchableDebounce, Icon } from '@components/General';
 
-import { SelectAccountOverlayProps } from '@screens/Overlay/SelectAccount';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -82,7 +80,7 @@ class AccountPicker extends Component<Props, State> {
             expanded: true,
         });
 
-        Navigator.showOverlay<SelectAccountOverlayProps>(AppScreens.Overlay.SelectAccount, {
+        Navigator.showOverlay(AppScreens.Overlay.SelectAccount, {
             selected: selectedItem,
             accounts,
             onSelect: this.onSelect,

@@ -1,5 +1,6 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
-import ApiService, { ApiError } from '@services/ApiService';
+import ApiService from '@services/ApiService';
 
 import { PseudoTransactionTypes } from '../../ledger/types/enums';
 
@@ -15,7 +16,7 @@ describe('Payload', () => {
             Account: 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY',
             Destination: 'rXUMMaPpZqPutoRszR29jtC8amWq3APkx',
             Amount: '1337',
-        } as any;
+        };
 
         const craftedPayload = Payload.build(transaction);
 
@@ -25,7 +26,7 @@ describe('Payload', () => {
             'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png',
         );
         expect(craftedPayload.getApplicationName()).toBe('Xaman');
-        expect(craftedPayload.getTransaction().JsonForSigning).toEqual(transaction);
+        expect(craftedPayload.getTransaction().Json).toEqual(transaction);
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
         const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
@@ -68,8 +69,8 @@ describe('Payload', () => {
 
         try {
             await Payload.from(invalidTypesPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual('Unable to verify the payload signature');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -84,8 +85,8 @@ describe('Payload', () => {
 
         try {
             await Payload.from(invalidSignInPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual('Unable to verify the payload signature');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
@@ -100,16 +101,17 @@ describe('Payload', () => {
 
         try {
             await Payload.from(InvalidPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual('Unable to verify the payload signature');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Unable to verify the payload signature');
         }
 
         payloadFetchSpy.mockClear();
     });
 
     it('Should be able return right values for assigned payload', async () => {
-        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
+        // @ts-ignore
         const fetchedPayload = await Payload.from(AccountSetPayload);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
@@ -119,19 +121,20 @@ describe('Payload', () => {
         expect(fetchedPayload.getApplicationName()).toBe(AccountSetPayload.application.name);
         expect(fetchedPayload.getReturnURL()).toBe(AccountSetPayload.meta.return_url_app);
         expect(fetchedPayload.getPayloadUUID()).toBe(AccountSetPayload.meta.uuid);
-        expect(fetchedPayload.getTransaction().JsonForSigning).toEqual(AccountSetPayload.payload.request_json);
+        expect(fetchedPayload.getTransaction().Json).toEqual(AccountSetPayload.payload.request_json);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.UNKNOWN);
     });
 
     it('Should be able return right values SignIn payload', async () => {
-        const { SignIn: SignInPayload }: any = PayloadTemplate;
+        const { SignIn: SignInPayload } = PayloadTemplate;
+        // @ts-ignore
         const fetchedPayload = await Payload.from(SignInPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isGenerated()).toBe(false);
         expect(fetchedPayload.isPseudoTransaction()).toBe(true);
         expect(fetchedPayload.shouldSubmit()).toBe(false);
         expect(fetchedPayload.getTransactionType()).toBe('SignIn');
-        expect(fetchedPayload.getTransaction().JsonForSigning).toEqual({});
+        expect(fetchedPayload.getTransaction().Json).toEqual({});
         expect(fetchedPayload.getTransaction().Type).toEqual(PseudoTransactionTypes.SignIn);
         expect(fetchedPayload.getOrigin()).toEqual(PayloadOrigin.DEEP_LINK);
     });
@@ -143,6 +146,7 @@ describe('Payload', () => {
         const multiSingPayload = JSON.parse(JSON.stringify(AccountSetPayload));
         multiSingPayload.meta.multisign = true;
 
+        // @ts-ignore
         const fetchedPayload = await Payload.from(multiSingPayload, PayloadOrigin.DEEP_LINK);
 
         expect(fetchedPayload.isMultiSign()).toBe(true);
@@ -157,7 +161,7 @@ describe('Payload', () => {
                 ...AccountSetPayload,
                 ...{
                     response: {
-                        resolved_at: 'SOME_VALUE',
+                        resolved_at: 'somevalue',
                     },
                 },
             }),
@@ -165,9 +169,9 @@ describe('Payload', () => {
 
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual(
-                'This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
+        } catch (e) {
+            expect(e.toString()).toEqual(
+                'Error: This payload has already been signed or rejected. Please repeat the process that generated the request, and scan the new request.',
             );
         }
 
@@ -186,29 +190,13 @@ describe('Payload', () => {
 
         try {
             await Payload.from(AccountSetPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual(
-                'This payload has expired. Please repeat the process that generated the request, and scan the new request.',
+        } catch (e) {
+            expect(e.toString()).toEqual(
+                'Error: This payload has expired. Please repeat the process that generated the request, and scan the new request.',
             );
         }
 
         payloadFetchSpy2.mockClear();
-    });
-
-    it('Should throw error if payload is handled by other user', async () => {
-        const { AccountSet: AccountSetPayload } = PayloadTemplate;
-
-        const payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
-            .mockImplementation(() => Promise.reject(new ApiError('message', 403, 'refrence')));
-
-        try {
-            await Payload.from(AccountSetPayload.meta.uuid);
-        } catch (error: any) {
-            expect(error.message).toEqual('Payload handled by another client');
-        }
-
-        payloadFetchSpy.mockClear();
     });
 
     it('Should throw error if transaction types are mismatch', async () => {
@@ -222,13 +210,13 @@ describe('Payload', () => {
 
         try {
             payload.getTransaction();
-        } catch (error: any) {
-            expect(error.message).toEqual('Parsed transaction have invalid transaction type!');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
         }
     });
 
     it('Should throw error if transaction type is not supported', async () => {
-        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
         // set unsupported type
         const unsupportedTypePayload = JSON.parse(JSON.stringify(AccountSetPayload));
@@ -239,23 +227,24 @@ describe('Payload', () => {
 
         try {
             payload.getTransaction();
-        } catch (error: any) {
-            expect(error.message).toEqual('Requested transaction type is not supported in Xaman!');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Requested transaction type is not supported in Xaman!');
         }
     });
 
     it('Should throw error if transaction and crafted tx have different type', async () => {
-        const { AccountSet: AccountSetPayload }: any = PayloadTemplate;
+        const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
         // set unsupported type
         AccountSetPayload.payload.tx_type = 'SignIn';
 
+        // @ts-ignore
         const payload = await Payload.from(AccountSetPayload);
 
         try {
             payload.getTransaction();
-        } catch (error: any) {
-            expect(error.message).toEqual('Parsed transaction have invalid transaction type!');
+        } catch (e) {
+            expect(e.toString()).toEqual('Error: Parsed transaction have invalid transaction type!');
         }
     });
 });

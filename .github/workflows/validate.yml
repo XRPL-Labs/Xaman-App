@@ -1,25 +1,31 @@
 name: validate
-env:
-  CI: true
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ develop, master ]
+on: [pull_request]
 
 jobs:
-  lint:
-    if: github.event.pull_request.draft == false
-    runs-on: [ self-hosted, macOS, ARM64 ]
+  validate-style:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
         with:
           fetch-depth: 1
 
-      - name: Prepare Environment
-        uses: ./.github/actions/prepare-env
+      - name: Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+
+      - run: node --version
+
+      - name: Cache node_modules/
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+      - run: npm ci
 
       - run: npm run validate
         if: ${{ always() }}

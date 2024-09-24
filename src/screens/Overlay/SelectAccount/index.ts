@@ -1,4 +1,3 @@
-import SelectAccountOverlay, { Props as SelectAccountOverlayProps } from './SelectAccountOverlay';
+import SelectAccountOverlay from './SelectAccountOverlay';
 
-export type { SelectAccountOverlayProps };
 export default SelectAccountOverlay;

@@ -30,8 +30,7 @@ module.exports = {
     maxWorkers: 1,
     testTimeout: 20000,
     moduleNameMapper: {
-        // Jest does not support package.json exports.
+        // Force module uuid to resolve with the CJS entry point, because Jest does not support package.json.exports. See https://github.com/uuidjs/uuid/issues/451
         uuid: require.resolve('uuid'),
-        '@realm/fetch': require.resolve('@realm/fetch'),
     },
 };

@@ -1,4 +1,4 @@
-import { has, get, isEqual } from 'lodash';
+import { has, get } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, InteractionManager } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
@@ -15,9 +15,6 @@ import { TouchableDebounce, Avatar } from '@components/General';
 
 import Localize from '@locale';
 
-import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
-import { Props as ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction/types';
-
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
@@ -25,12 +22,11 @@ import styles from './styles';
 export interface Props {
     account: AccountModel;
     item: Payload;
-    timestamp?: number;
 }
 
 export interface State {
-    transactionLabel?: string;
-    description?: string;
+    transactionLabel: string;
+    description: string;
 }
 
 export enum RequestType {
@@ -51,40 +47,19 @@ class RequestItem extends Component<Props, State> {
         };
     }
 
-    shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { item, timestamp } = this.props;
-        const { transactionLabel, description } = this.state;
-
-        return (
-            !isEqual(nextProps.item?.getPayloadUUID(), item?.getPayloadUUID()) ||
-            !isEqual(nextState.transactionLabel, transactionLabel) ||
-            !isEqual(nextState.description, description) ||
-            !isEqual(nextProps.timestamp, timestamp)
-        );
-    }
-
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.setDetails);
-    }
-
-    componentDidUpdate(prevProps: Props) {
-        const { item, timestamp } = this.props;
-
-        // force the lookup if timestamp changed
-        if (timestamp !== prevProps.timestamp || item?.getPayloadUUID() !== prevProps.item?.getPayloadUUID()) {
-            InteractionManager.runAfterInteractions(this.setDetails);
-        }
     }
 
     openXApp = () => {
         const { item } = this.props;
 
-        const xappIdentifier = get(item, 'payload.request_json.xappIdentifier') as string;
-        const title = get(item, 'payload.request_json.xappTitle', 'xApp') as string | undefined;
+        const xappIdentifier = get(item, 'payload.request_json.xappIdentifier');
+        const title = get(item, 'payload.request_json.xappTitle', 'xApp');
         const originData = { payload: get(item, 'meta.uuid') };
 
         if (xappIdentifier) {
-            Navigator.showModal<XAppBrowserModalProps>(
+            Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
                     title,
@@ -94,7 +69,7 @@ class RequestItem extends Component<Props, State> {
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         }
@@ -108,10 +83,10 @@ class RequestItem extends Component<Props, State> {
             item.setOrigin(PayloadOrigin.EVENT_LIST);
         }
 
-        Navigator.showModal<ReviewTransactionModalProps>(
+        Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
             { payload: item },
-            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 

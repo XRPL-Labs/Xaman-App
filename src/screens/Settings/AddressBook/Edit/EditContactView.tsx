@@ -1,7 +1,7 @@
 /**
  * Edit Contact Screen
  */
-import { filter, isEmpty, toString } from 'lodash';
+import { filter, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Alert, Keyboard, Platform, Share } from 'react-native';
 
@@ -24,8 +24,7 @@ import { Header, Spacer, Button, TextInput, InfoMessage, KeyboardAwareScrollView
 
 import Localize from '@locale';
 
-import { ScanModalProps } from '@screens/Modal/Scan';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -38,8 +37,8 @@ export interface State {
     isLoading: boolean;
     address: string;
     name: string;
-    tag?: string;
-    xAddress?: string;
+    tag: string;
+    xAddress: string;
 }
 
 /* Component ==================================================================== */
@@ -65,7 +64,7 @@ class EditContactView extends Component<Props, State> {
     }
 
     showScanner = () => {
-        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
+        Navigator.showModal(AppScreens.Modal.Scan, {
             type: StringType.XrplDestination,
             onRead: this.onScannerRead,
         });
@@ -81,18 +80,16 @@ class EditContactView extends Component<Props, State> {
 
                 const payIdInfo = await getPayIdInfo(result.payId);
 
-                if (payIdInfo) {
-                    this.setState({
-                        address: payIdInfo.account,
-                        tag: payIdInfo.tag,
-                    });
-                }
+                this.setState({
+                    address: payIdInfo.account,
+                    tag: payIdInfo.tag,
+                });
             } else {
                 const { to, tag, xAddress } = NormalizeDestination(result);
 
                 this.setState({
                     address: to,
-                    tag: tag ? toString(tag) : undefined,
+                    tag: tag && tag.toString(),
                     xAddress,
                 });
             }
@@ -204,7 +201,7 @@ class EditContactView extends Component<Props, State> {
                 if (decoded) {
                     this.setState({
                         address: decoded.classicAddress,
-                        tag: decoded.tag ? toString(decoded.tag) : undefined,
+                        tag: decoded.tag && decoded.tag.toString(),
                         xAddress: address,
                     });
                 }

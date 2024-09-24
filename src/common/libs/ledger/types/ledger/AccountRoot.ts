@@ -1,12 +1,10 @@
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry';
 
 /**
- * The AccountRoot interface represents an account in the ledger.
- * It extends the BaseLedgerEntry and HasPreviousTxnID interfaces.
+ * The AccountRoot object type describes a single account, its settings, and
+ * XRP balance.
  *
- * @interface
- * @extends {BaseLedgerEntry}
- * @extends {HasPreviousTxnID}
+ * @category Ledger Entries
  */
 export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
     /** The identifying (classic) address of this account. */
@@ -79,12 +77,4 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
     MintedNFTokens?: number;
     /** Another account that can mint NFTokens on behalf of this account. */
     NFTokenMinter?: string;
-
-    // TODO: add documentation
-    RewardAccumulator?: string;
-    RewardLgrFirst?: number;
-    RewardLgrLast?: number;
-    RewardTime?: number;
-    ImportSequence?: number;
-    AccountIndex?: string;
 }

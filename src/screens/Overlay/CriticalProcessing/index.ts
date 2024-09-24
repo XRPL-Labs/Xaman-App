@@ -1,4 +1,3 @@
-import CriticalProcessingOverlay, { Props as CriticalProcessingOverlayProps } from './CriticalProcessingOverlay';
+import CriticalProcessing from './CriticalProcessing';
 
-export type { CriticalProcessingOverlayProps };
-export default CriticalProcessingOverlay;
+export default CriticalProcessing;

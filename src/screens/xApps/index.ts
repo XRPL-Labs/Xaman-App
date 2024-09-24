@@ -1,4 +1,3 @@
-import XAppsView, { Props as XAppsViewProps } from './XAppsView';
+import XAppsView from './XAppsView';
 
-export type { XAppsViewProps };
 export default XAppsView;

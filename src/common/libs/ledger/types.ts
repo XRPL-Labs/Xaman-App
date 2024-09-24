@@ -19,7 +19,7 @@ export type SubmitResultType = {
     engineResult: string;
     message: string;
     hash?: string;
-    network?: {
+    network: {
         id: number;
         node: string;
         type: string;

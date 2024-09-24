@@ -2,22 +2,22 @@
 import React, { Component, PropsWithChildren } from 'react';
 import { isEqual } from 'lodash';
 
-import { View, Text, TextStyle, ViewStyle, ImageStyle, StyleProp } from 'react-native';
+import { View, Text, TextStyle, ViewStyle, ImageStyle } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
-import { LoadingIndicator } from '@components/General/LoadingIndicator';
 import { Icon } from '@components/General/Icon';
+import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props extends PropsWithChildren {
-    style?: StyleProp<ViewStyle>;
-    textStyle?: StyleProp<TextStyle>;
-    disabledStyle?: StyleProp<TextStyle>;
-    iconStyle?: StyleProp<ImageStyle>;
+    style?: ViewStyle | ViewStyle[];
+    textStyle?: TextStyle | TextStyle[];
+    disabledStyle?: TextStyle | TextStyle[];
+    iconStyle?: ImageStyle | ImageStyle[];
     secondary?: boolean;
     light?: boolean;
     contrast?: boolean;
@@ -45,9 +45,7 @@ interface Props extends PropsWithChildren {
 
 /* Component ==================================================================== */
 export default class Button extends Component<Props> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof Button.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         iconPosition: 'left',
         iconSize: 20,
         activeOpacity: 0.6,
@@ -108,8 +106,8 @@ export default class Button extends Component<Props> {
                         size={iconSize}
                         style={[
                             styles.iconLeft,
-                            light ? styles.iconButtonLight : {},
-                            contrast ? styles.iconButtonContrast : {},
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
                             iconStyle,
                         ]}
                     />
@@ -141,8 +139,8 @@ export default class Button extends Component<Props> {
                         size={iconSize}
                         style={[
                             styles.iconRight,
-                            light ? styles.iconButtonLight : {},
-                            contrast ? styles.iconButtonContrast : {},
+                            light && styles.iconButtonLight,
+                            contrast && styles.iconButtonContrast,
                             iconStyle,
                         ]}
                     />
@@ -185,7 +183,7 @@ export default class Button extends Component<Props> {
             hitSlop,
         } = this.props;
 
-        if (isDisabled) {
+        if (isDisabled === true) {
             return (
                 <View
                     testID={testID}

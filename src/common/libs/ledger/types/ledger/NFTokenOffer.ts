@@ -1,9 +1,9 @@
-import { LedgerAmount } from '../common';
+import { Amount } from '../common';
 
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry';
 
-export default interface NFTokenOffer extends BaseLedgerEntry, HasPreviousTxnID {
-    Amount: LedgerAmount;
+export interface NFTokenOffer extends BaseLedgerEntry, HasPreviousTxnID {
+    Amount: Amount;
     Destination?: string;
     Expiration: number;
     Flags: number;

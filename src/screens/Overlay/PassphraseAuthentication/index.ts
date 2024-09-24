@@ -1,6 +1,3 @@
-import PassphraseAuthenticationOverlay, {
-    Props as PassphraseAuthenticationOverlayProps,
-} from './PassphraseAuthenticationOverlay';
+import PassphraseAuthenticationModal from './PassphraseAuthenticationModal';
 
-export type { PassphraseAuthenticationOverlayProps };
-export default PassphraseAuthenticationOverlay;
+export default PassphraseAuthenticationModal;

@@ -4,7 +4,6 @@
 
 import { find, first } from 'lodash';
 import BigNumber from 'bignumber.js';
-import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
@@ -41,15 +40,15 @@ import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+interface Props {}
 
-export interface State {
+interface State {
     coreSettings: CoreModel;
-    accounts: Realm.Results<AccountModel>;
+    accounts: any;
     source: AccountModel;
-    amount?: string;
-    amountRate?: string;
-    currencyRate?: RatesType;
+    amount: string;
+    amountRate: string;
+    currencyRate: RatesType;
     withAmount: boolean;
 }
 
@@ -57,8 +56,8 @@ export interface State {
 class RequestView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Request;
 
-    amountInputRef: React.RefObject<typeof AmountInput>;
-    amountRateInputRef: React.RefObject<typeof AmountInput>;
+    amountInput: React.RefObject<typeof AmountInput | null>;
+    amountRateInput: React.RefObject<typeof AmountInput | null>;
 
     static options() {
         return {
@@ -75,15 +74,15 @@ class RequestView extends Component<Props, State> {
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             accounts,
-            source: find(accounts, { address: defaultAccount.address }) || first(accounts)!,
-            amount: undefined,
+            source: find(accounts, { address: defaultAccount.address }) || first(accounts),
+            amount: '',
             currencyRate: undefined,
-            amountRate: undefined,
+            amountRate: '',
             withAmount: false,
         };
 
-        this.amountInputRef = React.createRef();
-        this.amountRateInputRef = React.createRef();
+        this.amountInput = React.createRef();
+        this.amountRateInput = React.createRef();
     }
 
     componentDidMount() {
@@ -193,7 +192,9 @@ class RequestView extends Component<Props, State> {
 
     onHeaderBackPress = () => {
         Keyboard.dismiss();
-        setTimeout(Navigator.pop, 10);
+        setTimeout(() => {
+            Navigator.pop();
+        }, 10);
     };
 
     onHeaderSharePress = () => {
@@ -204,8 +205,8 @@ class RequestView extends Component<Props, State> {
     };
 
     calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
-        if (input === this.amountInputRef?.current) {
-            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset, default: 0 });
+        if (input === this.amountInput.current) {
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset });
         }
         return 0;
     };
@@ -220,7 +221,7 @@ class RequestView extends Component<Props, State> {
                 <View style={styles.amountContainer}>
                     <View style={AppStyles.flex1}>
                         <AmountInput
-                            ref={this.amountInputRef}
+                            ref={this.amountInput}
                             testID="amount-input"
                             value={amount}
                             valueType={AmountValueType.Native}
@@ -238,7 +239,7 @@ class RequestView extends Component<Props, State> {
                     </View>
                     <View style={AppStyles.flex1}>
                         <AmountInput
-                            ref={this.amountRateInputRef}
+                            ref={this.amountRateInput}
                             testID="amount-rate-input"
                             value={amountRate}
                             valueType={AmountValueType.IOU}

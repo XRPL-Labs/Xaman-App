@@ -13,30 +13,22 @@ import { AppScreens } from '@common/constants';
 
 import NetworkService from '@services/NetworkService';
 
-import { NetworkRepository, CoreRepository } from '@store/repositories';
+import { NetworkRepository } from '@store/repositories';
 import { NetworkModel, NodeModel } from '@store/models';
-import { NetworkType } from '@store/types';
 
 import { Header, InfoMessage } from '@components/General';
 import { NodeList } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { NetworkRailsSyncOverlayProps } from '@screens/Overlay/NetworkRailsSync';
-
+// style
 import styles from './styles';
+
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
-    dataSource: {
-        key: string;
-        title: string;
-        color: string;
-        defaultNode: NodeModel;
-        type: NetworkType;
-        data: NodeModel[];
-    }[];
+    dataSource: any;
 }
 
 /* Component ==================================================================== */
@@ -62,18 +54,9 @@ class NetworkSettingView extends Component<Props, State> {
     }
 
     updateDataSource = () => {
-        const coreSettings = CoreRepository.getSettings();
+        const networks = NetworkRepository.getNetworks();
 
-        let networks;
-        // if developer mode activated then show all networks
-        if (coreSettings.developerMode) {
-            networks = NetworkRepository.getNetworks();
-        } else {
-            // otherwise only show MainNet networks
-            networks = NetworkRepository.getNetworks({ type: NetworkType.Main });
-        }
-
-        const dataSource: any[] = [];
+        const dataSource = [] as any[];
 
         networks.forEach((network: NetworkModel) => {
             dataSource.push({
@@ -94,10 +77,6 @@ class NetworkSettingView extends Component<Props, State> {
     onNodePress = async (node: NodeModel) => {
         // get network
         const network = first(node.linkingObjects<NetworkModel>('Network', 'nodes'));
-
-        if (!network) {
-            throw new Error('Node does not have linked network object');
-        }
 
         // if this is the only node for this network then show a message
         if (network.nodes.length === 1) {
@@ -141,7 +120,7 @@ class NetworkSettingView extends Component<Props, State> {
     };
 
     showNetworkRailsSync = async () => {
-        Navigator.showOverlay<NetworkRailsSyncOverlayProps>(AppScreens.Overlay.NetworkRailsSync, {
+        Navigator.showOverlay(AppScreens.Overlay.NetworkRailsSync, {
             onSuccessSync: this.onSuccessSync,
         });
     };

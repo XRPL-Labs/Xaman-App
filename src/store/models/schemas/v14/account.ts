@@ -43,6 +43,7 @@ const AccountSchema = {
             for (let i = 0; i < oldAccounts.length; i++) {
                 const newAccount = newAccounts.find((n: any) => n.address === oldAccounts[i].address);
                 newAccount.details = [
+                    // @ts-ignore
                     newRealm.create('AccountDetails', {
                         id: `${newAccount.address}.${network.id}`,
                         network,

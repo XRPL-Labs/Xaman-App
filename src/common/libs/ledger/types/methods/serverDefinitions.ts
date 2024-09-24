@@ -21,7 +21,22 @@ export interface ServerDefinitionsRequest extends BaseRequest {
  * @category Responses
  */
 export interface ServerDefinitionsResponse extends BaseResponse {
-    [key: string]: any;
+    [key: string]:
+        | number
+        | string
+        | Array<
+              [
+                  string,
+                  {
+                      nth: number;
+                      isVLEncoded: boolean;
+                      isSerialized: boolean;
+                      isSigningField: boolean;
+                      type: string;
+                  },
+              ]
+          >
+        | Record<string, number>;
     hash: string;
     FIELDS?: Array<
         [

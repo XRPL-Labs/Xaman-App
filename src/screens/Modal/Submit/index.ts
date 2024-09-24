@@ -1,4 +1,3 @@
-import SubmitModal, { Props as SubmitModalProps } from './SubmitModal';
+import SubmitModal from './SubmitModal';
 
-export type { SubmitModalProps };
 export default SubmitModal;

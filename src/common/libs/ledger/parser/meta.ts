@@ -1,66 +1,35 @@
 // https://github.com/ripple/ripple-lib-extensions/tree/d266933698a38c51878b4b8806b39ca264526fdc/transactionparser
-
 import BigNumber from 'bignumber.js';
-import { compact, flatMap, flatten, groupBy, map, mapValues } from 'lodash';
+import { compact, find, flatMap, flatten, groupBy, has, get, isEmpty, map, mapValues, first, filter } from 'lodash';
 
 import NetworkService from '@services/NetworkService';
 
-import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
-import {
-    CreatedNode,
-    DeletedNode,
-    DiffType,
-    ModifiedNode,
-    TransactionMetadata,
-} from '@common/libs/ledger/types/transaction';
-
 /* Types ==================================================================== */
-import { BalanceChangeType, OfferStatus, OperationActions, OwnerCountChangeType } from './types';
+import { BalanceChangeType, OfferStatus, OwnerCountChangeType, OperationActions } from './types';
 import { HookExecution } from '../types/common';
-
-export type NodeWithDiffType =
-    | (CreatedNode & {
-          diffType: DiffType.CreatedNode;
-      })
-    | (DeletedNode & {
-          diffType: DiffType.DeletedNode;
-      })
-    | (ModifiedNode & {
-          diffType: DiffType.ModifiedNode;
-      });
-
-export type QuantityType = {
-    address: string;
-    balance: {
-        issuer?: string;
-        currency: string;
-        value: string;
-        action: OperationActions;
-    };
-};
 
 /* Class ==================================================================== */
 class Meta {
-    nodes: NodeWithDiffType[];
+    nodes: any[];
     hookExecutions: HookExecution[];
 
-    constructor(meta: TransactionMetadata | Record<string, never>) {
+    constructor(meta: any) {
         this.nodes =
-            meta?.AffectedNodes?.reduce((nodesWithDiffType, affectedNode) => {
-                if (typeof affectedNode === 'object' && Object.keys(affectedNode)[0]) {
-                    const diffType = Object.keys(affectedNode)[0] as DiffType;
-                    const node = affectedNode[diffType] as any;
+            meta?.AffectedNodes?.map((affectedNode: any) => {
+                const diffType = Object.keys(affectedNode)[0];
+                const node = affectedNode[diffType];
+                return {
+                    ...node,
+                    diffType,
+                    entryType: node.LedgerEntryType,
+                    ledgerIndex: node.LedgerIndex,
+                    newFields: node.NewFields || {},
+                    finalFields: node.FinalFields || {},
+                    previousFields: node.PreviousFields || {},
+                };
+            }) || [];
 
-                    nodesWithDiffType.push({
-                        ...node,
-                        diffType,
-                    });
-                }
-
-                return nodesWithDiffType;
-            }, [] as NodeWithDiffType[]) ?? [];
-
-        this.hookExecutions = meta?.HookExecutions?.map((execution) => execution.HookExecution) || [];
+        this.hookExecutions = meta?.HookExecutions?.map((execution: any) => execution.HookExecution) || [];
     }
 
     private getOperationAction = (value: BigNumber): OperationActions => {
@@ -96,95 +65,84 @@ class Meta {
         );
     };
 
-    private groupByAddress = (balanceChanges: QuantityType[]) => {
+    private groupByAddress = (balanceChanges: any) => {
         return mapValues(groupBy(balanceChanges, 'address'), this.combineChanges);
     };
 
-    private parseValue = (item: { value: string } | string) => {
-        return new BigNumber(typeof item === 'object' ? item.value : item);
+    private parseValue = (value: any) => {
+        return new BigNumber(value.value || value);
     };
 
-    private computeOwnerCountChange = (node: ModifiedNode): BigNumber | null => {
-        if (typeof node.FinalFields?.OwnerCount === 'number' && typeof node.PreviousFields?.OwnerCount === 'number') {
-            return new BigNumber(node.FinalFields.OwnerCount).minus(node.PreviousFields.OwnerCount);
+    private computeOwnerCountChange = (node: any) => {
+        let value = null;
+        if (has(node, 'finalFields.OwnerCount') && has(node, 'previousFields.OwnerCount')) {
+            value = node.finalFields.OwnerCount - node.previousFields.OwnerCount;
+        }
+        return value;
+    };
+
+    private computeBalanceChange = (node: any) => {
+        let value = null;
+        if (node.newFields.Balance) {
+            value = this.parseValue(node.newFields.Balance);
+        } else if (node.previousFields.Balance && node.finalFields.Balance) {
+            value = this.parseValue(node.finalFields.Balance).minus(this.parseValue(node.previousFields.Balance));
+        }
+        return value === null ? null : value.isZero() ? null : value;
+    };
+
+    private parseFinalBalance = (node: any) => {
+        if (node.newFields.Balance) {
+            return this.parseValue(node.newFields.Balance);
+        }
+        if (node.finalFields.Balance) {
+            return this.parseValue(node.finalFields.Balance);
         }
         return null;
     };
 
-    private computeBalanceChange = (node: NodeWithDiffType): BigNumber | null => {
-        let value = null;
-
-        if (node.diffType === DiffType.CreatedNode && node.NewFields?.Balance) {
-            value = this.parseValue(node.NewFields.Balance);
-        }
-
-        if (node.diffType === DiffType.ModifiedNode && node.FinalFields?.Balance && node.PreviousFields?.Balance) {
-            value = this.parseValue(node.FinalFields?.Balance).minus(this.parseValue(node.PreviousFields?.Balance));
-        }
-
-        if (node.diffType === DiffType.DeletedNode && node.FinalFields?.Balance && node.PreviousFields?.Balance) {
-            value = this.parseValue(node.FinalFields?.Balance).minus(this.parseValue(node.PreviousFields?.Balance));
-        }
-
-        return value === null ? null : value.isZero() ? null : value;
-    };
-
-    private parseOwnerCountQuantity = (
-        node: NodeWithDiffType,
-        computeParser: (node: NodeWithDiffType) => BigNumber | null,
-    ): OwnerCountChangeType | null => {
-        const value = computeParser(node);
+    private parseOwnerCountQuantity = (node: any, valueParser: any) => {
+        const value = valueParser(node);
 
         if (value === null) {
             return null;
         }
 
-        let Account;
-        if (node.diffType === DiffType.CreatedNode) {
-            Account = node.NewFields.Account;
-        } else if (node.FinalFields) {
-            Account = node.FinalFields.Account;
-        }
+        const valueNumber = new BigNumber(value);
 
         return {
-            address: Account,
-            value: value.absoluteValue().toNumber(),
-            action: this.getOperationAction(value),
+            address: node.finalFields.Account || node.newFields.Account,
+            value: valueNumber.absoluteValue().toNumber(),
+            action: this.getOperationAction(valueNumber),
         };
     };
 
-    private parseNativeQuantity = (
-        node: NodeWithDiffType,
-        valueCalculator: (node: NodeWithDiffType) => BigNumber | null,
-    ): QuantityType | null => {
-        const calculatedValue = valueCalculator(node);
+    private parseNativeQuantity = (node: any, valueParser: any) => {
+        const value = valueParser(node);
 
-        if (calculatedValue === null) {
+        if (value === null) {
             return null;
         }
 
-        let Account;
-        if (node.diffType === DiffType.CreatedNode) {
-            Account = node.NewFields.Account;
-        } else if (node.FinalFields) {
-            Account = node.FinalFields.Account;
-        }
+        const valueNumber = new BigNumber(value);
 
         return {
-            address: Account,
+            address: node.finalFields.Account || node.newFields.Account,
             balance: {
+                // @ts-ignore
+                issuer: undefined,
                 currency: NetworkService.getNativeAsset(),
-                value: calculatedValue.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
-                action: this.getOperationAction(calculatedValue),
+                value: valueNumber.absoluteValue().dividedBy(1000000.0).decimalPlaces(8).toString(10),
+                action: this.getOperationAction(valueNumber),
             },
         };
     };
 
-    private flipTrustlinePerspective = (quantity: QuantityType, value: BigNumber): QuantityType => {
+    private flipTrustlinePerspective = (quantity: any, value: BigNumber) => {
         const negatedBalance = value.negated();
 
         return {
-            address: quantity.balance.issuer!,
+            address: quantity.balance.issuer,
             balance: {
                 issuer: quantity.address,
                 currency: quantity.balance.currency,
@@ -194,11 +152,8 @@ class Meta {
         };
     };
 
-    private parseTrustlineQuantity = (
-        node: NodeWithDiffType,
-        valueCalculator: (node: NodeWithDiffType) => BigNumber | null,
-    ) => {
-        const value = valueCalculator(node);
+    private parseTrustlineQuantity = (node: any, valueParser: any) => {
+        const value = valueParser(node);
 
         if (value === null) {
             return null;
@@ -209,14 +164,7 @@ class Meta {
          * If an offer is placed to acquire an asset with no existing trustline,
          * the trustline can be created when the offer is taken.
          */
-
-        const fields =
-            (node.diffType === DiffType.CreatedNode && node.NewFields) ||
-            ((node.diffType === DiffType.ModifiedNode || node.diffType === DiffType.DeletedNode) && node.FinalFields);
-
-        if (!fields) {
-            return null;
-        }
+        const fields = isEmpty(node.newFields) ? node.finalFields : node.newFields;
 
         // the balance is always from low node's perspective
         const result = {
@@ -232,16 +180,16 @@ class Meta {
         return [result, this.flipTrustlinePerspective(result, value)];
     };
 
-    parseOfferStatus = (node: NodeWithDiffType): OfferStatus => {
-        if (node.diffType === DiffType.CreatedNode) {
+    parseOfferStatus = (node: any): OfferStatus => {
+        if (node.diffType === 'CreatedNode') {
             return OfferStatus.CREATED;
         }
-        if (node.diffType === DiffType.ModifiedNode) {
+        if (node.diffType === 'ModifiedNode') {
             return OfferStatus.PARTIALLY_FILLED;
         }
-        if (node.diffType === DiffType.DeletedNode) {
+        if (node.diffType === 'DeletedNode') {
             // A filled order has previous fields
-            if (node.PreviousFields && 'TakerPays' in node.PreviousFields) {
+            if (has(node, 'previousFields.TakerPays')) {
                 return OfferStatus.FILLED;
             }
             return OfferStatus.CANCELLED;
@@ -249,29 +197,25 @@ class Meta {
         return OfferStatus.UNKNOWN;
     };
 
-    /*
-     * Parse the offer status change from the meta
-     */
     parseOfferStatusChange = (owner: string, offerIndex: string): OfferStatus => {
-        const offerNode = this.nodes.find(
-            (node) => node.LedgerEntryType === LedgerEntryTypes.Offer && node.LedgerIndex === offerIndex,
-        );
+        const node = find(this.nodes, { entryType: 'Offer', LedgerIndex: offerIndex });
 
         // default state if offer node not found in meta
         let status = OfferStatus.UNKNOWN;
 
         // if found then parse the offer status
-        if (offerNode) {
-            status = this.parseOfferStatus(offerNode);
+        if (node) {
+            status = this.parseOfferStatus(node);
         }
 
         // offer is created or not exist, it can be FILLED or PARTIALLY_FILLED or KILLED
         if (status === OfferStatus.CREATED || status === OfferStatus.UNKNOWN) {
-            const hasRippleStateChange = this.nodes.find((node) => {
+            const hasRippleStateChange = find(this.nodes, (n) => {
                 return (
-                    node.diffType === DiffType.ModifiedNode &&
-                    node.LedgerEntryType === LedgerEntryTypes.RippleState &&
-                    (node.FinalFields?.HighLimit?.issuer === owner || node.FinalFields?.LowLimit?.issuer === owner)
+                    n.diffType === 'ModifiedNode' &&
+                    n.entryType === 'RippleState' &&
+                    (get(n, 'finalFields.HighLimit.issuer') === owner ||
+                        get(n, 'finalFields.LowLimit.issuer') === owner)
                 );
             });
 
@@ -290,15 +234,12 @@ class Meta {
         return status;
     };
 
-    /*
-     * Parse the balance changes from the meta
-     */
     parseBalanceChanges = (): { [key: string]: BalanceChangeType[] } => {
         const values = this.nodes.map((node) => {
-            if (node.LedgerEntryType === LedgerEntryTypes.AccountRoot) {
+            if (node.entryType === 'AccountRoot') {
                 return [this.parseNativeQuantity(node, this.computeBalanceChange)];
             }
-            if (node.LedgerEntryType === LedgerEntryTypes.RippleState) {
+            if (node.entryType === 'RippleState') {
                 return this.parseTrustlineQuantity(node, this.computeBalanceChange);
             }
             return [];
@@ -307,64 +248,49 @@ class Meta {
         return this.groupByAddress(compact(flatten(values)));
     };
 
-    /*
-     * Parse the account owner count change from the meta
-     */
     parseOwnerCountChanges = (): OwnerCountChangeType[] => {
-        return this.nodes.reduce((ownerCountChanges, node) => {
-            if (node.diffType === DiffType.ModifiedNode && node.LedgerEntryType === LedgerEntryTypes.AccountRoot) {
-                const change = this.parseOwnerCountQuantity(node, this.computeOwnerCountChange);
-                if (change) {
-                    ownerCountChanges.push(change);
-                }
+        const values = this.nodes.map((node) => {
+            if (node.entryType === 'AccountRoot') {
+                return this.parseOwnerCountQuantity(node, this.computeOwnerCountChange);
             }
-            return ownerCountChanges;
-        }, [] as OwnerCountChangeType[]);
+            return undefined;
+        });
+
+        return compact(values);
     };
 
-    /*
-     * Parse the generated ticket sequences from the meta
-     */
     parseTicketSequences = (): number[] => {
-        return this.nodes.reduce((ticketSequences, node) => {
-            if (node.LedgerEntryType === LedgerEntryTypes.Ticket && node.diffType === DiffType.CreatedNode) {
-                const ticketSequence = node.NewFields?.TicketSequence as number;
-                ticketSequences.push(ticketSequence);
+        const values = this.nodes.map((node) => {
+            if (node.entryType === 'Ticket') {
+                return node.newFields?.TicketSequence;
             }
-            return ticketSequences;
-        }, [] as number[]);
+            return undefined;
+        });
+
+        return compact(values);
     };
 
-    /*
-     * Parse the hook executions from the meta
-     */
     parseHookExecutions = (): HookExecution[] => {
         // if hook executions already in the meta return
         if (this.hookExecutions) {
             return this.hookExecutions;
         }
 
-        return this.nodes.reduce((hookExecutions, node) => {
-            if (node.diffType === DiffType.CreatedNode && node.LedgerEntryType === LedgerEntryTypes.EmittedTxn) {
-                hookExecutions.push(node.NewFields.EmittedTxn as HookExecution);
+        // calculate from created nodes
+        const executions = this.nodes.map((node) => {
+            if (node.diffType === 'CreatedNode' && node.entryType === 'EmittedTxn') {
+                return node.CreatedNode.NewFields.EmittedTxn;
             }
+            return undefined;
+        });
 
-            return hookExecutions;
-        }, [] as HookExecution[]);
+        return compact(executions);
     };
 
-    /*
-     * Parse the Account ID of the AMM account
-     */
     parseAMMAccountID = () => {
-        const ammNode = this.nodes.find((node) => node.LedgerEntryType === LedgerEntryTypes.AMM);
+        const account = first(filter(this.nodes, (node: any) => node.entryType === 'AMM'));
 
-        if (ammNode && ammNode.diffType === DiffType.CreatedNode) {
-            return ammNode.NewFields?.Account;
-        }
-        if (ammNode && ammNode.diffType === DiffType.ModifiedNode) {
-            return ammNode.FinalFields?.Account;
-        }
+        if (account) return account.FinalFields?.Account || account.NewFields?.Account;
 
         return undefined;
     };

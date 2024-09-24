@@ -27,7 +27,7 @@ export interface State {
 /* Component ==================================================================== */
 class EnterSecretNumbers extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 

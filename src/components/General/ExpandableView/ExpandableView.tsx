@@ -18,16 +18,14 @@ interface Props {
 
 interface State {
     expanded: boolean;
-    contentHeight?: number;
+    contentHeight: number;
 }
 
 /* Component ==================================================================== */
 class ExpandableView extends Component<Props, State> {
     private readonly animatedContainer: Animated.Value;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof ExpandableView.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         expanded: false,
     };
 
@@ -35,7 +33,7 @@ class ExpandableView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            expanded: props.expanded ?? false,
+            expanded: props.expanded,
             contentHeight: undefined,
         };
 

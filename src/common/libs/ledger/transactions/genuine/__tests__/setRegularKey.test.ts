@@ -1,8 +1,7 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
-
-import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { SetRegularKey, SetRegularKeyInfo } from '../SetRegularKey';
 import setRegularKeyTemplates from './fixtures/SetRegularKeyTx.json';
@@ -18,67 +17,39 @@ describe('SetRegularKey tx', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta }: any = setRegularKeyTemplates;
+            // @ts-ignore
+            const { tx, meta } = setRegularKeyTemplates;
             const instance = new SetRegularKey(tx, meta);
 
-            expect(instance.RegularKey).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.RegularKey).toBe('rDestinationxxxxxxxxxxxxxxxxxxxxxx');
         });
     });
 
     describe('Info', () => {
-        const Mixed = MutationsMixin(SetRegularKey);
-        const { tx, meta }: any = setRegularKeyTemplates;
-        const setInstance = new Mixed(tx, meta);
-        const clearInstance = new Mixed({ ...tx, RegularKey: '' }, meta);
-
-        describe('generateDescription() && getEventsLabel()', () => {
+        describe('getDescription() && getLabel()', () => {
             it('should return the expected description for setting the key', () => {
-                const info = new SetRegularKeyInfo(setInstance, {} as any);
+                const { tx, meta } = setRegularKeyTemplates;
+                const instance = new SetRegularKey(tx, meta);
 
-                const expectedDescription = `This is a SetRegularKey transaction${'\n'}It sets the account regular key to rrrrrrrrrrrrrrrrrrrrbzbvji`;
+                const expectedDescription = `${Localize.t('events.thisIsAnSetRegularKeyTransaction')}\n${Localize.t(
+                    'events.itSetsAccountRegularKeyTo',
+                    { regularKey: tx.RegularKey },
+                )}`;
 
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.setRegularKey'));
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                expect(SetRegularKeyInfo.getLabel(instance)).toEqual(Localize.t('events.setRegularKey'));
+                expect(SetRegularKeyInfo.getDescription(instance)).toEqual(expectedDescription);
             });
 
             it('should return the expected description for removing the key', () => {
-                const info = new SetRegularKeyInfo(clearInstance, {} as any);
+                const { tx, meta } = setRegularKeyTemplates;
+                const instance = new SetRegularKey({ ...tx, RegularKey: '' }, meta);
 
-                const expectedDescription = `This is a SetRegularKey transaction${'\n'}It removes the account regular key`;
+                const expectedDescription = `${Localize.t('events.thisIsAnSetRegularKeyTransaction')}\n${Localize.t(
+                    'events.itRemovesTheAccountRegularKey',
+                )}`;
 
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.removeRegularKey'));
-                expect(info.generateDescription()).toEqual(expectedDescription);
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants for setting the key', () => {
-                const info = new SetRegularKeyInfo(setInstance, {} as any);
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
-                    end: { address: 'rrrrrrrrrrrrrrrrrrrrbzbvji', tag: undefined },
-                });
-            });
-
-            it('should return the expected participants for removing the key', () => {
-                const info = new SetRegularKeyInfo(clearInstance, {} as any);
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
-                    end: undefined,
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                const info = new SetRegularKeyInfo(setInstance, {} as any);
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
+                expect(SetRegularKeyInfo.getLabel(instance)).toEqual(Localize.t('events.removeRegularKey'));
+                expect(SetRegularKeyInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
     });

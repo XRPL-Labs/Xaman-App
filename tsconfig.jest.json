@@ -2,8 +2,7 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "jsx": "react",
-    "lib": ["es2015"],
-    "moduleResolution": "node",
-    "customConditions": null
+    "module": "commonJS",
+    "noImplicitAny": false
   }
 }

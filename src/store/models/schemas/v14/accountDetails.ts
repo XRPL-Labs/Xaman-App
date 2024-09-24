@@ -1,5 +1,5 @@
 /**
- * Account Details Schema v14
+ * Account Details Schema
  */
 
 import { ExtendedSchemaType } from '@store/types';

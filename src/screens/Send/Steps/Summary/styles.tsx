@@ -97,12 +97,6 @@ const styles = StyleService.create({
         justifyContent: 'center',
         color: '$textPrimary',
     },
-    currencyItemCounterPartyLabel: {
-        fontSize: AppFonts.small.size,
-        fontFamily: AppFonts.base.family,
-        color: '$textSecondary',
-    },
-
     amountInput: {
         padding: 0,
         margin: 0,
@@ -131,7 +125,6 @@ const styles = StyleService.create({
         paddingLeft: 15,
         paddingTop: 15,
     },
-
     rateText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.base.size,
@@ -144,10 +137,6 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
         color: '$textPrimary',
-    },
-    feeContainer: {
-        paddingLeft: 15,
-        paddingTop: 15,
     },
     feePickerContainer: {
         paddingLeft: 15,

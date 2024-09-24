@@ -1,4 +1,3 @@
-import FlaggedDestinationOverlay, { Props as FlaggedDestinationOverlayProps } from './FlaggedDestinationOverlay';
+import FlaggedDestinationModal from './FlaggedDestinationModal';
 
-export type { FlaggedDestinationOverlayProps };
-export default FlaggedDestinationOverlay;
+export default FlaggedDestinationModal;

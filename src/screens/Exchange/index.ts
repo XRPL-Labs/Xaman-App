@@ -1,4 +1,3 @@
-import ExchangeView, { Props as ExchangeViewProps } from './ExchangeView';
+import ExchangeView from './ExchangeView';
 
-export type { ExchangeViewProps };
 export default ExchangeView;

@@ -1,5 +1,4 @@
-import AccountImportView from './AccountImportView';
-import { Props as AccountImportViewProps } from './types';
+import AccountImportContainer from './AccountImportView';
 
-export type { AccountImportViewProps };
-export default AccountImportView;
+/* Container ==================================================================== */
+export default AccountImportContainer;

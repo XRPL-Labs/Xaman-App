@@ -98,10 +98,6 @@ const styles = StyleService.create({
     separatorLine: {
         marginTop: 10,
     },
-    readonlyInfoMessageLabel: {
-        fontSize: AppFonts.small.size,
-        color: '$red',
-    },
 });
 
 export default styles;

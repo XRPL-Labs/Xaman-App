@@ -19,6 +19,6 @@ export interface State {
     currentStep: GenerateSteps;
     prevSteps: Array<GenerateSteps>;
     account: Partial<AccountModel>;
-    generatedAccount?: XRPL_Account;
+    generatedAccount: XRPL_Account;
     passphrase?: string;
 }

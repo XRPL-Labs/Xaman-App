@@ -16,14 +16,13 @@ import { ContactRepository, AccountRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
 import { Button, Footer, AmountText, Spacer } from '@components/General';
-
 import Localize from '@locale';
-import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+
 /* types ==================================================================== */
 export interface Props {}
 
@@ -34,9 +33,9 @@ export interface State {
 /* Component ==================================================================== */
 class ResultStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
-    private showDetailsTimeout?: ReturnType<typeof setTimeout>;
+    private showDetailsTimeout: any;
 
     constructor(props: Props) {
         super(props);
@@ -49,7 +48,7 @@ class ResultStep extends Component<Props, State> {
     componentDidMount() {
         const { payment } = this.context;
 
-        if (payment.VerifyResult?.success) {
+        if (payment.VerifyResult.success) {
             this.showDetailsTimeout = setTimeout(this.showDetailsCard, 4500);
         }
     }
@@ -60,36 +59,17 @@ class ResultStep extends Component<Props, State> {
 
     showDetailsCard = () => {
         LayoutAnimation.spring();
-
         this.setState({
             showDetailsCard: true,
         });
-    };
-
-    onAddToContactPress = () => {
-        const { destination } = this.context;
-
-        Navigator.popToRoot();
-
-        setTimeout(() => {
-            Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {
-                address: destination?.address,
-                tag: `${destination?.tag ?? ''}`,
-                name: destination?.name,
-            });
-        }, 1000);
-    };
-
-    onClosePress = () => {
-        Navigator.popToRoot();
     };
 
     renderAddToContactButton = () => {
         const { destination } = this.context;
 
         // if destination is already in the contact list or it's or own account just ignore
-        const contact = ContactRepository.findBy('address', destination!.address);
-        const account = AccountRepository.findBy('address', destination!.address);
+        const contact = ContactRepository.findBy('address', destination.address);
+        const account = AccountRepository.findBy('address', destination.address);
 
         if (contact.isEmpty() || account.isEmpty()) {
             return null;
@@ -103,7 +83,13 @@ class ResultStep extends Component<Props, State> {
                     secondary
                     roundedSmall
                     label={Localize.t('send.addToContacts')}
-                    onPress={this.onAddToContactPress}
+                    onPress={() => {
+                        Navigator.popToRoot();
+
+                        setTimeout(() => {
+                            Navigator.push(AppScreens.Settings.AddressBook.Add, destination);
+                        }, 1000);
+                    }}
                 />
             </>
         );
@@ -121,7 +107,7 @@ class ResultStep extends Component<Props, State> {
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
                     currency={
-                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currencyCode
+                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currency
                     }
                     immutable
                 />
@@ -132,9 +118,9 @@ class ResultStep extends Component<Props, State> {
                 <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.recipient')}:</Text>
                 <Spacer />
                 <Text style={[AppStyles.p, AppStyles.bold, AppStyles.colorBlue]}>
-                    {destination!.name || Localize.t('global.noNameFound')}
+                    {destination.name || Localize.t('global.noNameFound')}
                 </Text>
-                <Text style={[AppStyles.subtext, AppStyles.mono]}>{destination!.address}</Text>
+                <Text style={[AppStyles.subtext, AppStyles.mono]}>{destination.address}</Text>
 
                 {this.renderAddToContactButton()}
             </View>
@@ -157,7 +143,7 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={AppStyles.flex2}>
+                <View style={[AppStyles.flex2]}>
                     {showDetailsCard ? (
                         this.renderDetailsCard()
                     ) : (
@@ -167,9 +153,11 @@ class ResultStep extends Component<Props, State> {
                     )}
                 </View>
 
-                <Footer>
+                <Footer style={[]}>
                     <Button
-                        onPress={this.onClosePress}
+                        onPress={() => {
+                            Navigator.popToRoot();
+                        }}
                         style={{ backgroundColor: AppColors.green }}
                         label={Localize.t('global.close')}
                     />
@@ -192,12 +180,12 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={AppStyles.flex2}>
+                <View style={[AppStyles.flex2]}>
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>
-                            {payment.SubmitResult?.engineResult || 'Error'}
+                            {payment.TransactionResult?.code || 'Error'}
                         </Text>
 
                         <Spacer />
@@ -205,7 +193,9 @@ class ResultStep extends Component<Props, State> {
                         <Spacer />
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={AppStyles.subtext}>{payment.SubmitResult?.message || 'No Description'}</Text>
+                        <Text style={[AppStyles.subtext]}>
+                            {payment.TransactionResult?.message || 'No Description'}
+                        </Text>
 
                         <Spacer size={50} />
 
@@ -216,7 +206,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    payment.FinalResult?.message || payment.FinalResult?.code || 'Unexpected Error',
+                                    payment.TransactionResult?.message || payment.TransactionResult?.code || 'Error',
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}
@@ -224,9 +214,11 @@ class ResultStep extends Component<Props, State> {
                     </View>
                 </View>
 
-                <Footer>
+                <Footer style={[]}>
                     <Button
-                        onPress={this.onClosePress}
+                        onPress={() => {
+                            Navigator.popToRoot();
+                        }}
                         style={{ backgroundColor: AppColors.red }}
                         label={Localize.t('global.close')}
                     />
@@ -249,7 +241,7 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={AppStyles.flex2}>
+                <View style={[AppStyles.flex2]}>
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
@@ -257,9 +249,11 @@ class ResultStep extends Component<Props, State> {
                     </View>
                 </View>
 
-                <Footer>
+                <Footer style={[]}>
                     <Button
-                        onPress={this.onClosePress}
+                        onPress={() => {
+                            Navigator.popToRoot();
+                        }}
                         style={{ backgroundColor: AppColors.orange }}
                         label={Localize.t('global.close')}
                     />
@@ -271,9 +265,9 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { payment } = this.context;
 
-        if (payment.FinalResult?.success) {
-            // submitted successfully but cannot be verified
-            if (payment.VerifyResult?.success === false) {
+        if (payment.TransactionResult?.success) {
+            // submitted successfully but cannot verified
+            if (payment.VerifyResult.success === false) {
                 return this.renderVerificationFailed();
             }
             return this.renderSuccess();

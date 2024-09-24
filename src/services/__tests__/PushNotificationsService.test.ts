@@ -1,40 +1,42 @@
 import { NativeModules } from 'react-native';
 
-import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import messaging from '@react-native-firebase/messaging';
 
 import { AppScreens } from '@common/constants';
-import { Navigator } from '@common/helpers/navigator';
-import { Payload, PayloadOrigin } from '@common/libs/payload';
+// import { Navigator } from '@common/helpers/navigator';
+// import { Payload } from '@common/libs/payload';
 
 import PushNotificationsService from '../PushNotificationsService';
 import NavigationService from '../NavigationService';
 
-jest.mock('@react-native-firebase/messaging');
+messaging.AuthorizationStatus = {
+    NOT_DETERMINED: -1,
+    DENIED: 0,
+    AUTHORIZED: 1,
+    PROVISIONAL: 2,
+};
+
+const signRequestMessage = {
+    messageId: '1600090805361973',
+    data: { category: 'SIGNTX', payload: 'c2625db5-cb34-4831-86d4-bf9f2d9285b7' },
+    notification: {
+        ios: { subtitle: '𝗭𝗮𝗹𝗮𝗻𝗱𝗼' },
+        title: 'Sign request',
+        sound: 'default',
+        body: 'Payment: €100',
+    },
+};
+
+// const notificationOpen = {
+//     data: { category: 'SIGNTX', payload: 'c2625db5-cb34-4831-86d4-bf9f2d9285b7' },
+//     messageId: '1600091878699703',
+//     notification: { body: 'Payment: €100', ios: { subtitle: '𝗭𝗮𝗹𝗮𝗻𝗱𝗼' }, sound: 'default', title: 'Sign request' },
+// };
 
 const { LocalNotificationModule } = NativeModules;
 
 describe('PushNotificationsService', () => {
     const pushNotificationsService = PushNotificationsService;
-    const navigationService = NavigationService;
-
-    const signRequestMessage = {
-        messageId: '1600090805361973',
-        data: { category: 'SIGNTX', payload: 'c2625db5-cb34-4831-86d4-bf9f2d9285b7' },
-        notification: {
-            ios: { subtitle: '𝗭𝗮𝗹𝗮𝗻𝗱𝗼' },
-            title: 'Sign request',
-            sound: 'default',
-            body: 'Payment: €100',
-        },
-        fcmOptions: {},
-    } as FirebaseMessagingTypes.RemoteMessage;
-
-    const notificationOpen = {
-        messageId: '1600091878699703',
-        data: { category: 'SIGNTX', payload: 'c2625db5-cb34-4831-86d4-bf9f2d9285b7' },
-        notification: { body: 'Payment: €100', ios: { subtitle: 'Xaman' }, sound: 'default', title: 'Sign request' },
-        fcmOptions: {},
-    } as FirebaseMessagingTypes.RemoteMessage;
 
     it('should properly initialize', async () => {
         const spy = jest.spyOn(pushNotificationsService, 'createNotificationListeners');
@@ -62,8 +64,7 @@ describe('PushNotificationsService', () => {
         const spy1 = jest.spyOn(LocalNotificationModule, 'complete');
         const spy2 = jest.spyOn(pushNotificationsService, 'emit');
 
-        // @ts-ignore
-        jest.replaceProperty(NavigationService, 'currentScreen', AppScreens.TabBar.Home);
+        NavigationService.currentScreen = AppScreens.TabBar.Home;
 
         pushNotificationsService.handleNotification(signRequestMessage);
 
@@ -74,39 +75,33 @@ describe('PushNotificationsService', () => {
     it('should not show sign request when in review transaction screen', async () => {
         const spy1 = jest.spyOn(LocalNotificationModule, 'complete');
 
-        // @ts-ignore
-        jest.replaceProperty(navigationService, 'modals', [AppScreens.Modal.ReviewTransaction]);
+        NavigationService.modals = [AppScreens.Modal.ReviewTransaction];
 
         pushNotificationsService.handleNotification(signRequestMessage);
 
         expect(spy1).toBeCalledWith(signRequestMessage.messageId, false);
     });
 
-    it('should handle opening sign request', async () => {
-        // @ts-ignore
-        jest.replaceProperty(navigationService, 'modals', []);
+    // it('should handle opening sign request', async () => {
+    //     // jest.useFakeTimers();
 
-        const spy0 = jest.spyOn(Payload, 'from').mockImplementation(async () => {
-            return new Payload();
-        });
-        const spy1 = jest.spyOn(Navigator, 'showModal');
+    //     const spy1 = jest.spyOn(Navigator, 'showModal');
 
-        // call
-        pushNotificationsService.handleNotificationOpen(notificationOpen);
+    //     // mock the ledger service response
+    //     const spy = jest.spyOn(Payload, 'from').mockImplementation(async () => {
+    //         return new Payload();
+    //     });
 
-        // wait
-        await new Promise((resolve) => {
-            setTimeout(resolve, 300);
-        });
+    //     pushNotificationsService.handleNotificationOpen(notificationOpen);
 
-        expect(spy0).toBeCalledWith(notificationOpen?.data?.payload, PayloadOrigin.PUSH_NOTIFICATION);
-        expect(spy1).toBeCalledWith(
-            AppScreens.Modal.ReviewTransaction,
-            { payload: expect.any(Payload), componentType: 'MODAL' },
-            { modalPresentationStyle: 'fullScreen' },
-        );
+    //     // add delay
 
-        spy0.mockRestore();
-        spy1.mockRestore();
-    });
+    //     await new Promise((res) => setTimeout(res, 300));
+
+    //     // jest.runAllTimers();
+
+    //     expect(spy1).toBeCalled();
+
+    //     spy.mockRestore();
+    // });
 });

@@ -2,6 +2,8 @@
  * App Styles
  */
 
+/* eslint-disable spellcheck/spell-checker */
+
 import StyleService from '@services/StyleService';
 
 import Fonts from './fonts';
@@ -257,11 +259,6 @@ export default StyleService.create({
         fontSize: Fonts.subtext.size,
         color: '$textPrimary',
     },
-    smalltext: {
-        fontFamily: Fonts.small.family,
-        fontSize: Fonts.small.size,
-        color: '$textPrimary',
-    },
     monoSubText: {
         fontFamily: Fonts.base.familyMono,
         fontSize: Fonts.subtext.size - 1,
@@ -349,15 +346,6 @@ export default StyleService.create({
     },
     paddingBottomSml: {
         paddingBottom: Sizes.paddingSml,
-    },
-    gap: {
-        gap: Sizes.padding,
-    },
-    gapExtraSml: {
-        gap: Sizes.paddingExtraSml,
-    },
-    gapSml: {
-        gap: Sizes.paddingSml,
     },
 
     // Give me margin

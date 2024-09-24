@@ -25,8 +25,8 @@ Feature: Setup App
         Then I tap 'confirm-button'
 
     Scenario: After setup
-#        Given I should see 'change-log-overlay'
-#        Then I tap 'close-change-log-button'
+        Given I should see 'change-log-overlay'
+        Then I tap 'close-change-log-button'
         Given I should see 'home-tab-empty-view'
 
     Scenario: Enabled developer mode

@@ -1,4 +1,4 @@
-const { Then } = require('@cucumber/cucumber');
+const { Then } = require('cucumber');
 const { expect, element, by } = require('detox');
 
 let passcode = '167349';

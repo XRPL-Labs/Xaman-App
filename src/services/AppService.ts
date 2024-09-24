@@ -8,18 +8,21 @@ import { AppState, Alert, Linking, Platform, NativeModules, NativeEventEmitter }
 import NetInfo from '@react-native-community/netinfo';
 
 import Localize from '@locale';
+import { AppScreens } from '@common/constants';
 
+import { Navigator } from '@common/helpers/navigator';
 import { GetAppVersionCode } from '@common/helpers/app';
 
 import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
 
-import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import LoggerService from '@services/LoggerService';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
 const Emitter = new NativeEventEmitter(AppUtilsModule);
+
 /* Types  ==================================================================== */
 export enum NetStateStatus {
     Connected = 'Connected',
@@ -32,24 +35,19 @@ export enum AppStateStatus {
     Inactive = 'Inactive',
 }
 
-/* Events  ==================================================================== */
-export type AppServiceEvent = {
-    appStateChange: (status: AppStateStatus, prevStatus: AppStateStatus) => void;
-    netStateChange: (status: NetStateStatus, prevStatus: NetStateStatus) => void;
-};
-
+// events
 declare interface AppService {
-    on<U extends keyof AppServiceEvent>(event: U, listener: AppServiceEvent[U]): this;
-    off<U extends keyof AppServiceEvent>(event: U, listener: AppServiceEvent[U]): this;
-    emit<U extends keyof AppServiceEvent>(event: U, ...args: Parameters<AppServiceEvent[U]>): boolean;
+    on(event: 'appStateChange', listener: (status: AppStateStatus, prevStatus: AppStateStatus) => void): this;
+    on(event: string, listener: Function): this;
 }
+
 /* Service  ==================================================================== */
 class AppService extends EventEmitter {
     netStatus: NetStateStatus;
-    prevAppState?: AppStateStatus;
+    prevAppState: AppStateStatus;
     currentAppState: AppStateStatus;
     private inactivityTimeout: any;
-    private logger: LoggerInstance;
+    private logger: any;
 
     constructor() {
         super();
@@ -78,18 +76,16 @@ class AppService extends EventEmitter {
 
     // check if we need to show the App change log
     // this screen will be shown after user update the app to the new version
-    checkVersionChange = async () => {
+    checkShowChangeLog = async () => {
         const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
 
         if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
             // showChangeLogModal
-            // Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, {
-            //     version: currentVersionCode,
-            // });
+            Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
 
             // update the latest version code
-            await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
+            Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
         }
     };
 
@@ -142,20 +138,17 @@ class AppService extends EventEmitter {
     };
 
     setNetState = (isConnected: boolean) => {
-        let newState: NetStateStatus;
-
-        const prevState = this.netStatus;
-
+        let netStatus = NetStateStatus.Disconnected;
         if (isConnected) {
-            newState = NetStateStatus.Connected;
+            netStatus = NetStateStatus.Connected;
         } else {
-            newState = NetStateStatus.Disconnected;
+            netStatus = NetStateStatus.Disconnected;
         }
 
-        if (this.netStatus !== newState) {
-            this.netStatus = newState;
+        if (this.netStatus !== netStatus) {
+            this.netStatus = netStatus;
             // emit the netStateChange event
-            this.emit('netStateChange', newState, prevState);
+            this.emit('netStateChange', this.netStatus);
         }
     };
 
@@ -166,14 +159,14 @@ class AppService extends EventEmitter {
         return new Promise<void>((resolve) => {
             NetInfo.fetch()
                 .then((state) => {
-                    this.setNetState(state.isConnected ?? false);
+                    this.setNetState(state.isConnected);
                 })
                 .finally(() => {
                     resolve();
                 });
 
             NetInfo.addEventListener((state) => {
-                this.setNetState(state.isConnected ?? false);
+                this.setNetState(state.isConnected);
             });
         });
     };

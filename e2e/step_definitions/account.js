@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Given, Then } = require('@cucumber/cucumber');
+const { Given, Then } = require('cucumber');
 const { element, by, waitFor } = require('detox');
 
 const {

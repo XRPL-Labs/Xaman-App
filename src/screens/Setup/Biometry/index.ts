@@ -1,4 +1,3 @@
-import BiometrySetupView, { Props as BiometrySetupViewProps } from './BiometryView';
+import BiometrySetupContainer from './BiometryView';
 
-export type { BiometrySetupViewProps };
-export default BiometrySetupView;
+export default BiometrySetupContainer;

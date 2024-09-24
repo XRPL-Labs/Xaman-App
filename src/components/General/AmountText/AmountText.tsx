@@ -5,19 +5,17 @@
     <AmountText />
  *
  */
-
-import { isEqual } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { isEqual } from 'lodash';
 
 import React, { Component } from 'react';
 import { Text, Pressable, Alert, TextStyle, ViewStyle, View, InteractionManager, Animated } from 'react-native';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import Localize from '@locale';
 
 import styles from './styles';
-
 /* Types ==================================================================== */
 interface Props {
     testID?: string;
@@ -40,7 +38,7 @@ interface State {
     originalValue: any;
     value: string;
     currency: string;
-    truncated?: 'LOW' | 'HIGH';
+    truncated: 'LOW' | 'HIGH';
     showOriginalValue: boolean;
     localSettings: any;
 }
@@ -69,18 +67,17 @@ class AmountText extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { value: PropValue, prefix, currency, discreet, isLoading, style } = this.props;
+        const { value: PropValue, currency, discreet, isLoading, style } = this.props;
         const { showOriginalValue, value } = this.state;
 
         return (
-            nextProps.value !== PropValue ||
-            nextProps.prefix !== prefix ||
-            nextState.value !== value ||
-            nextProps.currency !== currency ||
-            nextState.showOriginalValue !== showOriginalValue ||
-            nextProps.discreet !== discreet ||
-            nextProps.style !== style ||
-            nextProps.isLoading !== isLoading
+            !isEqual(nextProps.value, PropValue) ||
+            !isEqual(nextState.value, value) ||
+            !isEqual(nextProps.currency, currency) ||
+            !isEqual(nextState.showOriginalValue, showOriginalValue) ||
+            !isEqual(nextProps.discreet, discreet) ||
+            !isEqual(nextProps.style, style) ||
+            !isEqual(nextProps.isLoading, isLoading)
         );
     }
 
@@ -147,7 +144,7 @@ class AmountText extends Component<Props, State> {
         const PRECISION = 8;
         const MAX_VALUE = 99999;
 
-        let newValue: string;
+        let newValue = '';
         let truncated;
 
         // value is low, we will show it as zero but better with ellipsis
@@ -259,7 +256,7 @@ class AmountText extends Component<Props, State> {
         const { testID, prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
-        let showValue: string;
+        let showValue = '';
 
         if (discreet) {
             showValue = '••••••••';

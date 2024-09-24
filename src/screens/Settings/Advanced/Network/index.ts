@@ -1,4 +1,3 @@
-import NetworkSettingView, { Props as NetworkSettingViewProps } from './NetworkSettingView';
+import NetworkSettingView from './NetworkSettingView';
 
-export type { NetworkSettingViewProps };
 export default NetworkSettingView;

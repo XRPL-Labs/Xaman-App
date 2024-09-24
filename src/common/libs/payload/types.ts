@@ -20,7 +20,7 @@ export interface ApplicationType {
 export interface MetaType {
     generated?: boolean;
     exists?: boolean;
-    uuid: string;
+    uuid?: string;
     multisign?: boolean;
     submit: boolean;
     patch?: boolean;
@@ -45,8 +45,8 @@ export interface PayloadReferenceType {
     tx_destination?: string;
     tx_destination_tag?: any;
     request_json: TransactionJson;
-    created_at: string;
-    expires_at: string;
+    created_at?: string;
+    expires_at?: string;
     hash?: string;
 }
 
@@ -112,7 +112,6 @@ export enum PayloadOrigin {
 
 export enum XAppOrigin {
     XAPP_STORE = 'XAPP_STORE',
-    XAPP_STORE_MESSAGE = 'XAPP_STORE_MESSAGE',
     XAPP_SHORT_LIST = 'XAPP_SHORT_LIST',
 
     QR = 'QR',

@@ -1,4 +1,3 @@
-import AddressBookView, { Props as AddressBookViewProps } from './AddressBookView';
+import AddressBookView from './AddressBookView';
 
-export type { AddressBookViewProps };
 export default AddressBookView;

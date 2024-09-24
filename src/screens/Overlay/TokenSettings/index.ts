@@ -1,5 +1,3 @@
-import TokenSettingsOverlay from './TokenSettingsOverlay';
-import { Props as TokenSettingsOverlayProps } from './types';
+import TokenSettings from './TokenSettings';
 
-export type { TokenSettingsOverlayProps };
-export default TokenSettingsOverlay;
+export default TokenSettings;

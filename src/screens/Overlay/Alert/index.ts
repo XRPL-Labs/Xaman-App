@@ -1,5 +1,3 @@
-import AlertOverlay from './AlertOverlay';
-import { Props as AlertOverlayProps } from './types';
+import AlertModal from './AlertModal';
 
-export type { AlertOverlayProps };
-export default AlertOverlay;
+export default AlertModal;

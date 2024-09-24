@@ -1,6 +1,6 @@
 //
 //  PerformanceLogger.m
-//  XamanTests
+//  XUMMTests
 //
 //  Created by XRPL-Labs on 05/10/2022.
 //

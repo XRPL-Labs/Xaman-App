@@ -1,4 +1,3 @@
-import EnterDestinationTagOverlay, { Props as EnterDestinationTagOverlayProps } from './EnterDestinationTagOverlay';
+import EnterDestinationTagOverlay from './EnterDestinationTagOverlay';
 
-export type { EnterDestinationTagOverlayProps };
 export default EnterDestinationTagOverlay;

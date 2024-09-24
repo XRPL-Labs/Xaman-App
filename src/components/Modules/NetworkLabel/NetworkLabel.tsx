@@ -26,9 +26,7 @@ interface State {
 
 /* Component ==================================================================== */
 class NetworkLabel extends PureComponent<Props, State> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof NetworkLabel.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         size: 10,
     };
 
@@ -37,7 +35,7 @@ class NetworkLabel extends PureComponent<Props, State> {
 
         this.state = {
             network: NetworkService.getNetwork(),
-            size: AppSizes.scale(props.size!),
+            size: AppSizes.scale(props.size),
         };
     }
 

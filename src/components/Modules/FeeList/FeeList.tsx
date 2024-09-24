@@ -1,21 +1,26 @@
 import React, { PureComponent } from 'react';
 import { View, Text, ViewStyle } from 'react-native';
 
-import { FeeItem } from '@screens/Overlay/SelectFee/types';
-
+// EventListItems
 import { FeeListItem } from './FeeListItem';
 
 /* Types ==================================================================== */
+interface FeeItems {
+    type: string;
+    value: number;
+    suggested?: boolean;
+}
+
 interface Props {
-    items: FeeItem[];
-    selectedItem: FeeItem;
+    items: FeeItems[];
+    selectedItem: FeeItems;
     onItemPress: (item: any) => void;
     containerStyle?: ViewStyle | ViewStyle[];
 }
 
 /* Component ==================================================================== */
 class FeeList extends PureComponent<Props> {
-    renderItem = (item: FeeItem): React.ReactElement => {
+    renderItem = (item: FeeItems): React.ReactElement => {
         const { selectedItem, onItemPress } = this.props;
 
         const { type, value } = item;

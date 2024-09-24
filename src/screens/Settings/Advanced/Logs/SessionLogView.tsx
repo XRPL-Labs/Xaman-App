@@ -11,8 +11,7 @@ import { Clipboard } from '@common/helpers/clipboard';
 
 import { AppScreens, AppConfig } from '@common/constants';
 
-import LoggerService, { LogEntry } from '@services/LoggerService';
-import StyleService from '@services/StyleService';
+import { LoggerService, StyleService } from '@services';
 
 import { Header } from '@components/General';
 
@@ -26,6 +25,7 @@ import styles from './styles';
 export interface Props {}
 
 export interface State {}
+
 /* Component ==================================================================== */
 class SessionLogView extends Component<Props, State> {
     static screenName = AppScreens.Settings.SessionLog;
@@ -37,10 +37,7 @@ class SessionLogView extends Component<Props, State> {
     }
 
     clear = () => {
-        // clear logs
         LoggerService.clearLogs();
-
-        // force reload this screen
         this.forceUpdate();
     };
 
@@ -108,10 +105,11 @@ class SessionLogView extends Component<Props, State> {
         );
     };
 
-    renderLogItem = ({ item }: { item: LogEntry }) => {
+    renderLogItem = ({ item }: { item: any }) => {
         const { timestamp, level, message, data } = item;
 
         return (
+            // @ts-ignore
             <Text selectable style={[styles.logRow, styles[level]]}>
                 <Text style={AppStyles.bold}>
                     [{timestamp}][{level}]{' '}
@@ -121,18 +119,14 @@ class SessionLogView extends Component<Props, State> {
         );
     };
 
-    keyExtractor = (item: LogEntry, index: number) => {
-        return `row-${index}`;
-    };
-
     render() {
         return (
-            <View testID="session-log-view" style={AppStyles.container}>
+            <View testID="session-log-view" style={[AppStyles.container]}>
                 <Header
                     centerComponent={{ text: Localize.t('settings.sessionLog') }}
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: Navigator.pop,
+                        onPress: () => Navigator.pop(),
                     }}
                     rightComponent={{
                         icon: 'IconMoreHorizontal',
@@ -143,7 +137,7 @@ class SessionLogView extends Component<Props, State> {
                     contentContainerStyle={styles.listContainer}
                     data={LoggerService.getLogs()}
                     renderItem={this.renderLogItem}
-                    keyExtractor={this.keyExtractor}
+                    keyExtractor={(item, index) => index.toString()}
                     ListEmptyComponent={<Text>{Localize.t('settings.noLogs')}</Text>}
                 />
             </View>

@@ -42,11 +42,10 @@ export interface State {
 class EnterDestinationTagOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.EnterDestinationTag;
 
-    private textInputViewRef: React.RefObject<View>;
-    private actionPanelRef: React.RefObject<ActionPanel>;
-
-    private setListenerTimeout?: ReturnType<typeof setTimeout>;
+    private textInputView: React.RefObject<View>;
+    private setListenerTimeout: any;
     private keyboardShow: boolean;
+    private actionPanelRef: React.RefObject<ActionPanel>;
 
     static options() {
         return {
@@ -68,7 +67,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
             destinationTag: props.destination?.tag || '',
         };
 
-        this.textInputViewRef = createRef<View>();
+        this.textInputView = createRef<View>();
         this.actionPanelRef = createRef<ActionPanel>();
 
         this.keyboardShow = false;
@@ -94,7 +93,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
 
         this.keyboardShow = true;
 
-        this.textInputViewRef?.current?.measure((x, y, width, height, pageX, pageY) => {
+        this.textInputView?.current?.measure((x, y, width, height, pageX, pageY) => {
             if (!pageY) return;
 
             const bottomView = AppSizes.screen.height - height - pageY;
@@ -208,7 +207,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                         />
                     </View>
                 </View>
-                <View style={AppStyles.paddingHorizontalSml}>
+                <View style={[AppStyles.paddingHorizontalSml]}>
                     <Text numberOfLines={1} style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                         {buttonType === 'next'
                             ? Localize.t('send.thisAddressRequiredDestinationTag')
@@ -231,7 +230,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
                 </View>
 
                 <View
-                    ref={this.textInputViewRef}
+                    ref={this.textInputView}
                     style={[
                         AppStyles.paddingHorizontalSml,
                         AppStyles.paddingVertical,

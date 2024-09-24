@@ -15,9 +15,6 @@ const styles = StyleService.create({
     webView: {
         backgroundColor: '$background',
     },
-    webViewContainer: {
-        backgroundColor: '$background',
-    },
     stateContainer: {
         backgroundColor: '$background',
         position: 'absolute',
@@ -27,7 +24,6 @@ const styles = StyleService.create({
         bottom: 0,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: AppSizes.paddingSml,
     },
     actionContainer: {
         marginHorizontal: AppSizes.paddingSml,
@@ -57,36 +53,6 @@ const styles = StyleService.create({
         marginRight: AppSizes.moderateScale(70),
         width: AppSizes.moderateScale(30),
         height: AppSizes.moderateScale(60),
-    },
-    infoIcon: {
-        tintColor: '$red',
-    },
-    actionContainer: {
-        marginHorizontal: AppSizes.paddingSml,
-    },
-    paymentRequiredContainer: {
-        backgroundColor: '$lightGrey',
-        marginTop: AppSizes.paddingSml,
-        paddingHorizontal: AppSizes.paddingExtraSml,
-        paddingVertical: AppSizes.paddingSml,
-        borderRadius: AppSizes.borderRadius,
-        alignSelf: 'stretch',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: AppSizes.paddingSml,
-    },
-    actionButtonContainer: {
-        backgroundColor: '$contrast',
-    },
-    actionButtonLabel: {
-        color: '$textContrast',
-        fontSize: AppFonts.subtext.size,
-    },
-    paymentText: {
-        fontFamily: AppFonts.base.family,
-        fontSize: AppFonts.subtext.size,
-        color: '$textPrimary',
-        textAlign: 'center',
     },
 });
 

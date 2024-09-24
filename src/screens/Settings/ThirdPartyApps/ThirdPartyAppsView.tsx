@@ -16,24 +16,43 @@ import { TouchableDebounce, Header, Avatar, Icon, Spacer } from '@components/Gen
 
 import Localize from '@locale';
 
-import { EditThirdPartyAppViewProps } from '@screens/Settings/ThirdPartyApps/Edit';
-
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+export type ThirdPartyAppType = {
+    app: {
+        id: string;
+        name: string;
+        description: string;
+        icon: string;
+    };
+    urls: {
+        homepage?: string;
+        terms?: string;
+        support?: string;
+        privacy?: string;
+    };
+    grant: {
+        validity: number;
+        issued: string;
+        expires: string;
+    };
+    report?: string;
+};
+
 export interface Props {}
 
 export interface State {
     isLoading: boolean;
-    thirdPartyApps: XamanBackend.ThirdPartyPermissionResponse;
+    thirdPartyApps: ThirdPartyAppType[];
 }
 
 /* Component ==================================================================== */
 class ThirdPartyAppsView extends Component<Props, State> {
     static screenName = AppScreens.Settings.ThirdPartyApps.List;
-    private navigationListener: EventSubscription | undefined;
+    private navigationListener: EventSubscription;
 
     static options() {
         return {
@@ -68,7 +87,7 @@ class ThirdPartyAppsView extends Component<Props, State> {
 
     fetchThirdPartyApps = () => {
         BackendService.getThirdPartyApps()
-            .then((thirdPartyApps) => {
+            .then((thirdPartyApps: ThirdPartyAppType[]) => {
                 if (Array.isArray(thirdPartyApps)) {
                     this.setState({
                         thirdPartyApps,
@@ -89,11 +108,11 @@ class ThirdPartyAppsView extends Component<Props, State> {
             });
     };
 
-    onItemPress = (item: XamanBackend.ThirdPartyPermission) => {
-        Navigator.push<EditThirdPartyAppViewProps>(AppScreens.Settings.ThirdPartyApps.Edit, { thirdPartyApp: item });
+    onItemPress = (item: ThirdPartyAppType) => {
+        Navigator.push(AppScreens.Settings.ThirdPartyApps.Edit, { thirdPartyApp: item });
     };
 
-    renderItem = ({ item }: { item: XamanBackend.ThirdPartyPermission }) => {
+    renderItem = ({ item }: { item: ThirdPartyAppType }) => {
         const { app } = item;
 
         return (

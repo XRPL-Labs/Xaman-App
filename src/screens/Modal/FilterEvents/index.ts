@@ -1,4 +1,3 @@
-import EventsFilterModal, { Props as EventsFilterModalProps } from './EventsFilterModal';
+import EventsFilterView from './EventsFilterView';
 
-export type { EventsFilterModalProps };
-export default EventsFilterModal;
+export default EventsFilterView;

@@ -1,10 +1,11 @@
 /* eslint-disable class-methods-use-this */
+/* eslint-disable spellcheck/spell-checker */
 
 class NetworkService {
     public network = {
         baseReserve: 10,
         ownerReserve: 2,
-        isFeatureEnabled: jest.fn(),
+        isFeatureEnabled: () => {},
         definitions: {},
         nativeAsset: {
             asset: 'XRP',
@@ -12,9 +13,6 @@ class NetworkService {
             iconSquare: 'icon_square_uri',
         },
     };
-
-    static ORIGIN = '/xaman/0.0.01/ios';
-    private userId = 'MOCK_USER_ID';
 
     public getNativeAsset() {
         return 'XRP';
@@ -33,10 +31,6 @@ class NetworkService {
 
     public getNetworkDefinitions(): any {
         return undefined;
-    }
-
-    public getNetwork(): any {
-        return this.network;
     }
 }
 

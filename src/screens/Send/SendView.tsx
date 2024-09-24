@@ -17,12 +17,11 @@ import NetworkService from '@services/NetworkService';
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import Memo from '@common/libs/ledger/parser/common/memo';
-
-import { AmountParser } from '@common/libs/ledger/parser/common';
+import { Amount } from '@common/libs/ledger/parser/common';
 import { Payment, PaymentValidation } from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
-import { SignMixin } from '@common/libs/ledger/mixin';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
+import Memo from '@common/libs/ledger/parser/common/memo';
 
 // components
 import { Header } from '@components/General';
@@ -47,7 +46,7 @@ import { Steps, Props, State, FeeItem } from './types';
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
 
-    private closeTimeout: ReturnType<typeof setTimeout> | undefined;
+    private closeTimeout: any;
 
     static options() {
         return {
@@ -61,21 +60,23 @@ class SendView extends Component<Props, State> {
         // default values
         const coreSettings = CoreRepository.getSettings();
         const spendableAccounts = AccountRepository.getSpendableAccounts();
-        const PaymentWithSigMixin = SignMixin(Payment);
+        const source = find(spendableAccounts, { address: coreSettings.account.address }) || first(spendableAccounts);
+        const currency = props.currency || NetworkService.getNativeAsset();
+        const amount = props.amount || '';
 
         this.state = {
             currentStep: Steps.Details,
             accounts: spendableAccounts,
-            payment: new PaymentWithSigMixin(),
-            source: find(spendableAccounts, { address: coreSettings.account.address }) ?? first(spendableAccounts),
-            currency: props.currency || NetworkService.getNativeAsset(),
-            amount: props.amount || '',
+            source,
+            currency,
+            amount,
             memo: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
             destination: undefined,
             destinationInfo: undefined,
-            scanResult: props.scanResult ?? undefined,
+            payment: new Payment(),
+            scanResult: props.scanResult || undefined,
             coreSettings,
             isLoading: false,
         };
@@ -126,9 +127,8 @@ class SendView extends Component<Props, State> {
         this.setState({ issuerFee });
     };
 
-    setDestination = (_destination: Destination | undefined) => {
+    setDestination = (_destination: Destination) => {
         const { destination, destinationInfo } = this.state;
-
         this.setState({
             destination: _destination,
             destinationInfo: _destination?.address !== destination?.address ? undefined : destinationInfo,
@@ -152,12 +152,12 @@ class SendView extends Component<Props, State> {
 
         const txJson = {
             TransactionType: 'Payment',
-            Account: source!.address,
-            Destination: destination!.address,
+            Account: source.address,
+            Destination: destination.address,
             Sequence: 0,
         };
 
-        if (destination?.tag) {
+        if (destination.tag) {
             Object.assign(txJson, {
                 DestinationTag: Number(destination.tag),
             });
@@ -166,12 +166,12 @@ class SendView extends Component<Props, State> {
         // set the amount
         if (typeof currency === 'string') {
             Object.assign(txJson, {
-                Amount: new AmountParser(amount, false).nativeToDrops().toString(),
+                Amount: new Amount(amount, false).nativeToDrops(),
             });
         } else {
             Object.assign(txJson, {
                 Amount: {
-                    currency: currency.currency.currencyCode,
+                    currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
                     value: amount,
                 },
@@ -192,7 +192,8 @@ class SendView extends Component<Props, State> {
     };
 
     changeStep = (step: Steps) => {
-        const { componentId } = this.props as { componentId: any };
+        // @ts-ignore
+        const { componentId } = this.props;
 
         // disable pop gesture in summary step for preventing closing the screen
         // while swiping the submit button
@@ -253,48 +254,41 @@ class SendView extends Component<Props, State> {
             // set values tho the payment transaction
 
             // set source account
-            payment.Account = source!.address;
+            payment.Account = {
+                address: source.address,
+            };
 
             // set the destination
-            payment.Destination = destination!.address;
-
-            if (typeof destination?.tag !== 'undefined') {
-                payment.DestinationTag = Number(destination.tag);
-            }
+            payment.Destination = {
+                address: destination.address,
+                tag: destination.tag,
+            };
 
             // set the amount
             if (typeof currency === 'string') {
                 // native currency
-                payment.Amount = {
-                    currency: NetworkService.getNativeAsset(),
-                    value: amount,
-                };
+                payment.Amount = amount;
             } else {
                 // IOU
                 // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
                 if (
                     issuerFee &&
-                    source!.address !== currency.currency.issuer &&
-                    destination!.address !== currency.currency.issuer
+                    source.address !== currency.currency.issuer &&
+                    destination.address !== currency.currency.issuer
                 ) {
-                    payment.Flags = {
-                        tfPartialPayment: true,
-                    };
+                    payment.Flags = [txFlags.Payment.PartialPayment];
                 }
 
                 // set the amount
                 payment.Amount = {
-                    currency: currency.currency.currencyCode,
+                    currency: currency.currency.currency,
                     issuer: currency.currency.issuer,
                     value: amount,
                 };
             }
 
             // set the calculated and selected fee
-            payment.Fee = {
-                currency: NetworkService.getNativeAsset(),
-                value: new AmountParser(selectedFee!.value).dropsToNative().toFixed(),
-            };
+            payment.Fee = new Amount(selectedFee.value).dropsToNative();
 
             // set memo if any
             if (memo) {
@@ -307,7 +301,7 @@ class SendView extends Component<Props, State> {
             await PaymentValidation(payment);
 
             // sign the transaction and then submit
-            await payment.sign(source!).then(this.submit);
+            await payment.sign(source).then(this.submit);
         } catch (e: any) {
             if (e) {
                 Navigator.showAlertModal({
@@ -372,7 +366,7 @@ class SendView extends Component<Props, State> {
     renderStep = () => {
         const { currentStep } = this.state;
 
-        let Step;
+        let Step = null;
 
         switch (currentStep) {
             case Steps.Details:
@@ -392,7 +386,7 @@ class SendView extends Component<Props, State> {
                 Step = ResultStep;
                 break;
             default:
-                return null;
+                break;
         }
 
         return (
@@ -448,7 +442,7 @@ class SendView extends Component<Props, State> {
 
     render() {
         return (
-            <View onResponderRelease={() => Keyboard.dismiss()} testID="send-screen" style={styles.container}>
+            <View onResponderRelease={() => Keyboard.dismiss()} testID="send-screen" style={[styles.container]}>
                 {this.renderHeader()}
                 {this.renderStep()}
             </View>

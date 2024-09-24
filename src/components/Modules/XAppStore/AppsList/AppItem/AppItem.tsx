@@ -1,44 +1,27 @@
 import React, { Component } from 'react';
-import { View, Text, Animated, Share } from 'react-native';
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
-
-import { AppScreens } from '@common/constants';
-import { XAppOrigin } from '@common/libs/payload';
-
-import { Navigator } from '@common/helpers/navigator';
-import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
+import { View, Text, Animated } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
-import { TouchableDebounce, Avatar, Button } from '@components/General';
-
-import { XAppInfoOverlayProps, DisplayButtonTypes } from '@screens/Overlay/XAppInfo';
-
-import Locale from '@locale';
-
 import { AppStyles } from '@theme';
+import { TouchableDebounce, Avatar } from '@components/General';
+
 import styles from './styles';
 
 /* types ==================================================================== */
-
 export type AppType = {
-    title: string;
-    description: string;
-    identifier: string;
     icon: string;
-    category?: string;
-    development?: boolean;
-};
+    identifier: string;
+    title: string;
 
-export enum AppActions {
-    LUNCH_APP = 'LUNCH',
-    OPEN_ABOUT = 'ABOUT',
-}
+    category: string;
+
+    development: boolean;
+};
 
 export interface Props {
     item?: AppType;
-    action: AppActions;
-    origin: XAppOrigin;
+    onPress: (app: AppType) => void;
 }
 
 /* Component ==================================================================== */
@@ -95,66 +78,11 @@ class AppItem extends Component<Props> {
         ]).start(this.startPlaceholderAnimation);
     };
 
-    openXApp = () => {
-        const { item, origin } = this.props;
+    onPress = () => {
+        const { item, onPress } = this.props;
 
-        const { identifier, title, icon } = item!;
-
-        // open xApp browser
-        Navigator.showModal<XAppBrowserModalProps>(
-            AppScreens.Modal.XAppBrowser,
-            {
-                identifier,
-                title,
-                icon,
-                origin,
-            },
-            {
-                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
-            },
-        );
-    };
-
-    shareXApp = () => {
-        const { item } = this.props;
-
-        const { identifier, title } = item!;
-
-        Share.share({
-            title,
-            message: `https://xumm.app/detect/xapp:${identifier}`,
-            url: undefined,
-        });
-    };
-
-    openXAppInfo = () => {
-        const { item } = this.props;
-
-        const { identifier, title, icon } = item!;
-
-        Navigator.showOverlay<XAppInfoOverlayProps>(AppScreens.Overlay.XAppInfo, {
-            identifier,
-            title: title!,
-            icon: icon!,
-            displayButtonTypes: [DisplayButtonTypes.OPEN, DisplayButtonTypes.SHARE],
-            onOpenPress: this.openXApp,
-            onSharePress: this.shareXApp,
-        });
-    };
-
-    onActionPress = () => {
-        const { action } = this.props;
-
-        switch (action) {
-            case AppActions.LUNCH_APP:
-                this.openXApp();
-                break;
-            case AppActions.OPEN_ABOUT:
-                this.openXAppInfo();
-                break;
-            default:
-                break;
+        if (typeof onPress === 'function') {
+            onPress(item);
         }
     };
 
@@ -178,46 +106,9 @@ class AppItem extends Component<Props> {
                         numberOfLines={1}
                         style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}
                     >
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                    </Animated.Text>
-                    <Animated.Text
-                        numberOfLines={1}
-                        style={[
-                            styles.appDescription,
-                            styles.appDescriptionPlaceholder,
-                            { opacity: this.placeholderAnimation },
-                        ]}
-                    >
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                 </View>
-            </View>
-        );
-    };
-
-    renderActionButton = () => {
-        const { action } = this.props;
-
-        if (!action) {
-            return null;
-        }
-
-        let actionLabel;
-
-        switch (action) {
-            case AppActions.LUNCH_APP:
-                actionLabel = Locale.t('xapp.openXapp');
-                break;
-            case AppActions.OPEN_ABOUT:
-                actionLabel = Locale.t('xapp.aboutXapp');
-                break;
-            default:
-                return null;
-        }
-
-        return (
-            <View style={styles.rightPanelContainer}>
-                <Button onPress={this.onActionPress} light roundedMini label={actionLabel} />
             </View>
         );
     };
@@ -230,10 +121,10 @@ class AppItem extends Component<Props> {
         }
 
         return (
-            <TouchableDebounce onPress={this.openXApp} activeOpacity={0.9}>
+            <TouchableDebounce onPress={this.onPress} activeOpacity={0.6}>
                 <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
                     <Avatar
-                        size={40}
+                        size={42}
                         source={{ uri: item.icon }}
                         badge={item.development ? 'IconSmartPhone' : undefined}
                         badgeColor={StyleService.value('$orange')}
@@ -242,11 +133,14 @@ class AppItem extends Component<Props> {
                         <Text numberOfLines={1} style={styles.appTitle}>
                             {item.title}
                         </Text>
-                        <Text numberOfLines={2} style={styles.appDescription}>
-                            {item.description ?? 'This is a short description'}
-                        </Text>
                     </View>
-                    {this.renderActionButton()}
+                    <View style={styles.rightPanelContainer}>
+                        <View style={styles.categoryContainer}>
+                            <Text numberOfLines={1} style={styles.categoryLabel}>
+                                {item.category}
+                            </Text>
+                        </View>
+                    </View>
                 </Animated.View>
             </TouchableDebounce>
         );

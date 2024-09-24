@@ -11,18 +11,11 @@ import { HexEncoding } from '@common/utils/string';
  * @returns encoded offer index in hex
  */
 const EncodeLedgerIndex = (account: string, sequence: number) => {
-    if (typeof account !== 'string') {
-        throw new Error(`EncodeLedgerIndex, account param is required, got ${typeof account} instead!`);
-    }
-    if (typeof sequence !== 'number') {
-        throw new Error(`EncodeLedgerIndex, sequence param is required, got ${typeof account} instead!`);
-    }
     let sequenceHex = sequence.toString(16);
     if (sequenceHex.length > 8) return false;
     sequenceHex = '0'.repeat(8 - sequenceHex.length) + sequenceHex;
     const payloadHex = `006F${libraries.rippleAddressCodec.decodeAccountID(account).toString('hex')}${sequenceHex}`;
-    const payloadHash = AccountLibUtils.hash(payloadHex);
-    return HexEncoding.toHex(payloadHash).toUpperCase();
+    return HexEncoding.toHex(AccountLibUtils.hash(payloadHex)).toUpperCase();
 };
 
 /**
@@ -145,6 +138,7 @@ const EncodeCTID = (ledgerSeq: number, txnIndex: number, networkId: number): str
         throw new Error(`networkId must not be greater than 65535 or less than 0, got ${networkId}`);
     }
 
+    // @ts-ignore
     return (((BigInt(0xc0000000) + BigInt(ledgerSeq)) << 32n) + (BigInt(txnIndex) << 16n) + BigInt(networkId))
         .toString(16)
         .toUpperCase();
@@ -170,7 +164,7 @@ const ConvertCodecAlphabet = (value: string, alphabet: string, toXRPL = true) =>
  * @param destination XrplDestination
  * @returns normalized XrplDestination
  */
-const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress?: string } => {
+const NormalizeDestination = (destination: XrplDestination): XrplDestination & { xAddress: string } => {
     let to;
     let tag;
     let xAddress;
@@ -193,10 +187,6 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
         }
     } catch {
         // ignore
-    }
-
-    if (!to) {
-        throw new Error(`Unable to normalize destination ${JSON.stringify(destination)}`);
     }
 
     return {

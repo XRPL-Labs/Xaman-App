@@ -39,7 +39,7 @@ const ROW_ITEM_HEIGHT = AppSizes.scale(80);
 class SelectAccountOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectAccount;
 
-    private actionPanelRef: React.RefObject<ActionPanel>;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -60,8 +60,6 @@ class SelectAccountOverlay extends Component<Props, State> {
             contentHeight: 0,
             paddingBottom: 0,
         };
-
-        this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
@@ -95,7 +93,9 @@ class SelectAccountOverlay extends Component<Props, State> {
             onSelect(account);
         }
 
-        this.actionPanelRef?.current?.slideDown();
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
+        }
     };
 
     onClose = () => {
@@ -106,10 +106,6 @@ class SelectAccountOverlay extends Component<Props, State> {
         }
 
         Navigator.dismissOverlay();
-    };
-
-    onCancelPress = () => {
-        this.actionPanelRef?.current?.slideDown();
     };
 
     renderRow = (account: AccountModel) => {
@@ -136,7 +132,7 @@ class SelectAccountOverlay extends Component<Props, State> {
                     ]}
                 >
                     <View style={[AppStyles.row, AppStyles.flex3, AppStyles.centerAligned]}>
-                        <View style={AppStyles.flex3}>
+                        <View style={[AppStyles.flex3]}>
                             <Text style={[styles.accountLabel, isSelected && styles.accountLabelSelected]}>
                                 {account.label}
                             </Text>
@@ -144,7 +140,7 @@ class SelectAccountOverlay extends Component<Props, State> {
                                 {account.address}
                             </Text>
                         </View>
-                        <View style={AppStyles.flex1}>
+                        <View style={[AppStyles.flex1]}>
                             <View
                                 style={[
                                     isSelected ? styles.radioCircleSelected : styles.radioCircle,
@@ -181,10 +177,16 @@ class SelectAccountOverlay extends Component<Props, State> {
         if (!accounts || !contentHeight) return null;
 
         return (
-            <ActionPanel height={contentHeight} onSlideDown={this.onClose} ref={this.actionPanelRef}>
+            <ActionPanel
+                height={contentHeight}
+                onSlideDown={this.onClose}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
+            >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text numberOfLines={1} style={AppStyles.h5}>
+                        <Text numberOfLines={1} style={[AppStyles.h5]}>
                             {Localize.t('account.myAccounts')}
                         </Text>
                     </View>
@@ -194,7 +196,9 @@ class SelectAccountOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={this.onCancelPress}
+                            onPress={() => {
+                                this.actionPanel?.slideDown();
+                            }}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.cancel')}
                         />

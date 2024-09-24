@@ -8,7 +8,6 @@
 
 #import "Libs/Notification/LocalNotification.h"
 #import "Libs/Security/Authentication/Biometric/BiometricModule.h"
-#import "Libs/Common/InAppPurchase/InAppPurchase.h"
 
 @implementation AppDelegate
 
@@ -48,11 +47,6 @@
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
-  return [self getBundleURL];
-}
-
-- (NSURL *)getBundleURL
-{
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
@@ -66,10 +60,13 @@
 
 // hide snapshot in task switcher
 - (void)applicationWillResignActive:(UIApplication *)application {
-  // ignore if user is authenticating with biometric or processing in app purchase
-  if([BiometricModule isUserAuthenticating] || [InAppPurchaseModule isUserPurchasing]){
+
+
+  // ignore if user is authenticating with biometric
+  if([BiometricModule isUserAuthenticating]){
     return;
   }
+
 
   NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
   UIWindow *topWindow = [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;

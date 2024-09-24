@@ -1,4 +1,3 @@
-import SettingsView, { Props as SettingsViewProps } from './SettingsView';
+import SettingsContainer from './SettingsView';
 
-export type { SettingsViewProps };
-export default SettingsView;
+export default SettingsContainer;

@@ -10,7 +10,7 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 import NavigationService, { ComponentTypes, RootType } from '@services/NavigationService';
 
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
-import { Navigator, AppScreenKeys } from '@common/helpers/navigator';
+import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
@@ -18,11 +18,14 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
-
 /* Service  ==================================================================== */
 class LinkingService {
-    private initialURL?: string;
-    private eventListener: EmitterSubscription | undefined;
+    private initialURL: string;
+    private eventListener: EmitterSubscription;
+
+    constructor() {
+        this.initialURL = null;
+    }
 
     initialize = () => {
         return new Promise<void>((resolve, reject) => {
@@ -69,7 +72,7 @@ class LinkingService {
         });
     };
 
-    routeUser = async (screen: AppScreenKeys, passProps: any, options: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
         // close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
@@ -104,14 +107,14 @@ class LinkingService {
             const payload = await Payload.from(uuid, PayloadOrigin.DEEP_LINK);
 
             // review the transaction
-            await this.routeUser(
+            this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 { payload },
                 { modalPresentationStyle: 'fullScreen' },
                 ComponentTypes.Modal,
             );
-        } catch (error: any) {
-            Alert.alert(Localize.t('global.error'), error?.message, [{ text: 'OK' }], { cancelable: false });
+        } catch (e: any) {
+            Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
         }
     };
 
@@ -142,7 +145,7 @@ class LinkingService {
 
     handleXrplDestination = async (destination: XrplDestination & PayId) => {
         if (destination.payId) {
-            await this.routeUser(
+            this.routeUser(
                 AppScreens.Transaction.Payment,
                 {
                     scanResult: {
@@ -160,15 +163,11 @@ class LinkingService {
         const { to, tag } = NormalizeDestination(destination);
 
         // if amount present as native currency and valid amount
-        if (
-            !destination.currency &&
-            typeof destination.amount !== 'undefined' &&
-            StringTypeCheck.isValidAmount(destination.amount)
-        ) {
+        if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
             amount = destination.amount;
         }
 
-        await this.routeUser(
+        this.routeUser(
             AppScreens.Transaction.Payment,
             {
                 scanResult: {

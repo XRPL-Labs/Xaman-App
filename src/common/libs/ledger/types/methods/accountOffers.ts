@@ -1,4 +1,4 @@
-import { LedgerAmount } from '../common';
+import { Amount } from '../common';
 
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod';
 
@@ -39,11 +39,11 @@ export interface AccountOffer {
     /**
      * The amount the account placing this Offer receives.
      */
-    taker_gets: LedgerAmount;
+    taker_gets: Amount;
     /**
      * The amount the account placing this Offer pays.
      */
-    taker_pays: LedgerAmount;
+    taker_pays: Amount;
     /**
      * The exchange rate of the Offer, as the ratio of the original taker_pays
      * divided by the original taker_gets. When executing offers, the offer with

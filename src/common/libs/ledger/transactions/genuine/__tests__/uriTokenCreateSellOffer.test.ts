@@ -1,8 +1,7 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
-
-import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { URITokenCreateSellOffer, URITokenCreateSellOfferInfo } from '../URITokenCreateSellOffer';
 
@@ -20,47 +19,27 @@ describe('URITokenCreateSellOffer tx', () => {
     });
 
     describe('Info', () => {
-        const { tx, meta }: any = uriTokenCreateSellOfferTemplate;
-        const Mixed = MutationsMixin(URITokenCreateSellOffer);
-        const instance = new Mixed(tx, meta);
-        const info = new URITokenCreateSellOfferInfo(instance, {} as any);
-
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `rrrrrrrrrrrrrrrrrrrrrholvtp offered to sell URI token with ID 1016FBAE4CAFB51A7E768724151964FF572495934C2D4A98CCC67229749C3F72 in order to receive 10 XRP${'\n'}This offer may only be accepted by rDestinationxxxxxxxxxxxxxxxxxxxxxx`;
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const { tx, meta } = uriTokenCreateSellOfferTemplate;
+                const instance = new URITokenCreateSellOffer(tx, meta);
+
+                const expectedDescription = `${Localize.t('events.uriTokenSellOfferExplain', {
+                    address: instance.Account.address,
+                    uriToken: instance.URITokenID,
+                    value: instance.Amount.value,
+                    currency: instance.Amount.currency,
+                })}\n${Localize.t('events.thisURITokenOfferMayOnlyBeAcceptedBy', {
+                    address: tx.Destination,
+                })}`;
+
+                expect(URITokenCreateSellOfferInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.createURITokenSellOffer'));
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    factor: [
-                        {
-                            currency: 'XRP',
-                            effect: 'POTENTIAL_EFFECT',
-                            value: '10',
-                        },
-                    ],
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                });
+                expect(URITokenCreateSellOfferInfo.getLabel()).toEqual(Localize.t('events.createURITokenSellOffer'));
             });
         });
     });

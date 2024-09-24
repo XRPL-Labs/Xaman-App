@@ -26,9 +26,9 @@ interface Props {
 interface State extends PathObjectType {}
 /* Component ==================================================================== */
 class DerivationPathInput extends Component<Props, State> {
-    private accountPathInputRef: React.RefObject<TextInput>;
-    private changePathInputRef: React.RefObject<TextInput>;
-    private addressIndexInputRef: React.RefObject<TextInput>;
+    private accountPathInput: TextInput;
+    private changePathInput: TextInput;
+    private addressIndexInput: TextInput;
 
     constructor(props: Props) {
         super(props);
@@ -38,10 +38,6 @@ class DerivationPathInput extends Component<Props, State> {
             changePath: '',
             addressIndex: '',
         };
-
-        this.accountPathInputRef = React.createRef();
-        this.changePathInputRef = React.createRef();
-        this.addressIndexInputRef = React.createRef();
     }
 
     componentDidMount() {
@@ -53,7 +49,9 @@ class DerivationPathInput extends Component<Props, State> {
     }
 
     focus = () => {
-        this.accountPathInputRef?.current?.focus();
+        if (this.accountPathInput) {
+            this.accountPathInput.focus();
+        }
     };
 
     onChangeCallback = () => {
@@ -85,11 +83,15 @@ class DerivationPathInput extends Component<Props, State> {
 
         if (e.nativeEvent.key === 'Backspace') {
             if (type === 'addressIndex' && addressIndex === '') {
-                this.changePathInputRef?.current?.focus();
+                if (this.changePathInput) {
+                    this.changePathInput.focus();
+                }
             }
 
             if (type === 'changePath' && changePath === '') {
-                this.accountPathInputRef?.current?.focus();
+                if (this.accountPathInput) {
+                    this.accountPathInput.focus();
+                }
             }
         }
     };
@@ -106,10 +108,12 @@ class DerivationPathInput extends Component<Props, State> {
         const { accountPath, changePath, addressIndex } = this.state;
 
         return (
-            <View style={styles.container}>
+            <View style={[styles.container]}>
                 <Text style={styles.label}>m/44&apos;/144&apos;/</Text>
                 <TextInput
-                    ref={this.accountPathInputRef}
+                    ref={(r) => {
+                        this.accountPathInput = r;
+                    }}
                     value={accountPath}
                     style={styles.input}
                     placeholderTextColor={StyleService.value('$lightGrey')}
@@ -117,13 +121,15 @@ class DerivationPathInput extends Component<Props, State> {
                     returnKeyType="next"
                     keyboardType="number-pad"
                     onSubmitEditing={() => {
-                        this.changeInputFocus(this.changePathInputRef);
+                        this.changeInputFocus(this.changePathInput);
                     }}
                     onChangeText={this.onPathChange.bind(null, 'accountPath')}
                 />
                 <Text style={styles.label}>&apos;/</Text>
                 <TextInput
-                    ref={this.changePathInputRef}
+                    ref={(r) => {
+                        this.changePathInput = r;
+                    }}
                     value={changePath}
                     style={styles.input}
                     placeholderTextColor={StyleService.value('$lightGrey')}
@@ -131,14 +137,16 @@ class DerivationPathInput extends Component<Props, State> {
                     returnKeyType="next"
                     keyboardType="number-pad"
                     onSubmitEditing={() => {
-                        this.changeInputFocus(this.addressIndexInputRef);
+                        this.changeInputFocus(this.addressIndexInput);
                     }}
                     onChangeText={this.onPathChange.bind(null, 'changePath')}
                     onKeyPress={this.onKeyPress.bind(null, 'changePath')}
                 />
                 <Text style={styles.label}>/</Text>
                 <TextInput
-                    ref={this.addressIndexInputRef}
+                    ref={(r) => {
+                        this.addressIndexInput = r;
+                    }}
                     placeholderTextColor={StyleService.value('$lightGrey')}
                     value={addressIndex}
                     returnKeyType="done"

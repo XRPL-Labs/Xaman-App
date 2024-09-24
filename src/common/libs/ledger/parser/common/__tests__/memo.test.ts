@@ -1,6 +1,6 @@
 import Memo from '../memo';
 
-describe('Memo parser', () => {
+describe('Common Parser Memo tx', () => {
     it('Should encode memo', () => {
         // application/x-binary
         const applicationBinary = {

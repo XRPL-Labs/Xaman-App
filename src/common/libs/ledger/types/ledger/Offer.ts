@@ -1,4 +1,4 @@
-import { LedgerAmount } from '../common';
+import { Amount } from '../common';
 
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry';
 
@@ -13,12 +13,12 @@ export default interface Offer extends BaseLedgerEntry, HasPreviousTxnID {
      */
     Sequence: number;
     /** The remaining amount and type of currency requested by the Offer creator. */
-    TakerPays: LedgerAmount;
+    TakerPays: Amount;
     /**
      * The remaining amount and type of currency being provided by the Offer
      * creator.
      */
-    TakerGets: LedgerAmount;
+    TakerGets: Amount;
     /** The ID of the Offer Directory that links to this Offer. */
     BookDirectory: string;
     /**

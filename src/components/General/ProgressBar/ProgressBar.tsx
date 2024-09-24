@@ -15,9 +15,7 @@ interface Props {
 class ProgressBar extends Component<Props> {
     private progress: Animated.Value;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof ProgressBar.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         initialProgress: 0,
         width: AppSizes.screen.width,
         visible: true,

@@ -1,4 +1,3 @@
-import RequestView, { Props as RequestViewProps } from './RequestView';
+import RequestView from './RequestView';
 
-export type { RequestViewProps };
 export default RequestView;

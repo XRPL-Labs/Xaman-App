@@ -13,11 +13,6 @@ export default StyleService.create({
         justifyContent: 'center',
         color: '$textPrimary',
     },
-    currencyItemCounterPartyLabel: {
-        fontSize: AppFonts.small.size,
-        fontFamily: AppFonts.base.family,
-        color: '$textSecondary',
-    },
     currencyItemLabelSelected: {
         color: '$blue',
     },

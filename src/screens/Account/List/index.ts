@@ -1,4 +1,3 @@
-import AccountsListView, { Props as AccountsListViewProps } from './AccountsListView';
+import AccountsListView from './AccountsListView';
 
-export type { AccountsListViewProps };
 export default AccountsListView;

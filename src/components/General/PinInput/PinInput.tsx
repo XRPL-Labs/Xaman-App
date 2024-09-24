@@ -18,7 +18,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
-    codeLength?: number;
+    codeLength: number;
     autoFocus?: boolean;
     checkStrength?: boolean;
     onFinish?: (code: string, isStrong?: boolean) => void;
@@ -33,9 +33,7 @@ interface State {
 class PinInput extends Component<Props, State> {
     private readonly textInputRef: React.RefObject<TextInput>;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof PinInput.defaultProps>>;
-
-    public static defaultProps: Partial<Props> = {
+    public static defaultProps = {
         codeLength: 4,
         autoFocus: true,
         checkStrength: false,
@@ -171,7 +169,11 @@ class PinInput extends Component<Props, State> {
         // check if pin is reference as date
         // if pin could be date with year (like 121091 that could be 12th of October or 10th of December 1991)
         const possibleDate = moment(code, 'DDMMYY').isValid() || moment(code, 'MMDDYY').isValid();
-        return !possibleDate;
+        if (possibleDate) {
+            return false;
+        }
+
+        return true;
     };
 
     setPinCode = (newCode: string) => {
@@ -251,7 +253,7 @@ class PinInput extends Component<Props, State> {
             );
         }
 
-        let props: {};
+        let props = {};
 
         // ios
         if (Platform.OS === 'ios') {

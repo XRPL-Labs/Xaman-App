@@ -28,7 +28,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ExplainActivationStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     goNext = () => {
         const { goNext, account } = this.context;

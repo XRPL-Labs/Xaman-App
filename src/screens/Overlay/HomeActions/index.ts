@@ -1,4 +1,3 @@
-import HomeActionsOverlay, { Props as HomeActionsOverlayProps } from './HomeActionsOverlay';
+import HomeActionsOverlay from './HomeActionsOverlay';
 
-export type { HomeActionsOverlayProps };
 export default HomeActionsOverlay;

@@ -12,8 +12,6 @@ import { NetworkModel } from '@store/models';
 
 import { Icon, TouchableDebounce } from '@components/General';
 
-import { SwitchNetworkOverlayProps } from '@screens/Overlay/SwitchNetwork';
-
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 
@@ -40,9 +38,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
     public static ButtonHeight = AppSizes.scale(30);
     private animation: Animated.Value;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof NetworkSwitchButton.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         loadingAnimation: true,
     };
 
@@ -163,7 +159,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
             isSwitcherOpen: true,
         });
 
-        Navigator.showOverlay<SwitchNetworkOverlayProps>(AppScreens.Overlay.SwitchNetwork, {
+        Navigator.showOverlay(AppScreens.Overlay.SwitchNetwork, {
             onChangeNetwork: this.debouncedOnNetworkChange,
             onClose: this.onSwitcherClose,
         });

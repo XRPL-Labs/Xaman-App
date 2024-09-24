@@ -1,3 +1,5 @@
+/* eslint-disable spellcheck/spell-checker */
+
 import Realm from 'realm';
 
 import BaseRepository from '../../repositories/base';
@@ -214,7 +216,7 @@ describe('BaseRepository', () => {
 
     describe('upsert', () => {
         it('should throw an error if data does not contain an id', async () => {
-            await expect(repo.upsert({ name: 'John' })).rejects.toThrow('id require primary key to be set');
+            await expect(repo.upsert({ name: 'John' })).rejects.toThrow('ID require primary key to be set');
         });
 
         it('should use UpdateMode.All if object exists', async () => {

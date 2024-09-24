@@ -1,3 +1,4 @@
+/* eslint-disable spellcheck/spell-checker */
 import { AppConfig } from '@common/constants';
 import { GetTransactionLink, GetAccountLink } from '../explorer';
 

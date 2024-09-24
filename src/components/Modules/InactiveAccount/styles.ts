@@ -1,33 +1,18 @@
 import StyleService from '@services/StyleService';
 
-import { AppFonts, AppSizes } from '@theme';
+import { AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
-    regularKeyContainer: {
-        marginHorizontal: AppSizes.paddingSml,
-        paddingVertical: AppSizes.paddingSml,
-        borderRadius: AppSizes.borderRadius,
-        gap: AppSizes.paddingSml,
-        backgroundColor: '$lightGreen',
-    },
-    regularAccountItem: {
-        marginBottom: AppSizes.paddingExtraSml,
-        marginHorizontal: AppSizes.paddingExtraSml,
-        paddingVertical: AppSizes.paddingExtraSml,
-        paddingHorizontal: AppSizes.paddingExtraSml,
+    accountRow: {
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingTop: 6,
+        paddingBottom: 6,
+        height: AppSizes.scale(60),
         borderRadius: AppSizes.scale(60) / 4,
         borderWidth: 1,
         borderColor: '$lightBlue',
         backgroundColor: '$tint',
-    },
-    regularItemLabel: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
-    },
-    regularItemAddress: {
-        fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.small.size,
-        color: '$grey',
     },
     iconInfo: {
         tintColor: '$grey',
@@ -35,15 +20,6 @@ export default StyleService.create({
     },
     iconAccount: {
         marginRight: 15,
-        tintColor: '$grey',
-    },
-
-    messageContainer: {
-        alignItems: 'center',
-        backgroundColor: '$lightRed',
-        margin: AppSizes.paddingSml,
-        padding: AppSizes.paddingSml,
-        borderRadius: AppSizes.borderRadius,
-        gap: AppSizes.paddingExtraSml,
+        tintColor: '$contrast',
     },
 });

@@ -8,17 +8,16 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 
 import { XAppOrigin } from '@common/libs/payload';
 
-import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
+import { Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 
-import { TouchableDebounce, Header, Icon, HorizontalLine } from '@components/General';
-import { MonetizationElement } from '@components/Modules';
+import { TouchableDebounce, Header, Icon } from '@components/General';
 
 import Localize from '@locale';
 
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
-
+// style
 import { AppStyles } from '@theme';
+
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -38,9 +37,9 @@ class SettingsView extends Component<Props, State> {
         };
     }
 
-    onRowPress = (route: AppScreenKeys | 'xumm.support') => {
-        if (route === 'xumm.support') {
-            Navigator.showModal<XAppBrowserModalProps>(
+    onRowPress = (route: string) => {
+        if (route === 'Xaman.Support.XApp') {
+            Navigator.showModal(
                 AppScreens.Modal.XAppBrowser,
                 {
                     identifier: AppConfig.xappIdentifiers.support,
@@ -48,15 +47,15 @@ class SettingsView extends Component<Props, State> {
                 },
                 {
                     modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                    modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                 },
             );
         } else {
-            Navigator.push(route, {});
+            Navigator.push(route);
         }
     };
 
-    renderRow = (icon: any, label: string, screen: AppScreenKeys | 'xumm.support', testID: string) => {
+    renderRow = (icon: any, label: string, screen: string, testID: string) => {
         return (
             <TouchableDebounce
                 testID={testID}
@@ -93,8 +92,6 @@ class SettingsView extends Component<Props, State> {
                     }}
                 />
 
-                <MonetizationElement canSuppressWarnings={false} style={styles.monetizationContainer} />
-
                 <View style={AppStyles.contentContainer}>
                     <ScrollView
                         style={AppStyles.flex1}
@@ -106,7 +103,7 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Account.List,
                             'accounts-button',
                         )}
-                        <HorizontalLine />
+                        <View style={styles.hr} />
                         {this.renderRow(
                             'IconSlider',
                             Localize.t('global.general'),
@@ -142,7 +139,7 @@ class SettingsView extends Component<Props, State> {
                         {this.renderRow(
                             'IconHelpCircle',
                             Localize.t('setupTermOfService.questionsAndSupport'),
-                            'xumm.support',
+                            'Xaman.Support.XApp',
                             'support-button',
                         )}
                         {this.renderRow(

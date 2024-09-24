@@ -19,7 +19,7 @@ interface WebViewBrowserProps {
 const WebViewBrowser = forwardRef<WebViewBrowserProps, WebViewProps>(
     ({ onLoadStart, onLoadEnd, errorMessage, containerStyle, ...otherProps }, ref) => {
         const [isLoading, setIsLoading] = useState<boolean>(false);
-        const [error, setError] = useState<string | undefined>(undefined);
+        const [error, setError] = useState<string>(undefined);
         const fadeAnimation = useRef(new Animated.Value(1)).current;
 
         const onWebViewLoadStart = () => {

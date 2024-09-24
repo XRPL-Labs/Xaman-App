@@ -6,14 +6,8 @@ import { TrustLineModel } from '@store/models';
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
-export type TrustLineRepositoryEvent = {
-    trustLineUpdate: (trustLine: TrustLineModel, changes: Partial<TrustLineModel>) => void;
-};
-
 declare interface TrustLineRepository {
-    on<U extends keyof TrustLineRepositoryEvent>(event: U, listener: TrustLineRepositoryEvent[U]): this;
-    off<U extends keyof TrustLineRepositoryEvent>(event: U, listener: TrustLineRepositoryEvent[U]): this;
-    emit<U extends keyof TrustLineRepositoryEvent>(event: U, ...args: Parameters<TrustLineRepositoryEvent[U]>): boolean;
+    on(event: 'trustLineUpdate', listener: (trustLine: TrustLineModel, changes: Partial<TrustLineModel>) => void): this;
 }
 
 /* Repository  ==================================================================== */
@@ -23,10 +17,10 @@ class TrustLineRepository extends BaseRepository<TrustLineModel> {
         this.model = TrustLineModel;
     }
 
-    update = async (object: Partial<TrustLineModel>): Promise<TrustLineModel> => {
+    update = (object: Partial<TrustLineModel>) => {
         // the primary key should be in the object
-        if (this.model.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {
-            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
+        if (!has(object, this.model.schema.primaryKey)) {
+            throw new Error('Update require primary key to be set');
         }
 
         return this.create(object, true).then((updatedTrustLine: TrustLineModel) => {

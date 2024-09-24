@@ -1,16 +1,17 @@
 import Realm from 'realm';
 import { values } from 'lodash';
 
-import { NetworkConfig } from '@common/constants';
+// eslint-disable-next-line import/no-unresolved
+import NetworksConfig from '@constants/network';
 
 import * as models from '../../models';
-import { populateDataStore } from '../../models/schemas/populate';
+import { populate as populateDataStore } from '../../models/schemas/latest';
 
 import { NetworkRepository } from '../../repositories';
 import { NetworkRailsChangesType, NetworkType } from '../../types';
 
 const defaultResponse = {} as any;
-for (const value of NetworkConfig.networks) {
+for (const value of NetworksConfig.networks) {
     defaultResponse[value.key] = {
         chain_id: value.networkId,
         color: value.color,
@@ -81,7 +82,7 @@ describe('NetworkRepository', () => {
             await NetworkRepository.applyNetworkChanges(railsResponse, changes);
 
             // get the new network object
-            const newNetwork = NetworkRepository.findOne({ key: 'MYNETWORK' })!;
+            const newNetwork = NetworkRepository.findOne({ key: 'MYNETWORK' });
 
             expect(newNetwork.networkId).toBe(railsResponse.MYNETWORK.chain_id);
             expect(newNetwork.color).toBe(railsResponse.MYNETWORK.color);
@@ -96,7 +97,7 @@ describe('NetworkRepository', () => {
         });
 
         it('should detect an added node  & apply changes', async () => {
-            expect(NetworkRepository.findOne({ key: 'XAHAU' })?.nodes.length).toBe(1);
+            expect(NetworkRepository.findOne({ key: 'XAHAU' }).nodes.length).toBe(1);
 
             const railsResponse = {
                 ...defaultResponse,
@@ -122,7 +123,7 @@ describe('NetworkRepository', () => {
             // apply changes
             await NetworkRepository.applyNetworkChanges(railsResponse, changes);
 
-            const network = NetworkRepository.findOne({ key: 'XAHAU' })!;
+            const network = NetworkRepository.findOne({ key: 'XAHAU' });
 
             expect(network.nodes.length).toBe(2);
             expect(network.nodes.find((n) => n.endpoint === 'wss://xahau-node-backup.network')).toBeDefined();
@@ -130,7 +131,7 @@ describe('NetworkRepository', () => {
         });
 
         it('should detect a removed node & apply changes', async () => {
-            expect(NetworkRepository.findOne({ key: 'TESTNET' })?.nodes.length).toBe(2);
+            expect(NetworkRepository.findOne({ key: 'TESTNET' }).nodes.length).toBe(2);
 
             const railsResponse = {
                 ...defaultResponse,
@@ -153,7 +154,7 @@ describe('NetworkRepository', () => {
             // apply changes
             await NetworkRepository.applyNetworkChanges(railsResponse, changes);
 
-            const network = NetworkRepository.findOne({ key: 'TESTNET' })!;
+            const network = NetworkRepository.findOne({ key: 'TESTNET' });
 
             expect(network.nodes.length).toBe(1);
             expect(network.nodes.find((n) => n.endpoint === 'wss://testnet.xrpl-labs.com')).toBeUndefined();
@@ -187,7 +188,7 @@ describe('NetworkRepository', () => {
             // apply changes
             await NetworkRepository.applyNetworkChanges(railsResponse, changes);
 
-            const network = NetworkRepository.findOne({ key: 'XAHAU' })!;
+            const network = NetworkRepository.findOne({ key: 'XAHAU' });
 
             expect(network.name).toBe('Xahau Mainnet');
             expect(network.color).toBe('#FFFFF');

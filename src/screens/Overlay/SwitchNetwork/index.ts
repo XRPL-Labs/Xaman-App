@@ -1,4 +1,3 @@
-import SwitchNetworkOverlay, { Props as SwitchNetworkOverlayProps } from './SwitchNetworkOverlay';
+import SwitchNetworkOverlay from './SwitchNetworkOverlay';
 
-export type { SwitchNetworkOverlayProps };
 export default SwitchNetworkOverlay;

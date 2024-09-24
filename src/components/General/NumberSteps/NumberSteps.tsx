@@ -12,7 +12,7 @@ import styles from './styles';
 
 /* Type ==================================================================== */
 interface Props {
-    currentStep: number;
+    currentStep?: number;
     onStepChange: (index: number) => void;
     length: number;
 }
@@ -24,9 +24,7 @@ interface State {
 
 /* Component ==================================================================== */
 export default class NumberSteps extends Component<Props, State> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof NumberSteps.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         currentStep: 0,
     };
 

@@ -25,7 +25,7 @@ export interface State {}
 /* Component ==================================================================== */
 class AccessLevelStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     componentDidMount() {
         const { setAccessLevel, account } = this.context;

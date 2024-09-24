@@ -4,7 +4,6 @@
 import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import { Animated, InteractionManager, Keyboard, ScrollView, Text, View } from 'react-native';
-import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { Result as LiquidityResult } from 'xrpl-orderbook-reader';
 
@@ -22,11 +21,10 @@ import { Payload } from '@common/libs/payload';
 import LedgerExchange, { MarketDirection } from '@common/libs/ledger/exchange';
 import { OfferCreate } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
-import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
-import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
-import { IssuedCurrency } from '@common/libs/ledger/types/common';
+import { OfferStatus } from '@common/libs/ledger/parser/types';
+import { txFlags } from '@common/libs/ledger/parser/common/flags/txFlags';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
@@ -46,8 +44,6 @@ import { AmountValueType } from '@components/General/AmountInput';
 
 import Localize from '@locale';
 
-import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
-
 // style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
@@ -64,7 +60,7 @@ export interface State {
     expectedOutcome: string;
     minimumOutcome: string;
     exchangeRate: string;
-    liquidity?: LiquidityResult;
+    liquidity: LiquidityResult;
     isLoading: boolean;
     isExchanging: boolean;
 }
@@ -73,12 +69,12 @@ export interface State {
 class ExchangeView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Exchange;
 
-    private timeout?: ReturnType<typeof setTimeout>;
+    private timeout: any;
     private sequence: number;
     private ledgerExchange: LedgerExchange;
     private amountInput: React.RefObject<typeof AmountInput | null>;
     private animatedOpacity: Animated.Value;
-    private mounted = false;
+    private mounted: boolean;
 
     static options() {
         return {
@@ -103,12 +99,14 @@ class ExchangeView extends Component<Props, State> {
         // create new ledger exchange instance base on pair
         this.ledgerExchange = new LedgerExchange({
             issuer: props.trustLine.currency.issuer,
-            currency: props.trustLine.currency.currencyCode,
+            currency: props.trustLine.currency.currency,
         });
 
         this.amountInput = React.createRef();
         this.animatedOpacity = new Animated.Value(1);
+        this.timeout = null;
         this.sequence = 0;
+        this.mounted = true;
     }
 
     componentDidMount() {
@@ -228,7 +226,10 @@ class ExchangeView extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.back'),
-                    onPress: Navigator.pop,
+
+                    onPress: () => {
+                        Navigator.pop();
+                    },
                 },
             ],
             { type: 'default' },
@@ -254,7 +255,7 @@ class ExchangeView extends Component<Props, State> {
                     currency:
                         direction === MarketDirection.SELL
                             ? NetworkService.getNativeAsset()
-                            : NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                            : NormalizeCurrencyCode(trustLine.currency.currency),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
@@ -277,11 +278,11 @@ class ExchangeView extends Component<Props, State> {
                 payCurrency:
                     direction === MarketDirection.SELL
                         ? NetworkService.getNativeAsset()
-                        : NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                        : NormalizeCurrencyCode(trustLine.currency.currency),
                 getAmount: Localize.formatNumber(Number(expectedOutcome)),
                 getCurrency:
                     direction === MarketDirection.SELL
-                        ? NormalizeCurrencyCode(trustLine.currency.currencyCode)
+                        ? NormalizeCurrencyCode(trustLine.currency.currency)
                         : NetworkService.getNativeAsset(),
             }),
             [
@@ -322,10 +323,7 @@ class ExchangeView extends Component<Props, State> {
 
         this.setState({ isExchanging: true });
 
-        const pair: IssuedCurrency = {
-            issuer: trustLine.currency.issuer,
-            currency: trustLine.currency.currencyCode,
-        };
+        const pair = { issuer: trustLine.currency.issuer, currency: trustLine.currency.currency };
 
         // create offerCreate transaction
         const offer = new OfferCreate({
@@ -342,23 +340,20 @@ class ExchangeView extends Component<Props, State> {
             offer.TakerPays = { currency: NetworkService.getNativeAsset(), value: minimumOutcome };
         }
 
-        // set ImmediateOrCancel & Sell flag
-        offer.Flags = {
-            tfImmediateOrCancel: true,
-            tfSell: true,
-        };
+        // ImmediateOrCancel & Sell flag
+        offer.Flags = [txFlags.OfferCreate.ImmediateOrCancel, txFlags.OfferCreate.Sell];
 
         // generate payload
-        const payload = Payload.build(offer.JsonForSigning);
+        const payload = Payload.build(offer.Json);
 
-        Navigator.showModal<ReviewTransactionModalProps<OfferCreate>>(
+        Navigator.showModal(
             AppScreens.Modal.ReviewTransaction,
             {
                 payload,
                 onResolve: this.onReviewScreenResolve,
                 onClose: this.onReviewScreenClose,
             },
-            { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+            { modalPresentationStyle: 'fullScreen' },
         );
     };
 
@@ -368,7 +363,7 @@ class ExchangeView extends Component<Props, State> {
         });
     };
 
-    onReviewScreenResolve = (offer: OfferCreate & SignMixinType & MutationsMixinType) => {
+    onReviewScreenResolve = (offer: OfferCreate) => {
         const { account } = this.props;
 
         this.setState({
@@ -386,11 +381,9 @@ class ExchangeView extends Component<Props, State> {
         }
 
         if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(offer.GetOfferStatus(account.address)) > -1) {
-            const balanceChanges = offer.BalanceChange(account.address);
-
             // calculate delivered amounts
-            const takerGot = balanceChanges[OperationActions.DEC].at(0)!;
-            const takerPaid = balanceChanges[OperationActions.INC].at(0)!;
+            const takerGot = offer.TakerGot(account.address);
+            const takerPaid = offer.TakerPaid(account.address);
 
             this.showResultAlert(
                 Localize.t('global.success'),
@@ -401,6 +394,8 @@ class ExchangeView extends Component<Props, State> {
                     getCurrency: NormalizeCurrencyCode(takerPaid.currency),
                 }),
             );
+        } else {
+            this.showResultAlert(Localize.t('global.failed'), Localize.t('exchange.failedExchange'));
         }
     };
 
@@ -434,7 +429,7 @@ class ExchangeView extends Component<Props, State> {
         const { account, trustLine } = this.props;
         const { direction } = this.state;
 
-        let availableBalance: string;
+        let availableBalance = '0';
 
         if (direction === MarketDirection.SELL) {
             availableBalance = new BigNumber(CalculateAvailableBalance(account)).toString();
@@ -450,7 +445,7 @@ class ExchangeView extends Component<Props, State> {
 
         let errorsText = '';
 
-        liquidity?.errors.forEach((e, i) => {
+        liquidity.errors.forEach((e, i) => {
             errorsText += `* ${this.ledgerExchange.errors[e]}`;
             if (i + 1 < liquidity.errors.length) {
                 errorsText += '\n';
@@ -494,7 +489,7 @@ class ExchangeView extends Component<Props, State> {
                             <AmountText
                                 value={exchangeRate}
                                 currency={`${NormalizeCurrencyCode(
-                                    trustLine.currency.currencyCode,
+                                    trustLine.currency.currency,
                                 )}/${NetworkService.getNativeAsset()}`}
                                 style={[styles.detailsValue, AppStyles.textRightAligned]}
                                 immutable
@@ -508,7 +503,7 @@ class ExchangeView extends Component<Props, State> {
                                 value={minimumOutcome}
                                 currency={
                                     direction === MarketDirection.SELL
-                                        ? trustLine.currency.currencyCode
+                                        ? trustLine.currency.currency
                                         : NetworkService.getNativeAsset()
                                 }
                                 style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
@@ -549,7 +544,9 @@ class ExchangeView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: Navigator.pop,
+                        onPress: () => {
+                            Navigator.pop();
+                        },
                     }}
                     centerComponent={{
                         text: Localize.t('global.exchange'),
@@ -573,7 +570,7 @@ class ExchangeView extends Component<Props, State> {
                                         {direction === MarketDirection.SELL
                                             ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
+                                              NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     <Text style={styles.subLabel}>
                                         {Localize.t('global.spendable')}:{' '}
@@ -643,12 +640,12 @@ class ExchangeView extends Component<Props, State> {
                                         {direction === MarketDirection.BUY
                                             ? NetworkService.getNativeAsset()
                                             : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
+                                              NormalizeCurrencyCode(trustLine.currency.currency)}
                                     </Text>
                                     {direction === MarketDirection.SELL && (
                                         <Text style={styles.subLabel}>
                                             {trustLine.counterParty.name}{' '}
-                                            {NormalizeCurrencyCode(trustLine.currency.currencyCode)}
+                                            {NormalizeCurrencyCode(trustLine.currency.currency)}
                                         </Text>
                                     )}
                                 </View>

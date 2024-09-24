@@ -14,19 +14,17 @@ class Keyboard {
         this.keyboardListenerStarted = false;
     }
 
-    getNormalizedEventName = (eventName: EventTypes): EventTypes => {
+    getEventName = (eventName: EventTypes): EventTypes => {
         switch (eventName) {
             case 'keyboardWillShow':
                 return Platform.select({
                     android: 'KeyboardShow',
                     ios: 'keyboardWillShow',
-                    default: eventName,
                 });
             case 'keyboardWillHide':
                 return Platform.select({
                     android: 'KeyboardHide',
                     ios: 'keyboardWillHide',
-                    default: eventName,
                 });
             default:
                 return eventName;
@@ -75,16 +73,16 @@ class Keyboard {
     };
 
     addListener = (eventType: EventTypes, handler: any) => {
-        const eventName = this.getNormalizedEventName(eventType);
+        const eventName = this.getEventName(eventType);
 
-        let subscription;
+        let subscription = undefined as EmitterSubscription;
 
         switch (Platform.OS) {
             case 'android':
                 subscription = DeviceEventEmitter.addListener(eventName, handler);
                 break;
             case 'ios':
-                // @ts-expect-error
+                // @ts-ignore
                 subscription = RNKeyboard.addListener(eventName, handler);
                 break;
             default:
@@ -102,7 +100,7 @@ class Keyboard {
     };
 
     removeListener = (eventType: EventTypes, handler: any) => {
-        const eventName = this.getNormalizedEventName(eventType);
+        const eventName = this.getEventName(eventType);
 
         this.removeSubscription(eventName, handler);
 

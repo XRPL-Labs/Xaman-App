@@ -45,12 +45,6 @@ export enum NetworkRailsChangesType {
     ChangedProperty = 'ChangedProperty',
 }
 
-export enum MonetizationStatus {
-    NONE = 'NONE',
-    COMING_UP = 'COMING_UP',
-    REQUIRED = 'REQUIRED',
-}
-
 export type NetworkRailsChanges = { [key: string]: { type: NetworkRailsChangesType; value: string }[] };
 
 export type Themes = 'light' | 'dark' | 'moonlight' | 'royal';

@@ -1,26 +1,32 @@
+import { StyleSheet } from 'react-native';
 import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
-    container: {},
+    container: {
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: 15,
+        borderColor: '$contrast',
+        marginBottom: AppSizes.paddingSml,
+    },
     closeButton: {
-        paddingTop: AppSizes.paddingMid,
-        paddingRight: AppSizes.paddingMid,
+        paddingTop: AppSizes.paddingExtraSml,
+        paddingRight: AppSizes.paddingExtraSml,
     },
     closeButtonIcon: {
         tintColor: '$contrast',
     },
     titleText: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.base.size,
+        fontFamily: AppFonts.pb.family,
+        fontSize: AppFonts.pb.size * 1.1,
         color: '$textPrimary',
-        paddingTop: AppSizes.paddingMid,
-        paddingHorizontal: AppSizes.paddingMid,
+        paddingTop: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingSml,
     },
     contentContainer: {
         paddingTop: AppSizes.paddingExtraSml,
-        paddingBottom: AppSizes.paddingMid,
-        paddingHorizontal: AppSizes.paddingMid,
+        paddingBottom: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingSml,
     },
 });

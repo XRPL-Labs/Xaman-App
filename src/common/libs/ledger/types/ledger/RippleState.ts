@@ -27,14 +27,6 @@ export default interface RippleState extends BaseLedgerEntry, HasPreviousTxnID {
      */
     HighLimit: IssuedCurrencyAmount;
     /**
-     * Represents the locked balance count
-     */
-    LockCount?: number;
-    /**
-     * Represents the locked balance of the line, ex in escrow.=
-     */
-    LockedBalance?: IssuedCurrencyAmount;
-    /**
      * A hint indicating which page of the low account's owner directory links to
      * this object, in case the directory consists of multiple pages.
      */

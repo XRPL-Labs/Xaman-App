@@ -1,13 +1,13 @@
 //
 //  VaultManagerTest.m
-//  XamanTests
+//  XUMMTests
 //
 
 #import <XCTest/XCTest.h>
 
-#import "../Xaman/Libs/Security/Vault/VaultManager.h"
-#import "../Xaman/Libs/Security/Vault/Cipher/Cipher.h"
-#import "../Xaman/Libs/Security/Vault/Storage/Keychain.h"
+#import "../XUMM/Libs/Security/Vault/VaultManager.h"
+#import "../XUMM/Libs/Security/Vault/Cipher/Cipher.h"
+#import "../XUMM/Libs/Security/Vault/Storage/Keychain.h"
 
 #import "PerformanceLogger.h"
 

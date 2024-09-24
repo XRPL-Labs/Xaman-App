@@ -13,13 +13,11 @@ const { ContactSchema, AccountSchema } = v3Schemas;
 /* Exports ==================================================================== */
 export const schemaVersion = 4;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    [CoreSchema, CounterPartySchema, CurrencySchema, TrustLineSchema, ProfileSchema].forEach((entry) => {
-        if (typeof entry.migration !== 'function') {
-            throw new Error(`migration method is required for schema ${entry.schema.name}`);
-        }
-
-        entry.migration(oldRealm, newRealm);
-    });
+    CoreSchema.migration(oldRealm, newRealm);
+    CounterPartySchema.migration(oldRealm, newRealm);
+    CurrencySchema.migration(oldRealm, newRealm);
+    TrustLineSchema.migration(oldRealm, newRealm);
+    ProfileSchema.migration(oldRealm, newRealm);
 };
 export const schemas = {
     ContactSchema,

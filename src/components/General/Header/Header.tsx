@@ -128,19 +128,17 @@ const Children = ({
 class Header extends PureComponent<Props> {
     static Height = AppSizes.heightPercentageToDP(9);
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof Header.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         placement: 'center',
     };
 
-    getChildStyle = (position: 'left' | 'right' | 'center'): ViewStyle => {
+    getChildStyle = (position: 'left' | 'right' | 'center') => {
         const { placement, centerComponent } = this.props;
 
         const positions = ['left', 'center', 'right'];
 
         if (placement !== 'center' && !centerComponent && position === 'center') {
-            return {};
+            return null;
         }
 
         if (positions.filter((p) => p !== placement).indexOf(position) === -1) {
@@ -157,7 +155,7 @@ class Header extends PureComponent<Props> {
             <View
                 style={[
                     styles.container,
-                    backgroundColor ? { backgroundColor } : {},
+                    backgroundColor && { backgroundColor },
                     { height: Header.Height },
                     containerStyle,
                 ]}
@@ -169,14 +167,12 @@ class Header extends PureComponent<Props> {
                 <Children
                     style={[
                         this.getChildStyle('center'),
-                        placement !== 'center'
-                            ? {
-                                  paddingHorizontal: Platform.select({
-                                      android: 16,
-                                      default: 15,
-                                  }),
-                              }
-                            : {},
+                        placement !== 'center' && {
+                            paddingHorizontal: Platform.select({
+                                android: 16,
+                                default: 15,
+                            }),
+                        },
                     ]}
                     placement="center"
                 >

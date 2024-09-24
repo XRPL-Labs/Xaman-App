@@ -1,6 +1,6 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 /* eslint-disable operator-linebreak */
-
 import { NativeModules } from 'react-native';
 import Vault from '../vault';
 

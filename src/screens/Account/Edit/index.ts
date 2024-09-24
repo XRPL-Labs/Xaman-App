@@ -1,4 +1,3 @@
-import AccountSettingsView, { Props as AccountSettingsViewProps } from './AccountSettingsView';
+import AccountSettingsView from './AccountSettingsView';
 
-export type { AccountSettingsViewProps };
 export default AccountSettingsView;

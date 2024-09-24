@@ -30,16 +30,17 @@ const NetworkSchema = {
         },
     },
 
-    migration: (oldRealm: Realm, newRealm: Realm) => {
-        /*  eslint-disable-next-line */
-        console.log('migrating Network schema to 14');
-
+    /*
+    Populate networks to the data store
+    Note: this is necessary in the process of migration and also fresh install
+    */
+    populate: (realm: Realm) => {
         // default supported networks list
         const { networks } = NetworkConfig;
 
         // create networks
         for (let i = 0; i < networks.length; i++) {
-            newRealm.create(NetworkSchema.schema.name, {
+            realm.create(NetworkSchema.schema.name, {
                 id: networks[i].networkId,
                 key: networks[i].key,
                 name: networks[i].name,
@@ -54,6 +55,14 @@ const NetworkSchema = {
                 updatedAt: new Date(),
             });
         }
+    },
+
+    migration: (oldRealm: Realm, newRealm: Realm) => {
+        /*  eslint-disable-next-line */
+        console.log('migrating Network schema to 14');
+
+        // populate networks
+        NetworkSchema.populate(newRealm);
     },
 };
 

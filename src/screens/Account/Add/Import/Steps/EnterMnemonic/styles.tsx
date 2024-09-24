@@ -56,7 +56,6 @@ const styles = StyleService.create({
     optionsButtonSelected: {
         backgroundColor: '$blue',
     },
-    optionsButtonText: {},
     optionsButtonSelectedText: {
         fontFamily: AppFonts.base.familyBold,
         color: '$white',

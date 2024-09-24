@@ -11,21 +11,21 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 export interface FiltersType {
-    text?: string;
-    favorite?: boolean;
-    hideZero?: boolean;
+    text: string;
+    favorite: boolean;
+    hideZero: boolean;
 }
 
 interface Props {
-    filters?: FiltersType;
+    filters: FiltersType;
     reorderEnabled: boolean;
-    onFilterChange: (filters: FiltersType | undefined) => void;
+    onFilterChange: (filters: FiltersType) => void;
     onReorderPress: () => void;
 }
 
 interface State {
     ownUpdate: boolean;
-    filterText?: string;
+    filterText: string;
     favoritesEnabled: boolean;
     hideZeroEnabled: boolean;
 }
@@ -33,7 +33,7 @@ interface State {
 /* Component ==================================================================== */
 class ListFilter extends Component<Props, State> {
     private animatedContainer: Animated.Value;
-    private readonly searchInputRef: React.RefObject<SearchBar>;
+    private readonly searchInputRef: React.RefObject<SearchBar | null>;
 
     constructor(props: Props) {
         super(props);
@@ -72,7 +72,7 @@ class ListFilter extends Component<Props, State> {
         }
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
         if (prevState.ownUpdate) {
             return {
                 ownUpdate: false,

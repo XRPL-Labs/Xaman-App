@@ -22,11 +22,6 @@ const styles = StyleService.create({
         marginTop: 7,
         marginBottom: 7,
     },
-
-    monetizationContainer: {
-        marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingSml,
-    },
 });
 
 export default styles;

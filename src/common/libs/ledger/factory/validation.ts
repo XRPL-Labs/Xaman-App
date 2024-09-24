@@ -1,49 +1,45 @@
-import * as TransactionInstances from '@common/libs/ledger/transactions/genuine';
-import * as PseudoTransactionsInstances from '@common/libs/ledger/transactions/pseudo';
+import { get } from 'lodash';
 
-import { FallbackTransactionValidation } from '@common/libs/ledger/transactions/fallback';
+import { AccountModel } from '@store/models';
+
+import * as Transactions from '@common/libs/ledger/transactions/genuine';
+import * as PseudoTransactions from '@common/libs/ledger/transactions/pseudo';
 
 /* Types ==================================================================== */
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+
 import {
-    FallbackTypes,
-    InstanceTypes,
-    PseudoTransactionTypes,
-    TransactionTypes,
-} from '@common/libs/ledger/types/enums';
-import { CombinedTransactions } from '@common/libs/ledger/transactions/types';
-import { ValidationType } from '@common/libs/ledger/factory/types';
+    Transactions as TransactionsType,
+    PseudoTransactions as PseudoTransactionsType,
+} from '@common/libs/ledger/transactions/types';
+
+type ValidationType<T> = (tx: T, account: AccountModel) => Promise<void>;
 
 /* Module ==================================================================== */
-
 const ValidationFactory = {
-    fromTransaction: (item: CombinedTransactions): ValidationType<CombinedTransactions> => {
-        let Validation: ValidationType<any> | undefined;
+    fromType: (
+        type: TransactionTypes | PseudoTransactionTypes,
+    ): ValidationType<TransactionsType | PseudoTransactionsType> => {
+        let validator;
 
-        const ValidtionInstanceName = `${item.Type}Validation`;
-
-        if (
-            item.InstanceType === InstanceTypes.FallbackTransaction &&
-            item.Type === FallbackTypes.FallbackTransaction
-        ) {
-            return FallbackTransactionValidation as ValidationType<any>;
+        switch (true) {
+            // Genuine transaction
+            case type in TransactionTypes:
+                validator = get(Transactions, `${type}Validation`, undefined);
+                break;
+            // Pseudo transaction
+            case type in PseudoTransactionTypes:
+                validator = get(PseudoTransactions, `${type}Validation`, undefined);
+                break;
+            default:
+                break;
         }
 
-        if (item.Type in TransactionTypes && Object.keys(TransactionInstances).includes(ValidtionInstanceName)) {
-            Validation = (TransactionInstances as any)[ValidtionInstanceName] as ValidationType<any>;
+        if (typeof validator === 'undefined') {
+            throw new Error(`Validation "${type}Validation" not found. Did you forget to include it?`);
         }
 
-        if (
-            item.Type in PseudoTransactionTypes &&
-            Object.keys(PseudoTransactionsInstances).includes(ValidtionInstanceName)
-        ) {
-            Validation = (PseudoTransactionsInstances as any)[ValidtionInstanceName] as ValidationType<any>;
-        }
-
-        if (typeof Validation === 'undefined') {
-            throw new Error(`Explainer "${item.Type}Validation" not found, forgot to include it?`);
-        }
-
-        return Validation;
+        return validator;
     },
 };
 

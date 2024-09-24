@@ -48,12 +48,10 @@ class AnimatedDialog extends PureComponent<Props, State> {
     updateHeight = () => {
         const { height } = this.props;
 
-        if (typeof height === 'number') {
-            Animated.spring(this.animatedHeight, {
-                toValue: height,
-                useNativeDriver: false,
-            }).start();
-        }
+        Animated.spring(this.animatedHeight, {
+            toValue: height,
+            useNativeDriver: false,
+        }).start();
     };
 
     show = () => {

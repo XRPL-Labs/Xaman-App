@@ -1,4 +1,3 @@
-import NetworkRailsSyncOverlay, { Props as NetworkRailsSyncOverlayProps } from './NetworkRailsSyncOverlay';
+import NetworkRailsSyncModal from './NetworkRailsSyncModal';
 
-export type { NetworkRailsSyncOverlayProps };
-export default NetworkRailsSyncOverlay;
+export default NetworkRailsSyncModal;

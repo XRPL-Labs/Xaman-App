@@ -1,7 +1,7 @@
 /**
  * TokenIcon
  *
-    <TokenIcon  />
+    <TokenIcon asset={} />
  *
  */
 import React, { PureComponent } from 'react';
@@ -21,14 +21,12 @@ interface Props {
 }
 
 interface State {
-    icon?: string;
+    icon: string;
 }
 
 /* Component ==================================================================== */
 class TokenIcon extends PureComponent<Props, State> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof TokenIcon.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         size: 12,
     };
 
@@ -40,9 +38,9 @@ class TokenIcon extends PureComponent<Props, State> {
         };
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
         const icon = TokenIcon.getIcon(nextProps.token);
-        if (icon && prevState.icon !== icon) {
+        if (prevState.icon !== icon) {
             return {
                 icon,
             };
@@ -50,9 +48,9 @@ class TokenIcon extends PureComponent<Props, State> {
         return null;
     }
 
-    static getIcon = (token: TrustLineModel | 'Native'): string | undefined => {
+    static getIcon = (token: TrustLineModel | 'Native'): string => {
         if (!token) {
-            return undefined;
+            return '';
         }
 
         // native
@@ -67,10 +65,6 @@ class TokenIcon extends PureComponent<Props, State> {
     render() {
         const { size, style, containerStyle } = this.props;
         const { icon } = this.state;
-
-        if (!icon) {
-            return null;
-        }
 
         return (
             <View style={containerStyle}>

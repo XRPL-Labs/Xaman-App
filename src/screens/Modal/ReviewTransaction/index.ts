@@ -1,5 +1,3 @@
-import ReviewTransactionModal from './ReviewTransactionModal';
-import { Props as ReviewTransactionModalProps } from './types';
+import ReviewTransactionModal from './ReviewTransaction';
 
-export type { ReviewTransactionModalProps };
 export default ReviewTransactionModal;

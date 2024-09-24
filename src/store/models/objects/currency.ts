@@ -17,31 +17,31 @@ class Currency extends Realm.Object<Currency> {
      * A unique identifier representing this specific currency instance.
      * combination of the currency's code and its issuer.
      */
-    public declare id: string;
+    public id: string;
     /**
      * The account of entity or organization responsible for issuing and maintaining the currency.
      */
-    public declare issuer: string;
+    public issuer: string;
     /**
-     * The currency code of the currency (ex: EUR),
+     * The standardized code or symbol of the currency (ex: EUR),
      */
-    public declare currencyCode: string;
+    public currency: string;
     /**
      * A descriptive, user-friendly name for the currency (ex: Euro) ,
      */
-    public declare name: string;
+    public name: string;
     /**
      * URL or local path pointing to an image that visually represents
      */
-    public declare avatar: string;
+    public avatar: string;
     /**
      * A flag indicating whether this currency is highlighted or preferred in the shortlist
      */
-    public declare shortlist: boolean;
+    public shortlist: boolean;
     /**
      * An optional xApp identifier linking the currency to a corresponding xApp
      */
-    public declare xapp_identifier?: string;
+    public xapp_identifier?: string;
 }
 
 export default Currency;

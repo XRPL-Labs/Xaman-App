@@ -1,4 +1,3 @@
-import PickerModal, { Props as PickerModalProps } from './PickerModal';
+import PickerModal from './PickerModal';
 
-export type { PickerModalProps };
 export default PickerModal;

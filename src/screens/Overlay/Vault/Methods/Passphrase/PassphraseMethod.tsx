@@ -22,20 +22,19 @@ import { AuthMethods } from '../../types';
 export interface Props {}
 
 export interface State {
-    passphrase?: string;
+    passphrase: string;
     offsetBottom: number;
 }
 
 /* Component ==================================================================== */
 class PassphraseMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    declare context: React.ContextType<typeof MethodsContext>;
+    context: React.ContextType<typeof MethodsContext>;
 
     private contentViewRef: React.RefObject<View>;
     private passwordInputRef: React.RefObject<PasswordInput>;
     private animatedColor: Animated.Value;
-
-    private mounted = false;
+    private mounted: boolean;
 
     constructor(props: Props) {
         super(props);
@@ -125,10 +124,6 @@ class PassphraseMethod extends Component<Props, State> {
     render() {
         const { dismiss, preferredSigner, isSigning } = this.context;
         const { offsetBottom, passphrase } = this.state;
-
-        if (!preferredSigner) {
-            return null;
-        }
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],

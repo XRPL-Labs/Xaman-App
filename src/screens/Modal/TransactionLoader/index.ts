@@ -1,4 +1,3 @@
-import TransactionLoaderModal, { Props as TransactionLoaderModalProps } from './TransactionLoaderModal';
+import TransactionLoaderModal from './TransactionLoaderModal';
 
-export type { TransactionLoaderModalProps };
 export default TransactionLoaderModal;

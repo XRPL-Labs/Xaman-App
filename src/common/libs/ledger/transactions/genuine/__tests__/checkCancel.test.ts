@@ -1,7 +1,6 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 import Localize from '@locale';
-
-import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { CheckCancel, CheckCancelInfo, CheckCancelValidation } from '../CheckCancel';
 import { CheckCreate } from '../CheckCreate';
@@ -10,8 +9,6 @@ import checkCancelTemplates from './fixtures/CheckCancelTx.json';
 import checkCreateTemplate from './fixtures/CheckCreateTx.json';
 
 jest.mock('@services/NetworkService');
-
-const MixedCheckCancel = MutationsMixin(CheckCancel);
 
 describe('CheckCancel', () => {
     describe('Class', () => {
@@ -23,7 +20,7 @@ describe('CheckCancel', () => {
 
         it('Should return right parsed values', () => {
             // @ts-ignore
-            const { tx, meta }: any = checkCancelTemplates;
+            const { tx, meta } = checkCancelTemplates;
             const instance = new CheckCancel(tx, meta);
 
             expect(instance.CheckID).toBe('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
@@ -31,10 +28,10 @@ describe('CheckCancel', () => {
 
         it('Should set check object', () => {
             // @ts-ignore
-            const { tx, meta }: any = checkCancelTemplates;
+            const { tx, meta } = checkCancelTemplates;
             const instance = new CheckCancel(tx, meta);
 
-            instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
+            instance.Check = new CheckCreate(checkCreateTemplate.tx);
 
             expect(instance.Check).toBeDefined();
             expect(instance.isExpired).toBe(true);
@@ -42,42 +39,22 @@ describe('CheckCancel', () => {
     });
 
     describe('Info', () => {
-        const { tx, meta }: any = checkCancelTemplates;
-        const instance = new MixedCheckCancel(tx, meta);
-        const info = new CheckCancelInfo(instance, {} as any);
-
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription =
-                    'The transaction will cancel check with ID xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+                const { tx, meta } = checkCancelTemplates;
+                const instance = new CheckCancel(tx, meta);
 
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const expectedDescription = `${Localize.t('events.theTransactionWillCancelCheckWithId', {
+                    checkId: tx.CheckID,
+                })}`;
+
+                expect(CheckCancelInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.cancelCheck'));
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx', tag: undefined },
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
+                expect(CheckCancelInfo.getLabel()).toEqual(Localize.t('events.cancelCheck'));
             });
         });
     });
@@ -86,10 +63,10 @@ describe('CheckCancel', () => {
         let instance: CheckCancel;
 
         beforeAll(() => {
-            const { tx, meta }: any = checkCancelTemplates;
+            const { tx, meta } = checkCancelTemplates;
             instance = new CheckCancel(tx, meta);
 
-            instance.Check = new CheckCreate(checkCreateTemplate.tx as any);
+            instance.Check = new CheckCreate(checkCreateTemplate.tx);
         });
 
         it('should resolve if Check is expired', async () => {
@@ -98,8 +75,7 @@ describe('CheckCancel', () => {
         });
 
         it('should reject with an error if Check object is not present', async () => {
-            // clear check object
-            instance.Check = undefined as any;
+            instance.Check = undefined;
 
             await expect(CheckCancelValidation(instance)).rejects.toThrowError(
                 Localize.t('payload.unableToGetCheckObject'),
@@ -109,19 +85,21 @@ describe('CheckCancel', () => {
         it('should reject if Check is not expired and Account address does not match Check Destination or Account addresses', async () => {
             const tx = {
                 Check: {
-                    Destination: 'destAddress',
-                    Account: 'accAddress',
+                    Destination: { address: 'destAddress' },
+                    Account: { address: 'accAddress' },
                 },
                 isExpired: false,
-                Account: 'otherAddress',
+                Account: { address: 'otherAddress' },
             };
 
             instance.Check = new CheckCreate({
                 Account: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx',
                 Destination: 'rDestinationxxxxxxxxxxxxxxxxxxxxxx',
-            } as any);
+            });
 
-            instance.Account = 'rXUMMaPpZqPutoRszR29jtC8amWq3APkx';
+            instance.Account = {
+                address: 'rOtherAccountxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            };
 
             await expect(CheckCancelValidation(tx as any)).rejects.toThrowError(
                 Localize.t('payload.nonExpiredCheckCanOnlyCancelByCreatedAccount'),

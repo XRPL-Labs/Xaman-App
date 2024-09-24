@@ -1,4 +1,3 @@
-import EventsView, { Props as EventsViewProps } from './EventsView';
+import EventsContainer from './EventsView';
 
-export type { EventsViewProps };
-export default EventsView;
+export default EventsContainer;

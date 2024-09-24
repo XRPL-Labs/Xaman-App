@@ -53,6 +53,7 @@ Feature: Upgrade Account
     Scenario: Add a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
+        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -107,7 +108,7 @@ Feature: Upgrade Account
         Given I should see same account address
 
     Scenario: Remove a asset
-        Then I tap 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq.EUR'
+        Then I tap 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.USD'
         Given I should have 'currency-settings-overlay'
         Given I should wait 10 sec to see 'line-remove-button'
         Then I tap 'line-remove-button'
@@ -121,4 +122,4 @@ Feature: Upgrade Account
         Given I should wait 20 sec to see 'success-result-view'
         Then I tap 'close-button'
         Then I tap alert button with label "OK"
-        Given I should not have 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq.EUR'
+        Given I should not have 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B.USD'

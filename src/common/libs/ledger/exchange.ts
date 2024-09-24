@@ -15,8 +15,7 @@ import Localize from '@locale';
 import NetworkService from '@services/NetworkService';
 import BackendService from '@services/BackendService';
 
-import { ValueToIOU } from '@common/utils/monetary';
-import { IssuedCurrency } from '@common/libs/ledger/types/common';
+import { ValueToIOU } from '@common/utils/amount';
 
 /* types ==================================================================== */
 export enum MarketDirection {
@@ -24,38 +23,32 @@ export enum MarketDirection {
     BUY = 'BUY',
 }
 
+export type ExchangePair = {
+    currency: string;
+    issuer?: string;
+};
+
 /* Constants ==================================================================== */
 const MAX_NATIVE_DECIMAL_PLACES = 6;
 const MAX_IOU_DECIMAL_PLACES = 8;
 
-const TIMEOUT_SECONDS = 10;
-const MAX_SPREAD_PERCENTAGE = 4;
-const MAX_SLIPPAGE_PERCENTAGE = 3;
-const MAX_SLIPPAGE_PERCENTAGE_REVERSE = 3;
 /* Class ==================================================================== */
 class LedgerExchange {
-    private liquidityCheck: LiquidityCheck | undefined;
-    private pair: IssuedCurrency;
+    private liquidityCheck: LiquidityCheck;
+    private pair: ExchangePair;
     public boundaryOptions: Options;
-    public errors: {
-        [Errors.REVERSE_LIQUIDITY_NOT_AVAILABLE]: string;
-        [Errors.MAX_SLIPPAGE_EXCEEDED]: string;
-        [Errors.REQUESTED_LIQUIDITY_NOT_AVAILABLE]: string;
-        [Errors.MAX_REVERSE_SLIPPAGE_EXCEEDED]: string;
-        [Errors.MAX_SPREAD_EXCEEDED]: string;
-    };
+    public errors: any;
 
-    constructor(pair: IssuedCurrency) {
+    constructor(pair: ExchangePair) {
         this.pair = pair;
         this.liquidityCheck = undefined;
 
-        // craft default boundary options
         this.boundaryOptions = {
             rates: RatesInCurrency.to,
-            timeoutSeconds: TIMEOUT_SECONDS,
-            maxSpreadPercentage: MAX_SPREAD_PERCENTAGE,
-            maxSlippagePercentage: MAX_SLIPPAGE_PERCENTAGE,
-            maxSlippagePercentageReverse: MAX_SLIPPAGE_PERCENTAGE_REVERSE,
+            timeoutSeconds: 10,
+            maxSpreadPercentage: 4,
+            maxSlippagePercentage: 3,
+            maxSlippagePercentageReverse: 3,
         };
 
         this.errors = {
@@ -95,7 +88,7 @@ class LedgerExchange {
 
         const decimalPlaces = direction === MarketDirection.SELL ? MAX_IOU_DECIMAL_PLACES : MAX_NATIVE_DECIMAL_PLACES;
 
-        const { maxSlippagePercentage = MAX_SLIPPAGE_PERCENTAGE } = this.boundaryOptions;
+        const { maxSlippagePercentage } = this.boundaryOptions;
         const amount = new BigNumber(value);
 
         // expected outcome base on liquidity rate

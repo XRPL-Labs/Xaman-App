@@ -51,11 +51,6 @@ declare namespace XamanBackend {
         accessToken: string;
         locked: boolean;
     }
-    enum MonetizationStatus {
-        NONE = 'NONE',
-        COMING_UP = 'COMING_UP',
-        REQUIRED = 'REQUIRED',
-    }
     interface PingResponse {
         pong: boolean;
         env: {
@@ -67,11 +62,6 @@ declare namespace XamanBackend {
         tosAndPrivacyPolicyVersion: number;
         railsVersion: number;
         badge: number;
-        monetization: {
-            monetizationStatus: MonetizationStatus;
-            productForPurchase: string;
-            monetizationType: string;
-        };
         auth: {
             user: {
                 uuidv4: string;
@@ -158,7 +148,6 @@ declare namespace XamanBackend {
     }
     interface AppCategory {
         title: string;
-        description: string;
         category: string;
         identifier: string;
         icon: string;
@@ -167,24 +156,12 @@ declare namespace XamanBackend {
         development: boolean;
         suppress: boolean;
     }
-    interface XAppStoreListingsCategories {
-        featured: AppCategory[];
-        popular: AppCategory[];
-        recent: AppCategory[];
-        all: AppCategory[];
-    }
     interface XAppStoreListingsResponse {
-        categories: XAppStoreListingsCategories;
-        message: {
-            id: number;
-            title: string;
-            content: string;
-            app: {
-                title: string;
-                description: string;
-                identifier: string;
-                icon: string;
-            };
+        categories: {
+            featured: AppCategory[];
+            popular: AppCategory[];
+            recent: AppCategory[];
+            all: AppCategory[];
         };
     }
     interface XAppShortListResponse {

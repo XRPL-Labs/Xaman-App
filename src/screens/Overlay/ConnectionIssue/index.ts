@@ -1,4 +1,3 @@
-import ConnectionIssueOverlay, { Props as ConnectionIssueOverlayProps } from './ConnectionIssueOverlay';
+import ConnectionIssueModal from './ConnectionIssueModal';
 
-export type { ConnectionIssueOverlayProps };
-export default ConnectionIssueOverlay;
+export default ConnectionIssueModal;

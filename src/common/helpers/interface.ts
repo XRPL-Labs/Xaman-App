@@ -8,8 +8,6 @@ import {
     ActionSheetIOSOptions,
 } from 'react-native';
 
-import StyleService from '@services/StyleService';
-
 interface PromptOptions extends AlertOptions {
     type?: 'default' | 'plain-text';
     defaultValue?: string;
@@ -28,31 +26,21 @@ const Toast = (message: string, duration?: number) => {
 };
 
 const ActionSheet = (options: ActionSheetIOSOptions, callback: any, style?: 'dark' | 'light') => {
-    const defaultOptions = { userInterfaceStyle: style || StyleService.isDarkMode() ? 'dark' : 'light' };
+    const defaultOptions = { userInterfaceStyle: style || 'light' };
     const actionSheet = Platform.OS === 'android' ? NativeModules.ActionSheetAndroid : ActionSheetIOS;
     actionSheet.showActionSheetWithOptions({ ...defaultOptions, ...options }, callback);
 };
 
 const Prompt = (title: string, message: string, callbackOrButtons?: any, options?: PromptOptions) => {
-    const defaultOptions = {
-        userInterfaceStyle: options?.userInterfaceStyle ?? StyleService.isDarkMode() ? 'dark' : 'light',
-    } as AlertOptions;
-
     if (!callbackOrButtons || !options || options.type === 'default') {
         // no input needed
-        Alert.alert(title, message, callbackOrButtons, { ...defaultOptions, ...options });
+        Alert.alert(title, message, callbackOrButtons, options);
     } else {
+        // if use need to input beside alert
+
         // platform === ios
         if (Platform.OS === 'ios') {
-            Alert.prompt(
-                title,
-                message,
-                callbackOrButtons,
-                options.type,
-                options.defaultValue,
-                options.keyboardType,
-                defaultOptions,
-            );
+            Alert.prompt(title, message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
             return;
         }
 
@@ -73,16 +61,16 @@ const Prompt = (title: string, message: string, callbackOrButtons?: any, options
         let config = {
             title: title || '',
             message: message || '',
-            ...defaultOptions,
         } as any;
 
         if (options) {
             config = {
                 ...config,
                 cancelable: options.cancelable !== false,
-                type: options.type ?? 'default',
-                defaultValue: options.defaultValue ?? '',
-                placeholder: options.placeholder ?? '',
+                type: options.type || 'default',
+                style: options.style || 'default',
+                defaultValue: options.defaultValue || '',
+                placeholder: options.placeholder || '',
             };
         }
         // At most three buttons (neutral, negative, positive). Ignore rest.
@@ -105,16 +93,16 @@ const Prompt = (title: string, message: string, callbackOrButtons?: any, options
             };
         }
 
-        PromptAndroid.promptWithArgs(config, (action: string, buttonKey: string, input: string) => {
+        PromptAndroid.promptWithArgs(config, (action: any, buttonKey: any, input: any) => {
             if (action !== PromptAndroid.buttonClicked) {
                 return;
             }
             if (buttonKey === PromptAndroid.buttonNeutral) {
-                typeof buttonNeutral.onPress === 'function' && buttonNeutral.onPress(input);
+                buttonNeutral.onPress && buttonNeutral.onPress(input);
             } else if (buttonKey === PromptAndroid.buttonNegative) {
-                typeof buttonNegative.onPress === 'function' && buttonNegative.onPress();
+                buttonNegative.onPress && buttonNegative.onPress();
             } else if (buttonKey === PromptAndroid.buttonPositive) {
-                typeof buttonPositive.onPress === 'function' && buttonPositive.onPress(input);
+                buttonPositive.onPress && buttonPositive.onPress(input);
             }
         });
     }

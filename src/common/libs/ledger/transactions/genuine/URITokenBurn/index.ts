@@ -1,3 +1,3 @@
-export { default as URITokenBurn } from './URITokenBurn.class';
-export { default as URITokenBurnValidation } from './URITokenBurn.validation';
-export { default as URITokenBurnInfo } from './URITokenBurn.info';
+export { default as URITokenBurn } from './URITokenBurnClass';
+export { default as URITokenBurnValidation } from './URITokenBurnValidation';
+export { default as URITokenBurnInfo } from './URITokenBurnInfo';

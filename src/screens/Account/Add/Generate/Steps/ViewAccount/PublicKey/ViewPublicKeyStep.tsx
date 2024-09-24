@@ -26,7 +26,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ViewPublicKeyStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
         const { goBack } = this.context;
@@ -37,7 +37,9 @@ class ViewPublicKeyStep extends Component<Props, State> {
             [
                 {
                     text: Localize.t('global.goBack'),
-                    onPress: goBack,
+                    onPress: () => {
+                        goBack();
+                    },
                     style: 'destructive',
                 },
                 { text: Localize.t('global.cancel') },
@@ -55,10 +57,8 @@ class ViewPublicKeyStep extends Component<Props, State> {
     copyPubKeyToClipboard = () => {
         const { generatedAccount } = this.context;
 
-        if (generatedAccount?.address) {
-            Clipboard.setString(generatedAccount.address);
-            Toast(Localize.t('account.publicKeyCopiedToClipboard'));
-        }
+        Clipboard.setString(generatedAccount.address);
+        Toast(Localize.t('account.publicKeyCopiedToClipboard'));
     };
 
     render() {

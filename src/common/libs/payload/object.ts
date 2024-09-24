@@ -1,10 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-import { get, isObject, isString, isUndefined } from 'lodash';
+import { get, has, isObject, isString, isUndefined } from 'lodash';
 
-import ApiService, { ApiError } from '@services/ApiService';
+import ApiService from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
-
-import CoreRepository from '@store/repositories/core';
 
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
@@ -12,8 +9,7 @@ import Localize from '@locale';
 
 import { TransactionJson } from '@common/libs/ledger/types/transaction';
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
-import { MutatedTransaction, SignableTransaction } from '@common/libs/ledger/transactions/types';
-
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import {
     ApplicationType,
     MetaType,
@@ -24,23 +20,21 @@ import {
     PayloadType,
 } from './types';
 
-import { MixingTypes } from '@common/libs/ledger/mixin/types';
-
 import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
-import { PayloadErrors } from './errors';
+import errors from './errors';
 
 // create logger
 const logger = LoggerService.createLogger('Payload');
 
 /* Payload  ==================================================================== */
 export class Payload {
-    meta!: MetaType;
-    application!: ApplicationType;
-    payload!: PayloadReferenceType;
-    origin!: PayloadOrigin;
-    generated!: boolean;
+    meta: MetaType;
+    application: ApplicationType;
+    payload: PayloadReferenceType;
+    origin: PayloadOrigin;
+    generated: boolean;
 
     /**
      * get payload object from payload UUID or payload Json
@@ -74,28 +68,25 @@ export class Payload {
     /**
      * build payload from inside the app
      * @param TxJson Ledger format TXJson
-     * @param custom_instruction
-     * @param submit
+     * @param message
      */
-    static build(TxJson: TransactionJson, custom_instruction?: string, submit = true): Payload {
+    static build(TxJson: TransactionJson, message?: string): Payload {
         const instance = new Payload();
 
         // force the signer accounts if account is set in transaction
         const signers = TxJson.Account ? [TxJson.Account] : [];
 
+        // set meta flag including submit and instruction message
         instance.meta = {
-            uuid: uuidv4(),
-            submit, // submit by default
-            signers, // only can be signed by tx Account or any
-            custom_instruction,
+            submit: true,
+            custom_instruction: message,
+            signers,
         };
 
         // set the payload and transaction type
         instance.payload = {
             tx_type: TxJson.TransactionType as TransactionTypes,
             request_json: TxJson,
-            created_at: new Date().toISOString(),
-            expires_at: new Date().toISOString(),
         };
 
         // set generated flag
@@ -120,7 +111,11 @@ export class Payload {
         try {
             const { hash, request_json, tx_type } = payload;
 
-            const isPseudoTransaction = tx_type in PseudoTransactionTypes;
+            const isPseudoTransaction = [
+                PseudoTransactionTypes.SignIn,
+                PseudoTransactionTypes.PaymentChannelAuthorize,
+                // @ts-ignore
+            ].includes(tx_type);
 
             // Pseudo transactions should not have transaction type
             if (isPseudoTransaction && request_json.TransactionType) {
@@ -176,9 +171,9 @@ export class Payload {
                 .get({ uuid, from: this.getOrigin() }, undefined, {
                     'X-Xaman-Digest': DigestSerializeWithSHA1.DIGEST_HASH_ALGO,
                 })
-                .then(async (response: PayloadType) => {
+                .then(async (res: PayloadType) => {
                     // get verification status
-                    const verified = await this.verify(response.payload);
+                    const verified = await this.verify(res.payload);
 
                     // if not verified then
                     if (!verified) {
@@ -186,32 +181,33 @@ export class Payload {
                         return;
                     }
 
-                    if (get(response, 'response.resolved_at')) {
+                    if (get(res, 'response.resolved_at')) {
                         reject(new Error(Localize.t('payload.payloadAlreadyResolved')));
                         return;
                     }
 
-                    if (get(response, 'meta.expired')) {
+                    if (get(res, 'meta.expired')) {
                         reject(new Error(Localize.t('payload.payloadExpired')));
                         return;
                     }
 
-                    resolve(response);
+                    resolve(res);
                 })
-                .catch((error: ApiError) => {
-                    // known error
-                    if (error.code && error.code in PayloadErrors) {
-                        return reject(new Error(PayloadErrors[error.code]));
-                    }
+                .catch((response: any) => {
+                    if (has(response, 'error')) {
+                        const { error } = response;
 
-                    // unknown error
-                    if (error.reference) {
-                        return reject(
-                            new Error(Localize.t('payload.unexpectedErrorOccurred', { reference: error.reference })),
-                        );
-                    }
+                        const code = get(error, 'code');
+                        const reference = get(error, 'reference');
 
-                    // unexpected error
+                        // known error message's
+                        if (code && has(errors, code)) {
+                            const errorMessage = get(errors, error.code);
+                            return reject(new Error(errorMessage));
+                        }
+
+                        return reject(new Error(Localize.t('payload.unexpectedErrorOccurred', { reference })));
+                    }
                     return reject(new Error(Localize.t('global.unexpectedErrorOccurred')));
                 });
         });
@@ -233,8 +229,8 @@ export class Payload {
                 origintype: this.getOrigin(),
             });
 
-            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((error: ApiError) => {
-                logger.error(`Patch ${this.getPayloadUUID()}`, error);
+            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((e: any) => {
+                logger.debug('Patch error', e);
             });
 
             return true;
@@ -262,8 +258,8 @@ export class Payload {
                     origintype: this.getOrigin(),
                 },
             )
-            .catch((error: ApiError) => {
-                logger.error(`Patch reject ${this.getPayloadUUID()}`, error);
+            .catch((e: any) => {
+                logger.debug('Reject error', e);
             });
     };
 
@@ -314,55 +310,38 @@ export class Payload {
     /**
      * Get transaction
      */
-    getTransaction(): SignableTransaction & MutatedTransaction {
+    getTransaction(): Transactions | PseudoTransactions {
         const { request_json, tx_type } = this.payload;
+
+        // check if normal transaction and supported by the app
+        if (
+            request_json.TransactionType &&
+            !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
+        ) {
+            throw new Error(`Requested transaction type is not supported "${request_json.TransactionType}".`);
+        }
 
         // check if pseudo transaction and supported by the app
         if (
             !request_json.TransactionType &&
             !Object.values(PseudoTransactionTypes).includes(tx_type as PseudoTransactionTypes)
         ) {
-            throw new Error(`Requested pseudo transaction type "${request_json.TransactionType} is not supported".`);
-        }
-
-        // check if normal transaction and supported by the app
-        // NOTE: only in case of developer mode enabled we allow transaction fallback
-        if (
-            request_json.TransactionType &&
-            !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
-        ) {
-            if (CoreRepository.isDeveloperModeEnabled()) {
-                logger.warn(
-                    `Requested transaction type "${request_json.TransactionType}" not found, revert to fallback transaction.`,
-                );
-            } else {
-                throw new Error(
-                    `Requested transaction type "${request_json.TransactionType} is not supported at the moment.`,
-                );
-            }
+            throw new Error(`Requested pseudo transaction type is not supported "${request_json.TransactionType}".`);
         }
 
         let craftedTransaction;
-
         if (this.isPseudoTransaction()) {
             craftedTransaction = TransactionFactory.getPseudoTransaction(
                 { ...request_json },
                 tx_type as PseudoTransactionTypes,
-                [MixingTypes.Sign, MixingTypes.Mutation],
-            ) as SignableTransaction & MutatedTransaction;
+            );
         } else {
-            craftedTransaction = TransactionFactory.getTransaction(
-                {
-                    ...request_json,
-                },
-                undefined,
-                [MixingTypes.Sign, MixingTypes.Mutation],
-            ) as SignableTransaction & MutatedTransaction;
+            craftedTransaction = TransactionFactory.getTransaction({ ...request_json });
         }
 
         // check assigned transaction have the same type as reported from backend
         // NOTE: THIS SHOULD NEVER HAPPEN
-        if (craftedTransaction.TransactionType && craftedTransaction.TransactionType !== this.getTransactionType()) {
+        if (craftedTransaction.TransactionType !== this.getTransactionType()) {
             throw new Error('Parsed transaction have invalid transaction type!');
         }
 
@@ -406,7 +385,7 @@ export class Payload {
     /**
      * Return payload custom instruction
      */
-    getCustomInstruction = (): string | undefined => {
+    getCustomInstruction = (): string => {
         return this.meta.custom_instruction;
     };
 
@@ -427,7 +406,7 @@ export class Payload {
             return signers;
         }
 
-        return [];
+        return undefined;
     };
 
     /**

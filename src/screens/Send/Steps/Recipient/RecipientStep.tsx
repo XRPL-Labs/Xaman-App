@@ -18,22 +18,23 @@ import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { NormalizeDestination } from '@common/utils/codec';
 
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 
+// components
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
+// locale
 import Localize from '@locale';
 
-import { EnterDestinationTagOverlayProps } from '@screens/Overlay/EnterDestinationTag';
-import { FlaggedDestinationOverlayProps } from '@screens/Overlay/FlaggedDestination';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+// context
 import { StepsContext } from '../../Context';
 
 /* types ==================================================================== */
@@ -61,7 +62,7 @@ class RecipientStep extends Component<Props, State> {
     sequence: number;
 
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -297,7 +298,7 @@ class RecipientStep extends Component<Props, State> {
 
         const myAccountList = remove(Array.from(accounts), (n) => {
             // remove source account from list
-            return n.address !== source?.address;
+            return n.address !== source.address;
         });
 
         if (myAccountList && myAccountList.length !== 0) {
@@ -339,7 +340,7 @@ class RecipientStep extends Component<Props, State> {
             return;
         }
 
-        Navigator.showOverlay<EnterDestinationTagOverlayProps>(AppScreens.Overlay.EnterDestinationTag, {
+        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
             buttonType: 'next',
             destination,
             onFinish: (destinationTag: string) => {
@@ -377,12 +378,6 @@ class RecipientStep extends Component<Props, State> {
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
         const { setDestinationInfo, amount, currency, destination, source } = this.context;
         let { destinationInfo } = this.context;
-
-        // double check, this should not be happening
-        if (!destination || !source) {
-            Alert.alert(Localize.t('global.error'), 'Source and Destination is required!');
-            return;
-        }
 
         try {
             this.setState({
@@ -434,7 +429,7 @@ class RecipientStep extends Component<Props, State> {
 
             if (destinationInfo.risk === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
                 setTimeout(() => {
-                    Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
+                    Navigator.showOverlay(AppScreens.Overlay.FlaggedDestination, {
                         destination: destination.address,
                         onContinue: this.checkAndNext.bind(null, [...passedChecks, PassableChecks.CONFIRMED_SCAM]),
                         onDismissed: this.resetResult,
@@ -536,10 +531,10 @@ class RecipientStep extends Component<Props, State> {
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
             if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
-                const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
-                    currency: currency.currency.currencyCode,
-                    issuer: currency.currency.issuer,
-                });
+                const destinationLine = await LedgerService.getFilteredAccountLine(
+                    destination.address,
+                    currency.currency,
+                );
 
                 // recipient does not have the proper trustline
                 if (
@@ -594,7 +589,7 @@ class RecipientStep extends Component<Props, State> {
                             currency:
                                 typeof currency === 'string'
                                     ? NetworkService.getNativeAsset()
-                                    : NormalizeCurrencyCode(currency.currency.currencyCode),
+                                    : NormalizeCurrencyCode(currency.currency.currency),
                         }),
                         buttons: [
                             {
@@ -660,7 +655,7 @@ class RecipientStep extends Component<Props, State> {
         }
 
         // go to the next step if everything was fine
-        await this.goNext();
+        this.goNext();
     };
 
     onScannerRead = (content: any) => {
@@ -673,12 +668,6 @@ class RecipientStep extends Component<Props, State> {
 
     goNext = async () => {
         const { goNext, setIssuerFee, source, destination, currency } = this.context;
-
-        // double check, this should not be happening
-        if (!destination || !source) {
-            Alert.alert(Localize.t('global.error'), 'Source and Destination is required!');
-            return;
-        }
 
         try {
             this.setState({
@@ -760,18 +749,16 @@ class RecipientStep extends Component<Props, State> {
                 address={item.address}
                 tag={item.tag}
                 info={{
-                    address: item.address,
-                    tag: item.tag,
                     name: item.name,
                     source: item.source,
                 }}
-                containerStyle={selected ? styles.accountElementSelected : {}}
-                textStyle={selected ? styles.accountElementSelectedText : {}}
+                containerStyle={selected && styles.accountElementSelected}
+                textStyle={selected && styles.accountElementSelectedText}
                 visibleElements={{
                     tag: false,
                     avatar: true,
                     source: true,
-                    menu: false,
+                    button: false,
                 }}
                 onPress={() => {
                     if (isLoading) {

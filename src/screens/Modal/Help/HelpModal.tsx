@@ -26,10 +26,10 @@ export interface Props {
 export interface State {}
 
 /* Component ==================================================================== */
-class HelpModal extends Component<Props, State> {
+class HelpView extends Component<Props, State> {
     static screenName = AppScreens.Modal.Help;
 
-    private backHandler: NativeEventSubscription | undefined;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -88,4 +88,4 @@ class HelpModal extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default HelpModal;
+export default HelpView;

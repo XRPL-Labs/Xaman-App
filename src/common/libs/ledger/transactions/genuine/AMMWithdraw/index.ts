@@ -1,3 +1,3 @@
-export { default as AMMWithdraw } from './AMMWithdraw.class';
-export { default as AMMWithdrawValidation } from './AMMWithdraw.validation';
-export { default as AMMWithdrawInfo } from './AMMWithdraw.info';
+export { default as AMMWithdraw } from './AMMWithdrawClass';
+export { default as AMMWithdrawValidation } from './AMMWithdrawValidation';
+export { default as AMMWithdrawInfo } from './AMMWithdrawInfo';

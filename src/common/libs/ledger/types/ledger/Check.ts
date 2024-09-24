@@ -1,4 +1,4 @@
-import { LedgerAmount } from '../common';
+import { Amount } from '../common';
 
 import { BaseLedgerEntry, HasPreviousTxnID } from './BaseLedgerEntry';
 
@@ -41,7 +41,7 @@ export default interface Check extends BaseLedgerEntry, HasPreviousTxnID {
      * Check is successfully cashed, the destination is credited in the same
      * currency for up to this amount.
      */
-    SendMax: LedgerAmount;
+    SendMax: Amount;
     /** The sequence number of the CheckCreate transaction that created this check. */
     Sequence: number;
     /**

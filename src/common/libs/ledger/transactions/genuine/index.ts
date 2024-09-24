@@ -1,4 +1,4 @@
-export { default as BaseGenuineTransaction } from './base';
+export { default as BaseTransaction } from './BaseTransaction';
 export * from './Payment';
 export * from './TrustSet';
 export * from './AccountSet';
@@ -42,5 +42,3 @@ export * from './AMMVote';
 export * from './AMMWithdraw';
 export * from './Remit';
 export * from './Clawback';
-export * from './DIDSet';
-export * from './DIDDelete';

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AlertDialogEditText"
+    style="@style/EditTextStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:imeOptions="actionDone"
     android:textCursorDrawable="@drawable/edit_text_cursor"
-    android:theme="@style/AlertDialogEditText" />
+    android:theme="@style/EditTextStyle"
+    />

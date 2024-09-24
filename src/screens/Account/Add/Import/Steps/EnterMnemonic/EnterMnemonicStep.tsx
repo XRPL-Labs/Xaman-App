@@ -13,6 +13,8 @@ import { derive } from 'xrpl-accountlib';
 
 import { StringType, XrplSecret } from 'xumm-string-decode';
 
+import Localize from '@locale';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
@@ -28,10 +30,7 @@ import {
     Footer,
 } from '@components/General';
 
-import Localize from '@locale';
-
-import { ScanModalProps } from '@screens/Modal/Scan';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -54,12 +53,12 @@ export interface State {
 /* Component ==================================================================== */
 class EnterMnemonicStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
-    private scrollViewRef: React.RefObject<KeyboardAwareScrollView>;
-    private inputs: Array<TextInput | null>;
-    private derivationPathInputRef: React.RefObject<DerivationPathInput>;
-    private scrollToBottomY: number;
+    scrollView: KeyboardAwareScrollView;
+    inputs: TextInput[];
+    derivationPathInput: DerivationPathInput;
+    scrollToBottomY: number;
 
     constructor(props: Props) {
         super(props);
@@ -75,12 +74,6 @@ class EnterMnemonicStep extends Component<Props, State> {
             isLoading: false,
         };
 
-        this.scrollViewRef = React.createRef();
-        this.derivationPathInputRef = React.createRef();
-
-        this.scrollToBottomY = 0;
-
-        // TODO: use React.createRef instead
         this.inputs = [];
     }
 
@@ -131,7 +124,7 @@ class EnterMnemonicStep extends Component<Props, State> {
             return;
         }
 
-        let words: any[];
+        let words = [];
 
         // first try space
         words = mnemonic.split(' ');
@@ -159,7 +152,7 @@ class EnterMnemonicStep extends Component<Props, State> {
     };
 
     showScanner = () => {
-        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
+        Navigator.showModal(AppScreens.Modal.Scan, {
             onRead: this.onScannerRead,
             type: StringType.XrplSecret,
         });
@@ -201,12 +194,10 @@ class EnterMnemonicStep extends Component<Props, State> {
 
     scrollToBottom = () => {
         setTimeout(() => {
-            this.scrollViewRef?.current?.scrollTo(this.scrollToBottomY);
+            if (this.scrollView) {
+                this.scrollView.scrollTo(this.scrollToBottomY);
+            }
         }, 100);
-    };
-
-    onContentSizeChange = (contentWidth: number, contentHeight: number) => {
-        this.scrollToBottomY = contentHeight;
     };
 
     renderRows = () => {
@@ -232,7 +223,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                     key={`row.${i}`}
                     style={[styles.inputRow, isActive && styles.inputRowActive]}
                     onPress={() => {
-                        this.inputs[i]?.focus();
+                        if (this.inputs[i]) {
+                            this.inputs[i].focus();
+                        }
                     }}
                 >
                     <Text style={[styles.label, isActive && styles.labelActive]}>#{i + 1}</Text>
@@ -251,7 +244,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                             if (i + 1 !== length) {
                                 if (this.inputs[i + 1]) {
                                     setTimeout(() => {
-                                        this.inputs[i + 1]?.focus();
+                                        this.inputs[i + 1].focus();
                                     }, 200);
                                 }
                             }
@@ -275,10 +268,10 @@ class EnterMnemonicStep extends Component<Props, State> {
         const { usePassphrase } = this.state;
 
         return (
-            <View style={AppStyles.flex1}>
+            <View style={[AppStyles.flex1]}>
                 <View style={AppStyles.hr} />
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml]}>
-                    <View style={AppStyles.leftAligned}>
+                    <View style={[AppStyles.leftAligned]}>
                         <Switch
                             onChange={(enabled) => {
                                 this.setState({ usePassphrase: enabled }, this.scrollToBottom);
@@ -295,7 +288,7 @@ class EnterMnemonicStep extends Component<Props, State> {
 
                 {usePassphrase && (
                     <PasswordInput
-                        inputWrapperStyle={AppStyles.marginBottomSml}
+                        inputWrapperStyle={[AppStyles.marginBottomSml]}
                         onChange={(pass) => {
                             this.setState({
                                 passphrase: pass,
@@ -334,7 +327,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                 {useAlternativePath && (
                     <DerivationPathInput
                         autoFocus
-                        ref={this.derivationPathInputRef}
+                        ref={(r) => {
+                            this.derivationPathInput = r;
+                        }}
                         onChange={this.onDerivationPathChange}
                     />
                 )}
@@ -354,7 +349,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     {Localize.t('account.pleaseEnterYourMnemonic')}
                 </Text>
+
                 <Spacer size={10} />
+
                 <Text
                     numberOfLines={1}
                     style={[
@@ -367,7 +364,9 @@ class EnterMnemonicStep extends Component<Props, State> {
                 >
                     {Localize.t('account.howManyWordsYourMnemonicIs')}
                 </Text>
+
                 <Spacer size={7} />
+
                 <View style={[AppStyles.row, AppStyles.paddingHorizontal, AppStyles.paddingBottomSml]}>
                     <Button
                         testID="12-words-button"
@@ -376,7 +375,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                             this.onLengthChange(12);
                         }}
                         roundedSmall
-                        style={[styles.optionsButton, length === 12 ? styles.optionsButtonSelected : {}]}
+                        style={[styles.optionsButton, length === 12 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 12 && styles.optionsButtonSelectedText]}
                         label="12"
                     />
@@ -387,7 +386,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         }}
                         light
                         roundedSmall
-                        style={[styles.optionsButton, length === 16 ? styles.optionsButtonSelected : {}]}
+                        style={[styles.optionsButton, length === 16 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 16 && styles.optionsButtonSelectedText]}
                         label="16"
                     />
@@ -398,7 +397,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                         }}
                         light
                         roundedSmall
-                        style={[styles.optionsButton, length === 24 ? styles.optionsButtonSelected : {}]}
+                        style={[styles.optionsButton, length === 24 && styles.optionsButtonSelected]}
                         textStyle={[styles.optionsButtonText, length === 24 && styles.optionsButtonSelectedText]}
                         label="24"
                     />
@@ -415,10 +414,14 @@ class EnterMnemonicStep extends Component<Props, State> {
                 </View>
 
                 <KeyboardAwareScrollView
-                    ref={this.scrollViewRef}
+                    ref={(r) => {
+                        this.scrollView = r;
+                    }}
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    contentContainerStyle={AppStyles.paddingHorizontal}
-                    onContentSizeChange={this.onContentSizeChange}
+                    contentContainerStyle={[AppStyles.paddingHorizontal]}
+                    onContentSizeChange={(contentWidth, contentHeight) => {
+                        this.scrollToBottomY = contentHeight;
+                    }}
                 >
                     {this.renderRows()}
                     {this.renderPassphrase()}
@@ -435,7 +438,7 @@ class EnterMnemonicStep extends Component<Props, State> {
                             onPress={goBack}
                         />
                     </View>
-                    <View style={AppStyles.flex5}>
+                    <View style={[AppStyles.flex5]}>
                         <Button
                             testID="next-button"
                             isLoading={isLoading}

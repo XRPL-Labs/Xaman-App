@@ -19,13 +19,27 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { FeeItem, Props, State } from './types';
+interface FeeItem {
+    type: string;
+    value: number;
+    suggested?: boolean;
+}
+
+interface Props {
+    availableFees: FeeItem[];
+    selectedFee: FeeItem;
+    onSelect: (fee: FeeItem) => void;
+}
+
+interface State {
+    selected: FeeItem;
+}
 
 /* Component ==================================================================== */
 class SelectFeeOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.SelectFee;
 
-    private actionPanelRef: React.RefObject<ActionPanel>;
+    private actionPanel: ActionPanel;
 
     static options() {
         return {
@@ -45,8 +59,6 @@ class SelectFeeOverlay extends Component<Props, State> {
         this.state = {
             selected: props.selectedFee,
         };
-
-        this.actionPanelRef = React.createRef();
     }
 
     onItemSelect = (item: FeeItem) => {
@@ -59,17 +71,15 @@ class SelectFeeOverlay extends Component<Props, State> {
         const { onSelect } = this.props;
         const { selected } = this.state;
 
-        this.actionPanelRef?.current?.slideDown();
+        if (this.actionPanel) {
+            this.actionPanel.slideDown();
+        }
 
         setTimeout(() => {
             if (typeof onSelect === 'function') {
                 onSelect(selected);
             }
         }, 200);
-    };
-
-    onClosePress = () => {
-        this.actionPanelRef?.current?.slideDown();
     };
 
     render() {
@@ -82,7 +92,9 @@ class SelectFeeOverlay extends Component<Props, State> {
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={AppStyles.centerAligned}
                 extraBottomInset
-                ref={this.actionPanelRef}
+                ref={(r) => {
+                    this.actionPanel = r;
+                }}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
@@ -95,7 +107,9 @@ class SelectFeeOverlay extends Component<Props, State> {
                             light
                             roundedSmall
                             isDisabled={false}
-                            onPress={this.onClosePress}
+                            onPress={() => {
+                                this.actionPanel?.slideDown();
+                            }}
                             textStyle={[AppStyles.subtext, AppStyles.bold]}
                             label={Localize.t('global.close')}
                         />

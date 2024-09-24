@@ -26,35 +26,35 @@ class Network extends Realm.Object<Network> {
     static schema: Realm.ObjectSchema = NetworkSchema.schema;
 
     /** Unique identifier representing this specific network */
-    public declare id: Realm.BSON.ObjectId;
+    public id: Realm.BSON.ObjectId;
     /** A unique key identifier for the network. (ex: TESTNET) */
-    public declare key: string;
+    public key: string;
     /** A number representing network/chain id */
-    public declare networkId: number;
+    public networkId: number;
     /** Descriptive name of the network. */
-    public declare name: string;
+    public name: string;
     /** Hex Color associated with the network. */
-    public declare color: string;
+    public color: string;
     /** Specifies the type or category of the network. */
-    public declare type: NetworkType;
+    public type: NetworkType;
     /** Details of the network's native asset, including its visual representation. */
-    public declare nativeAsset: NativeAsset;
+    public nativeAsset: NativeAsset;
     /** The basic reserve required on this network. */
-    public declare baseReserve: number;
+    public baseReserve: number;
     /** The owner's reserve requirement for this network. */
-    public declare ownerReserve: number;
+    public ownerReserve: number;
     /** Default node associated with this network. */
-    public declare defaultNode: any;
+    public defaultNode: any;
     /** Collection of nodes that belong to this network. */
-    public declare nodes: Realm.List<NodeModel>;
+    public nodes: Realm.List<NodeModel>;
     /** List of amendments that apply to this network. */
-    public declare amendments?: string[];
+    public amendments?: string[];
     /** Serialized string representation of network definitions. */
-    public declare definitionsString?: string;
+    public definitionsString?: string;
     /** Date when the network was initially registered in the system. */
-    public declare registerAt?: Date;
+    public registerAt?: Date;
     /** Date when the network's data was last updated in the system. */
-    public declare updatedAt?: Date;
+    public updatedAt?: Date;
 
     /**
      * Determines if a given feature, represented by an amendment, is enabled for this network.
@@ -63,7 +63,7 @@ class Network extends Realm.Object<Network> {
      * @returns {boolean} - True if the feature is enabled, false otherwise.
      */
     public isFeatureEnabled(amendment: keyof typeof Amendments): boolean {
-        return this.amendments ? this.amendments.indexOf(Amendments[amendment]) > -1 : false;
+        return this.amendments?.indexOf(Amendments[amendment]) > -1;
     }
 
     /**

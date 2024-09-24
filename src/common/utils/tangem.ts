@@ -60,13 +60,13 @@ const GetWalletPublicKey = (card: Card): string => {
             // get the first wallet
             const wallet = first(wallets);
             // return wallet pub key
-            return wallet!.publicKey;
+            return wallet.publicKey;
         }
     }
 
     // older version of tangem SDK
     if (has(card, 'walletPublicKey')) {
-        // @ts-expect-error
+        // @ts-ignore
         const { walletPublicKey } = card;
         return walletPublicKey;
     }
@@ -86,16 +86,16 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         const wallet = first(wallets);
         const derivedKeys = get(wallet, 'derivedKeys');
 
-        // response from android SDK is different from iOS
+        // response from android SDK is different than iOS
         let derivedKey;
 
         // android
         if (isPlainObject(derivedKeys)) {
             const key = first(keys(derivedKeys));
             try {
-                const keyJSON = JSON.parse(key!);
+                const keyJSON = JSON.parse(key);
                 if (get(keyJSON, 'rawPath') === DefaultDerivationPaths) {
-                    derivedKey = get(derivedKeys, key!);
+                    derivedKey = get(derivedKeys, key);
                 }
             } catch (e) {
                 // ignore
@@ -103,7 +103,7 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
         }
 
         // ios
-        // @ts-expect-error
+        // @ts-ignore
         if (Array.isArray(derivedKeys) && derivedKeys.length === 2 && first(derivedKeys) === DefaultDerivationPaths) {
             derivedKey = get(derivedKeys, '[1]');
         }
@@ -123,7 +123,7 @@ const GetWalletDerivedPublicKey = (card: Card): string => {
 /**
  * get card enforced security options
  */
-const GetCardSecurityOptions = (card: Card): { [key in TangemSecurity]: boolean } => {
+const GetCardSecurityOptions = (card: any): { [key in TangemSecurity]: boolean } => {
     return {
         [TangemSecurity.LongTap]: true,
         [TangemSecurity.Passcode]: get(card, 'settings.isSettingPasscodeAllowed', false),
@@ -134,7 +134,7 @@ const GetCardSecurityOptions = (card: Card): { [key in TangemSecurity]: boolean 
 /**
  * get card passcode status
  */
-const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
+const GetCardEnforcedSecurity = (card: any): TangemSecurity => {
     // new cards
     if (get(card, 'isPasscodeSet') === true) {
         return TangemSecurity.Passcode;
@@ -145,7 +145,6 @@ const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
     }
 
     // older version of tangem sdk
-    // @ts-expect-error
     if (has(card, 'isPin2Default') && !card.isPin2Default) {
         return TangemSecurity.Passcode;
     }
@@ -156,7 +155,7 @@ const GetCardEnforcedSecurity = (card: Card): TangemSecurity => {
 /**
  * get card ID
  */
-const GetCardId = (card: Card): string => {
+const GetCardId = (card: any): string => {
     if (has(card, 'cardId')) {
         return card.cardId;
     }

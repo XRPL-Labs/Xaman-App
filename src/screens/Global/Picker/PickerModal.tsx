@@ -78,7 +78,9 @@ class PickerModal extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: Navigator.pop,
+                        onPress: () => {
+                            Navigator.pop();
+                        },
                     }}
                     centerComponent={{ text: title }}
                 />

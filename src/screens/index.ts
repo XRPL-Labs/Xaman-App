@@ -9,7 +9,7 @@ import FinishSetup from './Setup/Finish';
 // TabBar
 import Home from './Home';
 import Events from './Events';
-import XApps from './xApps';
+import Profile from './xApps';
 import Settings from './Settings';
 
 // Account
@@ -50,7 +50,7 @@ import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
-import ParticipantMenu from './Overlay/ParticipantMenu';
+import RecipientMenu from './Overlay/RecipientMenu';
 import ConfirmDestinationTag from './Overlay/ConfirmDestinationTag';
 import SelectAccount from './Overlay/SelectAccount';
 import SelectCurrency from './Overlay/SelectCurrency';
@@ -61,7 +61,6 @@ import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
 import XAppInfo from './Overlay/XAppInfo';
 import NetworkRailsSync from './Overlay/NetworkRailsSync';
-import PurchaseProduct from './Overlay/PurchaseProduct';
 
 // Transaction
 import Send from './Send';
@@ -99,16 +98,20 @@ import Placeholder from './Global/Placeholder';
 import Picker from './Global/Picker';
 
 export {
+    // onboarding
     Onboarding,
+    // Setup
     PasscodeSetup,
     BiometrySetup,
     PushNotificationSetup,
     DisclaimersSetup,
     FinishSetup,
+    // Tab bar
     Home,
     Events,
-    XApps,
+    Profile,
     Settings,
+    // Account
     AccountAdd,
     AccountList,
     AccountEdit,
@@ -117,6 +120,7 @@ export {
     AccountImport,
     AccountGenerate,
     AccountCipherMigrationView,
+    // Modals
     ReviewTransaction,
     Scan,
     Submit,
@@ -127,6 +131,7 @@ export {
     CurrencyPicker,
     DestinationPicker,
     TransactionLoader,
+    // overlay
     SwitchAccount,
     ShareAccount,
     AddToken,
@@ -142,7 +147,7 @@ export {
     ExplainBalance,
     ChangeLog,
     ConnectionIssue,
-    ParticipantMenu,
+    RecipientMenu,
     ConfirmDestinationTag,
     SelectAccount,
     SelectCurrency,
@@ -153,24 +158,31 @@ export {
     SwitchNetwork,
     XAppInfo,
     NetworkRailsSync,
-    PurchaseProduct,
+    // transaction
     Send,
     Request,
     Exchange,
     TransactionDetails,
+    // addressBook
     AddressBook,
     AddContact,
     EditContact,
+    // settings
     GeneralSettings,
     AdvancedSettings,
     SecuritySettings,
     TermOfUse,
     Credits,
+    // change passcode
     ChangePasscode,
+    // third party apps
     ThirdPartyAppsList,
     EditThirdPartyApp,
+    // networks
     NetworkList,
+    // session logs
     SessionLog,
+    // global
     Picker,
     Placeholder,
 };

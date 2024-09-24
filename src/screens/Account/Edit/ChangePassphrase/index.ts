@@ -1,4 +1,3 @@
-import ChangePassphraseView, { Props as ChangePassphraseViewProps } from './ChangePassphraseView';
+import ChangePassphraseView from './ChangePassphraseView';
 
-export type { ChangePassphraseViewProps };
 export default ChangePassphraseView;

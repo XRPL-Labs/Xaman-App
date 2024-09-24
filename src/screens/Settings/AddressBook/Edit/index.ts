@@ -1,4 +1,3 @@
-import EditContactView, { Props as EditContactViewProps } from './EditContactView';
+import EditContactView from './EditContactView';
 
-export type { EditContactViewProps };
 export default EditContactView;

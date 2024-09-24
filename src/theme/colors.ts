@@ -2,6 +2,7 @@
  * App Theme - Colors
  */
 
+/* eslint-disable spellcheck/spell-checker */
 import { ColorLuminance, HexToRgbA } from '@common/utils/color';
 
 const colors = {

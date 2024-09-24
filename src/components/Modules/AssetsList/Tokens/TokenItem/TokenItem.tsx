@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 
 import { Button, AmountText, Icon, TokenAvatar, TokenIcon } from '@components/General';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { NormalizeCurrencyCode } from '@common/utils/amount';
 
 import { TrustLineModel } from '@store/models';
 
@@ -29,7 +29,7 @@ interface State {
     balance: string;
     favorite: boolean;
     no_ripple: boolean;
-    limit?: string;
+    limit: string;
 }
 
 /* Component ==================================================================== */
@@ -41,13 +41,13 @@ class TokenItem extends PureComponent<Props, State> {
 
         this.state = {
             balance: props.token.balance,
-            favorite: !!props.token.favorite,
-            no_ripple: !!props.token.no_ripple,
+            favorite: props.token.favorite,
+            no_ripple: props.token.no_ripple,
             limit: props.token.limit,
         };
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): State | null {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): State {
         if (
             !isEqual(nextProps.token.balance, prevState.balance) ||
             !isEqual(nextProps.token.favorite, prevState.favorite) ||
@@ -56,8 +56,8 @@ class TokenItem extends PureComponent<Props, State> {
         ) {
             return {
                 balance: nextProps.token.balance,
-                favorite: !!nextProps.token.favorite,
-                no_ripple: !!nextProps.token.no_ripple,
+                favorite: nextProps.token.favorite,
+                no_ripple: nextProps.token.no_ripple,
                 limit: nextProps.token.limit,
             };
         }
@@ -86,7 +86,7 @@ class TokenItem extends PureComponent<Props, State> {
         if (selfIssued) return Localize.t('home.selfIssued');
 
         if (token.currency.name) {
-            return `${token.counterParty.name} ${NormalizeCurrencyCode(token.currency.currencyCode)}`;
+            return `${token.counterParty.name} ${NormalizeCurrencyCode(token.currency.currency)}`;
         }
 
         return `${token.counterParty.name}`;
@@ -95,7 +95,11 @@ class TokenItem extends PureComponent<Props, State> {
     getCurrencyName = () => {
         const { token } = this.props;
 
-        return token.getReadableCurrency();
+        if (token.currency.name) {
+            return `${token.currency.name}`;
+        }
+
+        return NormalizeCurrencyCode(token.currency.currency);
     };
 
     getTokenAvatar = () => {
@@ -113,7 +117,7 @@ class TokenItem extends PureComponent<Props, State> {
         }
 
         // show alert on top of avatar if rippling set
-        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLiquidityPoolToken()) {
+        if ((no_ripple === false || Number(limit) === 0) && !token.obligation && !token.isLPToken()) {
             badge = <Icon name="ImageTriangle" size={15} />;
         }
 
@@ -144,6 +148,7 @@ class TokenItem extends PureComponent<Props, State> {
                     light
                     isDisabled
                     style={styles.reorderButton}
+                    disabledStyle={{}}
                 />
             </View>
         );
@@ -159,7 +164,7 @@ class TokenItem extends PureComponent<Props, State> {
                     <TokenIcon
                         token={token}
                         containerStyle={styles.tokenIconContainer}
-                        style={discreetMode ? AppStyles.imgColorGrey : {}}
+                        style={discreetMode && AppStyles.imgColorGrey}
                     />
                 }
                 value={balance}

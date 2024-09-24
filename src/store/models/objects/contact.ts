@@ -14,17 +14,17 @@ class Contact extends Realm.Object<Contact> {
     public static schema: Realm.ObjectSchema = ContactSchema.schema;
 
     /** Unique identifier of the contact UUID v4. @type {string} */
-    public declare id: string;
+    public id: string;
     /** Address associated with the contact. @type {string} */
-    public declare address: string;
+    public address: string;
     /** Name of the contact. @type {string} */
-    public declare name: string;
+    public name: string;
     /** Destination tag associated with the contact. @type {string} */
-    public declare destinationTag: string;
+    public destinationTag: string;
     /** Date when the contact was registered. @type {Date?} */
-    public declare registerAt?: Date;
+    public registerAt?: Date;
     /** Date when the contact was last updated. @type {Date?} */
-    public declare updatedAt?: Date;
+    public updatedAt?: Date;
 }
 
 export default Contact;

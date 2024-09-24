@@ -21,7 +21,7 @@ import Vault from '@common/libs/vault';
 import { GetCardId, GetWalletDerivedPublicKey } from '@common/utils/tangem';
 import { AppScreens } from '@common/constants';
 
-import BackendService from '@services/BackendService';
+import backendService from '@services/BackendService';
 import LedgerService from '@services/LedgerService';
 
 import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
@@ -32,12 +32,12 @@ import { Header } from '@components/General';
 
 import Localize from '@locale';
 
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
-
 import { AppStyles } from '@theme';
 
+// steps
 import Steps from './Steps';
 
+// context
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
@@ -59,7 +59,7 @@ class AccountImportView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let initStep: ImportSteps;
+        let initStep = undefined as ImportSteps;
 
         switch (true) {
             case props.upgradeAccount !== undefined:
@@ -115,10 +115,6 @@ class AccountImportView extends Component<Props, State> {
     populateTangemCard = () => {
         const { tangemCard } = this.props;
 
-        if (!tangemCard) {
-            throw new Error('Tangem card details is required for populating tangem card');
-        }
-
         // get derived public key from card data
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
@@ -126,12 +122,7 @@ class AccountImportView extends Component<Props, State> {
         const address = AccountLib.utils.deriveAddress(publicKey);
 
         // generate XRPL account
-        const account = new AccountLib.XRPL_Account({ address, keypair: { publicKey, privateKey: null } });
-
-        // check if the public key and address is initiated in the account object
-        if (!account?.keypair?.publicKey || !account.address) {
-            throw new Error('Tangem account public key and account address is required!');
-        }
+        const account = new AccountLib.XRPL_Account({ address, keypair: { publicKey, privateKey: undefined } });
 
         this.setState({
             importedAccount: account,
@@ -243,19 +234,19 @@ class AccountImportView extends Component<Props, State> {
         );
     };
 
-    goNext = async (nextStep?: ImportSteps) => {
+    goNext = async (nextStep: ImportSteps) => {
         const { account, upgradeAccount, importedAccount, alternativeSeedAlphabet, currentStep, prevSteps } =
             this.state;
 
         // we are in the last screen, just import the account and close the screen
         if (currentStep === 'FinishStep') {
-            await this.importAccount();
+            this.importAccount();
             return;
         }
 
         // if it's upgrade check if entered secret is match the account
         if (nextStep === 'ConfirmPublicKey' && upgradeAccount) {
-            if (importedAccount!.address !== upgradeAccount.address) {
+            if (importedAccount.address !== upgradeAccount.address) {
                 Alert.alert(Localize.t('global.error'), Localize.t('account.upgradeAccountSecretIsNotMatch'));
                 return;
             }
@@ -264,8 +255,7 @@ class AccountImportView extends Component<Props, State> {
         // check if the account is already exist before move to next step
         // if it's exist and readonly move as upgrade
         if ((nextStep === 'ConfirmPublicKey' || nextStep === 'LabelStep') && !upgradeAccount) {
-            // TODO: double check if imported account is defined
-            const exist = AccountRepository.findOne({ address: importedAccount!.address! });
+            const exist = AccountRepository.findOne({ address: importedAccount.address });
 
             if (exist) {
                 if (
@@ -277,14 +267,14 @@ class AccountImportView extends Component<Props, State> {
                     if (account.accessLevel === AccessLevels.Full && account.type === AccountTypes.Regular) {
                         Alert.alert(
                             Localize.t('global.error'),
-                            Localize.t('account.importingSecretAccountExist', { address: importedAccount!.address }),
+                            Localize.t('account.importingSecretAccountExist', { address: importedAccount.address }),
                         );
                         return;
                     }
 
                     Alert.alert(
                         Localize.t('global.error'),
-                        Localize.t('account.accountAlreadyExist', { address: importedAccount!.address }),
+                        Localize.t('account.accountAlreadyExist', { address: importedAccount.address }),
                     );
                     return;
                 }
@@ -302,8 +292,7 @@ class AccountImportView extends Component<Props, State> {
                 isLoading: true,
             });
 
-            // TODO: double check if imported account is defined
-            await LedgerService.getAccountInfo(importedAccount!.address!)
+            await LedgerService.getAccountInfo(importedAccount.address)
                 .then((accountInfo: any) => {
                     if (!accountInfo || has(accountInfo, 'error')) {
                         if (get(accountInfo, 'error') === 'actNotFound') {
@@ -338,7 +327,7 @@ class AccountImportView extends Component<Props, State> {
             });
         } else {
             this.setState({
-                currentStep: nextStep!,
+                currentStep: nextStep,
                 prevSteps,
             });
         }
@@ -358,7 +347,7 @@ class AccountImportView extends Component<Props, State> {
             Navigator.pop();
         } else {
             this.setState({
-                currentStep: last(prevSteps)!,
+                currentStep: last(prevSteps),
                 prevSteps: dropRight(prevSteps),
             });
         }
@@ -370,18 +359,18 @@ class AccountImportView extends Component<Props, State> {
 
         try {
             let encryptionKey;
-            let createdAccount: AccountModel;
+            let createdAccount = undefined as AccountModel;
 
             // if account is imported as full access report to the backend for security checks
             if (account.accessLevel === AccessLevels.Full) {
                 // get the signature and add account
                 if (account.type === AccountTypes.Tangem) {
-                    BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!)).catch(() => {
+                    backendService.addAccount(account.address, tangemSignature, GetCardId(tangemCard)).catch(() => {
                         // ignore
                     });
                 } else {
                     // include device UUID is signed transaction
-                    const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
+                    const { deviceUUID, uuid } = ProfileRepository.getProfile();
                     const { signedTransaction } = AccountLib.sign(
                         {
                             Account: account.address,
@@ -389,7 +378,8 @@ class AccountImportView extends Component<Props, State> {
                         },
                         importedAccount,
                     );
-                    BackendService.addAccount(account.address!, signedTransaction).catch(() => {
+
+                    backendService.addAccount(account.address, signedTransaction).catch(() => {
                         // ignore
                     });
                 }
@@ -414,7 +404,7 @@ class AccountImportView extends Component<Props, State> {
                 // import account as full access
                 createdAccount = await AccountRepository.add(
                     account,
-                    importedAccount!.keypair.privateKey!,
+                    importedAccount.keypair.privateKey,
                     encryptionKey,
                 );
             } else {
@@ -440,9 +430,9 @@ class AccountImportView extends Component<Props, State> {
                 // if account imported with alternative seed alphabet and xApp present
                 // route user to the xApp
                 if (has(alternativeSeedAlphabet, 'params.xapp')) {
-                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp') as string;
+                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp');
 
-                    Navigator.showModal<XAppBrowserModalProps>(
+                    Navigator.showModal(
                         AppScreens.Modal.XAppBrowser,
                         {
                             account: createdAccount,
@@ -452,12 +442,12 @@ class AccountImportView extends Component<Props, State> {
                         },
                         {
                             modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                            modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                         },
                     );
                 }
             });
-        } catch (error) {
+        } catch {
             // this should never happen but in case just show error that something went wrong
             Toast(Localize.t('global.unexpectedErrorOccurred'));
         }
@@ -551,12 +541,10 @@ class AccountImportView extends Component<Props, State> {
         return (
             <Header
                 leftComponent={
-                    currentStep === 'AccessLevel'
-                        ? {
-                              icon: 'IconChevronLeft',
-                              onPress: this.onHeaderBackPress,
-                          }
-                        : undefined
+                    currentStep === 'AccessLevel' && {
+                        icon: 'IconChevronLeft',
+                        onPress: this.onHeaderBackPress,
+                    }
                 }
                 centerComponent={{ text: title }}
             />

@@ -1,3 +1,3 @@
-const { setDefaultTimeout } = require('@cucumber/cucumber');
+const { setDefaultTimeout } = require('cucumber');
 
 setDefaultTimeout(400 * 1000);

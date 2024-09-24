@@ -32,21 +32,19 @@ interface State {
 
 /* Component ==================================================================== */
 class AccordionPicker extends Component<Props, State> {
-    private pickerContainerRef: React.RefObject<View>;
+    pickerContainer: View;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             expanded: false,
-            itemHeight: 0,
-            itemWidth: 0,
-            pageX: 0,
-            pageY: 0,
+            itemHeight: undefined,
+            itemWidth: undefined,
+            pageX: undefined,
+            pageY: undefined,
             selectedIndex: 0,
         };
-
-        this.pickerContainerRef = React.createRef();
     }
 
     static getDerivedStateFromProps(nextProps: Props) {
@@ -103,6 +101,10 @@ class AccordionPicker extends Component<Props, State> {
         });
     };
 
+    public updateContainerPosition = () => {
+        this.setContainerPosition();
+    };
+
     onPress = () => {
         const { onPress } = this.props;
 
@@ -136,8 +138,8 @@ class AccordionPicker extends Component<Props, State> {
     };
 
     setContainerPosition = () => {
-        if (this.pickerContainerRef.current) {
-            this.pickerContainerRef.current.measure((x, y, width, height, pageX, pageY) => {
+        if (this.pickerContainer) {
+            this.pickerContainer.measure((x, y, width, height, pageX, pageY) => {
                 this.setState({
                     pageX,
                     pageY,
@@ -225,7 +227,7 @@ class AccordionPicker extends Component<Props, State> {
 
         return (
             <Modal visible={expanded} transparent onRequestClose={this.close}>
-                <View style={styles.overlay} onStartShouldSetResponder={() => true} onResponderRelease={this.close}>
+                <View style={[styles.overlay]} onStartShouldSetResponder={() => true} onResponderRelease={this.close}>
                     <View
                         style={[
                             styles.pickerDropDownContainer,
@@ -250,7 +252,7 @@ class AccordionPicker extends Component<Props, State> {
 
         if (isEmpty(items)) {
             return (
-                <View style={containerStyle}>
+                <View style={[containerStyle]}>
                     {/* eslint-disable-next-line */}
                     <View style={[AppStyles.row, { paddingLeft: 10 }]}>
                         <Text style={[AppStyles.p, AppStyles.strong]}>No Item available</Text>
@@ -262,7 +264,9 @@ class AccordionPicker extends Component<Props, State> {
         return (
             <View
                 onLayout={this.setContainerPosition}
-                ref={this.pickerContainerRef}
+                ref={(r) => {
+                    this.pickerContainer = r;
+                }}
                 style={[
                     styles.pickerContainer,
                     containerStyle,

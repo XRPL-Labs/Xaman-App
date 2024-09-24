@@ -1,4 +1,3 @@
-import PushNotificationSetupView, { Props as PushNotificationSetupViewProps } from './PushNotificationView';
+import PushNotificationView from './PushNotificationView';
 
-export type { PushNotificationSetupViewProps };
-export default PushNotificationSetupView;
+export default PushNotificationView;

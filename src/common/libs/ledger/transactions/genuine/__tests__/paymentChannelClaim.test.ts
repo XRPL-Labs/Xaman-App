@@ -1,8 +1,7 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
-
-import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { PaymentChannelClaim, PaymentChannelClaimInfo } from '../PaymentChannelClaim';
 import paymentChannelClaimTemplates from './fixtures/PaymentChannelClaimTx.json';
@@ -18,68 +17,42 @@ describe('PaymentChannelClaim tx', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta }: any = paymentChannelClaimTemplates;
+            const { tx, meta } = paymentChannelClaimTemplates;
             const instance = new PaymentChannelClaim(tx, meta);
 
-            expect(instance.Channel).toBe('3BDB4F92432BCEB2385D3BAA60E8AAEC9B552890A240AEE4AA9E88C9E6C517E8');
-            expect(instance.PublicKey).toBe('ED46FF956B8EEC4BA614B1A6B0B4343D623AE37A891A0461F1F51464CFC3442CF7');
+            expect(instance.Type).toBe('PaymentChannelClaim');
+
+            expect(instance.Channel).toBe('C1AE6DDDEEC05CF2978C0BAD6FE302948E9533691DC749DCDD3B9E5992CA6198');
+            expect(instance.PublicKey).toBe('32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A');
             expect(instance.Signature).toBe(
-                '55C8169517E6353A7168B4F6BE202C0C4D0828CBC3556D4576A3FF67D117F678AEC624FC98417460FA172F313FD920030C8C50B38542BD8744F578A568FB730B',
+                '30440220718D264EF05CAED7C781FF6DE298DCAC68D002562C9BF3A07C1E721B420C0DAB02203A5A4779EF4D2CCC7BC3EF886676D803A9981B928D3B8ACA483B80ECA3CD7B9B',
             );
 
             expect(instance.Amount).toEqual({ currency: 'XRP', value: '1' });
-            expect(instance.Balance).toEqual({ currency: 'XRP', value: '49.65716' });
+            expect(instance.Balance).toEqual({ currency: 'XRP', value: '1' });
         });
     });
 
     describe('Info', () => {
-        const { tx, meta }: any = paymentChannelClaimTemplates;
-        const Mixed = MutationsMixin(PaymentChannelClaim);
-        const instance = new Mixed(tx, meta);
-        const info = new PaymentChannelClaimInfo(instance, {} as any);
-
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `It will update the payment channel 3BDB4F92432BCEB2385D3BAA60E8AAEC9B552890A240AEE4AA9E88C9E6C517E8${'\n'}The channel balance claimed is 49.65716 XRP${'\n'}The payment channel will be closed. Any remaining funds will be returned to the source account.`;
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const { tx, meta } = paymentChannelClaimTemplates;
+                const instance = new PaymentChannelClaim(tx, meta);
+
+                const expectedDescription = `${Localize.t('events.itWillUpdateThePaymentChannel', {
+                    channel: instance.Channel,
+                })}\n${Localize.t('events.theChannelBalanceClaimedIs', {
+                    balance: instance.Balance.value,
+                    currency: instance.Balance.currency,
+                })}\n${Localize.t('events.thePaymentChannelWillBeClosed')}`;
+
+                expect(PaymentChannelClaimInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.claimPaymentChannel'));
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rH11fDGhbVH5NVXNXkGAMTmfWhUHjCtA3B', tag: undefined },
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    factor: [
-                        {
-                            currency: 'XRP',
-                            effect: 'IMMEDIATE_EFFECT',
-                            value: '1',
-                        },
-                    ],
-                    mutate: {
-                        DEC: [],
-                        INC: [
-                            {
-                                action: 'INC',
-                                currency: 'XRP',
-                                value: '9.659988',
-                            },
-                        ],
-                    },
-                });
+                expect(PaymentChannelClaimInfo.getLabel()).toEqual(Localize.t('events.claimPaymentChannel'));
             });
         });
     });

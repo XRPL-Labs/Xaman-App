@@ -1,15 +1,10 @@
-import { MutationsMixin } from '@common/libs/ledger/mixin';
-
 import Localize from '@locale';
 
 import { AccountSet, AccountSetInfo } from '../AccountSet';
-
 import txTemplates from './fixtures/AccountSetTx.json';
 
 jest.mock('@services/LedgerService');
 jest.mock('@services/NetworkService');
-
-const MixedAccountSet = MutationsMixin(AccountSet);
 
 describe('AccountSet', () => {
     describe('Class', () => {
@@ -22,7 +17,7 @@ describe('AccountSet', () => {
         it('Should return right parsed values', () => {
             const {
                 Set: { tx },
-            }: any = txTemplates;
+            } = txTemplates;
             const instance = new AccountSet(tx);
 
             expect(instance.Domain).toBe('example.com');
@@ -39,122 +34,107 @@ describe('AccountSet', () => {
     });
 
     describe('Info', () => {
-        describe('generateDescription()', () => {
-            it('NoOperation', () => {
-                const {
-                    Set: { tx },
-                }: any = txTemplates;
-
-                const instance = new MixedAccountSet({
-                    ...tx,
-                    ...{
-                        SetFlag: undefined,
-                        ClearFlag: undefined,
-                        Domain: undefined,
-                        EmailHash: undefined,
-                        MessageKey: undefined,
-                        TransferRate: undefined,
-                        TickSize: undefined,
-                        NFTokenMinter: undefined,
-                        WalletLocator: undefined,
-                        WalletSize: undefined,
-                    },
-                });
-                const info = new AccountSetInfo(instance, {} as any);
-
-                const expectedDescription = `This is an AccountSet transaction${'\n'}This transaction doesn't affect any account settings.`;
-
-                expect(info.generateDescription()).toEqual(expectedDescription);
+        it('NoOperation', () => {
+            const {
+                Set: { tx },
+            } = txTemplates;
+            const instance = new AccountSet({
+                ...tx,
+                ...{
+                    SetFlag: undefined,
+                    ClearFlag: undefined,
+                    Domain: undefined,
+                    EmailHash: undefined,
+                    MessageKey: undefined,
+                    TransferRate: undefined,
+                    TickSize: undefined,
+                    NFTokenMinter: undefined,
+                    WalletLocator: undefined,
+                    WalletSize: undefined,
+                },
             });
 
-            it('CancelTicket', () => {
-                const {
-                    Set: { tx },
-                }: any = txTemplates;
+            const expectedDescription = `${Localize.t('events.thisIsAnAccountSetTransaction')}\n${Localize.t(
+                'events.thisTransactionDoesNotEffectAnyAccountSettings',
+            )}`;
 
-                const instance = new MixedAccountSet({
-                    ...tx,
-                    ...{
-                        TicketSequence: 1337,
-                        Sequence: 0,
-                        SetFlag: undefined,
-                        ClearFlag: undefined,
-                        Domain: undefined,
-                        EmailHash: undefined,
-                        MessageKey: undefined,
-                        TransferRate: undefined,
-                        TickSize: undefined,
-                        NFTokenMinter: undefined,
-                        WalletLocator: undefined,
-                        WalletSize: undefined,
-                    },
-                });
-                const accountSetInfo = new AccountSetInfo(instance, {} as any);
-
-                const expectedDescription = `This is an AccountSet transaction${'\n'}This transaction clears (consumes & removes) ticket #1337`;
-
-                expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
-                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.cancelTicket'));
-            });
-
-            it('Set', () => {
-                const {
-                    Set: { tx },
-                }: any = txTemplates;
-
-                const instance = new MixedAccountSet(tx);
-                const accountSetInfo = new AccountSetInfo(instance, {} as any);
-
-                const expectedDescription = `This is an AccountSet transaction${'\n'}It sets the account domain to example.com${'\n'}It sets the account's email hash to 0bc83cb571cd1c50ba6f3e8a78ef1346${'\n'}It sets the account message key to 03AB40A0490F9B7ED8DF29D246BF2D6269820A0EE7742ACDD457BEA7C7D0931EDB${'\n'}It sets the account transfer rate to 0.2${'\n'}It sets the account minter to rMinterxxxxxxxxxxxxxxxxxxxxxxxxxx${'\n'}It set the account flag asfAccountTxnID${'\n'}It clears the account flag asfDisableMaster${'\n'}It sets the account wallet locator to ABCDEF123456789${'\n'}It sets the account wallet size to 1337`;
-                expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
-                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
-            });
-
-            it('Clear', () => {
-                const {
-                    Clear: { tx },
-                }: any = txTemplates;
-
-                const instance = new MixedAccountSet(tx);
-                const accountSetInfo = new AccountSetInfo(instance, {} as any);
-
-                const expectedDescription = `This is an AccountSet transaction${'\n'}It removes the account domain${'\n'}It removes the account's email hash${'\n'}It removes the account message key${'\n'}It removes the account transfer rate${'\n'}It removes the account minter${'\n'}It removes the account's wallet locator${'\n'}It removes the account's wallet size`;
-
-                expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
-                expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
-            });
+            expect(AccountSetInfo.getDescription(instance)).toEqual(expectedDescription);
         });
 
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                const {
-                    Set: { tx },
-                }: any = txTemplates;
-
-                const instance = new MixedAccountSet(tx);
-                const accountSetInfo = new AccountSetInfo(instance, {} as any);
-                expect(accountSetInfo.getParticipants()).toStrictEqual({
-                    start: { address: 'rAccountxxxxxxxxxxxxxxxxxxxxxxxxxx', tag: undefined },
-                });
+        it('CancelTicket', () => {
+            const {
+                Set: { tx },
+            } = txTemplates;
+            const instance = new AccountSet({
+                ...tx,
+                ...{
+                    TicketSequence: 1337,
+                    Sequence: 0,
+                    SetFlag: undefined,
+                    ClearFlag: undefined,
+                    Domain: undefined,
+                    EmailHash: undefined,
+                    MessageKey: undefined,
+                    TransferRate: undefined,
+                    TickSize: undefined,
+                    NFTokenMinter: undefined,
+                    WalletLocator: undefined,
+                    WalletSize: undefined,
+                },
             });
+
+            const expectedDescription = `${Localize.t('events.thisIsAnAccountSetTransaction')}\n${Localize.t(
+                'events.thisTransactionClearTicket',
+                { ticketSequence: instance.TicketSequence },
+            )}`;
+
+            expect(AccountSetInfo.getDescription(instance)).toEqual(expectedDescription);
         });
 
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                const {
-                    Set: { tx },
-                }: any = txTemplates;
+        it('Set', () => {
+            const {
+                Set: { tx },
+            } = txTemplates;
+            const instance = new AccountSet(tx);
 
-                const instance = new MixedAccountSet(tx);
-                const accountSetInfo = new AccountSetInfo(instance, {} as any);
-                expect(accountSetInfo.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
-            });
+            const expectedDescription = `${Localize.t('events.thisIsAnAccountSetTransaction')}\n${Localize.t(
+                'events.itSetsAccountDomainTo',
+                { domain: instance.Domain },
+            )}\n${Localize.t('events.itSetsAccountEmailHashTo', { emailHash: instance.EmailHash })}\n${Localize.t(
+                'events.itSetsAccountMessageKeyTo',
+                { messageKey: instance.MessageKey },
+            )}\n${Localize.t('events.itSetsAccountTransferRateTo', {
+                transferRate: instance.TransferRate,
+            })}\n${Localize.t('events.itSetsAccountMinterTo', { minter: instance.NFTokenMinter })}\n${Localize.t(
+                'events.itSetsTheAccountFlag',
+                { flag: instance.SetFlag },
+            )}\n${Localize.t('events.itClearsTheAccountFlag', { flag: instance.ClearFlag })}\n${Localize.t(
+                'events.itSetsAccountWalletLocatorTo',
+                {
+                    walletLocator: instance.WalletLocator,
+                },
+            )}\n${Localize.t('events.itSetsAccountWalletSizeTo', { walletSize: instance.WalletSize })}`;
+
+            expect(AccountSetInfo.getDescription(instance)).toEqual(expectedDescription);
+        });
+
+        it('Clear', () => {
+            const {
+                Clear: { tx },
+            } = txTemplates;
+            const instance = new AccountSet(tx);
+
+            const expectedDescription = `${Localize.t('events.thisIsAnAccountSetTransaction')}\n${Localize.t(
+                'events.itRemovesTheAccountDomain',
+            )}\n${Localize.t('events.itRemovesTheAccountEmailHash')}\n${Localize.t(
+                'events.itRemovesTheAccountMessageKey',
+            )}\n${Localize.t('events.itRemovesTheAccountTransferRate')}\n${Localize.t(
+                'events.itRemovesTheAccountMinter',
+            )}\n${Localize.t('events.itRemovesTheAccountWalletLocator')}\n${Localize.t(
+                'events.itRemovesTheAccountWalletSize',
+            )}`;
+
+            expect(AccountSetInfo.getDescription(instance)).toEqual(expectedDescription);
         });
     });
 

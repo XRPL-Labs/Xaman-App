@@ -8,7 +8,7 @@ import { AppScreens } from '@common/constants';
 import NetworkService from '@services/NetworkService';
 import StyleService from '@services/StyleService';
 
-import { AmountParser } from '@common/libs/ledger/parser/common';
+import { Amount } from '@common/libs/ledger/parser/common';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Capitalize } from '@common/utils/string';
@@ -17,12 +17,14 @@ import { TouchableDebounce, Badge, Button, LoadingIndicator, InfoMessage } from 
 
 import Localize from '@locale';
 
-import { FeeItem, Props as SelectFeeOverlayProps } from '@screens/Overlay/SelectFee/types';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
+export interface FeeItem {
+    type: string;
+    value: string;
+}
 interface Props {
     txJson: any;
     containerStyle?: ViewStyle | ViewStyle[];
@@ -32,17 +34,15 @@ interface Props {
 }
 
 interface State {
-    availableFees?: FeeItem[];
-    selected?: FeeItem;
-    feeHooks?: number;
+    availableFees: FeeItem[];
+    selected: FeeItem;
+    feeHooks: number;
     error: boolean;
 }
 
 /* Component ==================================================================== */
 class FeePicker extends Component<Props, State> {
-    declare readonly props: Props & Required<Pick<Props, keyof typeof FeePicker.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         showHooksFee: true,
     };
 
@@ -101,7 +101,7 @@ class FeePicker extends Component<Props, State> {
                 });
 
                 // set the suggested fee by default
-                this.onSelect(find(availableFees, { type: suggested })!);
+                this.onSelect(find(availableFees, { type: suggested }));
             })
             .catch(() => {
                 this.setState({
@@ -128,9 +128,9 @@ class FeePicker extends Component<Props, State> {
     showFeeSelectOverlay = () => {
         const { availableFees, selected } = this.state;
 
-        Navigator.showOverlay<SelectFeeOverlayProps>(AppScreens.Overlay.SelectFee, {
-            availableFees: availableFees!,
-            selectedFee: selected!,
+        Navigator.showOverlay(AppScreens.Overlay.SelectFee, {
+            availableFees,
+            selectedFee: selected,
             onSelect: this.onSelect,
         });
     };
@@ -138,27 +138,19 @@ class FeePicker extends Component<Props, State> {
     getNormalizedFee = () => {
         const { selected } = this.state;
 
-        if (!selected) {
-            return 0;
-        }
-
-        return new AmountParser(selected.value).dropsToNative().toString();
+        return new Amount(selected.value).dropsToNative();
     };
 
     getNormalizedHooksFee = () => {
         const { feeHooks } = this.state;
 
-        if (!feeHooks) {
-            return 0;
-        }
-
-        return new AmountParser(feeHooks).dropsToNative().toString();
+        return new Amount(feeHooks).dropsToNative();
     };
 
     getFeeColor = () => {
         const { selected } = this.state;
 
-        switch (selected?.type) {
+        switch (selected.type) {
             case 'LOW':
                 return StyleService.value('$green');
             case 'MEDIUM':

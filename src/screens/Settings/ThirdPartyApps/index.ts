@@ -1,4 +1,3 @@
-import ThirdPartyAppsView, { Props as ThirdPartyAppsViewProps } from './ThirdPartyAppsView';
+import ThirdPartyAppsView from './ThirdPartyAppsView';
 
-export type { ThirdPartyAppsViewProps };
 export default ThirdPartyAppsView;

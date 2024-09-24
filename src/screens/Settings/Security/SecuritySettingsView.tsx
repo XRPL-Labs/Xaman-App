@@ -19,11 +19,7 @@ import { IsFlagSecure, SetFlagSecure } from '@common/helpers/app';
 import { TouchableDebounce, Header, Switch, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
-
-import { PickerModalProps } from '@screens/Global/Picker';
-import { ChangePasscodeViewProps } from '@screens/Settings/Security/ChangePasscode';
-import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -151,7 +147,7 @@ class SecuritySettingsView extends Component<Props, State> {
 
     onBiometricEnableChange = (enabled: boolean) => {
         // ask for passcode authentication before Enabling/Disabling the biometrics
-        Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
+        Navigator.showOverlay(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: () => {
                 this.changeBiometricStatus(enabled);
@@ -168,7 +164,7 @@ class SecuritySettingsView extends Component<Props, State> {
     showLogoutTimePicker = () => {
         const { coreSettings, timeItems } = this.state;
 
-        Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
+        Navigator.push(AppScreens.Global.Picker, {
             title: Localize.t('global.autoLock'),
             description: Localize.t('settings.autoLockAfter'),
             items: timeItems,
@@ -178,7 +174,7 @@ class SecuritySettingsView extends Component<Props, State> {
     };
 
     onChangePasscodePress = () => {
-        Navigator.push<ChangePasscodeViewProps>(
+        Navigator.push(
             AppScreens.Settings.ChangePasscode,
             {},
             {
@@ -303,7 +299,7 @@ class SecuritySettingsView extends Component<Props, State> {
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.hideBalance')}
+                                {Localize.t('settings.hideBalanceByDefault')}
                             </Text>
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>

@@ -1,4 +1,3 @@
-import AdvancedSettingsView, { Props as AdvancedSettingsViewProps } from './AdvancedSettingsView';
+import AdvancedSettingsView from './AdvancedSettingsView';
 
-export type { AdvancedSettingsViewProps };
 export default AdvancedSettingsView;

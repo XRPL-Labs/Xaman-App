@@ -1,10 +1,7 @@
 /**
  * IAP
  *
- * In-App Purchase module helper
- * Notes: after a success purchase and enabling the product for user we need to call finalizePurchase, otherwise
- * the amount will be refunded to the user.
- * If user doesn't have the permission to make payments, the purchase will be rejected by clear error message
+ * In App Purchase module helper
  *
  */
 import { NativeModules, Platform } from 'react-native';
@@ -12,84 +9,103 @@ import { NativeModules, Platform } from 'react-native';
 /* Const ==================================================================== */
 const { InAppPurchaseModule } = NativeModules;
 
-enum ErrorCode {
+enum ERRORS {
+    E_UNABLE_TO_INIT_MODULE = 'E_UNABLE_TO_INIT_MODULE',
+    E_PLAYSERVICE_NO_AVAILABLE = 'E_PLAYSERVICE_NO_AVAILABLE',
     E_CLIENT_IS_NOT_READY = 'E_CLIENT_IS_NOT_READY',
     E_PRODUCT_IS_NOT_AVAILABLE = 'E_PRODUCT_IS_NOT_AVAILABLE',
-    E_NO_PENDING_PURCHASE = 'E_NO_PENDING_PURCHASE',
-    E_PURCHASE_CANCELED = 'E_PURCHASE_CANCELED',
-    E_PURCHASE_FAILED = 'E_PURCHASE_FAILED',
-    E_FINISH_TRANSACTION_FAILED = 'E_FINISH_TRANSACTION_FAILED',
+    E_PURCHAES_CANCELED = 'E_PURCHAES_CANCELED',
+    E_PURCHAES_FALIED = 'E_PURCHAES_FALIED',
     E_ALREADY_PURCHASED = 'E_ALREADY_PURCHASED',
+    E_NO_PURCHASE_HISTORY = 'E_NO_PURCHASE_HISTORY',
     E_UNEXPECTED_ERROR = 'E_UNEXPECTED_ERROR',
 }
 
-/* Types ==================================================================== */
-interface GooglePlayPurchase {
-    purchaseToken: string;
-    products: Array<string>;
-    quantity: number;
-    orderId?: string;
-}
+const SUCCESS_PURCHASE_CODE = 'SUCCESS_PURCHASE';
 
-interface AppStorePayment {
-    transactionIdentifier: string;
-    productIdentifier: string;
-    quantity: number;
-    applicationUsername?: string;
-}
-
-export type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
 /* Lib ==================================================================== */
-const InAppPurchase = {
-    ErrorCode,
+const IAP = {
+    ERRORS,
+    SUCCESS_PURCHASE_CODE,
 
-    // for Android, we need to make sure the connection to google play is established before triggering billing flow
-    startConnectionIfAndroid: async () => {
+    /**
+     * Initialize the module/connection
+     */
+    init: async (): Promise<boolean> => {
+        return InAppPurchaseModule.init();
+    },
+
+    /**
+     * close any left connection
+     */
+    close: async (): Promise<boolean> => {
         if (Platform.OS === 'android') {
-            await InAppPurchaseModule.startConnection();
+            return InAppPurchaseModule.close();
         }
+        return true;
     },
 
     /**
-     * Restore any old purchases
+     * Restore any old purchase
      */
-    restorePurchases: async () => {
-        await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.restorePurchases();
+    restorePurchase: async (): Promise<string> => {
+        return InAppPurchaseModule.restorePurchase();
     },
 
     /**
-     * Start purchasing flow for productId
+     * Purchase the product
      */
-    purchase: async (productId: string) => {
-        await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.purchase(productId);
+    startPurchaseFlow: async (): Promise<string> => {
+        return InAppPurchaseModule.purchase();
     },
 
     /**
-     * Finalize a purchase with transaction receipt identifier
+     * Verify receipt with backend
      */
-    finalizePurchase: async (transactionReceiptIdentifier: string) => {
-        await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.finalizePurchase(transactionReceiptIdentifier);
-    },
-
-    /**
-     * Normalizes an error by returning its code, string representation, or a default error code.
-     * @param {any} error - The error to be normalized.
-     * @returns {string} - The normalized error code, string representation, or a default error code.
-     */
-    normalizeError: (error: any) => {
-        switch (true) {
-            case error.code:
-                return error.code;
-            case typeof error.toString === 'function':
-                return error.toString();
-            default:
-                return ErrorCode.E_UNEXPECTED_ERROR;
+    verify: async (receipt: string): Promise<boolean> => {
+        if (receipt) {
+            return true;
         }
+        return false;
+    },
+    /**
+     * Check if user already bought the pro subscription
+     */
+    status: async (): Promise<string> => {
+        return new Promise((resolve) => {
+            [IAP.init, IAP.restorePurchase, IAP.verify, IAP.close]
+                .reduce((accumulator: any, callback) => {
+                    return accumulator.then(callback);
+                }, Promise.resolve())
+                .then(() => {
+                    return resolve(SUCCESS_PURCHASE_CODE);
+                })
+                .catch((e: any) => resolve(IAP.normalizeError(e)));
+        });
+    },
+
+    purchase: async (): Promise<string> => {
+        return new Promise((resolve) => {
+            [IAP.init, IAP.startPurchaseFlow, IAP.verify, IAP.close]
+                .reduce((accumulator: any, callback) => {
+                    return accumulator.then(callback);
+                }, Promise.resolve())
+                .then(() => {
+                    return resolve(SUCCESS_PURCHASE_CODE);
+                })
+                .catch((e: any) => resolve(IAP.normalizeError(e)));
+        });
+    },
+
+    normalizeError: (e: any) => {
+        if (e.code) {
+            return e.code;
+        }
+        if (typeof e.toString === 'function') {
+            return e.toString();
+        }
+        return ERRORS.E_UNEXPECTED_ERROR;
     },
 };
 
-/* Export ==================================================================== */
-export { InAppPurchase };
+export default IAP;

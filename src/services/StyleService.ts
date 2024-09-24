@@ -1,21 +1,18 @@
 /**
  * Style service
  */
-import { has, get } from 'lodash';
+import { has, get, toLower } from 'lodash';
 import { Appearance, StyleSheet } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
 import CoreRepository from '@store/repositories/core';
-import CoreModel from '@store/models/objects/core';
-
+import { CoreModel } from '@store/models';
 import { Themes } from '@store/types';
 
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';
 
-import { ImageStyle, TextStyle, ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 /* Types  ==================================================================== */
-type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
 export type StyleType = Record<string, any>;
 
 /* Service  ==================================================================== */
@@ -50,8 +47,9 @@ class StyleService {
                     }
                 } else {
                     // lowerCase the theme name is required as we stored
-                    // theme name in title mode in version before v1.0.1
-                    theme = (coreSettings.theme?.toLowerCase() || 'light') as Themes;
+                    // theme name in title mode in version before 1.0.1
+                    // @ts-ignore
+                    theme = toLower(coreSettings.theme) || 'light';
                 }
 
                 this.setTheme(theme);
@@ -70,7 +68,7 @@ class StyleService {
         }
     };
 
-    create = <T extends NamedStyles<T> | NamedStyles<any>>(styles: T | NamedStyles<T>): T => {
+    create = (styles: any) => {
         return Object.entries(styles).reduce((themed: any, style: any) => {
             const [key, value] = style;
 
@@ -89,7 +87,7 @@ class StyleService {
         return style;
     };
 
-    value = (value: string): string => {
+    value = (value: any): string => {
         if (this.isReference(value)) {
             const referenceKey: string = this.createKeyFromReference(value);
             return this.findValue(referenceKey);
@@ -113,18 +111,22 @@ class StyleService {
         return this.themeName !== 'light';
     };
 
-    select<T extends string | number>(spec: { light?: T; dark?: T; default?: T }): T | undefined {
+    select = (spec: {
+        light?: string | number;
+        dark?: string | number;
+        default?: string | number;
+    }): string | number => {
         return 'light' in spec && !this.isDarkMode()
             ? spec.light
             : 'dark' in spec && this.isDarkMode()
-              ? spec.dark
-              : spec.default;
-    }
+            ? spec.dark
+            : spec.default;
+    };
 
-    getImage = (image: Extract<keyof typeof Images, string>): { uri: string } => {
+    getImage = (image: Extract<keyof typeof Images, string>) => {
         // if dark mode and there is a light mode for image return light
-        if (this.isDarkMode() && `${image}Light` in Images) {
-            return get(Images, `${image}Light`)!;
+        if (this.isDarkMode() && has(Images, `${image}Light`)) {
+            return get(Images, `${image}Light`);
         }
 
         return get(Images, image);

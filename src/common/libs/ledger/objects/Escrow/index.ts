@@ -1,3 +1,3 @@
-export { default as Escrow } from './Escrow.class';
-export { default as EscrowValidation } from './Escrow.validation';
-export { default as EscrowInfo } from './Escrow.info';
+export { default as Escrow } from './EscrowClass';
+export { default as EscrowValidation } from './EscrowValidation';
+export { default as EscrowInfo } from './EscrowInfo';

@@ -20,12 +20,12 @@ import { MethodsContext } from '../Context';
 export interface Props {}
 
 export interface State {
-    selectedSigner?: AccountModel;
+    selectedSigner: AccountModel;
 }
 /* Component ==================================================================== */
 class SelectSigner extends Component<Props, State> {
     static contextType = MethodsContext;
-    declare context: React.ContextType<typeof MethodsContext>;
+    context: React.ContextType<typeof MethodsContext>;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);
@@ -38,10 +38,6 @@ class SelectSigner extends Component<Props, State> {
     onSignPress = () => {
         const { onPreferredSignerSelect } = this.context;
         const { selectedSigner } = this.state;
-
-        if (!selectedSigner) {
-            throw new Error('Signer is required!');
-        }
 
         if (typeof onPreferredSignerSelect === 'function') {
             onPreferredSignerSelect(selectedSigner);
@@ -86,12 +82,12 @@ class SelectSigner extends Component<Props, State> {
                                 AppStyles.paddingTopSml,
                             ]}
                         >
-                            {Localize.t('account.thereAreAccountsEligibleToSign', { signersCount: signers?.length })}
+                            {Localize.t('account.thereAreAccountsEligibleToSign', { signersCount: signers.length })}
                         </Text>
 
                         <Spacer size={40} />
 
-                        {signers?.map((signer) => {
+                        {signers.map((signer) => {
                             return (
                                 <RadioButton
                                     key={`${signer.address}`}
@@ -100,7 +96,7 @@ class SelectSigner extends Component<Props, State> {
                                     label={signer.label}
                                     labelSmall={Truncate(signer.address, 22)}
                                     value={signer}
-                                    checked={selectedSigner?.address === signer.address}
+                                    checked={selectedSigner.address === signer.address}
                                 />
                             );
                         })}

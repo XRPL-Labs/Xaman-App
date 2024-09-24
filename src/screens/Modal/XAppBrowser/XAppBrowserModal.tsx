@@ -19,7 +19,6 @@ import {
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
-import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppConfig, AppScreens } from '@common/constants';
 
@@ -36,8 +35,8 @@ import { StringTypeCheck } from '@common/utils/string';
 import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
 import NetworkService from '@services/NetworkService';
 
-import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
-import { AccountModel, NetworkModel } from '@store/models';
+import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
+import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
@@ -45,41 +44,99 @@ import { BackendService, NavigationService, PushNotificationsService, StyleServi
 import {
     Avatar,
     Button,
-    HeartBeatAnimation,
-    Icon,
-    InfoMessage,
     LoadingIndicator,
-    RaisedButton,
+    HeartBeatAnimation,
     Spacer,
     WebView,
+    Icon,
+    InfoMessage,
 } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
 
-import { AccountAddViewProps } from '@screens/Account/Add';
-import { TransactionLoaderModalProps } from '@screens/Modal/TransactionLoader';
-import { DisplayButtonTypes, XAppInfoOverlayProps } from '@screens/Overlay/XAppInfo';
-import { ScanModalProps } from '@screens/Modal/Scan';
-import { DestinationPickerModalProps } from '@screens/Modal/DestinationPicker';
-import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
-
+// style
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { IEvent, Props, State, XAppMethods, XAppSpecialPermissions } from './types';
-import { ApiError } from '@services/ApiService';
-import { PurchaseProductOverlayProps } from '@screens/Overlay/PurchaseProduct';
+export interface Props {
+    identifier: string;
+    params?: any;
+    title?: string;
+    icon?: string;
+    account?: AccountModel;
+    origin?: PayloadOrigin;
+    originData?: any;
+}
+
+export interface State {
+    ott: string;
+    app: {
+        title: string;
+        icon: string;
+        identifier: string;
+        supportUrl: string;
+        permissions: {
+            special: string[];
+            commands: string[];
+        };
+        networks: string[];
+        __ott: string;
+    };
+    account: AccountModel;
+    network: NetworkModel;
+    error: string;
+    isLaunchingApp: boolean;
+    isLoadingApp: boolean;
+    isAppReady: boolean;
+    isAppReadyTimeout: boolean;
+    isRequiredNetworkSwitch: boolean;
+    coreSettings: CoreModel;
+    appVersionCode: string;
+}
+
+export enum XAppMethods {
+    SelectDestination = 'selectDestination',
+    OpenSignRequest = 'openSignRequest',
+    PayloadResolved = 'payloadResolved',
+    XAppNavigate = 'xAppNavigate',
+    OpenBrowser = 'openBrowser',
+    TxDetails = 'txDetails',
+    KycVeriff = 'kycVeriff',
+    ScanQr = 'scanQr',
+    Share = 'share',
+    Close = 'close',
+    Ready = 'ready',
+    NetworkSwitch = 'networkSwitch',
+}
+
+export enum XAppSpecialPermissions {
+    UrlLaunchNoConfirmation = 'URL_LAUNCH_NO_CONFIRMATION',
+    NetworkSwitchEventNoReload = 'NETWORK_SWITCH_EVENT_NO_RELOAD',
+}
+
+interface IEvent {
+    method: string;
+    reason?: string;
+    uuid?: string;
+    qrContents?: string;
+    destination?: Destination;
+    info?: AccountInfoType;
+    result?: any;
+    network?: string;
+}
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.XAppBrowser;
 
-    private backHandler?: NativeEventSubscription;
-    private softLoadingTimeout?: ReturnType<typeof setTimeout>;
+    private backHandler: NativeEventSubscription;
+
     private readonly webView: React.RefObject<WebView>;
+
     private lastMessageReceived: number;
+    private softLoadingTimeout: any;
 
     static options() {
         return {
@@ -116,6 +173,8 @@ class XAppBrowserModal extends Component<Props, State> {
         };
 
         this.webView = React.createRef();
+
+        this.backHandler = undefined;
 
         this.lastMessageReceived = 0;
     }
@@ -176,14 +235,14 @@ class XAppBrowserModal extends Component<Props, State> {
             const payload = await Payload.from(uuid, PayloadOrigin.XAPP);
 
             // review the transaction
-            Navigator.showModal<ReviewTransactionModalProps>(
+            Navigator.showModal(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
                     onResolve: this.onPayloadResolve,
                     onDecline: this.onPayloadDecline,
                 },
-                { modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen },
+                { modalPresentationStyle: 'fullScreen' },
             );
         } catch (e: any) {
             Alert.alert(Localize.t('global.error'), e.message, [{ text: 'OK' }], { cancelable: false });
@@ -219,7 +278,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     onScannerClose = () => {
-        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: undefined, reason: 'USER_CLOSE' });
+        this.sendEvent({ method: XAppMethods.ScanQr, qrContents: null, reason: 'USER_CLOSE' });
     };
 
     onDestinationSelect = (destination: Destination, info: AccountInfoType) => {
@@ -227,16 +286,11 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     onDestinationClose = () => {
-        this.sendEvent({
-            method: XAppMethods.SelectDestination,
-            destination: undefined,
-            info: undefined,
-            reason: 'USER_CLOSE',
-        });
+        this.sendEvent({ method: XAppMethods.SelectDestination, destination: null, info: null, reason: 'USER_CLOSE' });
     };
 
     showScanner = () => {
-        Navigator.showModal<ScanModalProps>(
+        Navigator.showModal(
             AppScreens.Modal.Scan,
             {
                 onRead: this.onScannerRead,
@@ -252,7 +306,7 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     showDestinationPicker = (data?: { ignoreDestinationTag?: boolean }) => {
-        Navigator.showModal<DestinationPickerModalProps>(
+        Navigator.showModal(
             AppScreens.Modal.DestinationPicker,
             {
                 onSelect: this.onDestinationSelect,
@@ -295,11 +349,6 @@ class XAppBrowserModal extends Component<Props, State> {
         const identifier = get(data, 'xApp', undefined);
         const title = get(data, 'title', undefined);
 
-        // identifier is not provided, just ignore the command
-        if (!identifier) {
-            return;
-        }
-
         // we are reloading the same xapp, we don't need to clear the app
         if (app?.identifier === identifier) {
             this.lunchApp(data);
@@ -312,8 +361,8 @@ class XAppBrowserModal extends Component<Props, State> {
                 app: {
                     identifier,
                     title,
-                    icon: undefined,
-                    supportUrl: undefined,
+                    icon: null,
+                    supportUrl: null,
                     permissions: undefined,
                     networks: undefined,
                     __ott: undefined,
@@ -329,11 +378,6 @@ class XAppBrowserModal extends Component<Props, State> {
         const { app } = this.state;
 
         const url = get(data, 'url', undefined);
-
-        // param is not provided, ignore
-        if (!url || !app) {
-            return;
-        }
 
         // url should be only https and contains only a domain url
         if (!StringTypeCheck.isValidURL(url)) {
@@ -378,11 +422,6 @@ class XAppBrowserModal extends Component<Props, State> {
         const hash = get(data, 'tx', undefined);
         const address = get(data, 'account', undefined);
 
-        // no param is provided
-        if (!address || !hash) {
-            return;
-        }
-
         // validate inputs
         if (!AccountLibUtils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
             return;
@@ -399,15 +438,11 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         setTimeout(() => {
-            Navigator.showModal<TransactionLoaderModalProps>(AppScreens.Modal.TransactionLoader, {
-                hash,
-                account,
-                network,
-            });
+            Navigator.showModal(AppScreens.Modal.TransactionLoader, { hash, account, network: network.key });
         }, delay);
     };
 
-    shareContent = (data: { text: string }) => {
+    shareContent = (data: any) => {
         const text = get(data, 'text');
 
         if (typeof text !== 'string' || isEmpty(text)) {
@@ -417,18 +452,11 @@ class XAppBrowserModal extends Component<Props, State> {
         // show share dialog
         RNShare.share({
             message: text,
-        }).catch(() => {
-            // ignore
-        });
+        }).catch(() => {});
     };
 
     handleCommand = (command: XAppMethods, parsedData: any) => {
         const { app, isAppReady } = this.state;
-
-        // no xapp is initiated ?
-        if (!app) {
-            return;
-        }
 
         // when there is no permission available just do not run any command
         if (!app.permissions || isEmpty(get(app.permissions, 'commands'))) {
@@ -531,11 +559,6 @@ class XAppBrowserModal extends Component<Props, State> {
     lunchApp = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
         const { app, appVersionCode, account, network, coreSettings, isLaunchingApp } = this.state;
-
-        // double check
-        if (!app) {
-            throw new Error('lunchApp, app is required!');
-        }
 
         try {
             // check if identifier have a valid value
@@ -650,11 +673,13 @@ class XAppBrowserModal extends Component<Props, State> {
                 isLoadingApp: true,
                 error: undefined,
             });
-        } catch (error: any) {
+            // @ts-ignore
+        } catch (error: Error) {
             this.setState({
                 ott: undefined,
+                app: undefined,
                 isLaunchingApp: false,
-                error,
+                error: error?.message,
             });
         }
     };
@@ -676,7 +701,7 @@ class XAppBrowserModal extends Component<Props, State> {
     onNetworkChange = (network: NetworkModel): void => {
         const { app } = this.state;
 
-        const networks = app?.networks ?? [];
+        const networks = app?.networks;
         const SpecialPermissions = app?.permissions?.special ?? [];
 
         // if we are going to send event instead of re-lunching the xapp
@@ -685,12 +710,12 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.setState({ network, isRequiredNetworkSwitch }, () => {
             if (!isRequiredNetworkSwitch) {
-                const isRequiredNoConfirmUrlLaunch = SpecialPermissions.includes(
+                const isRequiredNoConfirmURLlaunch = SpecialPermissions.includes(
                     XAppSpecialPermissions.NetworkSwitchEventNoReload,
                 );
 
                 // do not re-lunch the app and send event instead send event to the xapp
-                if (isRequiredNoConfirmUrlLaunch) {
+                if (isRequiredNoConfirmURLlaunch) {
                     // send the network switch event
                     this.onNetworkSwitch(network);
                 } else {
@@ -708,13 +733,8 @@ class XAppBrowserModal extends Component<Props, State> {
      * @property {Object} headers - The headers for the xapp.
      * @property {string} headers.X-OTT - The X-OTT header for authentication.
      */
-    getSource = (): { uri: string; headers?: any } => {
+    getSource = () => {
         const { app, ott, coreSettings } = this.state;
-
-        // app is not initiated?
-        if (!app) {
-            return { uri: '#' };
-        }
 
         return {
             uri: `https://xumm.app/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
@@ -773,11 +793,6 @@ class XAppBrowserModal extends Component<Props, State> {
     openDeveloperSupport = () => {
         const { app } = this.state;
 
-        // double check
-        if (!app?.supportUrl) {
-            return;
-        }
-
         Linking.openURL(app.supportUrl).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
@@ -792,11 +807,6 @@ class XAppBrowserModal extends Component<Props, State> {
     openDonation = (amount?: number): void => {
         const { app } = this.state;
 
-        // double check
-        if (!app?.supportUrl) {
-            return;
-        }
-
         this.navigateTo({
             xApp: AppConfig.xappIdentifiers.xappDonation,
             destination: app.identifier,
@@ -804,31 +814,13 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    lunchMonetization = () => {
-        const profile = ProfileRepository.getProfile();
-
-        // no profile found
-        if (!profile) {
-            return;
-        }
-
-        const { monetization } = profile;
-
-        Navigator.showOverlay<PurchaseProductOverlayProps>(AppScreens.Overlay.PurchaseProduct, {
-            productId: monetization.productForPurchase!,
-            productDescription: monetization.monetizationType!,
-            onSuccessPurchase: this.lunchApp,
-        });
-    };
-
     onInfoPress = () => {
         const { identifier, title, icon } = this.props;
 
-        Navigator.showOverlay<XAppInfoOverlayProps>(AppScreens.Overlay.XAppInfo, {
+        Navigator.showOverlay(AppScreens.Overlay.XAppInfo, {
             identifier,
-            title: title!,
-            icon: icon!,
-            displayButtonTypes: [DisplayButtonTypes.DONATION],
+            title,
+            icon,
             onDonationPress: this.openDonation,
         });
     };
@@ -838,7 +830,7 @@ class XAppBrowserModal extends Component<Props, State> {
         await Navigator.dismissModal();
 
         // push to the screen
-        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
+        Navigator.push(AppScreens.Account.Add);
     };
 
     onLoadEnd = (e: any) => {
@@ -854,8 +846,8 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // when xApp have permission to set the app ready then just wait for the app to set the ready state
         if (
-            Array.isArray(app?.permissions?.commands) &&
-            app?.permissions?.commands.includes(toUpper(XAppMethods.Ready))
+            Array.isArray(app.permissions?.commands) &&
+            app.permissions?.commands.includes(toUpper(XAppMethods.Ready))
         ) {
             // set timeout for loading
             if (this.softLoadingTimeout) {
@@ -901,31 +893,11 @@ class XAppBrowserModal extends Component<Props, State> {
     renderError = () => {
         const { error } = this.state;
 
-        if (error instanceof ApiError && error.code === 402) {
-            return (
-                <View style={styles.stateContainer}>
-                    <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
-                    <View style={styles.paymentRequiredContainer}>
-                        <Text style={styles.paymentText}>{Localize.t('monetization.paymentRequiredMessage')}</Text>
-                        <View style={AppStyles.row}>
-                            <RaisedButton
-                                small
-                                onPress={this.lunchMonetization}
-                                label={Localize.t('monetization.learnMore')}
-                                containerStyle={styles.actionButtonContainer}
-                                textStyle={styles.actionButtonLabel}
-                            />
-                        </View>
-                    </View>
-                </View>
-            );
-        }
-
         return (
             <View style={styles.stateContainer}>
                 <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.unableToLoadXApp')}</Text>
                 <Spacer size={20} />
-                <Text style={[AppStyles.monoSubText, AppStyles.textCenterAligned]}>{error?.message}</Text>
+                <Text style={[AppStyles.monoSubText, AppStyles.textCenterAligned]}>{error}</Text>
                 <Spacer size={40} />
                 <Button
                     secondary
@@ -945,7 +917,7 @@ class XAppBrowserModal extends Component<Props, State> {
         let LoaderComponent;
         let LoadingStateComponent;
 
-        if (app?.icon) {
+        if (app.icon) {
             LoaderComponent = (
                 <HeartBeatAnimation>
                     <Avatar
@@ -984,7 +956,7 @@ class XAppBrowserModal extends Component<Props, State> {
                             {Localize.t('xapp.theXAppHasNotBeenFullyLoaded')}
                         </Text>
                         <Spacer />
-                        {app?.supportUrl && (
+                        {app.supportUrl && (
                             <Button
                                 roundedMini
                                 secondary
@@ -1013,7 +985,7 @@ class XAppBrowserModal extends Component<Props, State> {
         const networks = NetworkRepository.findAll();
 
         for (const network of networks) {
-            if (app?.networks?.includes(network.key)) {
+            if (app.networks.includes(network.key)) {
                 supportedNetworks.push(network);
             }
         }
@@ -1073,11 +1045,10 @@ class XAppBrowserModal extends Component<Props, State> {
             }
         }
 
-        if ((isLaunchingApp || isLoadingApp) && !isAppReady && !isRequiredNetworkSwitch) {
+        if ((isLaunchingApp || isLoadingApp || !isAppReady) && !isRequiredNetworkSwitch) {
             stateView = this.renderLoading();
         } else if (error) {
             stateView = this.renderError();
-            appView = null;
         }
 
         return (
@@ -1093,9 +1064,9 @@ class XAppBrowserModal extends Component<Props, State> {
 
         return (
             <XAppBrowserHeader
-                identifier={app?.identifier}
-                title={app?.title}
-                icon={app?.icon}
+                identifier={app.identifier}
+                title={app.title}
+                icon={app.icon}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}

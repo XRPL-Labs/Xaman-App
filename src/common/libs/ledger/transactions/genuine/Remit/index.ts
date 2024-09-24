@@ -1,3 +1,3 @@
-export { default as Remit } from './Remit.class';
-export { default as RemitValidation } from './Remit.validation';
-export { default as RemitInfo } from './Remit.info';
+export { default as Remit } from './RemitClass';
+export { default as RemitValidation } from './RemitValidation';
+export { default as RemitInfo } from './RemitInfo';

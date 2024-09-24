@@ -20,14 +20,14 @@ import { Button, Spacer, Footer } from '@components/General';
 
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
-import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification';
-
 import { AppStyles } from '@theme';
+
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    passcode: string;
+}
 
 export interface State {
     isButtonsDisabled: boolean;
@@ -106,12 +106,12 @@ class BiometrySetupView extends Component<Props, State> {
         PushNotificationsService.checkPermission()
             .then((granted) => {
                 if (granted) {
-                    Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+                    Navigator.push(AppScreens.Setup.Disclaimers);
                     return;
                 }
 
                 // show push notification permission screen
-                Navigator.push<PushNotificationSetupViewProps>(AppScreens.Setup.PushNotification, {});
+                Navigator.push(AppScreens.Setup.PushNotification);
             })
             .finally(() => {
                 this.setState({

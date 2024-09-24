@@ -30,9 +30,6 @@ const styles = StyleService.create({
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
     },
-    nfTokenContainer: {
-        paddingHorizontal: 0,
-    },
 });
 
 export default styles;

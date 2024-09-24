@@ -1,16 +1,12 @@
 apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
-def canonicalVersionName = "3.0.0"
-def canonicalVersionCode = 18
-
-// NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
-def postFixSize = 30_000
+def canonicalVersionName = "2.8.2"
+def canonicalVersionCode = 30_008
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -30,7 +26,7 @@ react {
     /* Variants */
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
-    //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
+    //   If you add flavors like lite, prod , etc. you'll have to list your debuggableVariants.
     // debuggableVariants = ["liteDebug", "prodDebug"]
 
     /* Bundling */
@@ -93,23 +89,22 @@ def reactNativeArchitectures() {
 }
 
 def getPassword(String keyChain) {
-    def stdout = new ByteArrayOutputStream()
-    def stderr = new ByteArrayOutputStream()
-    exec {
-        commandLine 'security', '-q', 'find-generic-password', '-a', System.getenv("USER"), '-s', keyChain, '-w'
-        standardOutput = stdout
-        errorOutput = stderr
-        ignoreExitValue true
-    }
-    //noinspection GroovyAssignabilityCheck
-    stdout.toString().trim()
+   def stdout = new ByteArrayOutputStream()
+   def stderr = new ByteArrayOutputStream()
+   exec {
+       commandLine 'security', '-q', 'find-generic-password', '-a', System.getenv("USER"), '-s', keyChain, '-w'
+       standardOutput = stdout
+       errorOutput = stderr
+       ignoreExitValue true
+   }
+   //noinspection GroovyAssignabilityCheck
+  stdout.toString().trim()
 }
 
 android {
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     namespace "com.xrpllabs.xumm"
     defaultConfig {
@@ -117,7 +112,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         missingDimensionStrategy 'react-native-camera', 'mlkit'
-        versionCode canonicalVersionCode + postFixSize
+        versionCode canonicalVersionCode
         versionName canonicalVersionName
         testBuildType System.getProperty('testBuildType', 'debug')
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -128,7 +123,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include(*reactNativeArchitectures())
+            include (*reactNativeArchitectures())
         }
     }
     signingConfigs {
@@ -155,7 +150,7 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
-            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             manifestPlaceholders = [excludeSystemAlertWindowPermission: "true"]
             /* Add the firebaseCrashlytics extension (by default,
@@ -169,10 +164,7 @@ android {
     }
 
     // building in CI, change the singing config for release to debug
-    if (System.getenv("CI")) {
-        println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
-        println '!!! Replacing the release config with debug as build is running inside CI !!!'
-        println '!!!!!!!!!!!!!!!!!!!!!!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!'
+    if (System.getenv("CI") === "true"){
         buildTypes.release.signingConfig = signingConfigs.debug
     }
 
@@ -194,7 +186,7 @@ android {
 }
 
 dependencies {
-    // The version of react-native is set by the React Native Gradle Plugin
+  // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
     // For animated GIF support
@@ -215,15 +207,13 @@ dependencies {
     // blur view
     implementation 'com.github.Dimezis:BlurView:version-2.0.2'
     // WebView
-    implementation 'androidx.webkit:webkit:1.11.0'
-    // inApp purchase
-    implementation 'com.android.billingclient:billing:7.0.0'
-    implementation 'com.google.android.gms:play-services-wallet:19.4.0'
-    // inApp update
-    implementation 'com.google.android.play:app-update:2.1.0'
+    implementation 'androidx.webkit:webkit:1.4.0'
+    // inApp purchase and inApp update
+    implementation 'com.android.billingclient:billing:5.0.0'
+    implementation 'com.google.android.play:core:1.10.3'
     // Other
-    implementation 'com.google.android.gms:play-services-base:18.4.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.android.gms:play-services-base:18.1.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     // only for running tests
     androidTestImplementation 'com.wix:detox:+'

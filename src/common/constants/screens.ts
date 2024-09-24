@@ -59,7 +59,7 @@ const screens = {
         ExplainBalance: 'overlay.ExplainBalance',
         ChangeLog: 'overlay.ChangeLog',
         ConnectionIssue: 'overlay.ConnectionIssue',
-        ParticipantMenu: 'overlay.ParticipantMenu',
+        RecipientMenu: 'overlay.RecipientMenu',
         ConfirmDestinationTag: 'overlay.ConfirmDestinationTag',
         SelectAccount: 'overlay.SelectAccount',
         SelectCurrency: 'overlay.SelectCurrency',
@@ -71,7 +71,6 @@ const screens = {
         SwitchNetwork: 'overlay.SwitchNetwork',
         XAppInfo: 'overlay.XAppInfo',
         NetworkRailsSync: 'overlay.NetworkRailsSync',
-        PurchaseProduct: 'overlay.PurchaseProduct',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',
@@ -104,6 +103,6 @@ const screens = {
         Picker: 'app.global.Picker',
         Placeholder: 'app.global.Placeholder',
     },
-} as const;
+};
 
 export default screens;

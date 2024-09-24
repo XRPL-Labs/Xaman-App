@@ -10,8 +10,6 @@ import { AccountModel, TrustLineModel } from '@store/models';
 import { TouchableDebounce, Icon } from '@components/General';
 import { CurrencyItem } from '@components/Modules/CurrencyPicker/CurrencyItem';
 
-import { SelectCurrencyOverlayProps } from '@screens/Overlay/SelectCurrency';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -56,7 +54,7 @@ class CurrencyPicker extends Component<Props, State> {
         const { account, selectedItem, currencies } = this.props;
         const { expanded } = this.state;
 
-        if (expanded || !Array.isArray(currencies) || currencies.length <= 1) {
+        if (expanded || typeof currencies.length !== 'number' || currencies.length <= 1) {
             return;
         }
 
@@ -64,7 +62,7 @@ class CurrencyPicker extends Component<Props, State> {
             expanded: true,
         });
 
-        Navigator.showOverlay<SelectCurrencyOverlayProps>(AppScreens.Overlay.SelectCurrency, {
+        Navigator.showOverlay(AppScreens.Overlay.SelectCurrency, {
             account,
             currencies,
             selectedItem,
@@ -75,11 +73,12 @@ class CurrencyPicker extends Component<Props, State> {
 
     render() {
         const { account, currencies, containerStyle, selectedItem } = this.props;
+
         const { expanded } = this.state;
 
-        if (!currencies || currencies.length === 0 || !selectedItem) {
+        if (!currencies || currencies.length === 0) {
             return (
-                <View style={containerStyle}>
+                <View style={[containerStyle]}>
                     {/* eslint-disable-next-line */}
                     <View style={[AppStyles.row, { paddingLeft: 10 }]}>
                         <Text style={[AppStyles.p, AppStyles.strong]}>No Item available</Text>
@@ -90,12 +89,12 @@ class CurrencyPicker extends Component<Props, State> {
 
         return (
             <TouchableDebounce activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
-                <View style={AppStyles.row}>
-                    <View style={AppStyles.flex1}>
+                <View style={[AppStyles.row]}>
+                    <View style={[AppStyles.flex1]}>
                         <CurrencyItem account={account} item={selectedItem} />
                     </View>
                     {currencies.length > 1 && (
-                        <TouchableDebounce style={styles.collapseButton} onPress={this.showPicker}>
+                        <TouchableDebounce style={[styles.collapseButton]} onPress={this.showPicker}>
                             <Icon
                                 name={expanded ? 'IconChevronUp' : 'IconChevronDown'}
                                 size={20}

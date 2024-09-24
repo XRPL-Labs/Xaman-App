@@ -16,7 +16,7 @@ export interface IssuedCurrencyAmount extends IssuedCurrency {
     value: string;
 }
 
-export type LedgerAmount = IssuedCurrencyAmount | string;
+export type Amount = IssuedCurrencyAmount | string;
 
 export interface Balance {
     currency: string;
@@ -25,15 +25,19 @@ export interface Balance {
 }
 
 export interface Signer {
-    Account: string;
-    TxnSignature: string;
-    SigningPubKey: string;
+    Signer: {
+        Account: string;
+        TxnSignature: string;
+        SigningPubKey: string;
+    };
 }
 
 export interface Memo {
-    MemoData?: string;
-    MemoType?: string;
-    MemoFormat?: string;
+    Memo: {
+        MemoData?: string;
+        MemoType?: string;
+        MemoFormat?: string;
+    };
 }
 
 export type StreamType =
@@ -65,22 +69,27 @@ export type LedgerMarker = {
  */
 export interface SignerEntry {
     /**
-     * An XRP Ledger address whose signature contributes to the multi-signature.
-     * It does not need to be a funded address in the ledger.
+     * The object that describes the signer in SignerEntries.
      */
-    Account: string;
-    /**
-     * The weight of a signature from this signer.
-     * A multi-signature is only valid if the sum weight of the signatures provided meets
-     * or exceeds the signer list's SignerQuorum value.
-     */
-    SignerWeight: number;
-    /**
-     * An arbitrary 256-bit (32-byte) field that can be used to identify the signer, which
-     * may be useful for smart contracts, or for identifying who controls a key in a large
-     * organization.
-     */
-    WalletLocator?: string;
+    SignerEntry: {
+        /**
+         * An XRP Ledger address whose signature contributes to the multi-signature.
+         * It does not need to be a funded address in the ledger.
+         */
+        Account: string;
+        /**
+         * The weight of a signature from this signer.
+         * A multi-signature is only valid if the sum weight of the signatures provided meets
+         * or exceeds the signer list's SignerQuorum value.
+         */
+        SignerWeight: number;
+        /**
+         * An arbitrary 256-bit (32-byte) field that can be used to identify the signer, which
+         * may be useful for smart contracts, or for identifying who controls a key in a large
+         * organization.
+         */
+        WalletLocator?: string;
+    };
 }
 
 /**
@@ -114,7 +123,7 @@ export interface ResponseOnlyTxInfo {
  * @category Responses
  */
 export interface NFTOffer {
-    amount: LedgerAmount;
+    amount: Amount;
     flags: number;
     nft_offer_index: string;
     owner: string;
@@ -141,7 +150,9 @@ export interface NFToken {
 }
 
 export interface AuthAccount {
-    Account: string;
+    AuthAccount: {
+        Account: string;
+    };
 }
 
 /**
@@ -163,12 +174,4 @@ export interface HookEmission {
     EmittedTxnID: string;
     HookAccount: string;
     HookHash: string;
-}
-
-/**
- * Hook Parameter
- */
-export interface HookParameter {
-    HookParameterName: string;
-    HookParameterValue: string;
 }

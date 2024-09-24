@@ -1,4 +1,3 @@
-import MigrationExplainModal, { Props as MigrationExplainModalProps } from './MigrationExplainModal';
+import MigrationExplainModal from './MigrationExplainModal';
 
-export type { MigrationExplainModalProps };
 export default MigrationExplainModal;

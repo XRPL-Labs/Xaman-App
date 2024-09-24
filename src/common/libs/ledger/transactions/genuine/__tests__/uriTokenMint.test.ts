@@ -1,8 +1,7 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
-
-import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { URITokenMint, URITokenMintInfo } from '../URITokenMint';
 
@@ -20,41 +19,25 @@ describe('URITokenMint tx', () => {
     });
 
     describe('Info', () => {
-        const { tx, meta }: any = uriTokenMintTemplate;
-        const Mixed = MutationsMixin(URITokenMint);
-        const instance = new Mixed(tx, meta);
-        const info = new URITokenMintInfo(instance, {} as any);
-
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `The URI for this token is 697066733A2F2F434944${'\n'}The token has a digest: 697066733A2F2F434944697066733A2F2F434944697066733A2F2F434944${'\n'}The minter of this token has set the initial selling price to 1 XRP.${'\n'}This token can only be purchased by rDestinationxxxxxxxxxxxxxxxxxxxxxx`;
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                const { tx, meta } = uriTokenMintTemplate;
+                const instance = new URITokenMint(tx, meta);
+
+                const expectedDescription = `${Localize.t('events.theURIForThisTokenIs', {
+                    uri: instance.URI,
+                })}\n${Localize.t('events.theTokenHasADigest', { digest: instance.Digest })}\n${Localize.t(
+                    'events.uriTokenMintAmount',
+                    { value: instance.Amount.value, currency: instance.Amount.currency },
+                )}\n${Localize.t('events.uriTokenDestinationExplain', { address: instance.Destination.address })}`;
+
+                expect(URITokenMintInfo.getDescription(instance)).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.mintURIToken'));
-            });
-        });
-
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', tag: undefined },
-                });
-            });
-        });
-
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
+                expect(URITokenMintInfo.getLabel()).toEqual(Localize.t('events.mintURIToken'));
             });
         });
     });

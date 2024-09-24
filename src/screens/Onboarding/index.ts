@@ -1,4 +1,3 @@
-import OnboardingView, { Props as OnboardingViewProps } from './OnboardingView';
+import OnboardingView from './OnboardingView';
 
-export type { OnboardingViewProps };
 export default OnboardingView;

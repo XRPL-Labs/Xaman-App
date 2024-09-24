@@ -6,8 +6,6 @@
  * API Functions
  */
 
-// TODO: refactor refresh token mechanism prevent multiple calling the refresh token
-
 import merge from 'lodash/merge';
 
 import { ProfileRepository } from '@store/repositories';
@@ -18,7 +16,7 @@ import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
-import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import LoggerService from '@services/LoggerService';
 import NetworkService from '@services/NetworkService';
 
 /* Types  ==================================================================== */
@@ -27,31 +25,13 @@ type Methods = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
 /* Errors  ==================================================================== */
 export class ApiError extends Error {
     public code: number;
-    public reference?: string;
-    private originalMessage: string;
+    public reference: string;
 
-    constructor(message: string, code?: number, reference?: string) {
-        super();
+    constructor(message: string, code?: number, reference?: 'string') {
+        super(message);
         this.name = 'ApiError';
-        this.originalMessage = message;
         this.code = code || -1;
         this.reference = reference;
-    }
-
-    /**
-     * Retrieves the message associated with the current error response.
-     *
-     * @return {string} The error message.
-     */
-    get message() {
-        switch (this.code) {
-            // // generic errors
-            // // we got a payment required error from backend
-            // case 402:
-            //     return Localize.t('monetization.monetizationRequiredForThisFeature');
-            default:
-                return this.originalMessage;
-        }
     }
 }
 
@@ -62,12 +42,11 @@ class ApiService {
     private readonly timeoutSec: number;
     private endpoints: Map<string, string>;
     private idempotencyInt: number;
-    private accessToken?: string;
-    private bearerHash?: string;
-    private uniqueDeviceIdentifier?: string;
+    private accessToken: string;
+    private bearerHash: string;
+    private uniqueDeviceIdentifier: string;
     private isRefreshingToken: boolean;
-    private logger: LoggerInstance;
-
+    private logger: any;
     [index: string]: any;
 
     constructor() {
@@ -84,8 +63,6 @@ class ApiService {
         this.bearerHash = undefined;
         this.idempotencyInt = 0;
         this.isRefreshingToken = false;
-
-        this.uniqueDeviceIdentifier = undefined;
 
         // Logger
         this.logger = LoggerService.createLogger('Api');
@@ -197,7 +174,7 @@ class ApiService {
         const postData = {};
 
         // include the prev bear hash to the request
-        if (profile?.bearerHash) {
+        if (profile.bearerHash) {
             Object.assign(postData, { refresh_token: profile.refreshToken });
         }
 
@@ -208,7 +185,7 @@ class ApiService {
                 const { refresh_token, bearer_hash } = res;
 
                 // check if current refresh token is different then save
-                if (refresh_token && refresh_token !== profile?.refreshToken) {
+                if (refresh_token && refresh_token !== profile.refreshToken) {
                     // store the new refresh token
                     ProfileRepository.saveProfile({
                         refreshToken: refresh_token,
@@ -252,11 +229,12 @@ class ApiService {
      *   {foo: 'hi there', bar: { blah: 123, blah: [1, 2, 3] }}
      *   foo=hi there&bar[blah]=123&bar[blah][0]=1&bar[blah][1]=2&bar[blah][2]=3
      */
-    private serialize = (obj: Record<string, any>, prefix: string): string => {
+    private serialize = (obj: Object, prefix: string): string => {
         const str: Array<string> = [];
 
         Object.keys(obj).forEach((p) => {
             const k = prefix ? `${prefix}[${p}]` : p;
+            // @ts-ignore
             const v = obj[p];
 
             str.push(
@@ -429,6 +407,7 @@ class ApiService {
                     }
 
                     // handle error
+
                     if (typeof jsonRes === 'object' && Object.prototype.hasOwnProperty.call(jsonRes, 'error')) {
                         throw new ApiError(
                             `Api error ${rawRes.status}`,

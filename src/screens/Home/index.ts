@@ -1,4 +1,3 @@
-import HomeView, { Props as HomeViewProps } from './HomeView';
+import HomeView from './HomeView';
 
-export type { HomeViewProps };
 export default HomeView;

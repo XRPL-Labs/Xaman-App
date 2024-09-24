@@ -1,3 +1,3 @@
-export { default as BasePseudoTransaction } from './base';
+export { default as BasePseudoTransaction } from './BasePseudo';
 export * from './PaymentChannelAuthorize';
 export * from './SignIn';

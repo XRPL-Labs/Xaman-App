@@ -32,17 +32,15 @@ interface State {
 const DEFAULT_EXTRA_OFFSET = 20;
 /* Component ==================================================================== */
 class KeyboardAwareScrollView extends PureComponent<Props, State> {
+    private scrollViewRef: React.RefObject<ScrollView | null>;
     private keyboardHeight: number;
     private windowHeight: number;
     private scrollPosition: any;
     private viewHeight: number;
     private contentHeight: number;
-    private scrollViewRef: React.RefObject<ScrollView>;
-    private scrollToTimeout: NodeJS.Timeout | undefined;
+    private scrollToTimeout: any;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof KeyboardAwareScrollView.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         extraOffset: 0,
         enabled: true,
     };
@@ -52,13 +50,13 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
 
         this.state = {
             offset: new Animated.Value(0),
+            // offset: 0,
         };
 
         this.scrollViewRef = React.createRef();
 
         this.keyboardHeight = 0;
         this.viewHeight = 0;
-        this.contentHeight = 0;
         this.windowHeight = Dimensions.get('window').height;
 
         this.scrollPosition = { x: 0, y: 0 };
@@ -126,7 +124,8 @@ class KeyboardAwareScrollView extends PureComponent<Props, State> {
                 duration: 200,
             }).start(() => {
                 this.scrollToTimeout = setTimeout(() => {
-                    this.scrollViewRef?.current?.scrollTo({
+                    // @ts-ignore
+                    responder.scrollTo({
                         x: 0,
                         y: this.scrollPosition.y + textInputBottomPosition - keyboardPosition + DEFAULT_EXTRA_OFFSET,
                         animated: true,

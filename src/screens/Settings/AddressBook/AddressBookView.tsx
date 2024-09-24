@@ -9,7 +9,7 @@ import Fuse from 'fuse.js';
 import React, { Component } from 'react';
 import { View, Text, SectionList, Image, ImageBackground } from 'react-native';
 
-import { EventSubscription, Navigation } from 'react-native-navigation';
+import { Navigation } from 'react-native-navigation';
 
 import StyleService from '@services/StyleService';
 
@@ -22,10 +22,7 @@ import { ContactModel } from '@store/models';
 import { TouchableDebounce, Header, Button, SearchBar, Avatar } from '@components/General';
 
 import Localize from '@locale';
-
-import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
-import { EditContactViewProps } from '@screens/Settings/AddressBook/Edit';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -34,14 +31,14 @@ export interface Props {}
 
 export interface State {
     contacts: Realm.Results<ContactModel>;
-    dataSource: { title: string; data: ContactModel[] }[];
+    dataSource: any;
 }
 
 /* Component ==================================================================== */
 class AddressBookView extends Component<Props, State> {
     static screenName = AppScreens.Settings.AddressBook.List;
 
-    private navigationListener?: EventSubscription;
+    private navigationListener: any;
 
     static options() {
         return {
@@ -79,7 +76,7 @@ class AddressBookView extends Component<Props, State> {
         });
     }
 
-    convertContactsArrayToMap = (contacts: Realm.Results<ContactModel>): { title: string; data: ContactModel[] }[] => {
+    convertContactsArrayToMap = (contacts: Realm.Results<ContactModel>) => {
         const contactsCategoryMap = [] as any;
 
         sortBy(contacts, 'name').forEach((item) => {
@@ -130,14 +127,8 @@ class AddressBookView extends Component<Props, State> {
         });
     };
 
-    onItemPress = (item: ContactModel) => {
-        Navigator.push<EditContactViewProps>(AppScreens.Settings.AddressBook.Edit, {
-            contact: item,
-        });
-    };
-
-    onAddContactPress = () => {
-        Navigator.push<AddContactViewProps>(AppScreens.Settings.AddressBook.Add, {});
+    onItemPress = (item: any) => {
+        Navigator.push(AppScreens.Settings.AddressBook.Edit, { contact: item });
     };
 
     renderSectionHeader = ({ section: { title } }: any) => {
@@ -148,7 +139,7 @@ class AddressBookView extends Component<Props, State> {
         );
     };
 
-    renderItem = (contact: { item: ContactModel }) => {
+    renderItem = (contact: any) => {
         const { item } = contact;
 
         return (
@@ -158,7 +149,7 @@ class AddressBookView extends Component<Props, State> {
                 }}
                 activeOpacity={0.8}
             >
-                <View style={styles.row}>
+                <View style={[styles.row]}>
                     <Avatar size={40} source={{ uri: `https://xumm.app/avatar/${item.address}_180_50.png` }} />
                     <View style={styles.contentContainer}>
                         <Text style={styles.name}>{item.name}</Text>
@@ -174,11 +165,13 @@ class AddressBookView extends Component<Props, State> {
 
         if (isEmpty(contacts)) {
             return (
-                <View testID="address-book-view" style={AppStyles.container}>
+                <View testID="address-book-view" style={[AppStyles.container]}>
                     <Header
                         leftComponent={{
                             icon: 'IconChevronLeft',
-                            onPress: Navigator.pop,
+                            onPress: () => {
+                                Navigator.pop();
+                            },
                         }}
                         centerComponent={{ text: Localize.t('global.addressBook') }}
                     />
@@ -193,9 +186,11 @@ class AddressBookView extends Component<Props, State> {
                             <Button
                                 rounded
                                 icon="IconPlus"
-                                iconStyle={AppStyles.imgColorWhite}
+                                iconStyle={[AppStyles.imgColorWhite]}
                                 label={Localize.t('settings.addContact')}
-                                onPress={this.onAddContactPress}
+                                onPress={() => {
+                                    Navigator.push(AppScreens.Settings.AddressBook.Add);
+                                }}
                             />
                         </ImageBackground>
                     </View>
@@ -204,16 +199,20 @@ class AddressBookView extends Component<Props, State> {
         }
 
         return (
-            <View testID="address-book-view" style={AppStyles.container}>
+            <View testID="address-book-view" style={[AppStyles.container]}>
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
-                        onPress: Navigator.pop,
+                        onPress: () => {
+                            Navigator.pop();
+                        },
                     }}
                     centerComponent={{ text: Localize.t('global.addressBook') }}
                     rightComponent={{
                         icon: 'IconPlus',
-                        onPress: this.onAddContactPress,
+                        onPress: () => {
+                            Navigator.push(AppScreens.Settings.AddressBook.Add);
+                        },
                     }}
                 />
                 <SearchBar

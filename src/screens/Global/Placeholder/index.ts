@@ -1,4 +1,3 @@
-import PlaceholderView, { Props as PlaceholderViewProps } from './PlaceholderView';
+import PlaceholderView from './PlaceholderView';
 
-export type { PlaceholderViewProps };
 export default PlaceholderView;

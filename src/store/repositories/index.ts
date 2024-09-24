@@ -7,8 +7,6 @@ import CurrencyRepository from './currency';
 import ContactRepository from './contact';
 import NetworkRepository from './network';
 import NodeRepository from './node';
-import AmmPairRepository from './ammPair';
-import UserInteractionRepository from './userInteraction';
 
 export {
     AccountRepository,
@@ -20,6 +18,4 @@ export {
     ContactRepository,
     NetworkRepository,
     NodeRepository,
-    AmmPairRepository,
-    UserInteractionRepository,
 };

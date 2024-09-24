@@ -1,6 +1,6 @@
 export enum OperationActions {
-    DEC = 'DEC',
-    INC = 'INC',
+    DEC,
+    INC,
 }
 
 export enum OfferStatus {
@@ -61,6 +61,7 @@ export type MemoType = {
  * Transaction Account
  */
 export type Account = {
+    name?: string;
     address: string;
     tag?: number;
 };

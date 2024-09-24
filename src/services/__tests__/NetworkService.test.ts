@@ -4,17 +4,8 @@ import NetworkService from '../NetworkService';
 
 import * as FeeUtils from '@common/utils/fee';
 
-import { NetworkConfig } from '@common/constants';
-import ProfileRepository from '@store/repositories/profile';
-
 describe('NetworkService', () => {
     const networkService = NetworkService;
-
-    const coreSettings = {
-        network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
-    } as any;
-
-    const profile = { deviceUUID: 'MOCKED_UUID' } as any;
 
     beforeAll(() => {
         const logFn = console.warn;
@@ -32,7 +23,9 @@ describe('NetworkService', () => {
     });
 
     it('should properly initialize', async () => {
-        ProfileRepository.getProfile = jest.fn(() => profile);
+        const coreSettings = {
+            network: { baseReserve: 10, ownerReserve: 2, isFeatureEnabled: () => {}, definitions: {} },
+        } as any;
 
         await networkService.initialize(coreSettings);
 
@@ -43,21 +36,16 @@ describe('NetworkService', () => {
         });
     });
 
-    describe('update network definitions', () => {
+    describe('Update network definitions', () => {
         it('updates network definitions correctly', async () => {
             const returnedResponse = {
                 TYPES: {},
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
+                // @ts-ignore
                 FIELDS: [],
                 hash: 'DEFINITIONS_HASH',
-                // other
-                id: 'id',
-                __replyMs: 0,
-                __command: '__command',
-                __networkId: 0,
-                inLedger: 0,
             };
 
             jest.replaceProperty(networkService, 'network', {
@@ -74,14 +62,7 @@ describe('NetworkService', () => {
             expect(spy0).toHaveBeenCalledWith({ command: 'server_definitions' });
             expect(spy1).toHaveBeenCalledWith({
                 id: 'object_id',
-                definitionsString: JSON.stringify({
-                    TYPES: returnedResponse.TYPES,
-                    TRANSACTION_RESULTS: returnedResponse.TRANSACTION_RESULTS,
-                    TRANSACTION_TYPES: returnedResponse.TRANSACTION_TYPES,
-                    LEDGER_ENTRY_TYPES: returnedResponse.LEDGER_ENTRY_TYPES,
-                    FIELDS: returnedResponse.FIELDS,
-                    hash: returnedResponse.hash,
-                }),
+                definitionsString: JSON.stringify(returnedResponse),
             });
 
             spy0.mockRestore();
@@ -89,7 +70,7 @@ describe('NetworkService', () => {
         });
 
         it('warns on invalid response', async () => {
-            const invalidResponses = [{ error: 'some error' }, 'invalid resp', {}] as any;
+            const invalidResponses = [{ error: 'some error' }, 'invalid resp', {}];
 
             // eslint-disable-next-line guard-for-in
             for (const resp of invalidResponses) {
@@ -115,14 +96,9 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
+                // @ts-ignore
                 FIELDS: [],
                 hash: 'SOME_HASH',
-                // other
-                id: 'id',
-                __replyMs: 0,
-                __command: '__command',
-                __networkId: 0,
-                inLedger: 0,
             };
 
             const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() => Promise.resolve(returnedResponse));
@@ -151,14 +127,9 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
+                // @ts-ignore
                 FIELDS: [],
                 hash: 'SOME_HASH',
-                // other
-                id: 'id',
-                __replyMs: 0,
-                __command: '__command',
-                __networkId: 0,
-                inLedger: 0,
             };
 
             // @ts-ignore
@@ -188,7 +159,7 @@ describe('NetworkService', () => {
         });
     });
 
-    describe('calculate fee', () => {
+    describe('Calculate fee', () => {
         describe('Not Hooks enabled network', () => {
             let isFeatureEnabledSpy: any;
             let prepareTxForHookFeeSpy: any;
@@ -196,8 +167,11 @@ describe('NetworkService', () => {
             beforeAll(() => {
                 // set the network as normal network without hooks amendment
                 isFeatureEnabledSpy = jest
-                    .spyOn(networkService.network!, 'isFeatureEnabled')
+                    .spyOn(networkService.network, 'isFeatureEnabled')
                     .mockImplementation(() => false);
+                isFeatureEnabledSpy = jest
+                    .spyOn(networkService.network, 'isFeatureEnabled')
+                    .mockImplementation(() => true);
                 prepareTxForHookFeeSpy = jest
                     .spyOn(FeeUtils, 'PrepareTxForHookFee')
                     .mockImplementation(() => 'SIGNED_TX');
@@ -213,7 +187,7 @@ describe('NetworkService', () => {
                 const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
                     Promise.resolve({
                         drops: { base_fee: '15' },
-                    } as any),
+                    }),
                 );
 
                 const availableFees = await networkService.getAvailableNetworkFee({});
@@ -239,7 +213,7 @@ describe('NetworkService', () => {
             beforeAll(() => {
                 // set the network as hook enabled network
                 isFeatureEnabledSpy = jest
-                    .spyOn(networkService.network!, 'isFeatureEnabled')
+                    .spyOn(networkService.network, 'isFeatureEnabled')
                     .mockImplementation(() => true);
                 prepareTxForHookFeeSpy = jest
                     .spyOn(FeeUtils, 'PrepareTxForHookFee')
@@ -256,10 +230,10 @@ describe('NetworkService', () => {
                 const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() =>
                     Promise.resolve({
                         drops: {
-                            base_fee: '6176',
+                            base_fee: 6176,
                         },
-                        fee_hooks_feeunits: '6186',
-                    } as any),
+                        fee_hooks_feeunits: 6186,
+                    }),
                 );
 
                 const availableFees = await networkService.getAvailableNetworkFee({
@@ -278,26 +252,6 @@ describe('NetworkService', () => {
 
                 spy0.mockRestore();
             });
-        });
-    });
-    describe('normalize endpoint', () => {
-        test('Should append ORIGIN and userId for cluster endpoints', () => {
-            const endpoint = NetworkConfig.clusterEndpoints[0];
-            expect(networkService.normalizeEndpoint(endpoint)).toBe(
-                `${endpoint}${networkService.Origin}?user_id=${profile.deviceUUID}`,
-            );
-        });
-
-        test('Should use custom proxy for non-whitelisted endpoints and append userId', () => {
-            const endpoint = 'wss://mycustomnetwork.dev';
-            expect(networkService.normalizeEndpoint(endpoint)).toBe(
-                `${NetworkConfig.customNodeProxy}/${endpoint.replace('wss://', '')}?user_id=${profile.deviceUUID}`,
-            );
-        });
-
-        test('Should return the endpoint if it is in the whitelisted networks', () => {
-            const endpoint = 'wss://s2.ripple.com';
-            expect(networkService.normalizeEndpoint(endpoint)).toBe(endpoint);
         });
     });
 });

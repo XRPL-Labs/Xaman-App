@@ -33,7 +33,7 @@ export interface State {
 /* Component ==================================================================== */
 class LabelStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -53,7 +53,7 @@ class LabelStep extends Component<Props, State> {
             });
         }
 
-        getAccountName(account.address!)
+        getAccountName(account.address)
             .then((res: any) => {
                 if (!isEmpty(res)) {
                     const name = get(res, 'name');

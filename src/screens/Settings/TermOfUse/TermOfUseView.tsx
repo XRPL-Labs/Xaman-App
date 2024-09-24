@@ -11,6 +11,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens, AppConfig } from '@common/constants';
 
 import { ProfileRepository, CoreRepository } from '@store/repositories';
+import { CoreModel } from '@store/models';
 
 import { WebViewBrowser, Header, Footer, Spacer, Button } from '@components/General';
 
@@ -21,13 +22,22 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-import { Props, State } from './types';
+export interface Props {
+    asModal: boolean;
+}
+
+export interface State {
+    TOSVersion: number;
+    isTOSLoaded: boolean;
+    shouldShowAgreement: boolean;
+    coreSettings: CoreModel;
+}
 
 /* Component ==================================================================== */
 class TermOfUseView extends Component<Props, State> {
     static screenName = AppScreens.Settings.TermOfUse;
 
-    private backHandler: NativeEventSubscription | undefined;
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {
@@ -39,7 +49,7 @@ class TermOfUseView extends Component<Props, State> {
         super(props);
 
         this.state = {
-            TOSVersion: 0,
+            TOSVersion: undefined,
             isTOSLoaded: false,
             shouldShowAgreement: false,
             coreSettings: CoreRepository.getSettings(),
@@ -70,7 +80,7 @@ class TermOfUseView extends Component<Props, State> {
 
                 this.setState({
                     TOSVersion: version,
-                    shouldShowAgreement: (profile?.signedTOSVersion ?? 0) < version,
+                    shouldShowAgreement: profile.signedTOSVersion < version,
                 });
             }
         } catch {

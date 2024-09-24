@@ -1,4 +1,3 @@
-import HelpModal, { Props as HelpModalProps } from './HelpModal';
+import HelpModal from './HelpModal';
 
-export type { HelpModalProps };
 export default HelpModal;

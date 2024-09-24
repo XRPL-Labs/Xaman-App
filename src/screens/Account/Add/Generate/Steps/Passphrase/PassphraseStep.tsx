@@ -30,7 +30,7 @@ export interface State {
 /* Component ==================================================================== */
 class PassphraseStep extends Component<Props, State> {
     static contextType = StepsContext;
-    declare context: React.ContextType<typeof StepsContext>;
+    context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -64,8 +64,8 @@ class PassphraseStep extends Component<Props, State> {
         }
     };
 
-    onPassphraseChange = (value: string, isValid?: boolean) => {
-        this.setState({ passphrase: { value, isValid: isValid! } });
+    onPassphraseChange = (value: string, isValid: boolean) => {
+        this.setState({ passphrase: { value, isValid } });
     };
 
     onPassphraseConfirmChange = (passphraseConfirmation: string) => {

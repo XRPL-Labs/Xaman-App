@@ -19,11 +19,8 @@ export interface Props {
 class TextPlaceholder extends PureComponent<Props> {
     private readonly animatedPulse: Animated.Value;
     private readonly animatedFadeIn: Animated.Value;
-    private mounted = false;
 
-    declare readonly props: Props & Required<Pick<Props, keyof typeof TextPlaceholder.defaultProps>>;
-
-    static defaultProps: Partial<Props> = {
+    static defaultProps = {
         length: 12,
     };
 
@@ -35,16 +32,7 @@ class TextPlaceholder extends PureComponent<Props> {
     }
 
     componentDidMount() {
-        // track component mount state
-        this.mounted = true;
-
-        // start the placeholder
         InteractionManager.runAfterInteractions(this.startPlaceholderAnimation);
-    }
-
-    componentWillUnmount() {
-        // track component mount state
-        this.mounted = true;
     }
 
     componentDidUpdate(prevProps: Readonly<Props>) {
@@ -65,7 +53,7 @@ class TextPlaceholder extends PureComponent<Props> {
         const { isLoading } = this.props;
 
         // if not loading anymore then show the
-        if (!isLoading || !this.mounted) {
+        if (!isLoading) {
             return;
         }
 
@@ -119,6 +107,7 @@ class TextPlaceholder extends PureComponent<Props> {
         const ContainerProps = isPressable ? { activeOpacity: 0.8, onPress: this.onPress } : {};
 
         return (
+            // @ts-ignore
             // eslint-disable-next-line react/jsx-props-no-spreading
             <ContainerComponent {...ContainerProps} style={{ opacity: this.animatedFadeIn }}>
                 <Text selectable={selectable} numberOfLines={numberOfLines} style={style}>

@@ -1,11 +1,11 @@
+/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
 
-import { MutationsMixin } from '@common/libs/ledger/mixin';
-
 import { TrustSet, TrustSetInfo } from '../TrustSet';
 import trustSetTemplate from './fixtures/TrustSetTx.json';
+import { NormalizeCurrencyCode } from '../../../../../utils/amount';
 
 jest.mock('@services/NetworkService');
 
@@ -18,12 +18,13 @@ describe('TrustSet tx', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta }: any = trustSetTemplate;
+            // @ts-ignore
+            const { tx, meta } = trustSetTemplate;
             const instance = new TrustSet(tx, meta);
 
-            expect(instance.Currency).toBe('CNY');
-            expect(instance.Issuer).toBe('razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA');
-            expect(instance.Limit).toBe(1000000000);
+            expect(instance.Currency).toBe('USD');
+            expect(instance.Issuer).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.Limit).toBe(100);
             expect(instance.QualityIn).toBe(1);
             expect(instance.QualityOut).toBe(1);
         });
@@ -31,57 +32,48 @@ describe('TrustSet tx', () => {
         it('Should set/get fields', () => {
             const instance = new TrustSet();
 
-            instance.LimitAmount = {
-                currency: 'USD',
-                issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
-                value: '100',
-            };
-
+            instance.Currency = 'USD';
             expect(instance.Currency).toBe('USD');
+
+            instance.Issuer = 'rrrrrrrrrrrrrrrrrrrrbzbvji';
             expect(instance.Issuer).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+
+            instance.Limit = 100;
             expect(instance.Limit).toBe(100);
         });
     });
 
     describe('Info', () => {
-        const { tx, meta }: any = trustSetTemplate;
-        const Mixed = MutationsMixin(TrustSet);
-        const instance = new Mixed(tx, meta);
-        const info = new TrustSetInfo(instance, { address: tx.Account } as any);
-
-        describe('generateDescription()', () => {
+        describe('getDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription =
-                    'It establishes 1000000000 as the maximum amount of CNY from razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA that rhr8s3nSVJUFwkApgLP32XyYQXZ28Xphfc is willing to hold.';
+                const { tx, meta } = trustSetTemplate;
+                const instance = new TrustSet(tx, meta);
 
-                expect(info.generateDescription()).toEqual(expectedDescription);
+                // TODO: add more tests for different situations
+
+                const expectedDescription = `${Localize.t('events.itEstablishesTrustLineTo', {
+                    limit: instance.Limit,
+                    currency: NormalizeCurrencyCode(instance.Currency),
+                    issuer: instance.Issuer,
+                    address: instance.Account.address,
+                })}`;
+
+                // @ts-ignore
+                expect(TrustSetInfo.getDescription(instance, { address: tx.Account })).toEqual(expectedDescription);
             });
         });
 
-        describe('getEventsLabel()', () => {
+        describe('getLabel()', () => {
             it('should return the expected label', () => {
-                expect(info.getEventsLabel()).toEqual(Localize.t('events.addedATrustLine'));
-            });
-        });
+                const { tx, meta } = trustSetTemplate;
+                const instance = new TrustSet(tx, meta);
 
-        describe('getParticipants()', () => {
-            it('should return the expected participants', () => {
-                expect(info.getParticipants()).toStrictEqual({
-                    start: { address: 'rhr8s3nSVJUFwkApgLP32XyYQXZ28Xphfc', tag: undefined },
-                    end: { address: 'razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA', tag: undefined },
-                });
-            });
-        });
+                // TODO: add more tests for different situations
 
-        describe('getMonetaryDetails()', () => {
-            it('should return the expected monetary details', () => {
-                expect(info.getMonetaryDetails()).toStrictEqual({
-                    mutate: {
-                        DEC: [],
-                        INC: [],
-                    },
-                    factor: undefined,
-                });
+                // @ts-ignore
+                expect(TrustSetInfo.getLabel(instance, { address: tx.Account })).toEqual(
+                    Localize.t('events.updatedATrustLine'),
+                );
             });
         });
     });

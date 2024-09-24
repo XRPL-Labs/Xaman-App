@@ -1,6 +1,3 @@
-import ConfirmDestinationTagOverlay, {
-    Props as ConfirmDestinationTagOverlayProps,
-} from './ConfirmDestinationTagOverlay';
+import ConfirmDestinationTagModal from './ConfirmDestinationTagModal';
 
-export type { ConfirmDestinationTagOverlayProps };
-export default ConfirmDestinationTagOverlay;
+export default ConfirmDestinationTagModal;

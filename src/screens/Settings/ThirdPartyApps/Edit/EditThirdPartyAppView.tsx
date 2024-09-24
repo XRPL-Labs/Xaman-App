@@ -22,13 +22,14 @@ import { Icon, Avatar, Button, Header, Spacer, TouchableDebounce } from '@compon
 
 import Localize from '@locale';
 
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+import { ThirdPartyAppType } from '@screens/Settings/ThirdPartyApps/ThirdPartyAppsView';
 
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
-    thirdPartyApp: XamanBackend.ThirdPartyPermission;
+    thirdPartyApp: ThirdPartyAppType;
 }
 
 export interface State {
@@ -68,7 +69,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                 await Navigator.pop();
 
                 if (report) {
-                    Navigator.showModal<XAppBrowserModalProps>(
+                    Navigator.showModal(
                         AppScreens.Modal.XAppBrowser,
                         {
                             identifier: report,
@@ -79,7 +80,7 @@ class EditThirdPartyAppView extends Component<Props, State> {
                         },
                         {
                             modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                            modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                            modalPresentationStyle: OptionsModalPresentationStyle.fullScreen,
                         },
                     );
                 }

@@ -1,4 +1,4 @@
-import { LedgerAmount, Currency, IssuedCurrencyAmount } from '../common';
+import { Amount, Currency, IssuedCurrencyAmount } from '../common';
 
 import { BaseRequest, BaseResponse } from './baseMethod';
 
@@ -43,13 +43,13 @@ export interface AMMInfoResponse extends BaseResponse {
          * The total amount of one asset in the AMM's pool.
          * (Note: This could be asset or asset2 from the request)
          */
-        amount: LedgerAmount;
+        amount: Amount;
 
         /**
          * The total amount of the other asset in the AMM's pool.
          * (Note: This could be asset or asset2 from the request)
          */
-        amount2: LedgerAmount;
+        amount2: Amount;
 
         /**
          * (Omitted for XRP) If true, the amount currency is currently frozen for asset.

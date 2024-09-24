@@ -1,4 +1,3 @@
-import CipherMigrationView, { Props as CipherMigrationViewProps } from './CipherMigrationView';
+import CipherMigrationView from './CipherMigrationView';
 
-export type { CipherMigrationViewProps };
 export default CipherMigrationView;

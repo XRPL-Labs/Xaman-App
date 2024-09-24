@@ -26,11 +26,7 @@ export interface State {}
 class MigrationExplainModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.MigrationExplain;
 
-    private backHandler: NativeEventSubscription | undefined;
-
-    constructor(props: Props) {
-        super(props);
-    }
+    private backHandler: NativeEventSubscription;
 
     static options() {
         return {

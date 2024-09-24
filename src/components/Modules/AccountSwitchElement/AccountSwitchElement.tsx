@@ -11,8 +11,6 @@ import { Icon, TouchableDebounce } from '@components/General';
 
 import Locale from '@locale';
 
-import { Props as SwitchAccountOverlayProps } from '@screens/Overlay/SwitchAccount/types';
-
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -48,36 +46,30 @@ class AccountSwitchElement extends Component<Props, State> {
     onSwitcherClose = () => {
         const { onSwitcherClose } = this.props;
 
-        this.setState(
-            {
-                isSwitcherOpen: false,
-            },
-            () => {
-                if (typeof onSwitcherClose === 'function') {
-                    onSwitcherClose();
-                }
-            },
-        );
+        this.setState({
+            isSwitcherOpen: false,
+        });
+
+        if (typeof onSwitcherClose === 'function') {
+            onSwitcherClose();
+        }
     };
 
     onPress = () => {
         const { onAccountSwitch, showAddAccountButton, discreet } = this.props;
 
         // set the tracker flag to true
-        this.setState(
-            {
-                isSwitcherOpen: true,
-            },
-            () => {
-                // open the switcher overlay
-                Navigator.showOverlay<SwitchAccountOverlayProps>(AppScreens.Overlay.SwitchAccount, {
-                    discreetMode: !!discreet,
-                    showAddAccountButton: !!showAddAccountButton,
-                    onClose: this.onSwitcherClose,
-                    onSwitch: onAccountSwitch,
-                });
-            },
-        );
+        this.setState({
+            isSwitcherOpen: true,
+        });
+
+        // open the switcher overlay
+        Navigator.showOverlay(AppScreens.Overlay.SwitchAccount, {
+            discreetMode: discreet,
+            showAddAccountButton,
+            onClose: this.onSwitcherClose,
+            onSwitch: onAccountSwitch,
+        });
     };
 
     render() {

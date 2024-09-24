@@ -6,6 +6,7 @@ export default StyleService.create({
     sectionList: {
         flex: 1,
         alignSelf: 'stretch',
+        backgroundColor: '$background',
     },
     sectionListContainer: {
         paddingHorizontal: AppSizes.paddingList,

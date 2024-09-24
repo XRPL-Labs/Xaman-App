@@ -1,27 +1,26 @@
+import React, { Component } from 'react';
+import { Image, InteractionManager, View } from 'react-native';
 import { isEmpty, isEqual } from 'lodash';
 
-import React, { Component } from 'react';
-import { View, InteractionManager } from 'react-native';
-
 import { ExplainerFactory } from '@common/libs/ledger/factory';
-import { CombinedTransactions, Transactions } from '@common/libs/ledger/transactions/types';
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-
-import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
-import { LedgerObjects } from '@common/libs/ledger/objects/types';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
+import { Transactions } from '@common/libs/ledger/transactions/types';
+import { OfferStatus, OperationActions } from '@common/libs/ledger/parser/types';
 
 import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AccountNameType, getAccountName } from '@common/helpers/resolver';
+import { getAccountName } from '@common/helpers/resolver';
+import { Images } from '@common/helpers/images';
+
+import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
+import { Truncate } from '@common/utils/string';
 
 import { AppScreens } from '@common/constants';
 
-import { TouchableDebounce } from '@components/General';
+import Localize from '@locale';
 
-import * as Blocks from './Blocks';
-
-import { TransactionDetailsViewProps } from '@screens/Events/Details';
+import { AmountText, Avatar, Icon, TextPlaceholder, TouchableDebounce } from '@components/General';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
@@ -29,14 +28,19 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
-    item: Transactions & MutationsMixinType;
+    item: Transactions;
     timestamp?: number;
 }
 
 export interface State {
     isLoading: boolean;
-    participant?: AccountNameType;
-    explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
+    recipientDetails: {
+        address: string;
+        tag?: number;
+        name?: string;
+        kycApproved?: boolean;
+    };
+    label: string;
 }
 
 /* Component ==================================================================== */
@@ -50,22 +54,14 @@ class TransactionItem extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            participant: undefined,
-            explainer: undefined,
+            recipientDetails: undefined,
+            label: undefined,
         };
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { item, timestamp } = this.props;
-        const { isLoading, participant, explainer } = this.state;
-
-        return (
-            !isEqual(nextProps.item?.hash, item?.hash) ||
-            !isEqual(nextState.isLoading, isLoading) ||
-            !isEqual(nextState.participant, participant) ||
-            !isEqual(nextState.explainer, explainer) ||
-            !isEqual(nextProps.timestamp, timestamp)
-        );
+        const { timestamp } = this.props;
+        return !isEqual(nextState, this.state) || !isEqual(nextProps.timestamp, timestamp);
     }
 
     componentDidMount() {
@@ -77,10 +73,10 @@ class TransactionItem extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        const { item, timestamp } = this.props;
+        const { timestamp } = this.props;
 
         // force the lookup if timestamp changed
-        if (timestamp !== prevProps.timestamp || item?.hash !== prevProps.item?.hash) {
+        if (timestamp !== prevProps.timestamp) {
             InteractionManager.runAfterInteractions(this.setDetails);
         }
     }
@@ -90,8 +86,8 @@ class TransactionItem extends Component<Props, State> {
     }
 
     setDetails = async () => {
-        const { item, account } = this.props;
         const { isLoading } = this.state;
+        const { item, account } = this.props;
 
         // set is loading flag if not true
         if (!isLoading) {
@@ -100,40 +96,41 @@ class TransactionItem extends Component<Props, State> {
             });
         }
 
-        const explainer = ExplainerFactory.fromTransaction(item, account);
+        // fetch explainer
+        const txExplainer = ExplainerFactory.fromType(item.Type);
 
-        if (typeof explainer === 'undefined') {
-            this.setState({
-                isLoading: false,
-            });
-            return;
+        // get label
+        const transactionLabel = txExplainer.getLabel(item, account);
+
+        // get recipient
+        let recipient = txExplainer.getRecipient(item, account);
+
+        // if there is no recipient then load account address
+        if (isEmpty(recipient)) {
+            recipient = {
+                address: account.address,
+            };
         }
 
-        // get participants
-        const participants = explainer.getParticipants();
-
-        const otherParty =
-            participants.start?.address && participants.start?.address !== account.address
-                ? participants.start
-                : participants.end?.address && participants.end?.address !== account.address
-                  ? participants.end
-                  : { address: account.address };
-
         try {
-            // get participant details
-            const resp = await getAccountName(otherParty.address, otherParty.tag);
+            // getRecipient
+            const resp = await getAccountName(recipient.address, recipient.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
-                    explainer,
-                    participant: resp,
+                    label: transactionLabel,
+                    recipientDetails: {
+                        ...recipient,
+                        name: resp.name,
+                        kycApproved: resp.kycApproved,
+                    },
                     isLoading: false,
                 });
             }
         } catch (error) {
             if (this.mounted) {
                 this.setState({
-                    explainer,
-                    participant: { ...otherParty },
+                    label: transactionLabel,
+                    recipientDetails: { ...recipient },
                     isLoading: false,
                 });
             }
@@ -142,16 +139,446 @@ class TransactionItem extends Component<Props, State> {
 
     onPress = () => {
         const { item, account } = this.props;
+        Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
+    };
 
-        Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
-            item,
-            account,
-        });
+    getIcon = () => {
+        const { recipientDetails, isLoading } = this.state;
+
+        return (
+            <View style={styles.iconContainer}>
+                <Avatar
+                    badge={recipientDetails?.kycApproved ? 'IconCheckXaman' : undefined}
+                    border
+                    source={{ uri: `https://xumm.app/avatar/${recipientDetails?.address}_180_50.png` }}
+                    isLoading={isLoading}
+                />
+            </View>
+        );
+    };
+
+    getDescription = () => {
+        const { recipientDetails } = this.state;
+        const { item, account } = this.props;
+
+        if (item.Type === TransactionTypes.OfferCreate) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
+                const takerGot = item.TakerGot(account.address);
+                const takerPaid = item.TakerPaid(account.address);
+
+                return `${Localize.formatNumber(NormalizeAmount(takerGot.value))} ${NormalizeCurrencyCode(
+                    takerGot.currency,
+                )}/${NormalizeCurrencyCode(takerPaid.currency)}`;
+            }
+            return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
+                item.TakerGets.currency,
+            )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
+        }
+
+        if (item.Type === TransactionTypes.Payment) {
+            if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                const balanceChanges = item.BalanceChange(account.address);
+
+                if (balanceChanges?.sent && balanceChanges?.received) {
+                    return `${Localize.formatNumber(Number(balanceChanges.sent.value))} ${NormalizeCurrencyCode(
+                        balanceChanges.sent.currency,
+                    )}/${NormalizeCurrencyCode(balanceChanges.received.currency)}`;
+                }
+            }
+        }
+
+        if (recipientDetails?.name) return recipientDetails.name;
+        if (recipientDetails?.address) return Truncate(recipientDetails.address, 16);
+
+        return Localize.t('global.unknown');
+    };
+
+    renderMemoIcon = () => {
+        const { item } = this.props;
+
+        // if memo contain xApp identifier then show xApp Icon
+        if (item.getXappIdentifier()) {
+            return <Image source={Images.IconXApp} style={styles.xAppsIcon} />;
+        }
+
+        if (item.Memos) {
+            return <Icon name="IconFileText" style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]} size={12} />;
+        }
+
+        return null;
+    };
+
+    renderReserveIcon = () => {
+        const { item, account } = this.props;
+
+        let changes;
+
+        if (typeof item.OwnerCountChange === 'function') {
+            changes = item.OwnerCountChange(account.address);
+        }
+
+        if (changes) {
+            return (
+                <Icon
+                    name={changes.action === OperationActions.INC ? 'IconLock' : 'IconUnlock'}
+                    style={[AppStyles.imgColorGrey, AppStyles.paddingLeftSml]}
+                    size={12}
+                />
+            );
+        }
+
+        return null;
+    };
+
+    renderRightPanel = () => {
+        const { isLoading } = this.state;
+        const { item, account } = this.props;
+
+        if (isLoading) {
+            return null;
+        }
+
+        let incoming = item.Account?.address !== account.address;
+
+        if (item.Type === TransactionTypes.Payment) {
+            const balanceChanges = item.BalanceChange(account.address);
+            const amount = item.DeliveredAmount || item.Amount;
+
+            if ([item.Account.address, item.Destination?.address].indexOf(account.address) === -1) {
+                // regular key
+                if (!balanceChanges?.received && !balanceChanges?.sent) {
+                    return (
+                        <AmountText
+                            value={amount.value}
+                            currency={amount.currency}
+                            style={[styles.amount, styles.naturalColor]}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
+                        />
+                    );
+                }
+                if (balanceChanges?.received) {
+                    return (
+                        <AmountText
+                            value={balanceChanges.received?.value}
+                            currency={balanceChanges.received?.currency}
+                            style={styles.amount}
+                            currencyStyle={styles.currency}
+                            valueContainerStyle={styles.amountValueContainer}
+                            truncateCurrency
+                        />
+                    );
+                }
+            }
+
+            // path payment to self
+            if (item.Account.address === account.address && item.Destination.address === account.address) {
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        style={[styles.amount]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+
+            return (
+                <AmountText
+                    value={amount.value}
+                    currency={amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.AccountDelete) {
+            return (
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.EscrowCreate) {
+            return (
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={item.Account.address === account.address && '-'}
+                    style={[
+                        styles.amount,
+                        item.Account.address === account.address ? styles.orangeColor : styles.naturalColor,
+                    ]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.EscrowFinish) {
+            return (
+                <AmountText
+                    value={item.Amount.value}
+                    currency={item.Amount.currency}
+                    prefix={item.Owner === account.address && '-'}
+                    style={[
+                        styles.amount,
+                        item.Destination.address !== account.address &&
+                            item.Owner !== account.address &&
+                            styles.naturalColor,
+                        item.Owner === account.address && styles.outgoingColor,
+                    ]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.CheckCreate) {
+            return (
+                <AmountText
+                    value={item.SendMax.value}
+                    currency={item.SendMax.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.CheckCash) {
+            const amount = item.Amount || item.DeliverMin;
+            incoming = item.Account.address === account.address;
+            return (
+                <AmountText
+                    value={amount.value}
+                    currency={amount.currency}
+                    prefix={!incoming && '-'}
+                    style={[styles.amount, !incoming && styles.outgoingColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (item.Type === TransactionTypes.OfferCreate) {
+            if ([OfferStatus.FILLED, OfferStatus.PARTIALLY_FILLED].indexOf(item.GetOfferStatus(account.address)) > -1) {
+                const takerPaid = item.TakerPaid(account.address);
+
+                return (
+                    <AmountText
+                        value={takerPaid.value}
+                        currency={takerPaid.currency}
+                        style={[styles.amount]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+            return (
+                <AmountText
+                    value={item.TakerPays.value}
+                    currency={item.TakerPays.currency}
+                    style={[styles.amount, styles.naturalColor]}
+                    currencyStyle={styles.currency}
+                    valueContainerStyle={styles.amountValueContainer}
+                    truncateCurrency
+                />
+            );
+        }
+
+        if (
+            [
+                TransactionTypes.PaymentChannelClaim,
+                TransactionTypes.PaymentChannelFund,
+                TransactionTypes.PaymentChannelCreate,
+            ].includes(item.Type)
+        ) {
+            const balanceChanges = item.BalanceChange(account.address);
+
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.NFTokenAcceptOffer) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.GenesisMint) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && balanceChanges.received) {
+                return (
+                    <AmountText
+                        value={balanceChanges.received.value}
+                        currency={balanceChanges.received.currency}
+                        style={[styles.amount, styles.incomingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.EnableAmendment) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && balanceChanges.received) {
+                return (
+                    <AmountText
+                        value={balanceChanges.received.value}
+                        currency={balanceChanges.received.currency}
+                        style={[styles.amount, styles.incomingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.Import) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.ClaimReward) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (item.Type === TransactionTypes.Clawback) {
+            const balanceChanges = item.BalanceChange(account.address);
+            if (balanceChanges && (balanceChanges.received || balanceChanges.sent)) {
+                const amount = balanceChanges?.received || balanceChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!balanceChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!balanceChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        if (
+            [
+                TransactionTypes.AMMBid,
+                TransactionTypes.AMMWithdraw,
+                TransactionTypes.AMMDeposit,
+                TransactionTypes.AMMCreate,
+                TransactionTypes.AMMDelete,
+                TransactionTypes.AMMVote,
+            ].includes(item.Type)
+        ) {
+            const lpTokenChanges = item.LPTokenChanges(account.address);
+            if (lpTokenChanges && (lpTokenChanges.received || lpTokenChanges.sent)) {
+                const amount = lpTokenChanges?.received || lpTokenChanges?.sent;
+                return (
+                    <AmountText
+                        value={amount.value}
+                        currency={amount.currency}
+                        prefix={!!lpTokenChanges.sent && !amount.value.startsWith('-') && '-'}
+                        style={[styles.amount, !!lpTokenChanges.sent && styles.outgoingColor]}
+                        currencyStyle={styles.currency}
+                        valueContainerStyle={styles.amountValueContainer}
+                        truncateCurrency
+                    />
+                );
+            }
+        }
+
+        return null;
+    };
+
+    renderLabel = () => {
+        const { label, isLoading } = this.state;
+
+        return (
+            <TextPlaceholder style={styles.description} numberOfLines={1} isLoading={isLoading}>
+                {label}
+            </TextPlaceholder>
+        );
     };
 
     render() {
-        const { item, account } = this.props;
-        const { participant, explainer } = this.state;
+        const { isLoading } = this.state;
 
         return (
             <TouchableDebounce
@@ -159,18 +586,19 @@ class TransactionItem extends Component<Props, State> {
                 activeOpacity={0.6}
                 style={[styles.container, { height: TransactionItem.Height }]}
             >
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Blocks.AvatarBlock participant={participant} item={item} />
-                </View>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                    <Blocks.LabelBlock item={item} account={account} participant={participant} />
+                    <TextPlaceholder style={styles.label} numberOfLines={1} isLoading={isLoading}>
+                        {this.getDescription()}
+                    </TextPlaceholder>
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
-                        <Blocks.IndicatorIconBlock item={item} account={account} />
+                        {this.renderLabel()}
+                        {this.renderMemoIcon()}
+                        {this.renderReserveIcon()}
                     </View>
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                    <Blocks.MonetaryBlock explainer={explainer} />
+                    {this.renderRightPanel()}
                 </View>
             </TouchableDebounce>
         );

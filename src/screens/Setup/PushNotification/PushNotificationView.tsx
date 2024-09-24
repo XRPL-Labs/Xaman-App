@@ -14,14 +14,14 @@ import { PushNotificationsService, StyleService } from '@services';
 import { Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
-
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
-
+// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    passcode: string;
+}
 
 export interface State {
     isLoading: boolean;
@@ -85,14 +85,14 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     nextStep = () => {
-        Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+        Navigator.push(AppScreens.Setup.Disclaimers);
     };
 
     render() {
         const { isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="permission-setup-view" style={AppStyles.container}>
+            <SafeAreaView testID="permission-setup-view" style={[AppStyles.container]}>
                 <View style={[AppStyles.flex2, AppStyles.centerContent]}>
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </View>
@@ -113,7 +113,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                     </View>
                 </View>
 
-                <Footer style={AppStyles.paddingBottom}>
+                <Footer style={[AppStyles.paddingBottom]}>
                     <Button numberOfLines={1} light label={Localize.t('global.maybeLater')} onPress={this.nextStep} />
                     <Spacer />
                     <Button
