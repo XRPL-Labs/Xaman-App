@@ -17,4 +17,4 @@ runs:
       shell: bash
       run: |
         cd ios && \
-        pod install
+        pod install --repo-update
