@@ -1,3 +1,4 @@
-import RequestDeclineModal from './RequestDeclineModal';
+import RequestDeclineOverlay, { Props as RequestDeclineOverlayProps } from './RequestDeclineOverlay';
 
-export default RequestDeclineModal;
+export type { RequestDeclineOverlayProps };
+export default RequestDeclineOverlay;

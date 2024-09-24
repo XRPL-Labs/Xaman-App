@@ -1,3 +1,3 @@
-export { default as Clawback } from './ClawbackClass';
-export { default as ClawbackValidation } from './ClawbackValidation';
-export { default as ClawbackInfo } from './ClawbackInfo';
+export { default as Clawback } from './Clawback.class';
+export { default as ClawbackValidation } from './Clawback.validation';
+export { default as ClawbackInfo } from './Clawback.info';

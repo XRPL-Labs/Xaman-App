@@ -10,15 +10,16 @@ import Ledger from './Ledger';
 import { LedgerEntry, LedgerEntryFilter } from './LedgerEntry';
 import LedgerHashes from './LedgerHashes';
 import NegativeUNL from './NegativeUNL';
-import { NFTokenOffer } from './NFTokenOffer';
+import NFTokenOffer from './NFTokenOffer';
 import { NFTokenPage } from './NFTokenPage';
 import Offer, { OfferFlags } from './Offer';
 import PayChannel from './PayChannel';
 import RippleState, { RippleStateFlags } from './RippleState';
 import SignerList from './SignerList';
 import Ticket from './Ticket';
+import URIToken from './URIToken';
 
-export {
+export type {
     AccountRoot,
     Amendments,
     AMM,
@@ -45,4 +46,5 @@ export {
     SignerList,
     Ticket,
     VoteSlot,
+    URIToken,
 };

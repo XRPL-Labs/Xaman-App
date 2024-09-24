@@ -13,21 +13,22 @@ interface State {}
 
 /* Component ==================================================================== */
 class Swiper extends Component<Props, State> {
-    scroll: ScrollView = undefined;
-    views: Map<number, View> = new Map();
+    private scrollRef: React.RefObject<ScrollView>;
+    private views: Map<number, View | null> = new Map();
 
     private measureViewTimeout: any;
 
     constructor(props: Props) {
         super(props);
+
         this.state = {};
+
+        this.scrollRef = React.createRef();
     }
 
     componentDidMount() {
         setTimeout(() => {
-            if (this.scroll) {
-                this.scroll.scrollTo({ x: -30 });
-            }
+            this.scrollRef?.current?.scrollTo({ x: -30 });
         }, 10);
     }
 
@@ -47,7 +48,7 @@ class Swiper extends Component<Props, State> {
         const { items } = this.props;
         this.measureViewTimeout = setTimeout(() => {
             for (const [index, view] of this.views.entries()) {
-                view.measure((x, y, width, height, pageX) => {
+                view?.measure((x, y, width, height, pageX) => {
                     if (pageX > 20 && pageX < 40) {
                         this.onItemChange(items[index]);
                     }
@@ -61,9 +62,7 @@ class Swiper extends Component<Props, State> {
 
         return (
             <ScrollView
-                ref={(r) => {
-                    this.scroll = r;
-                }}
+                ref={this.scrollRef}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 decelerationRate={0}

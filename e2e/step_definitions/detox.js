@@ -1,4 +1,4 @@
-const { Given, Then } = require('cucumber');
+const { Given, Then } = require('@cucumber/cucumber');
 const { waitFor, expect, element, by, device } = require('detox');
 
 Then('I tap {string}', async (buttonId) => {
@@ -34,8 +34,10 @@ Then('I enter {string} in {string}', async (value, textInputId) => {
     await element(by.id(textInputId)).typeText(value);
 });
 
-Given('I should have {string}', async (screenId) => {
-    await expect(element(by.id(screenId))).toExist();
+Given('I should have {string}', async (elementId) => {
+    await waitFor(element(by.id(elementId)))
+        .toExist()
+        .withTimeout(5000);
 });
 
 Given('I should not have {string}', async (screenId) => {
@@ -85,7 +87,9 @@ Then('I tap alert button with label {string}', async (label) => {
 });
 
 Given('I should see alert with content {string}', async (title) => {
-    await expect(element(by.label(title))).toBeVisible();
+    await waitFor(element(by.label(title)))
+        .toBeVisible()
+        .withTimeout(5000);
 });
 
 Then('I send the app to the background', async () => {

@@ -27,7 +27,7 @@ interface Props {
     indicatorOpacity?: number;
     indicatorPosition?: 'none' | 'top' | 'right' | 'bottom' | 'left';
 
-    startPage?: number;
+    startPage: number;
 
     onLayout?: (event: any) => void;
     onScrollEnd?: (progress: any) => void;
@@ -42,39 +42,37 @@ interface State {
 
 /* Component ==================================================================== */
 export default class Slider extends Component<Props, State> {
-    progress: number;
-    mounted: boolean;
-    scrollState: number;
+    private progress: number;
+    private mounted: boolean;
+    private scrollState: number;
 
-    private scroll: React.RefObject<ScrollView>;
+    private scrollRef: React.RefObject<ScrollView>;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Slider.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         pagingEnabled: true,
-        nestedScrollEnabled: true,
         showsHorizontalScrollIndicator: false,
-        showsVerticalScrollIndicator: false,
         scrollEventThrottle: 25,
         scrollsToTop: false,
         indicatorOpacity: 0.3,
         startPage: 0,
-        horizontal: true,
     };
 
     constructor(props: Props) {
         super(props);
 
-        const { startPage } = this.props;
-
-        this.progress = startPage;
-        this.mounted = false;
-        this.scrollState = -1;
-        this.scroll = React.createRef();
-
         this.state = {
             width: 0,
             height: 0,
-            progress: new Animated.Value(startPage),
+            progress: new Animated.Value(props.startPage),
         };
+
+        this.progress = props.startPage;
+        this.mounted = false;
+        this.scrollState = -1;
+
+        this.scrollRef = React.createRef();
     }
 
     componentDidMount() {
@@ -124,8 +122,8 @@ export default class Slider extends Component<Props, State> {
             this.scrollState = 1;
         }
 
-        if (this.mounted && this.scroll) {
-            this.scroll.current.scrollTo({
+        if (this.mounted) {
+            this.scrollRef?.current?.scrollTo({
                 x: page * base,
                 animated,
             });
@@ -141,17 +139,19 @@ export default class Slider extends Component<Props, State> {
     }
 
     renderPage = (page: any, index: number) => {
-        const { width, height } = this.state;
-        let { progress } = this.state;
+        const { progress, width, height } = this.state;
         const { children } = this.props;
 
         const pages = Children.count(children);
 
         /* Adjust progress by page index */
-        // @ts-ignore
-        progress = Animated.add(progress, -index);
+        const adjustedProgress = Animated.add(progress, -index);
 
-        return <View style={[{ width, height }]}>{React.cloneElement(page, { index, pages, progress })}</View>;
+        return (
+            <View style={[{ width, height }]}>
+                {React.cloneElement(page, { index, pages, progress: adjustedProgress })}
+            </View>
+        );
     };
 
     renderIndicator = (pager: any) => {
@@ -161,9 +161,19 @@ export default class Slider extends Component<Props, State> {
             return null;
         }
 
-        return (
+        let indicatorStyle: ViewStyle | undefined;
+
+        if (indicatorPosition in styles) {
             // @ts-ignore
-            <View style={[styles[indicatorPosition]]}>
+            indicatorStyle = styles[indicatorPosition];
+        }
+
+        if (typeof indicatorStyle === 'undefined') {
+            return null;
+        }
+
+        return (
+            <View style={indicatorStyle}>
                 {/* eslint-disable-next-line */}
                 <Indicator {...pager} scrollTo={this.scrollToPage} />
             </View>
@@ -188,15 +198,15 @@ export default class Slider extends Component<Props, State> {
         };
 
         return (
-            <View style={[styles.container]}>
+            <View style={styles.container}>
                 <ScrollView
                     {...props}
                     style={[styles.scrollView, style]}
-                    onLayout={(event) => this.onLayout(event)}
+                    onLayout={this.onLayout}
                     onScroll={this.onScroll}
                     onScrollBeginDrag={this.onScrollBeginDrag}
                     onScrollEndDrag={this.onScrollEndDrag}
-                    ref={this.scroll}
+                    ref={this.scrollRef}
                 >
                     {Children.map(children, this.renderPage)}
                 </ScrollView>

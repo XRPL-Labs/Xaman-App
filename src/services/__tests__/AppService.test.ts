@@ -1,5 +1,4 @@
 import Preferences from '@common/libs/preferences';
-import { Navigator } from '@common/helpers/navigator';
 import * as AppHelpers from '@common/helpers/app';
 
 import AppService, { NetStateStatus, AppStateStatus } from '../AppService';
@@ -56,17 +55,15 @@ describe('AppService', () => {
         spy2.mockRestore();
     });
 
-    it('should show change log and update version code', async () => {
-        const spyShowChangeLog = jest.spyOn(Navigator, 'showOverlay');
+    it('should record the latest update version to the store', async () => {
         const spyUpdateVersionCode = jest.spyOn(Preferences, 'set');
 
         // mock current app version
         const spy1 = jest.spyOn(AppHelpers, 'GetAppVersionCode').mockImplementation(() => '0.5.1');
         const spy2 = jest.spyOn(Preferences, 'get').mockImplementation(async () => '0.4.9');
 
-        await appService.checkShowChangeLog();
+        await appService.checkVersionChange();
 
-        expect(spyShowChangeLog).toBeCalled();
         expect(spyUpdateVersionCode).toBeCalledWith(Preferences.keys.LATEST_VERSION_CODE, '0.5.1');
 
         spy1.mockRestore();

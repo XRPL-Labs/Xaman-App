@@ -71,6 +71,7 @@ const Sizes = {
 
     padding: 30,
     paddingSml: 20,
+    paddingMid: 15,
     paddingExtraSml: 10,
 
     paddingList: 25,

@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, InteractionManager, ImageBackground } from 'react-native';
+import { ImageBackground, InteractionManager, Text, View } from 'react-native';
 
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
@@ -13,19 +13,21 @@ import StyleService from '@services/StyleService';
 import { AppScreens } from '@common/constants';
 
 import { TransactionFactory } from '@common/libs/ledger/factory';
+import { MixingTypes, MutationsMixinType } from '@common/libs/ledger/mixin/types';
+import { Transactions } from '@common/libs/ledger/transactions/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { CoreRepository, NetworkRepository } from '@store/repositories';
+import { CoreRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
-// components
-import { Icon, Spacer, LoadingIndicator, InfoMessage, Button, Footer } from '@components/General';
+import { Button, Footer, Icon, InfoMessage, LoadingIndicator, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-// style
+import { TransactionDetailsViewProps } from '@screens/Events/Details';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -33,13 +35,12 @@ import styles from './styles';
 export interface Props {
     hash: string;
     account: AccountModel;
-    network: string;
+    network: NetworkModel;
 }
 
 export interface State {
     isLoading: boolean;
-    requiredSwitchNetwork: boolean;
-    requiredNetwork: NetworkModel;
+    requiresSwitchNetwork: boolean;
     error: boolean;
 }
 
@@ -62,8 +63,7 @@ class TransactionLoaderModal extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            requiredSwitchNetwork: false,
-            requiredNetwork: undefined,
+            requiresSwitchNetwork: false,
             error: false,
         };
     }
@@ -90,15 +90,11 @@ class TransactionLoaderModal extends Component<Props, State> {
         // check if we are connected to the network that this push is coming from
         const { networkKey } = NetworkService.getConnectionDetails();
 
-        if (network && network !== networkKey) {
-            // get required network
-            const requiredNetwork = NetworkRepository.findOne({ key: network });
-
+        if (network && network.key !== networkKey) {
             // set return
             this.setState({
                 isLoading: false,
-                requiredSwitchNetwork: true,
-                requiredNetwork,
+                requiresSwitchNetwork: true,
             });
             return;
         }
@@ -130,22 +126,20 @@ class TransactionLoaderModal extends Component<Props, State> {
                 return;
             }
 
-            // extract meta from response
-            const { meta, ...tx } = resp;
-
-            // remove some unnecessary fields
-            delete resp.meta;
+            // eslint-disable-next-line no-underscore-dangle
+            // @ts-expect-error
             delete resp.__replyMs;
+            // eslint-disable-next-line no-underscore-dangle
             delete resp.__command;
             delete resp.inLedger;
 
+            // pick meta from resp and anything else put it in the tx key
+            const { meta, ledger_index, validated, ...tx } = resp;
+
             // build transaction instance
-            const transactionInstance = TransactionFactory.fromLedger({
-                ledger_index: resp.ledger_index,
-                validated: resp.validated,
-                tx,
-                meta,
-            });
+            const transactionInstance = TransactionFactory.fromLedger({ tx, meta, ledger_index, validated }, [
+                MixingTypes.Mutation,
+            ]) as Transactions & MutationsMixinType;
 
             // switch to the right account if necessary
             const coreSettings = CoreRepository.getSettings();
@@ -161,10 +155,9 @@ class TransactionLoaderModal extends Component<Props, State> {
 
             // redirect to details screen with a little-bit delay
             setTimeout(() => {
-                Navigator.showModal(AppScreens.Transaction.Details, {
-                    tx: transactionInstance,
+                Navigator.showModal<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
+                    item: transactionInstance,
                     account,
-                    asModal: true,
                 });
             }, 500);
         } catch (error) {
@@ -179,13 +172,19 @@ class TransactionLoaderModal extends Component<Props, State> {
     };
 
     onSwitchNetworkPress = async () => {
-        const { requiredNetwork } = this.state;
+        const { network } = this.props;
+        const { requiresSwitchNetwork } = this.state;
+
+        // double check
+        if (!requiresSwitchNetwork) {
+            return;
+        }
 
         // switch to the desired network
-        await NetworkService.switchNetwork(requiredNetwork);
+        await NetworkService.switchNetwork(network);
 
         // re-run the preFlight
-        this.loadTransaction();
+        await this.loadTransaction();
     };
 
     dismiss = () => {
@@ -193,13 +192,13 @@ class TransactionLoaderModal extends Component<Props, State> {
     };
 
     renderNetworkSwitch = () => {
-        const { requiredNetwork } = this.state;
+        const { network } = this.props;
 
         const coreSettings = CoreRepository.getSettings();
 
         // only enable network switch if developer mode is on
         let ShouldShowSwitchButton = true;
-        if (requiredNetwork.type !== NetworkType.Main && !coreSettings.developerMode) {
+        if (network?.type !== NetworkType.Main && !coreSettings.developerMode) {
             ShouldShowSwitchButton = false;
         }
 
@@ -210,7 +209,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             const connectedNetwork = NetworkService.getNetwork();
             switchNetworkWarning = Localize.t('settings.networkChangeAccountDetailsWarning', {
                 from: `"${connectedNetwork.name}"`,
-                to: `"${requiredNetwork.name}`,
+                to: `"${network?.name}`,
             });
         }
 
@@ -221,7 +220,7 @@ class TransactionLoaderModal extends Component<Props, State> {
                 <InfoMessage
                     type="neutral"
                     label={`${Localize.t('events.transactionDetailsDifferentNetworkError', {
-                        network: `"${requiredNetwork.name}"`,
+                        network: `"${network?.name}"`,
                     })}\n\n${switchNetworkWarning}\n`}
                     hideActionButton={!ShouldShowSwitchButton}
                     actionButtonLabel={Localize.t('global.switchNetwork')}
@@ -267,12 +266,12 @@ class TransactionLoaderModal extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { isLoading, requiredSwitchNetwork, error } = this.state;
+        const { isLoading, requiresSwitchNetwork, error } = this.state;
 
         if (isLoading) {
             return this.renderLoading();
         }
-        if (requiredSwitchNetwork) {
+        if (requiresSwitchNetwork) {
             return this.renderNetworkSwitch();
         }
         if (error) {

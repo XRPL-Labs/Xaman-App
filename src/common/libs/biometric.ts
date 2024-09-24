@@ -11,6 +11,7 @@ import { BiometryType } from '@store/types';
 const { BiometricModule } = NativeModules;
 
 export enum BiometricErrors {
+    // noinspection JSUnusedGlobalSymbols
     ERROR_USER_CANCEL = 'USER_CANCEL',
     ERROR_NOT_SUPPORTED = 'BIOMETRIC_NOT_SUPPORTED',
     ERROR_NOT_ENROLLED = 'NOT_ENROLLED',

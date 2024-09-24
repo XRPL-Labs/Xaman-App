@@ -33,11 +33,12 @@ class Avatar extends PureComponent<Props> {
     private readonly animatedPulse: Animated.Value;
     private readonly animatedFadeIn: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof Avatar.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         size: 40,
         imageScale: 1,
         border: false,
-        badgeBorder: true,
     };
 
     constructor(props: Props) {
@@ -125,7 +126,7 @@ class Avatar extends PureComponent<Props> {
                             bottom: -size * 0.12,
                             right: -size * 0.15,
                         },
-                        badgeColor && { backgroundColor: badgeColor },
+                        badgeColor ? { backgroundColor: badgeColor } : {},
                     ]}
                 >
                     <Icon name={badge} size={size * 0.18} style={styles.badge} />

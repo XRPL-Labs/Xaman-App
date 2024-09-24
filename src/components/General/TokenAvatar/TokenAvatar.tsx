@@ -18,7 +18,7 @@ interface Props extends Omit<AvatarProps, 'source'> {
 }
 
 interface State {
-    avatar: string;
+    avatar?: string;
 }
 
 /* Component ==================================================================== */
@@ -31,7 +31,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         };
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         const avatar = TokenAvatar.getAvatar(nextProps.token);
         if (prevState.avatar !== avatar) {
             return {
@@ -59,7 +59,7 @@ class TokenAvatar extends PureComponent<Props, State> {
             return counterParty.avatar;
         }
 
-        if (token.isLPToken()) {
+        if (token.isLiquidityPoolToken()) {
             return StyleService.getImage('ImageUnknownAMM').uri;
         }
 

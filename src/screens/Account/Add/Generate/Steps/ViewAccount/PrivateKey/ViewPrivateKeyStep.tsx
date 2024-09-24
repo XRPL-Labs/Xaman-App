@@ -29,7 +29,7 @@ const ROWS = 8;
 /* Component ==================================================================== */
 class ViewPrivateKeyStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 
@@ -88,7 +88,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
                     <SecretNumberInput
                         ref={this.secretNumberInputRef}
                         currentRow={currentRow}
-                        secretNumbers={generatedAccount.secret.secretNumbers}
+                        secretNumbers={generatedAccount!.secret.secretNumbers!}
                         readonly
                     />
                 </View>
@@ -113,7 +113,7 @@ class ViewPrivateKeyStep extends Component<Props, State> {
                             secondary={currentRow !== ROWS - 1}
                             textStyle={AppStyles.strong}
                             label={currentRow !== ROWS - 1 ? Localize.t('global.next') : Localize.t('global.done')}
-                            icon={currentRow !== ROWS - 1 ? 'IconChevronRight' : null}
+                            icon={currentRow !== ROWS - 1 ? 'IconChevronRight' : undefined}
                             iconPosition="right"
                             onPress={this.goNext}
                         />

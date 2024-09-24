@@ -115,7 +115,7 @@ describe('DigestSerializeWithSHA1', () => {
                     value: '1',
                     issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
                 },
-            };
+            } as any;
 
             const result = await DigestSerializeWithSHA1.digest(input);
             // Ensure that the result is the expected digest

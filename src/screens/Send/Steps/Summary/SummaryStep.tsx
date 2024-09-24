@@ -15,7 +15,6 @@ import { Navigator } from '@common/helpers/navigator';
 
 import Preferences from '@common/libs/preferences';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
@@ -32,12 +31,12 @@ import {
 
 import { AccountPicker, FeePicker } from '@components/Modules';
 
-// locale
 import Localize from '@locale';
 
-// style
-import { AppStyles, AppColors } from '@theme';
+import { EnterDestinationTagOverlayProps } from '@screens/Overlay/EnterDestinationTag';
+import { ConfirmDestinationTagOverlayProps } from '@screens/Overlay/ConfirmDestinationTag';
 
+import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
@@ -46,16 +45,16 @@ import { StepsContext } from '../../Context';
 export interface Props {}
 
 export interface State {
-    confirmedDestinationTag: number;
+    confirmedDestinationTag?: number;
     destinationTagInputVisible: boolean;
-    currencyRate: RatesType;
+    currencyRate?: RatesType;
     canScroll: boolean;
 }
 
 /* Component ==================================================================== */
 class SummaryStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -132,8 +131,8 @@ class SummaryStep extends Component<Props, State> {
             });
         }
 
-        Navigator.showOverlay(AppScreens.Overlay.EnterDestinationTag, {
-            buttonType: 'apply',
+        Navigator.showOverlay<EnterDestinationTagOverlayProps>(AppScreens.Overlay.EnterDestinationTag, {
+            buttonType: 'set',
             destination,
             onFinish: (destinationTag: string) => {
                 Object.assign(destination, { tag: destinationTag });
@@ -163,11 +162,9 @@ class SummaryStep extends Component<Props, State> {
 
         this.setState(
             {
-                confirmedDestinationTag: destination.tag,
+                confirmedDestinationTag: destination!.tag,
             },
-            () => {
-                this.goNext();
-            },
+            this.goNext,
         );
     };
 
@@ -180,7 +177,7 @@ class SummaryStep extends Component<Props, State> {
             return;
         }
 
-        if (source.balance === 0) {
+        if (source!.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
         }
@@ -193,14 +190,14 @@ class SummaryStep extends Component<Props, State> {
         }
 
         // check if destination requires the destination tag
-        if (destinationInfo?.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
+        if (destinationInfo?.requireDestinationTag && (!destination!.tag || Number(destination!.tag) === 0)) {
             Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
             return;
         }
 
-        if (!isEmpty(destination.tag) && destination.tag !== confirmedDestinationTag) {
-            Navigator.showOverlay(AppScreens.Overlay.ConfirmDestinationTag, {
-                destinationTag: destination.tag,
+        if (!isEmpty(destination!.tag) && destination!.tag !== confirmedDestinationTag) {
+            Navigator.showOverlay<ConfirmDestinationTagOverlayProps>(AppScreens.Overlay.ConfirmDestinationTag, {
+                destinationTag: `${destination!.tag ?? ''}`,
                 onConfirm: this.onDestinationTagConfirm,
                 onChange: this.showEnterDestinationTag,
             });
@@ -220,7 +217,7 @@ class SummaryStep extends Component<Props, State> {
         goBack();
     };
 
-    getSwipeButtonColor = (): string => {
+    getSwipeButtonColor = (): string | undefined => {
         const { coreSettings } = this.context;
 
         if (coreSettings?.developerMode && coreSettings?.network) {
@@ -253,7 +250,7 @@ class SummaryStep extends Component<Props, State> {
                             <Text style={styles.currencyItemLabel}>{NetworkService.getNativeAsset()}</Text>
                             <Text style={styles.currencyBalance}>
                                 {Localize.t('global.available')}:{' '}
-                                {Localize.formatNumber(CalculateAvailableBalance(source))}
+                                {Localize.formatNumber(CalculateAvailableBalance(source!))}
                             </Text>
                         </View>
                     </View>
@@ -269,9 +266,8 @@ class SummaryStep extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text style={styles.currencyItemLabel}>
-                            {NormalizeCurrencyCode(item.currency.currency)}
-
-                            {item.currency.name && <Text style={AppStyles.subtext}> - {item.currency.name}</Text>}
+                            {item.getReadableCurrency()}
+                            <Text style={styles.currencyItemCounterPartyLabel}> - {item.counterParty.name}</Text>
                         </Text>
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
@@ -362,7 +358,7 @@ class SummaryStep extends Component<Props, State> {
                                     adjustsFontSizeToFit
                                     numberOfLines={1}
                                 >
-                                    {destination.address}
+                                    {destination!.address}
                                 </Text>
                             </View>
                         </View>
@@ -373,9 +369,10 @@ class SummaryStep extends Component<Props, State> {
                             <View style={AppStyles.flex1}>
                                 <View style={styles.rowTitle}>
                                     <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
-                                        {destination.tag && `${Localize.t('global.destinationTag')}: `}
+                                        {typeof destination!.tag !== 'undefined' &&
+                                            `${Localize.t('global.destinationTag')}: `}
                                         <Text style={AppStyles.colorBlue}>
-                                            {destination.tag || Localize.t('send.noDestinationTag')}
+                                            {destination!.tag || Localize.t('send.noDestinationTag')}
                                         </Text>
                                     </Text>
                                 </View>

@@ -9,6 +9,11 @@ export interface AccountLinesTrustline {
      * Balance means that the perspective account owes value.
      */
     balance: string;
+    /**
+     *  Represent the locked amount and count of the line for example in the escrow
+     */
+    lock_count?: number;
+    locked_balance?: string;
     /** A Currency Code identifying what currency this trust line can hold. */
     currency: string;
     /**

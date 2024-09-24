@@ -44,12 +44,11 @@ interface State {
 const BUTTONS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'Y', '0', 'X'];
 /* Component ==================================================================== */
 class SecurePinInput extends Component<Props, State> {
-    currentIndex: number;
-    inputRef: React.RefObject<TextInput>;
-    private clearInputTimeout: any;
+    private inputRef: React.RefObject<TextInput>;
+    private clearInputTimeout: NodeJS.Timeout | undefined;
     private lastKeyEventTimestamp: number;
 
-    public static defaultProps = {
+    static defaultProps: Partial<Props> = {
         virtualKeyboard: false,
         supportBiometric: true,
         length: 6,
@@ -60,11 +59,13 @@ class SecurePinInput extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
         this.state = {
             digits: '',
         };
 
-        this.currentIndex = 0;
+        this.lastKeyEventTimestamp = 0;
+
         this.inputRef = React.createRef();
     }
 
@@ -287,7 +288,7 @@ class SecurePinInput extends Component<Props, State> {
         const { virtualKeyboard, length, isLoading } = this.props;
         const { digits } = this.state;
 
-        let props = {};
+        let props: {};
 
         // ios
         if (Platform.OS === 'ios') {

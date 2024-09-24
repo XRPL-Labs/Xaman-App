@@ -36,12 +36,13 @@ export interface State {
 /* Component ==================================================================== */
 class PasscodeMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     private contentViewRef: React.RefObject<View>;
     private animatedColor: Animated.Value;
-    private mounted: boolean;
     private securePinInputRef: React.RefObject<SecurePinInput>;
+
+    private mounted = false;
 
     constructor(props: Props, context: React.ContextType<typeof MethodsContext>) {
         super(props);

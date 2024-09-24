@@ -4,6 +4,8 @@
  * and show status of submitting the transaction to the ledger
  */
 
+// FIXME: refactor this screen and other similar screens
+
 import React, { Component, Fragment } from 'react';
 import {
     View,
@@ -40,15 +42,15 @@ export interface Props {
 
 export interface State {
     step: 'submitting' | 'verifying' | 'result';
-    submitResult: SubmitResultType;
-    verifyResult: VerifyResultType;
+    submitResult?: SubmitResultType;
+    verifyResult?: VerifyResultType;
 }
 
 /* Component ==================================================================== */
 class SubmitModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Submit;
 
-    private backHandler: NativeEventSubscription;
+    private backHandler: NativeEventSubscription | undefined;
 
     static options() {
         return {
@@ -91,7 +93,7 @@ class SubmitModal extends Component<Props, State> {
         if (submitResult.success) {
             this.setState({ step: 'verifying', submitResult });
 
-            const verifyResult = await LedgerService.verifyTransaction(submitResult.hash);
+            const verifyResult = await LedgerService.verifyTransaction(submitResult.hash!);
 
             this.setState({
                 step: 'result',
@@ -118,7 +120,7 @@ class SubmitModal extends Component<Props, State> {
                     <Image style={styles.backgroundImageStyle} source={StyleService.getImage('IconSend')} />
                 </View>
 
-                <View style={[AppStyles.flex4]}>
+                <View style={AppStyles.flex4}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         {step === 'submitting' ? (
                             <Text style={[AppStyles.h4, AppStyles.textCenterAligned]}>
@@ -138,7 +140,7 @@ class SubmitModal extends Component<Props, State> {
                             </Text>
                         )}
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
@@ -159,10 +161,10 @@ class SubmitModal extends Component<Props, State> {
         return (
             <SafeAreaView
                 testID="result-view"
-                style={[AppStyles.container, verifyResult.success ? styles.containerSuccess : styles.containerFailed]}
+                style={[AppStyles.container, verifyResult?.success ? styles.containerSuccess : styles.containerFailed]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerContent]}>
-                    {verifyResult.success ? (
+                    {verifyResult?.success ? (
                         <Fragment key="success">
                             <Text
                                 style={[
@@ -194,11 +196,11 @@ class SubmitModal extends Component<Props, State> {
                     )}
                 </View>
 
-                <View style={[AppStyles.flex3]}>
+                <View style={AppStyles.flex3}>
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult.engineResult || '-'}</Text>
+                        <Text style={[AppStyles.p, AppStyles.monoBold]}>{submitResult?.engineResult || '-'}</Text>
 
                         <Spacer />
                         <View style={AppStyles.hr} />
@@ -206,10 +208,10 @@ class SubmitModal extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
 
-                        <Text style={[AppStyles.subtext]}>{submitResult.message.toString()}</Text>
+                        <Text style={[AppStyles.subtext]}>{submitResult?.message}</Text>
                         <Spacer />
 
-                        {verifyResult.transaction && (
+                        {verifyResult?.transaction && (
                             <>
                                 <View style={AppStyles.hr} />
                                 <Spacer />
@@ -218,7 +220,7 @@ class SubmitModal extends Component<Props, State> {
                                     {Localize.t('send.transactionID')}:
                                 </Text>
                                 <Spacer />
-                                <Text style={[AppStyles.subtext]}>{verifyResult.transaction.hash}</Text>
+                                <Text style={AppStyles.subtext}>{verifyResult.transaction.hash}</Text>
 
                                 <Spacer size={50} />
                                 <Button
@@ -239,7 +241,7 @@ class SubmitModal extends Component<Props, State> {
                 <Footer>
                     <Button
                         onPress={this.handleClose}
-                        style={{ backgroundColor: verifyResult.success ? AppColors.green : AppColors.red }}
+                        style={{ backgroundColor: verifyResult?.success ? AppColors.green : AppColors.red }}
                         label={Localize.t('global.close')}
                     />
                 </Footer>

@@ -1,10 +1,10 @@
 //
 //  CryptoTest.m
-//  XUMMTests
+//  XamanTests
 //
 
 import XCTest
-@testable import XUMM
+@testable import Xaman
 
 class CryptoTest: XCTestCase {
   

@@ -1,4 +1,4 @@
-import { Amount } from '../common';
+import { LedgerAmount } from '../common';
 import { Offer } from '../ledger';
 
 import { BaseRequest, BaseResponse, LookupByLedgerRequest } from './baseMethod';
@@ -53,12 +53,12 @@ export interface BookOffer extends Offer {
      * The maximum amount of currency that the taker can get, given the funding
      * status of the offer.
      */
-    taker_gets_funded?: Amount;
+    taker_gets_funded?: LedgerAmount;
     /**
      * The maximum amount of currency that the taker would pay, given the funding
      * status of the offer.
      */
-    taker_pays_funded?: Amount;
+    taker_pays_funded?: LedgerAmount;
     /**
      * The exchange rate, as the ratio taker_pays divided by taker_gets. For
      * fairness, offers that have the same quality are automatically taken

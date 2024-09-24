@@ -10,13 +10,12 @@ import StyleService from '@services/StyleService';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
-// locale
-import Localize from '@locale';
-
-// component
 import { Slider, Slide, Spacer } from '@components/General';
 
-// style
+import Localize from '@locale';
+
+import { PasscodeSetupViewProps } from '@screens/Setup/Passcode';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -38,7 +37,7 @@ class OnboardingView extends Component<Props, State> {
     }
 
     onFinish = () => {
-        Navigator.push(AppScreens.Setup.Passcode);
+        Navigator.push<PasscodeSetupViewProps>(AppScreens.Setup.Passcode, {});
     };
 
     render() {
@@ -46,13 +45,13 @@ class OnboardingView extends Component<Props, State> {
             <ImageBackground
                 testID="onboarding-screen"
                 source={StyleService.getImage('BackgroundPattern')}
-                style={[styles.container]}
+                style={styles.container}
                 imageStyle={styles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </SafeAreaView>
-                <SafeAreaView style={[AppStyles.flex8]}>
+                <SafeAreaView style={AppStyles.flex8}>
                     <Slider onFinish={this.onFinish}>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
@@ -64,7 +63,7 @@ class OnboardingView extends Component<Props, State> {
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                                 <Image
-                                    style={[AppStyles.emptyIcon]}
+                                    style={AppStyles.emptyIcon}
                                     source={StyleService.getImage('ImageManageAccounts')}
                                 />
                                 <Spacer size={50} />
@@ -80,7 +79,7 @@ class OnboardingView extends Component<Props, State> {
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                                 <Image
-                                    style={[AppStyles.emptyIcon]}
+                                    style={AppStyles.emptyIcon}
                                     source={StyleService.getImage('ImageSecurityFirst')}
                                 />
                                 <Spacer size={50} />
@@ -95,10 +94,7 @@ class OnboardingView extends Component<Props, State> {
                         </Slide>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image
-                                    style={[AppStyles.emptyIcon]}
-                                    source={StyleService.getImage('ImageSendReceive')}
-                                />
+                                <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageSendReceive')} />
                                 <Spacer size={50} />
                                 <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
                                     {Localize.t('onboarding.slideFour_title')}

@@ -14,19 +14,27 @@ import { AccountService, NetworkService, StyleService } from '@services';
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 
-// constants
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
+import { Button, RaisedButton } from '@components/General';
+import {
+    MonetizationElement,
+    ProBadge,
+    NetworkSwitchButton,
+    AccountSwitchElement,
+    InactiveAccount,
+    AssetsList,
+} from '@components/Modules';
+
 import Localize from '@locale';
 
-// components
-import { Button, RaisedButton } from '@components/General';
-import { ProBadge, NetworkSwitchButton, AccountSwitchElement, InactiveAccount, AssetsList } from '@components/Modules';
+import { SendViewProps } from '@screens/Send';
+import { AccountAddViewProps } from '@screens/Account/Add';
+import { ShareAccountOverlayProps } from '@screens/Overlay/ShareAccount';
 
-// style
 import { AppStyles } from '@theme';
 import styles from './styles';
 
@@ -47,7 +55,8 @@ export interface State {
 /* Component ==================================================================== */
 class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
-    private navigationListener: EventSubscription;
+
+    private navigationListener: EventSubscription | undefined;
 
     static options() {
         return {
@@ -174,14 +183,6 @@ class HomeView extends Component<Props, State> {
         }
     };
 
-    toggleDiscreetMode = () => {
-        const { discreetMode } = this.state;
-
-        this.setState({
-            discreetMode: !discreetMode,
-        });
-    };
-
     showExchangeAccountAlert = () => {
         Alert.alert(Localize.t('global.warning'), Localize.t('home.exchangeAccountReadonlyExplain'));
     };
@@ -215,12 +216,16 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         if (account) {
-            Navigator.showOverlay(AppScreens.Overlay.ShareAccount, { account });
+            Navigator.showOverlay<ShareAccountOverlayProps>(AppScreens.Overlay.ShareAccount, { account });
         }
     };
 
     pushSendScreen = () => {
-        Navigator.push(AppScreens.Transaction.Payment);
+        Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, {});
+    };
+
+    onAddAccountPress = () => {
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
     renderHeader = () => {
@@ -236,6 +241,8 @@ class HomeView extends Component<Props, State> {
             </Fragment>
         );
     };
+
+    renderMonetization = () => {};
 
     renderAssets = () => {
         const { timestamp } = this.props;
@@ -322,9 +329,7 @@ class HomeView extends Component<Props, State> {
                         icon="IconPlus"
                         iconStyle={AppStyles.imgColorWhite}
                         rounded
-                        onPress={() => {
-                            Navigator.push(AppScreens.Account.Add);
-                        }}
+                        onPress={this.onAddAccountPress}
                     />
                 </ImageBackground>
             </View>
@@ -372,6 +377,12 @@ class HomeView extends Component<Props, State> {
             <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
                 <View style={styles.headerContainer}>{this.renderHeader()}</View>
+
+                {/* Monetization */}
+                <Fragment key="monetization">
+                    <MonetizationElement style={styles.monetizationContainer} />
+                </Fragment>
+
                 {/* Content */}
                 <View style={AppStyles.contentContainer}>
                     {this.renderNetworkDetails()}

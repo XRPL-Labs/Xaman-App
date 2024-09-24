@@ -5,7 +5,7 @@
 
 export default {
     // The API URL we're connecting to
-    apiUrl: 'https://xumm.app/api',
+    apiUrl: 'https://xaman.app/api',
 
     // Map short names to the actual endpoints, so that we can
     // use them like so: AppAPI.ENDPOINT_NAME.METHOD()
@@ -37,8 +37,9 @@ export default {
         ['addTransaction', '/v1/app/add-tx'],
         ['thirdPartyApps', '/v1/app/third-party-permissions'],
         ['thirdPartyApp', '/v1/app/third-party-permissions/{appId}'],
-        ['xls20Details', '/v1/app/xls20-details'],
-        ['xls20Offered', '/v1/app/xls20-offered/{account}'],
+        ['nftDetails', '/v1/app/nft-details'],
+        ['nftOffered', '/v1/app/nft-offered/{account}'],
         ['networkRails', '/v1/app/rails'],
+        ['verifyPurchase', '/v1/app/verify-purchase'],
     ]),
 };

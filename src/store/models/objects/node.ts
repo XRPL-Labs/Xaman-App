@@ -14,13 +14,13 @@ class Node extends Realm.Object<Node> {
     public static schema: Realm.ObjectSchema = NodeSchema.schema;
 
     /** Unique identifier representing this specific node. */
-    public id: Realm.BSON.ObjectId;
+    public declare id: Realm.BSON.ObjectId;
     /** The endpoint or URL for this node. */
-    public endpoint: string;
+    public declare endpoint: string;
     /** Date when the node was initially registered in the system. */
-    public registerAt?: Date;
+    public declare registerAt?: Date;
     /** Date when the node's data was last updated in the system. */
-    public updatedAt?: Date;
+    public declare updatedAt?: Date;
 }
 
 export default Node;

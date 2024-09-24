@@ -3,20 +3,22 @@ import { View, Text } from 'react-native';
 
 import NetworkService from '@services/NetworkService';
 
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 import { TouchableDebounce, Icon, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppStyles } from '@theme';
-import { Navigator } from '@common/helpers/navigator';
-import { AppScreens } from '@common/constants';
+import { HelpModalProps } from '@screens/Modal/Help';
 
+import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* Component ==================================================================== */
 class ListEmpty extends PureComponent {
     openTrustLineDescription = () => {
-        Navigator.showModal(AppScreens.Modal.Help, {
+        Navigator.showModal<HelpModalProps>(AppScreens.Modal.Help, {
             title: Localize.t('home.whatAreOtherAssets', { nativeAsset: NetworkService.getNativeAsset() }),
             content: Localize.t('home.otherAssetsDesc', { nativeAsset: NetworkService.getNativeAsset() }),
         });
@@ -24,7 +26,7 @@ class ListEmpty extends PureComponent {
 
     render() {
         return (
-            <View testID="tokens-list-empty-view" style={[styles.container]}>
+            <View testID="tokens-list-empty-view" style={styles.container}>
                 <InfoMessage
                     type="warning"
                     label={Localize.t('home.youDonNotHaveOtherAssets', {

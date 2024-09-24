@@ -1,11 +1,11 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
-import { URITokenBuy, URITokenBuyInfo } from '../URITokenBuy';
-
-import uriTokenBuy from './fixtures/URITokenBuyTx.json';
-
 import Localize from '@locale';
+
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
+import { URITokenBuy, URITokenBuyInfo } from '../URITokenBuy';
+import uriTokenBuy from './fixtures/URITokenBuyTx.json';
 
 jest.mock('@services/NetworkService');
 
@@ -19,25 +19,54 @@ describe('URITokenBuy tx', () => {
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = uriTokenBuy;
+        const Mixed = MutationsMixin(URITokenBuy);
+        const instance = new Mixed(tx, meta);
+        const info = new URITokenBuyInfo(instance, {} as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = uriTokenBuy;
-                const instance = new URITokenBuy(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.uriTokenBuyExplain', {
-                    address: instance.Account.address,
-                    amount: instance.Amount.value,
-                    currency: instance.Amount.currency,
-                    tokenID: instance.URITokenID,
-                })}`;
-
-                expect(URITokenBuyInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription =
+                    'rrrrrrrrrrrrrrrrrrrrrholvtp paid 10 XRP in order to receive an URI token with ID 716E5990589AA8FA4247E0FEABE8B605CFFBBA5CA519A70BCA37C8CC173F3244';
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(URITokenBuyInfo.getLabel()).toEqual(Localize.t('events.buyURIToken'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.buyURIToken'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
+                            value: '10',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'XRP',
+                                value: '10',
+                            },
+                        ],
+                        INC: [],
+                    },
+                });
             });
         });
     });

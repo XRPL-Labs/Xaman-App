@@ -1,19 +1,19 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
 
 import LedgerService from '@services/LedgerService';
 
+import { MutationsMixin } from '@common/libs/ledger/mixin';
+
 import { Payment, PaymentInfo, PaymentValidation } from '../Payment';
 import paymentTemplate from './fixtures/PaymentTx.json';
-
-import { NormalizeCurrencyCode } from '../../../../../utils/amount';
-import { OperationActions } from '../../../parser/types';
 
 jest.mock('@services/NetworkService');
 
 describe('Payment tx', () => {
+    const Mixed = MutationsMixin(Payment);
+
     describe('Class', () => {
         it('Should set tx type if not set', () => {
             const instance = new Payment();
@@ -22,7 +22,7 @@ describe('Payment tx', () => {
         });
 
         it('Should return right parsed values for tx XRP->XRP', () => {
-            const { tx, meta } = paymentTemplate.XRP2XRP;
+            const { tx, meta }: any = paymentTemplate.XRP2XRP;
             const instance = new Payment(tx, meta);
 
             expect(instance.InvoiceID).toBe('123');
@@ -32,29 +32,30 @@ describe('Payment tx', () => {
                 value: '85.5321',
             });
 
-            expect(instance.Destination).toStrictEqual({
-                tag: 123,
-                address: 'rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh',
-            });
+            expect(instance.Destination).toEqual('rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh');
+            expect(instance.DestinationTag).toEqual(123);
         });
 
         it('Should return right parsed values for tx to self with path sets', () => {
-            const { tx, meta } = paymentTemplate.ToSelfWithPath;
-            const instance = new Payment(tx, meta);
+            const { tx, meta }: any = paymentTemplate.ToSelfWithPath;
+            const instance = new Mixed(tx, meta);
 
-            expect(instance.BalanceChange()).toStrictEqual({
-                received: {
-                    action: OperationActions.INC,
-                    currency: 'XRP',
-                    issuer: undefined,
-                    value: '0.999988',
-                },
-                sent: {
-                    action: OperationActions.DEC,
-                    currency: 'USD',
-                    issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
-                    value: '1.23905437',
-                },
+            expect(instance.BalanceChange(tx.Account)).toStrictEqual({
+                DEC: [
+                    {
+                        action: 'DEC',
+                        currency: 'USD',
+                        issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                        value: '1.23905437',
+                    },
+                ],
+                INC: [
+                    {
+                        action: 'INC',
+                        currency: 'XRP',
+                        value: '0.999988',
+                    },
+                ],
             });
         });
 
@@ -65,8 +66,10 @@ describe('Payment tx', () => {
             expect(instance.InvoiceID).toBe('123');
 
             // amount
-            // @ts-ignore
-            instance.Amount = '85.5321';
+            instance.Amount = {
+                currency: 'XRP',
+                value: '85.5321',
+            };
             expect(instance.Amount).toStrictEqual({
                 currency: 'XRP',
                 value: '85.5321',
@@ -83,27 +86,27 @@ describe('Payment tx', () => {
                 value: '1',
             });
 
-            instance.Destination = {
-                address: 'rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh',
-                tag: 1234,
-            };
-            expect(instance.Destination).toStrictEqual({
-                tag: 1234,
-                address: 'rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh',
-            });
+            instance.Destination = 'rXUMMProAS9qHvxooeJMYz5smAsJZvArh';
+            instance.DestinationTag = 1337;
+
+            expect(instance.Destination).toEqual('rXUMMProAS9qHvxooeJMYz5smAsJZvArh');
+            expect(instance.DestinationTag).toEqual(1337);
 
             instance.SendMax = {
                 currency: 'USD',
-                issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
             };
             expect(instance.SendMax).toStrictEqual({
                 currency: 'USD',
-                issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
             });
-            // @ts-ignore
-            instance.SendMax = '85.5321';
+
+            instance.SendMax = {
+                currency: 'XRP',
+                value: '85.5321',
+            };
             expect(instance.SendMax).toStrictEqual({
                 currency: 'XRP',
                 value: '85.5321',
@@ -111,16 +114,18 @@ describe('Payment tx', () => {
 
             instance.DeliverMin = {
                 currency: 'USD',
-                issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
             };
             expect(instance.DeliverMin).toStrictEqual({
                 currency: 'USD',
-                issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
+                issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
             });
-            // @ts-ignore
-            instance.DeliverMin = '85.5321';
+            instance.DeliverMin = {
+                currency: 'XRP',
+                value: '85.5321',
+            };
             expect(instance.DeliverMin).toStrictEqual({
                 currency: 'XRP',
                 value: '85.5321',
@@ -129,35 +134,60 @@ describe('Payment tx', () => {
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = paymentTemplate.ToSelfWithPath;
+        const instance = new Mixed(tx, meta);
+        const info = new PaymentInfo(instance, { address: tx.Account } as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = paymentTemplate.ToSelfWithPath;
-                const instance = new Payment(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.thePaymentHasASourceTag', {
-                    tag: instance.Account.tag,
-                })} \n${Localize.t('events.thePaymentHasADestinationTag', {
-                    tag: instance.Destination.tag,
-                })} \n${Localize.t('events.itWasInstructedToDeliver', {
-                    amount: instance.Amount.value,
-                    currency: NormalizeCurrencyCode(instance.Amount.currency),
-                })} ${Localize.t('events.bySpendingUpTo', {
-                    amount: instance.SendMax.value,
-                    currency: NormalizeCurrencyCode(instance.SendMax.currency),
-                })}`;
-
-                expect(PaymentInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `The payment source tag is: 1337 ${'\n'}The payment destination tag is: 1338 ${'\n'}It was instructed to deliver 1 XRP ${'\n'}by spending up to 1.239054364262807 USD`;
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                const { tx, meta } = paymentTemplate.SimplePayment;
-                const instance = new Payment(tx, meta);
-                // @ts-ignore
-                expect(PaymentInfo.getLabel(instance, { address: tx.Account })).toEqual(
-                    Localize.t('events.paymentSent'),
-                );
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.exchangedAssets'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ', tag: 1337 },
+                    end: { address: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ', tag: 1338 },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    factor: [
+                        {
+                            currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
+                            value: '1',
+                        },
+                    ],
+                    mutate: {
+                        DEC: [
+                            {
+                                action: 'DEC',
+                                currency: 'USD',
+                                issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                                value: '1.23905437',
+                            },
+                        ],
+                        INC: [
+                            {
+                                action: 'INC',
+                                currency: 'XRP',
+                                value: '0.999988',
+                            },
+                        ],
+                    },
+                });
             });
         });
     });
@@ -173,7 +203,7 @@ describe('Payment tx', () => {
                 { Amount: '0' },
                 { Amount: { currency: 'USD' } },
                 { Amount: { currency: 'USD', value: '0' } },
-            ];
+            ] as any;
             for (const payment of paymentsWithEmptyAmount) {
                 await expect(PaymentValidation(new Payment(payment))).rejects.toThrow(
                     new Error(Localize.t('send.pleaseEnterAmount')),
@@ -202,7 +232,7 @@ describe('Payment tx', () => {
             const paymentsWithXRPPayments = [
                 { Account, Destination, Amount: '20000000' },
                 { Account, Destination, Amount: { currency: 'USD', value: '1' }, SendMax: '20000000' },
-            ];
+            ] as any;
 
             for (const payment of paymentsWithXRPPayments) {
                 await expect(PaymentValidation(new Payment(payment))).rejects.toThrow(
@@ -234,7 +264,7 @@ describe('Payment tx', () => {
             const paymentsWithIOUPayments = [
                 { Account, Destination, Amount: { currency: 'USD', value: '20' } },
                 { Account, Destination, SendMax: { currency: 'USD', value: '20' }, Amount: '20000000' },
-            ];
+            ] as any;
 
             for (const payment of paymentsWithIOUPayments) {
                 await expect(PaymentValidation(new Payment(payment))).rejects.toThrow(
@@ -272,7 +302,7 @@ describe('Payment tx', () => {
                             Account,
                             Destination,
                             Amount: { currency: 'USD', value: '20', issuer: 'r...' },
-                        }),
+                        } as any),
                     ),
                 ).rejects.toThrow(new Error(Localize.t('send.unableToSendPaymentRecipientDoesNotHaveTrustLine')));
                 spy3.mockRestore();

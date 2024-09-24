@@ -17,7 +17,7 @@ export interface State {}
 /* Component ==================================================================== */
 class TangemMethod extends Component<Props, State> {
     static contextType = MethodsContext;
-    context: React.ContextType<typeof MethodsContext>;
+    declare context: React.ContextType<typeof MethodsContext>;
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.startAuthentication);
@@ -35,7 +35,6 @@ class TangemMethod extends Component<Props, State> {
         sign(AuthMethods.TANGEM, { tangemCard });
     };
 
-    // @ts-ignore
     render() {
         // this method doesn't render anything
         return null;

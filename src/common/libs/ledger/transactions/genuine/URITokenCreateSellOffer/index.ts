@@ -1,3 +1,3 @@
-export { default as URITokenCreateSellOffer } from './URITokenCreateSellOfferClass';
-export { default as URITokenCreateSellOfferValidation } from './URITokenCreateSellOfferValidation';
-export { default as URITokenCreateSellOfferInfo } from './URITokenCreateSellOfferInfo';
+export { default as URITokenCreateSellOffer } from './URITokenCreateSellOffer.class';
+export { default as URITokenCreateSellOfferValidation } from './URITokenCreateSellOffer.validation';
+export { default as URITokenCreateSellOfferInfo } from './URITokenCreateSellOffer.info';

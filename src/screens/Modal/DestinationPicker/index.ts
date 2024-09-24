@@ -1,3 +1,4 @@
-import DestinationPicker from './DestinationPicker';
+import DestinationPickerModal, { Props as DestinationPickerModalProps } from './DestinationPickerModal';
 
-export default DestinationPicker;
+export type { DestinationPickerModalProps };
+export default DestinationPickerModal;

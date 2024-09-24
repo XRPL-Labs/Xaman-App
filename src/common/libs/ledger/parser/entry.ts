@@ -1,8 +1,9 @@
-import { LedgerObjectFlags } from '@common/libs/ledger/parser/common/flags/objectFlags';
+import { LedgerEntryFlags } from '@common/constants/flags';
 
 /* Types ==================================================================== */
 import { RippleState } from '@common/libs/ledger/types/ledger';
 import { AccountLinesTrustline } from '@common/libs/ledger/types/methods';
+import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 /* Parser ==================================================================== */
 const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): AccountLinesTrustline => {
@@ -10,11 +11,12 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
     const [self, counterparty] = ledgerEntry.HighLimit.issuer === account ? parties : parties.reverse();
 
     const ripplingFlags = [
-        (LedgerObjectFlags.RippleState.lsfHighNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfHighNoRipple,
-        (LedgerObjectFlags.RippleState.lsfLowNoRipple & ledgerEntry.Flags) ===
-            LedgerObjectFlags.RippleState.lsfLowNoRipple,
+        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfHighNoRipple & ledgerEntry.Flags) ===
+            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfHighNoRipple,
+        (LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple & ledgerEntry.Flags) ===
+            LedgerEntryFlags[LedgerEntryTypes.RippleState]!.lsfLowNoRipple,
     ];
+
     const [no_ripple, no_ripple_peer] =
         ledgerEntry.HighLimit.issuer === account ? ripplingFlags : ripplingFlags.reverse();
 
@@ -23,9 +25,14 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
             ? ledgerEntry.Balance.value.slice(1)
             : ledgerEntry.Balance.value;
 
+    const locked_balance = ledgerEntry.LockedBalance?.value;
+    const lock_count = ledgerEntry.LockCount;
+
     return {
         account: counterparty.issuer,
         balance,
+        lock_count,
+        locked_balance,
         currency: self.currency,
         limit: self.value,
         limit_peer: counterparty.value,

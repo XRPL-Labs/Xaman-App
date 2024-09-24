@@ -34,5 +34,6 @@ export interface ErrorResponse extends BaseResponse {
     error: string;
     error_code?: string;
     error_message?: string;
+    error_exception?: string;
     request: Request;
 }

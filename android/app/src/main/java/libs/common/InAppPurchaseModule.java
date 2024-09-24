@@ -1,5 +1,3 @@
-// WARNING: THE FUNCTIONALITY OF THIS MODULE HAS NOT BEEN TESTED YET
-
 package libs.common;
 
 import androidx.annotation.NonNull;
@@ -7,27 +5,27 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Objects;
 
 import android.util.Log;
 
+import com.android.billingclient.api.ConsumeParams;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
-import com.android.billingclient.api.ProductDetailsResponseListener;
-import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.facebook.common.internal.ImmutableList;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
@@ -35,42 +33,44 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+
 
 @ReactModule(name = InAppPurchaseModule.NAME)
 public class InAppPurchaseModule extends ReactContextBaseJavaModule implements PurchasesUpdatedListener {
+    public static final String NAME = "InAppPurchaseModule";
+    public static final String TAG = NAME;
 
-    private static final String TAG = "InAppPurchaseModule";
-
-    private static final String XUMMProProductIdentifier = "com.xrpllabs.xumm.pro.test";
-
-    private static final String E_UNABLE_TO_INIT_MODULE = "E_UNABLE_TO_INIT_MODULE";
-    private static final String E_PLAYSERVICE_NO_AVAILABLE = "E_UNABLE_TO_INIT_MODULE";
     private static final String E_CLIENT_IS_NOT_READY = "E_CLIENT_IS_NOT_READY";
     private static final String E_PRODUCT_IS_NOT_AVAILABLE = "E_PRODUCT_IS_NOT_AVAILABLE";
-    private static final String E_PURCHAES_CANCELED = "E_PURCHAES_CANCELED";
-    private static final String E_PURCHAES_FALIED = "E_PURCHAES_FALIED";
+    private static final String E_NO_PENDING_PURCHASE = "E_NO_PENDING_PURCHASE";
+    private static final String E_PURCHASE_CANCELED = "E_PURCHASE_CANCELED";
+    private static final String E_PURCHASE_FAILED = "E_PURCHASE_FAILED";
+    private static final String E_FINISH_TRANSACTION_FAILED = "E_FINISH_TRANSACTION_FAILED";
     private static final String E_ALREADY_PURCHASED = "E_ALREADY_PURCHASED";
-    private static final String E_NO_PURCHASE_HISTORY = "E_NO_PURCHASE_HISTORY";
-
 
     private static ReactApplicationContext reactContext;
-    private HashMap<String, ArrayList<Promise>> promises = new HashMap<>();
 
+    private final HashMap<String, ProductDetails> productDetailsHashMap = new HashMap<>();
+    private final BillingClient billingClient;
     private final GoogleApiAvailability googleApiAvailability;
 
-    private BillingClient.Builder mBillingClientBuilder;
-    private BillingClient mBillingClient;
-    private HashMap<String, ProductDetails> productDetailsHashMap = new HashMap<>();
+    private Promise billingFlowPromise;
+
 
     InAppPurchaseModule(ReactApplicationContext context) {
         super(context);
+
         reactContext = context;
 
-        mBillingClientBuilder = BillingClient.newBuilder(context).enablePendingPurchases();
+        billingClient = BillingClient.newBuilder(reactContext)
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+                .setListener(this)
+                .build();
+
         googleApiAvailability = GoogleApiAvailability.getInstance();
     }
-
-    public static final String NAME = "InAppPurchaseModule";
 
     @NonNull
     @Override
@@ -79,252 +79,239 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     }
 
 
+    //---------------------------------
+    // React methods - These methods are exposed to React JS
+    //
+    // startConnection
+    // restorePurchases
+    // purchase
+    // finalizePurchase
+    //
+    //---------------------------------
+
+
+    // Starts a connection with Google BillingClient
     @ReactMethod
-    public void init(Promise promise) {
-        // already initialized
-        if (mBillingClient != null && mBillingClient.isReady()) {
+    public void startConnection(Promise promise) {
+        // already ready to accept purchase
+        if (isReady()) {
             promise.resolve(true);
             return;
         }
 
+        // check if google api is available
         if (googleApiAvailability.isGooglePlayServicesAvailable(reactContext) != ConnectionResult.SUCCESS) {
-            promise.reject(E_PLAYSERVICE_NO_AVAILABLE, "google play service is not available!");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Google play service is not available!");
             return;
         }
 
-        mBillingClient = mBillingClientBuilder.setListener(this).build();
-
-        mBillingClient.startConnection(new BillingClientStateListener() {
+        billingClient.startConnection(new BillingClientStateListener() {
             @Override
-            public void onBillingSetupFinished(BillingResult billingResult) {
-                try {
-
-                    int billingResponseCode = billingResult.getResponseCode();
-                    if (billingResponseCode == BillingClient.BillingResponseCode.OK) {
-                        addCallback("INIT_PROMISE", promise);
-                        // load product details
-                        loadProductDetails();
-                    } else {
-                        promise.reject(E_UNABLE_TO_INIT_MODULE, "Unable to initialize billing client");
-                    }
-                } catch (Exception e) {
-                    promise.reject(e);
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    promise.resolve(true);
+                } else {
+                    promise.reject(E_CLIENT_IS_NOT_READY, "Unable to start billing client");
                 }
             }
 
             @Override
             public void onBillingServiceDisconnected() {
-                try {
-                    promise.reject(E_UNABLE_TO_INIT_MODULE, "Billing service disconnected");
-                } catch (Exception e) {
-                    // ignore
+                promise.reject(E_CLIENT_IS_NOT_READY, "billing client service disconnected");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void restorePurchases(Promise promise) {
+        if (!isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
+            return;
+        }
+
+        WritableArray productsToBeConsumed = Arguments.createArray();
+
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
+                (billingResult, purchases) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : purchases) {
+                            // PURCHASED but not consumed
+                            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                                productsToBeConsumed.pushMap(purchaseToMap(purchase));
+                            }
+                        }
+                        promise.resolve(productsToBeConsumed);
+                    } else {
+                        promise.reject(E_NO_PENDING_PURCHASE, String.valueOf(billingResult.getResponseCode()));
+                    }
                 }
+        );
+    }
+
+    @ReactMethod
+    public void purchase(String productId, Promise promise) {
+        if (!isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "billingClient is not ready, forgot to initialize?");
+            return;
+        }
+
+        // try to fetch cached version of product details
+        if (productDetailsHashMap.containsKey(productId)) {
+            launchBillingFlow(productDetailsHashMap.get(productId), promise);
+            return;
+        }
+
+        // no cached product details
+        // fetch product details
+        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build());
+
+        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list.size() > 0) {
+                ProductDetails productDetails = list.get(0);
+
+                // cache the product details
+                productDetailsHashMap.put(list.get(0).getProductId(), productDetails);
+
+                // Launch the billing flow
+                launchBillingFlow(productDetails, promise);
+            } else {
+                Log.e(TAG, "Unable to load the product details with productId " + productId + " getResponseCode:" + billingResult.getResponseCode() + " list.size:" + list.size());
+                promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
             }
         });
     }
 
 
+    // Consumes a purchase token, indicating that the product has been provided to the user.
     @ReactMethod
-    public void restorePurchase(Promise promise) {
-        if (mBillingClient == null || !mBillingClient.isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
-            return;
-        }
-
-        mBillingClient.queryPurchasesAsync(
-                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build(),
-                new PurchasesResponseListener() {
-                    public void onQueryPurchasesResponse(
-                            BillingResult billingResult,
-                            List<Purchase> purchases) {
-
-                        String purchaseToken = null;
-
-                        if (purchases != null) {
-                            for (Purchase purchase : purchases) {
-                                if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-                                    purchaseToken = purchase.getPurchaseToken();
-                                }
-                            }
-                            if (purchaseToken != null) {
-                                promise.resolve(purchaseToken);
-                            } else {
-                                promise.reject(E_NO_PURCHASE_HISTORY, "No purchase token is available, unable to verify!");
-                            }
-                        } else {
-                            promise.reject(E_NO_PURCHASE_HISTORY, "No purchase history available");
-                        }
-                    }
-                }
-        );
-
-
-    }
-
-
-    @ReactMethod
-    public void purchase(Promise promise) {
-        if (mBillingClient == null || !mBillingClient.isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "Client is not ready, forgot to initialize?");
-            return;
-        }
-
-        ProductDetails productDetails = productDetailsHashMap.get(XUMMProProductIdentifier);
-
-        if (productDetails == null) {
-            promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "");
-            return;
-        }
-
-        String offerToken = productDetails
-                .getSubscriptionOfferDetails()
-                .get(0)
-                .getOfferToken();
-
-        ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                ImmutableList.of(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(offerToken)
-                                .build()
-                );
-
-
-        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build();
-
-
-        // Launch the billing flow
-        BillingResult billingResult = mBillingClient.launchBillingFlow(reactContext.getCurrentActivity(), billingFlowParams);
-
-        addCallback("PURCHASE_PROMISE", promise);
-    }
-
-
-
-    @ReactMethod
-    public void close(Promise promise) {
-        try {
-            // close the connection if exist
-            if (mBillingClient != null && mBillingClient.isReady()) {
-                mBillingClient.endConnection();
-                mBillingClient = null;
-            }
-            promise.resolve(true);
-        } catch (Exception e) {
-            promise.reject(e);
-        }
-    }
-
-
-    public void loadProductDetails() {
-        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(XUMMProProductIdentifier)
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build());
-
-        QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
-                .setProductList(productList)
-                .build();
-
-        mBillingClient.queryProductDetailsAsync(
-                params,
-                new ProductDetailsResponseListener() {
-                    public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
-                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null && productDetailsList.size() > 0) {
-                            for (ProductDetails productDetails : productDetailsList) {
-                                productDetailsHashMap.put(productDetails.getProductId(), productDetails);
-                            }
-                            resolveForKey("INIT_PROMISE", true);
-                        } else {
-                            rejectForKey("INIT_PROMISE", E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load product list", null);
-                        }
-                    }
-                }
-        );
-    }
-
-    @Override
-    public void onPurchasesUpdated(BillingResult billingResult, @Nullable List<Purchase> purchases) {
-        int responseCode = billingResult.getResponseCode();
-        if (responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
-            Log.d(TAG, "Success payment");
-            for (Purchase purchase : purchases) {
-                acknowledgePurchase(purchase);
-            }
-        } else if (responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
-            Log.d(TAG, "User canceled purchase");
-            rejectForKey("PURCHASE_PROMISE", E_PURCHAES_CANCELED, "Purchase canceled by users", null);
-        } else if (responseCode == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-            Log.d(TAG, "User already own this product");
-            rejectForKey("PURCHASE_PROMISE", E_ALREADY_PURCHASED, "User already bought this product", null);
-        } else {
-            Log.d(TAG, "Purchase failed");
-            rejectForKey("PURCHASE_PROMISE", E_PURCHAES_FALIED, "Purchase failed", null);
-        }
-    }
-
-
-    public void acknowledgePurchase(Purchase purchase) {
-        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            resolveForKey("PURCHASE_PROMISE", purchase.getPurchaseToken());
-            if (!purchase.isAcknowledged()) {
-                AcknowledgePurchaseParams acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.getPurchaseToken())
-                        .build();
-                mBillingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
-                    @Override
-                    public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
-                        Log.d(TAG, "Purchase Acknowledged");
-                    }
-                });
-            }
-        }
-    }
-
-
-    private void addCallback(final String key, final Promise promise) {
-        try {
-            ArrayList<Promise> list;
-            if (promises.containsKey(key)) {
-                list = promises.get(key);
+    public void finalizePurchase(String purchaseToken, Promise promise) {
+        billingClient.consumeAsync(ConsumeParams.newBuilder()
+                .setPurchaseToken(purchaseToken)
+                .build(), (billing, s) -> {
+            if (billing.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                promise.resolve(purchaseToken);
             } else {
-                list = new ArrayList<Promise>();
-                promises.put(key, list);
+                promise.reject(E_FINISH_TRANSACTION_FAILED, "billing response code " + billing.getResponseCode());
             }
+        });
+    }
 
-            list.add(promise);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+
+    //---------------------------------
+    // Private methods
+    //---------------------------------
+
+
+    // This method gets called when purchases are updated.
+    @Override
+    public void onPurchasesUpdated(@NonNull BillingResult billing, @Nullable List<Purchase> list) {
+        // check if we already have the promise, if not just return.
+        if (billingFlowPromise == null) {
+            return;
+        }
+
+        // something went wrong with the purchase, reject the billingFlowPromise
+        if (billing.getResponseCode() != BillingClient.BillingResponseCode.OK) {
+            switch (billing.getResponseCode()) {
+                case BillingClient.BillingResponseCode.USER_CANCELED:
+                    rejectBillingFlowPromise(E_PURCHASE_CANCELED, "purchase canceled by users");
+                    break;
+                case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
+                    rejectBillingFlowPromise(E_ALREADY_PURCHASED, "item already owned by users");
+                default:
+                    rejectBillingFlowPromise(E_PURCHASE_FAILED, "billing response code " + billing.getResponseCode());
+                    break;
+            }
+            return;
+        }
+
+
+        // something is not right?
+        if (list == null || list.isEmpty()) {
+            rejectBillingFlowPromise(E_PURCHASE_FAILED, "the purchase list is empty!");
+            return;
+        }
+
+        WritableArray productsToBeConsumed = Arguments.createArray();
+
+        for (Purchase purchase : list) {
+            if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+                productsToBeConsumed.pushMap(purchaseToMap(purchase));
+            }
+        }
+
+        // send back the purchase tokens
+        resolveBillingFlowPromise(productsToBeConsumed);
+    }
+
+    // Checks if BillingClient is ready.
+    // BillingClient takes some time to initialize, as it needs to establish a connection
+    // with Google Play Billing APIs.
+    public boolean isReady() {
+        return billingClient.isReady();
+    }
+
+    // A private method to actually launch the billing flow once we've loaded the product details.
+    // This method may fail and reject the promise if there's already a billing flow in progress.
+    private void launchBillingFlow(ProductDetails productDetails, Promise promise) {
+        // if we already have an promise going on for billing flow, reject it as we don't want to start
+        // the new flow without closing the old one
+        if (billingFlowPromise != null) {
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start the new one!");
+            return;
+        }
+
+
+        // assign the promise
+        billingFlowPromise = promise;
+
+        // lunch the billing flow
+        billingClient.launchBillingFlow(
+                Objects.requireNonNull(reactContext.getCurrentActivity()),
+                BillingFlowParams.newBuilder()
+                        .setProductDetailsParamsList(ImmutableList.of(
+                                BillingFlowParams.ProductDetailsParams.newBuilder()
+                                        .setProductDetails(productDetails)
+                                        .build()
+                        ))
+                        .build()
+        );
+    }
+
+    private WritableMap purchaseToMap(Purchase purchase) {
+        final WritableMap purchaseMap = Arguments.createMap();
+        purchaseMap.putString("purchaseToken", purchase.getPurchaseToken());
+        purchaseMap.putInt("quantity", purchase.getQuantity());
+        purchaseMap.putString("orderId", purchase.getOrderId());
+        purchaseMap.putArray("products", Arguments.fromList(purchase.getProducts()));
+        return purchaseMap;
+    }
+
+
+    private void resolveBillingFlowPromise(final WritableArray productsToBeConsumed) {
+        try {
+            billingFlowPromise.resolve(productsToBeConsumed);
+            billingFlowPromise = null;
+        } catch (Exception error) {
+            Log.e(TAG, "resolveBillingFlowPromise: " + error.getMessage());
         }
     }
 
-    private void resolveForKey(final String key, final Object value) {
+    private void rejectBillingFlowPromise(final String code, final String message) {
         try {
-            if (promises.containsKey(key)) {
-                ArrayList<Promise> list = promises.get(key);
-                for (Promise promise : list) {
-                    promise.resolve(value);
-                }
-                promises.remove(key);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    private void rejectForKey(final String key, final String code, final String message, final Exception err) {
-        try {
-            if (promises.containsKey(key)) {
-                ArrayList<Promise> list = promises.get(key);
-                for (Promise promise : list) {
-                    promise.reject(code, message, err);
-                }
-                promises.remove(key);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            billingFlowPromise.reject(code, message);
+            Log.d(TAG, "rejectBillingFlowPromise " + code);
+            billingFlowPromise = null;
+        } catch (Exception error) {
+            Log.e(TAG, "rejectBillingFlowPromise: " + error.getMessage());
         }
     }
 }

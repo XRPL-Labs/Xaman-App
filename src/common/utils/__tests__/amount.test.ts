@@ -1,5 +1,4 @@
-/* eslint-disable spellcheck/spell-checker */
-import { NormalizeAmount, NormalizeCurrencyCode, ValueToIOU } from '../amount';
+import { NormalizeAmount, NormalizeCurrencyCode, ValueToIOU } from '../monetary';
 
 jest.mock('@services/NetworkService');
 
@@ -65,6 +64,10 @@ describe('Utils.Amount', () => {
                     value: '4A65727279436F696E0000000000000000000000',
                     output: 'JerryCoin',
                 },
+                {
+                    value: '039C99CD9AB0B70B32ECDA51EAAE471625608EA2',
+                    output: 'LP 9C99...EA2',
+                },
             ];
             tests.forEach((v) => {
                 expect(NormalizeCurrencyCode(v.value)).toBe(v.output);
@@ -74,7 +77,7 @@ describe('Utils.Amount', () => {
 
     describe('ValueToIOU', () => {
         it('should raise error', () => {
-            expect(() => ValueToIOU(undefined)).toThrowError('Value is not valid string!');
+            expect(() => ValueToIOU(undefined as any)).toThrowError('Value is not valid string!');
             // @ts-ignore
             expect(() => ValueToIOU(0.1)).toThrowError('Value is not valid string!');
             // @ts-ignore

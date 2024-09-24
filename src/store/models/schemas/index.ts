@@ -13,7 +13,9 @@ import * as v12 from './v12';
 import * as v13 from './v13';
 import * as v14 from './v14';
 import * as v15 from './v15';
+import * as v16 from './v16';
+import * as v17 from './v17';
 
-const schemas = [v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15];
+const schemas = [v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17];
 
 export default schemas;

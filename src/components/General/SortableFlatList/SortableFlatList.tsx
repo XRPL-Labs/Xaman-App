@@ -42,24 +42,28 @@ enum AutoScrollState {
 
 /* Component ==================================================================== */
 export default class SortableFlatList extends Component<Props, State> {
-    private itemRefs: Map<number, CellComponent>;
-    private itemRefsSnapShot: Map<number, CellComponent>;
-    private activeItem: CellComponent;
+    private itemRefs: Map<number, CellComponent | null>;
+    private itemRefsSnapShot: Map<number, CellComponent | null>;
+    private activeItem: CellComponent | undefined;
     private listRef: React.RefObject<FlatList>;
 
-    private scaleRecoveryTimeout: ReturnType<typeof setTimeout>;
+    private scaleRecoveryTimeout: ReturnType<typeof setTimeout> | undefined;
+    private autoScrollInterval: ReturnType<typeof setTimeout> | undefined;
+
     private panResponder: PanResponderInstance;
     private isMovePanResponder: boolean;
-    private isActiveItemMoved: boolean;
+    private isActiveItemMoved = false;
 
     private scrollWindowHeight: number;
     private currentScrollOffset: number;
     private currentAutoScrollDy: number;
     private currentAutoScrollChanges: number;
-    private autoScrollInterval: ReturnType<typeof setTimeout>;
+
     private currentAutoScrollState: AutoScrollState;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SortableFlatList.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         separatorHeight: 0,
         sortable: true,
     };
@@ -68,7 +72,7 @@ export default class SortableFlatList extends Component<Props, State> {
         super(props);
 
         this.state = {
-            containerHeight: (props.itemHeight + props.separatorHeight) * props.dataSource.length,
+            containerHeight: (props.itemHeight + props.separatorHeight!) * props.dataSource.length,
             isItemActive: false,
         };
 
@@ -124,7 +128,7 @@ export default class SortableFlatList extends Component<Props, State> {
         const { containerHeight } = prevState;
 
         // if dataSource size or item height or separator size changed then apply new container height
-        const newContainerHeight = (nextProps.itemHeight + nextProps.separatorHeight) * nextProps.dataSource.length;
+        const newContainerHeight = (nextProps.itemHeight + nextProps.separatorHeight!) * nextProps.dataSource.length;
 
         if (newContainerHeight !== containerHeight) {
             return {
@@ -184,8 +188,9 @@ export default class SortableFlatList extends Component<Props, State> {
     onPanResponderMove = (event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         const { itemHeight, separatorHeight } = this.props;
         const { containerHeight } = this.state;
+
         // if no item active just return
-        if (!this.isMovePanResponder) {
+        if (!this.isMovePanResponder || !this.activeItem) {
             return;
         }
 
@@ -276,7 +281,7 @@ export default class SortableFlatList extends Component<Props, State> {
 
             const SCROLL_MAX_CHANGE = (2 * (itemHeight + separatorHeight)) / 100;
 
-            let newScrollOffset = undefined as number;
+            let newScrollOffset;
 
             if (this.currentAutoScrollState === AutoScrollState.MOVING_UP && this.currentScrollOffset > 0) {
                 newScrollOffset = this.currentScrollOffset - SCROLL_MAX_CHANGE;
@@ -295,7 +300,7 @@ export default class SortableFlatList extends Component<Props, State> {
                 }
             }
 
-            if (newScrollOffset !== undefined && this.currentScrollOffset !== newScrollOffset) {
+            if (typeof newScrollOffset !== 'undefined' && this.currentScrollOffset !== newScrollOffset) {
                 this.currentScrollOffset = newScrollOffset;
                 // scroll to the new position
                 this.listRef.current?.scrollToOffset({ offset: newScrollOffset, animated: false });

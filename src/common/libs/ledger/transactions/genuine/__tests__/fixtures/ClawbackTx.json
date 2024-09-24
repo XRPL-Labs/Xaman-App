@@ -1,0 +1,83 @@
+{
+  "tx": {
+    "Account": "rYNKrtQaf3vUVWVK5sw9rJdPGDLbxZu89",
+    "Amount": {
+      "currency": "594F494E4B000000000000000000000000000000",
+      "issuer": "r3CAQrWrJCFFnNf6mbUtCBUPtuqAb4odbC",
+      "value": "1"
+    },
+    "Fee": "12",
+    "Flags": 0,
+    "LastLedgerSequence": 86679176,
+    "Sequence": 85913937,
+    "SigningPubKey": "ED5048B5CAC582295C50BEF9A171DC44330A2EFD6E631BDE1FDFDA72081761DDBB",
+    "TransactionType": "Clawback",
+    "TxnSignature": "AB288CA3CC8A7091904D8CE0A8E11CC243E6EE96E8CDC16A86D2E13C3E0107A992AC78493FE4B10081FC27AC2FDA9070BA1983FBC9E974598BF9DD9362446E0A"
+  },
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rYNKrtQaf3vUVWVK5sw9rJdPGDLbxZu89",
+            "Balance": "19414452",
+            "Flags": 2155872256,
+            "OwnerCount": 0,
+            "Sequence": 85913938
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "1195CF5B88E3401F8397F2753AB50334C4FFD01B7DD84FF708D21B7A93A3DDAC",
+          "PreviousFields": {
+            "Balance": "19414464",
+            "Sequence": 85913937
+          },
+          "PreviousTxnID": "5275E4DAF3EA6144D8ED2B358C69F51A590D5CAD212954E10F378312A766EF86",
+          "PreviousTxnLgrSeq": 86679156
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Balance": {
+              "currency": "594F494E4B000000000000000000000000000000",
+              "issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+              "value": "-39.71012"
+            },
+            "Flags": 2228224,
+            "HighLimit": {
+              "currency": "594F494E4B000000000000000000000000000000",
+              "issuer": "r3CAQrWrJCFFnNf6mbUtCBUPtuqAb4odbC",
+              "value": "333333"
+            },
+            "HighNode": "0",
+            "LowLimit": {
+              "currency": "594F494E4B000000000000000000000000000000",
+              "issuer": "rYNKrtQaf3vUVWVK5sw9rJdPGDLbxZu89",
+              "value": "0"
+            },
+            "LowNode": "0"
+          },
+          "LedgerEntryType": "RippleState",
+          "LedgerIndex": "7E3CD9CBDC7BA90DB794D363271C9B388C1CFCE8D6FAA46E03B851657C929868",
+          "PreviousFields": {
+            "Balance": {
+              "currency": "594F494E4B000000000000000000000000000000",
+              "issuer": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+              "value": "-40.71012"
+            }
+          },
+          "PreviousTxnID": "2F29AAA039347DDBBA7069BA5BD0F88C19FEB65BA6FD0D159328330ABB16AE77",
+          "PreviousTxnLgrSeq": 86676355
+        }
+      }
+    ],
+    "TransactionIndex": 16,
+    "TransactionResult": "tesSUCCESS"
+  },
+  "validated": true,
+  "ctid": "C52A9E7600100000",
+  "date": 764006560,
+  "hash": "A845843AD384C47E26DB19F8D078D0C283F32F8E2EDA3B1F178EDDFCEDD3045D",
+  "inLedger": 86679158,
+  "ledger_index": 86679158
+}

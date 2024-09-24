@@ -40,7 +40,6 @@ Feature: Import Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -95,7 +94,6 @@ Feature: Import Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -154,7 +152,6 @@ Feature: Import Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'
@@ -215,7 +212,6 @@ Feature: Import Account
     Scenario: Test signing by adding a asset
         Then I tap 'add-token-button'
         Given I should have 'add-asset-overlay'
-        Then I tap 'counterParty-Bitstamp'
         Given I should wait 10 sec to see 'add-and-sign-button'
         Then I tap 'add-and-sign-button'
         Given I should have 'review-transaction-modal'

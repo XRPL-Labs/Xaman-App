@@ -1,3 +1,4 @@
-import FinishView from './FinishView';
+import FinishSetupView, { Props as FinishSetupViewProps } from './FinishView';
 
-export default FinishView;
+export type { FinishSetupViewProps };
+export default FinishSetupView;

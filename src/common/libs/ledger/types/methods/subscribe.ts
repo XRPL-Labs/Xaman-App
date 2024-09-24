@@ -1,4 +1,4 @@
-import type { Amount, Currency, Path, StreamType, ResponseOnlyTxInfo } from '../common';
+import type { LedgerAmount, Currency, Path, StreamType, ResponseOnlyTxInfo } from '../common';
 import { Offer } from '../ledger';
 import { TransactionMetadata } from '../transaction';
 
@@ -374,7 +374,7 @@ export interface PathFindStream extends BaseStream {
     /** Unique address of the account that would receive a transaction. */
     destination_account: string;
     /** Currency Amount that the destination would receive in a transaction. */
-    destination_amount: Amount;
+    destination_amount: LedgerAmount;
     /**
      * If false, this is the result of an incomplete search. A later reply may
      * have a better path. If true, then this is the best path found. (It is still
@@ -386,7 +386,7 @@ export interface PathFindStream extends BaseStream {
     /** The ID provided in the WebSocket request is included again at this level. */
     id: number | string;
     /** Currency Amount that would be spent in the transaction.  */
-    send_max?: Amount;
+    send_max?: LedgerAmount;
     /**
      * Array of objects with suggested paths to take. If empty, then no paths
      * were found connecting the source and destination accounts.
@@ -395,7 +395,7 @@ export interface PathFindStream extends BaseStream {
         | []
         | {
               paths_computed: Path[];
-              source_amount: Amount;
+              source_amount: LedgerAmount;
           };
 }
 

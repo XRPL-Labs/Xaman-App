@@ -19,14 +19,12 @@ const {
 /* Exports ==================================================================== */
 export const schemaVersion = 15;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    // Note: The order is important for this schema version
-    NetworkSchema.migration(oldRealm, newRealm);
-};
-export const populate = (realm: Realm) => {
-    [NetworkSchema, NodeSchema, CoreSchema].forEach((schema) => {
-        realm.write(() => {
-            schema.populate(realm);
-        });
+    [NetworkSchema].forEach((entry) => {
+        if (typeof entry.migration !== 'function') {
+            throw new Error(`migration method is required for schema ${entry.schema.name}`);
+        }
+
+        entry.migration(oldRealm, newRealm);
     });
 };
 export const schemas = {

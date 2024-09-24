@@ -17,7 +17,7 @@ import { AccountModel, TrustLineModel } from '@store/models';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
 // components
@@ -38,7 +38,7 @@ interface Props {}
 interface State {
     isLoadingAvailableBalance: boolean;
     isCheckingBalance: boolean;
-    currencyRate: RatesType;
+    currencyRate?: RatesType;
     amountRate: string;
 }
 
@@ -48,9 +48,9 @@ class DetailsStep extends Component<Props, State> {
     amountRateInput: React.RefObject<typeof AmountInput | null>;
 
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
-    constructor(props: undefined) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -91,6 +91,11 @@ class DetailsStep extends Component<Props, State> {
         const { source, currency } = this.context;
 
         return new Promise((resolve) => {
+            if (!source) {
+                resolve(0);
+                return;
+            }
+
             if (typeof currency === 'string') {
                 // native currency
                 resolve(CalculateAvailableBalance(source));
@@ -99,10 +104,14 @@ class DetailsStep extends Component<Props, State> {
                 // we fetch the IOU directly from Ledger
                 LedgerService.getFilteredAccountLine(source.address, {
                     issuer: currency.currency.issuer,
-                    currency: currency.currency.currency,
+                    currency: currency.currency.currencyCode,
                 })
                     .then((line) => {
-                        resolve(line.balance);
+                        if (line) {
+                            resolve(line.balance);
+                            return;
+                        }
+                        resolve(currency.balance);
                     })
                     .catch(() => {
                         // in case of error just return IOU cached balance
@@ -117,7 +126,7 @@ class DetailsStep extends Component<Props, State> {
 
         // check if account is activated
         // if not just show an alert an return
-        if (source.balance === 0) {
+        if (source?.balance === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.accountIsNotActivated'));
             return;
         }
@@ -181,7 +190,7 @@ class DetailsStep extends Component<Props, State> {
             return NetworkService.getNativeAsset();
         }
 
-        return NormalizeCurrencyCode(currency.currency.currency);
+        return NormalizeCurrencyCode(currency.currency.currencyCode);
     };
 
     applyAllBalance = async () => {
@@ -287,7 +296,7 @@ class DetailsStep extends Component<Props, State> {
         const { currency } = this.context;
 
         if (input === this.amountInput.current && typeof currency === 'string') {
-            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset });
+            return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset, default: 0 });
         }
         return 0;
     };
@@ -319,15 +328,15 @@ class DetailsStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <CurrencyPicker
-                            account={source}
+                            account={source!}
                             onSelect={this.onCurrencyChange}
                             currencies={
                                 source
                                     ? [
                                           NetworkService.getNativeAsset(),
                                           ...filter(
-                                              source.lines.sorted([['order', false]]),
-                                              (l) => l.balance > 0 || l.obligation === true,
+                                              source.lines?.sorted([['order', false]]),
+                                              (line) => Number(line.balance) > 0 || line.obligation === true,
                                           ),
                                       ]
                                     : []
@@ -380,7 +389,7 @@ class DetailsStep extends Component<Props, State> {
                                 style={styles.editButton}
                                 roundedSmall
                                 iconSize={15}
-                                iconStyle={AppStyles.imgColorGreyDark}
+                                iconStyle={AppStyles.imgColorGrey}
                                 light
                                 icon="IconEdit"
                             />

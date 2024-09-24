@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import { randomKey, HMAC256, SHA1, SHA256, SHA512 } from '../crypto';

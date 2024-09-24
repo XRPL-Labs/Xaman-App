@@ -30,14 +30,14 @@ describe('AuthenticationService', () => {
 
         appService.prevAppState = AppStateStatus.Background;
         appService.currentAppState = AppStateStatus.Active;
-        appService.emit('appStateChange', AppStateStatus.Active);
+        appService.emit('appStateChange', AppStateStatus.Active, AppStateStatus.Background);
         expect(spy1).toBeCalled();
 
         const spy2 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
 
         appService.prevAppState = AppStateStatus.Inactive;
         appService.currentAppState = AppStateStatus.Active;
-        appService.emit('appStateChange', AppStateStatus.Active);
+        appService.emit('appStateChange', AppStateStatus.Active, AppStateStatus.Inactive);
         expect(spy2).toBeCalled();
 
         spy1.mockRestore();
@@ -49,7 +49,7 @@ describe('AuthenticationService', () => {
 
         const promiseFn = () => Promise.resolve();
         const spyList = [
-            jest.spyOn(AppService, 'checkShowChangeLog').mockImplementationOnce(promiseFn),
+            jest.spyOn(AppService, 'checkVersionChange').mockImplementationOnce(promiseFn),
             jest.spyOn(AppService, 'checkAppUpdate').mockImplementationOnce(promiseFn),
             jest.spyOn(BackendService, 'ping').mockImplementationOnce(promiseFn),
             jest.spyOn(LinkingService, 'checkInitialDeepLink').mockImplementationOnce(promiseFn),
@@ -65,6 +65,7 @@ describe('AuthenticationService', () => {
             }
 
             // should clear post success array so won't be run in next success auth
+            // @ts-ignore
             expect(authenticationService.postSuccess).toBe([]);
         }, 1000);
     });

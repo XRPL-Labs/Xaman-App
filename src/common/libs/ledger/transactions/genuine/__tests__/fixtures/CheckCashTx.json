@@ -6,5 +6,58 @@
     "CheckID": "6F1DFD1D0FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B",
     "Fee": "12"
   },
-  "meta": {}
+  "meta": {
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+            "Balance": "10003499964",
+            "Flags": 0,
+            "OwnerCount": 0,
+            "Sequence": 4
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "1F5CCAAAAE908C0F449ADB267084DFFD3E4432921E64A020EEBC59D95BD4940A",
+          "PreviousFields": {
+            "Balance": "10000999976",
+            "Sequence": 3
+          },
+          "PreviousTxnID": "7D1400825FD25D17B0283B71B0CC2ACC921F32D057B66BB7331F1B43483BC3DA",
+          "PreviousTxnLgrSeq": 6967427
+        }
+      },
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Flags": 0,
+            "Owner": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "RootIndex": "46B6FD7D2C937D6A5D2832CAC94F424300B3FE72B5D1D460C20E6FADAD2FF7C7"
+          },
+          "LedgerEntryType": "DirectoryNode",
+          "LedgerIndex": "46B6FD7D2C937D6A5D2832CAC94F424300B3FE72B5D1D460C20E6FADAD2FF7C7"
+        }
+      },
+      {
+        "DeletedNode": {
+          "FinalFields": {
+            "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
+            "Destination": "rrrrrrrrrrrrrrrrrrrrBZbvji",
+            "DestinationNode": "0000000000000000",
+            "DestinationTag": 1235,
+            "Expiration": 572908967,
+            "Flags": 0,
+            "InvoiceID": "DEADBEEF2FE8A32E40E1F2C05CF1C15545BAB56B617F9C6C2D63A6B704BEF59B",
+            "OwnerNode": "0000000000000000",
+            "PreviousTxnID": "605A2E2C8E48AECAF5C56085D1AEAA0348DC838CE122C9188F94EB19DA05C2FE",
+            "PreviousTxnLgrSeq": 6967458,
+            "SendMax": "3000000",
+            "Sequence": 3
+          },
+          "LedgerEntryType": "Check",
+          "LedgerIndex": "4F6DDA7972A5E8C8F2AA3D2A475E56475FA573C65B935E26EABDA5F06A982C70"
+        }
+      }
+    ]
+  }
 }

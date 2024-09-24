@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 /* eslint-disable quotes */
-/* eslint-disable spellcheck/spell-checker */
 import { GetWalletPublicKey, GetWalletDerivedPublicKey, GetPreferCurve, GetSignOptions } from '../tangem';
 
 import cards from './fixtures/tangem.cards.json';

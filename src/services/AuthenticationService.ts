@@ -1,6 +1,7 @@
 /**
  * Authentication Service
  */
+import EventEmitter from 'events';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -17,12 +18,13 @@ import CoreRepository from '@store/repositories/core';
 import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LinkingService from '@services/LinkingService';
 import PushNotificationsService from '@services/PushNotificationsService';
 
 import Localize from '@locale';
-import EventEmitter from 'events';
+
+import { Props as LockOverlayProps } from '@screens/Overlay/Lock/types';
 
 /* Types  ==================================================================== */
 export enum LockStatus {
@@ -31,15 +33,23 @@ export enum LockStatus {
 }
 
 /* Events  ==================================================================== */
-declare interface AuthenticationService {
-    on(event: 'lockStateChange', listener: (state: LockStatus) => void): this;
-}
+export type AuthenticationServiceEvent = {
+    lockStateChange: (state: LockStatus) => void;
+};
 
+declare interface AuthenticationService {
+    on<U extends keyof AuthenticationServiceEvent>(event: U, listener: AuthenticationServiceEvent[U]): this;
+    off<U extends keyof AuthenticationServiceEvent>(event: U, listener: AuthenticationServiceEvent[U]): this;
+    emit<U extends keyof AuthenticationServiceEvent>(
+        event: U,
+        ...args: Parameters<AuthenticationServiceEvent[U]>
+    ): boolean;
+}
 /* Service  ==================================================================== */
 class AuthenticationService extends EventEmitter {
     private lockStatus: LockStatus;
     private postSuccess: Array<() => void>;
-    private logger: any;
+    private logger: LoggerInstance;
 
     constructor() {
         super();
@@ -51,7 +61,7 @@ class AuthenticationService extends EventEmitter {
 
         // list of methods that needs to run after success auth
         this.postSuccess = [
-            AppService.checkShowChangeLog,
+            AppService.checkVersionChange,
             AppService.checkAppUpdate,
             BackendService.sync,
             LinkingService.checkInitialDeepLink,
@@ -117,9 +127,9 @@ class AuthenticationService extends EventEmitter {
         setTimeout(() => {
             while (this.postSuccess.length) {
                 try {
-                    this.postSuccess.shift().call(null);
-                } catch (e) {
-                    this.logger.error(e);
+                    this.postSuccess.shift()?.call(null);
+                } catch (error) {
+                    this.logger.error('runAfterSuccessAuth', error);
                 }
             }
         }, 500);
@@ -182,7 +192,7 @@ class AuthenticationService extends EventEmitter {
 
     /**
      * Runs after success auth
-     * @param  {number} ts?
+     * @param ts
      */
     onSuccessAuthentication = async (ts?: number) => {
         if (!ts) {
@@ -206,7 +216,7 @@ class AuthenticationService extends EventEmitter {
     /**
      * runs after wrong passcode input
      * @param  {any} coreSettings
-     * @param  {number} ts?
+     * @param ts
      */
     private onWrongPasscodeInput = async (coreSettings: any, ts?: number) => {
         if (!ts) {
@@ -332,11 +342,11 @@ class AuthenticationService extends EventEmitter {
 
             if (
                 coreSettings.lastUnlockedTimestamp === 0 ||
-                realTime < coreSettings.lastUnlockedTimestamp ||
-                realTime - coreSettings.lastUnlockedTimestamp > coreSettings.minutesAutoLock * 60
+                realTime < (coreSettings.lastUnlockedTimestamp ?? 0) ||
+                realTime - (coreSettings.lastUnlockedTimestamp ?? 0) > coreSettings.minutesAutoLock * 60
             ) {
                 // show lock overlay
-                await Navigator.showOverlay(
+                await Navigator.showOverlay<LockOverlayProps>(
                     AppScreens.Overlay.Lock,
                     {},
                     {
@@ -421,6 +431,7 @@ class AuthenticationService extends EventEmitter {
      */
     onAppStateChange = async () => {
         if (
+            AppService.prevAppState &&
             [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
             AppService.currentAppState === AppStateStatus.Active
         ) {

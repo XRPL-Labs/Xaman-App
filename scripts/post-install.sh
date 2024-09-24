@@ -1,19 +1,12 @@
 #!/usr/bin/env bash
 
-# Let's exit on errors
-set -e
-
 CYAN='\033[1;36m'
 RED='\033[1;31m'
 GREEN='\033[1;32m'
-LIGHTGRAY='\033[0;37m'
 NC='\033[0m' # No Color
 
-ROOT=$(pwd)
-
-
 function _git_hook() {
-    echo -e "\n${GREEN}[-] Installing hooks... ${NC}"
+    echo -e "${GREEN}[-] Installing git hooks... ${NC}"
 
     GIT_DIR=$(git rev-parse --git-dir)
 
@@ -23,24 +16,27 @@ function _git_hook() {
     # this command creates symlink to our pre-commit script
     ln -s ../../scripts/pre-commit.sh $GIT_DIR/hooks/pre-commit
 
-    # excute permission
+    # execute permission
     chmod +x $GIT_DIR/hooks/pre-commit
 }
 
 function _patch(){
-    echo -e "\n${GREEN}[-] Patching packages... ${NC}"
+    echo -e "${GREEN}[-] Patching packages... ${NC}"
     # # patch packages
     npx patch-package
 }
 
 
-function _jetify(){
-    echo -e "\n${GREEN}[-] Fixing Android X... ${NC}"
 
-    cd $ROOT
-    npx jetify
+function _check_pod_install() {
+    # checking for pod install requirement
+    scripts/check-pod-install.sh
+    podInstallExitCode=$?
+    if [[ "$podInstallExitCode" -ne 0 ]]; then
+        echo -e ""
+        echo -e "${RED}[!] Warning: don't forget to run 'pod install' in '/ios' directory (｡◕‿‿◕｡) ${NC}"
+    fi
 }
-
 
 
 
@@ -49,7 +45,7 @@ echo -e "${CYAN}[*] Post Install.. ${NC}"
 
 _git_hook
 _patch
-_jetify
+_check_pod_install
 
-echo -e "\n${GREEN}[*] Everythinh Done! ${NC}"
+echo -e "\n${GREEN}[*] Everything went well! ${NC}"
 

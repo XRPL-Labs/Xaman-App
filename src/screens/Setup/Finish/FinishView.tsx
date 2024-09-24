@@ -82,16 +82,15 @@ class FinishView extends Component<Props, State> {
             CoreRepository.saveSettings({ initialized: true });
 
             // run post services after success auth
-            AuthenticationService.onSuccessAuthentication();
+            await AuthenticationService.onSuccessAuthentication();
 
             // navigate to default root
             Navigator.startDefault();
-        } catch (e) {
+        } catch (error: any) {
             this.setState({
                 isLoading: false,
             });
-            // @ts-ignore
-            Alert.alert('Error', e.message || e);
+            Alert.alert('Error', error.message || error);
         }
     };
 

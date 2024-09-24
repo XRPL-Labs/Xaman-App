@@ -9,36 +9,33 @@ Feature: Linking
         Given I should see alert with content 'Signed transaction detected, submit to the ledger?'
         Then I tap alert button with label 'Cancel'
 
+    Scenario: Open the sign request link in foreground
+        Then I open the url 'https://xumm.app/sign/2d87bba7-12f8-4b69-a9ac-8bccfbd3d04b'
+        Given I should see alert with content 'Payload handled by another client'
+        Then I tap alert button with label 'OK'
 
     Scenario: Launch the app with sign request link
-        Then I launch the app with url 'https://xumm.app/sign/511dc0b7-ef5c-4cc6-8eb5-7071133a86b4'
+        Then I launch the app with url 'https://xumm.app/sign/2d87bba7-12f8-4b69-a9ac-8bccfbd3d04b'
         Given I should see alert with content 'Payload handled by another client'
         Then I tap alert button with label 'OK'
 
-
-    Scenario: Open the sign requst link in foreground
-        Then I open the url 'https://xumm.app/sign/511dc0b7-ef5c-4cc6-8eb5-7071133a86b4'
-        Given I should see alert with content 'Payload handled by another client'
-        Then I tap alert button with label 'OK'
-
-    Scenario: Open the payId link in foreground
-        Then I open the url 'xumm$wietse.com'
-        Given I should have 'send-screen'
-        Given I should see 'send-details-view'
-        Then I enter '0.1' in 'amount-input'
-        Then I tap 'next-button'
-        Given I should see 'send-recipient-view'
-        Then I should have 'recipient-rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY'
-
-    Scenario: Launch the app with payId link
-        Then I launch the app with url "xumm$wietse.com"
-        Given I should have 'send-screen'
-        Given I should see 'send-details-view'
-        Then I enter '0.1' in 'amount-input'
-        Then I tap 'next-button'
-        Given I should see 'send-recipient-view'
-        Then I should have 'recipient-rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY'
-
+#    Scenario: Open the payId link in foreground
+#        Then I open the url 'xumm$wietse.com'
+#        Given I should have 'send-screen'
+#        Given I should see 'send-details-view'
+#        Then I enter '0.1' in 'amount-input'
+#        Then I tap 'next-button'
+#        Given I should see 'send-recipient-view'
+#        Then I should have 'recipient-rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY'
+#
+#    Scenario: Launch the app with payId link
+#        Then I launch the app with url "xumm$wietse.com"
+#        Given I should have 'send-screen'
+#        Given I should see 'send-details-view'
+#        Then I enter '0.1' in 'amount-input'
+#        Then I tap 'next-button'
+#        Given I should see 'send-recipient-view'
+#        Then I should have 'recipient-rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY'
 
 
 

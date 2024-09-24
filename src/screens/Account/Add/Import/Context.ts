@@ -20,4 +20,4 @@ interface ContextProps extends State {
     goBack: () => void;
 }
 
-export const StepsContext = React.createContext<Partial<ContextProps>>({});
+export const StepsContext = React.createContext<ContextProps>({} as any as ContextProps);

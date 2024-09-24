@@ -1,14 +1,19 @@
 import Realm from 'realm';
 import assign from 'lodash/assign';
 
-import { ProfileModel } from '@store/models';
+import ProfileModel from '@store/models/objects/profile';
 
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
+export type ProfileRepositoryEvent = {
+    profileUpdate: (profile: ProfileModel, changes: Partial<ProfileModel>) => void;
+};
+
 declare interface ProfileRepository {
-    on(event: 'profileUpdate', listener: (changes: Partial<ProfileModel>) => void): this;
-    on(event: string, listener: Function): this;
+    on<U extends keyof ProfileRepositoryEvent>(event: U, listener: ProfileRepositoryEvent[U]): this;
+    off<U extends keyof ProfileRepositoryEvent>(event: U, listener: ProfileRepositoryEvent[U]): this;
+    emit<U extends keyof ProfileRepositoryEvent>(event: U, ...args: Parameters<ProfileRepositoryEvent[U]>): boolean;
 }
 
 /* Repository  ==================================================================== */
@@ -20,9 +25,12 @@ class ProfileRepository extends BaseRepository<ProfileModel> {
 
     updateIdempotency = (idempotency: number) => {
         const profile = this.getProfile();
-        this.safeWrite(() => {
-            profile.idempotency = idempotency;
-        });
+
+        if (profile) {
+            this.safeWrite(() => {
+                profile.idempotency = idempotency;
+            });
+        }
     };
 
     saveProfile = (object: Partial<ProfileModel>): Promise<ProfileModel> => {
@@ -32,18 +40,21 @@ class ProfileRepository extends BaseRepository<ProfileModel> {
             if (current) {
                 this.safeWrite(() => {
                     assign(current, object);
+                    this.emit('profileUpdate', current, object);
                     resolve(current);
                 });
             } else {
-                this.create(object).then(resolve).catch(reject);
+                this.create(object)
+                    .then((createdProfile: ProfileModel) => {
+                        this.emit('profileUpdate', createdProfile, object);
+                        resolve(createdProfile);
+                    })
+                    .catch(reject);
             }
-
-            // send the event
-            this.emit('profileUpdate', object);
         });
     };
 
-    getProfile = (): ProfileModel => {
+    getProfile = (): ProfileModel | undefined => {
         const profiles = this.findAll();
 
         // get profile

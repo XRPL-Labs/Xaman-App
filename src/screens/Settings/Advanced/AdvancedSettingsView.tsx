@@ -5,7 +5,9 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Alert, Platform } from 'react-native';
 
-import { PushNotificationsService, ApiService } from '@services';
+import ApiService from '@services/ApiService';
+import PushNotificationsService from '@services/PushNotificationsService';
+import NetworkService from '@services/NetworkService';
 
 import { CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { CoreModel, ProfileModel } from '@store/models';
@@ -20,10 +22,14 @@ import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
 
 import Localize from '@locale';
 
+import { SessionLogViewProps } from '@screens/Settings/Advanced/Logs';
+import { NetworkSettingViewProps } from '@screens/Settings/Advanced/Network';
+import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
+import { ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
-import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -48,7 +54,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
-            profile: ProfileRepository.getProfile(),
+            profile: ProfileRepository.getProfile()!,
         };
     }
 
@@ -69,7 +75,7 @@ class AdvancedSettingsView extends Component<Props, State> {
     showChangeLog = () => {
         const currentVersionCode = GetAppVersionCode();
 
-        Navigator.showOverlay(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
+        Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
     };
 
     reRegisterPushToken = async () => {
@@ -114,7 +120,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
     enableDeveloperMode = () => {
         // authenticate with passcode before enabling the developer mode
-        Navigator.showOverlay(AppScreens.Overlay.Auth, {
+        Navigator.showOverlay<AuthenticateOverlayProps>(AppScreens.Overlay.Auth, {
             canAuthorizeBiometrics: false,
             onSuccess: () => {
                 // persist the settings
@@ -179,6 +185,10 @@ class AdvancedSettingsView extends Component<Props, State> {
         // get default network object
         const defaultNetwork = NetworkRepository.findOne({ networkId: NetworkConfig.defaultNetworkId });
 
+        if (!defaultNetwork) {
+            throw new Error('Unable to find default network from config!');
+        }
+
         Navigator.showAlertModal({
             type: 'warning',
             title: Localize.t('settings.disablingDeveloperMode'),
@@ -194,9 +204,9 @@ class AdvancedSettingsView extends Component<Props, State> {
                 },
                 {
                     text: Localize.t('global.continue'),
-                    onPress: () => {
+                    onPress: async () => {
                         // switch the network
-                        NetworkService.switchNetwork(defaultNetwork);
+                        await NetworkService.switchNetwork(defaultNetwork);
                         // disable developer mode
                         this.disableDeveloperMode();
                     },
@@ -205,6 +215,14 @@ class AdvancedSettingsView extends Component<Props, State> {
                 },
             ],
         });
+    };
+
+    showSessionLogs = () => {
+        Navigator.push<SessionLogViewProps>(AppScreens.Settings.SessionLog, {});
+    };
+
+    showNetworkSettings = () => {
+        Navigator.push<NetworkSettingViewProps>(AppScreens.Settings.Network.List, {});
     };
 
     render() {
@@ -222,23 +240,19 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    {/* node & explorer section */}
                     <Text numberOfLines={1} style={styles.descriptionText}>
                         {Localize.t('global.networks')}
                     </Text>
                     <TouchableDebounce
                         testID="network-settings-button"
                         style={styles.row}
-                        onPress={() => {
-                            Navigator.push(AppScreens.Settings.Network.List);
-                        }}
+                        onPress={this.showNetworkSettings}
                     >
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.networkSettings')}
                             </Text>
                         </View>
-
                         <View style={[AppStyles.centerAligned, AppStyles.row]}>
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
@@ -320,12 +334,7 @@ class AdvancedSettingsView extends Component<Props, State> {
                             />
                         </View>
                     </View>
-                    <TouchableDebounce
-                        style={styles.row}
-                        onPress={() => {
-                            Navigator.push(AppScreens.Settings.SessionLog);
-                        }}
-                    >
+                    <TouchableDebounce style={styles.row} onPress={this.showSessionLogs}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.sessionLog')}

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { Amount } from '@common/libs/ledger/parser/common';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import { NetworkService, StyleService } from '@services';
 import { TouchableDebounce } from '@components/General';
@@ -69,7 +69,7 @@ class FeeItemList extends PureComponent<Props, State> {
 
         const color = this.getColor();
         const label = this.getLabel();
-        const normalizedValue = new Amount(value).dropsToNative();
+        const normalizedValue = new AmountParser(value).dropsToNative().toString();
 
         return (
             <TouchableDebounce
