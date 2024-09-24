@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 import { NormalizeFeeDataSet, PrepareTxForHookFee } from '../fee';
 
 import * as AccountLib from 'xrpl-accountlib';
