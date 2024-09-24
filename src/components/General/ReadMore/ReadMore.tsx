@@ -19,7 +19,7 @@ import styles from './styles';
 interface Props {
     children: React.ReactNode;
     numberOfLines: number;
-    textStyle: TextStyle | Array<TextStyle>;
+    textStyle: TextStyle | TextStyle[];
 }
 
 interface State {
@@ -29,8 +29,8 @@ interface State {
 
 /* Component ==================================================================== */
 class ReadMore extends Component<Props, State> {
-    private trimmedTextHeight: number;
-    private fullTextHeight: number;
+    private trimmedTextHeight: number | undefined;
+    private fullTextHeight: number | undefined;
     private shouldShowMore: boolean;
 
     constructor(props: Props) {
@@ -41,8 +41,8 @@ class ReadMore extends Component<Props, State> {
             numberOfLines: props.numberOfLines,
         };
 
-        this.trimmedTextHeight = null;
-        this.fullTextHeight = null;
+        this.trimmedTextHeight = undefined;
+        this.fullTextHeight = undefined;
         this.shouldShowMore = false;
     }
 
@@ -73,7 +73,7 @@ class ReadMore extends Component<Props, State> {
 
     onPressMore = () => {
         this.setState({
-            numberOfLines: null,
+            numberOfLines: 0,
         });
     };
 
@@ -123,7 +123,7 @@ class ReadMore extends Component<Props, State> {
     renderFooter = () => {
         const { numberOfLines } = this.state;
 
-        if (this.shouldShowMore === true) {
+        if (this.shouldShowMore) {
             if (numberOfLines > 0) {
                 return this.renderViewMore();
             }

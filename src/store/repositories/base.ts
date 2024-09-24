@@ -1,12 +1,11 @@
 import EventEmitter from 'events';
-import { has } from 'lodash';
 
 import Realm from 'realm';
 
 /* Repository  ==================================================================== */
 export default class BaseRepository<T extends Realm.Object<any>> extends EventEmitter {
-    realm: Realm;
-    model: Realm.ObjectClass<T>;
+    realm!: Realm;
+    model!: Realm.ObjectClass<T>;
 
     /**
      * Normalizes the query for realm objects.
@@ -19,7 +18,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
 
         const queryObject = { ...query };
 
-        const props = this.model.schema.properties;
+        const props = this.model.schema?.properties!;
         const queries = Object.entries(queryObject)
             .filter(([key]) => props[key])
             .map(([key, value]) => {
@@ -102,7 +101,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @returns {T} - Found object.
      * @throws will throw an error if more than one result found.
      */
-    findOne = (query: string | Partial<T>): T => {
+    findOne = (query: string | Partial<T>): T | undefined => {
         const result = this.realm.objects(this.model).filtered(this.normalizeQuery(query));
 
         if (result.length === 0) {
@@ -133,10 +132,21 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @returns {Promise<T>} - The created or updated object.
      */
     upsert = async (data: Partial<T>): Promise<T> => {
-        if (!has(data, 'id')) throw new Error('ID require primary key to be set');
+        if (!this.model?.schema?.primaryKey) {
+            throw new Error('Primary key is required for upsert!');
+        }
 
-        // @ts-ignore
-        const objectExists = !!this.realm.objectForPrimaryKey(this.model, data.id);
+        // Getting the primary key name
+        const primaryKey = this.model?.schema?.primaryKey as keyof Partial<T>;
+
+        // the primary key should be in the object
+        if (!(primaryKey in data)) {
+            throw new Error(`${this.model?.schema?.primaryKey} require primary key to be set`);
+        }
+
+        const primaryKeyValue = data[primaryKey] as T[keyof T];
+
+        const objectExists = !!this.realm.objectForPrimaryKey(this.model, primaryKeyValue);
 
         return new Promise((resolve, reject) => {
             try {
@@ -220,7 +230,7 @@ export default class BaseRepository<T extends Realm.Object<any>> extends EventEm
      * @param {Realm.Object | Realm.Object[] | Realm.List<any> | Realm.Results<any>} object - The object(s) to delete.
      * @returns {Promise<void>} - A promise.
      */
-    delete = async (object: Realm.Object<T> | Realm.Object<T>[] | Realm.Results<T>): Promise<void> => {
+    delete = async (object: Realm.Object<any> | Realm.Object<any>[] | Realm.Results<any>): Promise<void> => {
         return new Promise((resolve, reject) => {
             try {
                 this.safeWrite(() => {

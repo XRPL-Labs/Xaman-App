@@ -37,7 +37,7 @@ export interface State {
 /* Component ==================================================================== */
 class VerifySignatureStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -74,13 +74,13 @@ class VerifySignatureStep extends Component<Props, State> {
         // NOTE: as this the address that been shown to the user with get it from account object
         const { address } = account;
 
-        const tangemCard = JSON.parse(account.additionalInfoString) as Card;
+        const tangemCard = JSON.parse(account.additionalInfoString!) as Card;
         // we can get public key from account object
         // but as we use card data to sign in the other parts we get it from card data
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
         // include device UUID and user uuid is signed transaction
-        const { uuid, deviceUUID } = ProfileRepository.getProfile();
+        const { uuid, deviceUUID } = ProfileRepository.getProfile()!;
 
         // prepare the transaction for signing
         const preparedTx = AccountLib.rawSigning.prepare(
@@ -131,10 +131,9 @@ class VerifySignatureStep extends Component<Props, State> {
             } else {
                 Alert.alert(Localize.t('global.error'), Localize.t('account.unableToVerifyTheSignature'));
             }
-        } catch (e) {
+        } catch (error: any) {
             // ignore use cancel operation
-            // @ts-ignore
-            if (e?.message && e?.message === 'The user cancelled the operation') {
+            if (error?.message && error?.message === 'The user cancelled the operation') {
                 return;
             }
             Alert.alert(Localize.t('global.error'), Localize.t('account.unableToVerifyTheSignature'));

@@ -1,4 +1,3 @@
-/* eslint-disable spellcheck/spell-checker */
 const ColorLuminance = (hex: string, lum: number) => {
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');
@@ -20,14 +19,13 @@ const ColorLuminance = (hex: string, lum: number) => {
 };
 
 const HexToRgbA = (hex: string, opacity: number) => {
-    let c;
+    let c: any;
     if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
         c = hex.substring(1).split('');
         if (c.length === 3) {
             c = [c[0], c[0], c[1], c[1], c[2], c[2]];
         }
         c = `0x${c.join('')}`;
-        // @ts-ignore
         return `rgba(${[(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',')},${opacity})`;
     }
     throw new Error(`HexToRgbA: ${hex} is not a valid hex value!`);

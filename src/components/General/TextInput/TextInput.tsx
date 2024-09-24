@@ -19,6 +19,8 @@ import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
+import { Props as ScanModalProps } from '@screens/Modal/Scan/types';
+
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
@@ -55,7 +57,7 @@ const ANDROID_KEYBAORDTYPES = ['visible-password'];
 
 /* Component ==================================================================== */
 class Input extends Component<Props, State> {
-    instance: TextInput;
+    private instanceRef: React.RefObject<TextInput>;
 
     constructor(props: Props) {
         super(props);
@@ -63,21 +65,19 @@ class Input extends Component<Props, State> {
         this.state = {
             focused: false,
         };
+
+        this.instanceRef = React.createRef();
     }
 
     public focus = () => {
         setTimeout(() => {
-            if (this.instance) {
-                this.instance.focus();
-            }
+            this.instanceRef?.current?.focus();
         }, 100);
     };
 
     public blur = () => {
         setTimeout(() => {
-            if (this.instance) {
-                this.instance.blur();
-            }
+            this.instanceRef?.current?.blur();
         }, 100);
     };
 
@@ -129,6 +129,7 @@ class Input extends Component<Props, State> {
                 (Platform.OS === 'android' &&
                     [...DEFAULT_KEYBAORDTYPES, ...ANDROID_KEYBAORDTYPES].indexOf(keyboardType) === -1)
             ) {
+                // noinspection JSConstantReassignment
                 delete filteredProps.keyboardType;
             }
         }
@@ -136,9 +137,7 @@ class Input extends Component<Props, State> {
         return (
             <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
                 <TextInput
-                    ref={(r) => {
-                        this.instance = r;
-                    }}
+                    ref={this.instanceRef}
                     onFocus={this.onFocus}
                     onBlur={this.onBlur}
                     placeholderTextColor={StyleService.value('$textSecondary')}
@@ -159,7 +158,7 @@ class Input extends Component<Props, State> {
             onScannerOpen();
         }
 
-        Navigator.showModal(AppScreens.Modal.Scan, {
+        Navigator.showModal<ScanModalProps>(AppScreens.Modal.Scan, {
             type: scannerType,
             onRead: onScannerRead,
             onClose: onScannerClose,

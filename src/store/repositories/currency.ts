@@ -3,8 +3,9 @@ import Realm from 'realm';
 
 import { CurrencyModel, CounterPartyModel } from '@store/models';
 
-import BaseRepository from './base';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
+
+import BaseRepository from './base';
 
 /* Repository  ==================================================================== */
 class CurrencyRepository extends BaseRepository<CurrencyModel> {
@@ -13,31 +14,23 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
         this.model = CurrencyModel;
     }
 
-    include = (data: any): Promise<any> => {
-        // assign id if not applied
-        if (!has(data, 'id')) {
-            throw new Error('Update require primary key (id) to be set');
-        }
-        return this.upsert(data);
-    };
-
     update = (object: CurrencyModel) => {
         // the primary key should be in the object
-        if (!has(object, 'id')) {
-            throw new Error('Update require primary key (id) to be set');
+        if (this.model?.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {
+            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
         }
         return this.create(object, true);
     };
 
     isVettedCurrency = (issuedCurrency: IssuedCurrency): boolean => {
-        const currency = this.findOne({ issuer: issuedCurrency.issuer, currency: issuedCurrency.currency });
+        const currency = this.findOne({ issuer: issuedCurrency.issuer, currencyCode: issuedCurrency.currency });
         if (!currency) {
             return false;
         }
         return !!currency.name;
     };
 
-    getCounterParty = (currency: CurrencyModel): CounterPartyModel => {
+    getCounterParty = (currency: CurrencyModel): CounterPartyModel | undefined => {
         const counterParty = currency.linkingObjects<CounterPartyModel>('CounterParty', 'currencies');
 
         if (!counterParty.isEmpty()) {

@@ -7,18 +7,21 @@ import { AccountModel } from '@store/models';
 import { AppScreens } from '@common/constants';
 
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
-import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+
 import { ExplainerFactory } from '@common/libs/ledger/factory';
+import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 import { Navigator } from '@common/helpers/navigator';
-import { getAccountName } from '@common/helpers/resolver';
+import { AccountNameType, getAccountName } from '@common/helpers/resolver';
 
-import { NormalizeAmount, NormalizeCurrencyCode } from '@common/utils/amount';
-import { Truncate } from '@common/utils/string';
+import { TouchableDebounce } from '@components/General';
 
-import { AmountText, Avatar, TextPlaceholder, TouchableDebounce } from '@components/General';
+import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 
-import Localize from '@locale';
+import * as Blocks from './Blocks';
+
+import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
@@ -26,19 +29,14 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
-    item: LedgerObjects;
+    item: LedgerObjects & MutationsMixinType;
     timestamp?: number;
 }
 
 export interface State {
     isLoading: boolean;
-    recipientDetails: {
-        address: string;
-        tag?: number;
-        name?: string;
-        kycApproved?: boolean;
-    };
-    label: string;
+    participant?: AccountNameType;
+    explainer?: ExplainerAbstract<Transactions | PseudoTransactions | LedgerObjects>;
 }
 
 /* Component ==================================================================== */
@@ -52,14 +50,22 @@ class LedgerObjectItem extends Component<Props, State> {
 
         this.state = {
             isLoading: true,
-            recipientDetails: undefined,
-            label: undefined,
+            participant: undefined,
+            explainer: undefined,
         };
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { timestamp } = this.props;
-        return !isEqual(nextState, this.state) || !isEqual(nextProps.timestamp, timestamp);
+        const { item, timestamp } = this.props;
+        const { isLoading, participant, explainer } = this.state;
+
+        return (
+            !isEqual(nextProps.item?.Index, item?.Index) ||
+            !isEqual(nextState.isLoading, isLoading) ||
+            !isEqual(nextState.participant, participant) ||
+            !isEqual(nextState.explainer, explainer) ||
+            !isEqual(nextProps.timestamp, timestamp)
+        );
     }
 
     componentDidMount() {
@@ -71,10 +77,10 @@ class LedgerObjectItem extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        const { timestamp } = this.props;
+        const { item, timestamp } = this.props;
 
-        // force the lookup if timestamp changed
-        if (timestamp !== prevProps.timestamp) {
+        // force the lookup if timestamp changed or item changed
+        if (timestamp !== prevProps.timestamp || item?.Index !== prevProps.item?.Index) {
             InteractionManager.runAfterInteractions(this.setDetails);
         }
     }
@@ -84,8 +90,8 @@ class LedgerObjectItem extends Component<Props, State> {
     }
 
     setDetails = async () => {
-        const { isLoading } = this.state;
         const { item, account } = this.props;
+        const { isLoading } = this.state;
 
         // set is loading flag if not true
         if (!isLoading) {
@@ -94,41 +100,40 @@ class LedgerObjectItem extends Component<Props, State> {
             });
         }
 
-        // fetch explainer
-        const objectExplainer = ExplainerFactory.fromType(item.Type);
+        const explainer = ExplainerFactory.fromLedgerObject(item, account);
 
-        // get label
-        const objectLabel = objectExplainer.getLabel(item, account);
-
-        // get recipient
-        let recipient = objectExplainer.getRecipient(item, account);
-
-        // if there is no recipient then load account address
-        if (isEmpty(recipient)) {
-            recipient = {
-                address: account.address,
-            };
+        if (typeof explainer === 'undefined') {
+            this.setState({
+                isLoading: false,
+            });
+            return;
         }
 
+        // get participants
+        const participants = explainer.getParticipants();
+
+        const otherParty =
+            participants.start?.address && participants.start?.address !== account.address
+                ? participants.start
+                : participants.end?.address && participants.end?.address !== account.address
+                  ? participants.end
+                  : { address: account.address };
+
         try {
-            // getRecipient
-            const resp = await getAccountName(recipient.address, recipient.tag);
+            // get participant details
+            const resp = await getAccountName(otherParty.address, otherParty.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
-                    label: objectLabel,
-                    recipientDetails: {
-                        ...recipient,
-                        name: resp.name,
-                        kycApproved: resp.kycApproved,
-                    },
+                    explainer,
+                    participant: resp,
                     isLoading: false,
                 });
             }
         } catch (error) {
             if (this.mounted) {
                 this.setState({
-                    label: objectLabel,
-                    recipientDetails: { ...recipient },
+                    explainer,
+                    participant: { ...otherParty },
                     isLoading: false,
                 });
             }
@@ -137,127 +142,35 @@ class LedgerObjectItem extends Component<Props, State> {
 
     onPress = () => {
         const { item, account } = this.props;
-        Navigator.push(AppScreens.Transaction.Details, { tx: item, account });
-    };
 
-    getIcon = () => {
-        const { recipientDetails, isLoading } = this.state;
-
-        return (
-            <View style={styles.iconContainer}>
-                <Avatar
-                    badge={recipientDetails?.kycApproved ? 'IconCheckXaman' : undefined}
-                    border
-                    source={{ uri: `https://xumm.app/avatar/${recipientDetails?.address}_180_50.png` }}
-                    isLoading={isLoading}
-                />
-            </View>
-        );
-    };
-
-    getDescription = () => {
-        const { recipientDetails } = this.state;
-        const { item } = this.props;
-
-        if (item.Type === LedgerEntryTypes.Offer) {
-            return `${Localize.formatNumber(NormalizeAmount(item.TakerGets.value))} ${NormalizeCurrencyCode(
-                item.TakerGets.currency,
-            )}/${NormalizeCurrencyCode(item.TakerPays.currency)}`;
-        }
-
-        if (item.Type === LedgerEntryTypes.NFTokenOffer) {
-            return item.NFTokenID;
-        }
-
-        if (recipientDetails?.name) return recipientDetails.name;
-        if (recipientDetails?.address) return Truncate(recipientDetails.address, 16);
-
-        return Localize.t('global.unknown');
-    };
-
-    renderRightPanel = () => {
-        const { item, account } = this.props;
-
-        if (item.Type === LedgerEntryTypes.Escrow) {
-            const incoming = item.Destination?.address === account.address;
-            return (
-                <AmountText
-                    value={item.Amount.value}
-                    currency={item.Amount.currency}
-                    prefix={!incoming && '-'}
-                    style={[styles.amount, incoming ? styles.orangeColor : styles.outgoingColor]}
-                    currencyStyle={styles.currency}
-                    valueContainerStyle={styles.amountValueContainer}
-                    truncateCurrency
-                />
-            );
-        }
-
-        if (item.Type === LedgerEntryTypes.Check) {
-            return (
-                <AmountText
-                    value={item.SendMax.value}
-                    currency={item.SendMax.currency}
-                    style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
-                    valueContainerStyle={styles.amountValueContainer}
-                    truncateCurrency
-                />
-            );
-        }
-
-        if (item.Type === LedgerEntryTypes.Offer) {
-            return (
-                <AmountText
-                    value={item.TakerPays.value}
-                    currency={item.TakerPays.currency}
-                    style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
-                    valueContainerStyle={styles.amountValueContainer}
-                    truncateCurrency
-                />
-            );
-        }
-
-        if (item.Type === LedgerEntryTypes.NFTokenOffer) {
-            return (
-                <AmountText
-                    value={item.Amount.value}
-                    currency={item.Amount.currency}
-                    style={[styles.amount, styles.naturalColor]}
-                    currencyStyle={styles.currency}
-                    valueContainerStyle={styles.amountValueContainer}
-                    truncateCurrency
-                />
-            );
-        }
-
-        return null;
+        Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
+            item,
+            account,
+        });
     };
 
     render() {
-        const { label, isLoading } = this.state;
+        const { item, account } = this.props;
+        const { participant, explainer } = this.state;
 
         return (
             <TouchableDebounce
                 onPress={this.onPress}
-                activeOpacity={0.8}
+                activeOpacity={0.6}
                 style={[styles.container, { height: LedgerObjectItem.Height }]}
             >
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>{this.getIcon()}</View>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <Blocks.AvatarBlock participant={participant} item={item} />
+                </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                    <TextPlaceholder style={styles.label} numberOfLines={1} isLoading={isLoading}>
-                        {this.getDescription()}
-                    </TextPlaceholder>
-
+                    <Blocks.LabelBlock item={item} account={account} participant={participant} />
                     <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <TextPlaceholder style={styles.description} numberOfLines={1} isLoading={isLoading}>
-                            {label}
-                        </TextPlaceholder>
+                        <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                        <Blocks.IndicatorIconBlock item={item} account={account} />
                     </View>
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                    {this.renderRightPanel()}
+                    <Blocks.MonetaryBlock explainer={explainer} />
                 </View>
             </TouchableDebounce>
         );

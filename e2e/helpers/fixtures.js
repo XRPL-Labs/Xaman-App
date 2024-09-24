@@ -2,6 +2,8 @@ const fetch = require('node-fetch');
 const { XrplClient } = require('xrpl-client');
 const AccountLib = require('xrpl-accountlib');
 
+let testNetCredits;
+
 // generate family seed
 const generateMnemonic = () => {
     const generatedAccount = AccountLib.generate.mnemonic();
@@ -32,13 +34,21 @@ const generateSecretNumbers = () => {
 
 // get funded testnet account
 const generateTestnetAccount = async () => {
+    if (testNetCredits) {
+        return testNetCredits;
+    }
+
     const resp = await fetch('https://xahau-test.net/newcreds', { method: 'POST' });
     const json = await resp.json();
 
-    return {
-        address: json.address,
-        secret: json.secret,
-    };
+    if (json.secret && json.address) {
+        testNetCredits = {
+            address: json.address,
+            secret: json.secret,
+        };
+    }
+
+    return testNetCredits;
 };
 
 const activateAccount = async (address) => {
@@ -64,8 +74,6 @@ const activateAccount = async (address) => {
     const accountInfo = await Connection.send({
         command: 'account_info',
         account: fundedAccount.address,
-        ledger_index: 'validated',
-        signer_lists: true,
     });
 
     Object.assign(Transaction, { Sequence: accountInfo.account_data.Sequence });

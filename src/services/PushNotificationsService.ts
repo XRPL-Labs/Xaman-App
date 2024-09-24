@@ -8,17 +8,17 @@ import EventEmitter from 'events';
 
 import { Alert, NativeModules, Platform } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { utils } from 'xrpl-accountlib';
 
-import { AccountRepository } from '@store/repositories';
+import { AccountRepository, NetworkRepository } from '@store/repositories';
 
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
 
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import NavigationService, { ComponentTypes } from '@services/NavigationService';
 
 import { StringTypeCheck } from '@common/utils/string';
@@ -29,10 +29,6 @@ import Localize from '@locale';
 const { LocalNotificationModule } = NativeModules;
 
 /* Types  ==================================================================== */
-declare interface PushNotificationsService {
-    on(event: 'signRequestUpdate', listener: () => void): this;
-    on(event: string, listener: Function): this;
-}
 
 export enum NotificationType {
     SignRequest = 'SignRequest',
@@ -40,19 +36,35 @@ export enum NotificationType {
     OpenTx = 'OpenTx',
 }
 
+export type PushNotificationsServiceEvent = {
+    signRequestUpdate: () => void;
+};
+
+declare interface PushNotificationsService {
+    on<U extends keyof PushNotificationsServiceEvent>(event: U, listener: PushNotificationsServiceEvent[U]): this;
+    off<U extends keyof PushNotificationsServiceEvent>(event: U, listener: PushNotificationsServiceEvent[U]): this;
+    emit<U extends keyof PushNotificationsServiceEvent>(
+        event: U,
+        ...args: Parameters<PushNotificationsServiceEvent[U]>
+    ): boolean;
+}
+
 /* Service  ==================================================================== */
 class PushNotificationsService extends EventEmitter {
-    initialized: boolean;
-    initialNotification: FirebaseMessagingTypes.RemoteMessage;
-    logger: any;
+    private initialized: boolean;
+    private initialNotification: FirebaseMessagingTypes.RemoteMessage | undefined;
+    private lastOpenedMessageId: string | undefined;
+    private logger: LoggerInstance;
 
     constructor() {
         super();
 
-        // Do not double listen for notifications
+        // do not double listen for notifications
         this.initialized = false;
-        // First app cold lunch notifications
+        // first app cold lunch notifications
         this.initialNotification = undefined;
+        // remember last processed messageId
+        this.lastOpenedMessageId = undefined;
 
         this.logger = LoggerService.createLogger('Push');
     }
@@ -163,10 +175,9 @@ class PushNotificationsService extends EventEmitter {
      * Fetch FCM token from firebase
      * @returns {Promise<string>} - firebase FCM token in string
      */
-    getToken = async (): Promise<string> => {
+    getToken = async (): Promise<string | undefined> => {
         try {
-            const token = await messaging().getToken();
-            return token;
+            return await messaging().getToken();
         } catch (error) {
             this.logger.error('Cannot get FCM token from firebase', error);
             return undefined;
@@ -182,8 +193,9 @@ class PushNotificationsService extends EventEmitter {
      * @param notification - FirebaseMessagingTypes.RemoteMessage
      * @returns {NotificationType}
      */
-    getType = (notification: { data: { category: 'SIGNTX' | 'OPENXAPP' | 'TXPUSH' } }): NotificationType => {
-        const category = get(notification, ['data', 'category']);
+    getNotificationType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType | undefined => {
+        const category = get(notification, ['data', 'category']) as 'SIGNTX' | 'OPENXAPP' | 'TXPUSH';
+
         switch (category) {
             case 'SIGNTX':
                 return NotificationType.SignRequest;
@@ -201,8 +213,8 @@ class PushNotificationsService extends EventEmitter {
      * @param notification - FirebaseMessagingTypes.RemoteMessage
      * @returns {boolean}
      */
-    isSignRequest = (notification: any): boolean => {
-        return this.getType(notification) === NotificationType.SignRequest;
+    isSignRequest = (notification: FirebaseMessagingTypes.RemoteMessage): boolean => {
+        return this.getNotificationType(notification) === NotificationType.SignRequest;
     };
 
     /**
@@ -229,7 +241,10 @@ class PushNotificationsService extends EventEmitter {
     handleNotification = (message: FirebaseMessagingTypes.RemoteMessage) => {
         // complete the notification and show the notification if necessary
         const shouldShowNotification = NavigationService.getCurrentModal() !== AppScreens.Modal.ReviewTransaction;
-        LocalNotificationModule.complete(message.messageId, shouldShowNotification);
+
+        if (message.messageId) {
+            LocalNotificationModule.complete(message.messageId, shouldShowNotification);
+        }
 
         // if any sign request exist then emit the event, this is needed for refreshing the events list
         if (this.isSignRequest(message)) {
@@ -253,7 +268,7 @@ class PushNotificationsService extends EventEmitter {
      * @param options - screen options
      * @param screenType - screen type
      */
-    routeUser = async (screen: string, passProps: any, options: any, screenType?: ComponentTypes) => {
+    routeUser = async (screen: AppScreenKeys, passProps: any, options: any, screenType?: ComponentTypes) => {
         // check if we need to close any overlay
         const currentOverlay = NavigationService.getCurrentOverlay();
 
@@ -282,12 +297,13 @@ class PushNotificationsService extends EventEmitter {
      * Handle sign request notification
      * @param notification
      */
-    handleSingRequest = async (notification: any) => {
+    handleSingRequest = async (notification: FirebaseMessagingTypes.RemoteMessage) => {
         // fetch payload UUID
         const payloadUUID = get(notification, ['data', 'payload']);
 
         // validate if valid payload UUID
-        if (!StringTypeCheck.isValidUUID(payloadUUID)) {
+        if (typeof payloadUUID !== 'string' || !StringTypeCheck.isValidUUID(payloadUUID)) {
+            this.logger.warn('received invalid sign request notification', notification?.data);
             return;
         }
 
@@ -303,8 +319,8 @@ class PushNotificationsService extends EventEmitter {
                     ComponentTypes.Modal,
                 );
             })
-            .catch((e) => {
-                Alert.alert(Localize.t('global.error'), e.message);
+            .catch((error) => {
+                Alert.alert(Localize.t('global.error'), error?.message);
                 this.logger.error('Cannot fetch payload from backend', payloadUUID);
             });
     };
@@ -313,11 +329,18 @@ class PushNotificationsService extends EventEmitter {
      * Handle opening xApp notification
      * @param notification
      */
-    handleOpenXApp = async (notification: any) => {
+    handleOpenXApp = async (notification: FirebaseMessagingTypes.RemoteMessage) => {
         const xappIdentifier = get(notification, ['data', 'xappIdentifier']);
         const xappTitle = get(notification, ['data', 'xappTitle']);
 
-        if (!xappIdentifier) return;
+        // validate
+        if (
+            typeof xappIdentifier !== 'string' ||
+            typeof xappTitle !== 'string' ||
+            !StringTypeCheck.isValidXAppIdentifier(xappIdentifier)
+        ) {
+            return;
+        }
 
         let delay = 0;
 
@@ -348,24 +371,39 @@ class PushNotificationsService extends EventEmitter {
     };
 
     /**
-     * Handle opening transaction details
+     * Handle opening transaction details modal screen
      * @param notification
      */
-    handleOpenTx = async (notification: any) => {
+    handleOpenTx = async (notification: FirebaseMessagingTypes.RemoteMessage) => {
         const hash = get(notification, ['data', 'tx']);
         const address = get(notification, ['data', 'account']);
-        const network = get(notification, ['data', 'network']);
+        const networkKey = get(notification, ['data', 'network']);
 
         // validate inputs
-        if (!utils.isValidAddress(address) || !StringTypeCheck.isValidHash(hash)) {
+        if (
+            typeof address !== 'string' ||
+            typeof hash !== 'string' ||
+            !AccountLibUtils.isValidAddress(address) ||
+            !StringTypeCheck.isValidHash(hash)
+        ) {
             return;
         }
 
-        // check if account exist in Xaman
         const account = AccountRepository.findOne({ address });
 
-        // account is not present in the app, just return
-        if (!account) return;
+        // check if account exist in the app
+        if (!account) {
+            // account is not present in the app, just return
+            return;
+        }
+
+        // forced network, check if we support this network
+        const network = NetworkRepository.findOne({ key: networkKey });
+
+        if (networkKey && !network) {
+            // we couldn't find the network object, just return
+            return;
+        }
 
         let delay = 0;
 
@@ -392,10 +430,16 @@ class PushNotificationsService extends EventEmitter {
      * Handle notifications when app is open from the notification
      * @param notification
      */
-    handleNotificationOpen = (notification: any) => {
-        if (!notification) return;
+    handleNotificationOpen = (notification: FirebaseMessagingTypes.RemoteMessage) => {
+        // check if we already handled this notification
+        if (!notification || notification.messageId === this.lastOpenedMessageId) {
+            return;
+        }
 
-        switch (this.getType(notification)) {
+        // assign last message id
+        this.lastOpenedMessageId = notification.messageId;
+
+        switch (this.getNotificationType(notification)) {
             case NotificationType.SignRequest:
                 this.handleSingRequest(notification);
                 break;

@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import { has } from 'lodash';
 
-import { NodeModel } from '@store/models';
+import NodeModel from '@store/models/objects/node';
 
 import BaseRepository from './base';
 
@@ -30,8 +30,8 @@ class NodeRepository extends BaseRepository<NodeModel> {
 
     update = (object: Partial<NodeModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.model.schema.primaryKey)) {
-            throw new Error('Update require primary key to be set');
+        if (this.model.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {
+            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
         }
         return this.create(object, true);
     };

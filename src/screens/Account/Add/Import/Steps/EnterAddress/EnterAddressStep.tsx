@@ -25,21 +25,21 @@ import { StepsContext } from '../../Context';
 export interface Props {}
 
 export interface State {
+    address?: string;
     isLoading: boolean;
-    address: string;
 }
 
 /* Component ==================================================================== */
 class EnterAddressStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             isLoading: false,
-            address: null,
+            address: undefined,
         };
     }
 
@@ -64,7 +64,7 @@ class EnterAddressStep extends Component<Props, State> {
         });
 
         // validate xrp address
-        if (!utils.isValidAddress(address)) {
+        if (!address || !utils.isValidAddress(address)) {
             Alert.alert(Localize.t('global.error'), Localize.t('global.invalidAddress'));
 
             this.setState({
@@ -119,6 +119,7 @@ class EnterAddressStep extends Component<Props, State> {
     render() {
         const { goBack } = this.context;
         const { address, isLoading } = this.state;
+
         return (
             <SafeAreaView
                 onResponderRelease={Keyboard.dismiss}

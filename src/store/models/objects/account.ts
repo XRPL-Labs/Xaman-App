@@ -5,8 +5,8 @@
  * @extends Realm.Object
  */
 
-import get from 'lodash/get';
 import Realm from 'realm';
+import { Card } from 'tangem-sdk-react-native';
 
 import { StringIdentifier } from '@common/utils/string';
 
@@ -22,77 +22,81 @@ class Account extends Realm.Object<Account> {
     public static schema: Realm.ObjectSchema = AccountSchema.schema;
 
     /** Type of the account. @type {AccountTypes} */
-    public type: AccountTypes;
+    public declare type: AccountTypes;
     /** Address of the account. @type {string} */
-    public address: string;
+    public declare address: string;
     /** Label of the account. @type {string} */
-    public label: string;
+    public declare label: string;
     /** Public key associated with the account. @type {string} */
-    public publicKey: string;
+    public declare publicKey: string;
     /** Access level of the account. @type {AccessLevels} */
-    public accessLevel: AccessLevels;
+    public declare accessLevel: AccessLevels;
     /** Encryption level for the account. @type {EncryptionLevels} */
-    public encryptionLevel: EncryptionLevels;
+    public declare encryptionLevel: EncryptionLevels;
     /** CipherEncryption version used to encrypt this account. @type {number} */
-    public encryptionVersion: number;
+    public declare encryptionVersion: number;
     /** Index Order of the account when showing as list, if any. @type {number?} */
-    public order?: number;
+    public declare order?: number;
     /** Whether the account is hidden in the accounts list. @type {boolean?} */
-    public hidden?: boolean;
+    public declare hidden?: boolean;
     /** Additional information string about the account (contains stringify version of object). @type {string?} */
-    public additionalInfoString?: string;
+    public declare additionalInfoString?: string;
     /** Detailed data associated with the account. @type {AccountDetails[]?} */
-    public details?: AccountDetails[];
+    public declare details?: AccountDetails[];
     /** Date when the account was registered. @type {Date?} */
-    public registerAt?: Date;
+    public declare registerAt?: Date;
     /** Date when the account was last updated. @type {Date?} */
-    public updatedAt?: Date;
+    public declare updatedAt?: Date;
 
     /**
      * Returns the parsed additional information object.
      * @type {Object}
      */
-    get additionalInfo(): Object {
-        return JSON.parse(this.additionalInfoString);
+    get additionalInfo(): Card | undefined {
+        return this.additionalInfoString ? JSON.parse(this.additionalInfoString) : undefined;
     }
 
     /**
      * Set the additional information after stringify it.
      */
-    set additionalInfo(data: Object) {
+    set additionalInfo(data: Card) {
         this.additionalInfoString = JSON.stringify(data);
     }
 
     get balance(): number {
-        return get(this.getDetails(), 'balance', 0);
+        return this.getDetails()?.balance ?? 0;
     }
 
-    get ownerCount() {
-        return get(this.getDetails(), 'ownerCount', 0);
+    get ownerCount(): number {
+        return this.getDetails()?.ownerCount ?? 0;
     }
 
-    get regularKey() {
-        return get(this.getDetails(), 'regularKey', undefined);
+    get regularKey(): string | undefined {
+        return this.getDetails()?.regularKey ?? undefined;
     }
 
-    get domain() {
-        return get(this.getDetails(), 'domain', undefined);
+    get domain(): string | undefined {
+        return this.getDetails()?.domain ?? undefined;
     }
 
-    get emailHash() {
-        return get(this.getDetails(), 'emailHash', undefined);
+    get emailHash(): string | undefined {
+        return this.getDetails()?.emailHash ?? undefined;
     }
 
-    get messageKey() {
-        return get(this.getDetails(), 'messageKey', undefined);
+    get messageKey(): string | undefined {
+        return this.getDetails()?.messageKey ?? undefined;
     }
 
-    get flags(): { [key: string]: boolean } {
-        return get(this.getDetails(), 'flags', undefined);
+    get flags(): { [key: string]: boolean } | undefined {
+        return this.getDetails()?.flags ?? undefined;
     }
 
     get lines() {
-        return get(this.getDetails(), 'lines', undefined);
+        return this.getDetails()?.lines ?? undefined;
+    }
+
+    get reward() {
+        return this.getDetails()?.reward ?? {};
     }
 
     /**
@@ -122,9 +126,9 @@ class Account extends Realm.Object<Account> {
      * @private
      * @returns {AccountDetails} The details of the account for the selected network.
      */
-    private getDetails(): AccountDetails {
+    private getDetails(): AccountDetails | undefined {
         const network = CoreRepository.getSelectedNetwork();
-        return this.details.find((details) => network?.id.equals(details.network?.id));
+        return this.details?.find((details) => network?.id.equals(details.network?.id));
     }
 }
 

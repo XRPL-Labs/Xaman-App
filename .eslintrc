@@ -4,8 +4,7 @@
       "@typescript-eslint",
       "react-native",
       "prettier",
-      "jest",
-      "spellcheck"
+      "jest"
     ],
     "extends": [
       "airbnb",
@@ -57,10 +56,13 @@
       "arrow-body-style": 0,
       "max-len": [2, {"code": 120, "tabWidth": 4, "ignoreUrls": true, "ignoreTemplateLiterals": true }],
       "quotes": ["error", "single"],
-      "semi": ["error", "always"],
+      "semi": "off",
+      "@typescript-eslint/semi": "error",
+      "@typescript-eslint/member-delimiter-style": "error",
+//      "@typescript-eslint/no-explicit-any": "error",
       "curly": [2, "multi-line"],
       "comma-dangle": [2, "always-multiline"],
-      "class-methods-use-this": ["error", {"enforceForClassFields": false, "exceptMethods": ["startApp", "componentDidMount", "componentWillUnmount", "render"] }],
+      "class-methods-use-this": ["off", {"enforceForClassFields": false, "exceptMethods": ["startApp", "componentDidMount", "componentWillUnmount", "render"] }],
       "global-require": 0,
       "quote-props": 0,
       "lines-between-class-members": "off",
@@ -132,33 +134,6 @@
       "jest/no-disabled-tests": 1,
       "jest/no-focused-tests": 2,
       "jest/no-identical-title": 2,
-      "react/no-unused-class-component-methods": 0,
-      "spellcheck/spell-checker": [1, {
-        "comments": true,
-        "strings": true,
-        "identifiers": true,
-        "lang": "en_US",
-        "skipWords": [
-          "eslint", "redux", "middleware", "destructuring", "async", "lodash", "libs", "Backend", "istanbul", "rehydrate", "linebreak",
-          "decrypt", "Keychain", "passphrase", "nonexist", "js", "Crashlytics", "Analytics", "init", "Onboarding", "middlewares",
-          "firebase", "ios", "const", "renderer", "dev", "fallbacks", "Utils", "sha512", "sha256", "sha1", "fn", "ja", "cn", "auth",
-          "cb", "loggin", "api", "src", "biometric", "Biometry", "rtl", "grey", "Unmount", "passcode", "Selectable", "png", "xrpl", "accountlib",
-          "Prev", "orm", "reselect", "keypair", "readonly", "uuid", "uuidv4", "desc", "sml", "wss", "altnet", "rippletest", "ws", "args",
-          "tx", "namespace", "bignumber", "Xrp", "counterparty", "str", "params", "req", "eg", "param", "timestamp", "idempotency", "Num", "testnet",
-          "utf", "xumm", "netinfo", "uri", "Interactable", "bool", "schemas", "Ious", "upsert", "Trustline", "rpepoch", "unix", "iso8601", "ecrypt",
-          "privatekey", "multisign", "tes", "Reactotron", "resize", "Interitem", "multisigned", "txid", "rgba", "jsx", "uint8", "img", "btn", "pbold",
-          "Devnet", "Mainnet", "Swiper", "calc", "abcdefgh", "cancelable", "uniqBy", "memoize", "Memoized", "html", "len", "fg", "bg", "ctx", "checksum",
-          "ecc", "uniq", "Truthy", "Responder", "ter", "ko", "zh", "mailto", "tabbar", "https", "gcm", "tf", "xlight", "aps", "tec", "barcodes", "Barcode",
-          "txblob", "tos", "gif", "ic", "asf", "ok", "Sig", "haptic", "Signable", "Unauthorize", "Preauth", "payid", "Biometrics", "Towo", "tz", "xrpscan",
-          "xrplorer", "bithomp", "xpring", "xrplns", "Pincode", "Txn", "iap", "Realtime", "datastore", "decrypted", "Tangem", "Sdk", "Secp256k1", "blockchain",
-          "Escrowed", "xapp", "Veriff", "Codec", "xapps", "Pressable", "nft", "ott", "Luminance", "HexToRgbA", "Misconfiguration", "kyc", "debounce", "debounced",
-          "nfc", "lsf", "nfts", "Taxon", "fioprotocol", "iou", "dy", "vy", "pb", "nf", "origintype", "Xaman", "xls20", "livenet", "feeunits", "Preflight", "ctid",
-          "explainer", "Cancelled", "nftoken", "Remint", "amm"
-        ],
-        "skipIfMatch": [
-          "http://[^s]*",
-          "^[-\\w]+\/[-\\w\\.]+$"
-        ]
-      }]
+      "react/no-unused-class-component-methods": 0
     }
   }

@@ -7,19 +7,23 @@ import { first } from 'lodash';
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import {
+    Navigation,
+    EventSubscription,
+    OptionsModalPresentationStyle,
+    OptionsModalTransitionStyle,
+} from 'react-native-navigation';
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
 import { StyleService, BackendService, NetworkService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
 import { VibrateHapticFeedback, Prompt } from '@common/helpers/interface';
-import { Navigator } from '@common/helpers/navigator';
+import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import { NormalizeDestination } from '@common/utils/codec';
@@ -37,26 +41,17 @@ import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {
-    onRead: (decoded: any) => void;
-    onClose?: () => void;
-    blackList?: StringType[];
-    type: StringType;
-    fallback?: boolean;
-}
-
-export interface State {
-    isLoading: boolean;
-    coreSettings: CoreModel;
-}
+import { Props, State } from './types';
 
 /* Component ==================================================================== */
-class ScanView extends Component<Props, State> {
+class ScanModal extends Component<Props, State> {
     static screenName = AppScreens.Modal.Scan;
 
     private shouldRead: boolean;
-    private backHandler: NativeEventSubscription;
-    private shouldReadTimeout: any;
+    private screenVisible: boolean;
+    private backHandler: NativeEventSubscription | undefined;
+    private shouldReadTimeout: NodeJS.Timeout | undefined;
+    private navigationListener?: EventSubscription;
 
     static options() {
         return {
@@ -76,14 +71,16 @@ class ScanView extends Component<Props, State> {
             coreSettings: CoreRepository.getSettings(),
         };
 
-        this.backHandler = undefined;
-
         // flag to check if we need to read the QR
         this.shouldRead = true;
+
+        // keep track of component visibility
+        this.screenVisible = false;
     }
 
     componentDidMount() {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.onClose);
+        this.navigationListener = Navigation.events().bindComponent(this);
     }
 
     componentWillUnmount() {
@@ -92,13 +89,26 @@ class ScanView extends Component<Props, State> {
         }
 
         if (this.shouldReadTimeout) clearTimeout(this.shouldReadTimeout);
+
+        if (this.navigationListener) {
+            this.navigationListener.remove();
+        }
+    }
+
+    componentDidAppear() {
+        this.screenVisible = true;
+    }
+
+    componentDidDisappear() {
+        // disable qr code reading if component is not visible
+        this.screenVisible = false;
     }
 
     setShouldRead = (value: boolean) => {
         this.shouldRead = value;
     };
 
-    routeUser = async (screen: string, passProps?: any, options?: any) => {
+    routeUser = async (screen: AppScreenKeys, passProps?: any, options?: any) => {
         // close scan modal
         await Navigator.dismissModal();
 
@@ -206,7 +216,7 @@ class ScanView extends Component<Props, State> {
             const payload = await Payload.from(uuid, PayloadOrigin.QR);
 
             // review the transaction
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Modal.ReviewTransaction,
                 {
                     payload,
@@ -249,7 +259,7 @@ class ScanView extends Component<Props, State> {
                 {
                     text: Localize.t('global.submit'),
                     onPress: async () => {
-                        this.routeUser(
+                        await this.routeUser(
                             AppScreens.Modal.Submit,
                             {
                                 txblob: cleanBlob,
@@ -271,7 +281,7 @@ class ScanView extends Component<Props, State> {
         if (availableAccounts.length > 0) {
             // if it's payId do nothing
             if (destination.payId) {
-                this.routeUser(
+                await this.routeUser(
                     AppScreens.Transaction.Payment,
                     {
                         scanResult: {
@@ -304,11 +314,11 @@ class ScanView extends Component<Props, State> {
             }
 
             // if amount present as native pass the amount
-            if (!destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
+            if (destination.amount && !destination.currency && StringTypeCheck.isValidAmount(destination.amount)) {
                 amount = destination.amount;
             }
 
-            this.routeUser(
+            await this.routeUser(
                 AppScreens.Transaction.Payment,
                 {
                     scanResult: {
@@ -399,9 +409,22 @@ class ScanView extends Component<Props, State> {
 
     handleUndetectedType = (content?: string, clipboard?: boolean) => {
         // some users scan QR on tangem card, navigate them to the account add screen
-        if (content === 'https://xumm.app/tangem') {
+        if (content && ['https://xumm.app/tangem', 'https://xaman.app/tangem'].some((url) => content.startsWith(url))) {
             this.routeUser(AppScreens.Account.Add);
             return;
+        }
+
+        // To make sure users scanning our Knowledge Base / etc QRs with Xumm instead of OS (regular URLs)
+        if (
+            content &&
+            ['https://xumm.app', 'https://help.xumm.app', 'https://xaman.app', 'https://help.xaman.app'].some((url) =>
+                content.startsWith(url),
+            )
+        ) {
+            if (StringTypeCheck.isValidURL(content)) {
+                Linking.openURL(content);
+                return;
+            }
         }
 
         // show error message base on origin
@@ -431,7 +454,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // if any black list defined check in the list
-        if (!type && onRead && blackList) {
+        if (!type && typeof onRead === 'function' && blackList) {
             if (blackList.indexOf(detectedType) === -1) {
                 Navigator.dismissModal();
                 onRead(content);
@@ -445,7 +468,7 @@ class ScanView extends Component<Props, State> {
         }
 
         // just return scanned content
-        if (!type && onRead) {
+        if (!type && typeof onRead === 'function') {
             Navigator.dismissModal();
             onRead(content);
             return;
@@ -454,7 +477,7 @@ class ScanView extends Component<Props, State> {
         const parsed = new StringDecoder(detected).getAny();
 
         // the other component wants to handle the decoded content
-        if (detectedType === type && onRead) {
+        if (detectedType === type && typeof onRead === 'function') {
             onRead(parsed);
             Navigator.dismissModal();
             return;
@@ -465,7 +488,7 @@ class ScanView extends Component<Props, State> {
         if (type && !fallback) {
             let message;
 
-            switch (type) {
+            switch (+type) {
                 case StringType.XrplDestination:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainXamanPayload')
@@ -473,7 +496,6 @@ class ScanView extends Component<Props, State> {
                               nativeAsset: NetworkService.getNativeAsset(),
                           });
                     break;
-                // @ts-ignore
                 case StringType.XummPayloadReference:
                     message = clipboard
                         ? Localize.t('scan.theClipboardDataIsNotContainAccountAddress', {
@@ -528,7 +550,8 @@ class ScanView extends Component<Props, State> {
             return;
         }
         // get first barcode that exist
-        const { data } = first(barcodes);
+        const { data } = first(barcodes)!;
+
         if (data) {
             this.onReadCode(data);
         }
@@ -545,7 +568,7 @@ class ScanView extends Component<Props, State> {
 
         if (data) {
             // return if we don't need to read again
-            if (!this.shouldRead) return;
+            if (!this.shouldRead || !this.screenVisible) return;
 
             // should not read anymore until we decide about detect value
             this.setShouldRead(false);
@@ -679,7 +702,7 @@ class ScanView extends Component<Props, State> {
                     onBarCodeRead={Platform.OS === 'ios' ? this.onBarCodeRead : undefined}
                     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                 >
-                    <View style={[styles.rectangleContainer]}>
+                    <View style={styles.rectangleContainer}>
                         <View style={styles.topLeft} />
                         <View style={styles.topRight} />
                         <View style={styles.bottomLeft} />
@@ -690,7 +713,7 @@ class ScanView extends Component<Props, State> {
                             {description}
                         </Text>
                     </View>
-                    <View style={[AppStyles.centerSelf]}>
+                    <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
                             onPress={this.checkClipboardContent}
@@ -716,4 +739,4 @@ class ScanView extends Component<Props, State> {
 }
 
 /* Export Component ==================================================================== */
-export default ScanView;
+export default ScanModal;

@@ -38,9 +38,9 @@ class DetoxCucumberAdapter {
     // eslint-disable-next-line class-methods-use-this
     mapStatus(result) {
         switch (result.status) {
-            case 'passed':
+            case 'PASSED':
                 return 'passed';
-            case 'failed':
+            case 'FAILED':
                 return 'failed';
             default:
                 return 'failed';

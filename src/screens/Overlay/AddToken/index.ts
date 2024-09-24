@@ -1,3 +1,5 @@
-import AddTokenModal from './AddTokenModal';
+import AddTokenOverlay from './AddTokenOverlay';
+import { Props as AddTokenOverlayProps } from './types';
 
-export default AddTokenModal;
+export type { AddTokenOverlayProps };
+export default AddTokenOverlay;

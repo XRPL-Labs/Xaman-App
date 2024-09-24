@@ -1,5 +1,5 @@
 import { Memo, Signer } from '../common';
-import { TransactionTypes } from '@common/libs/ledger/types/enums';
+import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /**
  * Every transaction has the same set of common fields.
@@ -11,7 +11,7 @@ export interface TransactionJson {
      * The type of transaction. Valid types include: `Payment`, `OfferCreate`,
      * `TrustSet`, and many others.
      */
-    TransactionType: TransactionTypes;
+    TransactionType: TransactionTypes | PseudoTransactionTypes;
     /**
      * Integer amount of XRP, in drops, to be destroyed as a cost for
      * distributing this transaction to the network. Some transaction types have
@@ -42,12 +42,12 @@ export interface TransactionJson {
     /**
      * Additional arbitrary information used to identify this transaction.
      */
-    Memos?: Memo[];
+    Memos?: { Memo: Memo }[];
     /**
      * Array of objects that represent a multi-signature which authorizes this
      * transaction.
      */
-    Signers?: Signer[];
+    Signers?: { Signer: Signer }[];
     /**
      * Arbitrary integer used to identify the reason for this payment, or a sender
      * on whose behalf this transaction is made. Conventionally, a refund should

@@ -1,3 +1,3 @@
-export { default as AccountSet } from './AccountSetClass';
-export { default as AccountSetValidation } from './AccountSetValidation';
-export { default as AccountSetInfo } from './AccountSetInfo';
+export { default as AccountSet } from './AccountSet.class';
+export { default as AccountSetValidation } from './AccountSet.validation';
+export { default as AccountSetInfo } from './AccountSet.info';

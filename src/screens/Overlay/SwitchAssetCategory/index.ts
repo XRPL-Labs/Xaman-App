@@ -1,3 +1,5 @@
-import SwitchAssetCategoryModal from './SwitchAssetCategoryModal';
+import SwitchAssetCategoryOverlay from './SwitchAssetCategoryOverlay';
+import { Props as SwitchAssetCategoryOverlayProps } from './types';
 
-export default SwitchAssetCategoryModal;
+export type { SwitchAssetCategoryOverlayProps };
+export default SwitchAssetCategoryOverlay;

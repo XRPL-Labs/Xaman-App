@@ -4,7 +4,7 @@ import { View, ViewStyle } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -12,6 +12,10 @@ import { TrustLineRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
+
+import { AddTokenOverlayProps } from '@screens/Overlay/AddToken';
+import { ExplainBalanceOverlayProps } from '@screens/Overlay/ExplainBalance';
+import { Props as TokenSettingsOverlayProps } from '@screens/Overlay/TokenSettings/types';
 
 import { TokenItem } from '@components/Modules/AssetsList/Tokens/TokenItem';
 import { NativeItem } from '@components/Modules/AssetsList/Tokens/NativeItem';
@@ -34,7 +38,7 @@ interface State {
     account: AccountModel;
     tokens: TrustLineModel[];
     dataSource: TrustLineModel[];
-    filters: FiltersType;
+    filters?: FiltersType;
     reorderEnabled: boolean;
 }
 
@@ -46,7 +50,7 @@ class TokensList extends Component<Props, State> {
         super(props);
 
         const { account } = props;
-        const tokens = account.lines.sorted([['order', false]]);
+        const tokens = (account.lines?.sorted([['order', false]]) as TrustLineModel[] | undefined) ?? [];
 
         this.state = {
             accountStateVersion: account.getStateVersion(),
@@ -85,7 +89,7 @@ class TokensList extends Component<Props, State> {
         );
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         // calculate account state version
         const accountStateVersion = nextProps.account.getStateVersion();
 
@@ -111,7 +115,7 @@ class TokensList extends Component<Props, State> {
             const { filters, reorderEnabled } = filtersState;
 
             // update tokens and dataSource
-            const tokens = nextProps.account.lines.sorted([['order', false]]);
+            const tokens = nextProps.account.lines?.sorted([['order', false]]) as TrustLineModel[] | undefined;
             let dataSource = filters ? TokensList.getFilteredList(tokens, filters) : tokens;
 
             // if reorder already enabled, keep the sorting in the dataSource and update the list
@@ -131,9 +135,9 @@ class TokensList extends Component<Props, State> {
         return null;
     }
 
-    static getFilteredList = (tokens: TrustLineModel[], filters: FiltersType): TrustLineModel[] => {
+    static getFilteredList = (tokens: TrustLineModel[] | undefined, filters: FiltersType): TrustLineModel[] => {
         if (!filters) {
-            return tokens;
+            return tokens ?? [];
         }
 
         // destruct filter variables
@@ -150,7 +154,7 @@ class TokensList extends Component<Props, State> {
                 return (
                     toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
                     toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
-                    toLower(NormalizeCurrencyCode(item.currency.currency)).indexOf(normalizedSearch) > -1
+                    toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) > -1
                 );
             });
         }
@@ -167,7 +171,7 @@ class TokensList extends Component<Props, State> {
             filtered = filter(filtered, { favorite: true });
         }
 
-        return filtered;
+        return filtered ?? [];
     };
 
     onTrustLineUpdate = (updatedToken: TrustLineModel, changes: Partial<TrustLineModel>) => {
@@ -179,7 +183,7 @@ class TokensList extends Component<Props, State> {
 
     onTokenAddButtonPress = () => {
         const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.AddToken, { account });
+        Navigator.showOverlay<AddTokenOverlayProps>(AppScreens.Overlay.AddToken, { account });
     };
 
     onTokenItemPress = (token: TrustLineModel) => {
@@ -192,7 +196,7 @@ class TokensList extends Component<Props, State> {
         }
 
         if (spendable) {
-            Navigator.showOverlay(
+            Navigator.showOverlay<TokenSettingsOverlayProps>(
                 AppScreens.Overlay.TokenSettings,
                 { trustLine: token, account },
                 {
@@ -206,7 +210,7 @@ class TokensList extends Component<Props, State> {
 
     onNativeItemPress = () => {
         const { account } = this.state;
-        Navigator.showOverlay(AppScreens.Overlay.ExplainBalance, { account });
+        Navigator.showOverlay<ExplainBalanceOverlayProps>(AppScreens.Overlay.ExplainBalance, { account });
     };
 
     onCategoryChangePress = () => {
@@ -269,7 +273,7 @@ class TokensList extends Component<Props, State> {
         this.toggleReordering();
     };
 
-    onFilterChange = (filters: FiltersType) => {
+    onFilterChange = (filters?: FiltersType) => {
         const { tokens } = this.state;
 
         // return if no token

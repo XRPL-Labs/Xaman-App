@@ -8,17 +8,14 @@ import Realm from 'realm';
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager } from 'react-native';
 
-import { Navigation } from 'react-native-navigation';
+import { EventSubscription, Navigation } from 'react-native-navigation';
 
 import Vault from '@common/libs/vault';
 
 import { AppScreens } from '@common/constants';
 
-// helpers
 import { Navigator } from '@common/helpers/navigator';
 import { Images } from '@common/helpers/images';
-
-// store
 
 import { AccountRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
@@ -26,15 +23,19 @@ import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import StyleService from '@services/StyleService';
 
-// components
 import { Button, Icon, Header, SortableFlatList, Spacer } from '@components/General';
 
 import Localize from '@locale';
-// style
+
+import { AccountAddViewProps } from '@screens/Account/Add';
+import { CipherMigrationViewProps } from '@screens/Account/Migration/CipherMigration';
+import { AccountSettingsViewProps } from '@screens/Account/Edit';
+
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
+
 export interface Props {}
 
 export interface State {
@@ -49,7 +50,7 @@ export interface State {
 class AccountListView extends Component<Props, State> {
     static screenName = AppScreens.Account.List;
 
-    private navigationListener: any;
+    private navigationListener?: EventSubscription;
 
     static options() {
         return {
@@ -132,7 +133,7 @@ class AccountListView extends Component<Props, State> {
         }
 
         if (!reorderEnabled) {
-            Navigator.push(AppScreens.Account.Edit.Settings, { account });
+            Navigator.push<AccountSettingsViewProps>(AppScreens.Account.Edit.Settings, { account });
         }
     };
 
@@ -240,7 +241,6 @@ class AccountListView extends Component<Props, State> {
                                 light
                                 roundedSmall
                                 icon="IconEdit"
-                                iconStyle={styles.rowIcon}
                                 iconSize={15}
                                 textStyle={styles.buttonEditText}
                                 label={Localize.t('global.edit')}
@@ -281,7 +281,7 @@ class AccountListView extends Component<Props, State> {
                                   icon: 'IconPlus',
                                   testID: 'add-account-button',
                                   onPress: () => {
-                                      Navigator.push(AppScreens.Account.Add);
+                                      Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
                                   },
                               }
                             : {
@@ -307,7 +307,7 @@ class AccountListView extends Component<Props, State> {
                             iconStyle={AppStyles.imgColorWhite}
                             rounded
                             onPress={() => {
-                                Navigator.push(AppScreens.Account.Add);
+                                Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
                             }}
                         />
                     </ImageBackground>
@@ -330,7 +330,10 @@ class AccountListView extends Component<Props, State> {
                                     iconPosition="right"
                                     roundedSmall
                                     onPress={() => {
-                                        Navigator.push(AppScreens.Account.Migration.CipherMigration);
+                                        Navigator.push<CipherMigrationViewProps>(
+                                            AppScreens.Account.Migration.CipherMigration,
+                                            {},
+                                        );
                                     }}
                                 />
                             </View>
@@ -355,7 +358,7 @@ class AccountListView extends Component<Props, State> {
                                     roundedSmall
                                     secondary
                                     onPress={() => {
-                                        Navigator.push(AppScreens.Account.Add);
+                                        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
                                     }}
                                 />
                             </View>

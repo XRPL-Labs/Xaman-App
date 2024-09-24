@@ -1,3 +1,5 @@
+import { OptionsModalTransitionStyle, OptionsModalPresentationStyle } from 'react-native-navigation';
+
 const Navigation = {
     setRoot: jest.fn(),
     pop: jest.fn(),
@@ -17,4 +19,4 @@ const Navigation = {
     })),
 };
 
-export { Navigation };
+export { Navigation, OptionsModalTransitionStyle, OptionsModalPresentationStyle };

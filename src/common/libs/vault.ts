@@ -42,18 +42,18 @@ const Vault = {
     /**
      *  Open Vault using provided key
      */
-    open: async (name: string, key: string): Promise<string> => {
+    open: async (name: string, key: string): Promise<string | undefined> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.openVault(name, key)
                 .then((clearText: string) => {
                     // this should never happen, just double-checking
                     if (!clearText) {
-                        reject(new Error('Vault open clear text is not defined!'));
+                        reject(new Error('Vault open, received empty clear text!'));
                         return;
                     }
                     resolve(clearText);
                 })
-                .catch((error: any) => {
+                .catch((error: Error) => {
                     logger.error('Vault open error', error);
                     resolve(undefined);
                 });
@@ -100,6 +100,7 @@ const Vault = {
                         reject(new Error('Encryption key size is wrong or not present!'));
                         return;
                     }
+
                     // encryption key presents as hex string, convert to buffer
                     const keyBytes = HexEncoding.toBinary(key);
                     // check if we got the right bytes

@@ -25,15 +25,17 @@ interface Props {
 
 interface State {
     isLoading: boolean;
-    name: string;
-    image: string;
+    name?: string;
+    image?: string;
 }
 
 /* Component ==================================================================== */
 class NFTokenElement extends PureComponent<Props, State> {
     private readonly animatedPlaceholder: Animated.Value;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof NFTokenElement.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         truncate: true,
     };
 
@@ -60,10 +62,10 @@ class NFTokenElement extends PureComponent<Props, State> {
         this.startPlaceholderAnimation();
 
         // fetch details from backend
-        BackendService.getXLS20Details(account, [nfTokenId])
+        BackendService.getNFTDetails(account, [nfTokenId])
             .then((resp: any) => {
                 const { tokenData } = resp;
-                if (typeof tokenData === 'object' && Object.prototype.hasOwnProperty.call(tokenData, nfTokenId)) {
+                if (typeof tokenData === 'object' && 'nfTokenId' in tokenData) {
                     const { image, name } = tokenData[nfTokenId];
 
                     this.setState({

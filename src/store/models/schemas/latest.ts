@@ -1,6 +1,4 @@
-import { schemas } from './v15';
-
-export { migration, populate } from './v15';
+import { schemas } from './v17';
 
 export const {
     CoreSchema,
@@ -13,4 +11,6 @@ export const {
     TrustLineSchema,
     CurrencySchema,
     ContactSchema,
+    AmmPairSchema,
+    UserInteractionSchema,
 } = schemas;

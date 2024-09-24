@@ -32,7 +32,7 @@ export interface State {}
 /* Component ==================================================================== */
 class ConfirmPublicKeyStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     goBack = () => {
         const { goBack, account } = this.context;
@@ -71,17 +71,15 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     copyPubKeyToClipboard = () => {
         const { importedAccount } = this.context;
 
-        Clipboard.setString(importedAccount.address);
+        Clipboard.setString(importedAccount!.address!);
         Toast(Localize.t('account.publicKeyCopiedToClipboard'));
     };
 
     getOtherChainAddress = (): string => {
         const { importedAccount, alternativeSeedAlphabet } = this.context;
 
-        const { alphabet } = alternativeSeedAlphabet;
-
-        if (typeof alphabet === 'string') {
-            return ConvertCodecAlphabet(importedAccount.address, alphabet, false);
+        if (alternativeSeedAlphabet && typeof alternativeSeedAlphabet?.alphabet === 'string') {
+            return ConvertCodecAlphabet(importedAccount!.address!, alternativeSeedAlphabet.alphabet, false);
         }
 
         // this should not happen
@@ -91,7 +89,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     renderRegularKeys = () => {
         const { importedAccount } = this.context;
 
-        const regularKeys = AccountRepository.getRegularKeys(importedAccount.address);
+        const regularKeys = AccountRepository.getRegularKeys(importedAccount!.address!);
 
         if (Array.isArray(regularKeys) && regularKeys.length > 0) {
             return (

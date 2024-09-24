@@ -1,4 +1,4 @@
-export { default as BaseLedgerObject } from './BaseLedgerObject';
+export { default as BaseLedgerObject } from './base';
 
 export * from './Check';
 export * from './Escrow';

@@ -27,7 +27,7 @@ export interface State {
 /* Component ==================================================================== */
 class ConfirmStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     private secretNumberInputRef: React.RefObject<SecretNumberInput>;
 
@@ -47,7 +47,7 @@ class ConfirmStep extends Component<Props, State> {
 
         const secretNumber = this.secretNumberInputRef.current?.getNumbers();
 
-        if (isEqual(generatedAccount.secret.secretNumbers, secretNumber)) {
+        if (isEqual(generatedAccount?.secret.secretNumbers, secretNumber)) {
             goNext('ViewPublicKey');
         } else {
             Alert.alert('Invalid', Localize.t('account.invalidSecretNumber'));
@@ -74,7 +74,9 @@ class ConfirmStep extends Component<Props, State> {
 
     validateRow = (row: number, numbers: string) => {
         const { generatedAccount } = this.context;
-        return isEqual(generatedAccount.secret.secretNumbers[row], numbers);
+
+        // TODO: type check
+        return isEqual(generatedAccount?.secret.secretNumbers![row], numbers);
     };
 
     onSecretNumberAllFilled = (filled: boolean) => {

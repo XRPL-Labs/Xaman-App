@@ -12,7 +12,7 @@ export default StyleService.create({
     },
     viewMoreText: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.base.size,
+        fontSize: AppFonts.subtext.size,
         marginRight: 5,
         color: '$grey',
     },

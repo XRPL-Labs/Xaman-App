@@ -5,7 +5,7 @@ import fetch from 'fetch-mock';
 import { ApiService } from '../';
 import { ApiError } from '../ApiService';
 
-const API_ROOT = 'https://xumm.app/api';
+const API_ROOT = 'https://xaman.app/api';
 const ENDPOINT = '/v1/app/ping';
 const ENDPOINT_WITH_PARAM = '/v1/app/ping?foo=bar';
 const ENDPOINT_WITH_ARGS = '/v1/app/liquidity-boundaries/{issuer}/{currency}';
@@ -17,6 +17,8 @@ const ENDPOINT_HTTP_ERROR = '/v1/app/ping?action=400';
 const URL_PARAMS = { foo: 'bar' };
 const URL_ARGS = { issuer: 'foo', currency: 'bar' };
 const POST_BODY = { foo: 'bar' };
+
+jest.mock('@services/NetworkService');
 
 describe('API', () => {
     beforeEach(() => {
@@ -40,25 +42,25 @@ describe('API', () => {
         describe(method.toUpperCase(), () => {
             it(`should ${method} given data`, async () => {
                 await ApiService['ping'][method](undefined, POST_BODY);
-                expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
+                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
             });
 
             it(`should ${method} given data with arg params`, async () => {
                 await ApiService['liquidityBoundaries'][method](URL_ARGS, POST_BODY);
                 expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ARGS_NORMALIZED}`);
-                expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
+                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
             });
 
             it(`should ${method} given data with URL params`, async () => {
                 await ApiService['ping'][method](URL_PARAMS, POST_BODY);
                 expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_PARAM}`);
-                expect(fetch.lastOptions().body).toBe(JSON.stringify(body));
+                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
             });
 
             it(`should ${method} given body in string`, async () => {
                 await ApiService['ping'][method](undefined, 'body');
                 expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT}`);
-                expect(fetch.lastOptions().body).toBe('body');
+                expect(fetch.lastOptions()!.body).toBe('body');
             });
 
             it(`should ${method} with action`, async () => {

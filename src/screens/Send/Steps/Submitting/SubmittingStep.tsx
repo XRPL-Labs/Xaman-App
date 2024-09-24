@@ -27,7 +27,7 @@ export interface State {}
 /* Component ==================================================================== */
 class SubmittingStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -42,7 +42,7 @@ class SubmittingStep extends Component<Props, State> {
                     <Image style={styles.backgroundImageStyle} source={Images.IconSend} />
                 </View>
 
-                <View style={[AppStyles.flex4]}>
+                <View style={AppStyles.flex4}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         {currentStep === 'Submitting' ? (
                             <Text style={[AppStyles.h4, AppStyles.textCenterAligned]}>
@@ -64,7 +64,7 @@ class SubmittingStep extends Component<Props, State> {
                             </Text>
                         )}
                     </View>
-                    <View style={[AppStyles.flex2]}>
+                    <View style={AppStyles.flex2}>
                         <LoadingIndicator size="large" />
                         <Spacer size={20} />
                         <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>

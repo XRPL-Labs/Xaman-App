@@ -31,7 +31,7 @@ export type LogEntry = {
 class LoggerService {
     private entries: Array<LogEntry>;
     private readonly isDEV: boolean;
-    private readonly levels: any;
+    private readonly levels: { [K in Levels]: { priority: number } };
 
     static MAX_LOG_SIZE = 500;
 
@@ -107,7 +107,7 @@ class LoggerService {
     };
 
     createLogger = (namespace: string): LoggerInstance => {
-        const logger = {};
+        const logger: any = {};
 
         const log = (level: Levels) => {
             return (message: string, data: any) => {
@@ -131,12 +131,10 @@ class LoggerService {
 
         for (const current in this.levels) {
             if (Object.prototype.hasOwnProperty.call(this.levels, current)) {
-                // @ts-ignore
-                logger[current] = log(current);
+                logger[current] = log(current as Levels);
             }
         }
 
-        // @ts-ignore
         return logger;
     };
 

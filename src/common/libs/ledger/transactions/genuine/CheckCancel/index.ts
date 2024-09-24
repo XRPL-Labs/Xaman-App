@@ -1,3 +1,3 @@
-export { default as CheckCancel } from './CheckCancelClass';
-export { default as CheckCancelValidation } from './CheckCancelValidation';
-export { default as CheckCancelInfo } from './CheckCancelInfo';
+export { default as CheckCancel } from './CheckCancel.class';
+export { default as CheckCancelValidation } from './CheckCancel.validation';
+export { default as CheckCancelInfo } from './CheckCancel.info';

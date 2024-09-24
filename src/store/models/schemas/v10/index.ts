@@ -17,7 +17,13 @@ const {
 /* Exports ==================================================================== */
 export const schemaVersion = 10;
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    CoreSchema.migration(oldRealm, newRealm);
+    [CoreSchema].forEach((entry) => {
+        if (typeof entry.migration !== 'function') {
+            throw new Error(`migration method is required for schema ${entry.schema.name}`);
+        }
+
+        entry.migration(oldRealm, newRealm);
+    });
 };
 export const schemas = {
     ContactSchema,

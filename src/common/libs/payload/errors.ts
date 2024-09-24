@@ -1,6 +1,7 @@
 import Locale from '@locale';
 
-const errors = {
+const PayloadErrors: { [key: number]: string } = {
+    402: Locale.t('monetization.monetizationRequiredForThisFeature'),
     403: Locale.t('payload.payloadHandledByAnotherClient'),
     404: Locale.t('payload.payloadNotFound'),
     405: Locale.t('payload.invalidPayloadResult'),
@@ -15,4 +16,4 @@ const errors = {
     804: Locale.t('payload.InvalidMultiSignAccount'),
 };
 
-export default errors;
+export { PayloadErrors };

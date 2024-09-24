@@ -9,14 +9,9 @@ import { NetworkService } from '@services';
 
 import { PathFindPathOption, PathFindRequest, PathFindResponse } from '@common/libs/ledger/types/methods';
 import { AmountType } from '@common/libs/ledger/parser/types';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 
 /* Types ==================================================================== */
-declare interface LedgerPathFinding {
-    on(event: 'expire', listener: () => void): this;
-
-    on(event: string, listener: Function): this;
-}
-
 type PaymentOptions = {
     [key: string]: PathFindPathOption;
 };
@@ -26,27 +21,33 @@ type RequestPromise = {
     rejecter: (reason?: any) => void;
 };
 
+/* Events  ==================================================================== */
+export type LedgerPathFindingEvent = {
+    expire: () => void;
+};
+
+declare interface LedgerPathFinding {
+    on<U extends keyof LedgerPathFindingEvent>(event: U, listener: LedgerPathFindingEvent[U]): this;
+    off<U extends keyof LedgerPathFindingEvent>(event: U, listener: LedgerPathFindingEvent[U]): this;
+    emit<U extends keyof LedgerPathFindingEvent>(event: U, ...args: Parameters<LedgerPathFindingEvent[U]>): boolean;
+}
+
 /* Constants ==================================================================== */
 const RESOLVE_AFTER_SECS = 7000; // seconds before returning the data
 const EXPIRE_AFTER_SECS = 60000; // seconds to expire the options
 
 /* Class ==================================================================== */
 class LedgerPathFinding extends EventEmitter {
-    private resolveTimeout: ReturnType<typeof setTimeout>;
-    private expireTimeout: ReturnType<typeof setTimeout>;
+    private resolveTimeout: ReturnType<typeof setTimeout> | undefined;
+    private expireTimeout: ReturnType<typeof setTimeout> | undefined;
 
-    private requestId: string;
-    private requestPromise: RequestPromise;
+    private requestId: string | undefined;
+    private requestPromise: RequestPromise | undefined;
     private paymentOptions: PaymentOptions;
 
     constructor() {
         super();
 
-        this.resolveTimeout = undefined;
-        this.expireTimeout = undefined;
-
-        this.requestId = undefined;
-        this.requestPromise = undefined;
         this.paymentOptions = {};
     }
 
@@ -150,7 +151,10 @@ class LedgerPathFinding extends EventEmitter {
                 subcommand: 'create',
                 source_account: source,
                 destination_account: destination,
-                destination_amount: amount,
+                destination_amount:
+                    amount.currency === NetworkService.getNativeAsset()
+                        ? new AmountParser(amount.value, false).nativeToDrops().toString()
+                        : amount,
             } as PathFindRequest)
                 .then((response) => {
                     if ('error' in response) {

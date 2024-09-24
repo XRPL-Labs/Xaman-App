@@ -1,7 +1,9 @@
 import Realm from 'realm';
 import { get, has } from 'lodash';
 
-import { NetworkModel, NodeModel } from '@store/models';
+import NodeModel from '@store/models/objects/node';
+import NetworkModel from '@store/models/objects/network';
+
 import { NetworkRailsChanges, NetworkRailsChangesType, NetworkType } from '@store/types';
 
 import NodeRepository from './node';
@@ -35,8 +37,8 @@ class NetworkRepository extends BaseRepository<NetworkModel> {
 
     update = (object: Partial<NetworkModel>) => {
         // the primary key should be in the object
-        if (!has(object, this.model.schema.primaryKey)) {
-            throw new Error(`Update require primary key ${this.model.schema.primaryKey} to be set`);
+        if (!has(object, this.model.schema?.primaryKey ?? '')) {
+            throw new Error(`Update require primary key ${this.model.schema?.primaryKey} to be set`);
         }
         return this.create(object, true);
     };

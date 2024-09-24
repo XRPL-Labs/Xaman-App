@@ -1,7 +1,8 @@
-/* eslint-disable spellcheck/spell-checker */
 /* eslint-disable max-len */
 
 import Localize from '@locale';
+
+import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { OfferCancel, OfferCancelInfo } from '../OfferCancel';
 import offerCancelTemplates from './fixtures/OfferCancelTx.json';
@@ -17,32 +18,50 @@ describe('OfferCancel tx', () => {
         });
 
         it('Should return right parsed values', () => {
-            const { tx, meta } = offerCancelTemplates;
+            const { tx, meta }: any = offerCancelTemplates;
             const instance = new OfferCancel(tx, meta);
 
             expect(instance.OfferSequence).toBe(6);
-            expect(instance.OfferID).toBe(tx.OfferID);
+            expect(instance.OfferID).toBe('EF963D9313AA45E85610598797D1A65E');
         });
     });
 
     describe('Info', () => {
-        describe('getDescription()', () => {
+        const { tx, meta }: any = offerCancelTemplates;
+        const Mixed = MutationsMixin(OfferCancel);
+        const instance = new Mixed(tx, meta);
+        const info = new OfferCancelInfo(instance, {} as any);
+
+        describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const { tx, meta } = offerCancelTemplates;
-                const instance = new OfferCancel(tx, meta);
-
-                const expectedDescription = `${Localize.t('events.theTransactionWillCancelOffer', {
-                    address: instance.Account.address,
-                    offerSequence: instance.OfferSequence,
-                })}\n${Localize.t('events.theTransactionHasAOfferId', { offerId: tx.OfferID })}`;
-
-                expect(OfferCancelInfo.getDescription(instance)).toEqual(expectedDescription);
+                const expectedDescription = `The transaction will cancel ra5nK24KXen9AHvsdFTKHSANinZseWnPcX's offer #6${'\n'}The transaction offer ID is: EF963D9313AA45E85610598797D1A65E`;
+                expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
 
-        describe('getLabel()', () => {
+        describe('getEventsLabel()', () => {
             it('should return the expected label', () => {
-                expect(OfferCancelInfo.getLabel()).toEqual(Localize.t('events.cancelOffer'));
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.cancelOffer'));
+            });
+        });
+
+        describe('getParticipants()', () => {
+            it('should return the expected participants', () => {
+                expect(info.getParticipants()).toStrictEqual({
+                    start: { address: 'ra5nK24KXen9AHvsdFTKHSANinZseWnPcX', tag: undefined },
+                });
+            });
+        });
+
+        describe('getMonetaryDetails()', () => {
+            it('should return the expected monetary details', () => {
+                expect(info.getMonetaryDetails()).toStrictEqual({
+                    mutate: {
+                        DEC: [],
+                        INC: [],
+                    },
+                    factor: undefined,
+                });
             });
         });
     });

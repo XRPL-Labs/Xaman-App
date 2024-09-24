@@ -24,7 +24,7 @@ interface Props {
     iconStyle?: ViewStyle | ViewStyle[];
     border?: boolean;
     iconSize?: number;
-    clearButtonVisibility: 'always' | 'typing' | 'focus' | 'never';
+    clearButtonVisibility?: 'always' | 'typing' | 'focus' | 'never';
 }
 
 interface State {
@@ -35,9 +35,11 @@ interface State {
 /* Component ==================================================================== */
 class SearchBar extends PureComponent<Props, State> {
     private readonly animatedAlpha: Animated.Value;
-    private readonly inputRef: React.RefObject<TextInput | null>;
+    private readonly inputRef: React.RefObject<TextInput>;
 
-    static defaultProps = {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof SearchBar.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
         height: AppSizes.heightPercentageToDP(5.5),
         placeholder: 'Please type ...',
         iconSize: 20,
@@ -132,7 +134,6 @@ class SearchBar extends PureComponent<Props, State> {
             return;
         }
 
-        // @ts-ignore
         if (value) {
             this.showClearButton();
         } else if (!value) {
@@ -211,7 +212,7 @@ class SearchBar extends PureComponent<Props, State> {
                 </View>
 
                 {isClearButtonVisible && (
-                    <TouchableOpacity activeOpacity={1} style={[styles.searchClear]} onPress={this.onClearPress}>
+                    <TouchableOpacity activeOpacity={1} style={styles.searchClear} onPress={this.onClearPress}>
                         <Animated.View style={[AppStyles.centerSelf, { opacity: this.animatedAlpha }]}>
                             <Icon name="IconX" size={20} style={AppStyles.imgColorPrimary} />
                         </Animated.View>

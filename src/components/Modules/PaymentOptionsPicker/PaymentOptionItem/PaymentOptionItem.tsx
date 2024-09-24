@@ -6,7 +6,7 @@ import { NetworkService, StyleService } from '@services';
 
 import { Images } from '@common/helpers/images';
 
-import { NormalizeCurrencyCode } from '@common/utils/amount';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CurrencyRepository } from '@store/repositories';
 
 import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';
@@ -160,7 +160,7 @@ class PaymentOptionItem extends Component<Props> {
             // check for vetted currency details
             currency = CurrencyRepository.findOne({
                 issuer,
-                currency: source_amount.currency,
+                currencyCode: source_amount.currency,
             });
         }
 
@@ -176,7 +176,7 @@ class PaymentOptionItem extends Component<Props> {
                             source={{
                                 uri: counterParty
                                     ? counterParty.avatar
-                                    : StyleService.getImage('ImageUnknownTrustLine').uri,
+                                    : StyleService.getImage('ImageUnknownTrustLine')?.uri,
                             }}
                             border
                             size={35}

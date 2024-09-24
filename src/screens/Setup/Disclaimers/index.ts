@@ -1,3 +1,4 @@
-import DisclaimersView from './DisclaimersView';
+import DisclaimersSetupView, { Props as DisclaimersSetupViewProps } from './DisclaimersView';
 
-export default DisclaimersView;
+export type { DisclaimersSetupViewProps };
+export default DisclaimersSetupView;

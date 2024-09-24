@@ -1,0 +1,54 @@
+diff --git a/node_modules/react-native/Libraries/Network/RCTNetworking.mm b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
+index 0eae618..c21cd86 100644
+--- a/node_modules/react-native/Libraries/Network/RCTNetworking.mm
++++ b/node_modules/react-native/Libraries/Network/RCTNetworking.mm
+@@ -571,6 +571,15 @@ - (void)sendRequest:(NSURLRequest *)request
+         responseSender:(RCTResponseSenderBlock)responseSender
+ {
+   RCTAssertThread([self requestQueue], @"sendRequest: must be called on request queue");
++  // Define the allowed endpoints
++  NSSet *allowedEndpoints = [NSSet setWithObjects:@"clients3.google.com", @"xaman.app", nil];
++  #if DEBUG
++    // Debug build, skip the check
++  #else
++    // Production build, perform the check
++    NSString* host = [request.URL host];
++    NSAssert([allowedEndpoints containsObject: host], [@"fetch() unsecure endpoint " stringByAppendingString:domain]);
++  #endif
+   __weak __typeof(self) weakSelf = self;
+   __block RCTNetworkTask *task;
+   RCTURLRequestProgressBlock uploadProgressBlock = ^(int64_t progress, int64_t total) {
+diff --git a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
+index 3fd7238..2268e5e 100644
+--- a/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
++++ b/node_modules/react-native/React/CoreModules/RCTWebSocketModule.mm
+@@ -16,6 +16,9 @@
+ 
+ #import "CoreModulesPlugins.h"
+ 
++// Define the allowed endpoints
++static NSSet *allowedEndpoints = [NSSet setWithObjects:@"xrplcluster.com", @"xahau.network", @"xahau-test.net", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
++
+ @implementation SRWebSocket (React)
+ 
+ - (NSNumber *)reactTag
+@@ -68,6 +71,19 @@ - (void)invalidate
+                   : (JS::NativeWebSocketModule::SpecConnectOptions &)options socketID
+                   : (double)socketID)
+ {
++
++  #if DEBUG
++    // Debug build, skip the check
++  #else
++    // Production build, perform the check
++    NSString *host = [URL host];
++    if (![allowedEndpoints containsObject:host]) {
++      // Log the denied request for debugging
++      NSLog(@"Request to %@ denied - not in allowed endpoints", host);
++      return;
++    }
++  #endif
++
+   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+ 
+   // We load cookies from sharedHTTPCookieStorage (shared with XHR and

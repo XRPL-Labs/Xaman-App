@@ -101,10 +101,6 @@ const styles = StyleService.create({
         margin: 0,
         padding: 0,
     },
-    amountInputUneffected: {
-        fontSize: AppFonts.h5.size,
-        color: '$textSecondary',
-    },
     alertBox: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -161,6 +157,12 @@ const styles = StyleService.create({
     copyButton: {
         flexDirection: 'row',
         paddingHorizontal: AppSizes.paddingExtraSml,
+    },
+    jsonTreeContainer: {
+        backgroundColor: StyleService.select({ light: '$light', dark: '$tint' }),
+        borderRadius: AppSizes.borderRadius,
+        padding: AppSizes.paddingExtraSml,
+        marginBottom: AppSizes.paddingSml,
     },
 });
 

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="pay_button_loading_indicator" type="id" />
+    <item name="pay_button_google_play" type="id" />
+</resources>

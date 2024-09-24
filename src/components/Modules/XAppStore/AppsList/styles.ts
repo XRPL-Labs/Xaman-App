@@ -1,4 +1,5 @@
 import StyleService from '@services/StyleService';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
@@ -9,5 +10,14 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+    },
+    sectionHeader: {
+        backgroundColor: '$background',
+        paddingVertical: AppSizes.paddingExtraSml,
+    },
+    sectionHeaderText: {
+        fontSize: AppFonts.base.size,
+        fontFamily: AppFonts.base.familyExtraBold,
+        color: '$textPrimary',
     },
 });

@@ -1,3 +1,3 @@
-export { default as SetHook } from './SetHookClass';
-export { default as SetHookValidation } from './SetHookValidation';
-export { default as SetHookInfo } from './SetHookInfo';
+export { default as SetHook } from './SetHook.class';
+export { default as SetHookValidation } from './SetHook.validation';
+export { default as SetHookInfo } from './SetHook.info';

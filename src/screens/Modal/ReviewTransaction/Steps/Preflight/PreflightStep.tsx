@@ -12,25 +12,25 @@ import { AccountRepository, CoreRepository, NetworkRepository } from '@store/rep
 import { NetworkType } from '@store/types';
 import { AccountModel } from '@store/models';
 
-// components
-import { Button, Icon, InfoMessage, Spacer } from '@components/General';
-import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
-
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
+import { Images } from '@common/helpers/images';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
+import { Button, Icon, InfoMessage, Spacer } from '@components/General';
+import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
+
 import Localize from '@locale';
+
+import { AccountAddViewProps } from '@screens/Account/Add';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-import { Images } from '@common/helpers/images';
-
 /* types ==================================================================== */
 enum RequiredActionsType {
     SWITCH_NETWORK = 'SWITCH_NETWORK',
@@ -41,7 +41,7 @@ enum RequiredActionsType {
 export interface Props {}
 
 export interface State {
-    requiredAction: RequiredActionsType;
+    requiredAction?: RequiredActionsType;
     requiredActionData: any;
 }
 
@@ -66,7 +66,7 @@ class PreflightError extends Error {
 /* Component ==================================================================== */
 class PreflightStep extends Component<Props, State> {
     static contextType = StepsContext;
-    context: React.ContextType<typeof StepsContext>;
+    declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
         super(props);
@@ -195,11 +195,7 @@ class PreflightStep extends Component<Props, State> {
                 if (payload.isMultiSign()) {
                     // only accounts with full access
                     availableAccounts = AccountRepository.getFullAccessAccounts();
-                } else if (
-                    payload.isPseudoTransaction() ||
-                    // @ts-ignore
-                    [TransactionTypes.Import].includes(payload.getTransactionType())
-                ) {
+                } else if (payload.isPseudoTransaction() || payload.getTransactionType() === TransactionTypes.Import) {
                     // account's that can sign the transaction
                     // NOTE: for Import transaction, the transaction can be signed with not activated accounts
                     availableAccounts = AccountRepository.getSignableAccounts();
@@ -215,13 +211,13 @@ class PreflightStep extends Component<Props, State> {
                 }
 
                 // choose preferred account for sign
-                let preferredAccount = undefined as AccountModel;
-                let source = undefined as AccountModel;
+                let preferredAccount: AccountModel | undefined;
+                let source: AccountModel | undefined;
 
                 // check for enforced signer accounts
                 const forcedSigners = payload.getSigners();
 
-                if (forcedSigners) {
+                if (Array.isArray(forcedSigners) && forcedSigners.length > 0) {
                     // filter available accounts base on forced signers
                     availableAccounts = filter(availableAccounts, (account) => forcedSigners.includes(account.address));
 
@@ -237,8 +233,8 @@ class PreflightStep extends Component<Props, State> {
                 }
 
                 // if any account set from payload, set as preferred account
-                if (transaction.Account) {
-                    preferredAccount = find(availableAccounts, { address: transaction.Account.address });
+                if (transaction && transaction.Account) {
+                    preferredAccount = find(availableAccounts, { address: transaction.Account });
                 }
 
                 // remove hidden accounts but keep preferred account even if hidden
@@ -265,6 +261,12 @@ class PreflightStep extends Component<Props, State> {
                 } else {
                     const defaultAccount = CoreRepository.getDefaultAccount();
                     source = find(availableAccounts, { address: defaultAccount.address }) || first(availableAccounts);
+                }
+
+                // double check
+                if (!source) {
+                    reject(new PreflightError(RequiredActionsType.ADD_ACCOUNT));
+                    return;
                 }
 
                 // set the source
@@ -319,7 +321,7 @@ class PreflightStep extends Component<Props, State> {
         await Navigator.dismissModal();
 
         // push to the screen
-        Navigator.push(AppScreens.Account.Add);
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
     renderForcedSigners = () => {
@@ -405,7 +407,7 @@ class PreflightStep extends Component<Props, State> {
     };
 
     render() {
-        const { onClose } = this.context;
+        const { onClose, transaction } = this.context;
         const { requiredAction } = this.state;
 
         // no action is required
@@ -431,7 +433,7 @@ class PreflightStep extends Component<Props, State> {
 
         return (
             <View testID="preflight-error-view" style={styles.container}>
-                <ReviewHeader onClose={onClose} title={Localize.t('global.reviewTransaction')} />
+                <ReviewHeader onClose={onClose} transaction={transaction} />
                 {ActionRenderer()}
             </View>
         );

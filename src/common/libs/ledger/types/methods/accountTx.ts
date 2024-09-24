@@ -59,7 +59,7 @@ export interface AccountTxTransaction {
      */
     meta: TransactionMetadata;
     /** JSON object defining the transaction. */
-    tx?: TransactionJson & ResponseOnlyTxInfo;
+    tx: TransactionJson & ResponseOnlyTxInfo;
     /** Unique hashed String representing the transaction. */
     tx_blob?: string;
     /**

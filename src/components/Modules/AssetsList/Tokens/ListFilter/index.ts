@@ -1,1 +1,1 @@
-export { default as ListFilter, FiltersType } from './ListFilter';
+export { default as ListFilter, type FiltersType } from './ListFilter';

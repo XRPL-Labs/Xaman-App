@@ -1,14 +1,12 @@
 import Realm from 'realm';
 
-// @ts-expect-error
-// eslint-disable-next-line import/no-unresolved
-import { AppConfig, NetworkConfig } from '@constants';
+import { AppConfig, NetworkConfig } from '@common/constants';
 
 import SampleDataV1 from '../fixture/v1.test.data';
 
 import RealmTestUtils from '../utils';
 
-import { AccountTypes } from '../../types';
+import { AccountTypes, MonetizationStatus } from '../../types';
 
 describe('Storage', () => {
     describe('Migrations', () => {
@@ -240,6 +238,32 @@ describe('Storage', () => {
 
             const network = RealmTestUtils.getFirstModelItem(instance, 'Network');
             expect(network.networkId).toBe(0);
+
+            instance.close();
+        });
+
+        it('should run v16 migrations successfully', async () => {
+            const instance = RealmTestUtils.getRealmInstanceWithVersion(16);
+            expect(instance.schemaVersion).toBe(16);
+
+            const currency = RealmTestUtils.getFirstModelItem(instance, 'Currency');
+            expect(currency.currency).toBeUndefined();
+            expect(currency.currencyCode).toBe('EUR');
+
+            instance.close();
+        });
+
+        it('should run v17 migrations successfully', async () => {
+            const instance = RealmTestUtils.getRealmInstanceWithVersion(17);
+            expect(instance.schemaVersion).toBe(17);
+
+            const profile = RealmTestUtils.getFirstModelItem(instance, 'Profile');
+            expect(profile.monetization.toJSON()).toStrictEqual({
+                monetizationStatus: MonetizationStatus.NONE,
+            });
+
+            const accountDetails = RealmTestUtils.getFirstModelItem(instance, 'AccountDetails');
+            expect(accountDetails.reward.toJSON()).toStrictEqual({});
 
             instance.close();
         });

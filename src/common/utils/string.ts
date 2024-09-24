@@ -33,20 +33,18 @@ const UUIDEncoding = {
  */
 const HexEncoding = {
     toBinary: (hex: string): Buffer => {
-        return hex ? Buffer.from(hex, 'hex') : undefined;
+        return Buffer.from(hex, 'hex');
     },
 
-    toString: (hex: string): string | undefined => {
-        return hex ? Buffer.from(hex, 'hex').toString('utf8') : undefined;
+    toString: (hex: string): string => {
+        return Buffer.from(hex, 'hex').toString('utf8');
     },
 
-    toHex: (text: string | number[] | Buffer): string | undefined => {
-        return text ? Buffer.from(text).toString('hex') : undefined;
+    toHex: (text: string | number[] | Buffer): string => {
+        return Buffer.from(text).toString('hex');
     },
 
-    toUTF8: (hex: string): string | undefined => {
-        if (!hex) return undefined;
-
+    toUTF8: (hex: string): string => {
         const buffer = Buffer.from(hex, 'hex');
         const isValid = Buffer.compare(Buffer.from(buffer.toString(), 'utf8'), buffer) === 0;
 
@@ -103,56 +101,38 @@ const StringTypeCheck = {
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const uuidv4RegExp = new RegExp('^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', 'i');
-        return uuidv4RegExp.test(input);
+        return !!input && uuidv4RegExp.test(input);
     },
 
     isValidURL: (input: string): boolean => {
-        if (typeof input !== 'string') {
-            return false;
-        }
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const urlRegExp = new RegExp('^https://[a-zA-Z0-9][a-zA-Z0-9-.]+[a-zA-Z0-9].[a-zA-Z]{1,}[?/]{0,3}[^\r\n\t]+');
-        return urlRegExp.test(input);
+        return !!input && urlRegExp.test(input);
     },
 
     isValidAmount: (input: string): boolean => {
-        if (typeof input !== 'string') {
-            return false;
-        }
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const amountRegExp = new RegExp(/^(?![0.]+$)\d+(\.\d{1,15})?$/gm);
-        return amountRegExp.test(input);
+        return !!input && amountRegExp.test(input);
     },
 
     isValidHash: (input: string): boolean => {
-        if (typeof input !== 'string') {
-            return false;
-        }
-
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const hashRegExp = new RegExp('^[A-F0-9]{64}$', 'i');
-        return hashRegExp.test(input);
+        return !!input && hashRegExp.test(input);
     },
 
     isValidXAppIdentifier: (input: string): boolean => {
-        if (typeof input !== 'string') {
-            return false;
-        }
-
         // TODO: fix eslint error
         // eslint-disable-next-line prefer-regex-literals,no-control-regex
         const identifier = new RegExp('^[A-Z0-9._-]+$', 'i');
-        return identifier.test(input);
+        return !!input && identifier.test(input);
     },
 
     isValidDestinationTag: (input: string): boolean => {
-        if (typeof input !== 'string') {
-            return false;
-        }
-
         // not a valid number
         if (!input.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
             return false;

@@ -51,8 +51,8 @@ class ChangeTangemSecurityView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        const current = GetCardEnforcedSecurity(props.account.additionalInfo);
-        const securityOptions = GetCardSecurityOptions(props.account.additionalInfo);
+        const current = GetCardEnforcedSecurity(props.account.additionalInfo!);
+        const securityOptions = GetCardSecurityOptions(props.account.additionalInfo!);
 
         this.state = {
             currentSecurity: current,

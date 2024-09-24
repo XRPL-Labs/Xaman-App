@@ -1,19 +1,26 @@
-import { flatMap, has, filter, find } from 'lodash';
 import Realm from 'realm';
-
-import { AccountModel, AccountDetailsModel, CurrencyModel, TrustLineModel } from '@store/models';
-import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+import { flatMap, has, filter, find } from 'lodash';
 
 import Vault from '@common/libs/vault';
+
+import { AccountModel, AccountDetailsModel, TrustLineModel } from '@store/models';
+import { AccessLevels, EncryptionLevels, AccountTypes } from '@store/types';
+
+import { IssuedCurrency } from '@common/libs/ledger/types/common';
 
 import BaseRepository from './base';
 
 /* Events  ==================================================================== */
+export type AccountRepositoryEvent = {
+    accountUpdate: (account: AccountModel, changes: Partial<AccountModel> | Partial<AccountDetailsModel>) => void;
+    accountCreate: (account: AccountModel) => void;
+    accountRemove: () => void;
+};
+
 declare interface AccountRepository {
-    on(event: 'accountUpdate', listener: (account: AccountModel, changes: Partial<AccountModel>) => void): this;
-    on(event: 'accountCreate', listener: (account: AccountModel) => void): this;
-    on(event: 'accountRemove', listener: () => void): this;
-    on(event: string, listener: Function): this;
+    on<U extends keyof AccountRepositoryEvent>(event: U, listener: AccountRepositoryEvent[U]): this;
+    off<U extends keyof AccountRepositoryEvent>(event: U, listener: AccountRepositoryEvent[U]): this;
+    emit<U extends keyof AccountRepositoryEvent>(event: U, ...args: Parameters<AccountRepositoryEvent[U]>): boolean;
 }
 
 /* Repository  ==================================================================== */
@@ -39,14 +46,22 @@ class AccountRepository extends BaseRepository<AccountModel> {
         privateKey?: string,
         encryptionKey?: string,
     ): Promise<AccountModel> => {
-        // Handle special cases for Readonly or Tangem card accounts
+        // handle special cases for Readonly or Tangem card accounts
         if (account.accessLevel === AccessLevels.Readonly || account.type === AccountTypes.Tangem) {
             const createdAccount = await this.create(account);
             this.emit('accountCreate', createdAccount);
             return createdAccount;
         }
 
-        // Handle full access accounts
+        if (!privateKey || !encryptionKey) {
+            throw new Error('private key and encryption key is required for full access accounts!');
+        }
+
+        if (!account?.publicKey) {
+            throw new Error('account public key is required');
+        }
+
+        // handle full access accounts
         await Vault.create(account.publicKey, privateKey, encryptionKey);
         const createdFullAccessAccount = await this.create(account, true);
         this.emit('accountCreate', createdFullAccessAccount);
@@ -60,7 +75,7 @@ class AccountRepository extends BaseRepository<AccountModel> {
      */
     update = async (object: Partial<AccountModel>): Promise<AccountModel> => {
         // Validate object has a primary key
-        if (!has(object, this.model.schema.primaryKey)) {
+        if (!has(object, this.model?.schema?.primaryKey!)) {
             throw new Error('Update require primary key to be set');
         }
 
@@ -86,6 +101,11 @@ class AccountRepository extends BaseRepository<AccountModel> {
             try {
                 this.safeWrite(() => {
                     const account = this.findOne({ address });
+
+                    if (!account) {
+                        throw new Error(`Account with address ${address} not found!`);
+                    }
+
                     const detailsObject = this.realm.create(
                         AccountDetailsModel.schema.name,
                         details,
@@ -101,7 +121,7 @@ class AccountRepository extends BaseRepository<AccountModel> {
                     }
 
                     if (objectsCount === 0) {
-                        account.details.push(detailsObject);
+                        account.details?.push(detailsObject);
                     }
 
                     this.emit('accountUpdate', account, details);
@@ -122,13 +142,6 @@ class AccountRepository extends BaseRepository<AccountModel> {
             return this.query(filters);
         }
         return this.findAll();
-    };
-
-    /**
-     * get all accounts count
-     */
-    getVisibleAccountCount = (): number => {
-        return this.query({ hidden: false }).length;
     };
 
     /**
@@ -200,11 +213,14 @@ class AccountRepository extends BaseRepository<AccountModel> {
     /**
      * check if account has currency
      */
-    hasCurrency = (account: AccountModel, currency: Partial<CurrencyModel>): boolean => {
+    hasCurrency = (account: AccountModel, issuedCurrency: IssuedCurrency): boolean => {
         let found = false;
 
-        account.lines.forEach((line: TrustLineModel) => {
-            if (line.currency.issuer === currency.issuer && line.currency.currency === currency.currency) {
+        account.lines?.forEach((line: TrustLineModel) => {
+            if (
+                line.currency.issuer === issuedCurrency.issuer &&
+                line.currency.currencyCode === issuedCurrency.currency
+            ) {
                 found = true;
             }
         });
@@ -216,21 +232,36 @@ class AccountRepository extends BaseRepository<AccountModel> {
      * Downgrade access level to readonly
      * WARNING: this will remove private key from keychain
      */
-    downgrade = (account: AccountModel): boolean => {
-        // it's already readonly
-        if (account.accessLevel === AccessLevels.Readonly) return true;
+    downgrade = async (account: AccountModel): Promise<void> => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            try {
+                // it's already readonly
+                if (account.accessLevel === AccessLevels.Readonly) {
+                    resolve();
+                    return;
+                }
 
-        // remove private key from vault
-        Vault.purge(account.publicKey);
+                // check if private key exist in the vault
+                const exist = await Vault.exist(account.publicKey);
 
-        // set the access level to Readonly
-        this.update({
-            address: account.address,
-            accessLevel: AccessLevels.Readonly,
-            encryptionLevel: EncryptionLevels.None,
+                // purge private key from vault
+                if (exist) {
+                    await Vault.purge(account.publicKey);
+                }
+
+                // set the access level to Readonly
+                await this.update({
+                    address: account.address,
+                    accessLevel: AccessLevels.Readonly,
+                    encryptionLevel: EncryptionLevels.None,
+                });
+
+                resolve();
+            } catch (error: any) {
+                reject(error);
+            }
         });
-
-        return true;
     };
 
     /**
@@ -240,20 +271,20 @@ class AccountRepository extends BaseRepository<AccountModel> {
      * @returns {Promise<boolean>} Whether the account was successfully removed.
      */
     purge = async (account: AccountModel): Promise<boolean> => {
-        // Remove private key if account has full access
+        // remove private key if account has full access
         if (account.accessLevel === AccessLevels.Full) {
             await Vault.purge(account.publicKey);
         }
 
-        // Remove account trust lines
-        for (const line of account.lines) {
+        // remove account trust lines
+        for (const line of account.lines ?? []) {
             await this.delete(line);
         }
 
-        // Delete the account
+        // delete the account
         await this.delete(account);
 
-        // Emit account removal event
+        // emit account removal event
         this.emit('accountRemove');
 
         return true;
