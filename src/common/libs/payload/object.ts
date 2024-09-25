@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { get, isObject, isString, isUndefined } from 'lodash';
 
+import { AppConfig } from '@common/constants';
+import { Endpoints } from '@common/constants/endpoints';
+
 import ApiService, { ApiError } from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
@@ -30,7 +33,6 @@ import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
 import { PayloadErrors } from './errors';
-import { Endpoints } from '@common/constants/api';
 
 // create logger
 const logger = LoggerService.createLogger('Payload');
@@ -390,7 +392,7 @@ export class Payload {
      */
     getApplicationName = (): string => {
         if (this.isGenerated()) {
-            return 'Xaman';
+            return AppConfig.appName;
         }
         return this.application.name;
     };
@@ -400,6 +402,7 @@ export class Payload {
      */
     getApplicationIcon = (): string => {
         if (this.isGenerated()) {
+            // FIXME: change to AppIcon/ic_luncher after removing the `xumm-cdn.imgix.net`
             return 'https://xumm-cdn.imgix.net/app-logo/91348bab-73d2-489a-bb7b-a8dba83e40ff.png';
         }
         return this.application.icon_url;

@@ -383,7 +383,7 @@
     "repeatPasscode": "Vänligen upprepa din pinkod",
     "passcodeDoNotMatch": "Passerkoden stämmer inte!",
     "warnNeedPasscode": "Du kommer att behöva din pinkod för att låsa upp appen",
-    "UnableToStoreThePasscode": "Det gick inte att lagra pinkoden. Detta borde inte ske. En felrapport skickades till Xaman-supportgruppen. Kontakta oss på support@xumm.app för mer information.",
+    "UnableToStoreThePasscode": "Det gick inte att lagra pinkoden. Detta borde inte ske. En felrapport skickades till Xaman-supportgruppen. Kontakta oss på support@xaman.app för mer information.",
     "weakPasscode": "Svag passerkod",
     "weakPasscodeDescription": "Den valda passerkoden är lätt att gissa. Vi rekommenderar att du väljer en starkare.",
     "useAnyway": "Använd ändå",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "När du får en annan telefon (ny / ersättning), av säkerhetsskäl, kommer Xaman att be dig att importera alla konton med hjälp av kontohemligheter igen.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Jag ska hålla mina hemligheter säkra, offline, så jag kan komma in i dem igen om jag får en ny telefon",
     "questionsAndSupport": "Frågor och stöd",
-    "questionsAndSupportExplain": "Om du har frågor kan du läsa frågor på FAQ och ställa frågor på https://support.xumm.app.\n\nDet här är den enda pålitliga kanalen för XUMM-funktioner.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Jag kommer bara att lita på svar från Xaman :s stödgrupp på https://support.xumm.app",
+    "questionsAndSupportExplain": "Om du har frågor kan du läsa frågor på FAQ och ställa frågor på https://support.xaman.app.\n\nDet här är den enda pålitliga kanalen för XUMM-funktioner.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Jag kommer bara att lita på svar från Xaman :s stödgrupp på https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Läs texten ovan noggrant"
   },
   "home": {

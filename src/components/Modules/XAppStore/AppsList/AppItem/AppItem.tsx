@@ -3,6 +3,8 @@ import { View, Text, Animated, Share } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
+import { HOSTNAME } from '@common/constants/endpoints';
+
 import { XAppOrigin } from '@common/libs/payload';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -123,7 +125,7 @@ class AppItem extends Component<Props> {
 
         Share.share({
             title,
-            message: `https://xumm.app/detect/xapp:${identifier}`,
+            message: `https://${HOSTNAME}/detect/xapp:${identifier}`,
             url: undefined,
         });
     };

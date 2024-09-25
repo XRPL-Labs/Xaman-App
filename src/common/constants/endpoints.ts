@@ -2,7 +2,9 @@
 /**
  * Endpoints
  */
-export const ApiUrl = 'https://xaman.app/api';
+
+export const HOSTNAME = 'xaman.app';
+export const ApiUrl = `https://${HOSTNAME}/api`;
 
 export enum Endpoints {
     Ping = '/v1/app/ping',
@@ -34,4 +36,23 @@ export enum Endpoints {
     NftOffered = '/v1/app/nft-offered/{account}',
     NetworkRails = '/v1/app/rails',
     VerifyPurchase = '/v1/app/verify-purchase',
+}
+
+export enum WebLinks {
+    // Webview
+    TermOfUseURL = `https://${HOSTNAME}/app/webviews/tos-privacy`,
+    CreditsURL = `https://${HOSTNAME}/app/webviews/credits`,
+    ChangeLogURL = `https://${HOSTNAME}/app/webviews/update`,
+    HooksExplainerURL = `https://${HOSTNAME}/app/webviews/hooks`,
+
+    // Providers
+    ExplorerProxy = `https://${HOSTNAME}/explorer`,
+    AvatarURL = `https://${HOSTNAME}/avatar`,
+
+    // Blog and Help center
+    FAQSecurityHardwareURL = `https://${HOSTNAME}/redir/faq/security-hardware`,
+    FAQAccountSigningPasswordURL = `https://${HOSTNAME}/redir/faq/account-signing-password`,
+
+    // Other
+    AppleStoreLink = `https://apps.apple.com/us/app/id1492302343`,
 }

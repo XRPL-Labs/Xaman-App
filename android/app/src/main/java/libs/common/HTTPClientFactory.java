@@ -18,8 +18,8 @@ import okhttp3.Request;
 
 public class HTTPClientFactory implements OkHttpClientFactory {
     // TODO: remove "xumm-cdn.imgix.net" after migration period
-    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xumm.pro", "xumm.app", "image-proxy.xrpl-labs.com");
-    private static final String defaultHost = "xumm.app";
+    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xaman.app", "xaman.app", "image-proxy.xrpl-labs.com");
+    private static final String defaultHost = "xaman.app";
 
     private static final class HostSelectionInterceptor implements Interceptor {
         @Override

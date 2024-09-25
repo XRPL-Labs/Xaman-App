@@ -42,7 +42,7 @@ import Localize from '@locale';
 
 import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
 import { InAppPurchaseReceipt } from '@common/libs/iap';
-import { Endpoints } from '@common/constants/api';
+import { Endpoints } from '@common/constants/endpoints';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -348,7 +348,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves when the permission is revoked.
      */
     revokeThirdPartyPermission = (appId: string): Promise<XamanBackend.RevokeThirdPartyPermissionResponse> => {
-        return ApiService.fetch(Endpoints.ThirdPartyApps, 'DELETE', { appId });
+        return ApiService.fetch(Endpoints.ThirdPartyApp, 'DELETE', { appId });
     };
 
     /**

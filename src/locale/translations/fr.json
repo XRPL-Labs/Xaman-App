@@ -383,7 +383,7 @@
     "repeatPasscode": "Veuillez répéter le mot de passe saisi précédemment",
     "passcodeDoNotMatch": "Le mot de passe ne correspond pas !",
     "warnNeedPasscode": "Vous aurez besoin de votre code d'accès pour déverrouiller l'application",
-    "UnableToStoreThePasscode": "Impossible de stocker le mot de passe. Cela ne devrait pas s’arriver. Un rapport d’erreur a été envoyé à l'équipe de support Xaman. Veuillez communiquer avec nous à support@xumm.app pour de plus amples renseignements.",
+    "UnableToStoreThePasscode": "Impossible de stocker le mot de passe. Cela ne devrait pas s’arriver. Un rapport d’erreur a été envoyé à l'équipe de support Xaman. Veuillez communiquer avec nous à support@xaman.app pour de plus amples renseignements.",
     "weakPasscode": "Code de passe faible",
     "weakPasscodeDescription": "Le mot de passe sélectionné est facile à deviner. Nous vous recommandons de choisir un plus fort.",
     "useAnyway": "Utiliser Anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Si vous changez de téléphone, pour des raisons de sécurité, Xaman vous demandera vos clefs secrètes afin de réinitialiser l'accès à vos comptes. ",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Je m'engage à conserver mes clefs secrètes en sécurité, hors ligne, afin de réinitialiser l'accès à mes comptes au cas où je change de téléphone.",
     "questionsAndSupport": "Questions et assistance",
-    "questionsAndSupportExplain": "Si vous avez des questions, veuillez vous référer à la FAQ officielle et poser vos questions sur https://support.xumm.app.\r\n\r\nCe sont LES SEULS moyens de communication employés par l'équipe XUMM pour fournir du support aux utilisateurs.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Je ne ferai confiance qu'aux réponses de l'équipe d'assistance Xaman à l'adresse https://support.xumm.app",
+    "questionsAndSupportExplain": "Si vous avez des questions, veuillez vous référer à la FAQ officielle et poser vos questions sur https://support.xaman.app.\r\n\r\nCe sont LES SEULS moyens de communication employés par l'équipe XUMM pour fournir du support aux utilisateurs.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Je ne ferai confiance qu'aux réponses de l'équipe d'assistance Xaman à l'adresse https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Veuillez lire attentivement le texte ci-dessus"
   },
   "home": {

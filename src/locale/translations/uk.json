@@ -383,7 +383,7 @@
     "repeatPasscode": "Будь ласка, повторіть Ваш новий ПІН-код",
     "passcodeDoNotMatch": "ПІН-код не збігається!",
     "warnNeedPasscode": "Для розблокування програми Вам знадобиться Ваш ПІН-код",
-    "UnableToStoreThePasscode": "Неможливо зберегти ПІН-код. Цього не повинно було статися. Звіт про помилку було надіслано до команди підтримки Xaman. Будь ласка, зв ' яжіться з нами за адресою support@xumm.app для додаткової інформації.",
+    "UnableToStoreThePasscode": "Неможливо зберегти ПІН-код. Цього не повинно було статися. Звіт про помилку було надіслано до команди підтримки Xaman. Будь ласка, зв ' яжіться з нами за адресою support@xaman.app для додаткової інформації.",
     "weakPasscode": "Слабкий код доступу",
     "weakPasscodeDescription": "Вибраний ПІН-код легко вгадати. Рекомендуємо вибрати більш міцний.",
     "useAnyway": "Використовувати",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Коли Ви отримаєте інший телефон (новий/відремонтованний), з міркувань безпеки, Xaman запитає Вас знову імпортувати всі Ваші акаунти, використовуючи секретнi ключi.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Я буду тримати свої секрети/ключі в безпеці, оффлайн, щоб я міг вводити їх знову, якщо отримаю новий телефон",
     "questionsAndSupport": "Запитання та підтримка",
-    "questionsAndSupportExplain": "Якщо у Вас є запитання, Ви можете прочитати FAQ та задати питання за адресою https://support.xumm.app.\r\n\r\nЦе ЄДИНИ надійний канал підтримки XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Я буду довіряти лише відповідям від команди підтримки Xaman на https://support.xumm.app",
+    "questionsAndSupportExplain": "Якщо у Вас є запитання, Ви можете прочитати FAQ та задати питання за адресою https://support.xaman.app.\r\n\r\nЦе ЄДИНИ надійний канал підтримки XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Я буду довіряти лише відповідям від команди підтримки Xaman на https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Будь ласка, уважно прочитайте наведений вище текст"
   },
   "home": {

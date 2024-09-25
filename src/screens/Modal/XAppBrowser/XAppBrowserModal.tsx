@@ -22,6 +22,7 @@ import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppConfig, AppScreens } from '@common/constants';
+import { HOSTNAME } from '@common/constants/endpoints';
 
 import { Images } from '@common/helpers/images';
 import { Navigator } from '@common/helpers/navigator';
@@ -717,7 +718,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         return {
-            uri: `https://xumm.app/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+            uri: `https://${HOSTNAME}/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
                 coreSettings.theme,
             )}`,
             headers: {

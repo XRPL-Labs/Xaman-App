@@ -2,7 +2,7 @@
 
 import fetch from 'fetch-mock';
 
-import { Endpoints } from '@common/constants/api';
+import { Endpoints } from '@common/constants/endpoints';
 
 import { ApiService } from '../';
 import { ApiError } from '../ApiService';

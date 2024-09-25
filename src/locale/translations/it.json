@@ -383,7 +383,7 @@
     "repeatPasscode": "Si prega di ripetere il tuo nuovo codice di sblocco",
     "passcodeDoNotMatch": "Il codice di sblocco non combacia!",
     "warnNeedPasscode": "Avrai bisogno del tuo codice di sblocco per sbloccare l'app",
-    "UnableToStoreThePasscode": "Impossibile memorizzare il codice di sblocco. Questo non dovrebbe accadere. Una segnalazione di bug è stata inviata al team di supporto Xaman. Contattarlo all'indirizzo support@xumm.app per ulteriori informazioni.",
+    "UnableToStoreThePasscode": "Impossibile memorizzare il codice di sblocco. Questo non dovrebbe accadere. Una segnalazione di bug è stata inviata al team di supporto Xaman. Contattarlo all'indirizzo support@xaman.app per ulteriori informazioni.",
     "weakPasscode": "Codice di accesso debole",
     "weakPasscodeDescription": "Il codice di accesso selezionato è facile da indovinare. Ti consigliamo di sceglierne uno più difficile.",
     "useAnyway": "Utilizza comunque",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Quando cambi telefono, per motivi di sicurezza, Xaman ti chiederà di importare tutti i tuoi account usando le loro chiavi segrete.\r\n",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Custodirò in un luogo sicuro la mia chiave segreta - offline - in modo che potrò riutilizzarla nel caso in cui cambi telefono",
     "questionsAndSupport": "Domande e assistenza",
-    "questionsAndSupportExplain": "Se hai domande, puoi leggere le FAQ e porre domande su https://support.xumm.app.\r\n\r\nQuesto è L'UNICO canale affidabile per il supporto XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Mi fiderò SOLAMENTE delle risposte ricevute dal Team di Supporto Xaman dell'indirizzo https://support.xumm.app",
+    "questionsAndSupportExplain": "Se hai domande, puoi leggere le FAQ e porre domande su https://support.xaman.app.\r\n\r\nQuesto è L'UNICO canale affidabile per il supporto XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Mi fiderò SOLAMENTE delle risposte ricevute dal Team di Supporto Xaman dell'indirizzo https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Si prega di leggere attentamente il testo scritto sopra"
   },
   "home": {

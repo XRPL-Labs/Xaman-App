@@ -383,7 +383,7 @@
     "repeatPasscode": "உங்கள் புதிய கடவுக்குறியீட்டை மீண்டும் செய்யவும்",
     "passcodeDoNotMatch": "கடவுக்குறியீடு பொருந்தவில்லை!",
     "warnNeedPasscode": "பயன்பாட்டைத் திறக்க உங்கள் கடவுக்குறியீடு தேவைப்படும்",
-    "UnableToStoreThePasscode": "கடவுக்குறியீட்டை சேமிக்க முடியவில்லை. இது நடக்கக்கூடாது. ஒரு பிழை அறிக்கை Xaman ஆதரவு குழுவுக்கு அனுப்பப்பட்டது. மேலும் தகவலுக்கு support@xumm.app இல் எங்களை தொடர்பு கொள்ளவும்.",
+    "UnableToStoreThePasscode": "கடவுக்குறியீட்டை சேமிக்க முடியவில்லை. இது நடக்கக்கூடாது. ஒரு பிழை அறிக்கை Xaman ஆதரவு குழுவுக்கு அனுப்பப்பட்டது. மேலும் தகவலுக்கு support@xaman.app இல் எங்களை தொடர்பு கொள்ளவும்.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "பாதுகாப்பு காரணங்களுக்காக, நீங்கள் மற்றொரு தொலைபேசியைப் பெறும்போது (புதிய / மாற்று), கணக்கு ரகசியங்களைப் பயன்படுத்தி உங்கள் எல்லா கணக்குகளையும் மீண்டும் இறக்குமதி செய்ய Xaman கேட்கும்.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "எனது ரகசியங்களை ஆஃப்லைனில் பாதுகாப்பாக வைத்திருப்பேன், எனவே புதிய தொலைபேசி கிடைத்தால் அவற்றை மீண்டும் உள்ளிடலாம்",
     "questionsAndSupport": "கேள்விகள் & ஆதரவு",
-    "questionsAndSupportExplain": "உங்களிடம் கேள்விகள் இருந்தால், நீங்கள் அடிக்கடி கேட்கப்படும் கேள்விகளைப் படித்து https://support.xumm.app இல் கேள்விகளைக் கேட்கலாம்.\r\nஇது XUMM ஆதரவுக்கான ஒரே நம்பகமான சேனல்.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xumm.app இல் Xaman ஆதரவு குழுவினரின் பதில்களை மட்டுமே நம்புகிறேன்.",
+    "questionsAndSupportExplain": "உங்களிடம் கேள்விகள் இருந்தால், நீங்கள் அடிக்கடி கேட்கப்படும் கேள்விகளைப் படித்து https://support.xaman.app இல் கேள்விகளைக் கேட்கலாம்.\r\nஇது XUMM ஆதரவுக்கான ஒரே நம்பகமான சேனல்.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xaman.app இல் Xaman ஆதரவு குழுவினரின் பதில்களை மட்டுமே நம்புகிறேன்.",
     "pleaseReadTheTextAboveCarefully": "மேலே உள்ள உரையை கவனமாக படிக்கவும்"
   },
   "home": {

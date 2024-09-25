@@ -383,7 +383,7 @@
     "repeatPasscode": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೊಸ ಪಾಸ್‌ಕೋಡ್ ಅನ್ನು ಪುನರಾವರ್ತಿಸಿ",
     "passcodeDoNotMatch": "ಪಾಸ್ಕೋಡ್ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ!",
     "warnNeedPasscode": "ಅಪ್ಲಿಕೇಶನ್ ಅನ್ಲಾಕ್ ಮಾಡಲು ನಿಮ್ಮ ಪಾಸ್ಕೋಡ್ ಅಗತ್ಯವಿದೆ",
-    "UnableToStoreThePasscode": "ಪಾಸ್ಕೋಡ್ ಅನ್ನು ಸಂಗ್ರಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇದು ಸಂಭವಿಸಬಾರದು. ದೋಷ ವರದಿಯನ್ನು Xaman ಬೆಂಬಲ ತಂಡಕ್ಕೆ ಕಳುಹಿಸಲಾಗಿದೆ. ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ ದಯವಿಟ್ಟು support@xumm.app ನಲ್ಲಿ ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ.",
+    "UnableToStoreThePasscode": "ಪಾಸ್ಕೋಡ್ ಅನ್ನು ಸಂಗ್ರಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ. ಇದು ಸಂಭವಿಸಬಾರದು. ದೋಷ ವರದಿಯನ್ನು Xaman ಬೆಂಬಲ ತಂಡಕ್ಕೆ ಕಳುಹಿಸಲಾಗಿದೆ. ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ ದಯವಿಟ್ಟು support@xaman.app ನಲ್ಲಿ ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "ನೀವು ಇನ್ನೊಂದು ಫೋನ್ ಪಡೆದಾಗ (ಹೊಸ / ಬದಲಿ), ಭದ್ರತಾ ಕಾರಣಗಳಿಗಾಗಿ, ಖಾತೆ ರಹಸ್ಯಗಳನ್ನು ಬಳಸಿಕೊಂಡು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಮತ್ತೆ ಆಮದು ಮಾಡಲು Xaman ಕೇಳುತ್ತದೆ.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "ನನ್ನ ರಹಸ್ಯಗಳನ್ನು ನಾನು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿರಿಸುತ್ತೇನೆ, ಹಾಗಾಗಿ ನಾನು ಹೊಸ ಫೋನ್ ಪಡೆದರೆ ಅವುಗಳನ್ನು ಮರು ನಮೂದಿಸಬಹುದು",
     "questionsAndSupport": "ಪ್ರಶ್ನೆಗಳು ಮತ್ತು ಬೆಂಬಲ",
-    "questionsAndSupportExplain": "ನೀವು ಪ್ರಶ್ನೆಗಳನ್ನು ಹೊಂದಿದ್ದರೆ, ನೀವು FAQ ಗಳನ್ನು ಓದಬಹುದು ಮತ್ತು https://support.xumm.app ನಲ್ಲಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಬಹುದು.\r\n\r\nXUMM ಬೆಂಬಲಕ್ಕಾಗಿ ಇದು ಕೇವಲ ವಿಶ್ವಾಸಾರ್ಹ ಚಾನಲ್ ಆಗಿದೆ.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "ನಾನು https://support.xumm.app ನಲ್ಲಿ Xaman ಬೆಂಬಲ ತಂಡದಿಂದ ಉತ್ತರಗಳನ್ನು ಮಾತ್ರ ನಂಬುತ್ತೇನೆ.",
+    "questionsAndSupportExplain": "ನೀವು ಪ್ರಶ್ನೆಗಳನ್ನು ಹೊಂದಿದ್ದರೆ, ನೀವು FAQ ಗಳನ್ನು ಓದಬಹುದು ಮತ್ತು https://support.xaman.app ನಲ್ಲಿ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಬಹುದು.\r\n\r\nXUMM ಬೆಂಬಲಕ್ಕಾಗಿ ಇದು ಕೇವಲ ವಿಶ್ವಾಸಾರ್ಹ ಚಾನಲ್ ಆಗಿದೆ.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "ನಾನು https://support.xaman.app ನಲ್ಲಿ Xaman ಬೆಂಬಲ ತಂಡದಿಂದ ಉತ್ತರಗಳನ್ನು ಮಾತ್ರ ನಂಬುತ್ತೇನೆ.",
     "pleaseReadTheTextAboveCarefully": "ದಯವಿಟ್ಟು ಮೇಲಿನ ಪಠ್ಯವನ್ನು ಎಚ್ಚರಿಕೆಯಿಂದ ಓದಿ"
   },
   "home": {

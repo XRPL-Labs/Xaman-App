@@ -16,7 +16,7 @@ import { CoreModel } from '@store/models';
 import { SHA256 } from '@common/libs/crypto';
 import { AppConfig, ErrorMessages } from '@common/constants';
 
-import { Endpoints, ApiUrl } from '@common/constants/api';
+import { Endpoints, ApiUrl } from '@common/constants/endpoints';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 

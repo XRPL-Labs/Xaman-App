@@ -383,7 +383,7 @@
     "repeatPasscode": "Bitte wiederholen Sie Ihren neuen Geheimzahl",
     "passcodeDoNotMatch": "Die Geheimzahl stimmt nicht überein!",
     "warnNeedPasscode": "Zum entsperren der App benötigen Sie ihre Geheimzahl",
-    "UnableToStoreThePasscode": "Die Geheimzahl kann nicht gespeichert werden. Das sollte nicht passieren. Ein Fehlerbericht wurde an das Xaman-Support-Team gesendet. Bitte kontaktieren Sie uns unter support@xumm.app für weitere Informationen.",
+    "UnableToStoreThePasscode": "Die Geheimzahl kann nicht gespeichert werden. Das sollte nicht passieren. Ein Fehlerbericht wurde an das Xaman-Support-Team gesendet. Bitte kontaktieren Sie uns unter support@xaman.app für weitere Informationen.",
     "weakPasscode": "Schwacher Kenncode",
     "weakPasscodeDescription": "Der ausgewählte Kenncode ist leicht zu erraten. Wir empfehlen Ihnen, eine stärkere zu wählen.",
     "useAnyway": "Trotzdem verwenden",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Falls Sie ihr Handy wechseln (zB Neu- oder Ersatzgerät), dann können Ihre bestehenden Account-Daten darauf wiederhergestellt werden. Aus Sicherheitsgründen wird Xaman Sie während des Einrichtungsvorganges dazu auffordern, ihre Account-Keys erneut einzugeben.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ich werde meine geheimen Schlüssel offline aufbewahren, damit ich sie erneut eingeben kann, wenn ich ein neues Telefon bekomme",
     "questionsAndSupport": "Fragen & Support",
-    "questionsAndSupportExplain": "Wenn Sie Fragen haben, können Sie die FAQ's lesen oder neue Fragen unter https://support.xumm.app stellen.\r\n\r\nDies ist der EINZIGE VERTRAUENSWÜRDIGE KANAL für Support von XUMM",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Ich vertraue AUSSCHLIEßLICH den Antworten von dem Xaman-Support-Team auf https://support.xumm.app",
+    "questionsAndSupportExplain": "Wenn Sie Fragen haben, können Sie die FAQ's lesen oder neue Fragen unter https://support.xaman.app stellen.\r\n\r\nDies ist der EINZIGE VERTRAUENSWÜRDIGE KANAL für Support von XUMM",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Ich vertraue AUSSCHLIEßLICH den Antworten von dem Xaman-Support-Team auf https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Bitte lesen Sie sich den obigen Text sorgfältig durch"
   },
   "home": {

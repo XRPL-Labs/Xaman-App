@@ -15,6 +15,7 @@ import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
+import { HOSTNAME } from '@common/constants/endpoints';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
@@ -174,7 +175,7 @@ class RequestView extends Component<Props, State> {
     getLink = () => {
         const { source, amount, withAmount } = this.state;
 
-        let content = `https://xumm.app/detect/request:${source.address}`;
+        let content = `https://${HOSTNAME}/detect/request:${source.address}`;
 
         if (amount && withAmount) {
             content += `?amount=${amount}`;

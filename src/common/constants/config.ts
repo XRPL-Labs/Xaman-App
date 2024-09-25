@@ -5,11 +5,6 @@
 export default {
     appName: 'Xaman',
     supportEmail: 'support@xaman.app',
-    termOfUseURL: 'https://xaman.app/app/webviews/tos-privacy/',
-    creditsURL: 'https://xaman.app/app/webviews/credits/',
-    changeLogURL: 'https://xaman.app/app/webviews/update/en/?update=',
-    explorerProxy: 'https://xaman.app/explorer',
-    hooksExplainerURL: 'https://xaman.app/app/webviews/hooks/',
 
     // persist storage config
     // NOTE: this should never be changed

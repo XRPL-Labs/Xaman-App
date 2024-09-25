@@ -383,7 +383,7 @@
     "repeatPasscode": "Herhaal je pincode",
     "passcodeDoNotMatch": "De toegangscode komt niet overeen!",
     "warnNeedPasscode": "Je hebt je toegangscode nodig om de app te ontgrendelen",
-    "UnableToStoreThePasscode": "Kan de toegangscode niet opslaan. Dit hoort niet te gebeuren. Er is een foutrapport verzonden naar het Xaman-team. Neem contact met ons op support@xumm.app voor meer informatie.",
+    "UnableToStoreThePasscode": "Kan de toegangscode niet opslaan. Dit hoort niet te gebeuren. Er is een foutrapport verzonden naar het Xaman-team. Neem contact met ons op support@xaman.app voor meer informatie.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Wanneer u van telefoon wisselt (bijv. vervangen / vernieuwen) zal Xaman om veiligheidsredenen vragen om al uw accounts en geheime sleutels opnieuw te importeren. U heeft hiervoor de geheime sleutels voor nodig.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ik zal mijn geheime sleutels veilig en offline bewaren en bewaken, zodat ik ze opnieuw kan invoeren als ik een nieuwe telefoon heb",
     "questionsAndSupport": "Vragen & ondersteuning",
-    "questionsAndSupportExplain": "Als u vragen hebt, kunt u de FAQ's lezen en vragen stellen op https://support.xumm.app.\r\n\r\nDit is HET ENIGE betrouwbare kanaal voor XUMM ondersteuning.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Ik vertrouw alleen antwoorden van het Xaman support team op https://support.xumm.app",
+    "questionsAndSupportExplain": "Als u vragen hebt, kunt u de FAQ's lezen en vragen stellen op https://support.xaman.app.\r\n\r\nDit is HET ENIGE betrouwbare kanaal voor XUMM ondersteuning.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Ik vertrouw alleen antwoorden van het Xaman support team op https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Lees de tekst zorgvuldig door"
   },
   "home": {

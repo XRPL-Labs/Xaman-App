@@ -8,7 +8,7 @@ import { View, Text, BackHandler, NativeEventSubscription } from 'react-native';
 import { HasBottomNotch } from '@common/helpers/device';
 import { Navigator } from '@common/helpers/navigator';
 
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
 
 import { ProfileRepository, CoreRepository } from '@store/repositories';
 
@@ -22,6 +22,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import { WebLinks } from '@common/constants/endpoints';
 
 /* Component ==================================================================== */
 class TermOfUseView extends Component<Props, State> {
@@ -106,7 +107,7 @@ class TermOfUseView extends Component<Props, State> {
     };
 
     getURI = () => {
-        return `${AppConfig.termOfUseURL}${Localize.getCurrentLocale()}`;
+        return `${WebLinks.TermOfUseURL}/${Localize.getCurrentLocale()}`;
     };
 
     onTOSLoaded = () => {

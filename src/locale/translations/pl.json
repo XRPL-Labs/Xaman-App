@@ -383,7 +383,7 @@
     "repeatPasscode": "Proszę powtórz swój nowy kod PIN",
     "passcodeDoNotMatch": "Nieprawidłowy kod dostępu.",
     "warnNeedPasscode": "Aby odblokować aplikacje, będziesz potrzebował swojego kodu dostępu",
-    "UnableToStoreThePasscode": "Nie można zapisać kodu PIN. To nie powinno się zdarzyć. Raport o błędzie został wysłany do zespołu wsparcia Xaman. Aby uzyskać więcej informacji, skontaktuj się z nami pod adresem (support@xumm.app).",
+    "UnableToStoreThePasscode": "Nie można zapisać kodu PIN. To nie powinno się zdarzyć. Raport o błędzie został wysłany do zespołu wsparcia Xaman. Aby uzyskać więcej informacji, skontaktuj się z nami pod adresem (support@xaman.app).",
     "weakPasscode": "Słaby kod dostępu",
     "weakPasscodeDescription": "Wybrany kod dostępu jest łatwy do odgadnięcia. Polecamy wybrać mocniejszy.",
     "useAnyway": "Użyj mimo to",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Gdy zmienisz telefon, ze względów bezpieczeństwa Xaman poprosi Cię o ponowne zaimportowanie wszystkich kont przy użyciu haseł/klucza/kodu, którymi jest ono zabezpieczone.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Będę przechowywać moje hasła/klucze/kody, w trybie offline, aby móc zalogować się do XUMM na nowym urządzeniu. ",
     "questionsAndSupport": "Pytania i Wsparcie",
-    "questionsAndSupportExplain": "Jeśli masz pytania, możesz przeczytać FAQ i zadawać pytania na stronie https://support.xumm.app.\n\nJest to JEDYNY wiarygodny kanał dla obsługi XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Zaufam tylko odpowiedziom zespołu wsparcia Xaman na stronie https://support.xumm.app",
+    "questionsAndSupportExplain": "Jeśli masz pytania, możesz przeczytać FAQ i zadawać pytania na stronie https://support.xaman.app.\n\nJest to JEDYNY wiarygodny kanał dla obsługi XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Zaufam tylko odpowiedziom zespołu wsparcia Xaman na stronie https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Przeczytaj uważnie powyższy tekst"
   },
   "home": {

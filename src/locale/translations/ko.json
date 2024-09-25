@@ -383,7 +383,7 @@
     "repeatPasscode": "새 비밀번호를 다시 입력하십시오",
     "passcodeDoNotMatch": "비밀번호가 일치하지 않습니다!",
     "warnNeedPasscode": "앱 잠금을 해제하려면 암호가 필요합니다.",
-    "UnableToStoreThePasscode": "패스코드를 저장할 수 없습니다. Xaman 지원 팀에게 오류 보고서가 제출되었습니다. 자세한 내용은 support@xumm.app  으로 문의하십시오.",
+    "UnableToStoreThePasscode": "패스코드를 저장할 수 없습니다. Xaman 지원 팀에게 오류 보고서가 제출되었습니다. 자세한 내용은 support@xaman.app  으로 문의하십시오.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "핸드폰을 교체 했을 시, 보안상의 이유로 Xaman은 다시 한 번 계좌의 비밀키를 사용하여 모든 계좌를 가져오도록 요청할 것입니다.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "나는 내 비밀 키를 안전하게, 오프라인에 보관하겠습니다. 그래서 새로운 전화기를 사용하게 되면 다시 그 비밀 키를 입력할 수 있습니다",
     "questionsAndSupport": "질문 및 지원",
-    "questionsAndSupportExplain": "질문이 있으면 https://support.xumm.app 에서 FAQ를 읽고 질문을 할 수 있습니다.\r\n\r\n이 곳이 유일하게 신뢰할 수 있는 XUMM 지원 채널입니다.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "나는 https://support.xumm.app 에서 Xaman 지원 팀의 답변만 믿겠습니다",
+    "questionsAndSupportExplain": "질문이 있으면 https://support.xaman.app 에서 FAQ를 읽고 질문을 할 수 있습니다.\r\n\r\n이 곳이 유일하게 신뢰할 수 있는 XUMM 지원 채널입니다.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "나는 https://support.xaman.app 에서 Xaman 지원 팀의 답변만 믿겠습니다",
     "pleaseReadTheTextAboveCarefully": "위의 글을 주의 깊게 읽으십시오"
   },
   "home": {

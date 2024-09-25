@@ -383,7 +383,7 @@
     "repeatPasscode": "Palun korda oma uut pääsukoodi",
     "passcodeDoNotMatch": "Paroolikood ei klapi!",
     "warnNeedPasscode": "Rakenduse avamiseks vajate oma pääsukoodi",
-    "UnableToStoreThePasscode": "Pääsukoodi salvestamine nurjus. Seda ei tohiks juhtuda. Xaman-i tugirühmale saadeti vearaport. Lisainfo saamiseks saada e-mail support@xumm.app.",
+    "UnableToStoreThePasscode": "Pääsukoodi salvestamine nurjus. Seda ei tohiks juhtuda. Xaman-i tugirühmale saadeti vearaport. Lisainfo saamiseks saada e-mail support@xaman.app.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Kui sa saad uue telefoni (uue või asendustelefoni), turvalisuse huvides, Xaman palub teil importida kõik oma kontosid kasutades uuesti konto saladusi.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ma hoian oma saladused seifis, offline, nii et ma saan uuesti sisestada, kui ma saan uue telefoni",
     "questionsAndSupport": "Küsimused ja tugi",
-    "questionsAndSupportExplain": "Kui teil on küsimusi, saate lugeda KKK ja küsida küsimusi https://support.xumm.app.\r\n\r\nSee on ainus usaldusväärne XUMM-i klienditoe kanal.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Ma usaldan ainult Xaman'i klienditoe vastuseid aadressilt https://support.xumm.app",
+    "questionsAndSupportExplain": "Kui teil on küsimusi, saate lugeda KKK ja küsida küsimusi https://support.xaman.app.\r\n\r\nSee on ainus usaldusväärne XUMM-i klienditoe kanal.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Ma usaldan ainult Xaman'i klienditoe vastuseid aadressilt https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Palun lugege hoolikalt ülevalolevat teksti."
   },
   "home": {

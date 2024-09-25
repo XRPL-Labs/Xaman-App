@@ -15,6 +15,7 @@ import Preferences from '@common/libs/preferences';
 import { VersionDiff } from '@common/utils/version';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
+import { WebLinks } from '@common/constants/endpoints';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
@@ -128,7 +129,7 @@ class AppService extends EventEmitter {
                             },
                             {
                                 text: Localize.t('global.update'),
-                                onPress: () => Linking.openURL('https://apps.apple.com/us/app/id1492302343'),
+                                onPress: () => Linking.openURL(WebLinks.AppleStoreLink),
                             },
                         ],
                         { cancelable: true },

@@ -383,7 +383,7 @@
     "repeatPasscode": "נא לחזור על קוד הכניסה החדש",
     "passcodeDoNotMatch": "קוד הגישה לא תואם!",
     "warnNeedPasscode": "אתה צריך את הסיסמה שלך כדי לפתוח את האפליקציה",
-    "UnableToStoreThePasscode": "לא ניתן לאחסן את קוד הכניסה. זה לא אמור לקרות. דוח באגים נשלח לצוות התמיכה של Xaman. אנא צור איתנו קשר עם support@xumm.app לקבלת מידע נוסף.",
+    "UnableToStoreThePasscode": "לא ניתן לאחסן את קוד הכניסה. זה לא אמור לקרות. דוח באגים נשלח לצוות התמיכה של Xaman. אנא צור איתנו קשר עם support@xaman.app לקבלת מידע נוסף.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "כאשר תקבל טלפון אחר (חדש / החלפה), מטעמי אבטחה, Xaman יבקש ממך לייבא שוב את כל חשבונותיך באמצעות סודות החשבון.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "אני אשמור על סודותיי בטוחים, במצב לא מקוון, כדי שאוכל להזין אותם מחדש אם אקבל טלפון חדש",
     "questionsAndSupport": "שאלות ותמיכה",
-    "questionsAndSupportExplain": "אם יש לך שאלות, אתה יכול לקרוא שאלות נפוצות ולשאול שאלות בכתובת https://support.xumm.app.\r\n\r\nזהו הערוץ המהימן היחיד לתמיכה ב- XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "אני אמון על תשובות מצוות התמיכה של Xaman רק בכתובת https://support.xumm.app",
+    "questionsAndSupportExplain": "אם יש לך שאלות, אתה יכול לקרוא שאלות נפוצות ולשאול שאלות בכתובת https://support.xaman.app.\r\n\r\nזהו הערוץ המהימן היחיד לתמיכה ב- XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "אני אמון על תשובות מצוות התמיכה של Xaman רק בכתובת https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "אנא קרא בעיון את הטקסט לעיל"
   },
   "home": {

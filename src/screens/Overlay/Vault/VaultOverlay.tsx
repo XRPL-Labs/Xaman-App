@@ -28,6 +28,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import Localize from '@locale';
 
@@ -232,8 +233,7 @@ class VaultOverlay extends Component<Props, State> {
     };
 
     openTroubleshootLink = () => {
-        const url = `https://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
-        Linking.openURL(url).catch(() => {
+        Linking.openURL(`${WebLinks.FAQAccountSigningPasswordURL}/${Localize.getCurrentLocale()}`).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };

@@ -383,7 +383,7 @@
     "repeatPasscode": "Prašome pakartoti savo naują kodą",
     "passcodeDoNotMatch": "Slaptažodis nesutampa!",
     "warnNeedPasscode": "Jums reikės savo slaptažodį atrakinti programą",
-    "UnableToStoreThePasscode": "Nepavyko išsaugoti kodo. Tai neturėtų atsitikti. Re ataskaita buvo nusiųsta į Xaman palaikymo komanda. Prašome susisiekti su mumis support@xumm.app daugiau informacijos.",
+    "UnableToStoreThePasscode": "Nepavyko išsaugoti kodo. Tai neturėtų atsitikti. Re ataskaita buvo nusiųsta į Xaman palaikymo komanda. Prašome susisiekti su mumis support@xaman.app daugiau informacijos.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Kai gausite kitą telefoną (naują / pakeistą), saugumo sumetimais Xaman vėl paprašys visų paskyrų importuoti naudodamas paskyros paslaptis.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Aš nuolat mano paslaptis saugi, offline, todėl galiu iš naujo įvesti juos, jei gausiu naują telefoną",
     "questionsAndSupport": "Klausimai ir palaikymas",
-    "questionsAndSupportExplain": "Jei turite klausimų, galite skaityti DUK ir užduoti klausimus https://support.xumm.app.\r\n\r\nTai yra vienintelis patikimas XUMM klientų aptarnavimo kanalas.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Pasitikėsiu tik Xaman palaikymo komandos atsakymais adresu https://support.xumm.app",
+    "questionsAndSupportExplain": "Jei turite klausimų, galite skaityti DUK ir užduoti klausimus https://support.xaman.app.\r\n\r\nTai yra vienintelis patikimas XUMM klientų aptarnavimo kanalas.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Pasitikėsiu tik Xaman palaikymo komandos atsakymais adresu https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Atidžiai perskaitykite aukščiau pateiktą tekstą"
   },
   "home": {

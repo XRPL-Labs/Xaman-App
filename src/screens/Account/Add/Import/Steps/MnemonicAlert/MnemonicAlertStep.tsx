@@ -5,6 +5,8 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image, Linking, Alert } from 'react-native';
 
+import { WebLinks } from '@common/constants/endpoints';
+
 import StyleService from '@services/StyleService';
 
 // components
@@ -28,9 +30,7 @@ class MnemonicAlertStep extends Component<Props, State> {
     declare context: React.ContextType<typeof StepsContext>;
 
     openFAQ = () => {
-        const url = 'https://xumm.app/redir/faq/security-hardware/en';
-
-        Linking.openURL(url).catch(() => {
+        Linking.openURL(`${WebLinks.FAQSecurityHardwareURL}/${Localize.getCurrentLocale()}`).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };

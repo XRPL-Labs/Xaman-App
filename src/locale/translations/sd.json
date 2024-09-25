@@ -383,7 +383,7 @@
     "repeatPasscode": "مهرباني ڪري پنهنجو نئون پاسورڊ ورجائي ورجايو",
     "passcodeDoNotMatch": "پاسورڊ ڪوڊ نٿو ملي",
     "warnNeedPasscode": "توهان ايپ کي ان لاڪ ڪرڻ لاء پنهنجي پاس ڪوڊ جي ضرورت پوندي",
-    "UnableToStoreThePasscode": "پاسورڊ محفوظ ڪرڻ لاءِ ناڪام اهو نه ٿيڻ گهرجي ها. بگ رپورٽ Xaman جي سپورٽ ٽيم ڏانهن موڪلي وئي. وڌيڪ معلومات لاءِ مهرباني ڪري اسان سان رابطو ڪريو support@xumm.app",
+    "UnableToStoreThePasscode": "پاسورڊ محفوظ ڪرڻ لاءِ ناڪام اهو نه ٿيڻ گهرجي ها. بگ رپورٽ Xaman جي سپورٽ ٽيم ڏانهن موڪلي وئي. وڌيڪ معلومات لاءِ مهرباني ڪري اسان سان رابطو ڪريو support@xaman.app",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "جڏهن توهان هڪ ٻيو فون وٺو (نئين / متبادل) ، حفاظتي سببن ڪري ، Xaman توهان کان ٻيهر اڪائونٽ راز استعمال ڪندي توهان جي سڀني اڪائونٽس درآمد ڪرڻ لاءِ چوندو.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "مان پنهنجي ڳجهي کاتي جون ڪنجيون محفوظ ۽ آف لائن رکندس ، انهي ڪري جيڪڏهن آئون نئين ڊوائيس حاصل ڪري سگهين ته انهن کي ٻيهر داخل ڪري سگهان ٿو.",
     "questionsAndSupport": "سوالن ۽ حمايت",
-    "questionsAndSupportExplain": "جيڪڏهن توهان وٽ سوال آهي ، توهان FAQ پڙهائي سگهو ٿا ۽ https://support.xumm.app تي سوال پڇو.\r\n\r\nاھو ھڪڙو واحد قابل اعتبار چينل آھي XUMM سپورٽ لاء.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "مان صرف Xaman جي سپورٽ ٽيم کان جواب تي اعتماد ڪندس https://support.xumm.app تي",
+    "questionsAndSupportExplain": "جيڪڏهن توهان وٽ سوال آهي ، توهان FAQ پڙهائي سگهو ٿا ۽ https://support.xaman.app تي سوال پڇو.\r\n\r\nاھو ھڪڙو واحد قابل اعتبار چينل آھي XUMM سپورٽ لاء.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "مان صرف Xaman جي سپورٽ ٽيم کان جواب تي اعتماد ڪندس https://support.xaman.app تي",
     "pleaseReadTheTextAboveCarefully": "مهرباني ڪري مٿي ڏنل متن کي غور سان پڙهو"
   },
   "home": {

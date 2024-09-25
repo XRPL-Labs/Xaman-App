@@ -383,7 +383,7 @@
     "repeatPasscode": "Mesedez errepikatu pasakode berria",
     "passcodeDoNotMatch": "Pasakodea ez dator bat!",
     "warnNeedPasscode": "Zure pasakodea beharko duzu aplikazioa desblokeatzeko",
-    "UnableToStoreThePasscode": "Ezin da pasakodea gorde. Hori ez litzateke gertatu behar. Akatsen berri eman zaio Xaman laguntza taldeari. Informazio gehiagorako jar zaitez gurekin harremanetan support@xumm.app helbidera.",
+    "UnableToStoreThePasscode": "Ezin da pasakodea gorde. Hori ez litzateke gertatu behar. Akatsen berri eman zaio Xaman laguntza taldeari. Informazio gehiagorako jar zaitez gurekin harremanetan support@xaman.app helbidera.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Beste telefono bat (berria / ordezkoa) lortzen duzunean, segurtasun arrazoiak direla eta, Xamanek kontu guztiak sekretuak erabiliz inportatzeko eskatuko dizu berriro.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Nire sekretuak seguru gordeko ditut, lineaz kanpo, telefono berri bat lortuz gero berriro sartu ahal izateko",
     "questionsAndSupport": "Galderak eta laguntza",
-    "questionsAndSupportExplain": "Galderarik baduzu, FAQ-ak irakurri eta galderak egin ditzakezu https://support.xumm.app helbidean.\r\n\r\nHau da XUMM laguntzarako kanal fidagarri BAKARRA.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xumm.app helbidean Xaman laguntza taldearen erantzunak fidatuko ditut",
+    "questionsAndSupportExplain": "Galderarik baduzu, FAQ-ak irakurri eta galderak egin ditzakezu https://support.xaman.app helbidean.\r\n\r\nHau da XUMM laguntzarako kanal fidagarri BAKARRA.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xaman.app helbidean Xaman laguntza taldearen erantzunak fidatuko ditut",
     "pleaseReadTheTextAboveCarefully": "Mesedez irakurri arretaz goiko testua"
   },
   "home": {

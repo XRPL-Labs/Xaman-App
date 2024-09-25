@@ -28,13 +28,13 @@ describe('Payload', () => {
         expect(craftedPayload.getTransaction().JsonForSigning).toEqual(transaction);
         expect(craftedPayload.getSigners()).toEqual(['rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY']);
 
-        const payloadPatchSpy = jest.spyOn(ApiService.payload, 'patch');
+        const payloadPatchSpy = jest.spyOn(ApiService, 'fetch');
         // @ts-ignore
         craftedPayload.patch({ signed_blob: '', tx_id: '', multisigned: '' });
         expect(payloadPatchSpy).toBeCalledTimes(0);
-        payloadPatchSpy.mockClear();
+        payloadPatchSpy.mockRestore();
 
-        const payloadRejectSpy = jest.spyOn(ApiService.payload, 'patch');
+        const payloadRejectSpy = jest.spyOn(ApiService, 'fetch');
         craftedPayload.reject('USER');
         expect(payloadRejectSpy).toBeCalledTimes(0);
         payloadRejectSpy.mockClear();
@@ -44,7 +44,7 @@ describe('Payload', () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
         const payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
+            .spyOn(ApiService, 'fetch')
             .mockImplementation(() => Promise.resolve(AccountSetPayload));
 
         const fetchedPayload = await Payload.from(AccountSetPayload.meta.uuid);
@@ -63,7 +63,7 @@ describe('Payload', () => {
         invalidTypesPayload.payload.request_json.TransactionType = 'SomethingElse';
 
         let payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
+            .spyOn(ApiService, 'fetch')
             .mockImplementation(() => Promise.resolve(Object.assign(invalidTypesPayload)));
 
         try {
@@ -74,9 +74,7 @@ describe('Payload', () => {
 
         payloadFetchSpy.mockClear();
 
-        payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
-            .mockImplementation(() => Promise.resolve(AccountSetPayload));
+        payloadFetchSpy = jest.spyOn(ApiService, 'fetch').mockImplementation(() => Promise.resolve(AccountSetPayload));
 
         const invalidSignInPayload = JSON.parse(JSON.stringify(AccountSetPayload));
         invalidSignInPayload.payload.tx_type = 'SignIn';
@@ -95,7 +93,7 @@ describe('Payload', () => {
         const { InvalidPayload } = PayloadTemplate;
 
         const payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
+            .spyOn(ApiService, 'fetch')
             .mockImplementation(() => Promise.resolve(InvalidPayload));
 
         try {
@@ -152,7 +150,7 @@ describe('Payload', () => {
     it('Should throw error if payload is resolved or expired', async () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
-        const payloadFetchSpy = jest.spyOn(ApiService.payload, 'get').mockImplementation(() =>
+        const payloadFetchSpy = jest.spyOn(ApiService, 'fetch').mockImplementation(() =>
             Promise.resolve({
                 ...AccountSetPayload,
                 ...{
@@ -173,7 +171,7 @@ describe('Payload', () => {
 
         payloadFetchSpy.mockClear();
 
-        const payloadFetchSpy2 = jest.spyOn(ApiService.payload, 'get').mockImplementation(() =>
+        const payloadFetchSpy2 = jest.spyOn(ApiService, 'fetch').mockImplementation(() =>
             Promise.resolve({
                 ...AccountSetPayload,
                 ...{
@@ -199,7 +197,7 @@ describe('Payload', () => {
         const { AccountSet: AccountSetPayload } = PayloadTemplate;
 
         const payloadFetchSpy = jest
-            .spyOn(ApiService.payload, 'get')
+            .spyOn(ApiService, 'fetch')
             .mockImplementation(() => Promise.reject(new ApiError('message', 403, 'refrence')));
 
         try {

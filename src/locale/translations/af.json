@@ -383,7 +383,7 @@
     "repeatPasscode": "Herhaal u nuwe wagwoordkode",
     "passcodeDoNotMatch": "Die wagkode stem nie ooreen nie!",
     "warnNeedPasscode": "U sal u wagkode benodig om die program te ontsluit",
-    "UnableToStoreThePasscode": "Kan nie die wagkode stoor nie. Dit behoort nie te gebeur nie. 'N Foutverslag is aan die Xaman-ondersteuningspan gestuur. Kontak ons ​​gerus by support@xumm.app vir meer inligting.",
+    "UnableToStoreThePasscode": "Kan nie die wagkode stoor nie. Dit behoort nie te gebeur nie. 'N Foutverslag is aan die Xaman-ondersteuningspan gestuur. Kontak ons ​​gerus by support@xaman.app vir meer inligting.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "As u Xaman met 'n nuwe foon gebruik, moet u u geheime sleutels weer invoer vir enige rekeninge wat u voorheen geskep het",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ek sal my geheime sleutels veilig en vanlyn hou, sodat ek dit weer kan invoer as ek a nuwe toestel kry.",
     "questionsAndSupport": "Vrae & ondersteuning",
-    "questionsAndSupportExplain": "As jy vrae het, kan jy vrae lees en vra vrae aan https://support.xumm.app.\r\n\r\nDit is die ENIGSTE betroubare kanaal vir XUMM ondersteuning.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Ek vertrou slegs die antwoorde van die Xaman-ondersteuningspan op https://support.xumm.app",
+    "questionsAndSupportExplain": "As jy vrae het, kan jy vrae lees en vra vrae aan https://support.xaman.app.\r\n\r\nDit is die ENIGSTE betroubare kanaal vir XUMM ondersteuning.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Ek vertrou slegs die antwoorde van die Xaman-ondersteuningspan op https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Lees asseblief die teks hierbo noukeurig"
   },
   "home": {

@@ -383,7 +383,7 @@
     "repeatPasscode": "Lūdzu, atkārtojiet savu jauno piekļuves kodu",
     "passcodeDoNotMatch": "Pieejas kods nesakrīt!",
     "warnNeedPasscode": "Jums būs nepieciešams jūsu piekļuves kodu, lai atbloķētu lietotni",
-    "UnableToStoreThePasscode": "Neizdevās saglabāt piekļuves kodu. Tas nedrīkst notikt. Xaman atbalsta komandai tika nosūtīts kļūdas ziņojums. Lūdzu, sazinieties ar mums support@xumm.app, lai iegūtu vairāk informācijas.",
+    "UnableToStoreThePasscode": "Neizdevās saglabāt piekļuves kodu. Tas nedrīkst notikt. Xaman atbalsta komandai tika nosūtīts kļūdas ziņojums. Lūdzu, sazinieties ar mums support@xaman.app, lai iegūtu vairāk informācijas.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Kad iegūsiet citu telefonu (jaunu/samainītu), tad drošības apsvērumu dēļ, Xaman lūgs jums vēlreiz migrēt visus savus kontus, izmantojot kontu pieejas datus.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ja dabūšu jaunu tālruni, tad turēšu savus pieejas datus bezsaistē, lai varētu tos ievadīt atkārtoti",
     "questionsAndSupport": "Jautājumi un atbalsts",
-    "questionsAndSupportExplain": "Ja jums ir jautājumi, jūs varat izlasīt sadaļu BUJ, kā arī uzdot jautājumus https://support.xumm.app.\r\n\r\nTas ir VIENĪGAIS uzticamais kanāls XUMM atbalstam.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Es uzticos atbildēm tikai no Xaman atbalsta komandas lapas https://support.xumm.app",
+    "questionsAndSupportExplain": "Ja jums ir jautājumi, jūs varat izlasīt sadaļu BUJ, kā arī uzdot jautājumus https://support.xaman.app.\r\n\r\nTas ir VIENĪGAIS uzticamais kanāls XUMM atbalstam.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Es uzticos atbildēm tikai no Xaman atbalsta komandas lapas https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Lūdzu zemāk izlasiet tekstu rūpīgi "
   },
   "home": {

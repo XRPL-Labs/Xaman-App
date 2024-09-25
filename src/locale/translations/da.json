@@ -383,7 +383,7 @@
     "repeatPasscode": "Gentag din nye adgangskode",
     "passcodeDoNotMatch": "Koden stemmer ikke overens!",
     "warnNeedPasscode": "Du skal bruge din adgangskode for at låse appen op",
-    "UnableToStoreThePasscode": "Kan ikke gemme adgangskoden. Dette bør ikke ske. Der er sendt en fejlrapport til Xaman-supportteamet. Kontakt os på support@xumm.app for at få flere oplysninger.",
+    "UnableToStoreThePasscode": "Kan ikke gemme adgangskoden. Dette bør ikke ske. Der er sendt en fejlrapport til Xaman-supportteamet. Kontakt os på support@xaman.app for at få flere oplysninger.",
     "weakPasscode": "Svag adgangskode",
     "weakPasscodeDescription": "Den valgte adgangskode er nem at gætte. Vi anbefaler, at du vælger en stærkere kode.",
     "useAnyway": "Brug alligevel",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Når du får en ny telefon (ny / udskiftning), vil Xaman af sikkerhedshensyn bede dig om at importere alle dine konti ved hjælp af konto-hemmelighederne igen.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Jeg vil holde mine kontohemmeligheder sikre, offline, så jeg kan genindtaste dem, hvis jeg får en ny telefon",
     "questionsAndSupport": "Spørgsmål og hjælp",
-    "questionsAndSupportExplain": "Hvis du har spørgsmål, kan du læse ofte stillede spørgsmål og stille spørgsmål på https://support.xumm.app.\r\n\r\nDet er DEN ENESTE troværdige kilde til at få hjælp fra XUMM!",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Jeg vil KUN have tillid til svar, der kommer fra Xaman-supportteamet på https://support.xumm.app",
+    "questionsAndSupportExplain": "Hvis du har spørgsmål, kan du læse ofte stillede spørgsmål og stille spørgsmål på https://support.xaman.app.\r\n\r\nDet er DEN ENESTE troværdige kilde til at få hjælp fra XUMM!",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Jeg vil KUN have tillid til svar, der kommer fra Xaman-supportteamet på https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Læs venligst den ovenstående tekst nøje igennem"
   },
   "home": {

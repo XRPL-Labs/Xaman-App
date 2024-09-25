@@ -2,7 +2,7 @@ import { get } from 'lodash';
 
 import React, { Component } from 'react';
 
-import { AppConfig } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import { Payload } from '@common/libs/payload';
 
@@ -57,7 +57,6 @@ class HooksExplainer extends Component<Props, State> {
         // LOG  Hex.Encode     1792
         // LOG  JSON.stringify 896
         // LOG  codec.encode   646
-
         if (transaction) {
             Object.assign(params, {
                 tx_hash: transaction.hash,
@@ -73,7 +72,7 @@ class HooksExplainer extends Component<Props, State> {
         }
 
         return {
-            uri: `${AppConfig.hooksExplainerURL}${Localize.getCurrentLocale()}`,
+            uri: `${WebLinks.HooksExplainerURL}/${Localize.getCurrentLocale()}`,
             method: 'POST',
             body: JSON.stringify(params),
             headers: {

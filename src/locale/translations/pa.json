@@ -383,7 +383,7 @@
     "repeatPasscode": "ਕ੍ਰਿਕਸ ਆਪਣੇ ਨਾਮ ਪਾਸਕੋਡ ਦੁਹਰਾਓ",
     "passcodeDoNotMatch": "ਪਾਸਕੋਡ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ!",
     "warnNeedPasscode": "ਐਪ ਨੂੰ ਅਨਲੌਕ ਕਰਨ ਲਈ ਤੁਹਾਨੂੰ ਆਪਣੇ ਪਾਸਕੋਡ ਦੀ ਜ਼ਰੂਰਤ ਹੋਏਗੀ",
-    "UnableToStoreThePasscode": "ਪਾਸਕੋਡ ਨੂੰ ਸਟੋਰ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ. ਅਜਿਹਾ ਨਹੀਂ ਹੋਣਾ ਚਾਹੀਦਾ. ਐਕਸਯੂਐਮਐਮ ਸਹਾਇਤਾ ਟੀਮ ਨੂੰ ਇੱਕ ਬੱਗ ਰਿਪੋਰਟ ਭੇਜੀ ਗਈ ਸੀ. ਵਧੇਰੇ ਜਾਣਕਾਰੀ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਸਾਡੇ ਨਾਲ support@xumm.app 'ਤੇ ਸੰਪਰਕ ਕਰੋ.",
+    "UnableToStoreThePasscode": "ਪਾਸਕੋਡ ਨੂੰ ਸਟੋਰ ਕਰਨ ਵਿੱਚ ਅਸਮਰੱਥ. ਅਜਿਹਾ ਨਹੀਂ ਹੋਣਾ ਚਾਹੀਦਾ. ਐਕਸਯੂਐਮਐਮ ਸਹਾਇਤਾ ਟੀਮ ਨੂੰ ਇੱਕ ਬੱਗ ਰਿਪੋਰਟ ਭੇਜੀ ਗਈ ਸੀ. ਵਧੇਰੇ ਜਾਣਕਾਰੀ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਸਾਡੇ ਨਾਲ support@xaman.app 'ਤੇ ਸੰਪਰਕ ਕਰੋ.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "ਜਦੋਂ ਤੁਸੀਂ ਇਕ ਹੋਰ ਫੋਨ ਪ੍ਰਾਪਤ ਕਰਦੇ ਹੋ (ਨਵਾਂ / ਬਦਲਣਾ), ਸੁਰੱਖਿਆ ਕਾਰਨਾਂ ਕਰਕੇ, Xaman ਤੁਹਾਨੂੰ ਖਾਤੇ ਦੇ ਭੇਦ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਆਪਣੇ ਸਾਰੇ ਖਾਤਿਆਂ ਨੂੰ ਮੁੜ ਆਯਾਤ ਕਰਨ ਲਈ ਕਹੇਗਾ.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "ਮੈਂ ਆਪਣੇ ਭੇਦ ਸੁਰੱਖਿਅਤ ਰੱਖਾਂਗਾ, ਔਫਲਾਈਨ ,ਇਸ ਲਈ ਜੇ ਮੈਂ ਇੱਕ ਨਵਾਂ ਫੋਨ ਪ੍ਰਾਪਤ ਕਰਦਾ ਹਾਂ ਤਾਂ ਮੈਂ ਉਨ੍ਹਾਂ ਵਿੱਚ ਦੁਬਾਰਾ ਦਾਖਲ ਹੋ ਸਕਦਾ ਹਾਂ",
     "questionsAndSupport": "ਸਵਾਲ & ਸਹਿਯੋਗ",
-    "questionsAndSupportExplain": "ਜੇ ਤੁਹਾਡੇ ਕੋਈ ਪ੍ਰਸ਼ਨ ਹਨ, ਤਾਂ ਤੁਸੀਂ ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ ਪੜ੍ਹ ਸਕਦੇ ਹੋ ਅਤੇ https://support.xumm.app 'ਤੇ ਪ੍ਰਸ਼ਨ ਪੁੱਛ ਸਕਦੇ ਹੋ.\r\n\r\nਇਹ XUMM ਸਹਾਇਤਾ ਲਈ ਸਿਰਫ ਭਰੋਸੇਯੋਗ ਚੈਨਲ ਹੈ.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "ਮੈਂ ਸਿਰਫ https://support.xumm.app ਤੇ Xaman ਸਪੋਰਟ ਟੀਮ ਦੁਆਰਾ ਜਵਾਬਾਂ ਤੇ ਭਰੋਸਾ ਕਰਾਂਗਾ.",
+    "questionsAndSupportExplain": "ਜੇ ਤੁਹਾਡੇ ਕੋਈ ਪ੍ਰਸ਼ਨ ਹਨ, ਤਾਂ ਤੁਸੀਂ ਅਕਸਰ ਪੁੱਛੇ ਜਾਂਦੇ ਸਵਾਲ ਪੜ੍ਹ ਸਕਦੇ ਹੋ ਅਤੇ https://support.xaman.app 'ਤੇ ਪ੍ਰਸ਼ਨ ਪੁੱਛ ਸਕਦੇ ਹੋ.\r\n\r\nਇਹ XUMM ਸਹਾਇਤਾ ਲਈ ਸਿਰਫ ਭਰੋਸੇਯੋਗ ਚੈਨਲ ਹੈ.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "ਮੈਂ ਸਿਰਫ https://support.xaman.app ਤੇ Xaman ਸਪੋਰਟ ਟੀਮ ਦੁਆਰਾ ਜਵਾਬਾਂ ਤੇ ਭਰੋਸਾ ਕਰਾਂਗਾ.",
     "pleaseReadTheTextAboveCarefully": "ਕਿਰਪਾ ਕਰਕੇ ਉੱਪਰ ਦਿੱਤੇ ਪਾਠ ਨੂੰ ਧਿਆਨ ਨਾਲ ਪੜ੍ਹੋ"
   },
   "home": {

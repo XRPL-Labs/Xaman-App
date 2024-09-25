@@ -383,7 +383,7 @@
     "repeatPasscode": "നിങ്ങളുടെ പുതിയ പാസ്‌കോഡ് ആവർത്തിക്കുക",
     "passcodeDoNotMatch": "പാസ്‌കോഡ് പൊരുത്തപ്പെടുന്നില്ല!",
     "warnNeedPasscode": "അപ്ലിക്കേഷൻ അൺലോക്കുചെയ്യുന്നതിന് നിങ്ങളുടെ പാസ്‌കോഡ് ആവശ്യമാണ്",
-    "UnableToStoreThePasscode": "പാസ്‌കോഡ് സംഭരിക്കാനായില്ല. ഇത് സംഭവിക്കാൻ പാടില്ല. Xaman പിന്തുണാ ടീമിന് ഒരു ബഗ് റിപ്പോർട്ട് അയച്ചു. കൂടുതൽ വിവരങ്ങൾക്ക് support@xumm.app ൽ ഞങ്ങളെ ബന്ധപ്പെടുക.",
+    "UnableToStoreThePasscode": "പാസ്‌കോഡ് സംഭരിക്കാനായില്ല. ഇത് സംഭവിക്കാൻ പാടില്ല. Xaman പിന്തുണാ ടീമിന് ഒരു ബഗ് റിപ്പോർട്ട് അയച്ചു. കൂടുതൽ വിവരങ്ങൾക്ക് support@xaman.app ൽ ഞങ്ങളെ ബന്ധപ്പെടുക.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "സുരക്ഷാ കാരണങ്ങളാൽ നിങ്ങൾക്ക് മറ്റൊരു ഫോൺ (പുതിയ / മാറ്റിസ്ഥാപിക്കൽ) ലഭിക്കുമ്പോൾ, അക്കൗണ്ട് രഹസ്യങ്ങൾ ഉപയോഗിച്ച് നിങ്ങളുടെ എല്ലാ അക്കൗണ്ടുകളും വീണ്ടും ഇറക്കുമതി ചെയ്യാൻ Xaman നിങ്ങളോട് ആവശ്യപ്പെടും.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "ഞാൻ എന്റെ രഹസ്യങ്ങൾ ഓഫ്‌ലൈനിൽ സുരക്ഷിതമായി സൂക്ഷിക്കും, അതിനാൽ എനിക്ക് ഒരു പുതിയ ഫോൺ ലഭിക്കുകയാണെങ്കിൽ അവ വീണ്ടും നൽകാം",
     "questionsAndSupport": "ചോദ്യങ്ങൾ & പിന്തുണ",
-    "questionsAndSupportExplain": "നിങ്ങൾക്ക് ചോദ്യങ്ങളുണ്ടെങ്കിൽ, നിങ്ങൾക്ക് പതിവുചോദ്യങ്ങൾ വായിക്കാനും https://support.xumm.app- ൽ ചോദ്യങ്ങൾ ചോദിക്കാനും കഴിയും.\r\n\r\nXUMM പിന്തുണയ്‌ക്കുള്ള ഏക വിശ്വസനീയമായ ചാനലാണിത്.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xumm.app- ലെ Xaman പിന്തുണാ ടീമിൽ നിന്നുള്ള ഉത്തരങ്ങളെ മാത്രം ഞാൻ വിശ്വസിക്കും.",
+    "questionsAndSupportExplain": "നിങ്ങൾക്ക് ചോദ്യങ്ങളുണ്ടെങ്കിൽ, നിങ്ങൾക്ക് പതിവുചോദ്യങ്ങൾ വായിക്കാനും https://support.xaman.app- ൽ ചോദ്യങ്ങൾ ചോദിക്കാനും കഴിയും.\r\n\r\nXUMM പിന്തുണയ്‌ക്കുള്ള ഏക വിശ്വസനീയമായ ചാനലാണിത്.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Https://support.xaman.app- ലെ Xaman പിന്തുണാ ടീമിൽ നിന്നുള്ള ഉത്തരങ്ങളെ മാത്രം ഞാൻ വിശ്വസിക്കും.",
     "pleaseReadTheTextAboveCarefully": "മുകളിലുള്ള വാചകം ശ്രദ്ധാപൂർവ്വം വായിക്കുക"
   },
   "home": {

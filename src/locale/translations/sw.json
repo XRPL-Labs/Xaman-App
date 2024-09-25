@@ -383,7 +383,7 @@
     "repeatPasscode": "Please repeat your new passcode",
     "passcodeDoNotMatch": "The passcodes do not match!",
     "warnNeedPasscode": "You will need your passcode to unlock the app",
-    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the Xaman support team. Please contact us at support@xumm.app for more information.",
+    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the Xaman support team. Please contact us at support@xaman.app for more information.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Using Xaman with a new device will require you to re-enter your secret keys for any accounts you have previously created.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "I will keep my secret account keys safe and offline, so I can re-enter them if I get a new device.",
     "questionsAndSupport": "Questions & Support",
-    "questionsAndSupportExplain": "Please don’t hesitate to contact us if you have any further questions. Our FAQ and support channel can be found here: https://support.xumm.app.\r\n\r\nPlease note: This is THE ONLY trustworthy channel for XUMM support.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "I will only trust answers from the Xaman support team at https://support.xumm.app ",
+    "questionsAndSupportExplain": "Please don’t hesitate to contact us if you have any further questions. Our FAQ and support channel can be found here: https://support.xaman.app.\r\n\r\nPlease note: This is THE ONLY trustworthy channel for XUMM support.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "I will only trust answers from the Xaman support team at https://support.xaman.app ",
     "pleaseReadTheTextAboveCarefully": "Please read the above text carefully"
   },
   "home": {

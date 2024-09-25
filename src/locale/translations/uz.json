@@ -383,7 +383,7 @@
     "repeatPasscode": "Iltimos, yangi parolingizni takrorlang",
     "passcodeDoNotMatch": "Parol tugri kelmadi!",
     "warnNeedPasscode": "Ilovani qulfdan chiqarish uchun sizga parol kerak bo'ladi",
-    "UnableToStoreThePasscode": "Parol saqlanmadi. Bunday bo'lmasligi kerak. Xato hisoboti Xaman-ni qo'llab-quvvatlash guruhiga yuborildi. Qo'shimcha ma'lumot uchun biz bilan support@xumm.app elektron manzili orqali bog'laning.",
+    "UnableToStoreThePasscode": "Parol saqlanmadi. Bunday bo'lmasligi kerak. Xato hisoboti Xaman-ni qo'llab-quvvatlash guruhiga yuborildi. Qo'shimcha ma'lumot uchun biz bilan support@xaman.app elektron manzili orqali bog'laning.",
     "weakPasscode": "Kuchsiz passcode",
     "weakPasscodeDescription": "Tanlangan parolni taxmin qilish oson. Biz sizga kuchliroq tanlash tavsiya.",
     "useAnyway": "Baribir Foydalaning",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Xavfsizligi sababli boshqa telefonni (yangi / almashtirish) olganingizda, Xaman yana barcha hisoblaringizni hisob sirlaridan foydalangan holda import qilishni so'raydi.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Men sirlarimni xavfsiz, oflaynda saqlayman, shuning uchun yangi telefon olsam, ularni qayta kiritishim mumkin",
     "questionsAndSupport": "Savollar va qo'llab-quvvatlash",
-    "questionsAndSupportExplain": "Agar sizda savollar bo'lsa, siz tez-tez so'raladigan savollarni o'qishingiz va https://support.xumm.app sahifasida savollar berishingiz mumkin.\r\n\r\nBu XUMM-ni qo'llab-quvvatlash uchun faqatgina ishonchli kanal.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Men faqat https://support.xumm.app saytidagi Xaman qo'llab-quvvatlash guruhining javoblariga ishonaman",
+    "questionsAndSupportExplain": "Agar sizda savollar bo'lsa, siz tez-tez so'raladigan savollarni o'qishingiz va https://support.xaman.app sahifasida savollar berishingiz mumkin.\r\n\r\nBu XUMM-ni qo'llab-quvvatlash uchun faqatgina ishonchli kanal.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Men faqat https://support.xaman.app saytidagi Xaman qo'llab-quvvatlash guruhining javoblariga ishonaman",
     "pleaseReadTheTextAboveCarefully": "Iltimos, yuqoridagi matnni diqqat bilan o'qing"
   },
   "home": {

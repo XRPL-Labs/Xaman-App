@@ -7,6 +7,7 @@ import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@components/General';
 
@@ -184,7 +185,7 @@ class AccountElement extends Component<Props, State> {
             badge = 'IconCheckXaman';
         }
 
-        return <Avatar source={{ uri: `https://xumm.app/avatar/${address}_180_50.png` }} badge={badge} border />;
+        return <Avatar source={{ uri: `${WebLinks.AvatarURL}/${address}_180_50.png` }} badge={badge} border />;
     };
 
     renderSource = () => {
