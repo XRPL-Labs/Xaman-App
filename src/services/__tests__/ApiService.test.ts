@@ -2,6 +2,8 @@
 
 import fetch from 'fetch-mock';
 
+import { Endpoints } from '@common/constants/api';
+
 import { ApiService } from '../';
 import { ApiError } from '../ApiService';
 
@@ -38,56 +40,54 @@ describe('API', () => {
 
     const body = { foo: 'bar' };
 
-    for (const method of ['put', 'post', 'get', 'delete', 'patch']) {
-        describe(method.toUpperCase(), () => {
-            it(`should ${method} given data`, async () => {
-                await ApiService['ping'][method](undefined, POST_BODY);
-                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
-            });
-
-            it(`should ${method} given data with arg params`, async () => {
-                await ApiService['liquidityBoundaries'][method](URL_ARGS, POST_BODY);
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ARGS_NORMALIZED}`);
-                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
-            });
-
-            it(`should ${method} given data with URL params`, async () => {
-                await ApiService['ping'][method](URL_PARAMS, POST_BODY);
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_PARAM}`);
-                expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
-            });
-
-            it(`should ${method} given body in string`, async () => {
-                await ApiService['ping'][method](undefined, 'body');
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT}`);
-                expect(fetch.lastOptions()!.body).toBe('body');
-            });
-
-            it(`should ${method} with action`, async () => {
-                await ApiService['ping'][method]({ action: 'update' });
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ACTION}`);
-            });
-
-            it(`${method} with invalid json response`, async () => {
-                await expect(ApiService['ping'][method]({ action: 'invalid_json' })).rejects.toMatchObject(
-                    new ApiError('Response returned is not valid JSON'),
-                );
-            });
-
-            it(`${method} with id`, async () => {
-                await ApiService['ping'][method]({ id: 1 });
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ID}`);
-
-                await ApiService['ping'][method](1);
-                expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ID}`);
-            });
-
-            it(`${method} with http error code`, async () => {
-                // await ApiService['ping'][method]({ action: '400' }).catch((e) => console.warn(e.message));
-                await expect(ApiService['ping'][method]({ action: '400' })).rejects.toMatchObject(
-                    new ApiError('Api error {"foo":"bar"}'),
-                );
-            });
+    describe('Should be able to make requests', () => {
+        it(`should call with given data`, async () => {
+            await ApiService.fetch(Endpoints.Ping, 'POST', undefined, POST_BODY);
+            expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
         });
-    }
+
+        it(`should call with given data with arg params`, async () => {
+            await ApiService.fetch(Endpoints.LiquidityBoundaries, 'POST', URL_ARGS, POST_BODY);
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ARGS_NORMALIZED}`);
+            expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
+        });
+
+        it(`should call with given data and URL params`, async () => {
+            await ApiService.fetch(Endpoints.Ping, 'POST', URL_PARAMS, URL_PARAMS);
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_PARAM}`);
+            expect(fetch.lastOptions()!.body).toBe(JSON.stringify(body));
+        });
+
+        it(`should call with given body in string`, async () => {
+            await ApiService.fetch(Endpoints.Ping, 'POST', undefined, 'RAW_BODY');
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT}`);
+            expect(fetch.lastOptions()!.body).toBe('RAW_BODY');
+        });
+
+        it(`should call with action`, async () => {
+            await ApiService.fetch(Endpoints.Ping, 'GET', { action: 'update' });
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ACTION}`);
+        });
+
+        it(`call with invalid json response`, async () => {
+            await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: 'invalid_json' })).rejects.toMatchObject(
+                new ApiError('Response returned is not valid JSON'),
+            );
+        });
+
+        it(`call with id`, async () => {
+            await ApiService.fetch(Endpoints.Ping, 'GET', { id: 1 });
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ID}`);
+
+            await ApiService.fetch(Endpoints.Ping, 'GET', 1);
+            expect(fetch.lastUrl()).toBe(`${API_ROOT}${ENDPOINT_WITH_ID}`);
+        });
+
+        it(`handle with http error code`, async () => {
+            // await ApiService['ping'][method]({ action: '400' }).catch((e) => console.warn(e.message));
+            await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: '400' })).rejects.toMatchObject(
+                new ApiError('Api error {"foo":"bar"}'),
+            );
+        });
+    });
 });

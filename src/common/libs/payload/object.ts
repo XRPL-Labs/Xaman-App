@@ -30,6 +30,7 @@ import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
 import { PayloadErrors } from './errors';
+import { Endpoints } from '@common/constants/api';
 
 // create logger
 const logger = LoggerService.createLogger('Payload');
@@ -172,10 +173,9 @@ export class Payload {
      */
     fetch = (uuid: string): Promise<PayloadType> => {
         return new Promise((resolve, reject) => {
-            ApiService.payload
-                .get({ uuid, from: this.getOrigin() }, undefined, {
-                    'X-Xaman-Digest': DigestSerializeWithSHA1.DIGEST_HASH_ALGO,
-                })
+            ApiService.fetch(Endpoints.Payload, 'GET', { uuid, from: this.getOrigin() }, undefined, {
+                'X-Xaman-Digest': DigestSerializeWithSHA1.DIGEST_HASH_ALGO,
+            })
                 .then(async (response: PayloadType) => {
                     // get verification status
                     const verified = await this.verify(response.payload);
@@ -233,9 +233,11 @@ export class Payload {
                 origintype: this.getOrigin(),
             });
 
-            ApiService.payload.patch({ uuid: this.getPayloadUUID() }, patch).catch((error: ApiError) => {
-                logger.error(`Patch ${this.getPayloadUUID()}`, error);
-            });
+            ApiService.fetch(Endpoints.Payload, 'PATCH', { uuid: this.getPayloadUUID() }, patch).catch(
+                (error: ApiError) => {
+                    logger.error(`Patch ${this.getPayloadUUID()}`, error);
+                },
+            );
 
             return true;
         }
@@ -252,19 +254,19 @@ export class Payload {
             return;
         }
 
-        ApiService.payload
-            .patch(
-                { uuid: this.getPayloadUUID() },
-                {
-                    reject: true,
-                    reject_initiator: initiator,
-                    reject_reason: reason,
-                    origintype: this.getOrigin(),
-                },
-            )
-            .catch((error: ApiError) => {
-                logger.error(`Patch reject ${this.getPayloadUUID()}`, error);
-            });
+        ApiService.fetch(
+            Endpoints.Payload,
+            'PATCH',
+            { uuid: this.getPayloadUUID() },
+            {
+                reject: true,
+                reject_initiator: initiator,
+                reject_reason: reason,
+                origintype: this.getOrigin(),
+            },
+        ).catch((error: ApiError) => {
+            logger.error(`Patch reject ${this.getPayloadUUID()}`, error);
+        });
     };
 
     /**
