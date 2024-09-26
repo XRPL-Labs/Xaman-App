@@ -17,9 +17,23 @@ import okhttp3.Request;
 
 
 public class HTTPClientFactory implements OkHttpClientFactory {
-    // TODO: remove "xumm-cdn.imgix.net" after migration period
-    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xaman.app", "xaman.app", "image-proxy.xrpl-labs.com");
+    // TODO: remove "xumm-cdn.imgix.net", "cdn.xumm.pro". "xumm.app" after migration period
+    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "cdn.xumm.pro", "xumm.app", "cdn.xaman.app", "xaman.app", "image-proxy.xrpl-labs.com");
     private static final String defaultHost = "xaman.app";
+
+    @Override
+    public OkHttpClient createNewNetworkModuleClient() {
+
+        HostSelectionInterceptor interceptor = new HostSelectionInterceptor();
+
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .connectTimeout(0, TimeUnit.MILLISECONDS)
+                .readTimeout(0, TimeUnit.MILLISECONDS)
+                .writeTimeout(0, TimeUnit.MILLISECONDS)
+                .cookieJar(new ReactCookieJarContainer())
+                .addInterceptor(interceptor);
+        return client.build();
+    }
 
     private static final class HostSelectionInterceptor implements Interceptor {
         @Override
@@ -36,19 +50,5 @@ public class HTTPClientFactory implements OkHttpClientFactory {
             }
             return chain.proceed(request);
         }
-    }
-
-    @Override
-    public OkHttpClient createNewNetworkModuleClient() {
-
-        HostSelectionInterceptor interceptor = new HostSelectionInterceptor();
-
-        OkHttpClient.Builder client = new OkHttpClient.Builder()
-                .connectTimeout(0, TimeUnit.MILLISECONDS)
-                .readTimeout(0, TimeUnit.MILLISECONDS)
-                .writeTimeout(0, TimeUnit.MILLISECONDS)
-                .cookieJar(new ReactCookieJarContainer())
-                .addInterceptor(interceptor);
-        return client.build();
     }
 }
