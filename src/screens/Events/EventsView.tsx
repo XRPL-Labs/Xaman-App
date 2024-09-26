@@ -586,12 +586,12 @@ class EventsView extends Component<Props, State> {
             return;
         }
 
-        let newTransactions;
+        let newDataSource: Array<Transactions | LedgerObjects>;
 
         if (activeSection === EventSections.ALL) {
-            newTransactions = transactions;
+            newDataSource = transactions;
         } else {
-            newTransactions = plannedTransactions;
+            newDataSource = plannedTransactions;
         }
 
         if (filters.TransactionType) {
@@ -679,45 +679,34 @@ class EventsView extends Component<Props, State> {
                     break;
             }
 
-            newTransactions = newTransactions.filter((element) => includeTypes.includes(element?.Type));
-        }
-
-        if (filters.Amount && filters.AmountIndicator) {
-            newTransactions = filter(newTransactions, (element) => {
-                if (filters.AmountIndicator === 'Bigger') {
-                    return (
-                        ('Amount' in element && parseFloat(element?.Amount!.value) >= parseFloat(filters.Amount!)) ||
-                        ('DeliverMin' in element &&
-                            parseFloat(element?.DeliverMin!.value) >= parseFloat(filters.Amount!)) ||
-                        ('SendMax' in element && parseFloat(element?.SendMax!.value) >= parseFloat(filters.Amount!)) ||
-                        ('TakerGets' in element &&
-                            parseFloat(element?.TakerGets!.value) >= parseFloat(filters.Amount!)) ||
-                        ('TakerPays' in element && parseFloat(element?.TakerPays!.value) >= parseFloat(filters.Amount!))
-                    );
-                }
-                return (
-                    ('Amount' in element && parseFloat(element.Amount!.value) <= parseFloat(filters.Amount!)) ||
-                    ('DeliverMin' in element && parseFloat(element.DeliverMin!.value) <= parseFloat(filters.Amount!)) ||
-                    ('SendMax' in element && parseFloat(element.SendMax!.value) <= parseFloat(filters.Amount!)) ||
-                    ('TakerGets' in element && parseFloat(element.TakerGets!.value) <= parseFloat(filters.Amount!)) ||
-                    ('TakerPays' in element && parseFloat(element.TakerPays!.value) <= parseFloat(filters.Amount!))
-                );
-            });
+            newDataSource = newDataSource.filter((element) => includeTypes.includes(element?.Type));
         }
 
         if (filters.Currency) {
-            newTransactions = newTransactions.filter(
-                (element) =>
-                    ('Amount' in element && element.Amount!.currency === filters.Currency) ||
-                    ('DeliverMin' in element && element.DeliverMin!.currency === filters.Currency) ||
-                    ('SendMax' in element && element.SendMax!.currency === filters.Currency) ||
-                    ('TakerGets' in element && element.TakerGets!.currency === filters.Currency) ||
-                    ('TakerPays' in element && element.TakerPays!.currency === filters.Currency),
+            // @ts-ignore
+            newDataSource = newDataSource.filter(({ Amount, DeliverMin, SendMax, TakerGets, TakerPays }) =>
+                [Amount, DeliverMin, SendMax, TakerGets, TakerPays].some(
+                    (field) => field?.currency === filters.Currency,
+                ),
+            );
+        }
+
+        if (filters.Amount && filters.AmountIndicator) {
+            const compareAmount = (value1: string, value2: string) =>
+                filters.AmountIndicator === 'Bigger'
+                    ? parseFloat(value1) >= parseFloat(value2)
+                    : parseFloat(value1) <= parseFloat(value2);
+
+            // @ts-ignore
+            newDataSource = filter(newDataSource, ({ Amount, DeliverMin, SendMax, TakerGets, TakerPays }) =>
+                [Amount, DeliverMin, SendMax, TakerGets, TakerPays].some(
+                    (field) => field && compareAmount(field.value, filters.Amount!),
+                ),
             );
         }
 
         if (filters.ExpenseType) {
-            newTransactions = newTransactions.filter((element) => {
+            newDataSource = newDataSource.filter((element) => {
                 if ('Destination' in element) {
                     if (filters.ExpenseType === 'Income') {
                         return element?.Destination === account.address;
@@ -729,7 +718,7 @@ class EventsView extends Component<Props, State> {
         }
 
         if (activeSection === EventSections.ALL) {
-            if (isEmpty(newTransactions) && canLoadMore) {
+            if (isEmpty(newDataSource) && canLoadMore) {
                 this.setState(
                     {
                         filters,
@@ -738,13 +727,13 @@ class EventsView extends Component<Props, State> {
                 );
             } else {
                 this.setState({
-                    dataSource: this.buildDataSource(newTransactions, [], plannedTransactions),
+                    dataSource: this.buildDataSource(newDataSource, [], plannedTransactions),
                     filters,
                 });
             }
         } else {
             this.setState({
-                dataSource: this.buildDataSource(transactions, [], newTransactions),
+                dataSource: this.buildDataSource(transactions, [], newDataSource),
                 filters,
             });
         }
