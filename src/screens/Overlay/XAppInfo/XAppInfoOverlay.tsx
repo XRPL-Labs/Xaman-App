@@ -158,7 +158,7 @@ class XAppInfoOverlay extends Component<Props, State> {
         const { displayButtonTypes } = this.props;
 
         if (
-            !displayButtonTypes?.includes(DisplayButtonTypes.OPEN) ||
+            !displayButtonTypes?.includes(DisplayButtonTypes.OPEN) &&
             !displayButtonTypes?.includes(DisplayButtonTypes.SHARE)
         ) {
             return null;
@@ -179,6 +179,7 @@ class XAppInfoOverlay extends Component<Props, State> {
                         style={AppStyles.flex1}
                         rounded
                         light
+                        icon="IconShare"
                         label={Localize.t('global.share')}
                         onPress={this.onSharePress}
                     />

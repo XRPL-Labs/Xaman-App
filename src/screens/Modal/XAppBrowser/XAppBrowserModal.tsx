@@ -12,6 +12,7 @@ import {
     InteractionManager,
     Linking,
     NativeEventSubscription,
+    Share,
     Share as RNShare,
     Text,
     View,
@@ -805,6 +806,18 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
+    shareXApp = () => {
+        const { app } = this.state;
+
+        const { identifier, title } = app!;
+
+        Share.share({
+            title,
+            message: `https://${HOSTNAME}/detect/xapp:${identifier}`,
+            url: undefined,
+        });
+    };
+
     lunchMonetization = () => {
         const profile = ProfileRepository.getProfile();
 
@@ -829,8 +842,9 @@ class XAppBrowserModal extends Component<Props, State> {
             identifier,
             title: title!,
             icon: icon!,
-            displayButtonTypes: [DisplayButtonTypes.DONATION],
+            displayButtonTypes: [DisplayButtonTypes.DONATION, DisplayButtonTypes.SHARE],
             onDonationPress: this.openDonation,
+            onSharePress: this.shareXApp,
         });
     };
 
