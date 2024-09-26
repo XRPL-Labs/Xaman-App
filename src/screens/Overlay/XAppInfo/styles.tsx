@@ -1,6 +1,7 @@
 import StyleService from '@services/StyleService';
 
 import { AppSizes, AppFonts } from '@theme';
+
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     cancelButton: {
@@ -48,7 +49,7 @@ const styles = StyleService.create({
     footer: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: AppSizes.paddingSml + AppSizes.safeAreaBottomInset,
+        marginBottom: AppSizes.paddingSml + AppSizes.bottomInset,
     },
 });
 
