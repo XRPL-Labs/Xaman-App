@@ -383,7 +383,7 @@
     "repeatPasscode": "कृपया अपना नया पासकोड दोहराएं",
     "passcodeDoNotMatch": "पासकोड मेल नहीं खाता है!",
     "warnNeedPasscode": "ऐप को अनलॉक करने के लिए आपको अपने पासकोड की आवश्यकता होगी",
-    "UnableToStoreThePasscode": "पासकोड संग्रहीत करने में असमर्थ। ऐसा न हो कि। Xaman समर्थन टीम को एक बग रिपोर्ट भेजी गई थी। अधिक जानकारी के लिए support@xumm.app पर संपर्क करें।",
+    "UnableToStoreThePasscode": "पासकोड संग्रहीत करने में असमर्थ। ऐसा न हो कि। Xaman समर्थन टीम को एक बग रिपोर्ट भेजी गई थी। अधिक जानकारी के लिए support@xaman.app पर संपर्क करें।",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "जब आप सुरक्षा कारणों से एक और फोन (नया / प्रतिस्थापन) प्राप्त करते हैं, तो Xaman आपसे खाता रहस्यों का उपयोग करके अपने सभी खातों को फिर से आयात करने के लिए कहेगा।",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "मैं अपनी गुप्त खाता कुंजियों को सुरक्षित रूप से ऑफ़लाइन रखूंगा ताकि नया फ़ोन मिलने पर मैं उन्हें पुनः दर्ज कर सकूँ।",
     "questionsAndSupport": "प्रश्न और समर्थन",
-    "questionsAndSupportExplain": "यदि आपके कोई प्रश्न हैं, तो आप अक्सर पूछे जाने वाले प्रश्न पढ़ सकते हैं और https://support.xumm.app पर प्रश्न पूछ सकते हैं।\r\n\r\nयह XUMM समर्थन के लिए केवल भरोसेमंद चैनल है।",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "मैं https://support.xumm.app पर केवल Xaman सपोर्ट टीम के उत्तरों पर भरोसा करूंगा",
+    "questionsAndSupportExplain": "यदि आपके कोई प्रश्न हैं, तो आप अक्सर पूछे जाने वाले प्रश्न पढ़ सकते हैं और https://support.xaman.app पर प्रश्न पूछ सकते हैं।\r\n\r\nयह XUMM समर्थन के लिए केवल भरोसेमंद चैनल है।",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "मैं https://support.xaman.app पर केवल Xaman सपोर्ट टीम के उत्तरों पर भरोसा करूंगा",
     "pleaseReadTheTextAboveCarefully": "कृपया ऊपर दिए गए पाठ को ध्यान से पढ़ें"
   },
   "home": {

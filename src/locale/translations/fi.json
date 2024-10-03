@@ -383,7 +383,7 @@
     "repeatPasscode": "Toista uusi salasanasi",
     "passcodeDoNotMatch": "Salasana ei täsmää!",
     "warnNeedPasscode": "Tarvitset salasanasi sovelluksen lukituksen avaamiseksi",
-    "UnableToStoreThePasscode": "Salasanaa ei voitu tallentaa. Näin ei pitäisi tapahtua. Xaman-tukiryhmälle on lähetetty vianmääritysraportti. Ole hyvä ja ota yhteyttä osoitteeseen support@xumm.app saadaksesi lisätietoja.",
+    "UnableToStoreThePasscode": "Salasanaa ei voitu tallentaa. Näin ei pitäisi tapahtua. Xaman-tukiryhmälle on lähetetty vianmääritysraportti. Ole hyvä ja ota yhteyttä osoitteeseen support@xaman.app saadaksesi lisätietoja.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Kun saat toisen puhelimen (uusi/korvaava), turvallisuussyistä Xaman pyytää sinua tuomaan kaikki tilit uudelleen tilin salaisia numeroita käyttäen.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Pidän salaisuuteni turvassa, poissa verkosta, jotta voin syöttää ne uudelleen jos saan uuden puhelimen",
     "questionsAndSupport": "Kysymyksiä ja tukea",
-    "questionsAndSupportExplain": "Jos sinulla on kysyttävää, voit lukea FAQ :n ja kysyä kysymyksiä osoitteessa https://support.xumm.app\r\n\r\nTämä on XUMM-tuen AINOA luotettava kanava.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Luotan Xaman-tukitiimin vastauksiin vain osoitteessa https://support.xumm.app",
+    "questionsAndSupportExplain": "Jos sinulla on kysyttävää, voit lukea FAQ :n ja kysyä kysymyksiä osoitteessa https://support.xaman.app\r\n\r\nTämä on XUMM-tuen AINOA luotettava kanava.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Luotan Xaman-tukitiimin vastauksiin vain osoitteessa https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Lue ylläoleva teksti huolellisesti"
   },
   "home": {

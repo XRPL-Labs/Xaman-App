@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 
+import { WebLinks } from '@common/constants/endpoints';
+
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import StyleService from '@services/StyleService';
@@ -44,7 +46,7 @@ class AvatarBlock extends PureComponent<IProps> {
             <View style={styles.avatarContainer}>
                 <Avatar
                     border
-                    source={{ uri: `https://xumm.app/avatar/${participant?.address}_180_50.png` }}
+                    source={{ uri: `${WebLinks.AvatarURL}/${participant?.address}_180_50.png` }}
                     isLoading={!participant}
                     badge={badgeProps?.badge}
                     badgeColor={badgeProps?.badgeColor}

@@ -383,7 +383,7 @@
     "repeatPasscode": "Molimo ponovno unesite vašu lozinku",
     "passcodeDoNotMatch": "Lozinka se ne podudara!",
     "warnNeedPasscode": "Za otključavanje aplikacije trebat će vam lozinka",
-    "UnableToStoreThePasscode": "Ne može se spremiti pristupni kod. Ovo se ne bi trebalo dogoditi. Izvještaj o kvaru je poslan u Xaman tim za podršku. Molimo kontaktirajte nas na @xumm.app za više informacija.",
+    "UnableToStoreThePasscode": "Ne može se spremiti pristupni kod. Ovo se ne bi trebalo dogoditi. Izvještaj o kvaru je poslan u Xaman tim za podršku. Molimo kontaktirajte nas na @xaman.app za više informacija.",
     "weakPasscode": "Slaba lozinka",
     "weakPasscodeDescription": "Odabranu lozinku je lako pogoditi. Preporučujemo da odaberete jači.",
     "useAnyway": "Koristite svejedno",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Kad nabavite drugi telefon (novi / zamjenski), iz sigurnosnih razloga Xaman će od vas zatražiti da ponovo uvezete sve svoje račune koristeći tajne računa.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Čuvat ću svoje tajne ključeve (lozinke) sigurnima (izvan mreže), kako bi ih mogao unijeti kada mijenjam mobitel",
     "questionsAndSupport": "Pitanja i podrška",
-    "questionsAndSupportExplain": "Ako imate pitanja, možete pročitati često postavljana pitanja i postavljati pitanja na https://support.xumm.app.\r\n\r\nOvo je JEDINI pouzdani kanal za XUMM podršku.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Vjerovat ću samo odgovorima tima za podršku Xaman-a na https://support.xumm.app]",
+    "questionsAndSupportExplain": "Ako imate pitanja, možete pročitati često postavljana pitanja i postavljati pitanja na https://support.xaman.app.\r\n\r\nOvo je JEDINI pouzdani kanal za XUMM podršku.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Vjerovat ću samo odgovorima tima za podršku Xaman-a na https://support.xaman.app]",
     "pleaseReadTheTextAboveCarefully": "Molimo pažljivo pročitajte gornji tekst"
   },
   "home": {

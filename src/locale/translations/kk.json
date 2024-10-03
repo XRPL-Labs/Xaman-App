@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Басқа телефонды (жаңа / ауыстырылған) алған кезде, қауіпсіздік мақсатында XUM сізден есептік жазба құпияларын қолдана отырып, барлық есептік жазбаларыңызды қайтадан импорттауды сұрайды.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Мен өзімнің құпиямды қауіпсіз, офлайн режимде сақтаймын, егер мен жаңа телефон алсам, оларға қайта кіре аламын",
     "questionsAndSupport": "Сұрақтар мен қолдау",
-    "questionsAndSupportExplain": "Егер сізде сұрақтар туындаса, сіз FAQ оқып, оларды мына мекен-жай бойынша сұрай аласыз https://support.xumm.app.\r\n\r\nБұл XUMM қолдау үшін жалғыз сенімді арна.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Мен тек Xaman қолдау тобының жауабына сенемін https://support.xumm.app ]",
+    "questionsAndSupportExplain": "Егер сізде сұрақтар туындаса, сіз FAQ оқып, оларды мына мекен-жай бойынша сұрай аласыз https://support.xaman.app.\r\n\r\nБұл XUMM қолдау үшін жалғыз сенімді арна.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Мен тек Xaman қолдау тобының жауабына сенемін https://support.xaman.app ]",
     "pleaseReadTheTextAboveCarefully": "Жоғарыдағы мәтінді мұқият оқып шығыңыз"
   },
   "home": {

@@ -383,7 +383,7 @@
     "repeatPasscode": "దయచేసి మీ క్రొత్త పాస్‌కోడ్‌ ను పునరావృతం చేయండి\r\n",
     "passcodeDoNotMatch": "పాస్కోడ్ సరిపోలడం లేదు!",
     "warnNeedPasscode": "యాప్ ను ‌లాక్ చేయడానికి మీకు మీ పాస్‌కోడ్ అవసరం\r\n",
-    "UnableToStoreThePasscode": "పాస్‌కోడ్‌ను నిల్వ చేయడం సాధ్యం కాలేదు. ఇది జరగకూడదు. Xaman మద్దతు బృందానికి బగ్ నివేదిక పంపబడింది. మరింత సమాచారం కోసం support@xumm.app వద్ద మమ్మల్ని సంప్రదించండి.\r\n",
+    "UnableToStoreThePasscode": "పాస్‌కోడ్‌ను నిల్వ చేయడం సాధ్యం కాలేదు. ఇది జరగకూడదు. Xaman మద్దతు బృందానికి బగ్ నివేదిక పంపబడింది. మరింత సమాచారం కోసం support@xaman.app వద్ద మమ్మల్ని సంప్రదించండి.\r\n",
     "weakPasscode": "బలహీనమైన పాస్‌కోడ్\r\n",
     "weakPasscodeDescription": "ఎంచుకున్న పాస్‌కోడ్ ఊహించడం సులభం. బలమైనదాన్ని ఎంచుకోవాలని మేము మీకు సిఫార్సు చేస్తున్నాము.",
     "useAnyway": "ఏమైనప్పటికీ వుపయోగించుము",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "మీకు మరొక ఫోన్ వచ్చినప్పుడు (క్రొత్త / పున ment స్థాపన), భద్రతా కారణాల దృష్ట్యా, ఖాతా రహస్యాలను ఉపయోగించి మీ అన్ని ఖాతాలను మళ్లీ దిగుమతి చేయమని Xaman అడుగుతుంది.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "నేను నా రహస్య ఖాతా కీలను సురక్షితంగా ఆఫ్‌లైన్‌లో ఉంచుతాను, అందువల్ల నాకు క్రొత్త ఫోన్ వస్తే వాటిని తిరిగి నమోదు చేయవచ్చు.",
     "questionsAndSupport": "ప్రశ్నలు & మద్దతు",
-    "questionsAndSupportExplain": "మీకు ప్రశ్నలు ఉంటే, మీరు తరచుగా అడిగే ప్రశ్నలను చదవవచ్చు మరియు https://support.xumm.app వద్ద ప్రశ్నలు అడగవచ్చు.\r\n\r\nఇది XUMM మద్దతు కోసం మాత్రమే నమ్మదగిన ఛానెల్.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "నేను https://support.xumm.app వద్ద Xaman మద్దతు బృందం నుండి సమాధానాలను మాత్రమే విశ్వసిస్తాను",
+    "questionsAndSupportExplain": "మీకు ప్రశ్నలు ఉంటే, మీరు తరచుగా అడిగే ప్రశ్నలను చదవవచ్చు మరియు https://support.xaman.app వద్ద ప్రశ్నలు అడగవచ్చు.\r\n\r\nఇది XUMM మద్దతు కోసం మాత్రమే నమ్మదగిన ఛానెల్.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "నేను https://support.xaman.app వద్ద Xaman మద్దతు బృందం నుండి సమాధానాలను మాత్రమే విశ్వసిస్తాను",
     "pleaseReadTheTextAboveCarefully": "దయచేసి పై వచనాన్ని జాగ్రత్తగా చదవండి"
   },
   "home": {

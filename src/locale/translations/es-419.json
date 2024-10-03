@@ -383,7 +383,7 @@
     "repeatPasscode": "Por favor, repita su nueva contraseña.",
     "passcodeDoNotMatch": "¡La clave de acceso no coincide!",
     "warnNeedPasscode": "Necesitará su código de acceso (PIN) para desbloquear la aplicación",
-    "UnableToStoreThePasscode": "No se puede almacenar el código de acceso. Esto no debería suceder. Se envió un informe de error al equipo de soporte de Xaman. Por favor, ponte en contacto con nosotros. Escríbenos a support@xumm.app para más información.",
+    "UnableToStoreThePasscode": "No se puede almacenar el código de acceso. Esto no debería suceder. Se envió un informe de error al equipo de soporte de Xaman. Por favor, ponte en contacto con nosotros. Escríbenos a support@xaman.app para más información.",
     "weakPasscode": "Código de acceso débil",
     "weakPasscodeDescription": "El código de acceso seleccionado es fácil de adivinar. Te recomendamos que elijas uno más fuerte.",
     "useAnyway": "Utilizar De Todas Maneras",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Cuando obtenga otro teléfono (nuevo/reemplazo), por razones de seguridad, Xaman le pedirá que importe todas sus cuentas utilizando de nuevo los secretos de la cuenta.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Mantendré mis claves secretas seguras y fuera de línea para que pueda ingresarlas nuevamente si obtengo un teléfono nuevo.",
     "questionsAndSupport": "Preguntas y Soporte",
-    "questionsAndSupportExplain": "Por favor, lea el FAQ. Si tienes más preguntas, contáctenos en https://support.xumm.app.\r\n\r\n¡Este es el ÚNICO canal oficial y fiable para el soporte de XUMM, otros pueden ser FRAUDE!",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Sólo confío en las respuestas del equipo de soporte de Xaman en https://support.xumm.app]",
+    "questionsAndSupportExplain": "Por favor, lea el FAQ. Si tienes más preguntas, contáctenos en https://support.xaman.app.\r\n\r\n¡Este es el ÚNICO canal oficial y fiable para el soporte de XUMM, otros pueden ser FRAUDE!",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Sólo confío en las respuestas del equipo de soporte de Xaman en https://support.xaman.app]",
     "pleaseReadTheTextAboveCarefully": "Por favor, lea el texto de arriba cuidadosamente"
   },
   "home": {

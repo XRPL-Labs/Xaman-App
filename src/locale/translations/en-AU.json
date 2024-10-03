@@ -383,7 +383,7 @@
     "repeatPasscode": "Please repeat your new passcode",
     "passcodeDoNotMatch": "The passcodes do not match!",
     "warnNeedPasscode": "You will need your passcode to unlock the app",
-    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the Xaman support team. Please contact us at support@xumm.app for more information.",
+    "UnableToStoreThePasscode": "Unable to store the passcode. This should not happen. A bug report was sent to the Xaman support team. Please contact us at support@xaman.app for more information.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use Anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "To ensure security, Xaman will ask you to import all your accounts again using your secret key when you get a new or replacement phone.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "I will keep my secret numeric account keys safely offline so I can re-enter them if I get a new phone.",
     "questionsAndSupport": "Questions & Support",
-    "questionsAndSupportExplain": "Please read our FAQ. Have more questions? Contact us at https://support.xumm.app.\r\n\r\nThis is our official, trusted channel for XUMM support. Beware, other channels may be fraudulent!",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "I will ONLY trust answers from the Official Xaman Support Team at https://support.xumm.app",
+    "questionsAndSupportExplain": "Please read our FAQ. Have more questions? Contact us at https://support.xaman.app.\r\n\r\nThis is our official, trusted channel for XUMM support. Beware, other channels may be fraudulent!",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "I will ONLY trust answers from the Official Xaman Support Team at https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Please read the text above carefully"
   },
   "home": {

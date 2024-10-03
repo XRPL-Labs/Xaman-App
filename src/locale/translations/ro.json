@@ -383,7 +383,7 @@
     "repeatPasscode": "Vă rugăm repetaţi noul dumneavoastră cod de acces",
     "passcodeDoNotMatch": "Codul de acces nu este valid!",
     "warnNeedPasscode": "Veţi avea nevoie de codul dumneavoastră de acces pentru a debloca aplicaţia.",
-    "UnableToStoreThePasscode": "Codul de acces nu poate fi stocat. Acest lucru nu ar trebui să se întâmple. A fost trimis un raport de eroare către echipa de suport Xaman. Vă rugăm să  ne contactați la support@xumm.app pentru mai multe informații.",
+    "UnableToStoreThePasscode": "Codul de acces nu poate fi stocat. Acest lucru nu ar trebui să se întâmple. A fost trimis un raport de eroare către echipa de suport Xaman. Vă rugăm să  ne contactați la support@xaman.app pentru mai multe informații.",
     "weakPasscode": "Cod de acces slab",
     "weakPasscodeDescription": "Parola selectată este ușor de ghicit. Vă recomandăm să alegeți o parolă mai puternică.",
     "useAnyway": "Folosește oricum",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Când obţineţi un alt telefon, din motive de securitate, Xaman vă va cere să importaţi toate conturile dumneavoastră folosind din nou cheile secrete ale contului.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Îmi voi păstra cheile secrete în siguranță, offline pentru a le putea utiliza la accesarea contului când îmi voi înlocui actualul dispozitiv.",
     "questionsAndSupport": "Întrebări & Suport",
-    "questionsAndSupportExplain": "Dacă aveţi întrebări, puteţi găsi răspunsuri şi pune întrebări la adresa https://support.xumm.app.\r\n\r\nAcesta este singurul canal de încredere pentru asistență clienţi XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Voi avea încredere doar în răspunsurile care vin din partea echipei de support Xaman, de la https://support.xumm.app.",
+    "questionsAndSupportExplain": "Dacă aveţi întrebări, puteţi găsi răspunsuri şi pune întrebări la adresa https://support.xaman.app.\r\n\r\nAcesta este singurul canal de încredere pentru asistență clienţi XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Voi avea încredere doar în răspunsurile care vin din partea echipei de support Xaman, de la https://support.xaman.app.",
     "pleaseReadTheTextAboveCarefully": "Vă rugăm să citiţi textul de mai sus cu atenție."
   },
   "home": {

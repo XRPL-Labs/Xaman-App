@@ -4,9 +4,6 @@ import { AppSizes, AppColors, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleSheet.create({
     rowContainer: {
-        paddingTop: AppSizes.paddingSml,
-        left: 0,
-        right: 0,
         flexDirection: 'row',
         flexWrap: 'wrap',
     },

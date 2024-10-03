@@ -383,7 +383,7 @@
     "repeatPasscode": "Vennligst gjenta din nye kode",
     "passcodeDoNotMatch": "Passordet samsvarer ikke!",
     "warnNeedPasscode": "Du vil trenge koden din for å låse opp programmet",
-    "UnableToStoreThePasscode": "Klarte ikke å lagre koden. Dette skal ikke skje. En bug-rapport ble sendt til Xaman support. Vennligst kontakt oss via support@xumm.app for mere informasjon.",
+    "UnableToStoreThePasscode": "Klarte ikke å lagre koden. Dette skal ikke skje. En bug-rapport ble sendt til Xaman support. Vennligst kontakt oss via support@xaman.app for mere informasjon.",
     "weakPasscode": "Svak passkode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Bruk uansett",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Når du anskaffer deg en annen telefon (ny / bytte) vil Xaman (pga. sikkerhetsmessige årsaker) be deg om å importere kontoer via dine hemmelige nøkler på nytt.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Jeg vil holde mine koder/nøkler sikre (og utenfor nettet) slik at jeg kan legge dette inn igjen hvis jeg anskaffer meg en ny telefon",
     "questionsAndSupport": "Spørsmål & Brukerstøtte",
-    "questionsAndSupportExplain": "Lurer du på noe så kan du lese FAQ og eventuelt sende inn spørsmål på https://support.xumm.app.\r\n\r\nDette er det ENESTE stedet man kan stole på for XUMM brukerhjelp.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Jeg vil BARE stole på svar fra Xaman Support Team på https://support.xumm.app",
+    "questionsAndSupportExplain": "Lurer du på noe så kan du lese FAQ og eventuelt sende inn spørsmål på https://support.xaman.app.\r\n\r\nDette er det ENESTE stedet man kan stole på for XUMM brukerhjelp.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Jeg vil BARE stole på svar fra Xaman Support Team på https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Vennligst les teksten over nøye"
   },
   "home": {

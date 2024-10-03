@@ -383,7 +383,7 @@
     "repeatPasscode": "新しいパスコードをもう一度入力してください",
     "passcodeDoNotMatch": "パスコードが一致しません！",
     "warnNeedPasscode": "アプリのロックを解除するにはパスコードが必要です。",
-    "UnableToStoreThePasscode": "パスコードが保存できません。想定外のエラーのため、バグレポートがXamanサポートチームに送信されました。詳細については、 support@xumm.app までお問い合わせ下さい。",
+    "UnableToStoreThePasscode": "パスコードが保存できません。想定外のエラーのため、バグレポートがXamanサポートチームに送信されました。詳細については、 support@xaman.app までお問い合わせ下さい。",
     "weakPasscode": "脆弱なパスコード",
     "weakPasscodeDescription": "選択されたパスコードは簡単に推測できます。より強力なものを選択することをお勧めします。",
     "useAnyway": "とにかく使ってみる",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "新しいデバイスでXamanを使用する際には、以前に作成したアカウントのシークレットキーを再度入力する必要があります。",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "アカウントのシークレットキーはオフラインで安全に保管し、新しいデバイスを手に入れたときに再入力できるようにしておきます。",
     "questionsAndSupport": "お問い合わせ・サポート",
-    "questionsAndSupportExplain": "ご不明な点がございましたら、お気軽にお問い合わせください。疑問がある場合は、決して操作を続行せず、まずサポートチームに確認してください。\r\n\r\nよくある質問とヘルプセンターは、https://support.xumm.app から確認できます。\n\nアプリ内から、\"Xaman Support\" xAppを使用してサポートを受けることもできます。SNSのサポートは利用しないでください。",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "https://support.xumm.app のXamanサポートチームからの回答を信用します。",
+    "questionsAndSupportExplain": "ご不明な点がございましたら、お気軽にお問い合わせください。疑問がある場合は、決して操作を続行せず、まずサポートチームに確認してください。\r\n\r\nよくある質問とヘルプセンターは、https://support.xaman.app から確認できます。\n\nアプリ内から、\"Xaman Support\" xAppを使用してサポートを受けることもできます。SNSのサポートは利用しないでください。",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "https://support.xaman.app のXamanサポートチームからの回答を信用します。",
     "pleaseReadTheTextAboveCarefully": "上記の文章をよくお読みください"
   },
   "home": {

@@ -383,7 +383,7 @@
     "repeatPasscode": "Tanpri repete nouvo paskod ou an",
     "passcodeDoNotMatch": "Paskod la pa matche ak!",
     "warnNeedPasscode": "Ou pral bezwen paskod ou a déblotché app a",
-    "UnableToStoreThePasscode": "Kapab nan magazen paskod la. Sa pa ta dwe rive. Yo te voye yon rapò ensèk nan ekip sipò Xaman. Tanpri kontakte nou nan support@xumm.app pou plis enfòmasyon.",
+    "UnableToStoreThePasscode": "Kapab nan magazen paskod la. Sa pa ta dwe rive. Yo te voye yon rapò ensèk nan ekip sipò Xaman. Tanpri kontakte nou nan support@xaman.app pou plis enfòmasyon.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Lè ou jwenn yon lòt telefòn (nouvo / ranplasman), pou rezon sekirite, Xaman ap mande ou enpòte tout kont ou lè l sèvi avèk sekrè yo kont ankò.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Mwen pral kenbe sekrè mwen an san danje, offline, se konsa mwen ka re-antre nan yo si mwen jwenn yon nouvo telefòn",
     "questionsAndSupport": "Kesyon & Sipò",
-    "questionsAndSupportExplain": "Si ou gen kesyon, ou ka li FAQ yo epi poze kesyon nan https://support.xumm.app.\r\n\r\nSa a se sèl chanèl konfyans pou sipò XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Mwen pral sèlman fè konfyans repons nan ekip sipò Xaman nan https://support.xumm.app",
+    "questionsAndSupportExplain": "Si ou gen kesyon, ou ka li FAQ yo epi poze kesyon nan https://support.xaman.app.\r\n\r\nSa a se sèl chanèl konfyans pou sipò XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Mwen pral sèlman fè konfyans repons nan ekip sipò Xaman nan https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Tanpri li tèks ki anwo a ak anpil atansyon"
   },
   "home": {

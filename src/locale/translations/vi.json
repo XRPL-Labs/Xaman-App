@@ -383,7 +383,7 @@
     "repeatPasscode": "Vui lòng lặp lại mật mã mới của bạn",
     "passcodeDoNotMatch": "Mật mã không khớp!",
     "warnNeedPasscode": "Bạn sẽ cần mật mã của mình để mở khóa ứng dụng",
-    "UnableToStoreThePasscode": "Không thể lưu trữ mật mã. Điều này không nên xảy ra. Một báo cáo lỗi đã được gửi đến nhóm hỗ trợ Xaman. Vui lòng liên hệ với chúng tôi tại support@xumm.app để biết thêm thông tin.",
+    "UnableToStoreThePasscode": "Không thể lưu trữ mật mã. Điều này không nên xảy ra. Một báo cáo lỗi đã được gửi đến nhóm hỗ trợ Xaman. Vui lòng liên hệ với chúng tôi tại support@xaman.app để biết thêm thông tin.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Khi bạn nhận được điện thoại khác (mới / thay thế), vì lý do bảo mật, Xaman sẽ yêu cầu bạn nhập lại tất cả tài khoản của mình bằng cách sử dụng bí mật tài khoản.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Tôi sẽ giữ bí mật của mình an toàn khi ngoại tuyến, vì vậy tôi có thể nhập lại nếu nhận được điện thoại mới",
     "questionsAndSupport": "Câu hỏi & Hỗ trợ",
-    "questionsAndSupportExplain": "Nếu bạn có thắc mắc, bạn có thể đọc Câu hỏi thường gặp và đặt câu hỏi tại https://support.xumm.app.\r\n\r\nĐây là kênh đáng tin cậy DUY NHẤT để hỗ trợ XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Tôi sẽ chỉ tin tưởng câu trả lời từ Xaman hỗ trợ nhóm tại https://support.xumm.app",
+    "questionsAndSupportExplain": "Nếu bạn có thắc mắc, bạn có thể đọc Câu hỏi thường gặp và đặt câu hỏi tại https://support.xaman.app.\r\n\r\nĐây là kênh đáng tin cậy DUY NHẤT để hỗ trợ XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Tôi sẽ chỉ tin tưởng câu trả lời từ Xaman hỗ trợ nhóm tại https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Vui lòng đọc kỹ văn bản trên"
   },
   "home": {

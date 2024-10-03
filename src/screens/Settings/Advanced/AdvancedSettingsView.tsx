@@ -5,7 +5,6 @@
 import React, { Component } from 'react';
 import { View, Text, ScrollView, Alert, Platform } from 'react-native';
 
-import ApiService from '@services/ApiService';
 import PushNotificationsService from '@services/PushNotificationsService';
 import NetworkService from '@services/NetworkService';
 
@@ -30,6 +29,7 @@ import { ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog';
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
+import BackendService from '@services/BackendService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -97,10 +97,15 @@ class AdvancedSettingsView extends Component<Props, State> {
             // fetch the push token and send to backend
             const devicePushToken = await PushNotificationsService.getToken();
 
-            ApiService.updateDevice
-                .post(null, {
-                    devicePushToken,
-                })
+            if (!devicePushToken) {
+                Alert.alert(
+                    Localize.t('global.error'),
+                    Localize.t('settings.unableToReRegisteredForPushNotifications'),
+                );
+                return;
+            }
+
+            BackendService.updateDevice({ devicePushToken })
                 .then(() => {
                     Alert.alert(
                         Localize.t('global.success'),

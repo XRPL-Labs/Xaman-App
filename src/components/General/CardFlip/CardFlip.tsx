@@ -1,4 +1,3 @@
-/* eslint-disable-next-line spellcheck/spell-checker */
 // https://github.com/lhandel/react-native-card-flip
 
 import React, { Component } from 'react';

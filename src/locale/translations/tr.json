@@ -383,7 +383,7 @@
     "repeatPasscode": "Lütfen yeni parolanızı tekrar girin",
     "passcodeDoNotMatch": "Şifre eşleşmiyor!",
     "warnNeedPasscode": "Uygulamanın kilidini açmak için şifrenize gereksinim duyacaksınız",
-    "UnableToStoreThePasscode": "Şifre saklanamıyor. Bu olmamalıydı. Xaman destek ekibine bir hata raporu gönderildi. Daha fazla bilgi için lütfen support@xumm.app adresinden bizimle iletişim kurun.",
+    "UnableToStoreThePasscode": "Şifre saklanamıyor. Bu olmamalıydı. Xaman destek ekibine bir hata raporu gönderildi. Daha fazla bilgi için lütfen support@xaman.app adresinden bizimle iletişim kurun.",
     "weakPasscode": "Zayıf şifre",
     "weakPasscodeDescription": "Seçilen şifre tahmin etmek için kolay. Daha güçlü bir tane seçmeni öneriyoruz.",
     "useAnyway": "Yine de kullan",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Güvenlik nedeniyle başka bir telefon (yeni/değiştirme) aldığınızda, Xaman, hesap sırlarını yeniden kullanarak tüm hesaplarınızı içe aktarmanızı isteyecektir.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Gizli anahtarımı güvenli bir şekilde, çevrimdışı tutacağım, böylece yeni bir telefon aldığımda tekrar giriş yapabilirim",
     "questionsAndSupport": "Sorular ve Destek",
-    "questionsAndSupportExplain": "Sorularınız varsa, SSS'leri okuyabilir ve https://support.xumm.app adresinden soru sorabilirsiniz.\r\n\r\nXUMM desteği için tek güvenilir kanal budur.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Sadece https://support.xumm.app adresindeki Xaman Destek ekibine güveneceğim.",
+    "questionsAndSupportExplain": "Sorularınız varsa, SSS'leri okuyabilir ve https://support.xaman.app adresinden soru sorabilirsiniz.\r\n\r\nXUMM desteği için tek güvenilir kanal budur.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Sadece https://support.xaman.app adresindeki Xaman Destek ekibine güveneceğim.",
     "pleaseReadTheTextAboveCarefully": "Lütfen yukarıdaki metni dikkatle okuyun"
   },
   "home": {

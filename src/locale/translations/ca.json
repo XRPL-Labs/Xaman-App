@@ -383,7 +383,7 @@
     "repeatPasscode": "Si us plau, repeteix la nova contrasenya",
     "passcodeDoNotMatch": "La contrasenya no coincideix!",
     "warnNeedPasscode": "Necessitaràs la contrasenya per desbloquejar l'aplicació",
-    "UnableToStoreThePasscode": "No es pot guardar la contrasenya. Això no hauria de passar. S'ha enviat un informe d'errors a l'equip de suport de Xaman. Poseu-vos en contacte amb nosaltres a support@xumm.app per a més informació.",
+    "UnableToStoreThePasscode": "No es pot guardar la contrasenya. Això no hauria de passar. S'ha enviat un informe d'errors a l'equip de suport de Xaman. Poseu-vos en contacte amb nosaltres a support@xaman.app per a més informació.",
     "weakPasscode": "Codi d'accés feble",
     "weakPasscodeDescription": "El codi seleccionat és fàcil d'endevinar. Et recomanem que en triïs un de més fort.",
     "useAnyway": "Utilitzar-lo igualment",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Quan et canviïs el telèfon (nou/substitució), per raons de seguretat, Xaman et demanarà que importis tots els comptes fent servir els patró secret de nou.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Mantindré la clau privada del compte segura fora de línia, de manera que la podré tornar a introduir en cas de canviar de telèfon",
     "questionsAndSupport": "Dubtes i Suport",
-    "questionsAndSupportExplain": "Si tens preguntes, pots llegir les FAQ i també preguntar a https://support.xumm.app.\r\nAquest és L'ÚNIC canal de confiança on XUMM ofereix suport.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "NOMÉS confiaré en les respostes que em doni l'equip de suport de Xaman a https://support.xumm.app",
+    "questionsAndSupportExplain": "Si tens preguntes, pots llegir les FAQ i també preguntar a https://support.xaman.app.\r\nAquest és L'ÚNIC canal de confiança on XUMM ofereix suport.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "NOMÉS confiaré en les respostes que em doni l'equip de suport de Xaman a https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Si us plau, llegeix amb atenció el text que hi ha a sobre"
   },
   "home": {

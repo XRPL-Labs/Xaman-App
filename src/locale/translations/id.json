@@ -383,7 +383,7 @@
     "repeatPasscode": "Harap ulangi kode sandi baru Anda",
     "passcodeDoNotMatch": "Kata sandi tidak cocok!",
     "warnNeedPasscode": "Anda akan memerlukan kode sandi Anda untuk membuka kunci aplikasi",
-    "UnableToStoreThePasscode": "Tidak dapat menyimpan kode sandi. Ini seharusnya tidak boleh terjadi. Sebuah laporan bug dikirim ke tim dukungan Xaman. Silahkan hubungi kami di support@xumm.app untuk informasi lebih lanjut.",
+    "UnableToStoreThePasscode": "Tidak dapat menyimpan kode sandi. Ini seharusnya tidak boleh terjadi. Sebuah laporan bug dikirim ke tim dukungan Xaman. Silahkan hubungi kami di support@xaman.app untuk informasi lebih lanjut.",
     "weakPasscode": "Kode sandi lemah",
     "weakPasscodeDescription": "Kode sandi yang dipilih mudah untuk menebak. Kami merekomendasikanmu untuk memilih yang lebih kuat.",
     "useAnyway": "Gunakan Saja",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Ketika Anda mendapatkan perangkat lain (baru/pengganti), untuk alasan keamanan, Xaman akan meminta Anda untuk mengimpor semua akun Anda menggunakan rahasia akun lagi.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Saya akan menyimpan rahasia saya dengan aman, offline, sehingga saya dapat memasukkannya kembali jika saya mendapatkan telepon baru",
     "questionsAndSupport": "Pertanyaan & Dukungan",
-    "questionsAndSupportExplain": "Jika Anda memiliki pertanyaan, Anda dapat membaca FAQ dan mengajukan pertanyaan di https://support.xumm.app.\r\n\r\nIni adalah SATU-SATUNYA saluran tepercaya untuk dukungan XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Saya hanya akan mempercayai jawaban dari tim dukungan Xaman di https://support.xumm.app",
+    "questionsAndSupportExplain": "Jika Anda memiliki pertanyaan, Anda dapat membaca FAQ dan mengajukan pertanyaan di https://support.xaman.app.\r\n\r\nIni adalah SATU-SATUNYA saluran tepercaya untuk dukungan XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Saya hanya akan mempercayai jawaban dari tim dukungan Xaman di https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Harap baca teks di atas dengan cermat"
   },
   "home": {

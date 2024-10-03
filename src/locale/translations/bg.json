@@ -383,7 +383,7 @@
     "repeatPasscode": "Моля, повторете новата си парола",
     "passcodeDoNotMatch": "Паролата не съвпада!",
     "warnNeedPasscode": "За да отключите приложението, ще ви е необходима вашата парола",
-    "UnableToStoreThePasscode": "Не може да се съхрани паролата. Това не трябва да се случва. Доклад за грешка е изпратен до екипа за поддръжка на Xaman. Моля, свържете се с нас на support@xumm.app за повече информация.",
+    "UnableToStoreThePasscode": "Не може да се съхрани паролата. Това не трябва да се случва. Доклад за грешка е изпратен до екипа за поддръжка на Xaman. Моля, свържете се с нас на support@xaman.app за повече информация.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Когато получите друг телефон (нов / подменен), от съображения за сигурност, Xaman ще ви помоли да импортирате отново всичките си акаунти, като използвате тайните на акаунта.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Ще пазя тайните си в безопасност, офлайн, за да мога да ги въведа отново, ако получа нов телефон",
     "questionsAndSupport": "Въпроси и Поддръжка",
-    "questionsAndSupportExplain": "Ако имате въпроси, можете да прочетете Често задавани въпроси и да задавате въпроси на https://support.xumm.app.\n\nТова е единственият надежден канал за поддръжка на XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Ще се доверя само на отговорите от екипа за поддръжка на Xaman на адрес https://support.xumm.app",
+    "questionsAndSupportExplain": "Ако имате въпроси, можете да прочетете Често задавани въпроси и да задавате въпроси на https://support.xaman.app.\n\nТова е единственият надежден канал за поддръжка на XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Ще се доверя само на отговорите от екипа за поддръжка на Xaman на адрес https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Моля, прочетете внимателно текста по-горе"
   },
   "home": {

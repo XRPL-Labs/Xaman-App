@@ -18,14 +18,15 @@ import {
     Alert,
 } from 'react-native';
 
+import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
+
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
 import Keyboard from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
-
-import { AppScreens } from '@common/constants';
 
 import Vault from '@common/libs/vault';
 
@@ -196,8 +197,7 @@ class PassphraseAuthenticationOverlay extends Component<Props, State> {
     };
 
     openTroubleshootLink = () => {
-        const url = `https://xumm.app/redir/faq/account-signing-password/${Localize.getCurrentLocale()}`;
-        Linking.openURL(url).catch(() => {
+        Linking.openURL(WebLinks.FAQAccountSigningPasswordURL).catch(() => {
             Alert.alert(Localize.t('global.error'), Localize.t('global.cannotOpenLink'));
         });
     };

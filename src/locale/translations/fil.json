@@ -383,7 +383,7 @@
     "repeatPasscode": "Mangyaring ulitin ang iyong bagong passcode",
     "passcodeDoNotMatch": "Ang passcode ay hindi tumutugma!",
     "warnNeedPasscode": "Kakailanganin mo ang iyong passcode upang ma-unlock ang app",
-    "UnableToStoreThePasscode": "Hindi maiimbak ang passcode. Hindi ito dapat mangyari. Isang ulat ng bug ang ipinadala sa koponan ng suporta ng Xaman. Mangyaring makipag-ugnay sa amin sa support@xumm.app para sa karagdagang impormasyon.",
+    "UnableToStoreThePasscode": "Hindi maiimbak ang passcode. Hindi ito dapat mangyari. Isang ulat ng bug ang ipinadala sa koponan ng suporta ng Xaman. Mangyaring makipag-ugnay sa amin sa support@xaman.app para sa karagdagang impormasyon.",
     "weakPasscode": "Mahinang passcode",
     "weakPasscodeDescription": "Ang napiling passcode ay madaling hulaan. Inererekomenda namin sa iyo na pumili ng mas malakas.",
     "useAnyway": "Gamitin pa rin",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Sa kadalihanang panseguridad, hihilingin sa iyo muli ng Xaman na i-import ang lahat ng iyong account gamit ang mga sekretong account sa panahong magpalit ka ng cellphone.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Itatago ko ang aking mga lihim na ligtas, offline, upang maipasok ko muli ang mga ito kung nakakakuha ako ng isang bagong telepono",
     "questionsAndSupport": "Mga Katanungan at Suporta",
-    "questionsAndSupportExplain": "Kung mayroon kang mga katanungan, maaari mong basahin ang mga FAQ at magtanong ng mga katanungan sa https://support.xumm.app.\r\n\r\nIto lamang ang mapagkakatiwalaang channel para sa suporta ng XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Magtiwala lang ako sa mga sagot mula sa koponan ng suporta ng Xaman sa https://support.xumm.app",
+    "questionsAndSupportExplain": "Kung mayroon kang mga katanungan, maaari mong basahin ang mga FAQ at magtanong ng mga katanungan sa https://support.xaman.app.\r\n\r\nIto lamang ang mapagkakatiwalaang channel para sa suporta ng XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Magtiwala lang ako sa mga sagot mula sa koponan ng suporta ng Xaman sa https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Mangyaring basahin nang maingat ang teksto sa itaas"
   },
   "home": {

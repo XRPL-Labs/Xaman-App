@@ -42,6 +42,8 @@ import Localize from '@locale';
 
 import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
 import { InAppPurchaseReceipt } from '@common/libs/iap';
+import { Endpoints } from '@common/constants/endpoints';
+
 /* Types  ==================================================================== */
 export interface RatesType {
     rate: number;
@@ -51,6 +53,10 @@ export interface RatesType {
 }
 
 /* Service  ==================================================================== */
+/**
+ * Service that handles interactions with the backend, including syncing curated IOUs,
+ * managing user payloads, and device activation and updates.
+ */
 class BackendService {
     private rates: Map<string, RatesType>;
 
@@ -174,8 +180,7 @@ class BackendService {
      * @returns {Promise<Payload[]>} A promise that resolves with an array of pending payloads.
      */
     getPendingPayloads = async (): Promise<Payload[]> => {
-        return ApiService.pendingPayloads
-            .get()
+        return ApiService.fetch(Endpoints.PendingPayloads, 'GET')
             .then(async (res: { payloads: PayloadType[] }) => {
                 const { payloads } = res;
 
@@ -197,8 +202,7 @@ class BackendService {
      */
     initUser = async (): Promise<XamanBackend.AddUserResponse> => {
         return new Promise((resolve, reject) => {
-            ApiService.addUser
-                .post()
+            ApiService.fetch(Endpoints.AddUser, 'POST')
                 .then((res: XamanBackend.AddUserResponse) => {
                     if (!res) {
                         throw new Error('Cannot add the device to the Xaman');
@@ -226,16 +230,17 @@ class BackendService {
     activateDevice = async (user: any, device: any): Promise<string> => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
-            ApiService.activateDevice
-                .post(
-                    null,
-                    {
-                        uniqueDeviceIdentifier: GetDeviceUniqueId(),
-                        devicePlatform: Platform.OS,
-                        devicePushToken: await PushNotificationsService.getToken(),
-                    },
-                    { Authorization: `${user.uuid}.${device.uuid}` },
-                )
+            ApiService.fetch(
+                Endpoints.ActivateDevice,
+                'POST',
+                null,
+                {
+                    uniqueDeviceIdentifier: GetDeviceUniqueId(),
+                    devicePlatform: Platform.OS,
+                    devicePushToken: await PushNotificationsService.getToken(),
+                },
+                { Authorization: `${user.uuid}.${device.uuid}` },
+            )
                 .then((res: XamanBackend.ActivateDeviceResponse) => {
                     const { accessToken } = res;
 
@@ -251,16 +256,30 @@ class BackendService {
     };
 
     /**
+     * Update device information
+     *
+     * @param {{ devicePushToken: string }} params - An object containing the device push token.
+     * @param {string} params.devicePushToken - The push token of the device to be updated.
+     * @returns {Promise<string>} The response from the server after updating the device information.
+     *
+     * @throws Will throw an error if the network request fails.
+     */
+    updateDevice = async ({ devicePushToken }: { devicePushToken: string }): Promise<string> => {
+        return ApiService.fetch(Endpoints.UpdateDevice, 'POST', null, {
+            devicePushToken,
+        });
+    };
+
+    /**
      * Pings the backend and updates the user profile.
      */
     ping = async () => {
-        return ApiService.ping
-            .post(null, {
-                appVersion: GetAppReadableVersion(),
-                appLanguage: Localize.getCurrentLocale(),
-                appCurrency: CoreRepository.getAppCurrency(),
-                devicePushToken: await PushNotificationsService.getToken(),
-            })
+        return ApiService.fetch(Endpoints.Ping, 'POST', null, {
+            appVersion: GetAppReadableVersion(),
+            appLanguage: Localize.getCurrentLocale(),
+            appCurrency: CoreRepository.getAppCurrency(),
+            devicePushToken: await PushNotificationsService.getToken(),
+        })
             .then((res: XamanBackend.PingResponse) => {
                 const { auth, badge, env, monetization, tosAndPrivacyPolicyVersion } = res;
 
@@ -312,7 +331,7 @@ class BackendService {
     };
 
     getCuratedIOUs = (version = 0, promoted = false): Promise<XamanBackend.CuratedIOUsResponse> => {
-        return ApiService.curatedIOUs.get({ version, promoted });
+        return ApiService.fetch(Endpoints.CuratedIOUs, 'GET', { version, promoted });
     };
 
     /**
@@ -320,7 +339,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with a list of authorized third-party app.
      */
     getThirdPartyApps = (): Promise<XamanBackend.ThirdPartyPermissionResponse> => {
-        return ApiService.thirdPartyApps.get();
+        return ApiService.fetch(Endpoints.ThirdPartyApps, 'GET');
     };
 
     /**
@@ -329,7 +348,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves when the permission is revoked.
      */
     revokeThirdPartyPermission = (appId: string): Promise<XamanBackend.RevokeThirdPartyPermissionResponse> => {
-        return ApiService.thirdPartyApp.delete({ appId });
+        return ApiService.fetch(Endpoints.ThirdPartyApp, 'DELETE', { appId });
     };
 
     /**
@@ -346,7 +365,7 @@ class BackendService {
             key: string;
         },
     ): Promise<XamanBackend.AddTransactionResponse> => {
-        return ApiService.addTransaction.post(null, {
+        return ApiService.fetch(Endpoints.AddTransaction, 'POST', null, {
             hash,
             node: network.node,
             nodeType: network.key,
@@ -361,7 +380,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves when the account is reported.
      */
     addAccount = (account: string, txblob: string, cid?: string): Promise<XamanBackend.AddAccountResponse> => {
-        return ApiService.addAccount.post(null, {
+        return ApiService.fetch(Endpoints.AddAccount, 'POST', null, {
             account,
             txblob,
             cid,
@@ -374,7 +393,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with account information.
      */
     getAddressInfo = (address: string): Promise<XamanBackend.AccountInfoResponse> => {
-        return ApiService.addressInfo.get(address);
+        return ApiService.fetch(Endpoints.AddressInfo, 'GET', address);
     };
 
     /**
@@ -383,7 +402,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with lookup results.
      */
     lookup = (content: string): Promise<XamanBackend.HandleLookupResponse> => {
-        return ApiService.lookup.get(content);
+        return ApiService.fetch(Endpoints.Lookup, 'GET', content);
     };
 
     /**
@@ -392,7 +411,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with account advisory information.
      */
     getAccountAdvisory = (address: string): Promise<XamanBackend.AccountAdvisoryResponse> => {
-        return ApiService.accountAdvisory.get(address);
+        return ApiService.fetch(Endpoints.AccountAdvisory, 'GET', address);
     };
 
     /**
@@ -401,7 +420,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with the XApp store listings.
      */
     getXAppStoreListings = (category: string): Promise<XamanBackend.XAppStoreListingsResponse> => {
-        return ApiService.xAppsStore.get({ category });
+        return ApiService.fetch(Endpoints.XAppsStore, 'GET', { category });
     };
 
     /**
@@ -409,7 +428,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with the short list of featured XApps.
      */
     getXAppShortList = (): Promise<XamanBackend.XAppShortListResponse> => {
-        return ApiService.xAppsShortList.get({
+        return ApiService.fetch(Endpoints.XAppsShortList, 'GET', {
             featured: true,
         });
     };
@@ -424,7 +443,7 @@ class BackendService {
         xAppId: string,
         data: XamanBackend.XappLunchDataType,
     ): Promise<XamanBackend.XappLunchTokenResponse> => {
-        return ApiService.xAppLaunch.post({ xAppId }, data);
+        return ApiService.fetch(Endpoints.XAppLaunch, 'POST', { xAppId }, data);
     };
 
     /**
@@ -433,7 +452,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with information about the XApp.
      */
     getXAppInfo = (xAppId: string): Promise<XamanBackend.XappInfoResponse> => {
-        return ApiService.xAppInfo.get({ xAppId });
+        return ApiService.fetch(Endpoints.XAppInfo, 'GET', { xAppId });
     };
 
     /**
@@ -441,8 +460,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with the list of currencies.
      */
     getCurrenciesList = (): Promise<XamanBackend.CurrenciesResponse> => {
-        const locale = Localize.getCurrentLocale();
-        return ApiService.currencies.get({ locale });
+        return ApiService.fetch(Endpoints.Currencies, 'GET', { locale: Localize.getCurrentLocale() });
     };
 
     /**
@@ -452,7 +470,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves when the audit trail action is completed.
      */
     auditTrail = (destination: string, reason: { reason: string }): Promise<XamanBackend.AuditTrailResponse> => {
-        return ApiService.auditTrail.post({ destination }, reason);
+        return ApiService.fetch(Endpoints.AuditTrail, 'POST', {}, reason);
     };
 
     /**
@@ -461,7 +479,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with translation json data.
      */
     getTranslation = (uuid: string): Promise<any> => {
-        return ApiService.translation.get({ uuid });
+        return ApiService.fetch(Endpoints.Translation, 'GET', { uuid });
     };
 
     /**
@@ -471,7 +489,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with details about the XLS20 tokens.
      */
     getNFTDetails = (account: string, tokens: string[]): Promise<any> => {
-        return ApiService.nftDetails.post(null, { account, tokens });
+        return ApiService.fetch(Endpoints.NftDetails, 'POST', null, { account, tokens });
     };
 
     /**
@@ -479,9 +497,8 @@ class BackendService {
      * @param {string} account - The account of the user offering XLS20 tokens.
      * @returns {Promise} A promise that resolves with the list of offered XLS20 tokens.
      */
-    getNFTOffered = (account: string): Array<NFTokenOffer> => {
-        return ApiService.xls20Offered
-            .get({ account })
+    getNFTOffered = (account: string): Promise<Array<NFTokenOffer>> => {
+        return ApiService.fetch(Endpoints.NftOffered, 'GET', { account })
             .then(async (res: Array<any>) => {
                 if (isEmpty(res)) {
                     return [];
@@ -515,6 +532,7 @@ class BackendService {
                 return compact(flatMap(ledgerOffers, LedgerObjectFactory.fromLedger));
             })
             .catch((error: string): any => {
+                console.error(error);
                 this.logger.error('Fetch XLS20 offered Error: ', error);
                 return [];
             });
@@ -525,7 +543,7 @@ class BackendService {
      * @returns {Promise} A promise that resolves with network rails data.
      */
     getNetworkRails = (): Promise<XamanBackend.NetworkRailsResponse> => {
-        return ApiService.networkRails.get();
+        return ApiService.fetch(Endpoints.NetworkRails, 'GET');
     };
 
     /**
@@ -536,7 +554,7 @@ class BackendService {
      * @returns {Promise} - A promise that resolves to an object containing liquidity boundaries.
      */
     getLiquidityBoundaries = (issuer: string, currency: string): Promise<XamanBackend.LiquidityBoundaries> => {
-        return ApiService.liquidityBoundaries.get({
+        return ApiService.fetch(Endpoints.LiquidityBoundaries, 'GET', {
             issuer,
             currency,
         });
@@ -568,8 +586,9 @@ class BackendService {
             }
 
             // fetch/update the rate from backend
-            ApiService.rates
-                .get({ currency: currencyCode })
+            ApiService.fetch(Endpoints.Rates, 'GET', {
+                currency: currencyCode,
+            })
                 .then((response: XamanBackend.CurrencyRateResponse) => {
                     const rate = {
                         rate: get(response, NetworkService.getNativeAsset(), 0),
@@ -585,11 +604,11 @@ class BackendService {
     };
 
     verifyPurchase = (purchases: InAppPurchaseReceipt) => {
-        return ApiService.verifyPurchase.post(null, purchases);
+        return ApiService.fetch(Endpoints.VerifyPurchase, 'POST', null, purchases);
     };
 
     acknowledgePurchase = (purchases: InAppPurchaseReceipt) => {
-        return ApiService.verifyPurchase.patch(null, purchases);
+        return ApiService.fetch(Endpoints.VerifyPurchase, 'PATCH', null, purchases);
     };
 }
 

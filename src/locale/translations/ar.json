@@ -383,7 +383,7 @@
     "repeatPasscode": "يرجى إعادة رمز المرور الجديد الخاص بك",
     "passcodeDoNotMatch": "رمز المرور غير متطابق!",
     "warnNeedPasscode": "ستحتاج إلى رمزك السري لفتح التطبيق",
-    "UnableToStoreThePasscode": "تعذر تخزين رمز المرور. لا ينبغي أن يحدث هذا. تم إرسال تقرير خطأ إلى فريق دعم Xaman. يرجى الاتصال بنا على support@xumm.app لمزيد من المعلومات.",
+    "UnableToStoreThePasscode": "تعذر تخزين رمز المرور. لا ينبغي أن يحدث هذا. تم إرسال تقرير خطأ إلى فريق دعم Xaman. يرجى الاتصال بنا على support@xaman.app لمزيد من المعلومات.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "عندما تحصل على هاتف آخر (جديد / بديل) ، لأسباب أمنية ، سيطلب منك Xaman استيراد جميع حساباتك باستخدام أسرار الحساب مرة أخرى.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "سأحافظ على أسراري آمنة ، دون اتصال بالإنترنت ، حتى أتمكن من إعادة إدخالها إذا حصلت على هاتف جديد",
     "questionsAndSupport": "الأسئلة والدعم",
-    "questionsAndSupportExplain": "إذا كانت لديك أسئلة ، فيمكنك قراءة الأسئلة الشائعة وطرح الأسئلة على https://support.xumm.app.\r\n\r\nهذه هي القناة الوحيدة الجديرة بالثقة لدعم XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "سأثق فقط في الإجابات من فريق دعم Xaman على https://support.xumm.app",
+    "questionsAndSupportExplain": "إذا كانت لديك أسئلة ، فيمكنك قراءة الأسئلة الشائعة وطرح الأسئلة على https://support.xaman.app.\r\n\r\nهذه هي القناة الوحيدة الجديرة بالثقة لدعم XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "سأثق فقط في الإجابات من فريق دعم Xaman على https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "يرجى قراءة النص أعلاه بعناية"
   },
   "home": {

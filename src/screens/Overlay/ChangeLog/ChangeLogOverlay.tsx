@@ -7,7 +7,9 @@ import { View, Text, Animated } from 'react-native';
 import { CoreRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens, AppConfig } from '@common/constants';
+
+import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import { WebViewBrowser, Button } from '@components/General';
 
@@ -74,7 +76,7 @@ class ChangeLogOverlay extends Component<Props, State> {
     getURI = () => {
         const { version } = this.props;
 
-        return `${AppConfig.changeLogURL}${version}`;
+        return `${WebLinks.ChangeLogURL}/${Localize.getCurrentLocale()}/?update=${version}`;
     };
 
     render() {

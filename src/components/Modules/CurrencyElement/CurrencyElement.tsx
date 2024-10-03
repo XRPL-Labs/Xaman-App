@@ -5,6 +5,8 @@ import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-nati
 
 import NetworkService from '@services/NetworkService';
 
+import { WebLinks } from '@common/constants/endpoints';
+
 import { getAccountName, AccountNameType } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Images } from '@common/helpers/images';
@@ -100,7 +102,7 @@ class CurrencyElement extends Component<Props, State> {
 
         return (
             <>
-                <Avatar source={{ uri: `https://xumm.app/avatar/${issuer}_180_50.png` }} badge={avatarBadge} border />
+                <Avatar source={{ uri: `${WebLinks.AvatarURL}/${issuer}_180_50.png` }} badge={avatarBadge} border />
                 <View style={styles.centerContent}>
                     <View style={[AppStyles.flex1, AppStyles.row]}>
                         {isLoading ? (

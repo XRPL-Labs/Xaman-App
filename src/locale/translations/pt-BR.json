@@ -383,7 +383,7 @@
     "repeatPasscode": "Por favor, repita o seu novo código PIN",
     "passcodeDoNotMatch": "O código de acesso não coincide!",
     "warnNeedPasscode": "Você vai precisar do seu código PIN para desbloquear o aplicativo",
-    "UnableToStoreThePasscode": "Não foi possível guardar o código PIN. Isto não deveria ter acontecido. Foi enviado um relatório de erro para a equipa de suporte Xaman. Por favor, contacte-nos através de support@xumm.app para mais informações.",
+    "UnableToStoreThePasscode": "Não foi possível guardar o código PIN. Isto não deveria ter acontecido. Foi enviado um relatório de erro para a equipa de suporte Xaman. Por favor, contacte-nos através de support@xaman.app para mais informações.",
     "weakPasscode": "Senha de acesso fraco",
     "weakPasscodeDescription": "A senha de acesso selecionado é fácil de adivinhar. Recomendamos que escolha uma mais forte.",
     "useAnyway": "Usar mesmo assim",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Ao trocar de telefone (novo / substituto), por razões de segurança, o Xaman irá solicitar a importação de todas as suas contas usando as chaves secretas da conta novamente.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Eu vou manter meus códigos secretos seguros e \"offline\", para que os possa digitar novamente caso eu mude de telemóvel.",
     "questionsAndSupport": "Perguntas & Suporte",
-    "questionsAndSupportExplain": "Se tiver dúvidas, pode ler as perguntas do FAQ e fazer perguntas em https://support.xumm.app.\r\n\r\nEste é o ÚNICO canal de confiança para suporte ao XUMM.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Eu vou confiar APENAS em respostas da equipe de apoio do Xaman em https://support.xumm.app.",
+    "questionsAndSupportExplain": "Se tiver dúvidas, pode ler as perguntas do FAQ e fazer perguntas em https://support.xaman.app.\r\n\r\nEste é o ÚNICO canal de confiança para suporte ao XUMM.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Eu vou confiar APENAS em respostas da equipe de apoio do Xaman em https://support.xaman.app.",
     "pleaseReadTheTextAboveCarefully": "Leia cuidadosamente o texto acima"
   },
   "home": {

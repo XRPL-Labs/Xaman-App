@@ -14,7 +14,9 @@ import { ProfileRepository } from '@store/repositories';
 import { CoreModel } from '@store/models';
 
 import { SHA256 } from '@common/libs/crypto';
-import { AppConfig, ApiConfig, ErrorMessages } from '@common/constants';
+import { AppConfig, ErrorMessages } from '@common/constants';
+
+import { Endpoints, ApiUrl } from '@common/constants/endpoints';
 
 import { GetDeviceUniqueId } from '@common/helpers/device';
 
@@ -60,7 +62,6 @@ class ApiService {
     private readonly apiUrl: string;
     private readonly userAgent: string;
     private readonly timeoutSec: number;
-    private endpoints: Map<string, string>;
     private idempotencyInt: number;
     private accessToken?: string;
     private bearerHash?: string;
@@ -68,13 +69,10 @@ class ApiService {
     private isRefreshingToken: boolean;
     private logger: LoggerInstance;
 
-    [index: string]: any;
-
     constructor() {
         // Config
-        this.apiUrl = ApiConfig.apiUrl;
+        this.apiUrl = ApiUrl;
         this.userAgent = `${AppConfig.appName}`;
-        this.endpoints = ApiConfig.endpoints;
 
         // After 100 seconds, let's call it a day!
         this.timeoutSec = 100 * 1000;
@@ -89,25 +87,6 @@ class ApiService {
 
         // Logger
         this.logger = LoggerService.createLogger('Api');
-
-        /**
-         * Build services from endpoints
-         * - So we can call ApiService.transactions.get() for example
-         */
-        this.endpoints.forEach((endpoint, key) => {
-            (<any>this)[key] = {
-                get: (params: any, payload: any, header?: any) =>
-                    this.fetcher('GET', endpoint, params, payload, header),
-                post: (params: any, payload: any, header?: any) =>
-                    this.fetcher('POST', endpoint, params, payload, header),
-                patch: (params: any, payload: any, header?: any) =>
-                    this.fetcher('PATCH', endpoint, params, payload, header),
-                put: (params: any, payload: any, header?: any) =>
-                    this.fetcher('PUT', endpoint, params, payload, header),
-                delete: (params: any, payload: any, header?: any) =>
-                    this.fetcher('DELETE', endpoint, params, payload, header),
-            };
-        });
     }
 
     public initialize(coreSettings: CoreModel) {
@@ -118,7 +97,7 @@ class ApiService {
                     // get current profile
                     const profile = ProfileRepository.getProfile();
 
-                    // app is setup and there auth token
+                    // app is already setup and there is auth token from profile
                     if (profile) {
                         // if no refresh/bearer token then fetch it as this is a feature that recently added
                         if (!profile.refreshToken) {
@@ -202,8 +181,7 @@ class ApiService {
         }
 
         // fetch the new refresh token from backend
-        return this.refreshToken
-            .post(null, postData)
+        return this.fetch(Endpoints.RefreshToken, 'POST', null, postData)
             .then((res: any) => {
                 const { refresh_token, bearer_hash } = res;
 
@@ -314,11 +292,18 @@ class ApiService {
     /**
      * Sends requests to the API
      */
-    fetcher(method: Methods, endpoint: any, params: any, body: object, header: object, retried = 0) {
-        /* eslint-disable-next-line  */
+    fetch(
+        endpoint: Endpoints,
+        method: Methods,
+        params?: any,
+        body?: object | string,
+        header?: object,
+        retried = 0,
+    ): Promise<any> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             // check if this is a refresh token request
-            const isRefreshTokenRequest = endpoint === this.endpoints.get('refreshToken');
+            const isRefreshTokenRequest = endpoint === Endpoints.RefreshToken;
             // increase retrying request
             retried += 1;
 
@@ -337,7 +322,7 @@ class ApiService {
             const apiTimedOut = setTimeout(() => reject(ErrorMessages.timeout), this.timeoutSec);
 
             if (!method || !endpoint) {
-                reject(new ApiError('Missing params (ApiService.fetcher).'));
+                reject(new ApiError('Missing params method or endpoint (ApiService.fetch).'));
                 return;
             }
 
@@ -363,7 +348,7 @@ class ApiService {
 
             // Add Endpoint Params
             let urlParams = '';
-            let urlEndpoint = endpoint;
+            let urlEndpoint = String(endpoint);
             const paramsClone = typeof params === 'object' ? { ...params } : params;
 
             if (paramsClone) {
@@ -458,7 +443,7 @@ class ApiService {
 
                         // call the request again
                         setTimeout(() => {
-                            this.fetcher(method, endpoint, params, body, header, retried).then(resolve).catch(reject);
+                            this.fetch(endpoint, method, params, body, header, retried).then(resolve).catch(reject);
                         }, 100);
 
                         // return

@@ -7,7 +7,8 @@ import { View } from 'react-native';
 import { Navigator } from '@common/helpers/navigator';
 import { HasBottomNotch } from '@common/helpers/device';
 
-import { AppScreens, AppConfig } from '@common/constants';
+import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import { CoreRepository } from '@store/repositories';
 import { CoreModel } from '@store/models';
@@ -55,7 +56,7 @@ class CreditsView extends Component<Props, State> {
     };
 
     getURI = () => {
-        return `${AppConfig.creditsURL}${Localize.getCurrentLocale()}`;
+        return `${WebLinks.CreditsURL}/${Localize.getCurrentLocale()}`;
     };
 
     render() {

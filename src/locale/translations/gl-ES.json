@@ -383,7 +383,7 @@
     "repeatPasscode": "Por favor, repita o seu novo PIN.",
     "passcodeDoNotMatch": "¡O código PIN non coincide!",
     "warnNeedPasscode": "Precisará do seu código PIN para desbloquea-la app",
-    "UnableToStoreThePasscode": "Incapaz de almacena-lo PIN. Isto non debería suceder. Un informe de erro foi enviado ó equipo de soporte técnico de Xaman. Por favor contáctenos en support@xumm.app para máis información.",
+    "UnableToStoreThePasscode": "Incapaz de almacena-lo PIN. Isto non debería suceder. Un informe de erro foi enviado ó equipo de soporte técnico de Xaman. Por favor contáctenos en support@xaman.app para máis información.",
     "weakPasscode": "Chave de acceso débil",
     "weakPasscodeDescription": "A chave de acceso seleccionado é doado de adiviñar. Recomendámoslle que escolla un máis forte.",
     "useAnyway": "Usar de todos os xeitos",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Cando vostede teña outro teléfono (novo/resposto), por seguridade, Xaman preguntaralle para importar todas as súas contas usando a clave secreta da conta.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Gardarei as miñas claves secretas seguras, sen conexión, para que poida volver a ingresalos se recibo un novo teléfono",
     "questionsAndSupport": "Preguntas e Soporte",
-    "questionsAndSupportExplain": "Se tes alguna dúbida, podes ler as preguntas frecuentes e facer preguntas en https://support.xumm.app.\r\nEsta é A ÚNICA canle confiable de soporte de XUMM",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Só confiarei nas respostas do equipo de  soporte de Xaman en https://support.xumm.app",
+    "questionsAndSupportExplain": "Se tes alguna dúbida, podes ler as preguntas frecuentes e facer preguntas en https://support.xaman.app.\r\nEsta é A ÚNICA canle confiable de soporte de XUMM",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Só confiarei nas respostas do equipo de  soporte de Xaman en https://support.xaman.app",
     "pleaseReadTheTextAboveCarefully": "Por favor, lea atentamente o texto anterior."
   },
   "home": {

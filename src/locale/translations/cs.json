@@ -383,7 +383,7 @@
     "repeatPasscode": "Zopakujte prosím své nové přístupové heslo",
     "passcodeDoNotMatch": "Přístupový kód se neshoduje!",
     "warnNeedPasscode": "K odemknutí aplikace budete potřebovat přístupové heslo",
-    "UnableToStoreThePasscode": "Přístupové heslo nelze uložit. Tato situace neměla nastat. Týmu Xaman byla odeslána zpráva o chybě. Prosím, kontaktujte nás na support@xumm.app pro více informací.",
+    "UnableToStoreThePasscode": "Přístupové heslo nelze uložit. Tato situace neměla nastat. Týmu Xaman byla odeslána zpráva o chybě. Prosím, kontaktujte nás na support@xaman.app pro více informací.",
     "weakPasscode": "Weak passcode",
     "weakPasscodeDescription": "The selected passcode is easy to guess. We recommend you to choose a stronger one.",
     "useAnyway": "Use anyway",
@@ -416,8 +416,8 @@
     "whenYouChangeYourPhoneExplain": "Když budete mít jiný telefon (nový/náhradní), z bezpečnostních důvodů vás Xaman požádá, abyste znovu importovali všechny své účty pomocí tajných klíčů.",
     "IWillKeepMySecretsSafeSoICanReEnterThemIfIGetANewPhone": "Své tajné klíče k účtu uschovám v bezpečí offline mimo internet, abych je mohl/mohla znovu zadat, pokud budu mít nový telefon.",
     "questionsAndSupport": "Dotazy a podpora",
-    "questionsAndSupportExplain": "Máte-li dotazy, můžete si přečíst Často kladené otázky a ptát se na https://support.xumm.app.\r\n\r\nJe to jediný důvěryhodný kanál pro XUMM podporu.",
-    "IOnlyTrustAnswersFromXamanSupportTeam": "Budu důvěřovat pouze odpovědím od týmu podpory Xaman na https://support.xumm.app].",
+    "questionsAndSupportExplain": "Máte-li dotazy, můžete si přečíst Často kladené otázky a ptát se na https://support.xaman.app.\r\n\r\nJe to jediný důvěryhodný kanál pro XUMM podporu.",
+    "IOnlyTrustAnswersFromXamanSupportTeam": "Budu důvěřovat pouze odpovědím od týmu podpory Xaman na https://support.xaman.app].",
     "pleaseReadTheTextAboveCarefully": "Prosíme přečtěte si pozorně text nahoře"
   },
   "home": {

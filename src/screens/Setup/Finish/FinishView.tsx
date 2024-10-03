@@ -9,7 +9,9 @@ import { View, SafeAreaView, Image, Alert } from 'react-native';
 
 import { CoreRepository, ProfileRepository } from '@store/repositories';
 import { Navigator } from '@common/helpers/navigator';
-import { AppScreens, AppConfig } from '@common/constants';
+
+import { AppScreens } from '@common/constants';
+import { WebLinks } from '@common/constants/endpoints';
 
 import { BackendService, AuthenticationService, StyleService } from '@services';
 
@@ -121,7 +123,7 @@ class FinishView extends Component<Props, State> {
     };
 
     getURI = () => {
-        return AppConfig.termOfUseURL;
+        return `${WebLinks.TermOfUseURL}/${Localize.getCurrentLocale()}`;
     };
 
     render() {
