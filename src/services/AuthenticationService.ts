@@ -414,7 +414,7 @@ class AuthenticationService extends EventEmitter {
                     resolve(true);
                 })
                 .catch((error) => {
-                    this.logger.warn(`Biometric authentication error: ${error.name}`);
+                    this.logger.warn('authenticateBiometrics', error);
                     // biometric's has been changed, we need to disable the biometric authentication
                     if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
                         this.onBiometricInvalidated();

@@ -103,8 +103,8 @@ class PushNotificationsService extends EventEmitter {
         }
 
         // persist the badge count
-        await LocalNotificationModule.setBadge(badge).catch((error: any): void => {
-            this.logger.warn('LocalNotificationModule setBadge', error);
+        await LocalNotificationModule.setBadge(badge).catch((error): void => {
+            this.logger.warn('LocalNotificationModule.setBadge', error);
         });
 
         // update the TabBar Events badge count
@@ -179,7 +179,7 @@ class PushNotificationsService extends EventEmitter {
         try {
             return await messaging().getToken();
         } catch (error) {
-            this.logger.error('Cannot get FCM token from firebase', error);
+            this.logger.error('getToken', error);
             return undefined;
         }
     };

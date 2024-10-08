@@ -196,8 +196,8 @@ class ApiService {
                     this.setBearerHash(bearer_hash);
                 }
             })
-            .catch((error: any) => {
-                this.logger.error('Refresh access token error: ', error);
+            .catch((error) => {
+                this.logger.error('updateRefreshToken', error);
             })
             .finally(() => {
                 this.isRefreshingToken = false;
@@ -374,11 +374,11 @@ class ApiService {
                     // eslint-disable-next-line
                     Object.keys(paramsClone).length > 0 ? (urlParams += `?${this.serialize(paramsClone, '')}`) : null;
 
-                    // String or Number - eg. /recipes/23
+                    // String or Number - eg= /recipes/23
                 } else if (typeof paramsClone === 'string' || typeof paramsClone === 'number') {
                     urlParams = `/${paramsClone}`;
                 } else {
-                    this.logger.warn('params are not an object!', this.apiUrl + urlEndpoint + urlParams);
+                    this.logger.warn('params are not an object!', `${this.apiUrl}${urlEndpoint}${urlParams}`);
                 }
             }
 

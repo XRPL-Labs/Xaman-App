@@ -67,8 +67,6 @@ export class Payload {
         } else if (isObject(args)) {
             // if not,  assign it to the class
             payload.assign(args);
-        } else {
-            throw new Error('invalid args applied, only string or object');
         }
 
         return payload;
@@ -237,7 +235,7 @@ export class Payload {
 
             ApiService.fetch(Endpoints.Payload, 'PATCH', { uuid: this.getPayloadUUID() }, patch).catch(
                 (error: ApiError) => {
-                    logger.error(`Patch ${this.getPayloadUUID()}`, error);
+                    logger.error(`patch ${this.getPayloadUUID()}`, error);
                 },
             );
 
