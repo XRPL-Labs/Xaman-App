@@ -1,0 +1,132 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[DerivationPathInput] should match snapshot 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "alignSelf": "center",
+      "backgroundColor": "#F3F6FA",
+      "borderColor": "rgba(96,104,133,0.06)",
+      "borderRadius": 10,
+      "borderWidth": 2,
+      "flexDirection": "row",
+      "height": 93.5,
+      "justifyContent": "center",
+      "minHeight": 55,
+      "paddingHorizontal": 10,
+      "width": "100%",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#606885",
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "paddingHorizontal": 10,
+        "textAlign": "center",
+      }
+    }
+  >
+    m/44'/144'/
+  </Text>
+  <TextInput
+    keyboardType="number-pad"
+    onChangeText={[Function]}
+    onSubmitEditing={[Function]}
+    placeholder="0"
+    placeholderTextColor="rgba(96,104,133,0.06)"
+    returnKeyType="next"
+    style={
+      {
+        "backgroundColor": "#F3F6FA",
+        "color": "#0030CF",
+        "flex": 1,
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "margin": 0,
+        "padding": 0,
+        "paddingRight": 20,
+        "textAlign": "left",
+        "textAlignVertical": "center",
+      }
+    }
+    value=""
+  />
+  <Text
+    style={
+      {
+        "color": "#606885",
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "paddingHorizontal": 10,
+        "textAlign": "center",
+      }
+    }
+  >
+    '/
+  </Text>
+  <TextInput
+    keyboardType="number-pad"
+    onChangeText={[Function]}
+    onKeyPress={[Function]}
+    onSubmitEditing={[Function]}
+    placeholder="0"
+    placeholderTextColor="rgba(96,104,133,0.06)"
+    returnKeyType="next"
+    style={
+      {
+        "backgroundColor": "#F3F6FA",
+        "color": "#0030CF",
+        "flex": 1,
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "margin": 0,
+        "padding": 0,
+        "paddingRight": 20,
+        "textAlign": "left",
+        "textAlignVertical": "center",
+      }
+    }
+    value=""
+  />
+  <Text
+    style={
+      {
+        "color": "#606885",
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "paddingHorizontal": 10,
+        "textAlign": "center",
+      }
+    }
+  >
+    /
+  </Text>
+  <TextInput
+    keyboardType="number-pad"
+    onChangeText={[Function]}
+    onKeyPress={[Function]}
+    placeholder="0"
+    placeholderTextColor="rgba(96,104,133,0.06)"
+    returnKeyType="done"
+    style={
+      {
+        "backgroundColor": "#F3F6FA",
+        "color": "#0030CF",
+        "flex": 1,
+        "fontFamily": "ProximaNova-Bold",
+        "fontSize": 30,
+        "margin": 0,
+        "padding": 0,
+        "paddingRight": 20,
+        "textAlign": "left",
+        "textAlignVertical": "center",
+      }
+    }
+    value=""
+  />
+</View>
+`;

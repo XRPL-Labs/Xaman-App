@@ -105,4 +105,8 @@ ReactNative.NativeModules.VaultManagerModule = {
     ),
 };
 
+ReactNative.Animated.timing = () => ({
+    start: (cb?: () => void) => (cb ? cb() : undefined),
+});
+
 module.exports = ReactNative;

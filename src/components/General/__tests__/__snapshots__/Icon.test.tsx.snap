@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Icon] renders correctly with custom size 1`] = `
+<Image
+  resizeMode="contain"
+  source={
+    {
+      "uri": "IconFlaskConical",
+    }
+  }
+  style={
+    [
+      {
+        "height": 78.57142857142857,
+        "width": 78.57142857142857,
+      },
+      undefined,
+    ]
+  }
+/>
+`;
+
+exports[`[Icon] renders correctly with custom style 1`] = `
+<Image
+  resizeMode="contain"
+  source={
+    {
+      "uri": "IconFlaskConical",
+    }
+  }
+  style={
+    [
+      {
+        "height": 39.285714285714285,
+        "width": 39.285714285714285,
+      },
+      {
+        "tintColor": "red",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`[Icon] renders correctly with default props 1`] = `
+<Image
+  resizeMode="contain"
+  source={
+    {
+      "uri": "IconFlaskConical",
+    }
+  }
+  style={
+    [
+      {
+        "height": 39.285714285714285,
+        "width": 39.285714285714285,
+      },
+      undefined,
+    ]
+  }
+/>
+`;

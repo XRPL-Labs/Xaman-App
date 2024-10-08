@@ -6,7 +6,7 @@ import { Text, ActivityIndicator } from 'react-native';
 
 import { Button } from '..';
 
-describe.skip('Button Component', () => {
+describe.skip('[Button]', () => {
     beforeEach(() => {
         jest.resetModules();
     });

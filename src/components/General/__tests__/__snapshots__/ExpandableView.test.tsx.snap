@@ -1,0 +1,221 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[ExpandableView] renders correctly when collapsed 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#F3F6FA",
+        "borderRadius": 15,
+        "width": "100%",
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      {
+        "backgroundColor": "rgba(96,104,133,0.06)",
+        "borderTopLeftRadius": 15,
+        "borderTopRightRadius": 15,
+        "padding": 10,
+      }
+    }
+  >
+    <Text
+      style={{}}
+    >
+      Expandable Title
+    </Text>
+  </View>
+  <View
+    collapsable={false}
+    onLayout={[Function]}
+    style={
+      {
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderLeftWidth": 2,
+        "borderRightWidth": 2,
+        "maxHeight": 0,
+        "opacity": 0,
+      }
+    }
+  >
+    <Text>
+      Expandable Content
+    </Text>
+  </View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "rgba(96,104,133,0.06)",
+        "borderBottomLeftRadius": 15,
+        "borderBottomRightRadius": 15,
+        "justifyContent": "center",
+        "opacity": 1,
+        "padding": 5,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        {
+          "uri": "IconChevronDown",
+        }
+      }
+      style={
+        [
+          {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          {
+            "tintColor": "#000000",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`[ExpandableView] renders correctly when expanded 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#F3F6FA",
+        "borderRadius": 15,
+        "width": "100%",
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      {
+        "backgroundColor": "rgba(96,104,133,0.06)",
+        "borderTopLeftRadius": 15,
+        "borderTopRightRadius": 15,
+        "padding": 10,
+      }
+    }
+  >
+    <Text
+      style={{}}
+    >
+      Expandable Title
+    </Text>
+  </View>
+  <View
+    collapsable={false}
+    onLayout={[Function]}
+    style={
+      {
+        "backgroundColor": "#F3F6FA",
+        "borderColor": "#F3F6FA",
+        "borderLeftWidth": 2,
+        "borderRightWidth": 2,
+        "maxHeight": 1000,
+        "opacity": 1,
+      }
+    }
+  >
+    <Text>
+      Expandable Content
+    </Text>
+  </View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "rgba(96,104,133,0.06)",
+        "borderBottomLeftRadius": 15,
+        "borderBottomRightRadius": 15,
+        "justifyContent": "center",
+        "opacity": 1,
+        "padding": 5,
+      }
+    }
+  >
+    <Image
+      resizeMode="contain"
+      source={
+        {
+          "uri": "IconChevronUp",
+        }
+      }
+      style={
+        [
+          {
+            "height": 31.428571428571427,
+            "width": 31.428571428571427,
+          },
+          {
+            "tintColor": "#000000",
+          },
+        ]
+      }
+    />
+  </View>
+</View>
+`;
