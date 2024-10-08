@@ -3,7 +3,6 @@ import Onboarding from './Onboarding';
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
 import PushNotificationSetup from './Setup/PushNotification';
-import DisclaimersSetup from './Setup/Disclaimers';
 import FinishSetup from './Setup/Finish';
 
 // TabBar
@@ -103,7 +102,6 @@ export {
     PasscodeSetup,
     BiometrySetup,
     PushNotificationSetup,
-    DisclaimersSetup,
     FinishSetup,
     Home,
     Events,

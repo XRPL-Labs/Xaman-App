@@ -15,7 +15,7 @@ import { Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
+import { FinishSetupViewProps } from '@screens/Setup/Finish';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -85,7 +85,7 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     nextStep = () => {
-        Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+        Navigator.push<FinishSetupViewProps>(AppScreens.Setup.Finish, {});
     };
 
     render() {
