@@ -1,0 +1,362 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Badge] applies correct color based on the type 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": "#3767CE",
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+>
+  <Text
+    adjustsFontSizeToFit={true}
+    numberOfLines={1}
+    style={
+      [
+        {
+          "color": "#ffffff",
+          "fontFamily": "ProximaNova-Bold",
+          "fontSize": 18,
+        },
+        {
+          "fontSize": 18,
+        },
+        undefined,
+      ]
+    }
+  >
+    XRPLNS
+  </Text>
+</View>
+`;
+
+exports[`[Badge] renders correctly with a label 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": undefined,
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+>
+  <Text
+    adjustsFontSizeToFit={true}
+    numberOfLines={1}
+    style={
+      [
+        {
+          "color": "#ffffff",
+          "fontFamily": "ProximaNova-Bold",
+          "fontSize": 18,
+        },
+        {
+          "fontSize": 18,
+        },
+        undefined,
+      ]
+    }
+  >
+    Test Label
+  </Text>
+</View>
+`;
+
+exports[`[Badge] renders correctly with default props 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": undefined,
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+/>
+`;
+
+exports[`[Badge] renders correctly with different sizes 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": undefined,
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+/>
+`;
+
+exports[`[Badge] renders correctly with different sizes 2`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": undefined,
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+/>
+`;
+
+exports[`[Badge] renders correctly with different sizes 3`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": undefined,
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+/>
+`;
+
+exports[`[Badge] renders correctly with specified type 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignSelf": "center",
+      "backgroundColor": "#3767CE",
+      "borderRadius": 5,
+      "marginLeft": 5,
+      "opacity": 1,
+      "paddingHorizontal": 5,
+      "paddingVertical": 1,
+    }
+  }
+>
+  <Text
+    adjustsFontSizeToFit={true}
+    numberOfLines={1}
+    style={
+      [
+        {
+          "color": "#ffffff",
+          "fontFamily": "ProximaNova-Bold",
+          "fontSize": 18,
+        },
+        {
+          "fontSize": 18,
+        },
+        undefined,
+      ]
+    }
+  >
+    XRPLNS
+  </Text>
+</View>
+`;

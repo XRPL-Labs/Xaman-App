@@ -1,0 +1,280 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[CheckBox] renders correctly when checked 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignItems": "center",
+      "borderColor": "#0030CF",
+      "borderRadius": 12,
+      "color": "#0030CF",
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "left": 0,
+      "opacity": 1,
+      "paddingHorizontal": 20,
+      "paddingVertical": 20,
+      "right": 0,
+      "width": "100%",
+    }
+  }
+  testID="testCheckBox"
+>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "borderColor": "#606885",
+            "borderRadius": 5,
+            "borderWidth": 3,
+            "height": 23,
+            "justifyContent": "center",
+            "width": 23,
+          },
+          {
+            "backgroundColor": "#0030CF",
+            "borderColor": "#0030CF",
+          },
+        ]
+      }
+    >
+      <Image
+        resizeMode="contain"
+        source={
+          {
+            "uri": "IconCheckXaman",
+          }
+        }
+        style={
+          [
+            {
+              "height": 18.857142857142858,
+              "width": 18.857142857142858,
+            },
+            {
+              "tintColor": "#ffffff",
+            },
+          ]
+        }
+      />
+    </View>
+  </View>
+  <View
+    style={
+      {
+        "flex": 6,
+      }
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#606885",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 32.14285714285714,
+          },
+          {
+            "color": "#0030CF",
+          },
+        ]
+      }
+    >
+      Test Label
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#606885",
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+          },
+        ]
+      }
+    >
+      Test Label Small
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 30,
+          },
+          {
+            "color": "#606885",
+            "marginTop": 3,
+          },
+          {
+            "color": "#0030CF",
+          },
+        ]
+      }
+    >
+      Test Description
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[CheckBox] renders correctly when unchecked 1`] = `
+<View
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    {
+      "alignItems": "center",
+      "borderRadius": 12,
+      "flexDirection": "row",
+      "justifyContent": "center",
+      "left": 0,
+      "opacity": 1,
+      "paddingHorizontal": 20,
+      "paddingVertical": 20,
+      "right": 0,
+      "width": "100%",
+    }
+  }
+  testID="testCheckBoxUnchecked"
+>
+  <View
+    style={
+      {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "alignItems": "center",
+            "borderColor": "#606885",
+            "borderRadius": 5,
+            "borderWidth": 3,
+            "height": 23,
+            "justifyContent": "center",
+            "width": 23,
+          },
+          null,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      {
+        "flex": 6,
+      }
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#606885",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 32.14285714285714,
+          },
+          false,
+        ]
+      }
+    >
+      Test Label Unchecked
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#606885",
+            "fontFamily": "ProximaNova-Bold",
+            "fontSize": 30,
+          },
+        ]
+      }
+    >
+      Test Label Small Unchecked
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 30,
+          },
+          {
+            "color": "#606885",
+            "marginTop": 3,
+          },
+          false,
+        ]
+      }
+    >
+      Test Description Unchecked
+    </Text>
+  </View>
+</View>
+`;

@@ -32,8 +32,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.createVault(name, entry, key)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault create error', error);
+                .catch((error) => {
+                    logger.error(`create [${name}]`, error);
                     reject(error);
                 });
         });
@@ -53,8 +53,8 @@ const Vault = {
                     }
                     resolve(clearText);
                 })
-                .catch((error: Error) => {
-                    logger.error('Vault open error', error);
+                .catch((error) => {
+                    logger.error(`open [${name}]`, error);
                     resolve(undefined);
                 });
         });
@@ -67,8 +67,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.vaultExist(name)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault vaultExist error', error);
+                .catch((error) => {
+                    logger.error(`exist [${name}]`, error);
                     reject(error);
                 });
         });
@@ -81,8 +81,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.isStorageEncryptionKeyExist()
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault isStorageEncryptionKeyExist error', error);
+                .catch((error) => {
+                    logger.error('isStorageEncryptionKeyExist', error);
                     reject(error);
                 });
         });
@@ -111,8 +111,8 @@ const Vault = {
 
                     resolve(keyBytes);
                 })
-                .catch((error: any) => {
-                    logger.error('Vault getStorageEncryptionKey error', error);
+                .catch((error) => {
+                    logger.error('getStorageEncryptionKey', error);
                     reject(error);
                 });
         });
@@ -132,8 +132,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.isMigrationRequired(name)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault isMigrationRequired error', error);
+                .catch((error) => {
+                    logger.error(`isMigrationRequired [${name}]`, error);
                     reject(error);
                 });
         });
@@ -146,8 +146,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.reKeyVault(name, oldKey, newKey)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault reKey error', error);
+                .catch((error) => {
+                    logger.error(`reKey [${name}]`, error);
                     reject(error);
                 });
         });
@@ -160,8 +160,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.reKeyBatchVaults(names, oldKey, newKey)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault batch reKey error', error);
+                .catch((error) => {
+                    logger.error('reKeyBatch', error);
                     reject(error);
                 });
         });
@@ -172,8 +172,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.purgeVault(name)
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault purge error', error);
+                .catch((error) => {
+                    logger.error(`purge [${name}]`, error);
                     reject(error);
                 });
         });
@@ -184,8 +184,8 @@ const Vault = {
         return new Promise((resolve, reject) => {
             VaultManagerModule.clearStorage()
                 .then(resolve)
-                .catch((error: any) => {
-                    logger.error('Vault clear storage error', error);
+                .catch((error) => {
+                    logger.error('clearStorage', error);
                     reject(error);
                 });
         });

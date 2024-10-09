@@ -20,7 +20,7 @@ import { Button, Spacer, Footer } from '@components/General';
 
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
+import { FinishSetupViewProps } from '@screens/Setup/Finish';
 import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification';
 
 import { AppStyles } from '@theme';
@@ -106,7 +106,7 @@ class BiometrySetupView extends Component<Props, State> {
         PushNotificationsService.checkPermission()
             .then((granted) => {
                 if (granted) {
-                    Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+                    Navigator.push<FinishSetupViewProps>(AppScreens.Setup.Finish, {});
                     return;
                 }
 

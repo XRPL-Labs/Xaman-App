@@ -110,9 +110,9 @@ class AppService extends EventEmitter {
 
                 // this method only works on android
                 if (Platform.OS === 'android') {
-                    AppUpdateModule.startUpdate().catch((e: any) => {
+                    AppUpdateModule.startUpdate().catch((error) => {
                         // user canceled this update
-                        if (e.code === 'E_UPDATE_CANCELLED') {
+                        if (error.code === 'E_UPDATE_CANCELLED') {
                             Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
                         }
                     });
@@ -136,9 +136,8 @@ class AppService extends EventEmitter {
                     );
                 }
             })
-            .catch((error: Error) => {
+            .catch((error) => {
                 this.logger.warn('checkAppUpdate', error);
-                // ignore
             });
     };
 

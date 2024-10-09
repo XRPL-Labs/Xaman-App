@@ -14,7 +14,7 @@ interface Props {
     items: any;
     containerStyle?: ViewStyle;
     selectedItem?: any;
-    renderItem: (item: any, selected?: boolean) => React.ReactElement | null;
+    renderItem: (item: any, selected: boolean) => React.ReactElement | null;
     onSelect?: (item: any) => void;
     onExpand?: () => void;
     onPress?: () => void;
@@ -203,7 +203,7 @@ class AccordionPicker extends Component<Props, State> {
                 style={[styles.pickerDropDownItem, AppStyles.centerContent]}
             >
                 <View style={[AppStyles.row]}>
-                    <View style={AppStyles.flex1}>{renderItem(selectedItem)}</View>
+                    <View style={AppStyles.flex1}>{renderItem(selectedItem, true)}</View>
                     {items.length > 1 && (
                         <TouchableDebounce style={[styles.collapseButton]} onPress={this.toggle}>
                             <Icon

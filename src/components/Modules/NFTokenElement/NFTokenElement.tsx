@@ -65,7 +65,8 @@ class NFTokenElement extends PureComponent<Props, State> {
         BackendService.getNFTDetails(account, [nfTokenId])
             .then((resp: any) => {
                 const { tokenData } = resp;
-                if (typeof tokenData === 'object' && 'nfTokenId' in tokenData) {
+
+                if (typeof tokenData === 'object' && nfTokenId in tokenData) {
                     const { image, name } = tokenData[nfTokenId];
 
                     this.setState({

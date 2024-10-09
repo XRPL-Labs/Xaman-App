@@ -156,7 +156,7 @@ export default class Storage {
                 });
                 resolve();
             } catch (error) {
-                this.logger.error('initRepositories:', error);
+                this.logger.error('initRepositories', error);
                 reject(error);
             }
         });
@@ -181,7 +181,7 @@ export default class Storage {
 
                 resolve();
             } catch (error) {
-                this.logger.error('populateDataStoreIfNeeded:', error);
+                this.logger.error('populateDataStoreIfNeeded', error);
                 reject(error);
             }
         });

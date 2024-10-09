@@ -8,7 +8,7 @@ import renderer from 'react-test-renderer';
 
 import { Text } from 'react-native';
 
-import { TextAvatar } from '..';
+import { TextAvatar } from '../TextAvatar';
 
 describe('[TextAvatar]', () => {
     it('renders correctly', () => {

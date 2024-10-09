@@ -3,7 +3,7 @@
  * Interact with Xaman backend
  */
 
-import { compact, flatMap, get, isEmpty, map, reduce } from 'lodash';
+import { get, isEmpty, map, reduce } from 'lodash';
 import moment from 'moment-timezone';
 import { Platform } from 'react-native';
 import { OptionsModalPresentationStyle } from 'react-native-navigation';
@@ -93,8 +93,8 @@ class BackendService {
         if (!hash) {
             return;
         }
-        this.addTransaction(hash, network).catch((e: any) => {
-            this.logger.error('Add transaction error: ', e);
+        this.addTransaction(hash, network).catch((error) => {
+            this.logger.error('addTransaction', error);
         });
     };
 
@@ -170,8 +170,8 @@ class BackendService {
 
             // persist the latest version
             await Preferences.set(Preferences.keys.CURATED_LIST_VERSION, String(version));
-        } catch (error: any) {
-            this.logger.error('Update Curated IOUs list: ', error);
+        } catch (error) {
+            this.logger.error('syncCuratedIOUs', error);
         }
     };
 
@@ -181,17 +181,17 @@ class BackendService {
      */
     getPendingPayloads = async (): Promise<Payload[]> => {
         return ApiService.fetch(Endpoints.PendingPayloads, 'GET')
-            .then(async (res: { payloads: PayloadType[] }) => {
+            .then((res: { payloads: PayloadType[] }) => {
                 const { payloads } = res;
 
                 if (!isEmpty(payloads)) {
-                    return Promise.all(flatMap(payloads, Payload.from));
+                    return Promise.all(payloads.map((payload) => Payload.from(payload)));
                 }
 
                 return [];
             })
-            .catch((error: any): any => {
-                this.logger.error('Fetch Pending Payloads Error: ', error);
+            .catch((error) => {
+                this.logger.error('getPendingPayloads', error);
                 return [];
             });
     };
@@ -325,8 +325,8 @@ class BackendService {
                     PushNotificationsService.updateBadge(badge);
                 }
             })
-            .catch((e: any) => {
-                this.logger.error('Ping Backend Error: ', e);
+            .catch((error) => {
+                this.logger.error('ping', error);
             });
     };
 
@@ -484,11 +484,11 @@ class BackendService {
 
     /**
      * Gets details about a list of NFT tokens.
-     * @param {string} account - The account associated with the XLS20 token.
-     * @param {string[]} tokens - An array of XLS20 token IDs.
-     * @returns {Promise} A promise that resolves with details about the XLS20 tokens.
+     * @param {string} account - The account associated with the NFT token.
+     * @param {string[]} tokens - An array of NFT token IDs.
+     * @returns {Promise<XamanBackend.NFTDetailsResponse>} A promise that resolves with details about the NFT tokens.
      */
-    getNFTDetails = (account: string, tokens: string[]): Promise<any> => {
+    getNFTDetails = (account: string, tokens: string[]): Promise<XamanBackend.NFTDetailsResponse> => {
         return ApiService.fetch(Endpoints.NftDetails, 'POST', null, { account, tokens });
     };
 
@@ -497,43 +497,43 @@ class BackendService {
      * @param {string} account - The account of the user offering XLS20 tokens.
      * @returns {Promise} A promise that resolves with the list of offered XLS20 tokens.
      */
-    getNFTOffered = (account: string): Promise<Array<NFTokenOffer>> => {
+    getNFTOffered = (account: string): Promise<NFTokenOffer[]> => {
         return ApiService.fetch(Endpoints.NftOffered, 'GET', { account })
-            .then(async (res: Array<any>) => {
+            .then(async (res: XamanBackend.NFTOfferedResponse) => {
                 if (isEmpty(res)) {
                     return [];
                 }
                 // fetch the offer objects from ledger
                 const ledgerOffers = await Promise.all(
-                    flatMap(res, async (offer) => {
-                        const { OfferID } = offer;
-                        return LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: OfferID })
-                            .then((resp) => {
-                                // something went wrong ?
-                                if ('error' in resp) {
-                                    return null;
-                                }
+                    res
+                        .map(({ OfferID, ledger_close_time }) => {
+                            return LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: OfferID })
+                                .then((resp) => {
+                                    // something went wrong ?
+                                    if ('error' in resp) {
+                                        return null;
+                                    }
 
-                                const { node } = resp;
-                                if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer) {
-                                    // combine ledger time with the object
-                                    return Object.assign(node, {
-                                        LedgerTime: get(offer, 'ledger_close_time'),
-                                    });
-                                }
-                                return null;
-                            })
-                            .catch(() => {
-                                return null;
-                            });
-                    }),
+                                    const { node } = resp;
+                                    if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer && ledger_close_time) {
+                                        // combine ledger time with the object
+                                        return Object.assign(node, {
+                                            LedgerTime: ledger_close_time,
+                                        });
+                                    }
+                                    return null;
+                                })
+                                .catch(() => {
+                                    return null;
+                                });
+                        })
+                        .filter(Boolean) as unknown as LedgerNFTokenOffer[],
                 );
 
-                return compact(flatMap(ledgerOffers, LedgerObjectFactory.fromLedger));
+                return ledgerOffers.map(LedgerObjectFactory.fromLedger).filter(Boolean) as NFTokenOffer[];
             })
-            .catch((error: string): any => {
-                console.error(error);
-                this.logger.error('Fetch XLS20 offered Error: ', error);
+            .catch((error) => {
+                this.logger.error('getNFTOffered', error);
                 return [];
             });
     };

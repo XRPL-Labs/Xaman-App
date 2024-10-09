@@ -21,7 +21,7 @@ import { Button, Spacer, Footer, PinInput, InfoMessage } from '@components/Gener
 
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
+import { FinishSetupViewProps } from '@screens/Setup/Finish';
 import { BiometrySetupViewProps } from '@screens/Setup/Biometry';
 import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification';
 
@@ -103,7 +103,7 @@ class PasscodeSetupView extends Component<Props, State> {
             // if push notification already granted then go to last part
             const granted = await PushNotificationsService.checkPermission();
             if (granted) {
-                Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+                Navigator.push<FinishSetupViewProps>(AppScreens.Setup.Finish, {});
                 return;
             }
 

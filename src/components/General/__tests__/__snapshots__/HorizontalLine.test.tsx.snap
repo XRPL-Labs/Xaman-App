@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[HorizontalLine] should render with custom props 1`] = `
+<View
+  style={
+    [
+      {
+        "marginBottom": 10,
+      },
+      {
+        "borderBottomColor": "red",
+        "borderBottomWidth": 4,
+        "width": "50%",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`[HorizontalLine] should render with default props 1`] = `
+<View
+  style={
+    [
+      undefined,
+      {
+        "borderBottomColor": "rgba(96,104,133,0.06)",
+        "borderBottomWidth": 2,
+        "width": "100%",
+      },
+    ]
+  }
+/>
+`;
