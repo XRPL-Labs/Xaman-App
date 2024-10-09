@@ -100,6 +100,7 @@ class Application {
         if (message) {
             if (
                 message.indexOf('Realm file decryption failed') > -1 ||
+                message.indexOf('Could not decrypt data') > -1 ||
                 message.indexOf('Could not decrypt bytes') > -1
             ) {
                 Alert.alert('Error', ErrorMessages.storageDecryptionFailed, [
