@@ -470,7 +470,14 @@ class BackendService {
      * @returns {Promise} A promise that resolves when the audit trail action is completed.
      */
     auditTrail = (destination: string, reason: { reason: string }): Promise<XamanBackend.AuditTrailResponse> => {
-        return ApiService.fetch(Endpoints.AuditTrail, 'POST', {}, reason);
+        return ApiService.fetch(
+            Endpoints.AuditTrail,
+            'POST',
+            {
+                destination,
+            },
+            reason,
+        );
     };
 
     /**
