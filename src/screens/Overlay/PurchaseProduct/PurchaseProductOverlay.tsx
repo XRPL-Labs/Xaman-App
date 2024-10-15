@@ -211,7 +211,7 @@ class PurchaseProductOverlay extends Component<Props, State> {
 
         return (
             <>
-                <ProductDetailsElement productIdentifier={productId} onDetailsResolved={this.onDetailsResolved} />
+                <ProductDetailsElement productId={productId} onDetailsResolved={this.onDetailsResolved} />
                 <Spacer size={20} />
                 <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
                 <Spacer size={50} />

@@ -11,7 +11,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 
 interface Props {
-    productIdentifier: string;
+    productId: string;
     onDetailsResolved?: () => void;
 }
 
@@ -38,13 +38,13 @@ class ProductDetailsElement extends PureComponent<Props, State> {
     }
 
     fetchDetails = () => {
-        const { productIdentifier, onDetailsResolved } = this.props;
+        const { productId, onDetailsResolved } = this.props;
 
         // start placeholder animation
         this.startPlaceholderAnimation();
 
         // fetch details from backend
-        InAppPurchase.getProductDetails(productIdentifier)
+        InAppPurchase.getProductDetails(productId)
             .then((resp) => {
                 this.setState(
                     {
