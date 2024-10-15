@@ -16,6 +16,7 @@
 @implementation InAppPurchaseModule
 
 static NSString *const E_CLIENT_IS_NOT_READY =  @"E_CLIENT_IS_NOT_READY";
+static NSString *const E_PRODUCT_DETAILS_NOT_FOUND =   @"E_PRODUCT_DETAILS_NOT_FOUND";
 static NSString *const E_PRODUCT_IS_NOT_AVAILABLE =   @"E_PRODUCT_IS_NOT_AVAILABLE";
 static NSString *const E_NO_PENDING_PURCHASE =  @"E_NO_PENDING_PURCHASE";
 static NSString *const E_PURCHASE_CANCELED = @"E_PURCHASE_CANCELED";
@@ -51,21 +52,15 @@ RCT_EXPORT_MODULE();
  finalizePurchase
  */
 
-RCT_EXPORT_METHOD(purchase:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(getProductDetails:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
   
-  // check if user can make the payment
-  if(![SKPaymentQueue canMakePayments]){
-    reject(E_CLIENT_IS_NOT_READY, @"User cannot make payments due to parental controls", nil);
-    return;
-  }
   
   // try to find the product details in our cached details
   [productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
     if ([product.productIdentifier isEqualToString:productID]) {
       // already have cached version of product details
-      // *** start the payment process
-      [self lunchBillingFlow:product resolver:resolve rejecter:reject];
+      resolve([self productToJson:product]);
       *stop = YES;
     }
   }];
@@ -86,14 +81,47 @@ RCT_EXPORT_METHOD(purchase:(NSString *)productID resolver:(RCTPromiseResolveBloc
           product = p;
         }
       }
-      // *** start the payment process
-      [strongSelf lunchBillingFlow:product resolver:resolve rejecter:reject];
-    } else {
-      reject(E_CLIENT_IS_NOT_READY, @"User cannot make payments due to parental controls", nil);
+      if(product){
+        resolve([strongSelf productToJson:product]);
+      }else{
+        reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
+      }
+    }else{
+      reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
     }
   };
+  
   // start the product details request
   [self->productRequestHandler startProductRequestForIdentifier:productID];
+}
+
+RCT_EXPORT_METHOD(purchase:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject) {
+  
+  // check if user can make the payment
+  if(![SKPaymentQueue canMakePayments]){
+    reject(E_CLIENT_IS_NOT_READY, @"user cannot make payments due to parental controls", nil);
+    return;
+  }
+  
+  
+  __block SKProduct * productForPurchase;
+  
+  // try to find the product details in our cached details
+  [productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
+    if ([product.productIdentifier isEqualToString:productID]) {
+      // already have cached version of product details
+      productForPurchase = product;
+      *stop = YES;
+    }
+  }];
+  
+  if(productForPurchase){
+    // found the product details lets start the payment
+    [self lunchBillingFlow:productForPurchase resolver:resolve rejecter:reject];
+  }else{
+    reject(E_PRODUCT_DETAILS_NOT_FOUND, [NSString stringWithFormat:@"product details with id %@ not found, make sure to run the getProductDetails method before purchase!", productID], nil);
+  }
 }
 
 RCT_EXPORT_METHOD(finalizePurchase:(NSString *)transactionIdentifier resolver:(RCTPromiseResolveBlock)resolve
@@ -114,7 +142,7 @@ RCT_EXPORT_METHOD(finalizePurchase:(NSString *)transactionIdentifier resolver:(R
   }
   
   if(!isTransactionFinished){
-    reject(E_FINISH_TRANSACTION_FAILED, [NSString stringWithFormat:@"Transaction with id %@ not found!", transactionIdentifier], nil);
+    reject(E_FINISH_TRANSACTION_FAILED, [NSString stringWithFormat:@"transaction with id %@ not found!", transactionIdentifier], nil);
   }
 }
 
@@ -129,6 +157,7 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
   [[SKPaymentQueue defaultQueue] addTransactionObserver:self->transactionObserver];
   [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
+
 
 #pragma mark Private
 
@@ -145,6 +174,22 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
   
   SKPayment *payment = [SKPayment paymentWithProduct:product];
   [[SKPaymentQueue defaultQueue] addPayment:payment];
+}
+
+
+
+-(NSDictionary *)productToJson:(SKProduct *)product {
+  NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+  [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+  [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+  [numberFormatter setLocale:product.priceLocale];
+  
+  return @{
+    @"title": [product localizedTitle],
+    @"description": [product localizedDescription],
+    @"price": [numberFormatter stringFromNumber:product.price],
+    @"productId": [product productIdentifier],
+  };
 }
 
 #pragma mark Public

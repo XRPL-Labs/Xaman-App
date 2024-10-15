@@ -9,6 +9,9 @@ const styles = StyleService.create({
     payButtonLoading: {
         opacity: 0.5,
     },
+    paButtonDisabled: {
+        opacity: 0.5,
+    },
 });
 
 export default styles;

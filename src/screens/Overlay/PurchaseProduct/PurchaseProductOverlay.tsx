@@ -2,10 +2,11 @@
  * Purchase product overlay
  */
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Alert } from 'react-native';
 
 import BackendService from '@services/BackendService';
 import LoggerService from '@services/LoggerService';
+import StyleService from '@services/StyleService';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -13,12 +14,15 @@ import { InAppPurchase, InAppPurchaseReceipt } from '@common/libs/iap';
 
 import { AppScreens } from '@common/constants';
 
-import { ActionPanel, Spacer, NativePaymentButton } from '@components/General';
+import { ActionPanel, Spacer, NativePaymentButton, Icon, CountDown, Button } from '@components/General';
+import { ProductDetailsElement } from '@components/Modules/ProductDetailsElement';
 
 import Localize from '@locale';
 
 // style
 import { AppStyles, AppSizes } from '@theme';
+
+import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {
@@ -30,6 +34,9 @@ export interface Props {
 
 export interface State {
     isPurchasing: boolean;
+    isRestoring: boolean;
+    isDetailsResolved: boolean;
+    purchaseSuccess: boolean;
 }
 
 /* Component ==================================================================== */
@@ -43,6 +50,9 @@ class PurchaseProductOverlay extends Component<Props, State> {
 
         this.state = {
             isPurchasing: false,
+            isRestoring: false,
+            isDetailsResolved: false,
+            purchaseSuccess: false,
         };
 
         this.actionPanel = React.createRef();
@@ -71,14 +81,52 @@ class PurchaseProductOverlay extends Component<Props, State> {
         await Navigator.dismissOverlay();
     };
 
+    onDetailsResolved = () => {
+        this.setState({
+            isDetailsResolved: true,
+        });
+    };
+
     onSuccessPurchase = async () => {
         const { onSuccessPurchase } = this.props;
 
         if (typeof onSuccessPurchase === 'function') {
             onSuccessPurchase();
         }
-        // close overlay
-        await Navigator.dismissOverlay();
+
+        this.setState({
+            purchaseSuccess: true,
+        });
+    };
+
+    restorePurchase = () => {
+        this.setState({
+            isRestoring: true,
+        });
+
+        InAppPurchase.restorePurchases()
+            .then(async (receipts) => {
+                if (Array.isArray(receipts) && receipts.length > 0) {
+                    // start the verifying process
+                    await this.verifyPurchase(receipts[0]);
+                } else {
+                    Alert.alert(
+                        Localize.t('monetization.noPurchaseFound'),
+                        Localize.t('monetization.noPreviousPurchases'),
+                    );
+                }
+            })
+            .catch(() => {
+                Alert.alert(
+                    Localize.t('global.unexpectedErrorOccurred'),
+                    Localize.t('monetization.errorRestorePurchase'),
+                );
+            })
+            .finally(() => {
+                this.setState({
+                    isRestoring: false,
+                });
+            });
     };
 
     verifyPurchase = async (purchaseReceipt: InAppPurchaseReceipt) => {
@@ -135,28 +183,56 @@ class PurchaseProductOverlay extends Component<Props, State> {
     };
 
     renderContent = () => {
-        const { productDescription } = this.props;
-        const { isPurchasing } = this.state;
+        const { productId } = this.props;
+        const { isPurchasing, isRestoring, isDetailsResolved, purchaseSuccess } = this.state;
+
+        if (purchaseSuccess) {
+            return (
+                <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
+                    <Spacer size={40} />
+                    <Text style={styles.successPurchaseText}>{Localize.t('monetization.allSet')}</Text>
+                    <Spacer />
+                    <Text style={styles.successPurchaseSubtext}>{Localize.t('monetization.thankYouForPurchase')}</Text>
+                    <Spacer size={50} />
+                    <Icon name="IconCheckXaman" size={80} style={styles.successIcon} />
+                    <Spacer size={80} />
+                    <CountDown
+                        seconds={5}
+                        style={styles.countDownText}
+                        onFinish={() => {
+                            this.actionPanel.current?.slideDown();
+                        }}
+                        preFix={Localize.t('global.closingIn')}
+                        postFix="s"
+                    />
+                </View>
+            );
+        }
 
         return (
             <>
-                <Text
-                    style={[
-                        AppStyles.centerContent,
-                        AppStyles.paddingVerticalSml,
-                        AppStyles.pbold,
-                        AppStyles.textCenterAligned,
-                    ]}
-                >
-                    {productDescription}
-                </Text>
+                <ProductDetailsElement productIdentifier={productId} onDetailsResolved={this.onDetailsResolved} />
                 <Spacer size={20} />
-                <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
-                    {Localize.t('monetization.prePurchaseMessage')}
-                </Text>
+                <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
                 <Spacer size={50} />
                 <View style={AppStyles.flex1}>
-                    <NativePaymentButton onPress={this.lunchPurchaseFlow} isLoading={isPurchasing} />
+                    <NativePaymentButton
+                        onPress={this.lunchPurchaseFlow}
+                        isLoading={isPurchasing}
+                        isDisabled={!isDetailsResolved}
+                    />
+                    <View style={styles.separatorContainer}>
+                        <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
+                    </View>
+                    <Button
+                        textStyle={styles.restorePurchase}
+                        isLoading={isRestoring}
+                        loadingIndicatorStyle={StyleService.select({ dark: 'light', light: 'dark' })}
+                        onPress={this.restorePurchase}
+                        label={Localize.t('monetization.restorePurchase')}
+                        roundedMini
+                        transparent
+                    />
                 </View>
             </>
         );
@@ -165,10 +241,11 @@ class PurchaseProductOverlay extends Component<Props, State> {
     render() {
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(300)}
+                height={AppSizes.moderateScale(385)}
                 onSlideDown={Navigator.dismissOverlay}
-                extraBottomInset
                 ref={this.actionPanel}
+                extraBottomInset
+                contentStyle={styles.actionPanel}
             >
                 {this.renderContent()}
             </ActionPanel>

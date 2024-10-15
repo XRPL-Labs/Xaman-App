@@ -38,6 +38,13 @@ interface AppStorePayment {
     applicationUsername?: string;
 }
 
+export interface ProductDetails {
+    title: string;
+    description: string;
+    price: string;
+    productId: string;
+}
+
 export type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
 /* Lib ==================================================================== */
 const InAppPurchase = {
@@ -51,11 +58,19 @@ const InAppPurchase = {
     },
 
     /**
+     * Get product details
+     */
+    getProductDetails: async (productId: string): Promise<ProductDetails> => {
+        await InAppPurchase.startConnectionIfAndroid();
+        return InAppPurchaseModule.getProductDetails<ProductDetails>(productId);
+    },
+
+    /**
      * Restore any old purchases
      */
     restorePurchases: async () => {
         await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.restorePurchases();
+        return InAppPurchaseModule.restorePurchases<InAppPurchaseReceipt>();
     },
 
     /**
@@ -63,7 +78,7 @@ const InAppPurchase = {
      */
     purchase: async (productId: string) => {
         await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.purchase(productId);
+        return InAppPurchaseModule.purchase<InAppPurchaseReceipt>(productId);
     },
 
     /**

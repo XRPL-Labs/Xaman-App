@@ -16,6 +16,7 @@ interface Props {
     testID?: string;
     onPress?: () => void;
     isLoading?: boolean;
+    isDisabled?: boolean;
     style?: StyleProp<ViewStyle> | undefined;
 }
 
@@ -25,9 +26,9 @@ const NativePayButton: HostComponent<Props & { height: number }> = requireNative
 /* Component ==================================================================== */
 export default class NativePaymentButton extends PureComponent<Props> {
     debouncedOnPress = () => {
-        const { onPress, isLoading } = this.props;
+        const { onPress, isLoading, isDisabled } = this.props;
 
-        if (isLoading) {
+        if (isLoading || isDisabled) {
             return;
         }
 
@@ -39,7 +40,8 @@ export default class NativePaymentButton extends PureComponent<Props> {
     onPress = debounce(this.debouncedOnPress, 500, { leading: true, trailing: false });
 
     render() {
-        const { buttonStyle, testID, style, isLoading } = this.props;
+        const { buttonStyle, testID, style, isLoading, isDisabled } = this.props;
+
         return (
             <>
                 <NativePayButton
@@ -47,7 +49,7 @@ export default class NativePaymentButton extends PureComponent<Props> {
                     height={AppSizes.scale(37)}
                     testID={testID}
                     onPress={this.onPress}
-                    style={[style, isLoading ? styles.payButtonLoading : {}]}
+                    style={[style, isLoading ? styles.payButtonLoading : {}, isDisabled ? styles.paButtonDisabled : {}]}
                 />
                 <LoadingIndicator color="light" style={styles.loadingIndicator} animating={isLoading} />
             </>

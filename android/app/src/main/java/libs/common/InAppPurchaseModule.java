@@ -43,6 +43,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     public static final String TAG = NAME;
 
     private static final String E_CLIENT_IS_NOT_READY = "E_CLIENT_IS_NOT_READY";
+    private static final String E_PRODUCT_DETAILS_NOT_FOUND = "E_PRODUCT_DETAILS_NOT_FOUND";
     private static final String E_PRODUCT_IS_NOT_AVAILABLE = "E_PRODUCT_IS_NOT_AVAILABLE";
     private static final String E_NO_PENDING_PURCHASE = "E_NO_PENDING_PURCHASE";
     private static final String E_PURCHASE_CANCELED = "E_PURCHASE_CANCELED";
@@ -72,12 +73,6 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         googleApiAvailability = GoogleApiAvailability.getInstance();
     }
 
-    @NonNull
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 
     //---------------------------------
     // React methods - These methods are exposed to React JS
@@ -89,6 +84,11 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     //
     //---------------------------------
 
+    @NonNull
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
     // Starts a connection with Google BillingClient
     @ReactMethod
@@ -123,6 +123,47 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     }
 
     @ReactMethod
+    public void getProductDetails(String productId, Promise promise) {
+        if (!isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
+            return;
+        }
+
+
+        // try to fetch cached version of product details
+        if (productDetailsHashMap.containsKey(productId)) {
+            promise.resolve(this.productToJson(Objects.requireNonNull(productDetailsHashMap.get(productId))));
+            return;
+        }
+
+        // no cached product details
+        // fetch product details
+        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build());
+
+        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
+                ProductDetails productDetails = list.get(0);
+
+                // cache the product details
+                productDetailsHashMap.put(list.get(0).getProductId(), productDetails);
+
+                // Launch the billing flow
+                promise.resolve(this.productToJson(productDetails));
+            } else {
+                Log.e(TAG, "Unable to load the product details with productId " + productId + " getResponseCode:" + billingResult.getResponseCode() + " list.size:" + list.size());
+                promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
+            }
+        });
+    }
+
+    @ReactMethod
     public void restorePurchases(Promise promise) {
         if (!isReady()) {
             promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
@@ -136,6 +177,8 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                 (billingResult, purchases) -> {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         for (Purchase purchase : purchases) {
+
+                            Log.d("IAP", String.valueOf(purchase));
                             // PURCHASED but not consumed
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
                                 productsToBeConsumed.pushMap(purchaseToMap(purchase));
@@ -162,33 +205,13 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
-        // no cached product details
-        // fetch product details
-        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(productId)
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build());
-
-        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
-                .setProductList(productList)
-                .build();
-
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list.size() > 0) {
-                ProductDetails productDetails = list.get(0);
-
-                // cache the product details
-                productDetailsHashMap.put(list.get(0).getProductId(), productDetails);
-
-                // Launch the billing flow
-                launchBillingFlow(productDetails, promise);
-            } else {
-                Log.e(TAG, "Unable to load the product details with productId " + productId + " getResponseCode:" + billingResult.getResponseCode() + " list.size:" + list.size());
-                promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
-            }
-        });
+        promise.reject(E_PRODUCT_DETAILS_NOT_FOUND, "product details with id " + productId + " not found, make sure to run the getProductDetails method before purchase!");
     }
 
+
+    //---------------------------------
+    // Private methods
+    //---------------------------------
 
     // Consumes a purchase token, indicating that the product has been provided to the user.
     @ReactMethod
@@ -203,12 +226,6 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             }
         });
     }
-
-
-    //---------------------------------
-    // Private methods
-    //---------------------------------
-
 
     // This method gets called when purchases are updated.
     @Override
@@ -293,6 +310,16 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         purchaseMap.putString("orderId", purchase.getOrderId());
         purchaseMap.putArray("products", Arguments.fromList(purchase.getProducts()));
         return purchaseMap;
+    }
+
+    private WritableMap productToJson(ProductDetails productDetails) {
+        final WritableMap results = Arguments.createMap();
+        results.putString("title", productDetails.getTitle());
+        results.putString("description", productDetails.getDescription());
+        results.putString("price", Objects.requireNonNull(productDetails.getOneTimePurchaseOfferDetails()).getFormattedPrice());
+        results.putString("productId", productDetails.getProductId());
+
+        return results;
     }
 
 
