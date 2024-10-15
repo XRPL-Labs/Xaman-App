@@ -23,7 +23,7 @@
   [self callCompletionHandlerWithResult:[[NSMutableArray alloc] init]];
 }
 
-- (void)   paymentQueue: (nonnull SKPaymentQueue *)queue
+- (void)paymentQueue: (nonnull SKPaymentQueue *)queue
     updatedTransactions: (nonnull NSArray<SKPaymentTransaction *> *)transactions {
   NSMutableArray *result=[self transactionsToResult:transactions];
   if([result count] > 0){

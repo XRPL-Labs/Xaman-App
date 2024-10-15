@@ -32,7 +32,7 @@ RCT_EXPORT_METHOD(checkUpdate: (RCTPromiseResolveBlock)resolve rejecter:(RCTProm
           return resolve(@NO);
         }
         
-        // if update vailable resolve the new version
+        // if update available resolve the new version
         BOOL isUpdateAvailable = [appStoreVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending;
         if (isUpdateAvailable){
           // new update is available
