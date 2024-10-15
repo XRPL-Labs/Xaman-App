@@ -292,7 +292,7 @@
     "noNameFound": "No name found",
     "readMoreInTheFAQ": "Read more in the FAQ",
     "whatsNew": "What's new",
-    "pushErrorPermissionMessage": "Unable to register push notifications. To grant the required notification permission, please go to your system settings and make sure that Xaman > Notifications are enabled.",
+    "pushErrorPermissionMessage": "Unable to register push notifications. This could be due to connectivity issues preventing the fetching of the FCM token from Firebase servers. Please ensure you have an active internet connection. Alternatively, to grant the required notification permission, go to your system settings and make sure that Xaman > Notifications are enabled.",
     "UnableToRegisterPushNotifications": "Unable to register push notifications",
     "readMore": "Read more",
     "readLess": "Read less",
