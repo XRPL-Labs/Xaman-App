@@ -114,7 +114,7 @@ class ProductDetailsElement extends PureComponent<Props, State> {
             <View style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
                     <Text style={styles.description} numberOfLines={3}>
-                        {productDetails?.description}
+                        {productDetails?.description || '30 days of unlimited Xaman use'}
                     </Text>
                     <Text style={styles.price}>
                         {productDetails?.price}{' '}

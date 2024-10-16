@@ -3,7 +3,9 @@ import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    actionPanel: {},
+    actionPanel: {
+        paddingHorizontal: AppSizes.paddingSml,
+    },
     prePurchaseText: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
@@ -20,10 +22,10 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.base.size,
         textAlign: 'center',
-        color: '$textPrimary',
+        color: '$textSecondary',
     },
-    successIcon: {
-        tintColor: '$green',
+    emojiIcon: {
+        fontSize: AppFonts.h1.size * 2,
     },
     countDownText: {
         fontFamily: AppFonts.base.family,

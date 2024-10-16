@@ -14,7 +14,7 @@ import { InAppPurchase, InAppPurchaseReceipt } from '@common/libs/iap';
 
 import { AppScreens } from '@common/constants';
 
-import { ActionPanel, Spacer, NativePaymentButton, Icon, CountDown, Button } from '@components/General';
+import { ActionPanel, Spacer, NativePaymentButton, CountDown, Button } from '@components/General';
 import { ProductDetailsElement } from '@components/Modules/ProductDetailsElement';
 
 import Localize from '@locale';
@@ -189,18 +189,18 @@ class PurchaseProductOverlay extends Component<Props, State> {
         if (purchaseSuccess) {
             return (
                 <View style={[AppStyles.flex1, AppStyles.centerAligned]}>
-                    <Spacer size={40} />
+                    <Spacer size={20} />
                     <Text style={styles.successPurchaseText}>{Localize.t('monetization.allSet')}</Text>
                     <Spacer />
                     <Text style={styles.successPurchaseSubtext}>{Localize.t('monetization.thankYouForPurchase')}</Text>
                     <Spacer size={50} />
-                    <Icon name="IconCheckXaman" size={80} style={styles.successIcon} />
+                    <Text style={styles.emojiIcon}>🎉</Text>
                     <Spacer size={80} />
                     <CountDown
                         seconds={5}
                         style={styles.countDownText}
                         onFinish={() => {
-                            this.actionPanel.current?.slideDown();
+                            // this.actionPanel.current?.slideDown();
                         }}
                         preFix={Localize.t('global.closingIn')}
                         postFix="s"
@@ -241,7 +241,7 @@ class PurchaseProductOverlay extends Component<Props, State> {
     render() {
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(385)}
+                height={AppSizes.moderateScale(365)}
                 onSlideDown={Navigator.dismissOverlay}
                 ref={this.actionPanel}
                 extraBottomInset

@@ -4,7 +4,7 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     container: {
-        backgroundColor: StyleService.select({ dark: '$tint', light: '$lightOrange' }),
+        backgroundColor: StyleService.select({ dark: '$light', light: '$darkGrey' }),
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: 10,
@@ -21,7 +21,7 @@ export default StyleService.create({
         flexShrink: 1,
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyBold,
-        color: '$textPrimary',
+        color: '$textContrast',
         marginBottom: AppSizes.paddingSml,
     },
     price: {
@@ -29,7 +29,7 @@ export default StyleService.create({
         flexShrink: 1,
         fontSize: AppFonts.base.size,
         fontFamily: AppFonts.base.familyMonoBold,
-        color: StyleService.select({ dark: '$orange', light: '#D35400' }),
+        color: StyleService.select({ dark: '$darkGrey', light: '$orange' }),
     },
     textPlaceholder: {
         color: StyleService.select({ dark: '$grey', light: '$silver' }),
