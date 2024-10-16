@@ -90,6 +90,15 @@ const InAppPurchase = {
     },
 
     /**
+     * Checks if the user is currently in the process of making a purchase.
+     *
+     * @returns {boolean} True if the user is making a purchase, otherwise false.
+     */
+    isUserPurchasing: (): boolean => {
+        return InAppPurchaseModule.isUserPurchasing();
+    },
+
+    /**
      * Normalizes an error by returning its code, string representation, or a default error code.
      * @param {any} error - The error to be normalized.
      * @returns {string} - The normalized error code, string representation, or a default error code.

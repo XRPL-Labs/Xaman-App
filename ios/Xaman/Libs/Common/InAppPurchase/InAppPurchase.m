@@ -50,7 +50,12 @@ RCT_EXPORT_MODULE();
  restorePurchases
  purchase
  finalizePurchase
+ isUserPurchasing
  */
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isUserPurchasing) {
+  return @([InAppPurchaseModule isUserPurchasing]);
+}
 
 RCT_EXPORT_METHOD(getProductDetails:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
@@ -192,7 +197,6 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
   };
 }
 
-#pragma mark Public
 
 +(BOOL)isUserPurchasing {
   for (SKPaymentTransaction* transaction in [[SKPaymentQueue defaultQueue] transactions]) {

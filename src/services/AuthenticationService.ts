@@ -9,6 +9,7 @@ import { GetElapsedRealtime } from '@common/helpers/device';
 import { ExitApp } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
+import { InAppPurchase } from '@common/libs/iap';
 import Vault from '@common/libs/vault';
 
 import DataStorage from '@store/storage';
@@ -429,11 +430,11 @@ class AuthenticationService extends EventEmitter {
     /**
      * Listen for app state change to check for lock the app
      */
-    onAppStateChange = async () => {
+    onAppStateChange = async (currentAppState: AppStateStatus, prevAppState: AppStateStatus) => {
         if (
-            AppService.prevAppState &&
-            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
-            AppService.currentAppState === AppStateStatus.Active
+            prevAppState === AppStateStatus.Active &&
+            [AppStateStatus.Background, AppStateStatus.Inactive].includes(currentAppState) &&
+            !InAppPurchase.isUserPurchasing()
         ) {
             await this.checkLockScreen();
         }

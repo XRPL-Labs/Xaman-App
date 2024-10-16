@@ -436,6 +436,13 @@ interface InAppPurchaseModuleInterface extends NativeModule {
      * @return {Promise<string>}
      */
     finalizePurchase(transactionReceiptIdentifier: string): Promise<string>;
+
+    /**
+     * Checks if the user is currently in the process of making a purchase.
+     *
+     * @return {boolean} True if the user is purchasing; otherwise, false.
+     */
+    isUserPurchasing(): boolean;
 }
 
 /**

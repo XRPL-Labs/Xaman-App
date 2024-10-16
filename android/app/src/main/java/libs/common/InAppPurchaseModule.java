@@ -58,6 +58,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     private final GoogleApiAvailability googleApiAvailability;
 
     private Promise billingFlowPromise;
+    private boolean isUserPurchasing = false;
 
 
     InAppPurchaseModule(ReactApplicationContext context) {
@@ -83,6 +84,12 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     // finalizePurchase
     //
     //---------------------------------
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    public boolean isUserPurchasing() {
+        return isUserPurchasing;
+    }
+
 
     @NonNull
     @Override
@@ -235,6 +242,9 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
+        // set the flag
+        isUserPurchasing = false;
+
         // something went wrong with the purchase, reject the billingFlowPromise
         if (billing.getResponseCode() != BillingClient.BillingResponseCode.OK) {
             switch (billing.getResponseCode()) {
@@ -279,6 +289,9 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     // A private method to actually launch the billing flow once we've loaded the product details.
     // This method may fail and reject the promise if there's already a billing flow in progress.
     private void launchBillingFlow(ProductDetails productDetails, Promise promise) {
+        // set flag
+        isUserPurchasing = true;
+
         // if we already have an promise going on for billing flow, reject it as we don't want to start
         // the new flow without closing the old one
         if (billingFlowPromise != null) {
