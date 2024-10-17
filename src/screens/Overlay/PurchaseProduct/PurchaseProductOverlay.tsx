@@ -200,7 +200,7 @@ class PurchaseProductOverlay extends Component<Props, State> {
                         seconds={5}
                         style={styles.countDownText}
                         onFinish={() => {
-                            // this.actionPanel.current?.slideDown();
+                            this.actionPanel.current?.slideDown();
                         }}
                         preFix={Localize.t('global.closingIn')}
                         postFix="s"
