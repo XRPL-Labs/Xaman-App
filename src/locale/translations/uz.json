@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Push xabarnomalari yoqilsinmi?",
-    "permissionDescription": "Imzo so'rovlari to'g'risida ogohlantirish uchun biz push xabarnomalaridan foydalanamiz"
+    "permissionDescription": "Imzo so'rovlari to'g'risida ogohlantirish uchun biz push xabarnomalaridan foydalanamiz",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman saqlashga oid emas",

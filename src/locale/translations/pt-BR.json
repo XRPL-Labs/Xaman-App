@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Ativar notificações push?",
-    "permissionDescription": "Usamos notificações push para enviar solicitações de assinaturas"
+    "permissionDescription": "Usamos notificações push para enviar solicitações de assinaturas",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman é não custodiado",

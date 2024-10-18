@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Gaitu bultzada jakinarazpenak?",
-    "permissionDescription": "bultzatu jakinarazpena erabiltzen dugu keinu eskaerak bidaltzeko"
+    "permissionDescription": "bultzatu jakinarazpena erabiltzen dugu keinu eskaerak bidaltzeko",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman ez-custodial da",

@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Activaţi notificările push?",
-    "permissionDescription": "Utilizăm notificarea push pentru a trimite cererile de aprobare. "
+    "permissionDescription": "Utilizăm notificarea push pentru a trimite cererile de aprobare. ",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman nu este o aplicație care se ocupă de custodia fondurilor dumneavoastră.",

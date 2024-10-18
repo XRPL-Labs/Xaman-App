@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Увімкнути push-сповіщення?",
-    "permissionDescription": "Ми використовуємо push-сповіщення для надсилання запитів на підпис"
+    "permissionDescription": "Ми використовуємо push-сповіщення для надсилання запитів на підпис",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman не зберігає Ваші активи.\r\nВаші активи завжди знаходяться в обліковій книзі XRP.\r\nXaman отримує, підписує та подає транзакції з(в) XRPL.",

@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Ieslēgt paziņojumus?",
-    "permissionDescription": "Tiek lietoti aplikācijas paziņojumi, lai brīdinātu par pierakstīšanās pieprasījumiem"
+    "permissionDescription": "Tiek lietoti aplikācijas paziņojumi, lai brīdinātu par pierakstīšanās pieprasījumiem",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman ir lietotājam pilnas pieejas aplikācija",

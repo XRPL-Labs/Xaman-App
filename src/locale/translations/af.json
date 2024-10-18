@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Aktiveer stootkennisgewings?",
-    "permissionDescription": "Ons gebruik stootkennisgewings om tekenversoeke te stuur"
+    "permissionDescription": "Ons gebruik stootkennisgewings om tekenversoeke te stuur",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman is nie-bewaarder",

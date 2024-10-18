@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Įjungti stumti pranešimus?",
-    "permissionDescription": "Mes naudojame automatinius pranešimus siųsdami prisijungimo prašymus."
+    "permissionDescription": "Mes naudojame automatinius pranešimus siųsdami prisijungimo prašymus.",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman yra su laisvės atėmimu nesusijęs",

@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Bật thông báo?",
-    "permissionDescription": "Chúng tôi sử dụng thông báo đẩy để cảnh báo bạn về các yêu cầu đăng nhập"
+    "permissionDescription": "Chúng tôi sử dụng thông báo đẩy để cảnh báo bạn về các yêu cầu đăng nhập",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman là không giam giữ",

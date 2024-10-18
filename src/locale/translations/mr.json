@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "पुश सूचना सक्षम करायच्या?",
-    "permissionDescription": "आम्ही आपल्याला साइन इन विनंत्यांबद्दल सतर्क करण्यासाठी पुश सूचना वापरतो"
+    "permissionDescription": "आम्ही आपल्याला साइन इन विनंत्यांबद्दल सतर्क करण्यासाठी पुश सूचना वापरतो",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman गैर-संरक्षित आहे.",

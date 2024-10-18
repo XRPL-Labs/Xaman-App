@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "푸시 알림을 사용 하시겠습니까?",
-    "permissionDescription": "푸시 알림을 사용하여 서명 요청을 보냅니다."
+    "permissionDescription": "푸시 알림을 사용하여 서명 요청을 보냅니다.",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman은 보관되지 않는다",

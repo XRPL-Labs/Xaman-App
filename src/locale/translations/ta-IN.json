@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "புஷ் அறிவிப்புகளை இயக்கவா?",
-    "permissionDescription": "அடையாளம் கோரிக்கைகளை உங்களுக்கு எச்சரிக்க புஷ் அறிவிப்புகளைப் பயன்படுத்துகிறோம்"
+    "permissionDescription": "அடையாளம் கோரிக்கைகளை உங்களுக்கு எச்சரிக்க புஷ் அறிவிப்புகளைப் பயன்படுத்துகிறோம்",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman அல்லாத உள்ளது காவலர்",

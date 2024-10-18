@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Ενεργοποίηση ειδοποιήσεων push;",
-    "permissionDescription": "Χρησιμοποιούμε ειδοποίηση push για την επιβεβαίωση συναλλαγών"
+    "permissionDescription": "Χρησιμοποιούμε ειδοποίηση push για την επιβεβαίωση συναλλαγών",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Το Xaman είναι μη-επιμελητικό.",

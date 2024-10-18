@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "ಪುಶ್ ಅಧಿಸೂಚನೆಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವುದೇ?",
-    "permissionDescription": "ಚಿಹ್ನೆ ವಿನಂತಿಗಳನ್ನು ಕಳುಹಿಸಲು ನಾವು ಪುಶ್ ಅಧಿಸೂಚನೆಯನ್ನು ಬಳಸುತ್ತೇವೆ"
+    "permissionDescription": "ಚಿಹ್ನೆ ವಿನಂತಿಗಳನ್ನು ಕಳುಹಿಸಲು ನಾವು ಪುಶ್ ಅಧಿಸೂಚನೆಯನ್ನು ಬಳಸುತ್ತೇವೆ",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman ಕಸ್ಟೋಡಿಯಲ್ ಅಲ್ಲ.",

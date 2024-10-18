@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "Anlık bildirimler etkinleştirilsin mi?",
-    "permissionDescription": "Giriş isteklerinde sizi uyarmak için anlık bildirim kullanırız."
+    "permissionDescription": "Giriş isteklerinde sizi uyarmak için anlık bildirim kullanırız.",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman sorumlu değildir.",

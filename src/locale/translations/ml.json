@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "പുഷ് അറിയിപ്പുകൾ പ്രവർത്തനക്ഷമമാക്കണോ?",
-    "permissionDescription": "ചിഹ്ന അഭ്യർത്ഥനകളെക്കുറിച്ച് നിങ്ങളെ അറിയിക്കാൻ ഞങ്ങൾ പുഷ് അറിയിപ്പുകൾ ഉപയോഗിക്കുന്നു"
+    "permissionDescription": "ചിഹ്ന അഭ്യർത്ഥനകളെക്കുറിച്ച് നിങ്ങളെ അറിയിക്കാൻ ഞങ്ങൾ പുഷ് അറിയിപ്പുകൾ ഉപയോഗിക്കുന്നു",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman നോൺ-കസ്റ്റോഡിയൽ ആണ്.",

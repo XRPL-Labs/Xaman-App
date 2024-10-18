@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "পুশ বিজ্ঞপ্তি সক্রিয় করুন?",
-    "permissionDescription": "সাইন অনুরোধ সম্পর্কে আপনাকে সতর্ক করতে আমরা পুশ বিজ্ঞপ্তিগুলি ব্যবহার করি"
+    "permissionDescription": "সাইন অনুরোধ সম্পর্কে আপনাকে সতর্ক করতে আমরা পুশ বিজ্ঞপ্তিগুলি ব্যবহার করি",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman অ-প্রথাগত।",

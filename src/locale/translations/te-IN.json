@@ -396,7 +396,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "పుష్ నోటిఫికేషన్‌లను ప్రారంభించాలా?\r\n",
-    "permissionDescription": "సైన్ అభ్యర్థనలను పంపడానికి మేము పుష్ నోటిఫికేషన్‌ను ఉపయోగిస్తాము\r\n"
+    "permissionDescription": "సైన్ అభ్యర్థనలను పంపడానికి మేము పుష్ నోటిఫికేషన్‌ను ఉపయోగిస్తాము\r\n",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman నాన్-కస్టోడియల్.",
