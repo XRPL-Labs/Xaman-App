@@ -28,9 +28,9 @@ describe('AuthenticationService', () => {
     it('should check for lock when coming from inactive/background state', async () => {
         const spy1 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
 
-        appService.prevAppState = AppStateStatus.Background;
-        appService.currentAppState = AppStateStatus.Active;
-        appService.emit('appStateChange', AppStateStatus.Active, AppStateStatus.Background);
+        appService.prevAppState = AppStateStatus.Active;
+        appService.currentAppState = AppStateStatus.Background;
+        appService.emit('appStateChange', AppStateStatus.Background, AppStateStatus.Active);
         expect(spy1).toBeCalled();
 
         const spy2 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());

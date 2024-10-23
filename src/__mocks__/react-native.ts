@@ -105,6 +105,10 @@ ReactNative.NativeModules.VaultManagerModule = {
     ),
 };
 
+ReactNative.NativeModules.InAppPurchaseModule = {
+    isUserPurchasing: jest.fn((type) => false),
+};
+
 ReactNative.Animated.timing = () => ({
     start: (cb?: () => void) => (cb ? cb() : undefined),
 });
