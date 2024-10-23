@@ -92,6 +92,14 @@ class ProductDetailsElement extends PureComponent<Props, State> {
                     >
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Animated.Text>
+                    <Animated.Text
+                        style={[styles.description, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                     <Animated.Text
                         style={[styles.price, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
@@ -113,7 +121,7 @@ class ProductDetailsElement extends PureComponent<Props, State> {
         return (
             <View style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                    <Text style={styles.description} numberOfLines={3}>
+                    <Text style={styles.description} numberOfLines={2}>
                         {productDetails?.description || '30 days of unlimited Xaman use'}
                     </Text>
                     <Text style={styles.price}>

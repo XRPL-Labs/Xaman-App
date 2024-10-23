@@ -169,6 +169,7 @@ class PurchaseProductOverlay extends Component<Props, State> {
                 isPurchasing: true,
             });
             const receipts = await InAppPurchase.purchase(productId);
+
             if (Array.isArray(receipts) && receipts.length > 0) {
                 // start the verifying process
                 await this.verifyPurchase(receipts[0]);
@@ -211,10 +212,12 @@ class PurchaseProductOverlay extends Component<Props, State> {
 
         return (
             <>
-                <ProductDetailsElement productId={productId} onDetailsResolved={this.onDetailsResolved} />
-                <Spacer size={20} />
-                <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
-                <Spacer size={50} />
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <ProductDetailsElement productId={productId} onDetailsResolved={this.onDetailsResolved} />
+                </View>
+                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                    <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
+                </View>
                 <View style={AppStyles.flex1}>
                     <NativePaymentButton
                         onPress={this.lunchPurchaseFlow}
@@ -241,11 +244,11 @@ class PurchaseProductOverlay extends Component<Props, State> {
     render() {
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(365)}
+                height={AppSizes.moderateScale(400)}
                 onSlideDown={Navigator.dismissOverlay}
                 ref={this.actionPanel}
-                extraBottomInset
                 contentStyle={styles.actionPanel}
+                extraBottomInset
             >
                 {this.renderContent()}
             </ActionPanel>

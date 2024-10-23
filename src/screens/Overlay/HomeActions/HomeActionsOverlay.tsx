@@ -148,10 +148,10 @@ class HomeActionsOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(440)}
+                ref={this.actionPanel}
+                height={AppSizes.moderateScale(430)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
-                ref={this.actionPanel}
             >
                 <Text numberOfLines={1} style={[styles.rowTitle, styles.rowTitleFirst]}>
                     {Localize.t('xapp.recentlyUsed')}

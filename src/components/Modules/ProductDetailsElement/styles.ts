@@ -22,7 +22,6 @@ export default StyleService.create({
         fontSize: AppFonts.p.size,
         fontFamily: AppFonts.base.familyBold,
         color: '$textContrast',
-        marginBottom: AppSizes.paddingSml,
     },
     price: {
         flexWrap: 'wrap',
@@ -30,6 +29,7 @@ export default StyleService.create({
         fontSize: AppFonts.base.size,
         fontFamily: AppFonts.base.familyMonoBold,
         color: StyleService.select({ dark: '$darkGrey', light: '$orange' }),
+        marginTop: AppSizes.paddingSml,
     },
     textPlaceholder: {
         color: StyleService.select({ dark: '$grey', light: '$silver' }),

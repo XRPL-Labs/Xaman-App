@@ -78,11 +78,11 @@ class SelectFeeOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(490)}
+                ref={this.actionPanelRef}
+                height={AppSizes.moderateScale(480)}
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={AppStyles.centerAligned}
                 extraBottomInset
-                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
