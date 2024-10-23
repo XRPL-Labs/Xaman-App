@@ -26,22 +26,37 @@ describe('AuthenticationService', () => {
     });
 
     it('should check for lock when coming from inactive/background state', async () => {
-        const spy1 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
+        const spy = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
 
-        appService.prevAppState = AppStateStatus.Active;
-        appService.currentAppState = AppStateStatus.Background;
-        appService.emit('appStateChange', AppStateStatus.Background, AppStateStatus.Active);
-        expect(spy1).toBeCalled();
+        appService.prevAppState = AppStateStatus.Background;
+        appService.currentAppState = AppStateStatus.Active;
+        appService.emit('appStateChange', appService.currentAppState, appService.prevAppState);
+        expect(spy).toBeCalled();
 
-        const spy2 = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
+        spy.mockClear();
 
         appService.prevAppState = AppStateStatus.Inactive;
         appService.currentAppState = AppStateStatus.Active;
-        appService.emit('appStateChange', AppStateStatus.Active, AppStateStatus.Inactive);
-        expect(spy2).toBeCalled();
+        appService.emit('appStateChange', appService.currentAppState, appService.prevAppState);
+        expect(spy).toBeCalled();
+        spy.mockRestore();
+    });
 
-        spy1.mockRestore();
-        spy2.mockRestore();
+    it('should check for lock when going to inactive/background state', async () => {
+        const spy = jest.spyOn(authenticationService, 'checkLockScreen').mockImplementation(jest.fn());
+
+        appService.prevAppState = AppStateStatus.Active;
+        appService.currentAppState = AppStateStatus.Background;
+        appService.emit('appStateChange', appService.currentAppState, appService.prevAppState);
+        expect(spy).toBeCalled();
+
+        spy.mockClear();
+
+        appService.prevAppState = AppStateStatus.Active;
+        appService.currentAppState = AppStateStatus.Inactive;
+        appService.emit('appStateChange', appService.currentAppState, appService.prevAppState);
+        expect(spy).toBeCalled();
+        spy.mockRestore();
     });
 
     it('should run the required functions after success auth', async () => {

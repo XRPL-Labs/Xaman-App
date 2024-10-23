@@ -16,7 +16,7 @@ import DataStorage from '@store/storage';
 import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
 
-import AppService, { AppStateStatus } from '@services/AppService';
+import AppService from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
@@ -430,12 +430,10 @@ class AuthenticationService extends EventEmitter {
     /**
      * Listen for app state change to check for lock the app
      */
-    onAppStateChange = async (currentAppState: AppStateStatus, prevAppState: AppStateStatus) => {
-        if (
-            prevAppState === AppStateStatus.Active &&
-            [AppStateStatus.Background, AppStateStatus.Inactive].includes(currentAppState) &&
-            !InAppPurchase.isUserPurchasing()
-        ) {
+    onAppStateChange = async () => {
+        // let's check the lock screen in any app state change
+        // only if user is not purchasing a product, we don't want to trigger lock screen after IAP purchase
+        if (!InAppPurchase.isUserPurchasing()) {
             await this.checkLockScreen();
         }
     };
