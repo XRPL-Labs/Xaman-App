@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, Alert, Platform, Linking } from 'react-native';
 
 import PushNotificationsService from '@services/PushNotificationsService';
 import NetworkService from '@services/NetworkService';
@@ -78,6 +78,10 @@ class AdvancedSettingsView extends Component<Props, State> {
         Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, { version: currentVersionCode });
     };
 
+    openAppSettings = () => {
+        Linking.openSettings();
+    };
+
     reRegisterPushToken = async () => {
         try {
             // get current permission status
@@ -90,7 +94,15 @@ class AdvancedSettingsView extends Component<Props, State> {
 
             // if still no permission granted, user need to give the permission manually
             if (!hasPermission) {
-                Alert.alert(Localize.t('global.error'), Localize.t('global.pushErrorPermissionMessage'));
+                Alert.alert(
+                    Localize.t('global.error'),
+                    Localize.t('global.pushErrorPermissionMessage'),
+                    [
+                        { text: Localize.t('global.approvePermissions'), onPress: this.openAppSettings },
+                        { text: Localize.t('global.cancel') },
+                    ],
+                    { cancelable: true },
+                );
                 return;
             }
 

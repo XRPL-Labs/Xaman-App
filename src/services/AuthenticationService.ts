@@ -9,13 +9,14 @@ import { GetElapsedRealtime } from '@common/helpers/device';
 import { ExitApp } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
+import { InAppPurchase } from '@common/libs/iap';
 import Vault from '@common/libs/vault';
 
 import DataStorage from '@store/storage';
 import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
 
-import AppService, { AppStateStatus } from '@services/AppService';
+import AppService from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
@@ -414,7 +415,7 @@ class AuthenticationService extends EventEmitter {
                     resolve(true);
                 })
                 .catch((error) => {
-                    this.logger.warn(`Biometric authentication error: ${error.name}`);
+                    this.logger.warn('authenticateBiometrics', error);
                     // biometric's has been changed, we need to disable the biometric authentication
                     if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
                         this.onBiometricInvalidated();
@@ -430,11 +431,9 @@ class AuthenticationService extends EventEmitter {
      * Listen for app state change to check for lock the app
      */
     onAppStateChange = async () => {
-        if (
-            AppService.prevAppState &&
-            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
-            AppService.currentAppState === AppStateStatus.Active
-        ) {
+        // let's check the lock screen in any app state change
+        // only if user is not purchasing a product, we don't want to trigger lock screen after IAP purchase
+        if (!InAppPurchase.isUserPurchasing()) {
             await this.checkLockScreen();
         }
     };

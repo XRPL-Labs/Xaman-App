@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[AmountInput] renders correctly with default props 1`] = `
+<TextInput
+  autoCapitalize="words"
+  keyboardType="decimal-pad"
+  onChangeText={[Function]}
+  placeholder="0"
+  returnKeyType="done"
+  value=""
+/>
+`;
+
+exports[`[AmountInput] renders correctly with specific props 1`] = `
+<TextInput
+  autoCapitalize="words"
+  editable={false}
+  keyboardType="decimal-pad"
+  onChangeText={[Function]}
+  placeholder="0"
+  placeholderTextColor="#999"
+  returnKeyType="done"
+  testID="amount-input"
+  value="12345.6789"
+/>
+`;

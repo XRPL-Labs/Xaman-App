@@ -42,6 +42,8 @@ import Remit from './Remit';
 import Clawback from './Clawback';
 import DIDSet from './DIDSet';
 import DIDDelete from './DIDDelete';
+import OracleSet from './OracleSet';
+import OracleDelete from './OracleDelete';
 
 export {
     Global,
@@ -88,4 +90,6 @@ export {
     Clawback,
     DIDSet,
     DIDDelete,
+    OracleSet,
+    OracleDelete,
 };

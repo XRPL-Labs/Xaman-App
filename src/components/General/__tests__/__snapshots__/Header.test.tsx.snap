@@ -1,0 +1,835 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Header] renders correctly with all components 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "flex-start",
+        "flex": 1,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Left
+    </Text>
+  </View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "flex": 3,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Center
+    </Text>
+  </View>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "flex-end",
+        "flex": 1,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Right
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[Header] renders correctly with backgroundColor 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {
+        "backgroundColor": "red",
+      },
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-start",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        {
+          "flex": 1,
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 3,
+          },
+          {},
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-end",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 1,
+          },
+        ],
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`[Header] renders correctly with centerComponent 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-start",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        {
+          "flex": 1,
+        },
+      ]
+    }
+  />
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "center",
+        "flex": 3,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Center
+    </Text>
+  </View>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-end",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 1,
+          },
+        ],
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`[Header] renders correctly with containerStyle 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      {
+        "borderColor": "blue",
+        "borderWidth": 1,
+      },
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-start",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        {
+          "flex": 1,
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 3,
+          },
+          {},
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-end",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 1,
+          },
+        ],
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`[Header] renders correctly with default props 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-start",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        {
+          "flex": 1,
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 3,
+          },
+          {},
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-end",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 1,
+          },
+        ],
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`[Header] renders correctly with leftComponent 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "flex-start",
+        "flex": 1,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Left
+    </Text>
+  </View>
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 3,
+          },
+          {},
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-end",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 1,
+          },
+        ],
+      ]
+    }
+  />
+</View>
+`;
+
+exports[`[Header] renders correctly with rightComponent 1`] = `
+<View
+  style={
+    [
+      {
+        "alignItems": "center",
+        "backgroundColor": "#ffffff",
+        "flexDirection": "row",
+        "justifyContent": "space-between",
+        "marginTop": 0,
+        "paddingHorizontal": 20,
+        "zIndex": 99999,
+      },
+      {},
+      {
+        "height": 120,
+      },
+      undefined,
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "alignItems": "flex-start",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        {
+          "flex": 1,
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "alignItems": "center",
+        },
+        {
+          "height": "100%",
+          "justifyContent": "center",
+        },
+        [
+          {
+            "flex": 3,
+          },
+          {},
+        ],
+      ]
+    }
+  />
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    hitSlop={
+      {
+        "left": 20,
+        "right": 20,
+      }
+    }
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "alignItems": "flex-end",
+        "flex": 1,
+        "height": "100%",
+        "justifyContent": "center",
+        "opacity": 1,
+      }
+    }
+  >
+    <Text
+      numberOfLines={1}
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Extrabld",
+            "fontSize": 42.857142857142854,
+            "left": 0,
+            "margin": 0,
+            "marginBottom": 4,
+            "marginTop": 4,
+            "right": 0,
+            "textAlign": "center",
+          },
+          undefined,
+        ]
+      }
+    >
+      Right
+    </Text>
+  </View>
+</View>
+`;

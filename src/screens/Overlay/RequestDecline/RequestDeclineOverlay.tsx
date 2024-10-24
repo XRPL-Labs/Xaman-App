@@ -73,10 +73,10 @@ class RequestDeclineOverlay extends Component<Props, State> {
     render() {
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(380)}
+                ref={this.actionPanel}
+                height={AppSizes.moderateScale(370)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
-                ref={this.actionPanel}
             >
                 <View style={[AppStyles.row, AppStyles.centerContent, AppStyles.paddingVerticalSml]}>
                     <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.textCenterAligned]}>

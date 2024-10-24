@@ -145,10 +145,10 @@ class ParticipantMenuOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(50) * (!contactExist ? 7 : 6)}
+                ref={this.actionPanelRef}
+                height={AppSizes.moderateScale(275) + (!contactExist ? AppSizes.scale(60) : 0)}
                 onSlideDown={this.onClose}
                 extraBottomInset
-                ref={this.actionPanelRef}
             >
                 <View style={[AppStyles.paddingHorizontalSml, AppStyles.centerContent]}>
                     <AccountElement

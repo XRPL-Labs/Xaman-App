@@ -3,12 +3,42 @@ import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    actionPanel: {
+        paddingHorizontal: AppSizes.paddingSml,
+    },
+    prePurchaseText: {
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size,
+        textAlign: 'center',
+        color: '$textPrimary',
+    },
+    successPurchaseText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.h4.size,
+        textAlign: 'center',
+        color: '$textPrimary',
+    },
+    successPurchaseSubtext: {
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.base.size,
+        textAlign: 'center',
+        color: '$textSecondary',
+    },
+    emojiIcon: {
+        fontSize: AppFonts.h1.size * 2,
+    },
+    countDownText: {
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.base.size * 0.7,
+        textAlign: 'center',
+        color: '$textSecondary',
+    },
     separatorContainer: {
-        width: '100%',
+        width: '50%',
         marginTop: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingMid,
-        borderTopColor: '$grey',
+        borderTopColor: '$textSecondary',
         borderTopWidth: 1.5,
+        alignSelf: 'center',
     },
     separatorText: {
         textAlign: 'center',
@@ -16,8 +46,14 @@ const styles = StyleService.create({
         paddingHorizontal: 10,
         alignSelf: 'center',
         backgroundColor: '$background',
-        color: '$grey',
+        color: '$textSecondary',
         fontFamily: AppFonts.base.familyBold,
+    },
+    restorePurchase: {
+        color: '$textSecondary',
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.small.size,
+        textDecorationLine: 'underline',
     },
 });
 

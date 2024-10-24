@@ -36,6 +36,10 @@ const styles = StyleService.create({
         alignSelf: 'stretch',
     },
 
+    buttonTransparent: {
+        backgroundColor: '$transparent',
+    },
+
     // Secondary
     buttonSecondary: {
         backgroundColor: '$grey',

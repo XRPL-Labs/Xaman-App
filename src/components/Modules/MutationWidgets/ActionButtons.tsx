@@ -143,7 +143,7 @@ class ActionButtons extends PureComponent<Props, State> {
                 if (item.Owner === account.address) {
                     availableActions.push(ActionTypes.CANCEL_OFFER);
                 } else if (!item.Destination || item.Destination === account.address) {
-                    if (item.Flags?.tfSellToken) {
+                    if (item.Flags?.lsfSellNFToken) {
                         availableActions.push(ActionTypes.ACCEPT_NFTOKEN_OFFER);
                     } else {
                         availableActions.push(ActionTypes.SELL_NFTOKEN);
@@ -239,8 +239,8 @@ class ActionButtons extends PureComponent<Props, State> {
                 if (item.Type === LedgerEntryTypes.NFTokenOffer) {
                     Object.assign(craftedTxJson, {
                         TransactionType: TransactionTypes.NFTokenAcceptOffer,
-                        NFTokenSellOffer: item.Flags?.tfSellToken ? item.Index : undefined,
-                        NFTokenBuyOffer: !item.Flags?.tfSellToken ? item.Index : undefined,
+                        NFTokenSellOffer: item.Flags?.lsfSellNFToken ? item.Index : undefined,
+                        NFTokenBuyOffer: !item.Flags?.lsfSellNFToken ? item.Index : undefined,
                     });
                 }
                 break;

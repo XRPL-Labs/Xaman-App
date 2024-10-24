@@ -1,10 +1,10 @@
 /**
- * Setup Permissions Screen
+ * Push Notification Setup Screen
  */
 
 import React, { Component } from 'react';
 
-import { View, Text, Image, SafeAreaView, Platform, Alert, Linking } from 'react-native';
+import { View, Text, Image, SafeAreaView, Alert } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -15,7 +15,7 @@ import { Footer, Button, Spacer } from '@components/General';
 
 import Localize from '@locale';
 
-import { DisclaimersSetupViewProps } from '@screens/Setup/Disclaimers';
+import { FinishSetupViewProps } from '@screens/Setup/Finish';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -47,10 +47,6 @@ class PushNotificationSetupView extends Component<Props, State> {
         };
     }
 
-    openAppSettings = () => {
-        Linking.openSettings();
-    };
-
     requestPermission = () => {
         this.setState({
             isLoading: true,
@@ -63,19 +59,19 @@ class PushNotificationSetupView extends Component<Props, State> {
                     return;
                 }
 
-                if (Platform.OS === 'ios') {
-                    Alert.alert(
-                        Localize.t('global.error'),
-                        Localize.t('global.pushErrorPermissionMessage'),
-                        [
-                            { text: Localize.t('global.approvePermissions'), onPress: this.openAppSettings },
-                            { text: Localize.t('global.cancel') },
-                        ],
-                        { cancelable: true },
-                    );
-                } else {
-                    Alert.alert(Localize.t('global.error'), Localize.t('global.UnableToRegisterPushNotifications'));
-                }
+                Alert.alert(
+                    Localize.t('global.error'),
+                    Localize.t('setupPermissions.pushRegisterError'),
+                    [
+                        {
+                            text: Localize.t('setupPermissions.continueSetup'),
+                            onPress: this.nextStep,
+                            isPreferred: true,
+                        },
+                        { text: Localize.t('global.cancel') },
+                    ],
+                    { cancelable: true },
+                );
             })
             .finally(() => {
                 this.setState({
@@ -85,7 +81,7 @@ class PushNotificationSetupView extends Component<Props, State> {
     };
 
     nextStep = () => {
-        Navigator.push<DisclaimersSetupViewProps>(AppScreens.Setup.Disclaimers, {});
+        Navigator.push<FinishSetupViewProps>(AppScreens.Setup.Finish, {});
     };
 
     render() {

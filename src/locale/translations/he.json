@@ -357,6 +357,16 @@
     "didDocument": "DID Document",
     "digest": "Digest",
     "uriTokeId": "URI Token Id",
+    "oracleDocumentID": "Oracle Document Id",
+    "provider": "Provider",
+    "lastUpdateTime": "Last update time",
+    "assetClass": "Asset class",
+    "priceDataSeries": "Price data series",
+    "baseAsset": "Base asset",
+    "quoteAsset": "Quote asset",
+    "assetPrice": "Asset price",
+    "priceData": "Price Data",
+    "scale": "Scale",
     "hookParameters": "Hook Parameters",
     "hookFeeNotice": "Note: The total transaction fee includes a %{hookFee} %{nativeAsset} hooks fee.",
     "unableToLoadNetworkFee": "Unable to load the network fee!",
@@ -365,7 +375,8 @@
     "doNotCloseTheApp": "Do NOT close Xaman\r\nDo NOT lock your device",
     "switchNetwork": "Switch network",
     "theme": "Theme",
-    "searchTokens": "Search tokens"
+    "searchTokens": "Search tokens",
+    "closingIn": "Closing in"
   },
   "onboarding": {
     "slideOne_title": "תשלומים ו\r\nבקשות תשלום\r\nעל ספר החשבונות XRP",
@@ -395,7 +406,9 @@
   },
   "setupPermissions": {
     "enableNotifications": "?לאפשר דחיפת הודעות",
-    "permissionDescription": "אנו משתמשים בהודעת דחיפה כדי לשלוח בקשות לחתימה"
+    "permissionDescription": "אנו משתמשים בהודעת דחיפה כדי לשלוח בקשות לחתימה",
+    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
+    "continueSetup": "Continue Setup"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman אינו משמורן",
@@ -540,6 +553,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "oracleSet": "Oracle Set",
+    "oracleDelete": "Oracle Delete",
     "canNotFetchTransactions": "לא ניתן להשיג עסקאות בחשבון!",
     "canNotFetchSignRequests": "Cannot fetch account sign requests!",
     "unableToLoadTheTransaction": "לא ניתן לטעון את העסקה, אנא וודא שאתה מחובר לאינטרנט!",
@@ -1154,20 +1169,28 @@
     "blobCopiedToClipboard": "Blob copied to clipboard",
     "dataCopiedToClipboard": "Data copied to clipboard",
     "didDocumentCopiedToClipboard": "DID Document copied to clipboard",
+    "oracleDocumentIdCopiedToClipboard": "Oracle Document Id copied to clipboard",
     "uriCopiedToClipboard": "URI copied to clipboard",
     "transactionJsonCopiedToClipboard": "Transaction json copied to clipboard",
-    "didDeleteWarning": "Warning: You are about to delete the Decentralized Identifier (DID) tied to the selected account. Keep in mind, this action cannot be undone."
+    "didDeleteWarning": "Warning: You are about to delete the Decentralized Identifier (DID) tied to the selected account. Keep in mind, this action cannot be undone.",
+    "oracleDeleteWarning": "Warning: You are about to delete the oracle record identified by the above Oracle Document ID. Keep in mind, this action cannot be undone."
   },
   "monetization": {
+    "oneTimeCharge": "One-time charge",
     "payWithApplePay": "Pay with Apple Pay",
     "payWithGooglePay": "Pay with Google Pay",
     "restorePurchase": "Restore purchase",
     "thankYouForUsingXaman": "Thank you for using Xaman!",
-    "comingPaymentWarning": "Thank you for using Xaman! You are still using Xaman for free, but you may be prompted for a small in-app payment to allow us to keep building to secure your assets.",
-    "paymentRequiredMessage": "A small payment is required to keep unlimited access for 30 days. Alternatively Xaman will be in limited use mode until your monthly limits automatically reset.",
-    "prePurchaseMessage": "Thank you for your support. We really appreciate it! Your payment has now unlocked a full month of unrestricted Xaman use, and helps us to continue developing Xaman, provide support & keep your funds safe. 🤗",
+    "comingPaymentWarning": "You're still enjoying Xaman for free, but you're nearing our free limit. To support Xaman's innovation and security, a small in-app payment may be requested soon.",
+    "paymentRequiredMessage": "A small payment is required to maintain unlimited access for the next 30 days. Alternatively, Xaman will switch to limited-use mode until your monthly limits reset automatically.",
+    "prePurchaseMessage": "Thank you for your support! Your payment unlocks a full month of unlimited Xaman use, helping us innovate, provide premium support, and ensure security for your assets.",
     "learnMore": "Learn more",
-    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again."
+    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
+    "allSet": "All set!",
+    "thankYouForPurchase": "Thank you for your purchase.",
+    "noPurchaseFound": "No Purchases Found",
+    "noPreviousPurchases": "We couldn't find any previous purchases to restore. If you believe this is an error, please contact our support team.",
+    "errorRestorePurchase": "An unexpected error occurred while checking your purchase history.\n\nPlease try again later or contact our support team if the issue persists."
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",

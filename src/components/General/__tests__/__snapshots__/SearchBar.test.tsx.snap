@@ -379,7 +379,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
       style={
         {
           "alignSelf": "center",
-          "opacity": 1,
+          "opacity": 0,
         }
       }
     >

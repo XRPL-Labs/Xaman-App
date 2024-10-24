@@ -1,6 +1,9 @@
 package libs.ui;
 
 
+import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -25,6 +28,30 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+// Workaround for fixing https://github.com/facebook/react-native/issues/17968
+class CustomFrameLayout extends FrameLayout {
+    private final Runnable mLayoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+            measure(
+                    View.MeasureSpec.makeMeasureSpec(getWidth(), View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(getHeight(), View.MeasureSpec.EXACTLY)
+            );
+            layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+    };
+
+    public CustomFrameLayout(@Nonnull ThemedReactContext context) {
+        super(context);
+    }
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        post(mLayoutRunnable);
+    }
+}
+
 
 @SuppressWarnings("unused")
 class PayButtonModule extends ViewGroupManager<FrameLayout> {
@@ -33,6 +60,7 @@ class PayButtonModule extends ViewGroupManager<FrameLayout> {
     static final String DEFAULT_BUTTON_STYLE = "dark";
     private FrameLayout payButtonContainer;
     private ThemedReactContext reactContext;
+    private int buttonTheme;
 
     @NonNull
     @Override
@@ -44,15 +72,16 @@ class PayButtonModule extends ViewGroupManager<FrameLayout> {
     public @Nonnull FrameLayout createViewInstance(@Nonnull ThemedReactContext context) {
         reactContext = context;
 
-        payButtonContainer = new FrameLayout(context);
+        payButtonContainer = new CustomFrameLayout(context);
         payButtonContainer.setLayoutParams(new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
         ));
 
         PayButton payButton = initWithPaymentButtonStyle(DEFAULT_BUTTON_STYLE, context);
-        payButtonContainer.addView(payButton);
 
+        payButton.requestLayout();
+        payButtonContainer.addView(payButton);
         return payButtonContainer;
     }
 
@@ -63,14 +92,7 @@ class PayButtonModule extends ViewGroupManager<FrameLayout> {
     }
 
     private PayButton initWithPaymentButtonStyle(String style, ThemedReactContext context) {
-        int buttonTheme;
-        switch (style) {
-            case "light":
-                buttonTheme = ButtonConstants.ButtonTheme.LIGHT;
-                break;
-            default:
-                buttonTheme = ButtonConstants.ButtonTheme.DARK;
-        }
+        buttonTheme = this.getButtonTheme(style);
 
         PayButton payButton = new PayButton(context);
         payButton.setId(R.id.pay_button_google_play);
@@ -90,16 +112,24 @@ class PayButtonModule extends ViewGroupManager<FrameLayout> {
 
     }
 
+    private int getButtonTheme(String style) {
+        switch (style) {
+            case "light":
+                return ButtonConstants.ButtonTheme.LIGHT;
+            default:
+                return ButtonConstants.ButtonTheme.DARK;
+        }
+    }
+
     @ReactProp(name = "buttonStyle")
     public void setButtonStyle(FrameLayout layout, String value) {
         PayButton oldPayButton = layout.findViewById(R.id.pay_button_google_play);
 
-        if (oldPayButton != null) {
-            payButtonContainer.removeView(oldPayButton);
+        if (oldPayButton != null && buttonTheme != this.getButtonTheme(value)) {
+            layout.removeView(oldPayButton);
+
+            PayButton payButton = initWithPaymentButtonStyle(value, reactContext);
+            layout.addView(payButton);
         }
-
-        PayButton payButton = initWithPaymentButtonStyle(value, reactContext);
-        payButtonContainer.addView(payButton);
-
     }
 }
