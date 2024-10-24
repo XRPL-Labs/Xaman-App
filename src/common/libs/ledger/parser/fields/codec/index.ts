@@ -6,6 +6,8 @@ import { Memos } from './Memos';
 import { RippleTime } from './RippleTime';
 import { Signers } from './Signers';
 import { SignerEntries } from './SignerEntries';
+import { PriceDataSeries } from './PriceDataSeries';
+
 import { TransferRate } from './TransferRate';
 import { TransferFee } from './TransferFee';
 import { TradingFee } from './TradingFee';
@@ -26,4 +28,5 @@ export {
     TradingFee,
     AuthAccounts,
     Amounts,
+    PriceDataSeries,
 };
