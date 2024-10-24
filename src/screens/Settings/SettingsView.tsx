@@ -141,7 +141,7 @@ class SettingsView extends Component<Props, State> {
                         <View style={styles.hr} />
                         {this.renderRow(
                             'IconHelpCircle',
-                            Localize.t('setupTermOfService.questionsAndSupport'),
+                            Localize.t('settings.questionsAndSupport'),
                             'xumm.support',
                             'support-button',
                         )}

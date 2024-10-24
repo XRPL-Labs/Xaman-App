@@ -254,7 +254,7 @@ class DestinationPickerModal extends Component<Props, State> {
         });
 
         if (searchText && searchText.length > 0) {
-            // check if it's a xrp address
+            // check if it's a account address
             // eslint-disable-next-line prefer-regex-literals
             const possibleAccountAddress = new RegExp(
                 /[rX][rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{23,50}/,

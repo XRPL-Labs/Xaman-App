@@ -84,6 +84,7 @@ class ChangePasscodeView extends Component<Props, State> {
 
     changeStep = (step: Steps) => {
         let stepDescription;
+
         switch (step) {
             case Steps.ENTER_OLD_PASSCODE:
                 stepDescription = Localize.t('settings.enterOldPasscode');
@@ -101,7 +102,7 @@ class ChangePasscodeView extends Component<Props, State> {
         this.setState(
             {
                 currentStep: step,
-                stepDescription,
+                stepDescription: stepDescription!,
             },
             () => {
                 this.cleanPinInput();

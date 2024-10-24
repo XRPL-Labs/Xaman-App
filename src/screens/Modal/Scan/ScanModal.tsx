@@ -356,25 +356,6 @@ class ScanModal extends Component<Props, State> {
         );
     };
 
-    handleAlternativeSeedCodec = (parsed: {
-        name: string;
-        alphabet: string | boolean;
-        params?: Record<string, unknown>;
-    }) => {
-        const { alphabet } = parsed;
-        if (alphabet) {
-            this.routeUser(
-                AppScreens.Account.Import,
-                {
-                    alternativeSeedAlphabet: parsed,
-                },
-                {},
-            );
-        } else {
-            this.handleUndetectedType();
-        }
-    };
-
     handleXummFeature = (parsed: { feature: string; type: string; params?: Record<string, string> }) => {
         const { feature, type } = parsed;
 
@@ -382,7 +363,7 @@ class ScanModal extends Component<Props, State> {
         if (feature === 'secret' && type === 'offline-secret-numbers') {
             Prompt(
                 Localize.t('global.warning'),
-                Localize.t('account.importSecretWithoutChecksumWarning'),
+                Localize.t('account.importSecretWithoutChecksumWarning', { network: NetworkService.getNetwork().name }),
                 [
                     {
                         text: Localize.t('global.cancel'),
@@ -532,9 +513,6 @@ class ScanModal extends Component<Props, State> {
                 break;
             case StringType.XummXapp:
                 this.handleXAPPLink(content, parsed);
-                break;
-            case StringType.XrplAltFamilySeedAlphabet:
-                this.handleAlternativeSeedCodec(parsed);
                 break;
             case StringType.XummFeature:
                 this.handleXummFeature(parsed);

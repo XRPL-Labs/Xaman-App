@@ -32,6 +32,7 @@ import { Props as AccountImportViewProps } from '@screens/Account/Add/Import/typ
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -187,7 +188,9 @@ class AccountAddView extends Component<Props, State> {
             // no wallet exist in the card
             Prompt(
                 Localize.t('global.notice'),
-                Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
+                Localize.t('account.tangemCardEmptyGenerateWalletAlert', {
+                    network: NetworkService.getNetwork().name,
+                }),
                 [
                     { text: Localize.t('global.cancel') },
                     {

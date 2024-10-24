@@ -27,6 +27,7 @@ import { AppStyles } from '@theme';
 import { StepsContext } from '../../Context';
 
 import styles from './styles';
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -163,7 +164,9 @@ class VerifySignatureStep extends Component<Props, State> {
                     </Text>
                     <Spacer size={20} />
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.yourXRPLedgerAccountWillNotBeTouched')}
+                        {Localize.t('account.yourLedgerAccountWillNotBeTouched', {
+                            network: NetworkService.getNetwork().name,
+                        })}
                     </Text>
                     <Spacer size={20} />
                 </View>

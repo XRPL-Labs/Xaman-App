@@ -464,7 +464,7 @@ class BackendService {
     };
 
     /**
-     * Performs an audit trail action for and XRP Ledger account.
+     * Performs an audit trail action for Ledger account.
      * @param {string} destination - The destination account of the audit trail.
      * @param {{ reason: string }} reason - The reason for the audit trail action.
      * @returns {Promise} A promise that resolves when the audit trail action is completed.

@@ -5,11 +5,9 @@
 import { dropRight, get, has, isEmpty, last } from 'lodash';
 import React, { Component } from 'react';
 import { Alert, Keyboard, View } from 'react-native';
-import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import { XAppOrigin } from '@common/libs/payload';
 import { Toast } from '@common/helpers/interface';
 import { getAccountName } from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
@@ -31,8 +29,6 @@ import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 import { Header } from '@components/General';
 
 import Localize from '@locale';
-
-import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
 
 import { AppStyles } from '@theme';
 
@@ -68,9 +64,6 @@ class AccountImportView extends Component<Props, State> {
             case props.tangemCard !== undefined:
                 initStep = 'VerifySignature';
                 break;
-            case props.alternativeSeedAlphabet !== undefined:
-                initStep = 'EnterSeed';
-                break;
             case props.importOfflineSecretNumber !== undefined:
                 initStep = 'EnterSecretNumbers';
                 break;
@@ -90,7 +83,6 @@ class AccountImportView extends Component<Props, State> {
             tangemSignature: undefined,
             secretType: SecretTypes.SecretNumbers,
             upgradeAccount: props.upgradeAccount,
-            alternativeSeedAlphabet: props.alternativeSeedAlphabet,
             importOfflineSecretNumber: props.importOfflineSecretNumber,
             isLoading: false,
         };
@@ -98,11 +90,11 @@ class AccountImportView extends Component<Props, State> {
 
     componentDidMount() {
         const { tangemCard } = this.props;
-        const { upgradeAccount, alternativeSeedAlphabet, importOfflineSecretNumber } = this.state;
+        const { upgradeAccount, importOfflineSecretNumber } = this.state;
 
-        // set the access level if it's upgrade or using alternative seed alphabet
+        // set the access level if it's upgrade or importOfflineSecretNumber
         // as we just move to importing seed section setting this is mandatory
-        if (upgradeAccount || alternativeSeedAlphabet || importOfflineSecretNumber) {
+        if (upgradeAccount || importOfflineSecretNumber) {
             this.setAccessLevel(AccessLevels.Full);
         }
 
@@ -244,8 +236,7 @@ class AccountImportView extends Component<Props, State> {
     };
 
     goNext = async (nextStep?: ImportSteps) => {
-        const { account, upgradeAccount, importedAccount, alternativeSeedAlphabet, currentStep, prevSteps } =
-            this.state;
+        const { account, upgradeAccount, importedAccount, currentStep, prevSteps } = this.state;
 
         // we are in the last screen, just import the account and close the screen
         if (currentStep === 'FinishStep') {
@@ -296,8 +287,7 @@ class AccountImportView extends Component<Props, State> {
 
         // check if account is activated
         // if not  -> show the activation explain step
-        // skip this step when account imported with alternative alphabet
-        if (currentStep === 'ConfirmPublicKey' && !alternativeSeedAlphabet) {
+        if (currentStep === 'ConfirmPublicKey') {
             this.setState({
                 isLoading: true,
             });
@@ -366,7 +356,7 @@ class AccountImportView extends Component<Props, State> {
 
     importAccount = async () => {
         const { tangemCard } = this.props;
-        const { account, importedAccount, passphrase, alternativeSeedAlphabet, tangemSignature } = this.state;
+        const { account, importedAccount, passphrase, tangemSignature } = this.state;
 
         try {
             let encryptionKey;
@@ -436,35 +426,11 @@ class AccountImportView extends Component<Props, State> {
             );
 
             // close the screen
-            Navigator.popToRoot().then(() => {
-                // if account imported with alternative seed alphabet and xApp present
-                // route user to the xApp
-                if (has(alternativeSeedAlphabet, 'params.xapp')) {
-                    const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp') as string;
-
-                    Navigator.showModal<XAppBrowserModalProps>(
-                        AppScreens.Modal.XAppBrowser,
-                        {
-                            account: createdAccount,
-                            identifier: xappIdentifier,
-                            origin: XAppOrigin.IMPORT_ACCOUNT,
-                            originData: alternativeSeedAlphabet,
-                        },
-                        {
-                            modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
-                            modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
-                        },
-                    );
-                }
-            });
-        } catch (error) {
+            Navigator.popToRoot();
+        } catch {
             // this should never happen but in case just show error that something went wrong
             Toast(Localize.t('global.unexpectedErrorOccurred'));
         }
-    };
-
-    onHeaderBackPress = () => {
-        Navigator.pop();
     };
 
     renderStep = () => {
@@ -496,7 +462,7 @@ class AccountImportView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { currentStep, alternativeSeedAlphabet } = this.state;
+        const { currentStep } = this.state;
 
         if (currentStep === 'FinishStep') return null;
 
@@ -520,11 +486,7 @@ class AccountImportView extends Component<Props, State> {
                 title = Localize.t('account.secretNumbers');
                 break;
             case 'EnterSeed':
-                if (alternativeSeedAlphabet) {
-                    title = Localize.t('account.importSecret');
-                } else {
-                    title = Localize.t('account.familySeed');
-                }
+                title = Localize.t('account.familySeed');
                 break;
             case 'VerifySignature':
                 title = Localize.t('account.verifyTangemCard');
@@ -554,7 +516,7 @@ class AccountImportView extends Component<Props, State> {
                     currentStep === 'AccessLevel'
                         ? {
                               icon: 'IconChevronLeft',
-                              onPress: this.onHeaderBackPress,
+                              onPress: Navigator.pop,
                           }
                         : undefined
                 }

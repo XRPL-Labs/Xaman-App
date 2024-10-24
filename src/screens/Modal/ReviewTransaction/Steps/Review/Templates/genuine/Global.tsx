@@ -53,7 +53,11 @@ class GlobalTemplate extends Component<Props, State> {
         // check if destination account is already imported in XUMM and can be signed
         if (transaction.Type === TransactionTypes.AccountDelete) {
             if (!find(AccountRepository.getSignableAccounts(), (o) => o.address === transaction.Destination)) {
-                warnings.push(Localize.t('payload.accountDeleteExchangeSupportWarning'));
+                warnings.push(
+                    Localize.t('payload.accountDeleteExchangeSupportWarning', {
+                        network: NetworkService.getNetwork().name,
+                    }),
+                );
             }
         }
 

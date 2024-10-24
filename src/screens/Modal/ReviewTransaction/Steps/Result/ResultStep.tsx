@@ -9,6 +9,11 @@ import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
 
+import { HexEncoding } from '@common/utils/string';
+import { ExplainerFactory } from '@common/libs/ledger/factory';
+
+import NetworkService from '@services/NetworkService';
+
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 // components
@@ -20,8 +25,6 @@ import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-import { HexEncoding } from '@common/utils/string';
-import { ExplainerFactory } from '@common/libs/ledger/factory';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -250,7 +253,11 @@ class ResultStep extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={AppStyles.subtext}>{Localize.t('send.verificationFailedDescription')}</Text>
+                        <Text style={AppStyles.subtext}>
+                            {Localize.t('send.verificationFailedDescription', {
+                                network: NetworkService.getNetwork().name,
+                            })}
+                        </Text>
                     </View>
                 </View>
 

@@ -63,7 +63,7 @@ class EnterAddressStep extends Component<Props, State> {
             isLoading: true,
         });
 
-        // validate xrp address
+        // validate address
         if (!address || !utils.isValidAddress(address)) {
             Alert.alert(Localize.t('global.error'), Localize.t('global.invalidAddress'));
 

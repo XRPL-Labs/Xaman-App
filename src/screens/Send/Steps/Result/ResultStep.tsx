@@ -253,7 +253,11 @@ class ResultStep extends Component<Props, State> {
                     <View style={styles.detailsCard}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={[AppStyles.subtext]}>{Localize.t('send.verificationFailedDescription')}</Text>
+                        <Text style={AppStyles.subtext}>
+                            {Localize.t('send.verificationFailedDescription', {
+                                network: NetworkService.getNetwork().name,
+                            })}
+                        </Text>
                     </View>
                 </View>
 
