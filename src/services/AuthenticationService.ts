@@ -9,7 +9,6 @@ import { GetElapsedRealtime } from '@common/helpers/device';
 import { ExitApp } from '@common/helpers/app';
 
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
-import { InAppPurchase } from '@common/libs/iap';
 import Vault from '@common/libs/vault';
 
 import DataStorage from '@store/storage';
@@ -347,7 +346,7 @@ class AuthenticationService extends EventEmitter {
                 realTime - (coreSettings.lastUnlockedTimestamp ?? 0) > coreSettings.minutesAutoLock * 60
             ) {
                 // show lock overlay
-                await Navigator.showOverlay<LockOverlayProps>(
+                Navigator.showOverlay<LockOverlayProps>(
                     AppScreens.Overlay.Lock,
                     {},
                     {
@@ -432,10 +431,7 @@ class AuthenticationService extends EventEmitter {
      */
     onAppStateChange = async () => {
         // let's check the lock screen in any app state change
-        // only if user is not purchasing a product, we don't want to trigger lock screen after IAP purchase
-        if (!InAppPurchase.isUserPurchasing()) {
-            await this.checkLockScreen();
-        }
+        await this.checkLockScreen();
     };
 }
 

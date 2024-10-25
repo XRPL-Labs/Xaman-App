@@ -6,8 +6,11 @@ import androidx.annotation.Nullable;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+
 
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.PendingPurchasesParams;
@@ -56,9 +59,10 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     private final HashMap<String, ProductDetails> productDetailsHashMap = new HashMap<>();
     private final BillingClient billingClient;
     private final GoogleApiAvailability googleApiAvailability;
+    private final AtomicBoolean isUserPurchasing = new AtomicBoolean(false);
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private Promise billingFlowPromise;
-    private boolean isUserPurchasing = false;
 
 
     InAppPurchaseModule(ReactApplicationContext context) {
@@ -87,7 +91,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
     @ReactMethod(isBlockingSynchronousMethod = true)
     public boolean isUserPurchasing() {
-        return isUserPurchasing;
+        return isUserPurchasing.get();
     }
 
 
@@ -164,7 +168,6 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                 // Launch the billing flow
                 promise.resolve(this.productToJson(productDetails));
             } else {
-                Log.e(TAG, "Unable to load the product details with productId " + productId + " getResponseCode:" + billingResult.getResponseCode() + " list.size:" + list.size());
                 promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
             }
         });
@@ -184,8 +187,6 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                 (billingResult, purchases) -> {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         for (Purchase purchase : purchases) {
-
-                            Log.d("IAP", String.valueOf(purchase));
                             // PURCHASED but not consumed
                             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
                                 productsToBeConsumed.pushMap(purchaseToMap(purchase));
@@ -242,8 +243,10 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
-        // set the flag
-        isUserPurchasing = false;
+        // Delay setting isUserPurchasing to false by 1 sec
+        // This is required due AppState change trigger after IAP activity launch
+        handler.postDelayed(() -> isUserPurchasing.set(false), 1000);
+
 
         // something went wrong with the purchase, reject the billingFlowPromise
         if (billing.getResponseCode() != BillingClient.BillingResponseCode.OK) {
@@ -290,7 +293,10 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     // This method may fail and reject the promise if there's already a billing flow in progress.
     private void launchBillingFlow(ProductDetails productDetails, Promise promise) {
         // set flag
-        isUserPurchasing = true;
+        if (isUserPurchasing.getAndSet(true)) {
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start the new one!");
+            return;
+        }
 
         // if we already have an promise going on for billing flow, reject it as we don't want to start
         // the new flow without closing the old one
@@ -341,17 +347,16 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             billingFlowPromise.resolve(productsToBeConsumed);
             billingFlowPromise = null;
         } catch (Exception error) {
-            Log.e(TAG, "resolveBillingFlowPromise: " + error.getMessage());
+            // ignore
         }
     }
 
     private void rejectBillingFlowPromise(final String code, final String message) {
         try {
             billingFlowPromise.reject(code, message);
-            Log.d(TAG, "rejectBillingFlowPromise " + code);
             billingFlowPromise = null;
         } catch (Exception error) {
-            Log.e(TAG, "rejectBillingFlowPromise: " + error.getMessage());
+            // ignore
         }
     }
 }
