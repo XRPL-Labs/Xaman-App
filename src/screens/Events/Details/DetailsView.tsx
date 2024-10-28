@@ -180,6 +180,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
             'InvoiceIdWidget',
             'HookDetailsWidget',
             'FeeWidget',
+            'TransferRateWidget',
             'ValidatedLedgerWidget',
         ];
 
