@@ -298,7 +298,6 @@ class ReviewTransactionModal extends Component<Props, State> {
                     text: Localize.t('account.deleteAccountWarning', {
                         ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
                         nativeAsset: NetworkService.getNativeAsset(),
-                        network: NetworkService.getNetwork().name,
                     }),
                     buttons: [
                         {

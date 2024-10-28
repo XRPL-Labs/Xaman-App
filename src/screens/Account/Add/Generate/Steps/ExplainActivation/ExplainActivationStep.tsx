@@ -51,7 +51,6 @@ class ExplainActivationStep extends Component<Props, State> {
                         {Localize.t('account.accountGenerateActivationExplain', {
                             baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                             nativeAsset: NetworkService.getNativeAsset(),
-                            network: NetworkService.getNetwork().name,
                         })}
                     </Text>
 

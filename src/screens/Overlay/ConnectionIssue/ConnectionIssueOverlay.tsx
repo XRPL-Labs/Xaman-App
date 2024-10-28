@@ -5,7 +5,6 @@
 import React, { Component } from 'react';
 import { Animated, Text } from 'react-native';
 
-import NetworkService from '@services/NetworkService';
 import StyleService from '@services/StyleService';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -80,14 +79,17 @@ class ConnectionIssueOverlay extends Component<Props, State> {
                 <Animated.View style={[styles.visibleContent, { opacity: this.animatedOpacity }]}>
                     <Icon name={StyleService.isDarkMode() ? 'ImageCloudAlertLight' : 'ImageCloudAlert'} size={100} />
                     <Spacer size={30} />
-                    <Text style={styles.title}>{Localize.t('global.looksLikeYouAreOffline')}</Text>
+
+                    <Text style={[styles.title]}>{Localize.t('global.looksLikeYouAreOffline')}</Text>
+
                     <Spacer size={5} />
+
                     <Text style={styles.subTitle}>
-                        {Localize.t('global.unableToConnectToLedgerNodePleaseCheckYourConnection', {
-                            network: NetworkService.getNetwork().name,
-                        })}
+                        {Localize.t('global.unableToConnectToXRPLNodePleaseCheckYourConnection')}
                     </Text>
+
                     <Spacer size={30} />
+
                     <Button onPress={this.dismiss} label={Localize.t('global.close')} light />
                 </Animated.View>
             </Animated.View>

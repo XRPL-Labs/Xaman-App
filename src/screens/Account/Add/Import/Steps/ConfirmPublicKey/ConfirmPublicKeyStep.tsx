@@ -8,6 +8,7 @@ import { SafeAreaView, View, Text, ScrollView } from 'react-native';
 import { AccountRepository } from '@store/repositories';
 import { AccountTypes } from '@store/types';
 
+import { ConvertCodecAlphabet } from '@common/utils/codec';
 import { Toast, Prompt } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
 
@@ -74,6 +75,17 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
         Toast(Localize.t('account.publicKeyCopiedToClipboard'));
     };
 
+    getOtherChainAddress = (): string => {
+        const { importedAccount, alternativeSeedAlphabet } = this.context;
+
+        if (alternativeSeedAlphabet && typeof alternativeSeedAlphabet?.alphabet === 'string') {
+            return ConvertCodecAlphabet(importedAccount!.address!, alternativeSeedAlphabet.alphabet, false);
+        }
+
+        // this should not happen
+        return 'Unknown';
+    };
+
     renderRegularKeys = () => {
         const { importedAccount } = this.context;
 
@@ -137,7 +149,7 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
     };
 
     render() {
-        const { importedAccount, isLoading } = this.context;
+        const { importedAccount, isLoading, alternativeSeedAlphabet } = this.context;
 
         if (!importedAccount) {
             return null;
@@ -149,14 +161,40 @@ class ConfirmPublicKeyStep extends Component<Props, State> {
                     {Localize.t('account.pleaseConfirmYourAccountAddress')}
                 </Text>
 
+                {alternativeSeedAlphabet && (
+                    <View
+                        style={[
+                            AppStyles.flex1,
+                            AppStyles.centerContent,
+                            AppStyles.stretchSelf,
+                            AppStyles.paddingHorizontalSml,
+                        ]}
+                    >
+                        <Text style={styles.addressHeader}>
+                            {Localize.t('account.yourChainAddressWas', { chain: alternativeSeedAlphabet.name })}
+                        </Text>
+                        <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
+                            <Text testID="account-alternative-address" selectable style={styles.addressField}>
+                                {this.getOtherChainAddress()}
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
                 <View
                     style={[
                         AppStyles.flex1,
-                        AppStyles.centerContent,
+                        !alternativeSeedAlphabet && AppStyles.centerContent,
                         AppStyles.stretchSelf,
                         AppStyles.paddingHorizontalSml,
                     ]}
                 >
+                    {alternativeSeedAlphabet && (
+                        <Text style={styles.addressHeader}>
+                            {Localize.t('account.yourXRPLedgerAccountIsGoingToBe')}
+                        </Text>
+                    )}
+
                     <View style={[styles.addressContainer, AppStyles.stretchSelf]}>
                         <Text testID="account-address-text" selectable style={styles.addressField}>
                             {importedAccount.address}

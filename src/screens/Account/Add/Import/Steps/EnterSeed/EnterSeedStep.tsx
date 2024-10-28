@@ -12,6 +12,8 @@ import Localize from '@locale';
 // components
 import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
+import { ConvertCodecAlphabet } from '@common/utils/codec';
+
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -43,6 +45,7 @@ class EnterSeedStep extends Component<Props, State> {
     }
 
     driveFamilySeed = () => {
+        const { alternativeSeedAlphabet } = this.context;
         const { secret } = this.state;
 
         try {
@@ -50,10 +53,18 @@ class EnterSeedStep extends Component<Props, State> {
                 throw new Error('Secret is required!');
             }
 
-            const account = derive.familySeed(secret);
+            let xrplSecret = secret;
+            // if alternative alphabet set then change
+            if (alternativeSeedAlphabet) {
+                const { alphabet } = alternativeSeedAlphabet;
+                if (typeof alphabet === 'string') {
+                    xrplSecret = ConvertCodecAlphabet(secret, alphabet);
+                }
+            }
+            const account = derive.familySeed(xrplSecret);
 
             this.goNext(account);
-        } catch {
+        } catch (error) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidFamilySeed'));
         }
     };
@@ -68,7 +79,7 @@ class EnterSeedStep extends Component<Props, State> {
             const account = derive.privatekey(secret);
 
             this.goNext(account);
-        } catch {
+        } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.invalidHexPrivateKey'));
         }
     };
@@ -128,21 +139,27 @@ class EnterSeedStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack } = this.context;
+        const { goBack, alternativeSeedAlphabet } = this.context;
         const { secret, showSecret, keyboardType } = this.state;
 
         return (
             <SafeAreaView testID="account-import-enter-family-seed-view" style={AppStyles.container}>
                 <KeyboardAwareScrollView style={AppStyles.flex1} contentContainerStyle={AppStyles.paddingHorizontal}>
                     <Text style={[AppStyles.p, AppStyles.bold, AppStyles.textCenterAligned]}>
-                        {Localize.t('account.pleaseProvideFamilySeed')}
+                        {alternativeSeedAlphabet
+                            ? Localize.t('account.toTurnYourSecretIntoXrplLedgerAccountPleaseEnterYourSecret')
+                            : Localize.t('account.pleaseProvideFamilySeed')}
                     </Text>
 
                     <Spacer size={50} />
 
                     <TextInput
                         testID="seed-input"
-                        placeholder={Localize.t('account.pleaseEnterYourFamilySeed')}
+                        placeholder={
+                            alternativeSeedAlphabet
+                                ? Localize.t('account.enterSecret')
+                                : Localize.t('account.pleaseEnterYourFamilySeed')
+                        }
                         autoCapitalize="none"
                         autoCorrect={false}
                         secureTextEntry={!showSecret}

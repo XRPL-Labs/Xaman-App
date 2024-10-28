@@ -24,7 +24,6 @@ import { Clipboard } from '@common/helpers/clipboard';
 
 import { AppScreens } from '@common/constants';
 
-import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
 // components
@@ -412,7 +411,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
     onRemovePress = async () => {
         Prompt(
             Localize.t('global.warning'),
-            Localize.t('account.removeTrustLineWarning', { network: NetworkService.getNetwork().name }),
+            Localize.t('account.removeTrustLineWarning'),
             [
                 { text: Localize.t('global.cancel') },
                 {
@@ -596,7 +595,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
         Navigator.showAlertModal({
             type: 'warning',
             title: Localize.t('global.warning'),
-            text: explanation!,
+            text: explanation,
             buttons: [
                 {
                     text: Localize.t('global.back'),

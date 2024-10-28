@@ -454,7 +454,6 @@ class RecipientStep extends Component<Props, State> {
                             text: Localize.t('send.destinationCannotActivateWithIOU', {
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                                 nativeAsset: NetworkService.getNativeAsset(),
-                                network: NetworkService.getNetwork().name,
                             }),
                             buttons: [
                                 {
@@ -481,7 +480,6 @@ class RecipientStep extends Component<Props, State> {
                             text: Localize.t('send.destinationNotExistTooLittleToCreate', {
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                                 nativeAsset: NetworkService.getNativeAsset(),
-                                network: NetworkService.getNetwork().name,
                             }),
                             buttons: [
                                 {
@@ -509,7 +507,6 @@ class RecipientStep extends Component<Props, State> {
                                 amount,
                                 baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                                 nativeAsset: NetworkService.getNativeAsset(),
-                                network: NetworkService.getNetwork().name,
                             }),
                             buttons: [
                                 {
@@ -612,7 +609,7 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
-            // check for native asset income disallow
+            // check for xrp income disallow
             if (
                 destinationInfo.disallowIncomingXRP &&
                 typeof currency === 'string' &&

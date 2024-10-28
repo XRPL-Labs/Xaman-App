@@ -142,11 +142,7 @@ class RequestItem extends Component<Props, State> {
 
         switch (this.getType()) {
             case RequestType.OpenXApp:
-                description = get(
-                    item,
-                    'payload.request_json.xappTitle',
-                    Localize.t('global.openForDetails'),
-                ) as string;
+                description = get(item, 'payload.request_json.xappTitle', Localize.t('global.openForDetails'));
                 break;
             case RequestType.SignRequest:
                 description = Localize.t('global.signRequest');

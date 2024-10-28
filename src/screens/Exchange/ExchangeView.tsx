@@ -302,7 +302,6 @@ class ExchangeView extends Component<Props, State> {
             Localize.t('global.pleaseNote'),
             Localize.t('exchange.slippageSpreadWarning', {
                 slippage: this.ledgerExchange.boundaryOptions.maxSlippagePercentage,
-                network: NetworkService.getNetwork().name,
             }),
             [
                 { text: Localize.t('global.cancel') },

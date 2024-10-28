@@ -19,7 +19,7 @@ type LocalizeSettings = {
 
 /* Class ==================================================================== */
 class Localize {
-    instance: I18n;
+    instance: any;
     moment: any;
     meta: any;
     settings?: LocalizeSettings;
