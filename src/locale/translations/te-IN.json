@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "చెల్లింపు ఒక గమ్యపు ట్యాగ్ను కలిగి ఉంది: %{tag}",
     "itWasInstructedToDeliver": "%{amount} %{currency} బట్వాడా చేయాలని ఆదేశించారు.",
     "bySpendingUpTo": "%{amount} %{currency} బట్వాడా చేయాలని ఆదేశించారు",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "ఇది తొలగించబడిన ఖాతా %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "మిగిలిన బ్యాలెన్స్ %{amount} %{currency} ను %{destination}  కు పంపిణీ చేయాలని ఆదేశించబడింది",
     "theTransactionHasASourceTag": "ఈ రుసుము ఒక మూలము ట్యాగ్ను కలిగి ఉంది: %{tag}",

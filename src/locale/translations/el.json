@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Η πληρωμή έχει μια ετικέτα προορισμού: %{tag}.",
     "itWasInstructedToDeliver": "Ήταν διατυπωμένο να παραδόσει %{amount} %{currency}.",
     "bySpendingUpTo": "με δαπάνες έως %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Διέγραψε τον λογαριασμό με %{address}.",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Ήταν διατυπωμένο να παραδώσει το υπόλοιπο των %{amount} %{currency} στο %{destination}.",
     "theTransactionHasASourceTag": "Η συναλλαγή διαθέτει ετικέτα προέλευσης: %{tag}.",

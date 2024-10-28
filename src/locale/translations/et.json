@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Makse on sihtmärgi silt on: %{tag}",
     "itWasInstructedToDeliver": "See oli määratud kandma %{amount} %{currency}",
     "bySpendingUpTo": "kulutades kuni %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "See kustutas konto aadressiga %{address}.",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "See oli määratud kandma ülejäänud summa %{amount} %{currency} aadressile %{destination}",
     "theTransactionHasASourceTag": "Tehingus on allika silt on: %{tag}",

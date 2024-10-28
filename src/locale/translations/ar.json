@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "علامة وجهة الدفع هي: %{tag}",
     "itWasInstructedToDeliver": "وأوعز ذلك لتقديم %{amount} %{currency}",
     "bySpendingUpTo": "من خلال إنفاق ما يصل إلى %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "تم حذف الحساب %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "وأوعز ذلك لتقديم الرصيد المتبقي من %{amount} %{currency} ل %{destination}",
     "theTransactionHasASourceTag": "علامة مصدر المعاملة هي: %{tag}",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Plata are ca etichetă (tag) de destinaţie: %{tag}.",
     "itWasInstructedToDeliver": "A fost instruit să livreze %{amount} %{currency}.",
     "bySpendingUpTo": "A fost instruit să livreze %{amount} %{currency}.",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "A fost şters contul %{address}.",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "A fost instruit să livreze soldul rămas  %{amount} %{currency} la %{destination}.",
     "theTransactionHasASourceTag": "Tranzacţia are un ca etichetă (tag) sursă: %{tag}.",

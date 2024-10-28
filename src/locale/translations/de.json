@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Die Zahlung hat eine Ziel Kennzeichnung (destination tag): %{tag}",
     "itWasInstructedToDeliver": "Es wurde angewiesen, %{amount} %{currency} zu übermitteln",
     "bySpendingUpTo": "Es wurde angewiesen, %{amount} %{currency} zu übermitteln",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Das Konto %{address} wurde gelöscht",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Es wurde angewiesen, den verbleibenden Bestand von %{amount} %{currency} an %{destination} zu übermitteln",
     "theTransactionHasASourceTag": "Die Transaktion verfügt über eine Quellen Kennzeichnung (source tag): %{tag}",

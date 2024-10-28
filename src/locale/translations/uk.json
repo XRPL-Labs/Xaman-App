@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Платіж має тег призначення: %{tag}",
     "itWasInstructedToDeliver": "Було доручено доставити %{amount} %{currency}",
     "bySpendingUpTo": "Було доручено доставити %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Це видалило  %{address} акаунт",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Було доручено надіслати залишок балансу у розмірі %{amount} %{currency} до %{destination}",
     "theTransactionHasASourceTag": "Транзакція має вихідний тег: %{tag}",

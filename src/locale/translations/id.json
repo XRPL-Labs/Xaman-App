@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Tag tujuan pembayaran adalah: %{tag}",
     "itWasInstructedToDeliver": "Itu diinstruksikan untuk mengirimkan %{amount} %{currency}",
     "bySpendingUpTo": "dengan membelanjakan hingga %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Ini menghapus akun %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Ini diinstruksikan untuk mengirimkan sisa saldo dari %{amount} %{currency} ke %{destination}",
     "theTransactionHasASourceTag": "Tag sumber transaksi adalah: %{tag}",

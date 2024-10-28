@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Maksājuma galamērķa apzīmējums: %{tag}",
     "itWasInstructedToDeliver": "Tas bija instruēts piegādāt %{amount} %{currency}",
     "bySpendingUpTo": "tērējot līdz %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Dzēsts konts %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Tas bija instruēts nosūtīt %{amount} %{currency} atlikušo atlikumu uz %{destination}",
     "theTransactionHasASourceTag": "Transakcijas izcelsmes galamērķa apzīmējums ir: %{tag}",

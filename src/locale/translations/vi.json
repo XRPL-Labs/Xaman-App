@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Thẻ đích thanh toán là: %{tag}",
     "itWasInstructedToDeliver": "Nó được hướng dẫn để phân phối %{amount} %{currency}",
     "bySpendingUpTo": "bằng cách chi tiêu lên đến %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Nó đã xóa tài khoản %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Nó được hướng dẫn chuyển số dư còn lại của %{amount} %{currency} đến %{destination}",
     "theTransactionHasASourceTag": "Thẻ nguồn giao dịch là: %{tag}",

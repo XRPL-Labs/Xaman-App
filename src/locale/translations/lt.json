@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Mokėjimo paskirties žyma yra: %{tag}",
     "itWasInstructedToDeliver": "Buvo nurodyta pristatyti %{amount} %{currency}",
     "bySpendingUpTo": "išleidžiant iki %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Tai ištrynė sąskaitą %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Jis buvo pavesta pristatyti likutį %{amount} %{currency} į %{destination}",
     "theTransactionHasASourceTag": "Sandoris šaltinis žyma yra: %{tag}",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "ਭੁਗਤਾਨ ਦਾ ਇੱਕ ਟਿਕਾਣਾ ਟੈਗ ਹੈ: %{tag}.\r\n",
     "itWasInstructedToDeliver": "ਨੂੰ ਸਪੁਰਦ ਕਰਨ ਦੀ ਹਦਾਇਤ ਕੀਤੀ ਗਈ ਸੀ %{amount} %{currency}.\r\n",
     "bySpendingUpTo": "ਤੱਕ ਖਰਚ ਕੇ  %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "ਇਸ ਨਾਲ ਖਾਤਾ ਮਿਟਾ ਦਿੱਤਾ ਗਿਆ %{address}.\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "ਦੀ ਬਾਕੀ ਬਚੀ ਰਕਮ ਦੀ ਸਪੁਰਦਗੀ ਕਰਨ ਲਈ ਨਿਰਦੇਸ਼ ਦਿੱਤਾ ਗਿਆ ਸੀ %{amount} %{currency} ਨੂੰ %{destination}.\r\n",
     "theTransactionHasASourceTag": "ਲੈਣਦੇਣ ਦਾ ਇੱਕ ਸਰੋਤ ਟੈਗ ਹੈ: %{tag}.\r\n",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Төлем белгілеу тегі: %{tag}",
     "itWasInstructedToDeliver": "Оған жеткізу тапсырылды %{amount} %{currency}",
     "bySpendingUpTo": "жұмсауға дейін %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Ол тіркелгіні жойды %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Оған қалған қалдықты жеткізу тапсырылды %{amount} %{currency} - дан %{destination}",
     "theTransactionHasASourceTag": "Транзакция көзі тегі: %{tag}",

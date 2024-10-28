@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "கட்டணம் ஒரு இலக்கு குறிச்சொல்லைக் கொண்டுள்ளது: %{tag}.\r\n",
     "itWasInstructedToDeliver": "வழங்க அறிவுறுத்தப்பட்டது %{amount} %{currency}.\r\n",
     "bySpendingUpTo": "வரை செலவு செய்வதன் மூலம் %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "இது கணக்கை நீக்கியது %{address}.\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "மீதமுள்ள நிலுவைகளை வழங்க அறிவுறுத்தப்பட்டது %{amount} %{currency} க்கு %{destination}.\r\n",
     "theTransactionHasASourceTag": "பரிவர்த்தனைக்கு மூல குறிச்சொல் உள்ளது: %{tag}.\r\n",

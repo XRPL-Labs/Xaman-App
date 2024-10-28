@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "ادائيگي جي منزل ٽيگ آهي: %{tag}",
     "itWasInstructedToDeliver": "ان کي پهچائڻ جي هدايت ڏني وئي %{amount} %{currency}",
     "bySpendingUpTo": "لاء خرچ ڪندي %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "اهو کاتو خارج ٿيل %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "انهي کي هدايت ڪئي وئي ته بيلنس جي باقي مقدار کي پهچائي %{amount} %{currency} جي طرف %{destination}",
     "theTransactionHasASourceTag": "ٽرانزيڪشن جو ماخذ ٽيگ آهي: %{tag}",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Płatność ma Tag docelowy: %{tag}",
     "itWasInstructedToDeliver": "Został poinstruowany, aby dostarczyć %{amount} %{currency}",
     "bySpendingUpTo": "Został poinstruowany, aby dostarczyć %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Usunięte konto %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Został on poinstruowany o dostarczyniu pozostałego salda %{amount} %{currency} na %{destination}",
     "theTransactionHasASourceTag": "Transakcja ma Tag źródłowy: %{tag}.",

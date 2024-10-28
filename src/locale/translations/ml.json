@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "പേയ്‌മെന്റിന് ഒരു ലക്ഷ്യസ്ഥാന ടാഗ് ഉണ്ട്: %{tag}.\r\n",
     "itWasInstructedToDeliver": "എത്തിക്കാൻ നിർദ്ദേശം നൽകി %{amount} %{currency}.\r\n",
     "bySpendingUpTo": "വരെ ചെലവഴിച്ചുകൊണ്ട് %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "ഇത് അക്കൗണ്ട് ഇല്ലാതാക്കി %{address}.\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "ബാക്കി തുക കൈമാറാൻ നിർദ്ദേശം നൽകി %{amount} %{currency} ടു %{destination}.\r\n",
     "theTransactionHasASourceTag": "ഇടപാടിന് ഒരു ഉറവിട ടാഗ് ഉണ്ട്: %{tag}.\r\n",

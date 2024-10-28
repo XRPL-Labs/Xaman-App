@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "To'lovni belgilash yorlig'i(tag): %{tag}",
     "itWasInstructedToDeliver": "Yetkazib berish haqida ko'rsatma berildi %{amount} %{currency}",
     "bySpendingUpTo": "gacha sarflab %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Bu hisobni o'chirib tashladi %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Qolgan qoldiqni etkazib berishga ko'rsatma berildi %{amount} %{currency} ga %{destination}",
     "theTransactionHasASourceTag": "Tranzaksiya manbai yorlig'i(tag): %{tag}",

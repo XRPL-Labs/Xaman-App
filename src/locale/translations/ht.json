@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Tag destinasyon peman an se: %{tag}",
     "itWasInstructedToDeliver": "Li te enstwi delivre %{amount} %{currency}",
     "bySpendingUpTo": "pa depanse jiska %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Li efase kont %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Li te enstwi delivre balans ki rete nan %{amount} %{currency} a %{destination}",
     "theTransactionHasASourceTag": "Tag sous tranzaksyon an se: %{tag}",

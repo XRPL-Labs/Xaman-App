@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Betalingen har en destinasjons-kode: %{tag}.",
     "itWasInstructedToDeliver": "Det ble instruert å levere %{amount} %{currency}",
     "bySpendingUpTo": "ved å bruke opptil %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Det slettet konto %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Det ble instruert at gjenværende balanse på %{amount} %{currency} skal bli sendt til %{destination}.",
     "theTransactionHasASourceTag": "Transaksjonen har en kilde-identifikasjon: %{tag}.",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "გზავნილს გააჩნია მიმღები ანგარიშის თეგი: %{tag}",
     "itWasInstructedToDeliver": "ბრძანება შეიქმნა აღნიშნული რაოდენობის მიწოდების: %{amount} %{currency}",
     "bySpendingUpTo": "%{amount} %{currency}-ის გახარჯვით",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "წაშალა შემდეგი ანგარიში: %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "ბრძანება შეიქმნა დარჩენილი ბალანსის %{amount} %{currency}-ის მიწოდების შემდეგ მისამართზე: %{destination}",
     "theTransactionHasASourceTag": "ტრანზაქციას გააჩნია თეგი: %{tag}",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "תג יעד התשלום הוא: %{tag}",
     "itWasInstructedToDeliver": "הונחה למסור %{amount} %{currency}",
     "bySpendingUpTo": "על ידי הוצאות עד %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "זה מחק את החשבון %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "הונחה למסור את היתרה הנותרת של %{amount} %{currency} ל- %{destination}",
     "theTransactionHasASourceTag": "תג המקור לעסקה הוא: %{tag}",

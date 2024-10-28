@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "ಪಾವತಿ ಗಮ್ಯಸ್ಥಾನ ಟ್ಯಾಗ್ ಹೊಂದಿದೆ: %{tag}.",
     "itWasInstructedToDeliver": "ತಲುಪಿಸಲು ಸೂಚನೆ ನೀಡಲಾಯಿತು %{amount} %{currency}.",
     "bySpendingUpTo": "ವರೆಗೆ ಖರ್ಚು ಮಾಡುವ ಮೂಲಕ %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "ಇದು ಖಾತೆಯನ್ನು ಅಳಿಸಿದೆ %{address}.",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "ಉಳಿದ ಬಾಕಿ ತಲುಪಿಸಲು ಸೂಚನೆ ನೀಡಲಾಯಿತು %{amount} %{currency} ಗೆ %{destination}",
     "theTransactionHasASourceTag": "ವಹಿವಾಟಿಗೆ ಮೂಲ ಟ್ಯಾಗ್ ಇದೆ: %{tag}.\r\n",

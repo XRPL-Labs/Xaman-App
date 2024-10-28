@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Le paiement a une balise de destination: %{tag}",
     "itWasInstructedToDeliver": "Il a été chargé de distribuer %{amount} %{currency}",
     "bySpendingUpTo": "en dépensant jusqu'à %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Il a supprimé le compte %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Il a été demandé d'envoyer le solde restant de %{amount} %{currency} à %{destination}",
     "theTransactionHasASourceTag": "La transaction possède une balise source: %{tag}",

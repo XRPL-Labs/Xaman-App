@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "El pagament té una etiqueta de destinació: %{tag}",
     "itWasInstructedToDeliver": "S'han donat instruccions per a lliurar %{amount} %{currency}.",
     "bySpendingUpTo": "gastant fins a %{amount}%{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "S'ha suprimit el compte %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Se li va indicar que lliurés el saldo restant de %{amount} %{currency} a %{destination}",
     "theTransactionHasASourceTag": "La transacció té una etiqueta d'origen: %{tag}.",

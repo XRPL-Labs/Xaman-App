@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "支払先のタグは次のとおりです : %{tag}",
     "itWasInstructedToDeliver": "%{amount} %{currency}をお届けするよう指示されました。",
     "bySpendingUpTo": "最大%{amount} %{currency}の利用が許可されています。",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "アカウント %{address} を削除しました。",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "残額の %{amount} %{currency} を%{destination}に届けるように指示されています。",
     "theTransactionHasASourceTag": "トランザクションのソース タグ：%{tag}",

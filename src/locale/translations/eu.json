@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Ordainketa helmuga etiketa hau da: %{tag}",
     "itWasInstructedToDeliver": "Emateko agindua eman zitzaion %{amount} %{currency}",
     "bySpendingUpTo": "gehienez gastatuz %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Kontua ezabatu du %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Gainerako saldoa emateko agindua eman zitzaion %{amount} %{currency} ra %{destination}",
     "theTransactionHasASourceTag": "Transakzio iturburuaren etiketa hau da: %{tag}",

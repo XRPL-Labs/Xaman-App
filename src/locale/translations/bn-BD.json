@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "অর্থ প্রদানের একটি গন্তব্য ট্যাগ রয়েছে: %{tag}.\r\n",
     "itWasInstructedToDeliver": "এটি সরবরাহ করার নির্দেশ দেওয়া হয়েছিল %{amount} %{currency}.\r\n",
     "bySpendingUpTo": "পর্যন্ত ব্যয় করে %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "এটি দিয়ে অ্যাকাউন্টটি মুছে ফেলা হয়েছে %{address}.\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "এর বাকী ভারসাম্য সরবরাহ করার জন্য নির্দেশ দেওয়া হয়েছিল %{amount} %{currency} প্রতি %{destination}.\r\n",
     "theTransactionHasASourceTag": "লেনদেনের একটি উত্স ট্যাগ রয়েছে: %{tag}.\r\n",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "भुगतान में एक गंतव्य टैग है:%{tag}",
     "itWasInstructedToDeliver": "इसे पहुंचाने का निर्देश दिया गया था %{amount} %{currency}",
     "bySpendingUpTo": "%{amount} %{currency} तक खर्च करके",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "इसने खाते को हटा दिया %{address} है",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "शेष राशि का वितरण करने का निर्देश दिया गया %{amount} %{currency} के %{destination} ",
     "theTransactionHasASourceTag": "लेन-देन का स्रोत टैग है: %{tag}",

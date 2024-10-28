@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "O pago ten unha etiqueta de destino: (Variable%{tag}).",
     "itWasInstructedToDeliver": "Foi instruído para entregar (Variable%{amount}) (Variable%{currency}).",
     "bySpendingUpTo": "Gastando ata (Variable%{amount}) (Variable%{currency}).",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "A conta será eliminada con (Variable%{address})",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Foi instruído para enviar o saldo restante de (Variable%{amount}) (Variable%{currency}) a (Variable%{destination}).",
     "theTransactionHasASourceTag": "A transacción ten unha fonte de etiqueta: (Variable%{tag}).",

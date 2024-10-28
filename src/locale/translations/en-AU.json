@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Payment Destination Tag: %{tag}",
     "itWasInstructedToDeliver": "It was instructed to deliver %{amount} %{currency}",
     "bySpendingUpTo": "by spending up to %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "It deleted account %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "It was instructed to deliver the remaining balance of %{amount} %{currency} to %{destination}",
     "theTransactionHasASourceTag": "Transaction Source Tag: %{tag}",

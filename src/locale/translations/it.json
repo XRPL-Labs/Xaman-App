@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Il pagamento ha il seguente tag di destinazione: %{tag}",
     "itWasInstructedToDeliver": "È stato ordinato di consegnare %{amount} %{currency}",
     "bySpendingUpTo": "È stato ordinato di consegnare %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Ha cancellato l'account %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "È stato ordinato di versare il saldo rimanente di %{amount} %{currency} all'account %{destination}",
     "theTransactionHasASourceTag": "La transazione ha il seguente tag di origine: %{tag}",

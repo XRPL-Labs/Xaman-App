@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Ang patutunguhang tag ng pagbabayad ay: %{tag}",
     "itWasInstructedToDeliver": "Inutusan itong maghatid %{amount} %{currency}",
     "bySpendingUpTo": "sa paggastos ng hanggang sa %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Tinanggal nito ang account %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Inatasan itong ihatid ang natitirang balanse ng %{amount} %{currency} sa %{destination}",
     "theTransactionHasASourceTag": "Ang tag ng pinagmulan ng transaksyon ay: %{tag}",

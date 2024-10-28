@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "देयकास गंतव्य टॅग आहे: %{tag}\r\n",
     "itWasInstructedToDeliver": "वितरित करण्याच्या सूचना देण्यात आल्या %{amount} %{currency}\r\n",
     "bySpendingUpTo": "पर्यंत खर्च करून %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "यात खाते हटविले %{address}\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "उर्वरित शिल्लक देण्याची सूचना केली होती %{amount} %{currency} करण्यासाठी %{destination}\r\n",
     "theTransactionHasASourceTag": "व्यवहार स्त्रोत टॅग आहे: %{tag}\r\n",

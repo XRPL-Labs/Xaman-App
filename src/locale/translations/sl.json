@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Plačilo ima ciljno oznako: %{tag}",
     "itWasInstructedToDeliver": "Naročilo za dostavo %{amount} %{currency}",
     "bySpendingUpTo": "Naročilo za dostavo %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Račun  %{address} je bil izbrisan",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Zahtevek za dostavo preostalega stanja %{amount} %{currency} na %{destination}",
     "theTransactionHasASourceTag": "Izvorna oznaka transakcije: %{tag}",

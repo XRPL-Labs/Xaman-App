@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Die betalingsbestemmingsmerker is: %{tag}",
     "itWasInstructedToDeliver": "Daar is opdrag gegee om %{amount} %{currency} af te lewer",
     "bySpendingUpTo": "deur tot %{amount} %{currency} te spandeer",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Dit het rekening %{address} uitgevee",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Daar is opdrag gegee om die oorblywende saldo van %{amount} %{currency} aan %{destination} te lewer",
     "theTransactionHasASourceTag": "Die transaksiebron-merker is: %{tag}",

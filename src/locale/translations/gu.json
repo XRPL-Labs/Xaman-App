@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "ચુકવણી ગંતવ્ય ટેગ ધરાવે છે: %{tag}.\r\n",
     "itWasInstructedToDeliver": "પહોંચાડવા સૂચના આપવામાં આવી હતી %{amount} %{currency}.\r\n",
     "bySpendingUpTo": "સુધી ખર્ચ કરીને %{amount} %{currency}\r\n",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "તેની સાથે એકાઉન્ટ કાઢી %{address}.\r\n",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "નું બાકીનું બેલેન્સ પહોંચાડવા સૂચના આપવામાં આવી હતી %{amount} %{currency} પ્રતિ %{destination}.\r\n",
     "theTransactionHasASourceTag": "વ્યવહાર સ્ત્રોત ટેગ ધરાવે છે: %{tag}.\r\n",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "지불 목적지 태그: %{tag}",
     "itWasInstructedToDeliver": "%{amount} %{currency} 을(를) 전송하도록 지시되었습니다",
     "bySpendingUpTo": "최대 %{amount} %{currency}  까지 지출하는 방법",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "%{address} 은 삭제된 계좌입니다",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "%{destination} 으로 잔액 %{amount} %{currency} 을(를) 전송하도록 지시되었습니다 ",
     "theTransactionHasASourceTag": "트랜잭션 소스 태그: %{tag}",

@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Платеж имеет тег назначения: %{tag}",
     "itWasInstructedToDeliver": "Было поручено доставить %{amount} %{currency}",
     "bySpendingUpTo": "Было поручено доставить %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Это удалило аккаунт %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Было поручено доставить остаток баланса в размере %{amount} %{currency} к %{destination}",
     "theTransactionHasASourceTag": "Транзакция имеет тег источника: %{tag}",

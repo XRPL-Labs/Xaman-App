@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Ödemenin hedef etiketi var: %{tag}",
     "itWasInstructedToDeliver": "%{amount} %{currency} teslim edilmesi talimatı verildi",
     "bySpendingUpTo": "%{amount} %{currency} teslim edilmesi talimatı verildi",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "%{address} hesabı silindi.",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Kalan bakiyenin %{amount} %{currency} - %{destination} adresine teslim edilmesi için talimat verildi.",
     "theTransactionHasASourceTag": "İşlemin bir kaynak etiketi vardır: %{tag}",

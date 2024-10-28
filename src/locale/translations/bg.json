@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Етикет за местоназначение на плащането (Destination Tag): %{tag}",
     "itWasInstructedToDeliver": "Беше инструктирано да достави %{amount} %{currency}",
     "bySpendingUpTo": "Беше инструктирано да достави %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Изтрита сметка  %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Беше инструктирано да достави оставащия баланс от %{amount} %{currency} до %{destination}",
     "theTransactionHasASourceTag": "Транзакцията има етикет на източник (source tag): %{tag}",

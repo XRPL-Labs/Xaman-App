@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Platba má cílovou značku: %{tag}",
     "itWasInstructedToDeliver": "Bylo poukázáno k doručení %{amount} %{currency}",
     "bySpendingUpTo": "útratou až %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Odstranilo to účet s adresou %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "Byl zadán příkaz na doručení zbývajícího zůstatku %{amount} %{currency} na %{destination}",
     "theTransactionHasASourceTag": "Transakce má zdrojovou značku: %{tag}",

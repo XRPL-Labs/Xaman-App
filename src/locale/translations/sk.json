@@ -587,6 +587,7 @@
     "thePaymentHasADestinationTag": "Platba destinácia značka je: %{tag}",
     "itWasInstructedToDeliver": "Bolo nariadené doručiť %{amount} %{currency}\r\n",
     "bySpendingUpTo": "utratením až %{amount} %{currency}",
+    "transferRateMayApplied": "This transaction may be subject to a %{transferRatePercentage} transfer rate applied by the issuer. Please refer to the issuer account for additional information.",
     "itDeletedAccount": "Vymazalo konto %{address}",
     "itWasInstructedToDeliverTheRemainingBalanceOf": "To bol inštruovaný dodať zostávajúce zostatok %{amount} %{currency} do %{destination}",
     "theTransactionHasASourceTag": "Transakcia zdrojová značka je: %{tag}",
