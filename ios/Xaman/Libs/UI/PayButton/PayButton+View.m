@@ -35,7 +35,7 @@ NSString * const DEFAULT_BUTTON_STYLE = @"dark";
     }
     
     
-    _button = [[PKPaymentButton alloc] initWithPaymentButtonType:PKPaymentButtonTypeInStore paymentButtonStyle:style];
+    _button = [[PKPaymentButton alloc] initWithPaymentButtonType:PKPaymentButtonTypePlain paymentButtonStyle:style];
     [_button addTarget:self action:@selector(touchUpInside:)forControlEvents:UIControlEventTouchUpInside];
 
     [super setFrame:_button.frame];
