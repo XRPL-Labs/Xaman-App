@@ -10,7 +10,7 @@ import styles from './styles';
 
 /* Constants ==================================================================== */
 const FLOAT_EPSILON = 2 ** -23;
-const AUTO_SCROLL_INTERVAL = 3000; // 3s
+const AUTO_SCROLL_INTERVAL = 5000; // 5s
 
 function equal(a: number, b: number) {
     return Math.abs(a - b) <= FLOAT_EPSILON * Math.max(Math.abs(a), Math.abs(b));
