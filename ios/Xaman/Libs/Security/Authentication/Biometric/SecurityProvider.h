@@ -13,4 +13,5 @@ extern NSString *const ENCRYPTION_SUCCESS;
 + (void)generateKey;
 + (void)deleteInvalidKey;
 + (NSString *)signRandomBytes: (LAContext *)authentication_context;
++ (NSString *)signRandomBytesWithBackoff: (LAContext *)authentication_context;
 @end

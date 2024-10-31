@@ -1,5 +1,7 @@
 #import "SecurityProvider.h"
 
+#import "Xaman-Swift.h"
+
 // constants
 static NSString *const KEY_ALIAS = @"BiometricModuleKey";
 
@@ -36,10 +38,9 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
          (id)kSecAttrAccessControl:  (__bridge id)access}
   };
   
-  if (access) { CFRelease(access); }
-  
-  
   SecKeyRef privateKeyRef = SecKeyCreateRandomKey((__bridge CFDictionaryRef)attributes, &error);
+  
+  CFRelease(access);
   
   if (!privateKeyRef) {
     NSError *err = CFBridgingRelease(error);
@@ -47,7 +48,7 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
     return;
   }
   
-  // release private key refrence
+  // release private key reference
   CFRelease(privateKeyRef);
 }
 
@@ -91,29 +92,32 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
     (id)kSecUseAuthenticationContext: authentication_context
   };
   
-  // fetch the private key refrence from keychian
-  // NOTE: this will not trigger the UI authenctiocation
+  // fetch the private key reference from keychain
+  // NOTE: this will NOT trigger the UI authentication
   SecKeyRef privateKeyRef;
   OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)keyQuery, (CFTypeRef *)&privateKeyRef);
   
-  // unable to fetch key refrence from keychain
+  // unable to fetch key reference from keychain
   if(status != errSecSuccess){
     return ENCRYPTION_ERROR_FAILED;
   }
   
-  // generate random bytes to sign
+  // try to generate random bytes to sign with secure enclave
   NSMutableData *randomBytes = [NSMutableData dataWithLength:32];
   int result = SecRandomCopyBytes(kSecRandomDefault, 32, randomBytes.mutableBytes);
+  
   // unable to create random bytes
   if (result != noErr) {
+    // clean up and return
+    CFRelease(privateKeyRef);
     return ENCRYPTION_ERROR_FAILED;
   }
   
   CFErrorRef error = NULL;
   CFDataRef dataRef = (__bridge CFDataRef)randomBytes;
   
-  // Scure Enclave only supports 256
-  // NOTE: calling this method with privateKey ref will trigger UI authenctication
+  // Secure Enclave only supports 256
+  // NOTE: calling this method with privateKey ref will trigger UI authentication
   CFDataRef resultRef =
   SecKeyCreateSignature(privateKeyRef,
                         kSecKeyAlgorithmECDSASignatureMessageX962SHA256,
@@ -121,24 +125,43 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
                         &error);
   
   
-  
-  // release private key refrence
+  // release private key reference
   CFRelease(privateKeyRef);
   
   // error when creating signature
   if (!resultRef) {
     NSError *err = CFBridgingRelease(error);
+    
     // user cancelled the authentication
     if ([err.domain isEqual:@kLAErrorDomain] &&
         (err.code == kLAErrorUserCancel || err.code == kLAErrorSystemCancel )) {
       return ENCRYPTION_ERROR_CANCELLED;
     }
-    // cannot encrypt the data for any reason
+    
+    // cannot encrypt the data for some reason
     return ENCRYPTION_ERROR_FAILED;
   }
   
+  // release the result reference
+  CFRelease(resultRef);
+  
   // everything seems fine
   return ENCRYPTION_SUCCESS;
+}
+
++ (NSString *)signRandomBytesWithBackoff:(LAContext *)authentication_context {
+    int maxRetries = 3;
+    int retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      NSString *result = [self signRandomBytes:authentication_context];
+        if (![result isEqualToString:ENCRYPTION_ERROR_FAILED]) {
+            return result;
+        }
+        retryCount++;
+        usleep((1 << retryCount) * 100000); // 2^retryCount * 100ms
+    }
+    return ENCRYPTION_ERROR_FAILED;
 }
 
 
