@@ -268,7 +268,7 @@ class SecuritySettingsView extends Component<Props, State> {
                         </View>
                         <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                             <Switch
-                                isDisabled={!biometricAvailable && !biometricEnabled}
+                                isDisabled={!biometricAvailable}
                                 checked={biometricEnabled}
                                 onChange={this.onBiometricEnableChange}
                             />

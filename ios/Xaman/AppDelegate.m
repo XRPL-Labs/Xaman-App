@@ -42,7 +42,6 @@
   [LocalNotificationModule initialise];
   [BiometricModule initialise];
 
-
   return YES;
 }
 

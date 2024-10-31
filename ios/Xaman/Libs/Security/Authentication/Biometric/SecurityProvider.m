@@ -76,7 +76,6 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
     (id)kSecAttrApplicationTag: KEY_ALIAS,
   };
 
-
   OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)keyQuery, nil);
   return status == errSecSuccess;
 }
@@ -150,18 +149,19 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
 }
 
 + (NSString *)signRandomBytesWithBackoff:(LAContext *)authentication_context {
-    int maxRetries = 3;
-    int retryCount = 0;
-
-    while (retryCount < maxRetries) {
-      NSString *result = [self signRandomBytes:authentication_context];
-        if (![result isEqualToString:ENCRYPTION_ERROR_FAILED]) {
-            return result;
-        }
-        retryCount++;
-        usleep((1 << retryCount) * 100000); // 2^retryCount * 100ms
+  int maxRetries = 3;
+  int retryCount = 0;
+  
+  while (retryCount < maxRetries) {
+    NSString *result = [self signRandomBytes:authentication_context];
+    if (![result isEqualToString:ENCRYPTION_ERROR_FAILED]) {
+      return result;
     }
-    return ENCRYPTION_ERROR_FAILED;
+    
+    retryCount++;
+    usleep((1 << retryCount) * 100000); // 2^retryCount * 100ms
+  }
+  return ENCRYPTION_ERROR_FAILED;
 }
 
 

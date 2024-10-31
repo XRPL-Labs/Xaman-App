@@ -384,16 +384,19 @@ class AuthenticationService extends EventEmitter {
             // check if biometry is active
             const coreSettings = CoreRepository.getSettings();
             if (coreSettings.biometricMethod === BiometryType.None) {
+                this.logger.debug('Biometric is disabled from settings');
                 resolve(false);
                 return;
             }
 
             // check if we can authenticate with biometrics in the device level
             Biometric.isSensorAvailable()
-                .then(() => {
+                .then((biometryType) => {
+                    this.logger.debug('Biometric is available', biometryType);
                     resolve(true);
                 })
-                .catch(() => {
+                .catch((reason) => {
+                    this.logger.debug('Biometric is not available, reason', reason);
                     resolve(false);
                 });
         });
@@ -415,7 +418,9 @@ class AuthenticationService extends EventEmitter {
                 })
                 .catch((error) => {
                     this.logger.warn('authenticateBiometrics', error);
+
                     // biometric's has been changed, we need to disable the biometric authentication
+                    // NOTE: this is where we delete the biometrics key when biometrics changes on device
                     if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
                         this.onBiometricInvalidated();
                     }
