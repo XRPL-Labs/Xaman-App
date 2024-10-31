@@ -10,8 +10,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		4E76AF7D78F0343A996A8CCE /* Pods_Xaman_XamanTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD60F0C13BA576045833BA5 /* Pods_Xaman_XamanTests.framework */; };
-		9F2B8C19DDAA855ECD2EF1A2 /* Pods_Xaman.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C137C8E9CDF0648A92B4C5D /* Pods_Xaman.framework */; };
+		559A5D08536F62959115419B /* libPods-Xaman.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E970B0A9270522FB0AF008B0 /* libPods-Xaman.a */; };
 		A2021F6A28E591F300506772 /* CryptoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2021F6928E591F300506772 /* CryptoTest.swift */; };
 		A2021F7528E5C53000506772 /* CipherTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A2021F7428E5C53000506772 /* CipherTest.m */; };
 		A2021F7728E6DF9700506772 /* VaultMangerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A2021F7628E6DF9700506772 /* VaultMangerTest.m */; };
@@ -69,6 +68,7 @@
 		A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2ED131B252F113A002AFC09 /* StoreKit.framework */; };
 		A2F4F39528802A4600444302 /* UniqueIdProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4F39428802A4600444302 /* UniqueIdProvider.m */; };
 		A2F4F398288168CB00444302 /* Clipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = A2F4F397288168CB00444302 /* Clipboard.m */; };
+		CE2349EA1CF53D755A66BD4C /* libPods-Xaman-XamanTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AB54F464B5BCA7B88FD9167 /* libPods-Xaman-XamanTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,13 +86,13 @@
 		00E356EE1AD99517003FC87E /* XamanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XamanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04A66EC2DDF90CD814AAB046 /* Pods-Xaman-XamanTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Xaman-XamanTests.release.xcconfig"; path = "Target Support Files/Pods-Xaman-XamanTests/Pods-Xaman-XamanTests.release.xcconfig"; sourceTree = "<group>"; };
-		0C137C8E9CDF0648A92B4C5D /* Pods_Xaman.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Xaman.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Xaman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xaman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Xaman/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Xaman/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Xaman/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Xaman/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Xaman/main.m; sourceTree = "<group>"; };
+		7AB54F464B5BCA7B88FD9167 /* libPods-Xaman-XamanTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Xaman-XamanTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2021F6828E591F300506772 /* XamanTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XamanTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		A2021F6928E591F300506772 /* CryptoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoTest.swift; sourceTree = "<group>"; };
 		A2021F7428E5C53000506772 /* CipherTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CipherTest.m; sourceTree = "<group>"; };
@@ -189,8 +189,8 @@
 		A2F4F396288168BC00444302 /* Clipboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clipboard.h; sourceTree = "<group>"; };
 		A2F4F397288168CB00444302 /* Clipboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clipboard.m; sourceTree = "<group>"; };
 		B712F110E060129D749043CD /* Pods-Xaman.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Xaman.debug.xcconfig"; path = "Target Support Files/Pods-Xaman/Pods-Xaman.debug.xcconfig"; sourceTree = "<group>"; };
-		BFD60F0C13BA576045833BA5 /* Pods_Xaman_XamanTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Xaman_XamanTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA7812F0C935F7652256C087 /* Pods-Xaman-XamanTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Xaman-XamanTests.debug.xcconfig"; path = "Target Support Files/Pods-Xaman-XamanTests/Pods-Xaman-XamanTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E970B0A9270522FB0AF008B0 /* libPods-Xaman.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Xaman.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F35B10B5380FF4BC3DA7B7F5 /* Pods-Xaman.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Xaman.release.xcconfig"; path = "Target Support Files/Pods-Xaman/Pods-Xaman.release.xcconfig"; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4E76AF7D78F0343A996A8CCE /* Pods_Xaman_XamanTests.framework in Frameworks */,
+				CE2349EA1CF53D755A66BD4C /* libPods-Xaman-XamanTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,7 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2ED131C252F113A002AFC09 /* StoreKit.framework in Frameworks */,
-				9F2B8C19DDAA855ECD2EF1A2 /* Pods_Xaman.framework in Frameworks */,
+				559A5D08536F62959115419B /* libPods-Xaman.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,8 +266,8 @@
 				A2ED131B252F113A002AFC09 /* StoreKit.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
-				0C137C8E9CDF0648A92B4C5D /* Pods_Xaman.framework */,
-				BFD60F0C13BA576045833BA5 /* Pods_Xaman_XamanTests.framework */,
+				E970B0A9270522FB0AF008B0 /* libPods-Xaman.a */,
+				7AB54F464B5BCA7B88FD9167 /* libPods-Xaman-XamanTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -762,11 +762,9 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesSwift/Promises_Privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/RCTI18nStrings.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RealmJS/RealmJS.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/glog/glog_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb_Privacy.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -781,11 +779,9 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleUtilities_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FBLPromises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Promises_Privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCT-Folly_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCTI18nStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RealmJS.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/glog_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/nanopb_Privacy.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -869,11 +865,9 @@
 				"${PODS_CONFIGURATION_BUILD_DIR}/GoogleUtilities/GoogleUtilities_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesObjC/FBLPromises_Privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/PromisesSwift/Promises_Privacy.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/RCTI18nStrings.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RealmJS/RealmJS.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/TangemSdk/TangemSdk.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/glog/glog_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/nanopb/nanopb_Privacy.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -888,11 +882,9 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleUtilities_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FBLPromises_Privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Promises_Privacy.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCT-Folly_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCTI18nStrings.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RealmJS.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TangemSdk.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/glog_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/nanopb_Privacy.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
