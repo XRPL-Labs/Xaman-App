@@ -34,9 +34,8 @@
   [ReactNativeNavigation bootstrapWithBridge:bridge];
 
   // init firebase app
-  if ([FIRApp defaultApp] == nil) {
-    [FIRApp configure];
-  }
+  [FIRApp configure];
+  
 
   // bootstrap local notification and Biometric module
   [LocalNotificationModule initialise];
