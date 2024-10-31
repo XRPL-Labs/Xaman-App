@@ -31,6 +31,18 @@ export default StyleService.create({
         color: StyleService.select({ dark: '$darkGrey', light: '$orange' }),
         marginTop: AppSizes.paddingSml,
     },
+    errorContainer: {
+        backgroundColor: StyleService.select({ dark: '$lightRed', light: '$red' }),
+    },
+    errorText: {
+        paddingBottom: AppSizes.paddingSml,
+        flexWrap: 'wrap',
+        flexShrink: 1,
+        textAlign: 'center',
+        fontSize: AppFonts.subtext.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: StyleService.select({ dark: '$darkGrey', light: '$light' }),
+    },
     textPlaceholder: {
         color: StyleService.select({ dark: '$grey', light: '$silver' }),
         backgroundColor: StyleService.select({ dark: '$grey', light: '$silver' }),

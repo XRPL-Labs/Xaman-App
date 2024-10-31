@@ -1191,7 +1191,8 @@
     "thankYouForPurchase": "Bedankt voor uw aankoop.",
     "noPurchaseFound": "Geen Aankopen Gevonden",
     "noPreviousPurchases": "We konden geen eerdere aankopen vinden om te herstellen. Als u denkt dat dit een fout is, neem dan contact op met ons support team.",
-    "errorRestorePurchase": "Er is een onverwachte fout opgetreden bij het controleren van uw aankoopgeschiedenis.\n\nProbeer het later opnieuw of neem contact op met ons support team als het probleem aanhoudt."
+    "errorRestorePurchase": "Er is een onverwachte fout opgetreden bij het controleren van uw aankoopgeschiedenis.\n\nProbeer het later opnieuw of neem contact op met ons support team als het probleem aanhoudt.",
+    "couldNotFetchProductDetails": "Error fetching product details. Please try again later or contact support if the issue persists."
   },
   "errors": {
     "unableToLoadTermOfService": "Oeps! Kan de Algemene Voorwaarden niet ophalen",

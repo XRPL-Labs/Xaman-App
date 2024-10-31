@@ -3,11 +3,12 @@ import { View, Text, Animated, InteractionManager } from 'react-native';
 
 import { InAppPurchase, ProductDetails } from '@common/libs/iap';
 
+import { Button } from '@components/General';
+
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
-
 /* Types ==================================================================== */
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 
 interface State {
     productDetails?: ProductDetails;
+    hasError: boolean;
 }
 
 /* Component ==================================================================== */
@@ -28,6 +30,7 @@ class ProductDetailsElement extends PureComponent<Props, State> {
 
         this.state = {
             productDetails: undefined,
+            hasError: false,
         };
 
         this.animatedPlaceholder = new Animated.Value(1);
@@ -58,7 +61,9 @@ class ProductDetailsElement extends PureComponent<Props, State> {
                 );
             })
             .catch(() => {
-                // ignore
+                this.setState({
+                    hasError: true,
+                });
             });
     };
 
@@ -81,6 +86,16 @@ class ProductDetailsElement extends PureComponent<Props, State> {
                 useNativeDriver: true,
             }),
         ]).start(this.startPlaceholderAnimation);
+    };
+
+    retryFetchDetails = () => {
+        // set the error flag to false and try again
+        this.setState(
+            {
+                hasError: false,
+            },
+            this.fetchDetails,
+        );
     };
 
     renderPlaceHolder = () => {
@@ -111,10 +126,31 @@ class ProductDetailsElement extends PureComponent<Props, State> {
         );
     };
 
+    renderError = () => {
+        return (
+            <View style={styles.container}>
+                <View style={AppStyles.flex1}>
+                    <Text style={styles.errorText}>{Localize.t('monetization.couldNotFetchProductDetails')}</Text>
+                    <Button
+                        light
+                        roundedMini
+                        icon="IconRefresh"
+                        iconSize={14}
+                        onPress={this.retryFetchDetails}
+                        label={Localize.t('global.tryAgain')}
+                    />
+                </View>
+            </View>
+        );
+    };
+
     render() {
-        const { productDetails } = this.state;
+        const { productDetails, hasError } = this.state;
 
         if (!productDetails) {
+            if (hasError) {
+                return this.renderError();
+            }
             return this.renderPlaceHolder();
         }
 
@@ -122,7 +158,7 @@ class ProductDetailsElement extends PureComponent<Props, State> {
             <View style={styles.container}>
                 <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
                     <Text style={styles.description} numberOfLines={2}>
-                        {productDetails?.description || '30 days of unlimited Xaman use'}
+                        {productDetails?.description || 'Unlock a full month of unlimited app use'}
                     </Text>
                     <Text style={styles.price}>
                         {productDetails?.price}{' '}
