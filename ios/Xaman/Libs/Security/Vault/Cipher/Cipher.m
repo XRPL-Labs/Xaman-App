@@ -1,5 +1,6 @@
 //
 //  Cipher.m
+//
 //  Created by XRPL-Labs on 01/09/2022.
 //
 
@@ -9,7 +10,6 @@
 #import "V2+AesGcm.h"
 
 @implementation Cipher
-
 
 + (NSNumber *) getLatestCipherVersion {
   return [ CipherV2AesGcm getCipherVersion];
