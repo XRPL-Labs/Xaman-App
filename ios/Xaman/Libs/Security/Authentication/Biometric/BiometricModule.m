@@ -21,10 +21,12 @@ static bool _isUserAuthenticating = FALSE;
 RCT_EXPORT_MODULE();
 
 +(void)initialise {
-  // generate key if not exist
-  if(![SecurityProvider isKeyReady]){
-    [SecurityProvider generateKey];
-  }
+  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // generate key if not exist
+    if(![SecurityProvider isKeyReady]){
+      [SecurityProvider generateKey];
+    }
+  });
 }
 
 // get normalised biometry type
