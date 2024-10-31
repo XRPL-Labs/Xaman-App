@@ -15,7 +15,7 @@ import DataStorage from '@store/storage';
 import { BiometryType } from '@store/types';
 import CoreRepository from '@store/repositories/core';
 
-import AppService from '@services/AppService';
+import AppService, { AppStateStatus } from '@services/AppService';
 import NavigationService, { RootType } from '@services/NavigationService';
 import BackendService from '@services/BackendService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
@@ -406,7 +406,15 @@ class AuthenticationService extends EventEmitter {
      * start biometric authentication
      */
     authenticateBiometrics = (reason: string): Promise<Boolean> => {
-        return new Promise((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            // we do not want to trigger Biometric UI when app is NOT active
+            if (AppService.currentAppState !== AppStateStatus.Active) {
+                this.logger.warn('ignore requested biometric authentication while app is not active');
+                reject(new Error(BiometricErrors.APP_NOT_ACTIVE));
+                return;
+            }
+
             // check if we can authenticate with biometrics in the device level
             Biometric.authenticate(reason)
                 .then(async () => {
