@@ -2,23 +2,28 @@
 /* eslint-disable react/jsx-props-no-spreading */
 
 import React, { Component, Children } from 'react';
-import { View, ScrollView, Animated, ViewStyle } from 'react-native';
+import { View, ScrollView, Animated, ViewStyle, InteractionManager } from 'react-native';
 
 import Indicator from './PageIndicator';
 
 import styles from './styles';
 
 /* Constants ==================================================================== */
-const floatEpsilon = 2 ** -23;
+const FLOAT_EPSILON = 2 ** -23;
+const AUTO_SCROLL_INTERVAL = 3000; // 3s
 
 function equal(a: number, b: number) {
-    return Math.abs(a - b) <= floatEpsilon * Math.max(Math.abs(a), Math.abs(b));
+    return Math.abs(a - b) <= FLOAT_EPSILON * Math.max(Math.abs(a), Math.abs(b));
 }
 
 /* Types ==================================================================== */
 interface Props {
     children: React.ReactNode;
     style?: ViewStyle;
+    scrollAutomatically?: boolean;
+    scrollEnabled?: boolean;
+    horizontal?: boolean;
+    showsVerticalScrollIndicator?: boolean;
     pagingEnabled?: boolean;
     showsHorizontalScrollIndicator?: boolean;
     scrollEventThrottle?: number;
@@ -45,6 +50,7 @@ export default class Slider extends Component<Props, State> {
     private progress: number;
     private mounted: boolean;
     private scrollState: number;
+    private autoScrollInterval: NodeJS.Timeout | null;
 
     private scrollRef: React.RefObject<ScrollView>;
 
@@ -57,6 +63,7 @@ export default class Slider extends Component<Props, State> {
         scrollsToTop: false,
         indicatorOpacity: 0.3,
         startPage: 0,
+        scrollAutomatically: false,
     };
 
     constructor(props: Props) {
@@ -71,17 +78,47 @@ export default class Slider extends Component<Props, State> {
         this.progress = props.startPage;
         this.mounted = false;
         this.scrollState = -1;
+        this.autoScrollInterval = null;
 
         this.scrollRef = React.createRef();
     }
 
     componentDidMount() {
         this.mounted = true;
+
+        InteractionManager.runAfterInteractions(this.startAutoScroll);
     }
 
     componentWillUnmount() {
         this.mounted = false;
+
+        this.stopAutoScroll();
     }
+
+    startAutoScroll = () => {
+        const { scrollAutomatically } = this.props;
+
+        if (scrollAutomatically) {
+            this.autoScrollInterval = setInterval(this.autoScroll, AUTO_SCROLL_INTERVAL);
+        }
+    };
+
+    stopAutoScroll = () => {
+        if (this.autoScrollInterval) {
+            clearInterval(this.autoScrollInterval);
+        }
+    };
+
+    autoScroll = () => {
+        const { children } = this.props;
+        const { progress } = this.state;
+
+        const pages = Children.count(children);
+        // @ts-ignore __getValue
+        const nextPage = (Math.round(progress.__getValue()) + 1) % pages;
+
+        this.scrollToPage(nextPage);
+    };
 
     onLayout = (event: any) => {
         const { width, height } = event.nativeEvent.layout;
@@ -109,6 +146,7 @@ export default class Slider extends Component<Props, State> {
 
     onScrollBeginDrag = () => {
         this.scrollState = 0;
+        this.stopAutoScroll(); // stop auto scroll when user begins to drag
     };
 
     onScrollEndDrag = () => {
@@ -207,6 +245,7 @@ export default class Slider extends Component<Props, State> {
                     onScrollBeginDrag={this.onScrollBeginDrag}
                     onScrollEndDrag={this.onScrollEndDrag}
                     ref={this.scrollRef}
+                    horizontal
                 >
                     {Children.map(children, this.renderPage)}
                 </ScrollView>
