@@ -1,3 +1,10 @@
+//
+//  InAppPurchase.m
+//  Xaman
+//
+//  Created by XRPL Labs on 02/06/2024.
+//
+
 #import "InAppPurchase.h"
 
 #import <React/RCTConvert.h>
@@ -82,7 +89,7 @@ RCT_EXPORT_METHOD(getProductDetails:(NSString *)productID resolver:(RCTPromiseRe
         
         // we go the product details
         if (didSucceed) {
-          SKProduct *product;
+          SKProduct *product = nil;
           for(SKProduct *p in products) {
             // cache the product details
             [strongSelf->productDetailsMutableSet addObject:p];
@@ -129,7 +136,7 @@ RCT_EXPORT_METHOD(purchase:(NSString *)productID resolver:(RCTPromiseResolveBloc
     
     if(productForPurchase){
       // found the product details lets start the payment
-      [self lunchBillingFlow:productForPurchase resolver:resolve rejecter:reject];
+      [self launchBillingFlow:productForPurchase resolver:resolve rejecter:reject];
     }else{
       reject(E_PRODUCT_DETAILS_NOT_FOUND, [NSString stringWithFormat:@"product details with id %@ not found, make sure to run the getProductDetails method before purchase!", productID], nil);
     }
@@ -141,7 +148,7 @@ RCT_EXPORT_METHOD(finalizePurchase:(NSString *)transactionIdentifier resolver:(R
   dispatch_async(dispatch_get_main_queue(), ^{
     if ([[SKPaymentQueue defaultQueue].transactions count] == 0) {
       reject(E_FINISH_TRANSACTION_FAILED, @"transactions queue is empty.", nil);
-      return;;
+      return;
     }
     
     BOOL isTransactionFinished = NO;
@@ -177,7 +184,7 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
 
 #pragma mark Private
 
--(void)lunchBillingFlow:(SKProduct *) product
+-(void)launchBillingFlow:(SKProduct *) product
                resolver:(RCTPromiseResolveBlock)resolve
                rejecter:(RCTPromiseRejectBlock)reject {
   // set the completion handler for transaction updates
