@@ -47,8 +47,9 @@ RCT_EXPORT_MODULE();
 #pragma mark JS methods
 
 /*
- restorePurchases
+ getProductDetails
  purchase
+ restorePurchases
  finalizePurchase
  isUserPurchasing
  */
@@ -59,108 +60,118 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(isUserPurchasing) {
 
 RCT_EXPORT_METHOD(getProductDetails:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-  
-  
-  // try to find the product details in our cached details
-  [productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
-    if ([product.productIdentifier isEqualToString:productID]) {
-      // already have cached version of product details
-      resolve([self productToJson:product]);
-      *stop = YES;
-    }
-  }];
-  
-  // we couldn't find product details, lets try to fetch it
   __weak typeof(self) weakSelf = self;
-  // set the completion handler for product request
-  self->productRequestHandler.completionHandler = ^(BOOL didSucceed, NSArray<SKProduct *> *products, NSError *error) {
-    // we go the product details
-    if (didSucceed) {
-      __strong typeof(self) strongSelf = weakSelf;
-      SKProduct *product;
-      for(SKProduct *p in products) {
-        // cache the product details
-        [strongSelf->productDetailsMutableSet addObject:p];
-        // find the product details we are looking for
-        if([p.productIdentifier isEqualToString:productID]){
-          product = p;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    
+    // try to find the product details in our cached details
+    __block BOOL productFound = NO;
+    [self->productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
+      if ([product.productIdentifier isEqualToString:productID]) {
+        // already have cached version of product details
+        resolve([weakSelf productToJson:product]);
+        productFound = YES;
+        *stop = YES;
+      }
+    }];
+    
+    if (!productFound) {
+      // we couldn't find product details, lets try to fetch it
+      // set the completion handler for product request
+      self->productRequestHandler.completionHandler = ^(BOOL didSucceed, NSArray<SKProduct *> *products, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        
+        // we go the product details
+        if (didSucceed) {
+          SKProduct *product;
+          for(SKProduct *p in products) {
+            // cache the product details
+            [strongSelf->productDetailsMutableSet addObject:p];
+            // find the product details we are looking for
+            if([p.productIdentifier isEqualToString:productID]){
+              product = p;
+            }
+          }
+          if(product){
+            resolve([strongSelf productToJson:product]);
+          }else{
+            reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
+          }
+        }else{
+          reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
         }
-      }
-      if(product){
-        resolve([strongSelf productToJson:product]);
-      }else{
-        reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
-      }
-    }else{
-      reject(E_PRODUCT_IS_NOT_AVAILABLE, [NSString stringWithFormat:@"product with id %@ not found!", productID], nil);
+      };
+      
+      // start the product details request
+      [self->productRequestHandler startProductRequestForIdentifier:productID];
     }
-  };
-  
-  // start the product details request
-  [self->productRequestHandler startProductRequestForIdentifier:productID];
+  });
 }
 
 RCT_EXPORT_METHOD(purchase:(NSString *)productID resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-  
-  // check if user can make the payment
-  if(![SKPaymentQueue canMakePayments]){
-    reject(E_CLIENT_IS_NOT_READY, @"user cannot make payments due to parental controls", nil);
-    return;
-  }
-  
-  
-  __block SKProduct * productForPurchase;
-  
-  // try to find the product details in our cached details
-  [productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
-    if ([product.productIdentifier isEqualToString:productID]) {
-      // already have cached version of product details
-      productForPurchase = product;
-      *stop = YES;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    // check if user can make the payment
+    if(![SKPaymentQueue canMakePayments]){
+      reject(E_CLIENT_IS_NOT_READY, @"user cannot make payments due to parental controls", nil);
+      return;
     }
-  }];
-  
-  if(productForPurchase){
-    // found the product details lets start the payment
-    [self lunchBillingFlow:productForPurchase resolver:resolve rejecter:reject];
-  }else{
-    reject(E_PRODUCT_DETAILS_NOT_FOUND, [NSString stringWithFormat:@"product details with id %@ not found, make sure to run the getProductDetails method before purchase!", productID], nil);
-  }
+    
+    
+    __block SKProduct * productForPurchase;
+    // try to find the product details in our cached details
+    [self->productDetailsMutableSet enumerateObjectsUsingBlock:^(SKProduct *product, BOOL *stop){
+      if ([product.productIdentifier isEqualToString:productID]) {
+        // already have cached version of product details
+        productForPurchase = product;
+        *stop = YES;
+      }
+    }];
+    
+    if(productForPurchase){
+      // found the product details lets start the payment
+      [self lunchBillingFlow:productForPurchase resolver:resolve rejecter:reject];
+    }else{
+      reject(E_PRODUCT_DETAILS_NOT_FOUND, [NSString stringWithFormat:@"product details with id %@ not found, make sure to run the getProductDetails method before purchase!", productID], nil);
+    }
+  });
 }
 
 RCT_EXPORT_METHOD(finalizePurchase:(NSString *)transactionIdentifier resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-  if ([[SKPaymentQueue defaultQueue].transactions count] == 0) {
-    reject(E_FINISH_TRANSACTION_FAILED, @"transactions queue is empty.", nil);
-    return;;
-  }
-  
-  BOOL isTransactionFinished = NO;
-  for (SKPaymentTransaction *transaction in [[SKPaymentQueue defaultQueue] transactions]) {
-    if ([transaction.transactionIdentifier isEqualToString:transactionIdentifier]){
-      [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-      resolve(transactionIdentifier);
-      isTransactionFinished = YES;
-      break;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([[SKPaymentQueue defaultQueue].transactions count] == 0) {
+      reject(E_FINISH_TRANSACTION_FAILED, @"transactions queue is empty.", nil);
+      return;;
     }
-  }
-  
-  if(!isTransactionFinished){
-    reject(E_FINISH_TRANSACTION_FAILED, [NSString stringWithFormat:@"transaction with id %@ not found!", transactionIdentifier], nil);
-  }
+    
+    BOOL isTransactionFinished = NO;
+    for (SKPaymentTransaction *transaction in [[SKPaymentQueue defaultQueue] transactions]) {
+      if ([transaction.transactionIdentifier isEqualToString:transactionIdentifier]){
+        [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+        resolve(transactionIdentifier);
+        isTransactionFinished = YES;
+        break;
+      }
+    }
+    
+    if(!isTransactionFinished){
+      reject(E_FINISH_TRANSACTION_FAILED, [NSString stringWithFormat:@"transaction with id %@ not found!", transactionIdentifier], nil);
+    }
+  });
 }
 
 RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-  // set the completion handler for transaction updates
-  self->transactionObserver.completionHandler = ^(NSArray<NSDictionary *> *result) {
-    resolve(result);
-  };
-  
-  // start the transaction observer and restore completed transactions
-  [[SKPaymentQueue defaultQueue] addTransactionObserver:self->transactionObserver];
-  [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    // set the completion handler for transaction updates
+    self->transactionObserver.completionHandler = ^(NSArray<NSDictionary *> *result) {
+      resolve(result);
+    };
+    
+    // start the transaction observer and restore completed transactions
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self->transactionObserver];
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+  });
 }
 
 
@@ -197,6 +208,7 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
   };
 }
 
+#pragma mark API
 
 +(BOOL)isUserPurchasing {
   for (SKPaymentTransaction* transaction in [[SKPaymentQueue defaultQueue] transactions]) {
@@ -208,10 +220,6 @@ RCT_EXPORT_METHOD(restorePurchases:(RCTPromiseResolveBlock)resolve
 }
 
 @end
-
-
-#pragma mark API
-
 
 
 
