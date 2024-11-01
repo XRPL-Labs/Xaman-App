@@ -133,6 +133,11 @@ const StringTypeCheck = {
     },
 
     isValidDestinationTag: (input: string): boolean => {
+        // not a valid input
+        if (typeof input !== 'string') {
+            return false;
+        }
+
         // not a valid number
         if (!input.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
             return false;
