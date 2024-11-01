@@ -128,7 +128,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
             @Override
             public void onBillingServiceDisconnected() {
-                promise.reject(E_CLIENT_IS_NOT_READY, "billing client service disconnected");
+                promise.reject(E_CLIENT_IS_NOT_READY, "Billing client service disconnected!");
             }
         });
     }
@@ -136,7 +136,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     @ReactMethod
     public void getProductDetails(String productId, Promise promise) {
         if (!isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
             return;
         }
 
@@ -176,7 +176,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     @ReactMethod
     public void restorePurchases(Promise promise) {
         if (!isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
             return;
         }
 
@@ -203,7 +203,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     @ReactMethod
     public void purchase(String productId, Promise promise) {
         if (!isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "billingClient is not ready, forgot to initialize?");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
             return;
         }
 
@@ -213,7 +213,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
-        promise.reject(E_PRODUCT_DETAILS_NOT_FOUND, "product details with id " + productId + " not found, make sure to run the getProductDetails method before purchase!");
+        promise.reject(E_PRODUCT_DETAILS_NOT_FOUND, "Product is unavailable!");
     }
 
 
@@ -230,7 +230,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             if (billing.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                 promise.resolve(purchaseToken);
             } else {
-                promise.reject(E_FINISH_TRANSACTION_FAILED, "billing response code " + billing.getResponseCode());
+                promise.reject(E_FINISH_TRANSACTION_FAILED, "Finalize purchase failed: code " + billing.getResponseCode());
             }
         });
     }
@@ -252,12 +252,13 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         if (billing.getResponseCode() != BillingClient.BillingResponseCode.OK) {
             switch (billing.getResponseCode()) {
                 case BillingClient.BillingResponseCode.USER_CANCELED:
-                    rejectBillingFlowPromise(E_PURCHASE_CANCELED, "purchase canceled by users");
+                    rejectBillingFlowPromise(E_PURCHASE_CANCELED, "The purchase was canceled by the user.");
                     break;
                 case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-                    rejectBillingFlowPromise(E_ALREADY_PURCHASED, "item already owned by users");
+                    rejectBillingFlowPromise(E_ALREADY_PURCHASED, "The item is already owned.");
+                    break;
                 default:
-                    rejectBillingFlowPromise(E_PURCHASE_FAILED, "billing response code " + billing.getResponseCode());
+                    rejectBillingFlowPromise(E_PURCHASE_FAILED, "An unexpected error occurred, code: " + billing.getResponseCode());
                     break;
             }
             return;
@@ -266,7 +267,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
         // something is not right?
         if (list == null || list.isEmpty()) {
-            rejectBillingFlowPromise(E_PURCHASE_FAILED, "the purchase list is empty!");
+            rejectBillingFlowPromise(E_PURCHASE_FAILED, "The purchase list is empty!");
             return;
         }
 
@@ -294,14 +295,14 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     private void launchBillingFlow(ProductDetails productDetails, Promise promise) {
         // set flag
         if (isUserPurchasing.getAndSet(true)) {
-            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start the new one!");
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start a new one!");
             return;
         }
 
         // if we already have an promise going on for billing flow, reject it as we don't want to start
         // the new flow without closing the old one
         if (billingFlowPromise != null) {
-            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start the new one!");
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start a new one!");
             return;
         }
 

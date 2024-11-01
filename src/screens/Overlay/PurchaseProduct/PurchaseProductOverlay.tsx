@@ -171,11 +171,22 @@ class PurchaseProductOverlay extends Component<Props, State> {
             const receipts = await InAppPurchase.purchase(productId);
 
             if (Array.isArray(receipts) && receipts.length > 0) {
-                // start the verifying process
-                await this.verifyPurchase(receipts[0]);
+                const receipt = receipts[0];
+
+                if ('error' in receipt) {
+                    // something happened :\
+                    throw new Error(receipt.error);
+                } else {
+                    // start the verifying process if transaction was successful
+                    await this.verifyPurchase(receipt);
+                }
             }
-        } catch (error) {
+        } catch (error: any) {
             LoggerService.recordError('lunchPurchaseFlow: ', error);
+            Alert.alert(
+                Localize.t('monetization.purchaseFailed'),
+                error.message || Localize.t('global.somethingWentWrong'),
+            );
         } finally {
             this.setState({
                 isPurchasing: false,

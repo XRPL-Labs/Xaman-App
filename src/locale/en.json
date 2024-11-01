@@ -1193,7 +1193,8 @@
     "noPurchaseFound": "No Purchases Found",
     "noPreviousPurchases": "We couldn't find any previous purchases to restore. If you believe this is an error, please contact our support team.",
     "errorRestorePurchase": "An unexpected error occurred while checking your purchase history.\n\nPlease try again later or contact our support team if the issue persists.",
-    "couldNotFetchProductDetails": "Error fetching product details. Please try again later or contact support if the issue persists."
+    "couldNotFetchProductDetails": "Error fetching product details. Please try again later or contact support if the issue persists.",
+    "purchaseFailed": "Purchase failed!"
   },
   "errors": {
     "unableToLoadTermOfService":"Oops! Unable to Retrieve Terms of Service",

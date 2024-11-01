@@ -32,6 +32,7 @@ interface GooglePlayPurchase {
 }
 
 interface AppStorePayment {
+    error?: string;
     transactionIdentifier: string;
     productIdentifier: string;
     quantity: number;
