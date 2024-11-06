@@ -12,7 +12,7 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import { Button, TextInput, InfoMessage, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
 import { Navigator } from '@common/helpers/navigator';
-import { getAccountInfo } from '@common/helpers/resolver';
+import AccountResolver from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
@@ -74,7 +74,7 @@ class EnterAddressStep extends Component<Props, State> {
         }
 
         // check for exchange account
-        const destinationInfo = await getAccountInfo(address);
+        const destinationInfo = await AccountResolver.getAccountInfo(address);
 
         this.setState({
             isLoading: false,

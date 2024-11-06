@@ -14,7 +14,8 @@ import { AccountRepository, ContactRepository } from '@store/repositories';
 import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
-import { getAccountName, getAccountInfo } from '@common/helpers/resolver';
+
+import AccountResolver from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -105,7 +106,7 @@ class RecipientStep extends Component<Props, State> {
         const { to, tag } = NormalizeDestination(result);
 
         if (to) {
-            const accountInfo = await getAccountName(to, tag);
+            const accountInfo = await AccountResolver.getAccountName(to, tag);
 
             this.setState({
                 dataSource: this.getSearchResultSource([
@@ -208,7 +209,11 @@ class RecipientStep extends Component<Props, State> {
                                 res.matches.forEach(async (element: any) => {
                                     // if payid in result, then look for payId in local source as well
                                     if (element.source === 'payid') {
-                                        const internalResult = await getAccountName(element.account, element.tag, true);
+                                        const internalResult = await AccountResolver.getAccountName(
+                                            element.account,
+                                            element.tag,
+                                            true,
+                                        );
 
                                         // found in local source
                                         if (internalResult.name) {
@@ -399,7 +404,7 @@ class RecipientStep extends Component<Props, State> {
 
             if (!destinationInfo) {
                 // check for account exist and potential destination tag required
-                destinationInfo = await getAccountInfo(destination.address);
+                destinationInfo = await AccountResolver.getAccountInfo(destination.address);
                 // set destination account info
                 setDestinationInfo(destinationInfo);
             }

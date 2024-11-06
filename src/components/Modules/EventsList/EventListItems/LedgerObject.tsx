@@ -12,7 +12,8 @@ import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AccountNameType, getAccountName } from '@common/helpers/resolver';
+
+import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
 
 import { TouchableDebounce } from '@components/General';
 
@@ -121,7 +122,7 @@ class LedgerObjectItem extends Component<Props, State> {
 
         try {
             // get participant details
-            const resp = await getAccountName(otherParty.address, otherParty.tag);
+            const resp = await AccountResolver.getAccountName(otherParty.address, otherParty.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,

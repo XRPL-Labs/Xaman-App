@@ -11,7 +11,8 @@ import { libraries } from 'xrpl-accountlib';
 import { StyleService } from '@services';
 
 import { NormalizeDestination } from '@common/utils/codec';
-import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
+
+import AccountResolver from '@common/helpers/resolver';
 import { Toast, Prompt, ActionSheet } from '@common/helpers/interface';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -79,12 +80,12 @@ class EditContactView extends Component<Props, State> {
                     isLoading: true,
                 });
 
-                const payIdInfo = await getPayIdInfo(result.payId);
+                const payIdInfo = await AccountResolver.getPayIdInfo(result.payId);
 
                 if (payIdInfo) {
                     this.setState({
                         address: payIdInfo.account,
-                        tag: payIdInfo.tag,
+                        tag: payIdInfo.tag ?? undefined,
                     });
                 }
             } else {
@@ -146,12 +147,7 @@ class EditContactView extends Component<Props, State> {
         });
 
         // update catch for this contact
-        getAccountName.cache.set(
-            `${address}${tag || ''}`,
-            new Promise((resolve) => {
-                resolve({ name, source: 'contacts' });
-            }),
-        );
+        AccountResolver.setCache(`${address}${tag ?? ''}`, { address: address!, name, source: 'contacts' });
 
         Toast(Localize.t('settings.contactSuccessUpdated'));
 

@@ -21,7 +21,7 @@ import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { getAccountInfo } from '@common/helpers/resolver';
+import AccountResolver from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
@@ -415,7 +415,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             if (transaction.Type === TransactionTypes.Payment) {
                 try {
-                    const destinationInfo = await getAccountInfo(transaction.Destination);
+                    const destinationInfo = await AccountResolver.getAccountInfo(transaction.Destination);
 
                     // if sending to a blackHoled account
                     if (destinationInfo.blackHole) {

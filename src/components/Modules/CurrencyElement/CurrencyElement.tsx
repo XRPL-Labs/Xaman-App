@@ -7,7 +7,7 @@ import NetworkService from '@services/NetworkService';
 
 import { WebLinks } from '@common/constants/endpoints';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Images } from '@common/helpers/images';
 
@@ -72,7 +72,7 @@ class CurrencyElement extends Component<Props, State> {
             });
         }
 
-        getAccountName(issuer)
+        AccountResolver.getAccountName(issuer)
             .then((res) => {
                 if (!isEmpty(res)) {
                     this.setState({
