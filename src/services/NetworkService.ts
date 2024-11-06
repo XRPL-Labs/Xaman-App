@@ -546,6 +546,8 @@ class NetworkService extends EventEmitter {
                 TRANSACTION_RESULTS: isPlainObject,
                 TRANSACTION_TYPES: isPlainObject,
                 LEDGER_ENTRY_TYPES: isPlainObject,
+                TRANSACTION_FLAGS: isPlainObject,
+                TRANSACTION_FLAGS_INDICES: isPlainObject,
                 FIELDS: isArray,
                 hash: isString,
             } as { [key: string]: (value?: any) => boolean };
@@ -556,7 +558,9 @@ class NetworkService extends EventEmitter {
                 if (Object.prototype.hasOwnProperty.call(respValidation, key)) {
                     // validate
                     if (respValidation[key](definitionsResp[key]) === false) {
-                        this.logger.warn('server_definitions got invalid format:', definitionsResp);
+                        this.logger.warn(
+                            `server_definitions invalid format for key ${key}, got ${typeof definitionsResp[key]}`,
+                        );
                         return;
                     }
                     // set the key
