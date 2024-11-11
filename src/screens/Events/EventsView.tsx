@@ -770,7 +770,7 @@ class EventsView extends Component<Props, State> {
                 'Amount.currency',
                 'Currency', // TrustSet currency
                 'Issuer', // TrustSet issuer
-                'Hash',
+                'hash',
             ],
             shouldSort: false,
             includeScore: false,
@@ -788,7 +788,7 @@ class EventsView extends Component<Props, State> {
                 'Amount.currency',
                 'Owner',
                 'NFTokenID',
-                'Hash',
+                'hash',
             ],
             shouldSort: false,
             includeScore: false,
