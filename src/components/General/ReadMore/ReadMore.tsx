@@ -96,12 +96,8 @@ class ReadMore extends Component<Props, State> {
 
     renderViewMore = () => {
         return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
-                onPress={this.onPressMore}
-            >
-                <Text style={styles.viewMoreText}>{Localize.t('global.readMore')}</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.actionButton} onPress={this.onPressMore}>
+                <Text style={styles.actionButtonText}>{Localize.t('global.readMore')}</Text>
                 <Icon name="IconChevronDown" style={AppStyles.imgColorGrey} size={21} />
             </TouchableOpacity>
         );
@@ -109,12 +105,8 @@ class ReadMore extends Component<Props, State> {
 
     renderViewLess = () => {
         return (
-            <TouchableOpacity
-                activeOpacity={0.8}
-                style={[AppStyles.row, AppStyles.paddingTopSml, AppStyles.centerSelf]}
-                onPress={this.onPressLess}
-            >
-                <Text style={styles.viewMoreText}>{Localize.t('global.readLess')}</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.actionButton} onPress={this.onPressLess}>
+                <Text style={styles.actionButtonText}>{Localize.t('global.readLess')}</Text>
                 <Icon name="IconChevronUp" style={AppStyles.imgColorGrey} size={21} />
             </TouchableOpacity>
         );

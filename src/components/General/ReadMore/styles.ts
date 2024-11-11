@@ -1,6 +1,6 @@
 import StyleService from '@services/StyleService';
 
-import { AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
@@ -10,9 +10,14 @@ export default StyleService.create({
         left: 0,
         top: 0,
     },
-    viewMoreText: {
+    actionButton: {
+        flexDirection: 'row',
+        paddingTop: AppSizes.paddingExtraSml,
+        alignSelf: 'center',
+    },
+    actionButtonText: {
         fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size,
+        fontSize: AppFonts.small.size,
         marginRight: 5,
         color: '$grey',
     },
