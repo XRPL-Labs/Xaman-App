@@ -6,7 +6,7 @@
  */
 import React, { PureComponent } from 'react';
 
-import { Animated, View, Image, ImageSourcePropType, ViewStyle, InteractionManager } from 'react-native';
+import { Animated, View, Image, ImageStyle, ImageSourcePropType, ViewStyle, InteractionManager } from 'react-native';
 
 import { Images } from '@common/helpers/images';
 
@@ -25,6 +25,7 @@ export interface Props {
     badge?: (() => React.ReactNode) | Extract<keyof typeof Images, string>;
     badgeColor?: string;
     containerStyle?: ViewStyle | ViewStyle[];
+    imageStyle?: ImageStyle | ImageStyle[];
     backgroundColor?: string;
 }
 
@@ -138,7 +139,7 @@ class Avatar extends PureComponent<Props> {
     };
 
     renderAvatar = () => {
-        const { source, size, imageScale, border, containerStyle } = this.props;
+        const { source, size, imageScale, border, imageStyle, containerStyle } = this.props;
 
         return (
             <Animated.View
@@ -160,6 +161,7 @@ class Avatar extends PureComponent<Props> {
                         styles.image,
                         border && styles.border,
                         { height: AppSizes.scale(size) * imageScale, width: AppSizes.scale(size) * imageScale },
+                        imageStyle,
                     ]}
                 />
             </Animated.View>

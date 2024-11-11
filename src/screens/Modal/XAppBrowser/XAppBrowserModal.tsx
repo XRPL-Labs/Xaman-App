@@ -882,7 +882,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // set the app is ready
         this.setState({
-            isLoadingApp: false,
+            isLoadingApp: !shouldSetAppReady,
             isAppReady: shouldSetAppReady,
         });
     };
@@ -962,13 +962,16 @@ class XAppBrowserModal extends Component<Props, State> {
 
         if (app?.icon) {
             LoaderComponent = (
-                <HeartBeatAnimation>
+                <HeartBeatAnimation animated={!isAppReadyTimeout}>
                     <Avatar
                         size={80}
                         source={{ uri: app.icon }}
                         badgeColor={StyleService.value('$orange')}
                         // eslint-disable-next-line react-native/no-color-literals,react-native/no-inline-styles
-                        containerStyle={{ backgroundColor: 'transparent' }}
+                        containerStyle={{
+                            backgroundColor: 'transparent',
+                            opacity: isAppReadyTimeout ? 0.2 : 1,
+                        }}
                     />
                 </HeartBeatAnimation>
             );
