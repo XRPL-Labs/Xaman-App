@@ -71,7 +71,7 @@ describe('API', () => {
 
         it(`call with invalid json response`, async () => {
             await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: 'invalid_json' })).rejects.toMatchObject(
-                new ApiError('Response returned is not valid JSON'),
+                new ApiError('Response returned is not valid JSON Unexpected token i in JSON at position 0'),
             );
         });
 
@@ -86,7 +86,7 @@ describe('API', () => {
         it(`handle with http error code`, async () => {
             // await ApiService['ping'][method]({ action: '400' }).catch((e) => console.warn(e.message));
             await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: '400' })).rejects.toMatchObject(
-                new ApiError('Api error {"foo":"bar"}'),
+                new ApiError('Api error 400 {"foo":"bar"}'),
             );
         });
     });

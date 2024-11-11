@@ -404,26 +404,20 @@ class ApiService {
                     try {
                         const textRes = await rawRes.text();
                         jsonRes = this.safeParse(textRes);
-                    } catch (error) {
-                        throw new ApiError(ErrorMessages.invalidJson);
+                    } catch (error: any) {
+                        throw new ApiError(`${ErrorMessages.invalidJson} ${error.message}`);
                     }
 
-                    // Only continue if the header is successful
-                    if (rawRes && rawRes.status === 200) {
-                        return jsonRes || rawRes;
-                    }
-
-                    // handle error
-                    if (typeof jsonRes === 'object' && Object.prototype.hasOwnProperty.call(jsonRes, 'error')) {
+                    if (rawRes?.status !== 200 || jsonRes?.error) {
                         throw new ApiError(
-                            `Api error ${rawRes.status}`,
+                            `Api error ${rawRes.status} ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`,
                             jsonRes?.error?.code,
                             jsonRes?.error?.reference,
                         );
                     }
 
-                    // anything else just throw
-                    throw new ApiError(`Api error ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`);
+                    // Only continue if the header is successful and no error in the jsonRes
+                    return jsonRes || rawRes;
                 })
                 .then((res) => {
                     resolve(res);
