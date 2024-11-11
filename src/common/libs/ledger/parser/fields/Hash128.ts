@@ -8,7 +8,7 @@ export const Hash128 = {
     setter: (self: any, name: string) => {
         return (value: string): void => {
             if (typeof value !== 'string') {
-                throw new Error(`field ${name} required type number, got ${typeof value}`);
+                throw new Error(`field ${name} required type string, got ${typeof value}`);
             }
 
             // TODO: add value check and validation
