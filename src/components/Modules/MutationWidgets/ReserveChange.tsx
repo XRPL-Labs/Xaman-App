@@ -1,5 +1,7 @@
+import BigNumber from 'bignumber.js';
+
 import React, { PureComponent } from 'react';
-import { Text, View } from 'react-native';
+import { InteractionManager, Text, View } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -21,8 +23,53 @@ import styles from './styles';
 /* Types ==================================================================== */
 import { Props } from './types';
 
+interface State {
+    value?: string;
+    action?: OperationActions;
+}
+
 /* Component ==================================================================== */
-class ReserveChange extends PureComponent<Props> {
+class ReserveChange extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            value: undefined,
+            action: undefined,
+        };
+    }
+
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(this.setOwnerReserveChanges);
+    }
+
+    setOwnerReserveChanges = () => {
+        const { item } = this.props;
+
+        let ownerReserveChanges: OwnerCountChangeType | undefined;
+
+        switch (item.InstanceType) {
+            case InstanceTypes.LedgerObject:
+                ownerReserveChanges = this.getLedgerObjectChanges();
+                break;
+            case InstanceTypes.GenuineTransaction:
+            case InstanceTypes.FallbackTransaction:
+                ownerReserveChanges = this.getTransactionChanges();
+                break;
+            default:
+                break;
+        }
+
+        if (ownerReserveChanges) {
+            this.setState({
+                value: new BigNumber(NetworkService.getNetworkReserve().OwnerReserve)
+                    .multipliedBy(ownerReserveChanges.value)
+                    .toString(),
+                action: ownerReserveChanges.action,
+            });
+        }
+    };
+
     showBalanceExplain = () => {
         const { account } = this.props;
 
@@ -38,8 +85,11 @@ class ReserveChange extends PureComponent<Props> {
     getLedgerObjectChanges = (): OwnerCountChangeType | undefined => {
         const { item, account } = this.props;
 
-        // ignore for incoming NFTokenOffers
-        if (item.Type === LedgerEntryTypes.NFTokenOffer && item.Owner !== account.address) {
+        // ignore for incoming NFTokenOffers and URITokenOffers
+        if (
+            (item.Type === LedgerEntryTypes.NFTokenOffer || item.Type === LedgerEntryTypes.URIToken) &&
+            item.Owner !== account.address
+        ) {
             return undefined;
         }
 
@@ -58,23 +108,9 @@ class ReserveChange extends PureComponent<Props> {
     };
 
     render() {
-        const { item } = this.props;
+        const { value, action } = this.state;
 
-        let changes;
-
-        switch (item.InstanceType) {
-            case InstanceTypes.LedgerObject:
-                changes = this.getLedgerObjectChanges();
-                break;
-            case InstanceTypes.GenuineTransaction:
-            case InstanceTypes.FallbackTransaction:
-                changes = this.getTransactionChanges();
-                break;
-            default:
-                break;
-        }
-
-        if (!changes) {
+        if (!value || !action) {
             return null;
         }
 
@@ -82,7 +118,7 @@ class ReserveChange extends PureComponent<Props> {
             <View style={styles.itemContainer}>
                 <View style={AppStyles.row}>
                     <Icon
-                        name={changes.action === OperationActions.INC ? 'IconLock' : 'IconUnlock'}
+                        name={action === OperationActions.INC ? 'IconLock' : 'IconUnlock'}
                         size={18}
                         style={AppStyles.imgColorPrimary}
                     />
@@ -91,13 +127,13 @@ class ReserveChange extends PureComponent<Props> {
 
                 <View style={AppStyles.paddingBottomSml}>
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
-                        {changes.action === OperationActions.INC
+                        {action === OperationActions.INC
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
-                                  ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: value,
                                   nativeAsset: NetworkService.getNativeAsset(),
                               })
                             : Localize.t('events.thisTransactionDecreaseAccountReserve', {
-                                  ownerReserve: Number(changes.value) * NetworkService.getNetworkReserve().OwnerReserve,
+                                  ownerReserve: value,
                                   nativeAsset: NetworkService.getNativeAsset(),
                               })}
                     </Text>
