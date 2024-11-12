@@ -423,6 +423,9 @@ class ApiService {
                     resolve(res);
                 })
                 .catch(async (error: ApiError) => {
+                    // log the api error
+                    this.logger.error(`fetch ${thisUrl}`, error);
+
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
