@@ -38,6 +38,7 @@ exports[`[Avatar] should apply styles correctly 1`] = `
             "height": 128.57142857142856,
             "width": 128.57142857142856,
           },
+          undefined,
         ]
       }
     />
@@ -78,6 +79,7 @@ exports[`[Avatar] should render correctly 1`] = `
             "height": 85.71428571428571,
             "width": 85.71428571428571,
           },
+          undefined,
         ]
       }
     />
@@ -118,6 +120,7 @@ exports[`[Avatar] should render correctly with a badge 1`] = `
             "height": 85.71428571428571,
             "width": 85.71428571428571,
           },
+          undefined,
         ]
       }
     />

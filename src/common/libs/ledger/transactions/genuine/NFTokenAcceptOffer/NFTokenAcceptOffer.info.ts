@@ -88,7 +88,7 @@ class NFTokenAcceptOfferInfo extends ExplainerAbstract<NFTokenAcceptOffer, Mutat
     }
 
     getAssetDetails(): AssetDetails[] {
-        return [{ type: AssetTypes.NFToken, nfTokenId: this.item.Offer.NFTokenID }];
+        return [{ type: AssetTypes.NFToken, nfTokenId: this.item.Offer.NFTokenID! }];
     }
 }
 
