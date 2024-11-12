@@ -139,6 +139,14 @@ const styles = StyleService.create({
         paddingHorizontal: 10,
         borderRadius: 50,
     },
+    uriTokenContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '$tint',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 50,
+    },
 });
 
 export default styles;

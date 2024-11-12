@@ -304,11 +304,22 @@ declare namespace XamanBackend {
         };
     }
 
-    interface NFTOfferedResponse extends Array<NFTOffered> {}
+    interface NFTOfferedResponse extends Array<NFTOffered & URITokenOffered> {}
 
     interface NFTOffered {
         _type: string;
         OfferID: string;
+        ledger_close_time: number;
+    }
+
+    interface URITokenOffered {
+        _type: string;
+        Amount: string;
+        Flags: number;
+        URITokenID: string;
+        OfferID: string;
+        OfferCreator: string;
+        CurrentNftOwner: string;
         ledger_close_time: number;
     }
 

@@ -6,6 +6,7 @@ import { MutationsMixin } from '@common/libs/ledger/mixin';
 
 import { URITokenBurn, URITokenBurnInfo } from '../URITokenBurn';
 import uriTokenBurnTemplate from './fixtures/URITokenBurnTx.json';
+import { AssetTypes } from '../../../factory/types';
 
 jest.mock('@services/NetworkService');
 
@@ -55,6 +56,18 @@ describe('URITokenBurn tx', () => {
                     },
                     factor: undefined,
                 });
+            });
+        });
+
+        describe('getAssetDetails()', () => {
+            it('should return the expected asset details', () => {
+                expect(info.getAssetDetails()).toStrictEqual([
+                    {
+                        owner: 'rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn',
+                        type: AssetTypes.URIToken,
+                        uriTokenId: 'C84F707D006E99BEA1BC0A05C9123C8FFE3B40C45625C20DA24059DE09C09C9F',
+                    },
+                ]);
             });
         });
     });

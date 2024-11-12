@@ -4,6 +4,7 @@ import { View, Text } from 'react-native';
 import { URITokenBuy } from '@common/libs/ledger/transactions';
 
 import { AmountText } from '@components/General';
+import { URITokenElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -31,9 +32,14 @@ class URITokenBuyTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.uriTokeId')}</Text>
+                <Text style={styles.label}>{Localize.t('global.uritoken')}</Text>
                 <View style={styles.contentBox}>
-                    <Text style={styles.value}>{transaction.URITokenID}</Text>
+                    <URITokenElement
+                        uriTokenId={transaction!.URITokenID}
+                        showBurnableStatus
+                        truncate={false}
+                        containerStyle={styles.uriTokenContainer}
+                    />
                 </View>
 
                 <Text style={styles.label}>{Localize.t('global.amount')}</Text>

@@ -14,6 +14,11 @@ const styles = StyleService.create({
         backgroundColor: '$tint',
         marginBottom: AppSizes.paddingSml,
     },
+    uriTokenContainer: {
+        paddingHorizontal: 5,
+        paddingVertical: AppSizes.paddingExtraSml,
+        backgroundColor: '$light',
+    },
     nfTokenContainer: {
         paddingHorizontal: 0,
     },

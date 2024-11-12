@@ -6,7 +6,8 @@ import URITokenCreateSellOffer from './URITokenCreateSellOffer.class';
 
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { AssetDetails, AssetTypes, ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Descriptor ==================================================================== */
 class URITokenCreateSellOfferInfo extends ExplainerAbstract<URITokenCreateSellOffer, MutationsMixinType> {
@@ -46,6 +47,7 @@ class URITokenCreateSellOfferInfo extends ExplainerAbstract<URITokenCreateSellOf
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
+            end: { address: this.item.Destination, tag: undefined },
         };
     }
 
@@ -54,12 +56,16 @@ class URITokenCreateSellOfferInfo extends ExplainerAbstract<URITokenCreateSellOf
             mutate: this.item.BalanceChange(this.account.address),
             factor: [
                 {
-                    currency: this.item.Amount!.currency,
-                    value: this.item.Amount!.value,
+                    ...this.item.Amount!,
                     effect: MonetaryStatus.POTENTIAL_EFFECT,
+                    action: this.item.Account === this.account.address ? OperationActions.INC : OperationActions.DEC,
                 },
             ],
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.URIToken, owner: this.item.Account, uriTokenId: this.item.URITokenID! }];
     }
 }
 

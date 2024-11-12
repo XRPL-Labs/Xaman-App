@@ -33,6 +33,9 @@ const styles = StyleService.create({
     nfTokenContainer: {
         paddingHorizontal: 0,
     },
+    uriTokenContainer: {
+        paddingHorizontal: 0,
+    },
 });
 
 export default styles;

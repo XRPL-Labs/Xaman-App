@@ -3,6 +3,7 @@
 import Localize from '@locale';
 
 import { MutationsMixin } from '@common/libs/ledger/mixin';
+import { AssetTypes } from '@common/libs/ledger/factory/types';
 
 import { URITokenBuy, URITokenBuyInfo } from '../URITokenBuy';
 import uriTokenBuy from './fixtures/URITokenBuyTx.json';
@@ -67,6 +68,18 @@ describe('URITokenBuy tx', () => {
                         INC: [],
                     },
                 });
+            });
+        });
+
+        describe('getAssetDetails()', () => {
+            it('should return the expected asset details', () => {
+                expect(info.getAssetDetails()).toStrictEqual([
+                    {
+                        owner: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
+                        type: AssetTypes.URIToken,
+                        uriTokenId: '716E5990589AA8FA4247E0FEABE8B605CFFBBA5CA519A70BCA37C8CC173F3244',
+                    },
+                ]);
             });
         });
     });

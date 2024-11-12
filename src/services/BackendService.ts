@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 import { OptionsModalPresentationStyle } from 'react-native-navigation';
 
 import { AppScreens } from '@common/constants';
+import { Endpoints } from '@common/constants/endpoints';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceUniqueId } from '@common/helpers/device';
@@ -25,10 +26,11 @@ import CurrencyRepository from '@store/repositories/currency';
 import Preferences from '@common/libs/preferences';
 
 import { Payload, PayloadType } from '@common/libs/payload';
+import { InAppPurchaseReceipt } from '@common/libs/iap';
 
 import { LedgerObjectFactory } from '@common/libs/ledger/factory';
-import { NFTokenOffer } from '@common/libs/ledger/objects';
-import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
+import { NFTokenOffer, URIToken } from '@common/libs/ledger/objects';
+import { NFTokenOffer as LedgerNFTokenOffer, URIToken as LedgerURIToken } from '@common/libs/ledger/types/ledger';
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // services
@@ -41,8 +43,6 @@ import NetworkService from '@services/NetworkService';
 import Localize from '@locale';
 
 import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
-import { InAppPurchaseReceipt } from '@common/libs/iap';
-import { Endpoints } from '@common/constants/endpoints';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -504,17 +504,20 @@ class BackendService {
      * @param {string} account - The account of the user offering XLS20 tokens.
      * @returns {Promise} A promise that resolves with the list of offered XLS20 tokens.
      */
-    getNFTOffered = (account: string): Promise<NFTokenOffer[]> => {
+    getNFTOffered = (account: string): Promise<NFTokenOffer[]> | Promise<URIToken[]> => {
         return ApiService.fetch(Endpoints.NftOffered, 'GET', { account })
             .then(async (res: XamanBackend.NFTOfferedResponse) => {
                 if (isEmpty(res)) {
                     return [];
                 }
+
                 // fetch the offer objects from ledger
                 const ledgerOffers = await Promise.all(
                     res
-                        .map(({ OfferID, ledger_close_time }) => {
-                            return LedgerService.getLedgerEntry<LedgerNFTokenOffer>({ index: OfferID })
+                        .map(({ OfferID, URITokenID, ledger_close_time }) => {
+                            return LedgerService.getLedgerEntry<LedgerNFTokenOffer | LedgerURIToken>({
+                                index: URITokenID || OfferID,
+                            })
                                 .then((resp) => {
                                     // something went wrong ?
                                     if ('error' in resp) {
@@ -522,12 +525,20 @@ class BackendService {
                                     }
 
                                     const { node } = resp;
-                                    if (node?.LedgerEntryType === LedgerEntryTypes.NFTokenOffer && ledger_close_time) {
-                                        // combine ledger time with the object
-                                        return Object.assign(node, {
-                                            LedgerTime: ledger_close_time,
-                                        });
+                                    if (node) {
+                                        if (
+                                            [LedgerEntryTypes.NFTokenOffer, LedgerEntryTypes.URIToken].includes(
+                                                node.LedgerEntryType,
+                                            ) &&
+                                            ledger_close_time
+                                        ) {
+                                            // combine ledger time with the object so we have some dates to show
+                                            return Object.assign(node, {
+                                                LedgerCloseTime: ledger_close_time,
+                                            });
+                                        }
                                     }
+
                                     return null;
                                 })
                                 .catch(() => {

@@ -14,6 +14,7 @@ export * from './ProBadge';
 export * from './PaymentOptionsPicker';
 export * from './InactiveAccount';
 export * from './NFTokenElement';
+export * from './URITokenElement';
 export * from './NetworkSwitchButton';
 export * from './NetworkLabel';
 export * from './AccountSwitchElement';

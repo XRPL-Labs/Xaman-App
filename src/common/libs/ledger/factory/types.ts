@@ -4,6 +4,21 @@ import { Account, AmountType, OperationActions } from '@common/libs/ledger/parse
 import { BalanceChanges } from '@common/libs/ledger/mixin/types';
 
 /**
+ * This type represents participants in a process, with optional stages defining their roles.
+ *
+ * @typedef {Object} Participants
+ *
+ * @property {Account} [start] - Represents the initial participant or state.
+ * @property {Account} [through] - Represents the intermediary participant or transitional state.
+ * @property {Account} [end] - Represents the final participant or ending state.
+ */
+export type Participants = {
+    start?: Account;
+    through?: Account;
+    end?: Account;
+};
+
+/**
  * Represents the monetary status of a transaction.
  * @enum {string}
  */
@@ -57,11 +72,12 @@ export type MonetaryDetails =
 export type AssetDetails =
     | {
           type: AssetTypes.NFToken;
-          nfTokenId?: string;
+          nfTokenId: string;
       }
     | {
           type: AssetTypes.URIToken;
-          uriTokenId?: string;
+          uriTokenId: string;
+          owner: string;
       };
 
 /**
@@ -101,7 +117,7 @@ export abstract class ExplainerAbstract<T, M = unknown> {
      *                    - through: {Account} The account through which the transaction passes
      *                    - end: {Account} The account where the transaction ends
      */
-    abstract getParticipants(): { start?: Account; through?: Account; end?: Account };
+    abstract getParticipants(): Participants;
     /**
      * Retrieves the monetary details.
      *

@@ -7,6 +7,7 @@ import { MutationsMixin } from '@common/libs/ledger/mixin';
 import { URITokenCreateSellOffer, URITokenCreateSellOfferInfo } from '../URITokenCreateSellOffer';
 
 import uriTokenCreateSellOfferTemplate from './fixtures/URITokenCreateSellOfferTx.json';
+import { AssetTypes } from '../../../factory/types';
 
 jest.mock('@services/NetworkService');
 
@@ -23,7 +24,7 @@ describe('URITokenCreateSellOffer tx', () => {
         const { tx, meta }: any = uriTokenCreateSellOfferTemplate;
         const Mixed = MutationsMixin(URITokenCreateSellOffer);
         const instance = new Mixed(tx, meta);
-        const info = new URITokenCreateSellOfferInfo(instance, {} as any);
+        const info = new URITokenCreateSellOfferInfo(instance, { address: tx.Account } as any);
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
@@ -42,6 +43,7 @@ describe('URITokenCreateSellOffer tx', () => {
             it('should return the expected participants', () => {
                 expect(info.getParticipants()).toStrictEqual({
                     start: { address: 'rrrrrrrrrrrrrrrrrrrrrholvtp', tag: undefined },
+                    end: { address: 'rDestinationxxxxxxxxxxxxxxxxxxxxxx', tag: undefined },
                 });
             });
         });
@@ -51,6 +53,7 @@ describe('URITokenCreateSellOffer tx', () => {
                 expect(info.getMonetaryDetails()).toStrictEqual({
                     factor: [
                         {
+                            action: 'INC',
                             currency: 'XRP',
                             effect: 'POTENTIAL_EFFECT',
                             value: '10',
@@ -61,6 +64,18 @@ describe('URITokenCreateSellOffer tx', () => {
                         INC: [],
                     },
                 });
+            });
+        });
+
+        describe('getAssetDetails()', () => {
+            it('should return the expected asset details', () => {
+                expect(info.getAssetDetails()).toStrictEqual([
+                    {
+                        owner: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
+                        type: AssetTypes.URIToken,
+                        uriTokenId: '1016FBAE4CAFB51A7E768724151964FF572495934C2D4A98CCC67229749C3F72',
+                    },
+                ]);
             });
         });
     });
