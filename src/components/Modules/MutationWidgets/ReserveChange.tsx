@@ -126,7 +126,7 @@ class ReserveChange extends PureComponent<Props, State> {
                 </View>
 
                 <View style={AppStyles.paddingBottomSml}>
-                    <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
+                    <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
                         {action === OperationActions.INC
                             ? Localize.t('events.thisTransactionIncreaseAccountReserve', {
                                   ownerReserve: value,
@@ -139,8 +139,8 @@ class ReserveChange extends PureComponent<Props, State> {
                     </Text>
                 </View>
                 <Button
-                    roundedSmall
-                    secondary
+                    roundedMini
+                    light
                     label={Localize.t('events.myBalanceAndReserve')}
                     onPress={this.showBalanceExplain}
                 />
