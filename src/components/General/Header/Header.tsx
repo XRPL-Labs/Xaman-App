@@ -16,7 +16,7 @@ type placementType = 'left' | 'right' | 'center';
 interface ChildrenProps {
     testID?: string;
     text?: string;
-    textStyle?: TextStyle;
+    textStyle?: TextStyle | TextStyle[];
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
     iconStyle?: ImageStyle;

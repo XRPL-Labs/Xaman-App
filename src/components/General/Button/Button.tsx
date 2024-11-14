@@ -196,6 +196,7 @@ export default class Button extends Component<Props> {
                         transparent && styles.buttonTransparent,
                         secondary && styles.buttonSecondary,
                         light && styles.buttonLight,
+                        contrast && styles.buttonContrast,
                         rounded && styles.buttonRounded,
                         roundedSmall && styles.buttonRoundedSmall,
                         roundedSmallBlock && styles.buttonRoundedSmallBlock,
