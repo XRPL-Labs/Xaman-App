@@ -4,32 +4,38 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     container: {
-        backgroundColor: StyleService.select({ dark: '$light', light: '$darkGrey' }),
-        flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '$tint',
-        paddingHorizontal: AppSizes.paddingSml,
-        paddingVertical: AppSizes.paddingSml,
     },
     tokenImageContainer: {
         marginRight: 10,
     },
     description: {
-        flexWrap: 'wrap',
-        flexShrink: 1,
-        fontSize: AppFonts.p.size,
+        fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
-        color: '$textContrast',
+        paddingHorizontal: AppSizes.padding,
+        paddingVertical: AppSizes.paddingExtraSml,
+        textAlign: 'center',
+        color: '$textPrimary',
+    },
+    benefitsText: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: '$orange',
+    },
+    priceContainer: {
+        alignSelf: 'stretch',
+        backgroundColor: StyleService.select({ dark: '$lightOrange', light: '$lightOrange' }),
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'center',
+        borderColor: '$orange',
+        padding: AppSizes.paddingSml,
+        marginTop: AppSizes.paddingSml,
     },
     price: {
-        flexWrap: 'wrap',
-        flexShrink: 1,
-        fontSize: AppFonts.base.size,
-        fontFamily: AppFonts.base.familyMonoBold,
-        color: StyleService.select({ dark: '$darkGrey', light: '$orange' }),
-        marginTop: AppSizes.paddingSml,
+        fontSize: AppFonts.h4.size,
+        fontFamily: AppFonts.base.familyExtraBold,
+        color: StyleService.select({ dark: '$white', light: '$darkGrey' }),
     },
     errorContainer: {
         backgroundColor: StyleService.select({ dark: '$lightRed', light: '$red' }),
@@ -41,17 +47,24 @@ export default StyleService.create({
         textAlign: 'center',
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyBold,
-        color: StyleService.select({ dark: '$darkGrey', light: '$light' }),
+        color: '$red',
     },
     textPlaceholder: {
         color: StyleService.select({ dark: '$grey', light: '$silver' }),
         backgroundColor: StyleService.select({ dark: '$grey', light: '$silver' }),
     },
-    title: {
+    priceDescription: {
         flexWrap: 'wrap',
         flexShrink: 1,
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.small.size,
-        color: StyleService.select({ dark: '$grey', light: '$silver' }),
+        color: StyleService.select({ dark: '$light', light: '$silver' }),
+    },
+    checkMarkIcon: {
+        tintColor: '$orange',
+    },
+    checkMarkIconPlaceholder: {
+        tintColor: StyleService.select({ dark: '$grey', light: '$silver' }),
+        opacity: 0.8,
     },
 });

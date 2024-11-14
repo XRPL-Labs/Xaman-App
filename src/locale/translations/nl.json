@@ -1202,7 +1202,13 @@
     "noPreviousPurchases": "We konden geen eerdere aankopen vinden om te herstellen. Als u denkt dat dit een fout is, neem dan contact op met ons support team.",
     "errorRestorePurchase": "Er is een onverwachte fout opgetreden bij het controleren van uw aankoopgeschiedenis.\n\nProbeer het later opnieuw of neem contact op met ons support team als het probleem aanhoudt.",
     "couldNotFetchProductDetails": "Error fetching product details. Please try again later or contact support if the issue persists.",
-    "purchaseFailed": "Purchase failed!"
+    "purchaseFailed": "Purchase failed!",
+    "termsAndConditions": "Terms and conditions",
+    "privacyPolicy": "Privacy policy",
+    "benefitsTextOne": "Sign payloads",
+    "benefitsTextTwo": "xApp access",
+    "benefitsTextThree": "Premium support",
+    "prePurchaseTip": "Please note that this is a one-month purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
   },
   "errors": {
     "unableToLoadTermOfService": "Oeps! Kan de Algemene Voorwaarden niet ophalen",

@@ -1,10 +1,40 @@
 import StyleService from '@services/StyleService';
+
 import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    actionPanel: {
-        paddingHorizontal: AppSizes.paddingSml,
+    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    header: {
+        marginTop: 0,
+        backgroundColor: 'transparent',
+    },
+    backgroundImageStyle: {
+        alignSelf: 'flex-start',
+        resizeMode: 'repeat',
+        tintColor: '$tint',
+        opacity: 1,
+    },
+    actionContainer: {
+        backgroundColor: StyleService.select({ light: '$white', dark: '$tint' }),
+        borderRadius: AppSizes.borderRadius,
+        padding: AppSizes.paddingSml,
+        marginTop: AppSizes.padding,
+    },
+    productDescriptionText: {
+        fontFamily: AppFonts.h4.family,
+        fontSize: AppFonts.h4.size,
+        textAlign: 'center',
+        color: '$textPrimary',
+        fontWeight: '900',
+        paddingTop: AppSizes.padding,
+        paddingBottom: AppSizes.paddingExtraSml,
+    },
+    notesText: {
+        fontFamily: AppFonts.small.family,
+        fontSize: AppFonts.small.size,
+        textAlign: 'center',
+        color: '$grey',
     },
     prePurchaseText: {
         fontFamily: AppFonts.base.family,
@@ -13,8 +43,8 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     successPurchaseText: {
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.h4.size,
+        fontFamily: AppFonts.base.familyExtraBold,
+        fontSize: AppFonts.h3.size,
         textAlign: 'center',
         color: '$textPrimary',
     },
@@ -45,7 +75,7 @@ const styles = StyleService.create({
         marginTop: -10,
         paddingHorizontal: 10,
         alignSelf: 'center',
-        backgroundColor: '$background',
+        backgroundColor: StyleService.select({ light: '$white', dark: '$tint' }),
         color: '$textSecondary',
         fontFamily: AppFonts.base.familyBold,
     },
@@ -54,6 +84,15 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.small.size,
         textDecorationLine: 'underline',
+    },
+    appIcon: {
+        width: AppSizes.scale(60),
+        height: AppSizes.scale(60),
+        borderRadius: AppSizes.scale(75) / 4,
+    },
+    checkMarkImage: {
+        tintColor: '$green',
+        alignSelf: 'center',
     },
 });
 

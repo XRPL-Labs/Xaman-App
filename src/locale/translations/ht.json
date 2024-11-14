@@ -1186,14 +1186,14 @@
     "oracleDeleteWarning": "Warning: You are about to delete the oracle record identified by the above Oracle Document ID. Keep in mind, this action cannot be undone."
   },
   "monetization": {
-    "oneTimeCharge": "One-time charge",
+    "oneTimeCharge": "One-time charge - not automatically renewing",
     "payWithApplePay": "Pay with Apple Pay",
     "payWithGooglePay": "Pay with Google Pay",
-    "restorePurchase": "Restore purchase",
+    "restorePurchase": "Restore Purchase",
     "thankYouForUsingXaman": "Thank you for using Xaman!",
     "comingPaymentWarning": "You're still enjoying Xaman for free, but you're nearing our free limit. To support Xaman's innovation and security, a small in-app payment may be requested soon.",
     "paymentRequiredMessage": "A small payment is required to maintain unlimited access for the next 30 days. Alternatively, Xaman will switch to limited-use mode until your monthly limits reset automatically.",
-    "prePurchaseMessage": "Thank you for your support! Your payment unlocks a full month of unlimited Xaman use, helping us innovate, provide premium support, and ensure security for your assets.",
+    "prePurchaseMessage": "Thank you for your support! Your payment unlocks a full month of unrestricted Xaman use.",
     "learnMore": "Learn more",
     "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
     "allSet": "All set!",
@@ -1202,7 +1202,13 @@
     "noPreviousPurchases": "We couldn't find any previous purchases to restore. If you believe this is an error, please contact our support team.",
     "errorRestorePurchase": "An unexpected error occurred while checking your purchase history.\n\nPlease try again later or contact our support team if the issue persists.",
     "couldNotFetchProductDetails": "Error fetching product details. Please try again later or contact support if the issue persists.",
-    "purchaseFailed": "Purchase failed!"
+    "purchaseFailed": "Purchase failed!",
+    "termsAndConditions": "Terms and conditions",
+    "privacyPolicy": "Privacy policy",
+    "benefitsTextOne": "Sign payloads",
+    "benefitsTextTwo": "xApp access",
+    "benefitsTextThree": "Premium support",
+    "prePurchaseTip": "Please note that this is a one-month purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",

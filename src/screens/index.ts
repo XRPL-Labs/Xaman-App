@@ -32,6 +32,7 @@ import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
 import TransactionLoader from './Modal/TransactionLoader';
+import PurchaseProduct from './Modal/PurchaseProduct';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
@@ -60,7 +61,6 @@ import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
 import XAppInfo from './Overlay/XAppInfo';
 import NetworkRailsSync from './Overlay/NetworkRailsSync';
-import PurchaseProduct from './Overlay/PurchaseProduct';
 
 // Transaction
 import Send from './Send';

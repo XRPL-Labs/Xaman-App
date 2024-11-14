@@ -43,6 +43,7 @@ import { AccountModel, NetworkModel } from '@store/models';
 import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
+import { ApiError } from '@services/ApiService';
 
 import {
     Avatar,
@@ -65,14 +66,13 @@ import { DisplayButtonTypes, XAppInfoOverlayProps } from '@screens/Overlay/XAppI
 import { ScanModalProps } from '@screens/Modal/Scan';
 import { DestinationPickerModalProps } from '@screens/Modal/DestinationPicker';
 import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
+import { PurchaseProductModalProps } from '@screens/Modal/PurchaseProduct';
 
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
 import { IEvent, Props, State, XAppMethods, XAppSpecialPermissions } from './types';
-import { ApiError } from '@services/ApiService';
-import { PurchaseProductOverlayProps } from '@screens/Overlay/PurchaseProduct';
 
 /* Component ==================================================================== */
 class XAppBrowserModal extends Component<Props, State> {
@@ -828,7 +828,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         const { monetization } = profile;
 
-        Navigator.showOverlay<PurchaseProductOverlayProps>(AppScreens.Overlay.PurchaseProduct, {
+        Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
             productId: monetization.productForPurchase!,
             productDescription: monetization.monetizationType!,
             onSuccessPurchase: this.lunchApp,

@@ -3,7 +3,7 @@ import { View, Text, Animated, InteractionManager } from 'react-native';
 
 import { InAppPurchase, ProductDetails } from '@common/libs/iap';
 
-import { Button } from '@components/General';
+import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -101,24 +101,60 @@ class ProductDetailsElement extends PureComponent<Props, State> {
     renderPlaceHolder = () => {
         return (
             <View style={styles.container}>
-                <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                    <Animated.Text
-                        style={[styles.description, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
-                    >
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Animated.Text>
-                    <Animated.Text
-                        style={[styles.description, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
-                    >
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Animated.Text>
+                <Animated.Text
+                    style={[styles.description, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </Animated.Text>
+
+                <View style={AppStyles.paddingExtraSml}>
+                    <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.gapExtraSml]}>
+                        <Icon name="IconCheckXaman" style={styles.checkMarkIconPlaceholder} size={14} />
+                        <Animated.Text
+                            style={[styles.benefitsText, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Animated.Text>
+                    </View>
+                    <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.gapExtraSml]}>
+                        <Icon name="IconCheckXaman" style={styles.checkMarkIconPlaceholder} size={14} />
+                        <Animated.Text
+                            style={[styles.benefitsText, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Animated.Text>
+                    </View>
+                    <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.gapExtraSml]}>
+                        <Icon name="IconCheckXaman" style={styles.checkMarkIconPlaceholder} size={14} />
+                        <Animated.Text
+                            style={[styles.benefitsText, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Animated.Text>
+                    </View>
+                </View>
+
+                <View style={styles.priceContainer}>
                     <Animated.Text
                         style={[styles.price, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
                     >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Animated.Text>
+                    <Animated.Text
+                        style={[styles.priceDescription, styles.textPlaceholder, { opacity: this.animatedPlaceholder }]}
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Animated.Text>
                 </View>
@@ -129,17 +165,15 @@ class ProductDetailsElement extends PureComponent<Props, State> {
     renderError = () => {
         return (
             <View style={styles.container}>
-                <View style={AppStyles.flex1}>
-                    <Text style={styles.errorText}>{Localize.t('monetization.couldNotFetchProductDetails')}</Text>
-                    <Button
-                        light
-                        roundedMini
-                        icon="IconRefresh"
-                        iconSize={14}
-                        onPress={this.retryFetchDetails}
-                        label={Localize.t('global.tryAgain')}
-                    />
-                </View>
+                <Text style={styles.errorText}>{Localize.t('monetization.couldNotFetchProductDetails')}</Text>
+                <Button
+                    light
+                    roundedMini
+                    icon="IconRefresh"
+                    iconSize={14}
+                    onPress={this.retryFetchDetails}
+                    label={Localize.t('global.tryAgain')}
+                />
             </View>
         );
     };
@@ -156,14 +190,24 @@ class ProductDetailsElement extends PureComponent<Props, State> {
 
         return (
             <View style={styles.container}>
-                <View style={[AppStyles.flex1, AppStyles.leftAligned]}>
-                    <Text style={styles.description} numberOfLines={2}>
-                        {productDetails?.description || 'Unlock a full month of unlimited app use'}
-                    </Text>
-                    <Text style={styles.price}>
-                        {productDetails?.price}{' '}
-                        <Text style={styles.title}>({Localize.t('monetization.oneTimeCharge')})</Text>
-                    </Text>
+                <Text style={styles.description} numberOfLines={2}>
+                    {productDetails?.description || 'One full month of unrestricted Xaman use'}
+                </Text>
+
+                <View style={AppStyles.paddingExtraSml}>
+                    {['benefitsTextOne', 'benefitsTextTwo', 'benefitsTextThree'].map((benefit, index) => (
+                        <View key={index} style={[AppStyles.row, AppStyles.centerAligned, AppStyles.gapExtraSml]}>
+                            <Icon name="IconCheckXaman" style={styles.checkMarkIcon} size={14} />
+                            <Text style={styles.benefitsText} numberOfLines={1}>
+                                {Localize.t(`monetization.${benefit}`)}
+                            </Text>
+                        </View>
+                    ))}
+                </View>
+
+                <View style={styles.priceContainer}>
+                    <Text style={styles.price}>{productDetails?.price}</Text>
+                    <Text style={styles.priceDescription}>({Localize.t('monetization.oneTimeCharge')})</Text>
                 </View>
             </View>
         );
