@@ -23,7 +23,6 @@ export * from './ReadMore';
 
 export * from './Button';
 export * from './SegmentButtons';
-export * from './NativePaymentButton';
 export * from './SwipeButton';
 export * from './RadioButton';
 export * from './RaisedButton';

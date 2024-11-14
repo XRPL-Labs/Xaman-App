@@ -160,7 +160,7 @@ class BackendService {
 
             // delete removed parties from data store
             const counterParties = CounterPartyRepository.findAll();
-            const removedParties = counterParties.filter((c: any) => {
+            const removedParties = counterParties.filter((c) => {
                 return !updatedParties.includes(c.id);
             });
 
@@ -227,7 +227,7 @@ class BackendService {
      * @param {any} device - The device object.
      * @returns {Promise<string>} A promise that resolves with an access token.
      */
-    activateDevice = async (user: any, device: any): Promise<string> => {
+    activateDevice = async (user: { uuid: string }, device: { uuid: string }): Promise<string> => {
         /* eslint-disable-next-line */
         return new Promise(async (resolve, reject) => {
             ApiService.fetch(
