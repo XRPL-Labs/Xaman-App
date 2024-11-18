@@ -108,12 +108,14 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
 
             if (feeIncludedBalanceIndex > -1) {
                 const afterFee = new BigNumber(balanceChanges[feeIncludedBalanceIndex].value).minus(this.Fee!.value);
+
                 if (afterFee.isZero()) {
                     // remove the item from balanceChanges
                     balanceChanges.splice(feeIncludedBalanceIndex, 1);
                 } else if (
                     afterFee.isNegative() &&
-                    this.TransactionType === TransactionTypes.NFTokenAcceptOffer &&
+                    (this.TransactionType === TransactionTypes.NFTokenAcceptOffer ||
+                        this.TransactionType === TransactionTypes.OfferCreate) &&
                     balanceChanges[feeIncludedBalanceIndex].action === OperationActions.DEC
                 ) {
                     // replace the action with Increase and positive the afterFee

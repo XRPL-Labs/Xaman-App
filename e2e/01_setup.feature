@@ -14,11 +14,6 @@ Feature: Setup App
         Then I type my passcode
         Then I tap 'next-button'
 
-    Scenario: Setup Disclaimers
-        Given I should have 'disclaimers-setup-screen'
-        Given I should see 'disclaimer-content-view'
-        Then I agree all disclaimers
-
     Scenario: Finish setup
         Given I should wait 5 sec to see 'agreement-setup-screen'
         Then I wait 5 sec for button 'confirm-button' to be enabled

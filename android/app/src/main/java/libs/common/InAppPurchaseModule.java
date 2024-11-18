@@ -6,8 +6,11 @@ import androidx.annotation.Nullable;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+
 
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.PendingPurchasesParams;
@@ -43,6 +46,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     public static final String TAG = NAME;
 
     private static final String E_CLIENT_IS_NOT_READY = "E_CLIENT_IS_NOT_READY";
+    private static final String E_PRODUCT_DETAILS_NOT_FOUND = "E_PRODUCT_DETAILS_NOT_FOUND";
     private static final String E_PRODUCT_IS_NOT_AVAILABLE = "E_PRODUCT_IS_NOT_AVAILABLE";
     private static final String E_NO_PENDING_PURCHASE = "E_NO_PENDING_PURCHASE";
     private static final String E_PURCHASE_CANCELED = "E_PURCHASE_CANCELED";
@@ -55,6 +59,8 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     private final HashMap<String, ProductDetails> productDetailsHashMap = new HashMap<>();
     private final BillingClient billingClient;
     private final GoogleApiAvailability googleApiAvailability;
+    private final AtomicBoolean isUserPurchasing = new AtomicBoolean(false);
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     private Promise billingFlowPromise;
 
@@ -72,12 +78,6 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         googleApiAvailability = GoogleApiAvailability.getInstance();
     }
 
-    @NonNull
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 
     //---------------------------------
     // React methods - These methods are exposed to React JS
@@ -89,6 +89,17 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     //
     //---------------------------------
 
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    public boolean isUserPurchasing() {
+        return isUserPurchasing.get();
+    }
+
+
+    @NonNull
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
     // Starts a connection with Google BillingClient
     @ReactMethod
@@ -117,7 +128,47 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
             @Override
             public void onBillingServiceDisconnected() {
-                promise.reject(E_CLIENT_IS_NOT_READY, "billing client service disconnected");
+                promise.reject(E_CLIENT_IS_NOT_READY, "Billing client service disconnected!");
+            }
+        });
+    }
+
+    @ReactMethod
+    public void getProductDetails(String productId, Promise promise) {
+        if (!isReady()) {
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
+            return;
+        }
+
+
+        // try to fetch cached version of product details
+        if (productDetailsHashMap.containsKey(productId)) {
+            promise.resolve(this.productToJson(Objects.requireNonNull(productDetailsHashMap.get(productId))));
+            return;
+        }
+
+        // no cached product details
+        // fetch product details
+        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
+                .setProductId(productId)
+                .setProductType(BillingClient.ProductType.INAPP)
+                .build());
+
+        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
+                .setProductList(productList)
+                .build();
+
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
+                ProductDetails productDetails = list.get(0);
+
+                // cache the product details
+                productDetailsHashMap.put(list.get(0).getProductId(), productDetails);
+
+                // Launch the billing flow
+                promise.resolve(this.productToJson(productDetails));
+            } else {
+                promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
             }
         });
     }
@@ -125,7 +176,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     @ReactMethod
     public void restorePurchases(Promise promise) {
         if (!isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "billing client is not ready, forgot to initialize?");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
             return;
         }
 
@@ -152,7 +203,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     @ReactMethod
     public void purchase(String productId, Promise promise) {
         if (!isReady()) {
-            promise.reject(E_CLIENT_IS_NOT_READY, "billingClient is not ready, forgot to initialize?");
+            promise.reject(E_CLIENT_IS_NOT_READY, "Billing client is not ready, forgot to initialize?");
             return;
         }
 
@@ -162,33 +213,13 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
-        // no cached product details
-        // fetch product details
-        ImmutableList<QueryProductDetailsParams.Product> productList = ImmutableList.of(QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(productId)
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build());
-
-        QueryProductDetailsParams queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
-                .setProductList(productList)
-                .build();
-
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list.size() > 0) {
-                ProductDetails productDetails = list.get(0);
-
-                // cache the product details
-                productDetailsHashMap.put(list.get(0).getProductId(), productDetails);
-
-                // Launch the billing flow
-                launchBillingFlow(productDetails, promise);
-            } else {
-                Log.e(TAG, "Unable to load the product details with productId " + productId + " getResponseCode:" + billingResult.getResponseCode() + " list.size:" + list.size());
-                promise.reject(E_PRODUCT_IS_NOT_AVAILABLE, "Unable to load the product details with productId " + productId);
-            }
-        });
+        promise.reject(E_PRODUCT_DETAILS_NOT_FOUND, "Product is unavailable!");
     }
 
+
+    //---------------------------------
+    // Private methods
+    //---------------------------------
 
     // Consumes a purchase token, indicating that the product has been provided to the user.
     @ReactMethod
@@ -199,16 +230,10 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             if (billing.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                 promise.resolve(purchaseToken);
             } else {
-                promise.reject(E_FINISH_TRANSACTION_FAILED, "billing response code " + billing.getResponseCode());
+                promise.reject(E_FINISH_TRANSACTION_FAILED, "Finalize purchase failed: code " + billing.getResponseCode());
             }
         });
     }
-
-
-    //---------------------------------
-    // Private methods
-    //---------------------------------
-
 
     // This method gets called when purchases are updated.
     @Override
@@ -218,16 +243,22 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
             return;
         }
 
+        // Delay setting isUserPurchasing to false by 1 sec
+        // This is required due AppState change trigger after IAP activity launch
+        handler.postDelayed(() -> isUserPurchasing.set(false), 1000);
+
+
         // something went wrong with the purchase, reject the billingFlowPromise
         if (billing.getResponseCode() != BillingClient.BillingResponseCode.OK) {
             switch (billing.getResponseCode()) {
                 case BillingClient.BillingResponseCode.USER_CANCELED:
-                    rejectBillingFlowPromise(E_PURCHASE_CANCELED, "purchase canceled by users");
+                    rejectBillingFlowPromise(E_PURCHASE_CANCELED, "The purchase was canceled by the user.");
                     break;
                 case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-                    rejectBillingFlowPromise(E_ALREADY_PURCHASED, "item already owned by users");
+                    rejectBillingFlowPromise(E_ALREADY_PURCHASED, "The item is already owned.");
+                    break;
                 default:
-                    rejectBillingFlowPromise(E_PURCHASE_FAILED, "billing response code " + billing.getResponseCode());
+                    rejectBillingFlowPromise(E_PURCHASE_FAILED, "An unexpected error occurred, code: " + billing.getResponseCode());
                     break;
             }
             return;
@@ -236,7 +267,7 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
 
         // something is not right?
         if (list == null || list.isEmpty()) {
-            rejectBillingFlowPromise(E_PURCHASE_FAILED, "the purchase list is empty!");
+            rejectBillingFlowPromise(E_PURCHASE_FAILED, "The purchase list is empty!");
             return;
         }
 
@@ -262,10 +293,16 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
     // A private method to actually launch the billing flow once we've loaded the product details.
     // This method may fail and reject the promise if there's already a billing flow in progress.
     private void launchBillingFlow(ProductDetails productDetails, Promise promise) {
+        // set flag
+        if (isUserPurchasing.getAndSet(true)) {
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start a new one!");
+            return;
+        }
+
         // if we already have an promise going on for billing flow, reject it as we don't want to start
         // the new flow without closing the old one
         if (billingFlowPromise != null) {
-            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start the new one!");
+            promise.reject(E_PURCHASE_FAILED, "There is a Billing flow going on at the moment, can't start a new one!");
             return;
         }
 
@@ -295,23 +332,32 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
         return purchaseMap;
     }
 
+    private WritableMap productToJson(ProductDetails productDetails) {
+        final WritableMap results = Arguments.createMap();
+        results.putString("title", productDetails.getTitle());
+        results.putString("description", productDetails.getDescription());
+        results.putString("price", Objects.requireNonNull(productDetails.getOneTimePurchaseOfferDetails()).getFormattedPrice());
+        results.putString("productId", productDetails.getProductId());
+
+        return results;
+    }
+
 
     private void resolveBillingFlowPromise(final WritableArray productsToBeConsumed) {
         try {
             billingFlowPromise.resolve(productsToBeConsumed);
             billingFlowPromise = null;
         } catch (Exception error) {
-            Log.e(TAG, "resolveBillingFlowPromise: " + error.getMessage());
+            // ignore
         }
     }
 
     private void rejectBillingFlowPromise(final String code, final String message) {
         try {
             billingFlowPromise.reject(code, message);
-            Log.d(TAG, "rejectBillingFlowPromise " + code);
             billingFlowPromise = null;
         } catch (Exception error) {
-            Log.e(TAG, "rejectBillingFlowPromise: " + error.getMessage());
+            // ignore
         }
     }
 }

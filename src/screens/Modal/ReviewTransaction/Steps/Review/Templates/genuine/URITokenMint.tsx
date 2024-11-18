@@ -1,10 +1,9 @@
-import isEmpty from 'lodash/isEmpty';
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
 import { URITokenMint } from '@common/libs/ledger/transactions';
 
-import { AmountText } from '@components/General';
+import { AmountText, ReadMore } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -38,16 +37,20 @@ class URITokenMintTemplate extends Component<Props, State> {
                     <>
                         <Text style={styles.label}>{Localize.t('global.uri')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.URI}</Text>
+                            <ReadMore numberOfLines={3} textStyle={styles.value}>
+                                {transaction.URI}
+                            </ReadMore>
                         </View>
                     </>
                 )}
 
-                {!isEmpty(transaction.Digest) && (
+                {transaction.Digest && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.digest')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.valueSubtext}>{transaction.Digest}</Text>
+                            <ReadMore numberOfLines={3} textStyle={styles.value}>
+                                {transaction.Digest}
+                            </ReadMore>
                         </View>
                     </>
                 )}

@@ -52,7 +52,7 @@ class OnboardingView extends Component<Props, State> {
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                 </SafeAreaView>
                 <SafeAreaView style={AppStyles.flex8}>
-                    <Slider onFinish={this.onFinish}>
+                    <Slider onFinish={this.onFinish} scrollAutomatically>
                         <Slide>
                             <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                                 <Text style={[AppStyles.h4, AppStyles.strong]}>

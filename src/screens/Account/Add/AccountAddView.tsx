@@ -122,8 +122,8 @@ class AccountAddView extends Component<Props, State> {
             }
 
             this.goToImport({ tangemCard: card });
-        } catch (e) {
-            LoggerService.recordError('Unexpected error in importing tangem wallet', e);
+        } catch (error) {
+            LoggerService.recordError('Unexpected error in importing tangem wallet', error);
             Alert.alert(
                 Localize.t('global.unexpectedErrorOccurred'),
                 Localize.t('global.pleaseCheckSessionLogForMoreInfo'),

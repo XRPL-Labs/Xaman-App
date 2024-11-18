@@ -12,6 +12,7 @@ import NetworkService from '@services/NetworkService';
 import { Payload } from '@common/libs/payload';
 
 import { LedgerEntryTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 import { TransactionJson } from '@common/libs/ledger/types/transaction';
 
 import { Button } from '@components/General';
@@ -31,7 +32,9 @@ enum ActionTypes {
     NEW_PAYMENT = 'NEW_PAYMENT',
     CANCEL_OFFER = 'CANCEL_OFFER',
     ACCEPT_NFTOKEN_OFFER = 'ACCEPT_NFTOKEN_OFFER',
+    ACCEPT_URITOKEN_OFFER = 'ACCEPT_URITOKEN_OFFER',
     SELL_NFTOKEN = 'SELL_NFTOKEN',
+    SELL_URITOKEN = 'SELL_URITOKEN',
     CANCEL_ESCROW = 'CANCEL_ESCROW',
     FINISH_ESCROW = 'FINISH_ESCROW',
     CANCEL_CHECK = 'CANCEL_CHECK',
@@ -58,6 +61,10 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
                 return { label: Localize.t('events.acceptOffer'), secondary: true };
             case ActionTypes.SELL_NFTOKEN:
                 return { label: Localize.t('events.sellMyNFT'), secondary: true };
+            case ActionTypes.SELL_URITOKEN:
+                return { label: Localize.t('events.sellMyNFT'), secondary: true };
+            case ActionTypes.ACCEPT_URITOKEN_OFFER:
+                return { label: Localize.t('events.acceptOffer'), secondary: true };
             case ActionTypes.CANCEL_ESCROW:
                 return { label: Localize.t('events.cancelEscrow'), secondary: true };
             case ActionTypes.FINISH_ESCROW:
@@ -143,12 +150,23 @@ class ActionButtons extends PureComponent<Props, State> {
                 if (item.Owner === account.address) {
                     availableActions.push(ActionTypes.CANCEL_OFFER);
                 } else if (!item.Destination || item.Destination === account.address) {
-                    if (item.Flags?.tfSellToken) {
+                    if (item.Flags?.lsfSellNFToken) {
                         availableActions.push(ActionTypes.ACCEPT_NFTOKEN_OFFER);
                     } else {
                         availableActions.push(ActionTypes.SELL_NFTOKEN);
                     }
                 }
+                break;
+            case LedgerEntryTypes.URIToken:
+            case TransactionTypes.URITokenMint:
+                if (item.Destination) {
+                    if (item.Destination === account.address) {
+                        availableActions.push(ActionTypes.ACCEPT_URITOKEN_OFFER);
+                    } else {
+                        availableActions.push(ActionTypes.CANCEL_OFFER);
+                    }
+                }
+
                 break;
             case LedgerEntryTypes.Escrow:
                 if (item.isExpired) {
@@ -232,6 +250,11 @@ class ActionButtons extends PureComponent<Props, State> {
                         TransactionType: TransactionTypes.NFTokenCancelOffer,
                         NFTokenOffers: [item.Index],
                     });
+                } else if (item.Type === LedgerEntryTypes.URIToken) {
+                    Object.assign(craftedTxJson, {
+                        TransactionType: TransactionTypes.URITokenCancelSellOffer,
+                        URITokenID: item.URITokenID,
+                    });
                 }
                 break;
             case ActionTypes.ACCEPT_NFTOKEN_OFFER:
@@ -239,8 +262,8 @@ class ActionButtons extends PureComponent<Props, State> {
                 if (item.Type === LedgerEntryTypes.NFTokenOffer) {
                     Object.assign(craftedTxJson, {
                         TransactionType: TransactionTypes.NFTokenAcceptOffer,
-                        NFTokenSellOffer: item.Flags?.tfSellToken ? item.Index : undefined,
-                        NFTokenBuyOffer: !item.Flags?.tfSellToken ? item.Index : undefined,
+                        NFTokenSellOffer: item.Flags?.lsfSellNFToken ? item.Index : undefined,
+                        NFTokenBuyOffer: !item.Flags?.lsfSellNFToken ? item.Index : undefined,
                     });
                 }
                 break;
@@ -284,6 +307,18 @@ class ActionButtons extends PureComponent<Props, State> {
                         TransactionType: TransactionTypes.AccountSet,
                         Sequence: 0,
                         TicketSequence: item.TicketSequence,
+                    });
+                }
+                break;
+            case ActionTypes.ACCEPT_URITOKEN_OFFER:
+                if (item.Type === LedgerEntryTypes.URIToken || item.Type === TransactionTypes.URITokenMint) {
+                    Object.assign(craftedTxJson, {
+                        TransactionType: TransactionTypes.URITokenBuy,
+                        URITokenID: item.URITokenID,
+                        Amount:
+                            item.Amount!.currency === NetworkService.getNativeAsset()
+                                ? new AmountParser(item.Amount!.value, false).nativeToDrops().toString()
+                                : item.Amount,
                     });
                 }
                 break;

@@ -3,7 +3,6 @@ import Onboarding from './Onboarding';
 import PasscodeSetup from './Setup/Passcode';
 import BiometrySetup from './Setup/Biometry';
 import PushNotificationSetup from './Setup/PushNotification';
-import DisclaimersSetup from './Setup/Disclaimers';
 import FinishSetup from './Setup/Finish';
 
 // TabBar
@@ -33,6 +32,7 @@ import XAppBrowser from './Modal/XAppBrowser';
 import CurrencyPicker from './Modal/CurrencyPicker';
 import DestinationPicker from './Modal/DestinationPicker';
 import TransactionLoader from './Modal/TransactionLoader';
+import PurchaseProduct from './Modal/PurchaseProduct';
 
 // Overlay
 import SwitchAccount from './Overlay/SwitchAccount';
@@ -61,7 +61,6 @@ import SwitchAssetCategory from './Overlay/SwitchAssetCategory';
 import SwitchNetwork from './Overlay/SwitchNetwork';
 import XAppInfo from './Overlay/XAppInfo';
 import NetworkRailsSync from './Overlay/NetworkRailsSync';
-import PurchaseProduct from './Overlay/PurchaseProduct';
 
 // Transaction
 import Send from './Send';
@@ -103,7 +102,6 @@ export {
     PasscodeSetup,
     BiometrySetup,
     PushNotificationSetup,
-    DisclaimersSetup,
     FinishSetup,
     Home,
     Events,

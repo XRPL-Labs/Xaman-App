@@ -56,3 +56,8 @@ export enum WebLinks {
     // Other
     AppleStoreLink = `https://apps.apple.com/us/app/id1492302343`,
 }
+
+export enum ComplianceLinks {
+    PrivacyStatement = 'https://xrpl-labs.com/static/documents/XRPL-Labs-Privacy-Statement-V1.pdf',
+    TermsOfUse = 'https://xrpl-labs.com/static/documents/XRPL-Labs-Terms-of-Service-V1.pdf',
+}

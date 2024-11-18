@@ -44,3 +44,5 @@ export * from './Remit';
 export * from './Clawback';
 export * from './DIDSet';
 export * from './DIDDelete';
+export * from './OracleSet';
+export * from './OracleDelete';

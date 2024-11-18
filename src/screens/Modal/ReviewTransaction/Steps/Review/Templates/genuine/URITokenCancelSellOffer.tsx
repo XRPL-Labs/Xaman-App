@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { Text } from 'react-native';
 
 import { URITokenCancelSellOffer } from '@common/libs/ledger/transactions';
 
+import { ExpandableView } from '@components/General';
+
 import Localize from '@locale';
+
+import URITokenOffer from '../objects/URITokenOffer';
 
 import styles from '../styles';
 
@@ -25,14 +29,20 @@ class URITokenCancelSellOfferTemplate extends Component<Props, State> {
     }
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.uriTokeId')}</Text>
-                <View style={styles.contentBox}>
-                    <Text style={styles.value}>{transaction.URITokenID}</Text>
-                </View>
+                <Text style={styles.label}>{Localize.t('global.uriTokenOffer')}</Text>
+                <ExpandableView
+                    expanded
+                    title={transaction.URITokenID}
+                    titleStyle={styles.value}
+                    containerStyle={styles.objectTemplateContainer}
+                    contentContainerStyle={styles.objectTemplateChildContainer}
+                >
+                    <URITokenOffer source={source} uriTokenId={transaction.URITokenID!} />
+                </ExpandableView>
             </>
         );
     }

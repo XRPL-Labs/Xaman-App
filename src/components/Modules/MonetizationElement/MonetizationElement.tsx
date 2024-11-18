@@ -8,7 +8,7 @@ import { ProfileRepository, UserInteractionRepository } from '@store/repositorie
 import { MonetizationStatus } from '@store/types';
 import { InteractionTypes } from '@store/models/objects/userInteraction';
 
-import { PurchaseProductOverlayProps } from '@screens/Overlay/PurchaseProduct';
+import { PurchaseProductModalProps } from '@screens/Modal/PurchaseProduct';
 
 import { Button, RaisedButton } from '@components/General';
 
@@ -94,7 +94,7 @@ class MonetizationElement extends PureComponent<Props, State> {
     purchaseProduct = () => {
         const { productForPurchase, monetizationType } = this.state;
 
-        Navigator.showOverlay<PurchaseProductOverlayProps>(AppScreens.Overlay.PurchaseProduct, {
+        Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
             productId: productForPurchase!,
             productDescription: monetizationType!,
             onSuccessPurchase: this.onSuccessPurchase,

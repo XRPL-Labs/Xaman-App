@@ -211,7 +211,7 @@ class LedgerService extends EventEmitter {
         const resp = await NetworkService.send<AccountNFTsRequest, AccountNFTsResponse>(request);
 
         if ('error' in resp) {
-            this.logger.warn('Error fetching account NFTs:', resp.error);
+            this.logger.warn('getAccountNFTokens', resp.error);
             return combined;
         }
 
@@ -233,7 +233,7 @@ class LedgerService extends EventEmitter {
         const resp = await this.getAccountObjects(account, { type: 'uri_token', marker });
 
         if ('error' in resp) {
-            this.logger.error('Unable to get account URI Tokens', resp.error);
+            this.logger.error('getAccountURITokens', resp.error);
             return combined;
         }
 
@@ -288,7 +288,7 @@ class LedgerService extends EventEmitter {
             this.getGatewayBalances(account)
                 .then((resp) => {
                     if ('error' in resp) {
-                        this.logger.error('Unable to get account obligations', resp.error);
+                        this.logger.error('getAccountObligations', resp.error);
                         resolve([]);
                         return;
                     }
@@ -317,8 +317,8 @@ class LedgerService extends EventEmitter {
 
                     resolve(obligationsLines);
                 })
-                .catch((error: Error) => {
-                    this.logger.error('getAccountObligations error', error);
+                .catch((error) => {
+                    this.logger.error('getAccountObligations', error);
                     return resolve([]);
                 });
         });
@@ -344,8 +344,8 @@ class LedgerService extends EventEmitter {
                     const transferFee = new BigNumber(TransferRate).dividedBy(10000000).minus(100).toNumber();
                     resolve(transferFee);
                 })
-                .catch((error: Error) => {
-                    this.logger.error('Unable to fetch account transfer rate!', error);
+                .catch((error) => {
+                    this.logger.error('getAccountTransferRate', error);
                     reject(
                         new Error('Unable to fetch account transfer rate, please check session logs for more info!'),
                     );
@@ -391,8 +391,8 @@ class LedgerService extends EventEmitter {
 
                     resolve(availableBalance);
                 })
-                .catch((error: Error) => {
-                    this.logger.error('Unable to fetch account balance', error);
+                .catch((error) => {
+                    this.logger.error('getAccountAvailableBalance', error);
                     reject(new Error('Unable to fetch account balance, please check session logs for more info!'));
                 });
         });
@@ -417,8 +417,8 @@ class LedgerService extends EventEmitter {
                     const { account_data } = resp;
                     resolve(Number(account_data.Sequence));
                 })
-                .catch((error: Error) => {
-                    this.logger.error('Unable to fetch account sequence', error);
+                .catch((error) => {
+                    this.logger.error('getAccountSequence', error);
                     reject(new Error('Unable to fetch account sequence, please check session logs for more info!'));
                 });
         });
@@ -481,7 +481,8 @@ class LedgerService extends EventEmitter {
 
                 return RippleStateToTrustLine(node, account);
             })
-            .catch(() => {
+            .catch((error) => {
+                this.logger.error('getFilteredAccountLine', error);
                 return undefined;
             });
     };
@@ -549,7 +550,7 @@ class LedgerService extends EventEmitter {
                 fail_hard: failHard,
             });
 
-            this.logger.debug('Submit transaction:', submitResponse);
+            this.logger.debug('submitTransaction', submitResponse);
 
             // assign hash we received from submitting the transaction
             // this is necessary for verifying the transaction in case of only tx_blob is available

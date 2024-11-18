@@ -1,5 +1,3 @@
-use_frameworks! :linkage => :static
-
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
@@ -12,7 +10,6 @@ prepare_react_native_project!
 
 # no-ad-tracking Analytics subspec as we do not use it at all
 $RNFirebaseAnalyticsWithoutAdIdSupport = true
-$RNFirebaseAsStaticFramework = true
 
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -23,6 +20,15 @@ end
 
 target 'Xaman' do
   config = use_native_modules!
+
+      pod 'Firebase', :modular_headers => true
+      pod 'FirebaseCoreInternal', :modular_headers => true
+      pod 'GoogleUtilities', :modular_headers => true
+      pod 'FirebaseCore', :modular_headers => true
+      pod 'FirebaseInstallations', :modular_headers => true
+      pod 'FirebaseCoreExtension', :modular_headers => true
+      pod 'GoogleDataTransport', :modular_headers => true
+      pod 'nanopb', :modular_headers => true
 
   use_react_native!(
     :path => config[:reactNativePath],

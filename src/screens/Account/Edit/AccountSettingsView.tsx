@@ -8,7 +8,7 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import { getAccountName } from '@common/helpers/resolver';
+import AccountResolver from '@common/helpers/resolver';
 
 import { GetCardEnforcedSecurity, GetCardId, TangemSecurity } from '@common/utils/tangem';
 import { AppConfig, AppScreens } from '@common/constants';
@@ -108,13 +108,12 @@ class AccountSettingsView extends Component<Props, State> {
             label: labelClean,
         });
 
-        // update catch for this account
-        getAccountName.cache.set(
-            account.address,
-            new Promise((resolve) => {
-                resolve({ name: labelClean, source: 'accounts' });
-            }),
-        );
+        // update resolver cache for this account
+        AccountResolver.setCache(`${account.address}`, {
+            address: account.address,
+            name: labelClean,
+            source: 'accounts',
+        });
     };
 
     showAccessLevelPicker = () => {

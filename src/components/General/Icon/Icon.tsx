@@ -1,7 +1,7 @@
 /**
- * Footer
+ * Icon
  *
-    <Footer></Footer>
+    <Icon name={'IconLock'} size={25}></Icon>
  *
  */
 import React from 'react';

@@ -3,11 +3,12 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, SafeAreaView, Image, Platform, Keyboard, InteractionManager } from 'react-native';
+import { Image, InteractionManager, Keyboard, Platform, SafeAreaView, Text, View } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
 
-import { AuthenticationService, StyleService } from '@services';
+import { AppService, AuthenticationService, StyleService } from '@services';
+import { AppStateStatus } from '@services/AppService';
 
 import { BiometricErrors } from '@common/libs/biometric';
 
@@ -15,7 +16,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
-import { SecurePinInput, BlurView } from '@components/General';
+import { BlurView, SecurePinInput } from '@components/General';
 
 import Localize from '@locale';
 
@@ -29,6 +30,7 @@ import { Props, State } from './types';
 class LockOverlay extends Component<Props, State> {
     static screenName = AppScreens.Overlay.Lock;
 
+    private pendingBiometricAuthentication?: boolean;
     private securePinInputRef: React.RefObject<SecurePinInput>;
 
     static options() {
@@ -49,17 +51,35 @@ class LockOverlay extends Component<Props, State> {
         };
 
         this.securePinInputRef = React.createRef();
+
+        // keep track of pending biometric authentications
+        this.pendingBiometricAuthentication = false;
     }
 
     componentDidMount() {
-        // dismiss any keyboard when it's locked
-        Keyboard.dismiss();
+        // add app state change listener
+        AppService.addListener('appStateChange', this.onAppStateChange);
 
         // check for biometric authentication
         InteractionManager.runAfterInteractions(() => {
+            // dismiss any keyboard when it's locked
+            Keyboard.dismiss();
+            // first set the biometric status and then start authentication
             this.setBiometricStatus().then(this.startAuthentication);
         });
     }
+
+    componentWillUnmount() {
+        AppService.removeListener('appStateChange', this.onAppStateChange);
+    }
+
+    onAppStateChange = (nextState: AppStateStatus) => {
+        // resume the biometric authentication
+        if (this.pendingBiometricAuthentication && nextState === AppStateStatus.Active) {
+            this.pendingBiometricAuthentication = false;
+            this.startAuthentication();
+        }
+    };
 
     setBiometricStatus = () => {
         return new Promise((resolve) => {
@@ -77,9 +97,15 @@ class LockOverlay extends Component<Props, State> {
     startAuthentication = () => {
         const { isBiometricAvailable } = this.state;
 
-        // if any biometric method available start the biometric authentication
+        // if any biometric method available then start the biometric authentication
         if (isBiometricAvailable) {
-            this.requestBiometricAuthenticate(true);
+            if (AppService.currentAppState !== AppStateStatus.Active) {
+                // so we wait for the app to come back to the Active state
+                this.pendingBiometricAuthentication = true;
+            } else {
+                // start the authentication
+                this.requestBiometricAuthenticate(true);
+            }
         }
     };
 
@@ -147,7 +173,7 @@ class LockOverlay extends Component<Props, State> {
             <BlurView
                 style={styles.blurView}
                 blurAmount={Platform.OS === 'ios' ? 15 : 20}
-                blurType={StyleService.isDarkMode() ? 'dark' : 'light'}
+                blurType={StyleService.select({ dark: 'dark', light: 'light' })}
             >
                 <SafeAreaView testID="lock-overlay" style={styles.container}>
                     <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>

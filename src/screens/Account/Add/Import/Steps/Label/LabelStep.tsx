@@ -2,13 +2,14 @@
  * import Account/Label Screen
  */
 
-import { isEmpty, get } from 'lodash';
+import { isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import { AppConfig } from '@common/constants';
 
-import { getAccountName } from '@common/helpers/resolver';
+import AccountResolver from '@common/helpers/resolver';
 
 import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
@@ -53,25 +54,25 @@ class LabelStep extends Component<Props, State> {
             });
         }
 
-        getAccountName(account.address!)
-            .then((res: any) => {
+        AccountResolver.getAccountName(account.address!)
+            .then((res) => {
                 if (!isEmpty(res)) {
-                    const name = get(res, 'name');
+                    const { name } = res;
 
                     if (name) {
                         if (account.type === AccountTypes.Tangem) {
-                            if (name.starsWith('💳')) {
+                            if (name.startsWith('💳')) {
                                 this.setState({
-                                    label: res.name,
+                                    label: name,
                                 });
                             } else {
                                 this.setState({
-                                    label: `💳 ${res.name}`,
+                                    label: `💳 ${name}`,
                                 });
                             }
                         } else {
                             this.setState({
-                                label: res.name,
+                                label: name,
                             });
                         }
                     }

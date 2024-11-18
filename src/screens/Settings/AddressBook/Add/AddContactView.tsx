@@ -11,7 +11,8 @@ import { StringType, XrplDestination } from 'xumm-string-decode';
 import { libraries } from 'xrpl-accountlib';
 
 import { NormalizeDestination } from '@common/utils/codec';
-import { getAccountName, getPayIdInfo } from '@common/helpers/resolver';
+
+import AccountResolver from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -70,7 +71,7 @@ class AddContactView extends Component<Props, State> {
 
         // if everything is fine try to fetch the account name
         if (to) {
-            const accountInfo = await getAccountName(to, tag);
+            const accountInfo = await AccountResolver.getAccountName(to, tag);
 
             this.setState({
                 xAddress,
@@ -89,7 +90,7 @@ class AddContactView extends Component<Props, State> {
 
             // if payId try to resolve
             if (result.payId) {
-                const payIdInfo = await getPayIdInfo(result.payId);
+                const payIdInfo = await AccountResolver.getPayIdInfo(result.payId);
 
                 if (payIdInfo) {
                     await this.doNameLookup({
@@ -150,13 +151,12 @@ class AddContactView extends Component<Props, State> {
             destinationTag: tag || '',
         });
 
-        // update catch for this contact
-        getAccountName.cache.set(
-            `${address}${tag || ''}`,
-            new Promise((resolve) => {
-                resolve({ name, source: 'contacts' });
-            }),
-        );
+        // update resolver cache for this contact
+        AccountResolver.setCache(`${address}${tag ?? ''}`, {
+            address: address!,
+            name,
+            source: 'contacts',
+        });
 
         Toast(Localize.t('settings.contactSuccessSaved'));
 

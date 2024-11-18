@@ -38,6 +38,9 @@ const LedgerEntryFlags = {
         lsfPassive: 0x00010000,
         lsfSell: 0x00020000,
     },
+    [LedgerEntryTypes.URIToken]: {
+        lsfBurnable: 0x00000001,
+    },
 };
 
 export { LedgerEntryFlags };

@@ -83,6 +83,33 @@ export interface SignerEntry {
     WalletLocator?: string;
 }
 
+export interface PriceData {
+    /**
+     * The primary asset in a trading pair. Any valid identifier, such as a stock symbol,
+     * bond CUSIP, or currency code is allowed. For example, in the BTC/USD pair, BTC is the base asset;
+     * in 912810RR9/BTC, 912810RR9 is the base asset.
+     */
+    BaseAsset: string;
+
+    /**
+     * The quote asset in a trading pair. The quote asset denotes the price of one unit of the base asset.
+     * For example, in the BTC/USD pair, USD is the quote asset; in 912810RR9/BTC, BTC is the quote asset.
+     */
+    QuoteAsset: string;
+
+    /**
+     * The asset price after applying the Scale precision level. If it is not included,
+     * the PriceData object will be deleted.
+     */
+    AssetPrice?: number;
+
+    /**
+     * The scaling factor to apply to an asset price. For example, if Scale is 6 and original price
+     * is 0.155, then the scaled price is 155000. Valid scale ranges are 0-10. The default value is 0.
+     */
+    Scale?: number;
+}
+
 /**
  * This information is added to Transactions in request responses, but is not part
  * of the canonical Transaction information on ledger. These fields are denoted with

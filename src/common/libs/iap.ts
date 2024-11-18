@@ -32,10 +32,18 @@ interface GooglePlayPurchase {
 }
 
 interface AppStorePayment {
+    error?: string;
     transactionIdentifier: string;
     productIdentifier: string;
     quantity: number;
     applicationUsername?: string;
+}
+
+export interface ProductDetails {
+    title: string;
+    description: string;
+    price: string;
+    productId: string;
 }
 
 export type InAppPurchaseReceipt = GooglePlayPurchase | AppStorePayment;
@@ -51,11 +59,19 @@ const InAppPurchase = {
     },
 
     /**
+     * Get product details
+     */
+    getProductDetails: async (productId: string): Promise<ProductDetails> => {
+        await InAppPurchase.startConnectionIfAndroid();
+        return InAppPurchaseModule.getProductDetails<ProductDetails>(productId);
+    },
+
+    /**
      * Restore any old purchases
      */
     restorePurchases: async () => {
         await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.restorePurchases();
+        return InAppPurchaseModule.restorePurchases<InAppPurchaseReceipt>();
     },
 
     /**
@@ -63,7 +79,7 @@ const InAppPurchase = {
      */
     purchase: async (productId: string) => {
         await InAppPurchase.startConnectionIfAndroid();
-        return InAppPurchaseModule.purchase(productId);
+        return InAppPurchaseModule.purchase<InAppPurchaseReceipt>(productId);
     },
 
     /**
@@ -72,6 +88,15 @@ const InAppPurchase = {
     finalizePurchase: async (transactionReceiptIdentifier: string) => {
         await InAppPurchase.startConnectionIfAndroid();
         return InAppPurchaseModule.finalizePurchase(transactionReceiptIdentifier);
+    },
+
+    /**
+     * Checks if the user is currently in the process of making a purchase.
+     *
+     * @returns {boolean} True if the user is making a purchase, otherwise false.
+     */
+    isUserPurchasing: (): boolean => {
+        return InAppPurchaseModule.isUserPurchasing();
     },
 
     /**

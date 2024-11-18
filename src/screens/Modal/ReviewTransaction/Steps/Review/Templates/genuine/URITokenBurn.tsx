@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
+import { URITokenElement } from '@components/Modules';
+
 import { URITokenBurn } from '@common/libs/ledger/transactions';
 
 import Localize from '@locale';
@@ -29,9 +31,13 @@ class URITokenBurnTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.uriTokeId')}</Text>
+                <Text style={styles.label}>{Localize.t('global.uritoken')}</Text>
                 <View style={styles.contentBox}>
-                    <Text style={styles.value}>{transaction.URITokenID}</Text>
+                    <URITokenElement
+                        uriTokenId={transaction!.URITokenID}
+                        truncate={false}
+                        containerStyle={styles.uriTokenContainer}
+                    />
                 </View>
             </>
         );

@@ -6,7 +6,7 @@ import URITokenBuy from './URITokenBuy.class';
 
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { AssetDetails, AssetTypes, ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class URITokenBuyInfo extends ExplainerAbstract<URITokenBuy, MutationsMixinType> {
@@ -46,6 +46,10 @@ class URITokenBuyInfo extends ExplainerAbstract<URITokenBuy, MutationsMixinType>
                 },
             ],
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.URIToken, owner: this.item.Account, uriTokenId: this.item.URITokenID! }];
     }
 }
 

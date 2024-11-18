@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { AmountText, Icon } from '@components/General';
 import { NFTokenElement } from '@components/Modules/NFTokenElement';
+import { URITokenElement } from '@components/Modules/URITokenElement';
 
 import { AssetDetails, AssetTypes, MonetaryFactorType, MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { BalanceChangeType, OperationActions } from '@common/libs/ledger/parser/types';
@@ -64,6 +65,14 @@ class AssetsMutations extends PureComponent<Props, State> {
                         account={account.address}
                         nfTokenId={asset.nfTokenId}
                         containerStyle={styles.nfTokenContainer}
+                    />
+                );
+            case AssetTypes.URIToken:
+                return (
+                    <URITokenElement
+                        key={asset.uriTokenId}
+                        uriTokenId={asset.uriTokenId}
+                        containerStyle={styles.uriTokenContainer}
                     />
                 );
             default:

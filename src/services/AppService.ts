@@ -9,13 +9,15 @@ import NetInfo from '@react-native-community/netinfo';
 
 import Localize from '@locale';
 
-import { GetAppVersionCode } from '@common/helpers/app';
+import { WebLinks } from '@common/constants/endpoints';
 
+import { InAppPurchase } from '@common/libs/iap';
 import Preferences from '@common/libs/preferences';
+
+import { GetAppVersionCode } from '@common/helpers/app';
 import { VersionDiff } from '@common/utils/version';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
-import { WebLinks } from '@common/constants/endpoints';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
@@ -110,9 +112,9 @@ class AppService extends EventEmitter {
 
                 // this method only works on android
                 if (Platform.OS === 'android') {
-                    AppUpdateModule.startUpdate().catch((e: any) => {
+                    AppUpdateModule.startUpdate().catch((error) => {
                         // user canceled this update
-                        if (e.code === 'E_UPDATE_CANCELLED') {
+                        if (error.code === 'E_UPDATE_CANCELLED') {
                             Preferences.set(Preferences.keys.UPDATE_IGNORE_VERSION_CODE, `${versionCode}`);
                         }
                     });
@@ -136,9 +138,8 @@ class AppService extends EventEmitter {
                     );
                 }
             })
-            .catch((error: Error) => {
+            .catch((error) => {
                 this.logger.warn('checkAppUpdate', error);
-                // ignore
             });
     };
 
@@ -219,6 +220,12 @@ class AppService extends EventEmitter {
     };
 
     handleAppStateChange = (nextAppState: any) => {
+        // ignore the ApPState changes when user is purchasing as it will be trigger by IAP activity
+        if (InAppPurchase.isUserPurchasing()) {
+            this.logger.debug('ignore appState change while user is purchasing through IAP.');
+            return;
+        }
+
         let appState;
         switch (nextAppState) {
             case 'active':

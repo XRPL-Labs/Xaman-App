@@ -1,6 +1,7 @@
 export { default as ActionButtonsWidget } from './ActionButtons';
 export { default as ExplainWidget } from './Explain';
 export { default as FeeWidget } from './Fee';
+export { default as TransferRateWidget } from './TransferRate';
 export { default as FlagsWidget } from './Flags';
 export { default as HookDetailsWidget } from './HookDetails';
 export { default as IdentifierWidget } from './Identifier';

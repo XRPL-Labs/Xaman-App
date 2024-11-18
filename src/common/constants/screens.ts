@@ -8,7 +8,6 @@ const screens = {
         Passcode: 'app.Setup.Passcode',
         Biometric: 'app.Setup.Biometric',
         PushNotification: 'app.Setup.PushNotification',
-        Disclaimers: 'app.Setup.Disclaimers',
         Finish: 'app.Setup.Finish',
     },
     TabBar: {
@@ -43,6 +42,7 @@ const screens = {
         XAppBrowser: 'modal.XAppBrowser',
         DestinationPicker: 'modal.DestinationPicker',
         TransactionLoader: 'modal.TransactionLoader',
+        PurchaseProduct: 'modal.PurchaseProduct',
     },
     Overlay: {
         SwitchAccount: 'overlay.SwitchAccount',
@@ -71,7 +71,6 @@ const screens = {
         SwitchNetwork: 'overlay.SwitchNetwork',
         XAppInfo: 'overlay.XAppInfo',
         NetworkRailsSync: 'overlay.NetworkRailsSync',
-        PurchaseProduct: 'overlay.PurchaseProduct',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

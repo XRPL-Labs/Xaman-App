@@ -3,7 +3,7 @@ import { isEqual, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-native';
 
-import { getAccountName, AccountNameType } from '@common/helpers/resolver';
+import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -125,7 +125,7 @@ class AccountElement extends Component<Props, State> {
             });
         }
 
-        getAccountName(address, tag)
+        AccountResolver.getAccountName(address, tag)
             .then((res) => {
                 if (!isEmpty(res) && this.mounted) {
                     this.setState(

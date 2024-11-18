@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[LoadingIndicator] renders while animating is false 1`] = `
+<ActivityIndicator
+  animating={false}
+  color="#000000"
+  size="small"
+/>
+`;
+
+exports[`[LoadingIndicator] renders with custom styles 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#000000"
+  size="small"
+  style={
+    {
+      "margin": 10,
+    }
+  }
+/>
+`;
+
+exports[`[LoadingIndicator] renders with default props 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#000000"
+  size="small"
+/>
+`;
+
+exports[`[LoadingIndicator] renders with specified color (dark) 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#000000"
+  size="small"
+/>
+`;
+
+exports[`[LoadingIndicator] renders with specified color (light) 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#ffffff"
+  size="small"
+/>
+`;
+
+exports[`[LoadingIndicator] renders with specified size (large) 1`] = `
+<ActivityIndicator
+  animating={true}
+  color="#000000"
+  size="large"
+/>
+`;

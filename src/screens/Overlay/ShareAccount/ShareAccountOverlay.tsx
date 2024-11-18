@@ -95,10 +95,10 @@ class ShareAccountOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel
-                height={AppSizes.moderateScale(580)}
+                ref={this.actionPanelRef}
+                height={AppSizes.moderateScale(570)}
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={AppStyles.centerAligned}
-                ref={this.actionPanelRef}
                 extraBottomInset
             >
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>

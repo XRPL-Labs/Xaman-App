@@ -289,10 +289,45 @@ declare namespace XamanBackend {
         };
     }
 
+    interface NFTDetailsResponse {
+        network: string;
+        account: string;
+        tokens: string[];
+        tokenData: {
+            [key: string]: {
+                issuer: string;
+                token: string;
+                owner: string | null;
+                name: string;
+                image: string;
+            };
+        };
+    }
+
+    interface NFTOfferedResponse extends Array<NFTOffered & URITokenOffered> {}
+
+    interface NFTOffered {
+        _type: string;
+        OfferID: string;
+        ledger_close_time: number;
+    }
+
+    interface URITokenOffered {
+        _type: string;
+        Amount: string;
+        Flags: number;
+        URITokenID: string;
+        OfferID: string;
+        OfferCreator: string;
+        CurrentNftOwner: string;
+        ledger_close_time: number;
+    }
+
     declare enum RatesInCurrency {
         to = 'to',
         from = 'from',
     }
+
     interface LiquidityBoundaries {
         issuer: string;
         iou: string;
@@ -307,6 +342,4 @@ declare namespace XamanBackend {
             maxBookLines?: number;
         };
     }
-
-    // TODO: add /v1/app/xls20-details - /v1/app/xls20-offered/{account}
 }

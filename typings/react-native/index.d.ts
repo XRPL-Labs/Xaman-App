@@ -407,13 +407,21 @@ interface InAppPurchaseModuleInterface extends NativeModule {
      * Android specific
      */
     startConnection(): Promise<boolean>;
+
+    /**
+     * Fetches the details of a product by its ID.
+     *
+     * @param {string} productId - The unique identifier of the product.
+     * @return {Promise<T>} A promise that resolves to the product details.
+     */
+    getProductDetails<T>(productId: string): Promise<T>;
     /**
      * Checks if there are any previous purchases
      * that have been made but not yet finalized
      *
      * @returns {Promise<Array<string>>} A promise that resolves to an array of purchase details representing the previous purchases that have not been finalized yet.
      */
-    restorePurchases(): Promise<Array<T>>;
+    restorePurchases<T>(): Promise<Array<T>>;
     /**
      * Launches the billing flow for a specific product ID.
      *
@@ -421,13 +429,20 @@ interface InAppPurchaseModuleInterface extends NativeModule {
      * @return {Promise<Array<string>>} A promise resolved with an array of successful purchases,
      *                                representing the data of the purchase.
      */
-    purchase(productId: string): Promise<Array<T>>;
+    purchase<T>(productId: string): Promise<Array<T>>;
     /**
      * finalize a purchase, indicating that the product has been provided to the user.
      *
      * @return {Promise<string>}
      */
     finalizePurchase(transactionReceiptIdentifier: string): Promise<string>;
+
+    /**
+     * Checks if the user is currently in the process of making a purchase.
+     *
+     * @return {boolean} True if the user is purchasing; otherwise, false.
+     */
+    isUserPurchasing(): boolean;
 }
 
 /**

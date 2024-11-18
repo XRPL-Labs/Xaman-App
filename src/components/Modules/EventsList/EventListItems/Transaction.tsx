@@ -13,7 +13,7 @@ import { LedgerObjects } from '@common/libs/ledger/objects/types';
 import { AccountModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
-import { AccountNameType, getAccountName } from '@common/helpers/resolver';
+import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
 
 import { AppScreens } from '@common/constants';
 
@@ -121,7 +121,7 @@ class TransactionItem extends Component<Props, State> {
 
         try {
             // get participant details
-            const resp = await getAccountName(otherParty.address, otherParty.tag);
+            const resp = await AccountResolver.getAccountName(otherParty.address, otherParty.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,

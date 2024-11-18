@@ -104,7 +104,7 @@ class AccountService extends EventEmitter {
         const { transaction, meta } = tx;
 
         if (typeof transaction === 'object' && typeof meta === 'object') {
-            this.logger.debug(`Transaction received: ${get(transaction, 'hash', 'NO_HASH')}`);
+            this.logger.debug(`transactionHandler [${get(transaction, 'hash', 'NO_HASH')}]`);
 
             // get effected accounts
             const balanceChangesAccounts = keys(new Meta(meta).parseBalanceChanges());
@@ -155,7 +155,7 @@ class AccountService extends EventEmitter {
         const accountInfo = await LedgerService.getAccountInfo(account);
 
         if (!accountInfo) {
-            this.logger.warn(`Fetch account info [${account}]: got empty response`);
+            this.logger.warn(`updateAccountInfo [${account}]: got empty response`);
         }
 
         // if there is any error in the response return and ignore fetching the account lines
@@ -181,7 +181,7 @@ class AccountService extends EventEmitter {
             }
 
             // log the error and return
-            this.logger.warn(`Fetch account info [${account}]:`, accountInfo?.error);
+            this.logger.warn(`updateAccountInfo [${account}]:`, accountInfo?.error);
             return;
         }
 
@@ -328,12 +328,12 @@ class AccountService extends EventEmitter {
                 if (include.indexOf(account) === -1) return;
             }
 
-            await this.updateAccountInfo(account).catch((error: Error) => {
-                this.logger.error(`Update account info [${account}] `, error);
+            await this.updateAccountInfo(account).catch((error) => {
+                this.logger.error(`updateAccountInfo [${account}] `, error);
             });
 
-            await this.updateAMMPairs(account).catch((error: Error) => {
-                this.logger.error(`Update amm pairs [${account}] `, error);
+            await this.updateAMMPairs(account).catch((error) => {
+                this.logger.error(`updateAMMPairs [${account}] `, error);
             });
         });
     };
@@ -364,8 +364,8 @@ class AccountService extends EventEmitter {
         NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
             accounts: this.accounts,
-        }).catch((error: Error) => {
-            this.logger.warn('Unable to Unsubscribe accounts', error);
+        }).catch((error) => {
+            this.logger.warn('unsubscribe', error);
         });
     }
 
@@ -379,7 +379,7 @@ class AccountService extends EventEmitter {
             command: 'subscribe',
             accounts: this.accounts,
         }).catch((error: Error) => {
-            this.logger.warn('Unable to Subscribe accounts', error);
+            this.logger.warn('subscribe', error);
         });
     }
 }

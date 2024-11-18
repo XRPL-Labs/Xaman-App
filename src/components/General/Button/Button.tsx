@@ -18,6 +18,7 @@ interface Props extends PropsWithChildren {
     textStyle?: StyleProp<TextStyle>;
     disabledStyle?: StyleProp<TextStyle>;
     iconStyle?: StyleProp<ImageStyle>;
+    transparent?: boolean;
     secondary?: boolean;
     light?: boolean;
     contrast?: boolean;
@@ -171,6 +172,7 @@ export default class Button extends Component<Props> {
         const {
             isDisabled,
             style,
+            transparent,
             secondary,
             light,
             contrast,
@@ -191,8 +193,10 @@ export default class Button extends Component<Props> {
                     testID={testID}
                     style={[
                         styles.button,
+                        transparent && styles.buttonTransparent,
                         secondary && styles.buttonSecondary,
                         light && styles.buttonLight,
+                        contrast && styles.buttonContrast,
                         rounded && styles.buttonRounded,
                         roundedSmall && styles.buttonRoundedSmall,
                         roundedSmallBlock && styles.buttonRoundedSmallBlock,
@@ -220,6 +224,7 @@ export default class Button extends Component<Props> {
                 delayPressIn={0}
                 style={[
                     styles.button,
+                    transparent && styles.buttonTransparent,
                     secondary && styles.buttonSecondary,
                     light && styles.buttonLight,
                     contrast && styles.buttonContrast,

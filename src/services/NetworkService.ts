@@ -339,7 +339,7 @@ class NetworkService extends EventEmitter {
                 }
 
                 resolve(NormalizeFeeDataSet(resp));
-            } catch (error: any) {
+            } catch (error) {
                 this.logger.warn('Unable to calculate available network fees:', error);
                 reject(new Error('Unable to calculate available network fees!'));
             }
@@ -436,8 +436,8 @@ class NetworkService extends EventEmitter {
             if (this.connection) {
                 this.connection.close();
             }
-        } catch (e) {
-            this.logger.error('Unable to close the connection', e);
+        } catch (error) {
+            this.logger.error('Unable to close the connection', error);
         }
     };
 
@@ -449,8 +449,8 @@ class NetworkService extends EventEmitter {
             if (this.connection) {
                 this.connection.reinstate();
             }
-        } catch (e) {
-            this.logger.error('Unable to reinstate the connection', e);
+        } catch (error) {
+            this.logger.error('Unable to reinstate the connection', error);
         }
     };
 
@@ -464,8 +464,8 @@ class NetworkService extends EventEmitter {
             this.closeConnection();
             // reinstate
             this.reinstateConnection();
-        } catch (e) {
-            this.logger.error('Unable to reconnect', e);
+        } catch (error) {
+            this.logger.error('Unable to reconnect', error);
         }
     };
 
@@ -546,6 +546,8 @@ class NetworkService extends EventEmitter {
                 TRANSACTION_RESULTS: isPlainObject,
                 TRANSACTION_TYPES: isPlainObject,
                 LEDGER_ENTRY_TYPES: isPlainObject,
+                TRANSACTION_FLAGS: isPlainObject,
+                TRANSACTION_FLAGS_INDICES: isPlainObject,
                 FIELDS: isArray,
                 hash: isString,
             } as { [key: string]: (value?: any) => boolean };
@@ -556,7 +558,9 @@ class NetworkService extends EventEmitter {
                 if (Object.prototype.hasOwnProperty.call(respValidation, key)) {
                     // validate
                     if (respValidation[key](definitionsResp[key]) === false) {
-                        this.logger.warn('server_definitions got invalid format:', definitionsResp);
+                        this.logger.warn(
+                            `server_definitions invalid format for key ${key}, got ${typeof definitionsResp[key]}`,
+                        );
                         return;
                     }
                     // set the key
@@ -570,7 +574,7 @@ class NetworkService extends EventEmitter {
                 id: this.getNetwork().id,
                 definitionsString: JSON.stringify(definitions),
             });
-        } catch (error: any) {
+        } catch (error) {
             this.logger.error('updateNetworkDefinitions: ', error);
         }
     };
@@ -595,8 +599,8 @@ class NetworkService extends EventEmitter {
                     amendments: resp.node.Amendments,
                 });
             })
-            .catch((error: any) => {
-                this.logger.error(error);
+            .catch((error) => {
+                this.logger.error('updateNetworkFeatures: ', error);
             });
     };
 
@@ -632,8 +636,8 @@ class NetworkService extends EventEmitter {
                     });
                 }
             })
-            .catch((error: any) => {
-                this.logger.error(error);
+            .catch((error) => {
+                this.logger.error('updateNetworkReserve', error);
             });
     };
 

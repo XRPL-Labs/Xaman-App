@@ -6,7 +6,7 @@ import URITokenBurn from './URITokenBurn.class';
 
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
-import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { AssetDetails, AssetTypes, ExplainerAbstract } from '@common/libs/ledger/factory/types';
 
 /* Descriptor ==================================================================== */
 class URITokenBurnInfo extends ExplainerAbstract<URITokenBurn, MutationsMixinType> {
@@ -35,6 +35,10 @@ class URITokenBurnInfo extends ExplainerAbstract<URITokenBurn, MutationsMixinTyp
             mutate: this.item.BalanceChange(this.account.address),
             factor: undefined,
         };
+    }
+
+    getAssetDetails(): AssetDetails[] {
+        return [{ type: AssetTypes.URIToken, owner: this.item.Account, uriTokenId: this.item.URITokenID! }];
     }
 }
 

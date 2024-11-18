@@ -5,16 +5,23 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, Animated, ViewStyle } from 'react-native';
+import { View, Animated, ViewStyle, InteractionManager } from 'react-native';
 
 /* Types ==================================================================== */
 interface Props {
+    animated?: boolean;
     children: React.ReactNode;
     containerStyle?: ViewStyle | ViewStyle[];
 }
 
 /* Component ==================================================================== */
 class HeartBeatAnimation extends PureComponent<Props> {
+    declare readonly props: Props & Required<Pick<Props, keyof typeof HeartBeatAnimation.defaultProps>>;
+
+    static defaultProps: Partial<Props> = {
+        animated: true,
+    };
+
     private scaleAnimation: Animated.Value;
 
     constructor(props: Props) {
@@ -24,10 +31,26 @@ class HeartBeatAnimation extends PureComponent<Props> {
     }
 
     componentDidMount() {
-        this.startAnimation();
+        InteractionManager.runAfterInteractions(this.startAnimation);
+    }
+
+    componentDidUpdate(prevProps: Props) {
+        const { animated } = this.props;
+
+        if (animated !== prevProps.animated) {
+            if (animated) {
+                this.startAnimation();
+            } else {
+                this.stopAnimation();
+            }
+        }
     }
 
     startAnimation = () => {
+        const { animated } = this.props;
+
+        if (!animated) return;
+
         Animated.loop(
             Animated.sequence([
                 Animated.timing(this.scaleAnimation, {
@@ -42,6 +65,10 @@ class HeartBeatAnimation extends PureComponent<Props> {
                 }),
             ]),
         ).start();
+    };
+
+    stopAnimation = () => {
+        this.scaleAnimation.stopAnimation();
     };
 
     render() {

@@ -331,7 +331,7 @@ class NavigationService extends EventEmitter {
     };
 
     setCurrentOverlay = (overlay: AppScreenKeys) => {
-        if (last(this.overlays) !== overlay) {
+        if (!this.overlays.includes(overlay)) {
             analytics().logScreenView({ screen_name: overlay });
             this.overlays.push(overlay);
         }

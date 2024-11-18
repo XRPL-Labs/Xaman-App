@@ -10,8 +10,9 @@ import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'reac
 import * as AccountLib from 'xrpl-accountlib';
 
 import { XAppOrigin } from '@common/libs/payload';
+
 import { Toast } from '@common/helpers/interface';
-import { getAccountName } from '@common/helpers/resolver';
+import AccountResolver from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
 import { SHA256 } from '@common/libs/crypto';
@@ -37,7 +38,6 @@ import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
 import { AppStyles } from '@theme';
 
 import Steps from './Steps';
-
 import { StepsContext } from './Context';
 
 /* types ==================================================================== */
@@ -427,13 +427,12 @@ class AccountImportView extends Component<Props, State> {
                 account: createdAccount,
             });
 
-            // update catch for this account
-            getAccountName.cache.set(
-                account.address,
-                new Promise((resolve) => {
-                    resolve({ name: account.label, source: 'accounts' });
-                }),
-            );
+            // update resolver cache for this account
+            AccountResolver.setCache(account.address!, {
+                address: account.address!,
+                name: account.label,
+                source: 'accounts',
+            });
 
             // close the screen
             Navigator.popToRoot().then(() => {

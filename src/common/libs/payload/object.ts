@@ -7,8 +7,6 @@ import { Endpoints } from '@common/constants/endpoints';
 import ApiService, { ApiError } from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
 
-import CoreRepository from '@store/repositories/core';
-
 import { TransactionFactory } from '@common/libs/ledger/factory';
 
 import Localize from '@locale';
@@ -67,8 +65,6 @@ export class Payload {
         } else if (isObject(args)) {
             // if not,  assign it to the class
             payload.assign(args);
-        } else {
-            throw new Error('invalid args applied, only string or object');
         }
 
         return payload;
@@ -237,7 +233,7 @@ export class Payload {
 
             ApiService.fetch(Endpoints.Payload, 'PATCH', { uuid: this.getPayloadUUID() }, patch).catch(
                 (error: ApiError) => {
-                    logger.error(`Patch ${this.getPayloadUUID()}`, error);
+                    logger.error(`patch ${this.getPayloadUUID()}`, error);
                 },
             );
 
@@ -330,20 +326,13 @@ export class Payload {
         }
 
         // check if normal transaction and supported by the app
-        // NOTE: only in case of developer mode enabled we allow transaction fallback
         if (
             request_json.TransactionType &&
             !Object.values(TransactionTypes).includes(request_json.TransactionType as TransactionTypes)
         ) {
-            if (CoreRepository.isDeveloperModeEnabled()) {
-                logger.warn(
-                    `Requested transaction type "${request_json.TransactionType}" not found, revert to fallback transaction.`,
-                );
-            } else {
-                throw new Error(
-                    `Requested transaction type "${request_json.TransactionType} is not supported at the moment.`,
-                );
-            }
+            logger.warn(
+                `Requested transaction type "${request_json.TransactionType}" not found, revert to fallback transaction.`,
+            );
         }
 
         let craftedTransaction;

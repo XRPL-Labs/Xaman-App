@@ -100,6 +100,7 @@ class Application {
         if (message) {
             if (
                 message.indexOf('Realm file decryption failed') > -1 ||
+                message.indexOf('Could not decrypt data') > -1 ||
                 message.indexOf('Could not decrypt bytes') > -1
             ) {
                 Alert.alert('Error', ErrorMessages.storageDecryptionFailed, [
@@ -192,13 +193,13 @@ class Application {
                     .then(() => {
                         resolve();
                     })
-                    .catch((e) => {
-                        this.logger.error('initializeServices Error:', e);
-                        reject(e);
+                    .catch((error) => {
+                        this.logger.error('initializeServices', error);
+                        reject(error);
                     });
-            } catch (e) {
-                reject(e);
-                this.logger.error('initializeServices Error:', e);
+            } catch (error) {
+                reject(error);
+                this.logger.error('initializeServices', error);
             }
         });
     };
@@ -215,9 +216,9 @@ class Application {
                     }
                 });
                 resolve();
-            } catch (e: any) {
-                this.logger.error('reinstate Services Error:', e);
-                reject(e);
+            } catch (error) {
+                this.logger.error('reinstateServices', error);
+                reject(error);
             }
         });
     };

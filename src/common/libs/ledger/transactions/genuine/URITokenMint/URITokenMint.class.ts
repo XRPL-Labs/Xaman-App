@@ -29,6 +29,25 @@ class URITokenMint extends BaseGenuineTransaction {
         // set transaction type
         this.TransactionType = URITokenMint.Type;
     }
+
+    get URITokenID(): string {
+        if (!this._meta?.AffectedNodes) {
+            throw new Error('Determining the minted URIToken id necessitates the metadata!');
+        }
+
+        let uriTokenId = '';
+
+        this._meta?.AffectedNodes?.forEach((node) => {
+            if (node.CreatedNode && node.CreatedNode.LedgerEntryType === 'URIToken') {
+                const { LedgerIndex } = node.CreatedNode;
+                if (LedgerIndex) {
+                    uriTokenId = LedgerIndex;
+                }
+            }
+        });
+
+        return uriTokenId;
+    }
 }
 
 /* Export ==================================================================== */

@@ -50,6 +50,8 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
+                TRANSACTION_FLAGS: {},
+                TRANSACTION_FLAGS_INDICES: {},
                 FIELDS: [],
                 hash: 'DEFINITIONS_HASH',
                 // other
@@ -79,6 +81,8 @@ describe('NetworkService', () => {
                     TRANSACTION_RESULTS: returnedResponse.TRANSACTION_RESULTS,
                     TRANSACTION_TYPES: returnedResponse.TRANSACTION_TYPES,
                     LEDGER_ENTRY_TYPES: returnedResponse.LEDGER_ENTRY_TYPES,
+                    TRANSACTION_FLAGS: returnedResponse.TRANSACTION_FLAGS,
+                    TRANSACTION_FLAGS_INDICES: returnedResponse.TRANSACTION_FLAGS_INDICES,
                     FIELDS: returnedResponse.FIELDS,
                     hash: returnedResponse.hash,
                 }),
@@ -115,6 +119,8 @@ describe('NetworkService', () => {
                 TRANSACTION_RESULTS: {},
                 TRANSACTION_TYPES: {},
                 LEDGER_ENTRY_TYPES: {},
+                TRANSACTION_FLAGS: {},
+                TRANSACTION_FLAGS_INDICES: {},
                 FIELDS: [],
                 hash: 'SOME_HASH',
                 // other
@@ -176,7 +182,7 @@ describe('NetworkService', () => {
 
             expect(spy0).toHaveBeenCalledWith({ command: 'server_definitions' });
             expect(spy1).not.toHaveBeenCalled();
-            expect(spy2).toHaveBeenCalledWith('server_definitions got invalid format:', returnedResponse);
+            expect(spy2).toHaveBeenCalledWith('server_definitions invalid format for key TYPES, got string');
 
             spy0.mockRestore();
             spy1.mockRestore();

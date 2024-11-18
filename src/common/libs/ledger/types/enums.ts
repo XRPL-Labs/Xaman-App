@@ -52,6 +52,8 @@ export enum TransactionTypes {
     Clawback = 'Clawback',
     DIDDelete = 'DIDDelete',
     DIDSet = 'DIDSet',
+    OracleSet = 'OracleSet',
+    OracleDelete = 'OracleDelete',
 }
 
 /**
@@ -95,6 +97,7 @@ export enum LedgerEntryTypes {
     RippleState = 'RippleState',
     SignerList = 'SignerList',
     EmittedTxn = 'EmittedTxn',
+    Oracle = 'Oracle',
 }
 
 /**

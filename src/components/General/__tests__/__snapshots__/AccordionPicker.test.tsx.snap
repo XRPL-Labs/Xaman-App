@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[AccordionPicker] renders correctly with items 1`] = `
+<View
+  onLayout={[Function]}
+  style={
+    [
+      {
+        "backgroundColor": "#F3F6FA",
+        "borderRadius": 15,
+        "padding": 5,
+      },
+      undefined,
+      false,
+    ]
+  }
+>
+  <View
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onClick={[Function]}
+    onLayout={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "backgroundColor": "transparent",
+        "borderRadius": 12,
+        "height": 70,
+        "justifyContent": "center",
+        "marginTop": 2,
+        "opacity": 1,
+        "paddingHorizontal": 12,
+      }
+    }
+  >
+    <View
+      style={
+        [
+          {
+            "flexDirection": "row",
+            "left": 0,
+            "right": 0,
+          },
+        ]
+      }
+    >
+      <View
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <Text>
+          Selected Item 1
+        </Text>
+      </View>
+      <View
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": undefined,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          {
+            "alignSelf": "center",
+            "backgroundColor": "#000000",
+            "borderRadius": 8,
+            "height": 25,
+            "justifyContent": "center",
+            "opacity": 1,
+            "width": 40,
+          }
+        }
+      >
+        <Image
+          resizeMode="contain"
+          source={
+            {
+              "uri": "IconChevronDown",
+            }
+          }
+          style={
+            [
+              {
+                "height": 31.428571428571427,
+                "width": 31.428571428571427,
+              },
+              {
+                "alignSelf": "center",
+                "tintColor": "#ffffff",
+              },
+            ]
+          }
+        />
+      </View>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`[AccordionPicker] shows "No Item available" when items list is empty 1`] = `
+<View>
+  <View
+    style={
+      [
+        {
+          "flexDirection": "row",
+          "left": 0,
+          "right": 0,
+        },
+        {
+          "paddingLeft": 10,
+        },
+      ]
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#000000",
+            "fontFamily": "ProximaNova-Regular",
+            "fontSize": 34.285714285714285,
+          },
+          {
+            "fontFamily": "ProximaNova-Extrabld",
+          },
+        ]
+      }
+    >
+      No Item available
+    </Text>
+  </View>
+</View>
+`;

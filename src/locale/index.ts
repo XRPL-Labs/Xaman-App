@@ -6,7 +6,7 @@ import { I18n } from 'i18n-js';
 import BigNumber from 'bignumber.js';
 
 /* Types ==================================================================== */
-type LocalizeSettings = {
+export type LocalizeSettings = {
     /* Character used for decimal separator */
     separator: string;
     /* Character used for thousands separator */
@@ -92,7 +92,7 @@ class Localize {
         this.settings = settings;
     };
 
-    getSettings = (): any => {
+    getSettings = (): LocalizeSettings | undefined => {
         return this.settings;
     };
 

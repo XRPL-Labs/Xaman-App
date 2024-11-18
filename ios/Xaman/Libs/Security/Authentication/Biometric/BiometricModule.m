@@ -21,27 +21,29 @@ static bool _isUserAuthenticating = FALSE;
 RCT_EXPORT_MODULE();
 
 +(void)initialise {
-  // generate key if not exist
-  if(![SecurityProvider isKeyReady]){
-    [SecurityProvider generateKey];
-  }
+  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    // generate key if not exist
+    if(![SecurityProvider isKeyReady]){
+      [SecurityProvider generateKey];
+    }
+  });
 }
 
-// get normalize biomtery type
+// get normalised biometry type
 - (NSString *)getBiometryType:(LAContext *)context {
   return context.biometryType == LABiometryTypeFaceID ? TYPE_BIOMETRIC_FACEID : TYPE_BIOMETRIC_TOUCHID;
 }
 
-// get normalized sensore errors
+// get normalised sensors errors
 -(NSString *) getSensorError: (LAContext *)context {
   
   NSError *error;
-  // can autherize, everything seems fine, no errros
+  // can authorise, everything seems fine, no errors
   if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error]) {
     return NULL;
   }
   
-  // biometrics are not available, reutrn error
+  // biometrics are not available, return error
   switch (error.code) {
     case LAErrorBiometryNotAvailable:
       return ERROR_NOT_AVAILABLE;
@@ -60,7 +62,7 @@ RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve
     LAContext *context = [[LAContext alloc] init];
     NSString *error = [self getSensorError:context];
     
-    // can authorize with biometrics
+    // can authorise with biometrics
     if(error == NULL){
       
       // if sensor is available but the key is not generated
@@ -82,17 +84,16 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
   dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    
     LAContext *context = [[LAContext alloc] init];
     NSString *error = [self getSensorError:context];
     
-    // pre check for authentication availabality
+    // pre check for authentication availability
     if(error != NULL){
       reject(error, nil, nil);
       return;
     }
     
-    // set the athentication reason
+    // set the authentication reason
     context.localizedReason = reason;
     // remove fallback button
     context.localizedFallbackTitle = @"";
@@ -103,7 +104,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
     
     // try to sign random bytes with private key
     // NOTE: this will trigger biometric authentication
-    NSString *result = [SecurityProvider signRandomBytes:context];
+    NSString *result = [SecurityProvider signRandomBytesWithBackoff:context];
     
     
     // we got the result set isUserAuthenticating to false
@@ -115,7 +116,7 @@ RCT_EXPORT_METHOD(authenticate: (NSString *)reason
       return;
     }
     
-    // biometrics are not available, reutrn error
+    // biometrics are not available, return error
     if([result isEqual:ENCRYPTION_ERROR_CANCELLED]){
       reject(ERROR_USER_CANCEL, nil, nil);
       return;

@@ -60,6 +60,7 @@ export const Images = {
     // Xaman
     XamanLogo: buildImageSource('XamanLogo', 'xaman_logo'),
     XamanLogoLight: buildImageSource('XamanLogoLight', 'xaman_logo_light'),
+    XamanAppIcon: buildImageSource('XamanAppIcon', 'xaman_app_icon'),
     // Icons
     IconTabBarScan: buildImageSource('IconTabBarScan', 'icon_tabbar_scan'),
     IconTabBarHome: buildImageSource('IconTabBarHome', 'icon_tabbar_home'),

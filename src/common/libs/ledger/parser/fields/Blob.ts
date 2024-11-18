@@ -2,7 +2,6 @@
 export const Blob = {
     getter: (self: any, name: string) => {
         return (): string => {
-            // TODO: try to decode to UTF8 and if it was a valid string then return the string instead of blob
             return self[name];
         };
     },
@@ -15,7 +14,7 @@ export const Blob = {
 
             // TODO: valid we are setting hex value
             if (typeof value !== 'string') {
-                throw new Error(`field ${name} required type number, got ${typeof value}`);
+                throw new Error(`field ${name} required type string, got ${typeof value}`);
             }
 
             self[name] = value;

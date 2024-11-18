@@ -10,6 +10,15 @@ const FormatDate = (date: string): string => {
 };
 
 /**
+ * format the unix timestamp
+ * @param timestamp
+ * @returns string September 4, 1986 8:30 PM
+ */
+const FormatTimestamp = (timestamp: number): string => {
+    return moment.unix(timestamp).format('lll');
+};
+
+/**
  * format the date
  * @returns string 22:30:00
  * @param time
@@ -19,4 +28,4 @@ const FormatTime = (time: string): string => {
 };
 
 /* Export ==================================================================== */
-export { FormatDate, FormatTime };
+export { FormatDate, FormatTime, FormatTimestamp };

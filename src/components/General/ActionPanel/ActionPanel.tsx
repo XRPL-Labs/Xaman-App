@@ -67,7 +67,7 @@ class ActionPanel extends Component<Props, State> {
         let panelHeight = height;
 
         if (extraBottomInset) {
-            panelHeight += AppSizes.safeAreaBottomInset * 0.5;
+            panelHeight += AppSizes.safeAreaBottomInset;
         }
 
         const snapPoints = [{ y: screenHeight }, { y: screenHeight - panelHeight }];

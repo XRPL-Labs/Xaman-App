@@ -15,9 +15,9 @@ export enum LogEvents {
 export type Levels = 'debug' | 'warn' | 'error';
 
 export type LoggerInstance = {
-    debug: { (message: string, data?: any): void };
-    warn: { (message: string, data?: any): void };
-    error: { (message: string, data?: any): void };
+    debug: (message: string, data?: any) => void;
+    warn: (message: string, data?: any) => void;
+    error: (message: string, data?: any) => void;
 };
 
 export type LogEntry = {
@@ -29,15 +29,15 @@ export type LogEntry = {
 
 /* Service  ==================================================================== */
 class LoggerService {
-    private entries: Array<LogEntry>;
+    private entries: LogEntry[];
     private readonly isDEV: boolean;
-    private readonly levels: { [K in Levels]: { priority: number } };
+    private readonly levels: Record<Levels, { priority: number }>;
 
     static MAX_LOG_SIZE = 500;
 
     constructor() {
         this.entries = [];
-        this.isDEV = !!__DEV__;
+        this.isDEV = Boolean(__DEV__);
         this.levels = {
             debug: { priority: 20 },
             warn: { priority: 40 },
@@ -48,7 +48,7 @@ class LoggerService {
     /**
      * log error in firebase crashlytics
      */
-    logError = (message: string, exception: any) => {
+    logError = (message: string, exception: Error) => {
         if (message) {
             crashlytics().log(message);
         }
@@ -60,14 +60,14 @@ class LoggerService {
     /**
      * log an event in firebase analytics
      */
-    logEvent = (event: LogEvents, params?: { [key: string]: any }) => {
+    logEvent = (event: LogEvents, params?: Record<string, any>) => {
         analytics().logEvent(event, params);
     };
 
     /**
      * log error in session logs
      */
-    recordError = (message: string, exception: any) => {
+    recordError = (message: string, exception: unknown) => {
         const data = this.normalizeError(exception);
         this.addLogMessage('error', message, data);
     };
@@ -75,19 +75,21 @@ class LoggerService {
     /**
      * normalize error message
      */
-    normalizeError = (err: any) => {
+    normalizeError = (err: unknown): string => {
         if (!err) {
             return ErrorMessages.default;
         }
         let error = '';
         if (typeof err === 'string') {
             error = err;
-        } else if (err.error && err.error.message) {
-            error = err.error.message;
-        } else if (err.message) {
-            error = err.message;
-        } else if (typeof err.toString === 'function') {
-            error = err.toString();
+        } else if (typeof err === 'object') {
+            if ('error' in err && typeof (err as any).error.message === 'string') {
+                error = (err as any).error.message;
+            } else if ('message' in err) {
+                error = (err as any).message as string;
+            } else if (typeof err.toString === 'function') {
+                error = err.toString();
+            }
         }
         if (!error) {
             error = ErrorMessages.default;
@@ -97,7 +99,7 @@ class LoggerService {
 
     pad = (time: string) => time.padStart(2, '0');
 
-    getTimeStamp = () => {
+    getTimeStamp = (): string => {
         const date = new Date();
         const hours = this.pad(date.getHours().toString());
         const minutes = this.pad(date.getMinutes().toString());
@@ -107,10 +109,10 @@ class LoggerService {
     };
 
     createLogger = (namespace: string): LoggerInstance => {
-        const logger: any = {};
+        const logger: Partial<LoggerInstance> = {};
 
         const log = (level: Levels) => {
-            return (message: string, data: any) => {
+            return (message: string, data?: any) => {
                 if (data instanceof Error) {
                     data = this.normalizeError(data);
                 }
@@ -120,22 +122,19 @@ class LoggerService {
                 }
 
                 if (this.isDEV) {
-                    // eslint-disable-next-line no-console
+                    // eslint-disable-next-line
                     console[level](`[${namespace}] ${message}`, data);
                 }
 
-                // add the log to entries list
                 this.addLogMessage(level, message, data);
             };
         };
 
-        for (const current in this.levels) {
-            if (Object.prototype.hasOwnProperty.call(this.levels, current)) {
-                logger[current] = log(current as Levels);
-            }
-        }
+        (Object.keys(this.levels) as Levels[]).forEach((current) => {
+            logger[current] = log(current);
+        });
 
-        return logger;
+        return logger as LoggerInstance;
     };
 
     addLogMessage(level: Levels, message: string, data: any) {
@@ -151,11 +150,11 @@ class LoggerService {
         }
     }
 
-    getLogs() {
+    getLogs(): LogEntry[] {
         return this.entries;
     }
 
-    clearLogs() {
+    clearLogs(): void {
         this.entries = [];
     }
 }

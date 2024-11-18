@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[Avatar] should apply styles correctly 1`] = `
+<View>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "red",
+        "borderColor": "rgba(96,104,133,0.06)",
+        "borderRadius": 11,
+        "borderWidth": 1,
+        "height": 129.87142857142857,
+        "justifyContent": "center",
+        "opacity": 1,
+        "width": 129.87142857142857,
+      }
+    }
+  >
+    <Image
+      resizeMode="cover"
+      source={
+        {
+          "uri": "https://example.com/avatar.jpg",
+        }
+      }
+      style={
+        [
+          {
+            "borderRadius": 11,
+          },
+          {
+            "borderColor": "rgba(96,104,133,0.06)",
+            "borderWidth": 1,
+          },
+          {
+            "height": 128.57142857142856,
+            "width": 128.57142857142856,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`[Avatar] should render correctly 1`] = `
+<View>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderRadius": 11,
+        "height": 85.71428571428571,
+        "justifyContent": "center",
+        "opacity": 1,
+        "width": 85.71428571428571,
+      }
+    }
+  >
+    <Image
+      resizeMode="cover"
+      source={
+        {
+          "uri": "https://example.com/avatar.jpg",
+        }
+      }
+      style={
+        [
+          {
+            "borderRadius": 11,
+          },
+          false,
+          {
+            "height": 85.71428571428571,
+            "width": 85.71428571428571,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+</View>
+`;
+
+exports[`[Avatar] should render correctly with a badge 1`] = `
+<View>
+  <View
+    collapsable={false}
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#F3F6FA",
+        "borderRadius": 11,
+        "height": 85.71428571428571,
+        "justifyContent": "center",
+        "opacity": 1,
+        "width": 85.71428571428571,
+      }
+    }
+  >
+    <Image
+      resizeMode="cover"
+      source={
+        {
+          "uri": "https://example.com/avatar.jpg",
+        }
+      }
+      style={
+        [
+          {
+            "borderRadius": 11,
+          },
+          false,
+          {
+            "height": 85.71428571428571,
+            "width": 85.71428571428571,
+          },
+          undefined,
+        ]
+      }
+    />
+  </View>
+  <View
+    style={
+      [
+        {
+          "position": "absolute",
+        },
+        {
+          "bottom": -4.8,
+          "right": -6,
+        },
+      ]
+    }
+  >
+    <Text>
+      Badge
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`[Avatar] should render correctly with loading state 1`] = `
+<View
+  collapsable={false}
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#606885",
+      "borderRadius": 11,
+      "height": 85.71428571428571,
+      "justifyContent": "center",
+      "opacity": 0.3,
+      "width": 85.71428571428571,
+    }
+  }
+/>
+`;

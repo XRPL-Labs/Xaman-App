@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { URITokenCreateSellOffer } from '@common/libs/ledger/transactions';
 
 import { AmountText } from '@components/General';
-import { AccountElement } from '@components/Modules';
+import { AccountElement, URITokenElement } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -32,24 +32,14 @@ class URITokenCreateSellOfferTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.uriTokeId')}</Text>
+                <Text style={styles.label}>{Localize.t('global.uritoken')}</Text>
                 <View style={styles.contentBox}>
-                    <Text style={styles.value}>{transaction.URITokenID}</Text>
+                    <URITokenElement
+                        uriTokenId={transaction!.URITokenID}
+                        truncate={false}
+                        containerStyle={styles.uriTokenContainer}
+                    />
                 </View>
-
-                {transaction.Amount && (
-                    <>
-                        <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-                        <View style={styles.contentBox}>
-                            <AmountText
-                                value={transaction.Amount.value}
-                                currency={transaction.Amount.currency}
-                                style={styles.amount}
-                                immutable
-                            />
-                        </View>
-                    </>
-                )}
 
                 {transaction.Destination && (
                     <>
@@ -62,6 +52,20 @@ class URITokenCreateSellOfferTemplate extends Component<Props, State> {
                             address={transaction.Destination}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                         />
+                    </>
+                )}
+
+                {transaction.Amount && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.amount')}</Text>
+                        <View style={styles.contentBox}>
+                            <AmountText
+                                value={transaction.Amount.value}
+                                currency={transaction.Amount.currency}
+                                style={styles.amount}
+                                immutable
+                            />
+                        </View>
                     </>
                 )}
             </>

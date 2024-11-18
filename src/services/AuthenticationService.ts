@@ -346,7 +346,7 @@ class AuthenticationService extends EventEmitter {
                 realTime - (coreSettings.lastUnlockedTimestamp ?? 0) > coreSettings.minutesAutoLock * 60
             ) {
                 // show lock overlay
-                await Navigator.showOverlay<LockOverlayProps>(
+                Navigator.showOverlay<LockOverlayProps>(
                     AppScreens.Overlay.Lock,
                     {},
                     {
@@ -384,16 +384,19 @@ class AuthenticationService extends EventEmitter {
             // check if biometry is active
             const coreSettings = CoreRepository.getSettings();
             if (coreSettings.biometricMethod === BiometryType.None) {
+                this.logger.debug('Biometric is disabled from settings');
                 resolve(false);
                 return;
             }
 
             // check if we can authenticate with biometrics in the device level
             Biometric.isSensorAvailable()
-                .then(() => {
+                .then((biometryType) => {
+                    this.logger.debug('Biometric is available', biometryType);
                     resolve(true);
                 })
-                .catch(() => {
+                .catch((reason) => {
+                    this.logger.debug('Biometric is not available, reason', reason);
                     resolve(false);
                 });
         });
@@ -403,7 +406,15 @@ class AuthenticationService extends EventEmitter {
      * start biometric authentication
      */
     authenticateBiometrics = (reason: string): Promise<Boolean> => {
-        return new Promise((resolve, reject) => {
+        // eslint-disable-next-line no-async-promise-executor
+        return new Promise(async (resolve, reject) => {
+            // we do not want to trigger Biometric UI when app is NOT active
+            if (AppService.currentAppState !== AppStateStatus.Active) {
+                this.logger.warn('ignore requested biometric authentication while app is not active');
+                reject(new Error(BiometricErrors.APP_NOT_ACTIVE));
+                return;
+            }
+
             // check if we can authenticate with biometrics in the device level
             Biometric.authenticate(reason)
                 .then(async () => {
@@ -414,8 +425,10 @@ class AuthenticationService extends EventEmitter {
                     resolve(true);
                 })
                 .catch((error) => {
-                    this.logger.warn(`Biometric authentication error: ${error.name}`);
+                    this.logger.warn('authenticateBiometrics', error);
+
                     // biometric's has been changed, we need to disable the biometric authentication
+                    // NOTE: this is where we delete the biometrics key when biometrics changes on device
                     if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
                         this.onBiometricInvalidated();
                     }
@@ -430,13 +443,8 @@ class AuthenticationService extends EventEmitter {
      * Listen for app state change to check for lock the app
      */
     onAppStateChange = async () => {
-        if (
-            AppService.prevAppState &&
-            [AppStateStatus.Background, AppStateStatus.Inactive].indexOf(AppService.prevAppState) > -1 &&
-            AppService.currentAppState === AppStateStatus.Active
-        ) {
-            await this.checkLockScreen();
-        }
+        // let's check the lock screen in any app state change
+        await this.checkLockScreen();
     };
 }
 

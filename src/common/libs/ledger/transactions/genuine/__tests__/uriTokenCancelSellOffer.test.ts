@@ -3,6 +3,7 @@
 import Localize from '@locale';
 
 import { MutationsMixin } from '@common/libs/ledger/mixin';
+import { AssetTypes } from '@common/libs/ledger/factory/types';
 
 import { URITokenCancelSellOffer, URITokenCancelSellOfferInfo } from '../URITokenCancelSellOffer';
 
@@ -56,6 +57,18 @@ describe('URITokenCancelSellOffer tx', () => {
                     },
                     factor: undefined,
                 });
+            });
+        });
+
+        describe('getAssetDetails()', () => {
+            it('should return the expected asset details', () => {
+                expect(info.getAssetDetails()).toStrictEqual([
+                    {
+                        owner: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
+                        type: AssetTypes.URIToken,
+                        uriTokenId: '9CE208D4743A11AB5BAE47E23E917D456EB722A89568EDCCCA94B3B04ADC95D2',
+                    },
+                ]);
             });
         });
     });

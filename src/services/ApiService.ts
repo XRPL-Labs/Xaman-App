@@ -196,8 +196,8 @@ class ApiService {
                     this.setBearerHash(bearer_hash);
                 }
             })
-            .catch((error: any) => {
-                this.logger.error('Refresh access token error: ', error);
+            .catch((error) => {
+                this.logger.error('updateRefreshToken', error);
             })
             .finally(() => {
                 this.isRefreshingToken = false;
@@ -374,11 +374,11 @@ class ApiService {
                     // eslint-disable-next-line
                     Object.keys(paramsClone).length > 0 ? (urlParams += `?${this.serialize(paramsClone, '')}`) : null;
 
-                    // String or Number - eg. /recipes/23
+                    // String or Number - eg= /recipes/23
                 } else if (typeof paramsClone === 'string' || typeof paramsClone === 'number') {
                     urlParams = `/${paramsClone}`;
                 } else {
-                    this.logger.warn('params are not an object!', this.apiUrl + urlEndpoint + urlParams);
+                    this.logger.warn('params are not an object!', `${this.apiUrl}${urlEndpoint}${urlParams}`);
                 }
             }
 
@@ -404,31 +404,28 @@ class ApiService {
                     try {
                         const textRes = await rawRes.text();
                         jsonRes = this.safeParse(textRes);
-                    } catch (error) {
-                        throw new ApiError(ErrorMessages.invalidJson);
+                    } catch (error: any) {
+                        throw new ApiError(`${ErrorMessages.invalidJson} ${error.message}`);
                     }
 
-                    // Only continue if the header is successful
-                    if (rawRes && rawRes.status === 200) {
-                        return jsonRes || rawRes;
-                    }
-
-                    // handle error
-                    if (typeof jsonRes === 'object' && Object.prototype.hasOwnProperty.call(jsonRes, 'error')) {
+                    if (rawRes?.status !== 200 || jsonRes?.error) {
                         throw new ApiError(
-                            `Api error ${rawRes.status}`,
+                            `Api error ${rawRes.status} ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`,
                             jsonRes?.error?.code,
                             jsonRes?.error?.reference,
                         );
                     }
 
-                    // anything else just throw
-                    throw new ApiError(`Api error ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`);
+                    // Only continue if the header is successful and no error in the jsonRes
+                    return jsonRes || rawRes;
                 })
                 .then((res) => {
                     resolve(res);
                 })
                 .catch(async (error: ApiError) => {
+                    // log the api error
+                    this.logger.error(`fetch ${thisUrl}`, error);
+
                     // API got back to us, clear the timeout
                     clearTimeout(apiTimedOut);
 
