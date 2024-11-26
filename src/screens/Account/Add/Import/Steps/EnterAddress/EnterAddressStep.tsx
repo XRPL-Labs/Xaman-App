@@ -8,11 +8,12 @@ import { SafeAreaView, View, Text, Alert, Keyboard } from 'react-native';
 import { XRPL_Account, utils } from 'xrpl-accountlib';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
-// components
-import { Button, TextInput, InfoMessage, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
+import ResolverService from '@services/ResolverService';
 
 import { Navigator } from '@common/helpers/navigator';
-import AccountResolver from '@common/helpers/resolver';
+
+// components
+import { Button, TextInput, InfoMessage, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
 import Localize from '@locale';
 
@@ -74,13 +75,13 @@ class EnterAddressStep extends Component<Props, State> {
         }
 
         // check for exchange account
-        const destinationInfo = await AccountResolver.getAccountInfo(address);
+        const advisoryInfo = await ResolverService.getAccountAdvisoryInfo(address);
 
         this.setState({
             isLoading: false,
         });
 
-        if (destinationInfo.possibleExchange) {
+        if (advisoryInfo.possibleExchange) {
             Navigator.showAlertModal({
                 type: 'warning',
                 text: Localize.t('account.thisAddressAppearsToBeExchangeAddress'),

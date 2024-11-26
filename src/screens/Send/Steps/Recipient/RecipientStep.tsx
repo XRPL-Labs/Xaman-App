@@ -15,14 +15,13 @@ import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
-import AccountResolver from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService, ResolverService } from '@services';
 
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { AccountElement } from '@components/Modules';
@@ -106,7 +105,7 @@ class RecipientStep extends Component<Props, State> {
         const { to, tag } = NormalizeDestination(result);
 
         if (to) {
-            const accountInfo = await AccountResolver.getAccountName(to, tag);
+            const accountInfo = await ResolverService.getAccountName(to, tag);
 
             this.setState({
                 dataSource: this.getSearchResultSource([
@@ -209,7 +208,7 @@ class RecipientStep extends Component<Props, State> {
                                 res.matches.forEach(async (element: any) => {
                                     // if payid in result, then look for payId in local source as well
                                     if (element.source === 'payid') {
-                                        const internalResult = await AccountResolver.getAccountName(
+                                        const internalResult = await ResolverService.getAccountName(
                                             element.account,
                                             element.tag,
                                             true,
@@ -404,14 +403,14 @@ class RecipientStep extends Component<Props, State> {
 
             if (!destinationInfo) {
                 // check for account exist and potential destination tag required
-                destinationInfo = await AccountResolver.getAccountInfo(destination.address);
+                destinationInfo = await ResolverService.getAccountAdvisoryInfo(destination.address);
                 // set destination account info
                 setDestinationInfo(destinationInfo);
             }
 
             // check for account risk and scam
             if (
-                (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') &&
+                (destinationInfo.danger === 'PROBABLE' || destinationInfo.danger === 'HIGH_PROBABILITY') &&
                 passedChecks.indexOf(PassableChecks.PROBABLE_SCAM) === -1
             ) {
                 setTimeout(() => {
@@ -437,7 +436,7 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
-            if (destinationInfo.risk === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
+            if (destinationInfo.danger === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
                 setTimeout(() => {
                     Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
                         destination: destination.address,

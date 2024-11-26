@@ -1,7 +1,7 @@
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 import { XAppOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
-import { AccountInfoType } from '@common/helpers/resolver';
+import { AccountAdvisoryResolveType } from '@services/ResolverService';
 
 export interface Props {
     identifier: string;
@@ -65,7 +65,7 @@ export interface IEvent {
     uuid?: string;
     qrContents?: string;
     destination?: Destination;
-    info?: AccountInfoType;
+    info?: AccountAdvisoryResolveType;
     result?: any;
     network?: string;
 }

@@ -31,11 +31,11 @@ import { GetAppVersionCode } from '@common/helpers/app';
 
 import { Payload, PayloadOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
-import { AccountInfoType } from '@common/helpers/resolver';
 
 import { StringTypeCheck } from '@common/utils/string';
 
 import AuthenticationService, { LockStatus } from '@services/AuthenticationService';
+import { AccountAdvisoryResolveType } from '@services/ResolverService';
 import NetworkService from '@services/NetworkService';
 
 import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
@@ -224,7 +224,7 @@ class XAppBrowserModal extends Component<Props, State> {
         this.sendEvent({ method: XAppMethods.ScanQr, qrContents: undefined, reason: 'USER_CLOSE' });
     };
 
-    onDestinationSelect = (destination: Destination, info: AccountInfoType) => {
+    onDestinationSelect = (destination: Destination, info: AccountAdvisoryResolveType) => {
         this.sendEvent({ method: XAppMethods.SelectDestination, destination, info, reason: 'SELECTED' });
     };
 

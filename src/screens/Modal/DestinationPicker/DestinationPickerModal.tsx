@@ -18,11 +18,11 @@ import { Destination } from '@common/libs/ledger/parser/types';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import AccountResolver, { AccountInfoType } from '@common/helpers/resolver';
 
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService } from '@services';
+import BackendService from '@services/BackendService';
+import ResolverService, { AccountAdvisoryResolveType } from '@services/ResolverService';
 
 import { Button, TextInput, Footer, InfoMessage, LoadingIndicator } from '@components/General';
 import { AccountElement } from '@components/Modules';
@@ -38,7 +38,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     onClose: () => void;
-    onSelect: (destination: Destination, info: AccountInfoType) => void;
+    onSelect: (destination: Destination, info: AccountAdvisoryResolveType) => void;
 
     ignoreDestinationTag: boolean;
 }
@@ -51,7 +51,7 @@ export interface State {
     contacts: Realm.Results<ContactModel>;
     dataSource: any[];
     destination?: Destination;
-    destinationInfo?: AccountInfoType;
+    destinationInfo?: AccountAdvisoryResolveType;
 }
 /* Component ==================================================================== */
 class DestinationPickerModal extends Component<Props, State> {
@@ -102,7 +102,7 @@ class DestinationPickerModal extends Component<Props, State> {
         const { to, tag } = NormalizeDestination(result);
 
         if (to) {
-            const accountInfo = await AccountResolver.getAccountName(to, tag);
+            const accountInfo = await ResolverService.getAccountName(to, tag);
 
             this.setState({
                 dataSource: this.getSearchResultSource([
@@ -211,7 +211,7 @@ class DestinationPickerModal extends Component<Props, State> {
                                 res.matches.forEach(async (element: any) => {
                                     // if payid in result, then look for payId in local source as well
                                     if (element.source === 'payid') {
-                                        const internalResult = await AccountResolver.getAccountName(
+                                        const internalResult = await ResolverService.getAccountName(
                                             element.account,
                                             element.tag,
                                             true,
@@ -405,7 +405,7 @@ class DestinationPickerModal extends Component<Props, State> {
 
         try {
             // check for account exist and potential destination tag required
-            const destinationInfo = await AccountResolver.getAccountInfo(destination.address);
+            const destinationInfo = await ResolverService.getAccountAdvisoryInfo(destination.address);
 
             // set destination account info
             this.setState({
@@ -413,7 +413,7 @@ class DestinationPickerModal extends Component<Props, State> {
             });
 
             // check for account risk and scam
-            if (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') {
+            if (destinationInfo.danger === 'PROBABLE' || destinationInfo.danger === 'HIGH_PROBABILITY') {
                 Navigator.showAlertModal({
                     type: 'warning',
                     text: Localize.t('send.destinationIsProbableIsScam'),
@@ -437,7 +437,7 @@ class DestinationPickerModal extends Component<Props, State> {
                 return;
             }
 
-            if (destinationInfo.risk === 'CONFIRMED') {
+            if (destinationInfo.danger === 'CONFIRMED') {
                 Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
                     destination: destination.address,
                     onContinue: this.onSelect,
