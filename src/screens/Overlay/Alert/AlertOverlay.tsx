@@ -200,18 +200,11 @@ class AlertOverlay extends Component<Props, State> {
                 style={[styles.container, { backgroundColor: interpolateColor }]}
             >
                 <Animated.View style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}>
-                    <View style={[AppStyles.centerAligned]}>{this.renderIcon()}</View>
-
-                    <View style={AppStyles.centerAligned}>{this.renderTitle()}</View>
-
+                    {this.renderIcon()}
+                    {this.renderTitle()}
                     <Spacer size={20} />
-
-                    <View style={AppStyles.centerAligned}>
-                        <Text style={styles.subTitle}>{text}</Text>
-                    </View>
-
+                    <Text style={styles.subTitle}>{text}</Text>
                     <Spacer size={30} />
-
                     {this.renderButtons()}
                 </Animated.View>
             </Animated.View>
