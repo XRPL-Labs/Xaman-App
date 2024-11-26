@@ -134,6 +134,7 @@ class BackendService {
                     await CurrencyRepository.updateCurrencyDetails({
                         id: currency.id,
                         ...updatedDetails,
+                        updatedAt: new Date(),
                     });
                 }
             }

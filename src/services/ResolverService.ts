@@ -3,6 +3,7 @@
  * This service is responsible to resolve account related details including names, issuer token details etc ...
  */
 
+import moment from 'moment-timezone';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 
 import BackendService from '@services/BackendService';
@@ -108,7 +109,7 @@ class ResolverService {
 
     private onCurrencyUpsert = async (currency: CurrencyModel) => {
         // 24 hours considered outdated
-        const isCurrencyOutdated = new Date().getTime() - new Date(currency.updatedAt).getTime() < 24 * 60 * 60 * 1000;
+        const isCurrencyOutdated = moment(currency.updatedAt).isBefore(moment().subtract(24, 'minutes'));
 
         // if currency is outdated then start syncing
         if (isCurrencyOutdated) {
