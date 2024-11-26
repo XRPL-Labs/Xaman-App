@@ -32,6 +32,7 @@ export interface AccountNameResolveType {
     name?: string;
     source?: string;
     kycApproved?: boolean;
+    blocked?: boolean;
 }
 
 export interface AccountAdvisoryResolveType {
@@ -169,6 +170,7 @@ class ResolverService {
                     name: res?.name ?? undefined,
                     source: res?.source?.replace('internal:', '').replace('.com', ''),
                     kycApproved: res?.kycApproved,
+                    blocked: res?.blocked,
                 }),
             });
         }

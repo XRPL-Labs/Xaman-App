@@ -160,6 +160,9 @@ class TransactionItem extends Component<Props, State> {
                 activeOpacity={0.6}
                 style={[styles.container, { height: TransactionItem.Height }]}
             >
+                {/* if participant is block the show an overlay to reduce the visibility */}
+                {participant?.blocked && <View style={styles.containerBlocked} />}
+
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Blocks.AvatarBlock participant={participant} item={item} />
                 </View>
