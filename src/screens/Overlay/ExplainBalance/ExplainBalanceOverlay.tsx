@@ -10,6 +10,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
+import { AccountRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import NetworkService from '@services/NetworkService';
@@ -31,7 +32,6 @@ import Localize from '@locale';
 // style
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
-import { AccessLevels } from '@store/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -43,6 +43,7 @@ export interface State {
     accountObjects: any;
     nfTokenPageCount: number;
     networkReserve: { BaseReserve: number; OwnerReserve: number };
+    isSignable: boolean;
 }
 
 /* Component ==================================================================== */
@@ -71,13 +72,22 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             accountObjects: [],
             nfTokenPageCount: 0,
             networkReserve: NetworkService.getNetworkReserve(),
+            isSignable: true,
         };
 
         this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
+        const { account } = this.props;
+
         InteractionManager.runAfterInteractions(this.setAccountObjectsState);
+
+        // check if account is signable
+        const isSignable = AccountRepository.isSignable(account);
+        this.setState({
+            isSignable,
+        });
     }
 
     loadAccountObjects = async (
@@ -350,7 +360,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
     render() {
         const { account } = this.props;
-        const { isLoading } = this.state;
+        const { isLoading, isSignable } = this.state;
 
         return (
             <ActionPanel
@@ -422,7 +432,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Spacer size={30} />
 
                         <Text style={styles.rowTitle}>{Localize.t('account.availableForSpending')}</Text>
-                        {account.accessLevel === AccessLevels.Readonly && (
+                        {!isSignable && (
                             <>
                                 <Spacer size={10} />
                                 <InfoMessage
