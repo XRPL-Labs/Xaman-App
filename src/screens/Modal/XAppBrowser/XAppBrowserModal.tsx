@@ -292,8 +292,6 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     navigateTo = (data: { xApp: string; title?: string; [key: string]: any }) => {
-        const { app } = this.state;
-
         const identifier = get(data, 'xApp', undefined);
         const title = get(data, 'title', undefined);
 
@@ -302,10 +300,9 @@ class XAppBrowserModal extends Component<Props, State> {
             return;
         }
 
-        // we are reloading the same xapp, we don't need to clear the app
-        if (app?.identifier === identifier) {
-            this.lunchApp(data);
-            return;
+        // clean up
+        if (this.softLoadingTimeout) {
+            clearTimeout(this.softLoadingTimeout);
         }
 
         this.setState(
@@ -320,6 +317,12 @@ class XAppBrowserModal extends Component<Props, State> {
                     networks: undefined,
                     __ott: undefined,
                 },
+                error: undefined,
+                isLaunchingApp: true,
+                isLoadingApp: false,
+                isAppReady: false,
+                isAppReadyTimeout: false,
+                isRequiredNetworkSwitch: false,
             },
             () => {
                 this.lunchApp(data);
@@ -425,14 +428,15 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     handleCommand = (command: XAppMethods, parsedData: any) => {
-        const { app, isAppReady } = this.state;
+        const { app, isAppReady, coreSettings } = this.state;
 
         // no xapp is initiated ?
-        if (!app) {
+        // check if it's a know command
+        if (!app || !Object.values(XAppMethods).includes(command)) {
             return;
         }
 
-        // when there is no permission available just do not run any command
+        // when there is no permission available just do not run any command or the command is unknown for us
         if (!app.permissions || isEmpty(get(app.permissions, 'commands'))) {
             return;
         }
@@ -442,12 +446,22 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // xApp doesn't have the permission to run this command
         if (!AllowedCommands.includes(command.toUpperCase())) {
+            // show alert about command
+            if (coreSettings.developerMode) {
+                Alert.alert(
+                    Localize.t('global.error'),
+                    Localize.t('xapp.xAppDoesNotHavePermissionToRunThisCommand', { command }),
+                );
+            }
             return;
         }
 
         // for any command to be run, the app should be in ready state
         // only allow READY command
         if (!isAppReady && command !== XAppMethods.Ready) {
+            if (coreSettings.developerMode) {
+                Alert.alert(Localize.t('global.error'), Localize.t('xapp.appReadyToAcceptCommands'));
+            }
             return;
         }
 
@@ -858,9 +872,9 @@ class XAppBrowserModal extends Component<Props, State> {
 
     onLoadEnd = (e: any) => {
         const { app } = this.state;
-
         const { loading } = e.nativeEvent;
 
+        // still loading ?
         if (loading) {
             return;
         }

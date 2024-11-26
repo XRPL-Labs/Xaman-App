@@ -719,7 +719,9 @@
     "chooseAmount": "Kies bedrag",
     "aboutThisXApp": "Over deze xApp",
     "xAppSupportNetworkError": "Deze xApp is niet beschikbaar op het netwerk waarmee u verbonden bent",
-    "switchToSupportedNetworks": "Schakel over naar een van de ondersteunde netwerken hieronder"
+    "switchToSupportedNetworks": "Schakel over naar een van de ondersteunde netwerken hieronder",
+    "xAppDoesNotHavePermissionToRunThisCommand": "This xApp does not have permission to run '%{command}' command. If you believe you need this permission, please contact support.",
+    "appReadyToAcceptCommands": "The xApp must be in a ready state to be able to accept commands."
   },
   "settings": {
     "generalSettings": "Algemeen",

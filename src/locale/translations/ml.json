@@ -719,7 +719,9 @@
     "chooseAmount": "Choose amount",
     "aboutThisXApp": "About this xApp",
     "xAppSupportNetworkError": "This xApp is not available on the network you are connected with",
-    "switchToSupportedNetworks": "Please switch to one of the supported networks below"
+    "switchToSupportedNetworks": "Please switch to one of the supported networks below",
+    "xAppDoesNotHavePermissionToRunThisCommand": "This xApp does not have permission to run '%{command}' command. If you believe you need this permission, please contact support.",
+    "appReadyToAcceptCommands": "The xApp must be in a ready state to be able to accept commands."
   },
   "settings": {
     "generalSettings": "ജനറൽ",
