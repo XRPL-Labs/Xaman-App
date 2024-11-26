@@ -111,7 +111,7 @@ class HomeView extends Component<Props, State> {
             // Update account details when component didAppear and Socket is connected
             if (account?.isValid() && NetworkService.isConnected()) {
                 // only update current account details
-                AccountService.updateAccountsDetails([account.address]);
+                AccountService.updateAccountsDetails(account.address);
             }
         });
     }
