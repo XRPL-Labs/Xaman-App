@@ -565,7 +565,7 @@
     "openWithExplorer": " Көмегімен ашу %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Белгіні көрсету",
-    "throughOfferBy": "Ұсыныс арқылы",
+    "through": "Through",
     "plannedOn": "Жоспарланған",
     "transactionId": "Транзакция идентификаторы",
     "ledgerIndex": "Тізілім Индексі",

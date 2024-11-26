@@ -565,7 +565,7 @@
     "openWithExplorer": "Open met %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Toon memo",
-    "throughOfferBy": "Via aanbieding door",
+    "through": "Through",
     "plannedOn": "Gepland op",
     "transactionId": "Transactie ID",
     "ledgerIndex": "Ledger Index",

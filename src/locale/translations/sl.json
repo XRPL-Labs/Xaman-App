@@ -565,7 +565,7 @@
     "openWithExplorer": "Odpri z %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Pokaži opomnik",
-    "throughOfferBy": "Skozi ponudbo",
+    "through": "Through",
     "plannedOn": "Načrtovano v",
     "transactionId": "ID transakcije",
     "ledgerIndex": "Kazalo glavne knjige",

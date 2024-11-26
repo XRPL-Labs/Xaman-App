@@ -565,7 +565,7 @@
     "openWithExplorer": "Deschideți cu %{explorer}.",
     "openInExplorer": "Open in explorer",
     "showMemo": "Afișați Memo.",
-    "throughOfferBy": "Prin ofertă emisă de",
+    "through": "Through",
     "plannedOn": "Planificat pe",
     "transactionId": "ID tranzacţie",
     "ledgerIndex": "Index registru",

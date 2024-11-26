@@ -565,7 +565,7 @@
     "openWithExplorer": "ഇതിലൂടെ തുറക്കു %{explorer}\r\n",
     "openInExplorer": "Open in explorer",
     "showMemo": "മെമ്മോ കാണിക്കുക",
-    "throughOfferBy": "ഓഫർ വഴി",
+    "through": "Through",
     "plannedOn": "ആസൂത്രണം ചെയ്‌തു",
     "transactionId": "ഇടപാട് ഐഡി",
     "ledgerIndex": "ലെഡ്ജർ സൂചിക",

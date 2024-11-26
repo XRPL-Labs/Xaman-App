@@ -565,7 +565,7 @@
     "openWithExplorer": "Bilan oching %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Yodnomani ko'rsatish",
-    "throughOfferBy": "Tomonidan taklif orqali",
+    "through": "Through",
     "plannedOn": "Rejalashtirilgan",
     "transactionId": "Tranzaksiya identifikatori",
     "ledgerIndex": "Ledger indeksi",

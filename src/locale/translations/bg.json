@@ -565,7 +565,7 @@
     "openWithExplorer": "Отваряне с %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Показване на Мемо",
-    "throughOfferBy": "Чрез оферта от",
+    "through": "Through",
     "plannedOn": "Планирано на",
     "transactionId": "Идентификатор на транзакция",
     "ledgerIndex": "Индекс на счетоводна книга (Ledger Index)",

@@ -565,7 +565,7 @@
     "openWithExplorer": "%{explorer} (으)로 열기",
     "openInExplorer": "Open in explorer",
     "showMemo": "메모 보기",
-    "throughOfferBy": "제공을 통해",
+    "through": "Through",
     "plannedOn": "계획됨",
     "transactionId": "거래 ID",
     "ledgerIndex": "레저 지수",

@@ -565,7 +565,7 @@
     "openWithExplorer": "Ava %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Näita memo",
-    "throughOfferBy": "Läbi pakkumise",
+    "through": "Through",
     "plannedOn": "Plaanitud",
     "transactionId": "TehinguID",
     "ledgerIndex": "Pearaamatu indeks",

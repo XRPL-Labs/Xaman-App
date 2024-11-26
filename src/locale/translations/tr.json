@@ -565,7 +565,7 @@
     "openWithExplorer": "%{explorer} ile aç",
     "openInExplorer": "Open in explorer",
     "showMemo": "Notu göster",
-    "throughOfferBy": "Teklif aracılığıyla",
+    "through": "Through",
     "plannedOn": "Planlandığı tarih",
     "transactionId": "İşlem kimliği",
     "ledgerIndex": "Defter Dizini",

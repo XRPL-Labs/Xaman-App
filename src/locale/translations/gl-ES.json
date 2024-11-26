@@ -565,7 +565,7 @@
     "openWithExplorer": "Abrir con %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Mostrar memo",
-    "throughOfferBy": "A través dunha oferta de",
+    "through": "Through",
     "plannedOn": "Planificado en",
     "transactionId": "ID da transacción",
     "ledgerIndex": "Índice Ledger",

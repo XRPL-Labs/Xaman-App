@@ -565,7 +565,7 @@
     "openWithExplorer": "Άνοιγμα με το %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Εμφάνιση σημειώματος",
-    "throughOfferBy": "Μέσω της προσφοράς από",
+    "through": "Through",
     "plannedOn": "Προγραμματισμένο στις",
     "transactionId": "Ταυτότητα συναλλαγής",
     "ledgerIndex": "Δείκτης Ledger",

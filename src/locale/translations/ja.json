@@ -565,7 +565,7 @@
     "openWithExplorer": "%{explorer}で開く",
     "openInExplorer": "エクスプローラで開く",
     "showMemo": "メモを表示",
-    "throughOfferBy": "による提供を通じて",
+    "through": "Through",
     "plannedOn": "計画中",
     "transactionId": "トランザクション ID",
     "ledgerIndex": "レジャーインデックス",

@@ -565,7 +565,7 @@
     "openWithExplorer": "Åpne med %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Vis notat",
-    "throughOfferBy": "Gjennom tilbud fra",
+    "through": "Through",
     "plannedOn": "Planlagt den",
     "transactionId": "Transaksjons-id",
     "ledgerIndex": "Ledger indeks",

@@ -565,7 +565,7 @@
     "openWithExplorer": "Atidaryti su %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Rodyti atmintinę",
-    "throughOfferBy": "Per pasiūlymą",
+    "through": "Through",
     "plannedOn": "Planuojama",
     "transactionId": "Operacijos ID",
     "ledgerIndex": "Knygos Indeksas",

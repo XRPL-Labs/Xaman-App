@@ -565,7 +565,7 @@
     "openWithExplorer": "Öppna med %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Visa memo",
-    "throughOfferBy": "Genom erbjudande av",
+    "through": "Through",
     "plannedOn": "Planerat på",
     "transactionId": "Transaktions-ID",
     "ledgerIndex": "Liggerindex",

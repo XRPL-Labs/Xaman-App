@@ -565,7 +565,7 @@
     "openWithExplorer": "Открыть с помощью %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Показать примечание",
-    "throughOfferBy": "Через предложение",
+    "through": "Through",
     "plannedOn": "Запланировано на",
     "transactionId": "ID транзакции",
     "ledgerIndex": "Индекс учетной книги",

@@ -565,7 +565,7 @@
     "openWithExplorer": "Отвори са %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Прикажи допис",
-    "throughOfferBy": "Кроз понуду од",
+    "through": "Through",
     "plannedOn": "Планиранo",
     "transactionId": "ИД трансакције",
     "ledgerIndex": "Ledger садржај",

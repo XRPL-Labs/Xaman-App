@@ -565,7 +565,7 @@
     "openWithExplorer": "Avaa käyttämällä %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Näytä muistio",
-    "throughOfferBy": "Tarjouksen kautta",
+    "through": "Through",
     "plannedOn": "Suunniteltu",
     "transactionId": "Tapahtuman tunnus",
     "ledgerIndex": "pääkirjahakemisto",

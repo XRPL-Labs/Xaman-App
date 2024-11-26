@@ -565,7 +565,7 @@
     "openWithExplorer": "Otevřít pomocí %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Zobrazit zprávu",
-    "throughOfferBy": "Prostřednictvím nabídky od",
+    "through": "Through",
     "plannedOn": "Naplánováno na",
     "transactionId": "ID transakce",
     "ledgerIndex": "Ledger Index",

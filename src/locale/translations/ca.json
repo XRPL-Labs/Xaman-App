@@ -565,7 +565,7 @@
     "openWithExplorer": "Obre amb %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Mostra la nota",
-    "throughOfferBy": "Mitjançant l'oferta de",
+    "through": "Through",
     "plannedOn": "Planificat",
     "transactionId": "Identificador de la transacció",
     "ledgerIndex": "Índex de Registre",

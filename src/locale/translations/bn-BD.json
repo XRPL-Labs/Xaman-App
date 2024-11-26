@@ -565,7 +565,7 @@
     "openWithExplorer": "সঙ্গে খোলা %{explorer} ",
     "openInExplorer": "Open in explorer",
     "showMemo": "মেমো দেখান",
-    "throughOfferBy": "অফার মাধ্যমে",
+    "through": "Through",
     "plannedOn": "পরিকল্পনা করা হয়েছে",
     "transactionId": "লেনদেন নাম্বার",
     "ledgerIndex": "লেজার সূচক",

@@ -565,7 +565,7 @@
     "openWithExplorer": "Buksan gamit %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Ipakita ang talaan",
-    "throughOfferBy": "Sa pamamagitan ng alok ni",
+    "through": "Through",
     "plannedOn": "Nakaplano sa",
     "transactionId": "ID ng transaksyon",
     "ledgerIndex": "Ledger talatuntunan",

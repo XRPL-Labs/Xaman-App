@@ -565,7 +565,7 @@
     "openWithExplorer": "Ireki honekin %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Erakutsi oharra",
-    "throughOfferBy": "By eskaintzaren bidez",
+    "through": "Through",
     "plannedOn": "Aurreikusita",
     "transactionId": "Transakzioaren ID",
     "ledgerIndex": "Liburuaren aurkibidea",

@@ -565,7 +565,7 @@
     "openWithExplorer": "ತೆರೆಯಿರಿ %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "ಮೆಮೊ ತೋರಿಸಿ",
-    "throughOfferBy": "ಮೂಲಕ ಪ್ರಸ್ತಾಪವನ್ನು ಮೂಲಕ",
+    "through": "Through",
     "plannedOn": "ಯೋಜಿಸಲಾಗಿದೆ",
     "transactionId": "ವಹಿವಾಟು ID",
     "ledgerIndex": "ಲೆಡ್ಜರ್ ಸೂಚ್ಯಂಕ",

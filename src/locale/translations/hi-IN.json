@@ -565,7 +565,7 @@
     "openWithExplorer": "%{explorer} के साथ खोलें",
     "openInExplorer": "Open in explorer",
     "showMemo": "मेमो दिखाओ",
-    "throughOfferBy": "द्वारा ऑफ़र के माध्यम से",
+    "through": "Through",
     "plannedOn": "पर योजना बनाई",
     "transactionId": "लेन देन आईडी",
     "ledgerIndex": "खाता सूचकांक",

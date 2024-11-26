@@ -565,7 +565,7 @@
     "openWithExplorer": "打开用%{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "显示备忘录",
-    "throughOfferBy": "通过提供",
+    "through": "Through",
     "plannedOn": "Planned on",
     "transactionId": "Transaction ID",
     "ledgerIndex": "Ledger Index",

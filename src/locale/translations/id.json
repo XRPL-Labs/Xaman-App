@@ -565,7 +565,7 @@
     "openWithExplorer": "Buka dengan %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Tunjukkan memo",
-    "throughOfferBy": "Melalui penawaran oleh",
+    "through": "Through",
     "plannedOn": "Direncanakan pada",
     "transactionId": "ID transaksi",
     "ledgerIndex": "Indeks Buku Besar",

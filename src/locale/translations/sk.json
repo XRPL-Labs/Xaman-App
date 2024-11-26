@@ -565,7 +565,7 @@
     "openWithExplorer": "Otvoriť v %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Zobraziť poznámku",
-    "throughOfferBy": "Prostredníctvom ponuky od",
+    "through": "Through",
     "plannedOn": "Plánované dňa",
     "transactionId": "Transakcie ID",
     "ledgerIndex": "knihy zoznam",

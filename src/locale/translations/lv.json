@@ -565,7 +565,7 @@
     "openWithExplorer": "Atvērt ar %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Rādīt ziņojumu",
-    "throughOfferBy": "Ar piedāvājuma palīdzību",
+    "through": "Through",
     "plannedOn": "Plānotie",
     "transactionId": "Darījuma ID",
     "ledgerIndex": "Virsgrāmatas indekss",

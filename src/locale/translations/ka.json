@@ -565,7 +565,7 @@
     "openWithExplorer": "ლეჯერზე ნახვა: %{explorer} ",
     "openInExplorer": "Open in explorer",
     "showMemo": "მემოს ჩვენება",
-    "throughOfferBy": "მეშვეობით შეთავაზება",
+    "through": "Through",
     "plannedOn": "დაგეგმილი",
     "transactionId": "ტრანზაქციის ID ",
     "ledgerIndex": "ლეჯერის ინდექსი",

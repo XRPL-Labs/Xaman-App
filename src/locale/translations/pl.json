@@ -565,7 +565,7 @@
     "openWithExplorer": "Otwórz w %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "Pokaż notatkę",
-    "throughOfferBy": "Poprzez ofertę wg",
+    "through": "Through",
     "plannedOn": "Planowane w dniu",
     "transactionId": "Identyfikator transakcji",
     "ledgerIndex": "Indeks sieci XRPL",

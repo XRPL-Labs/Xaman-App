@@ -565,7 +565,7 @@
     "openWithExplorer": "فتح مع %{explorer}",
     "openInExplorer": "Open in explorer",
     "showMemo": "إظهار المذكرة",
-    "throughOfferBy": "من خلال العرض المقدم من",
+    "through": "Through",
     "plannedOn": "خططت على",
     "transactionId": "معرف المعاملة",
     "ledgerIndex": "فهرس دفتر الأستاذ",
