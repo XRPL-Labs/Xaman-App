@@ -11,7 +11,9 @@ import { Toast } from '@common/helpers/interface';
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
-import { AmountText, Icon, TokenAvatar, TokenIcon, TouchableDebounce } from '@components/General';
+import { AmountText, Icon, TouchableDebounce } from '@components/General';
+
+import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 

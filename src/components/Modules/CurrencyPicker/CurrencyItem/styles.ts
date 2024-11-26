@@ -13,16 +13,17 @@ export default StyleService.create({
         justifyContent: 'center',
         color: '$textPrimary',
     },
-    currencyItemCounterPartyLabel: {
+    currencyIssuerLabel: {
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.family,
         color: '$textSecondary',
+        paddingTop: 5,
     },
     currencyItemLabelSelected: {
         color: '$blue',
     },
     currencyBalance: {
-        fontSize: AppFonts.subtext.size * 0.9,
+        fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyMono,
         color: '$grey',
     },

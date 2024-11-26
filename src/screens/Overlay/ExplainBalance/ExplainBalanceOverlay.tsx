@@ -15,7 +15,6 @@ import { AccountModel, TrustLineModel } from '@store/models';
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
 
@@ -23,16 +22,9 @@ import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // components
-import {
-    ActionPanel,
-    Button,
-    Icon,
-    InfoMessage,
-    LoadingIndicator,
-    Spacer,
-    TokenAvatar,
-    TokenIcon,
-} from '@components/General';
+import { ActionPanel, Button, Icon, InfoMessage, LoadingIndicator, Spacer } from '@components/General';
+
+import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 
@@ -237,9 +229,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         </View>
                         <Text style={styles.rowLabel}>
                             {Localize.t('global.asset')}
-                            <Text style={styles.rowLabelSmall}>
-                                {` (${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currencyCode)})`}
-                            </Text>
+                            <Text style={styles.rowLabelSmall}>{` (${line.getFormattedIssuer()})`}</Text>
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>

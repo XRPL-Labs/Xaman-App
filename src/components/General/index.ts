@@ -39,8 +39,6 @@ export * from './AmountText';
 export * from './LoadingIndicator';
 export * from './KeyboardAwareScrollView';
 export * from './ActionPanel';
-export * from './TokenAvatar';
-export * from './TokenIcon';
 export * from './ExpandableView';
 export * from './BlurView';
 export * from './WebView';

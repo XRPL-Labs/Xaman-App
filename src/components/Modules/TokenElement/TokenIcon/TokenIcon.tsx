@@ -42,7 +42,7 @@ class TokenIcon extends PureComponent<Props, State> {
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State): Partial<State> | null {
         const icon = TokenIcon.getIcon(nextProps.token);
-        if (icon && prevState.icon !== icon) {
+        if (prevState.icon !== icon) {
             return {
                 icon,
             };
@@ -61,7 +61,7 @@ class TokenIcon extends PureComponent<Props, State> {
             return currency;
         }
 
-        return token.currency?.avatar;
+        return token.currency?.avatarUrl;
     };
 
     render() {

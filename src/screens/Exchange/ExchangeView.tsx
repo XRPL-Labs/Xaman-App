@@ -39,8 +39,9 @@ import {
     InfoMessage,
     LoadingIndicator,
     Spacer,
-    TokenAvatar,
 } from '@components/General';
+
+import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import { AmountValueType } from '@components/General/AmountInput';
 
@@ -55,7 +56,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
-    trustLine: TrustLineModel;
+    token: TrustLineModel;
 }
 
 export interface State {
@@ -102,8 +103,8 @@ class ExchangeView extends Component<Props, State> {
 
         // create new ledger exchange instance base on pair
         this.ledgerExchange = new LedgerExchange({
-            issuer: props.trustLine.currency.issuer,
-            currency: props.trustLine.currency.currencyCode,
+            issuer: props.token.currency.issuer,
+            currency: props.token.currency.currencyCode,
         });
 
         this.amountInput = React.createRef();
@@ -236,7 +237,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     onExchangePress = () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
         const { direction, amount, expectedOutcome } = this.state;
 
         // dismiss keyboard if present
@@ -254,7 +255,7 @@ class ExchangeView extends Component<Props, State> {
                     currency:
                         direction === MarketDirection.SELL
                             ? NetworkService.getNativeAsset()
-                            : NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                            : NormalizeCurrencyCode(token.currency.currencyCode),
                 }),
                 [
                     { text: Localize.t('global.cancel') },
@@ -277,11 +278,11 @@ class ExchangeView extends Component<Props, State> {
                 payCurrency:
                     direction === MarketDirection.SELL
                         ? NetworkService.getNativeAsset()
-                        : NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                        : NormalizeCurrencyCode(token.currency.currencyCode),
                 getAmount: Localize.formatNumber(Number(expectedOutcome)),
                 getCurrency:
                     direction === MarketDirection.SELL
-                        ? NormalizeCurrencyCode(trustLine.currency.currencyCode)
+                        ? NormalizeCurrencyCode(token.currency.currencyCode)
                         : NetworkService.getNativeAsset(),
             }),
             [
@@ -317,14 +318,14 @@ class ExchangeView extends Component<Props, State> {
     };
 
     prepareAndSign = async () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
         const { amount, minimumOutcome, direction } = this.state;
 
         this.setState({ isExchanging: true });
 
         const pair: IssuedCurrency = {
-            issuer: trustLine.currency.issuer,
-            currency: trustLine.currency.currencyCode,
+            issuer: token.currency.issuer,
+            currency: token.currency.currencyCode,
         };
 
         // create offerCreate transaction
@@ -416,7 +417,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     getAvailableBalance = () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
         const { direction } = this.state;
 
         let availableBalance;
@@ -424,14 +425,14 @@ class ExchangeView extends Component<Props, State> {
         if (direction === MarketDirection.SELL) {
             availableBalance = CalculateAvailableBalance(account);
         } else {
-            availableBalance = Number(trustLine.balance);
+            availableBalance = Number(token.balance);
         }
 
         return availableBalance;
     };
 
     applyAllBalance = () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
         const { direction } = this.state;
 
         let availableBalance: string;
@@ -439,7 +440,7 @@ class ExchangeView extends Component<Props, State> {
         if (direction === MarketDirection.SELL) {
             availableBalance = new BigNumber(CalculateAvailableBalance(account)).toString();
         } else {
-            availableBalance = new BigNumber(trustLine.balance).toString();
+            availableBalance = new BigNumber(token.balance).toString();
         }
 
         this.onAmountChange(availableBalance);
@@ -472,7 +473,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     renderBottomContainer = () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
         const { direction, liquidity, amount, exchangeRate, minimumOutcome, isExchanging, isLoading } = this.state;
 
         if (isLoading || !liquidity) {
@@ -494,7 +495,7 @@ class ExchangeView extends Component<Props, State> {
                             <AmountText
                                 value={exchangeRate}
                                 currency={`${NormalizeCurrencyCode(
-                                    trustLine.currency.currencyCode,
+                                    token.currency.currencyCode,
                                 )}/${NetworkService.getNativeAsset()}`}
                                 style={[styles.detailsValue, AppStyles.textRightAligned]}
                                 immutable
@@ -508,7 +509,7 @@ class ExchangeView extends Component<Props, State> {
                                 value={minimumOutcome}
                                 currency={
                                     direction === MarketDirection.SELL
-                                        ? trustLine.currency.currencyCode
+                                        ? token.currency.currencyCode
                                         : NetworkService.getNativeAsset()
                                 }
                                 style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
@@ -537,7 +538,7 @@ class ExchangeView extends Component<Props, State> {
     };
 
     render() {
-        const { trustLine } = this.props;
+        const { token } = this.props;
         const { direction, amount, expectedOutcome } = this.state;
 
         return (
@@ -555,42 +556,49 @@ class ExchangeView extends Component<Props, State> {
                         text: Localize.t('global.exchange'),
                     }}
                 />
-                <View style={[styles.contentContainer]}>
+                <View style={styles.contentContainer}>
                     {/* From part */}
                     <View style={styles.fromContainer}>
                         <View style={AppStyles.row}>
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={direction === MarketDirection.SELL ? 'Native' : trustLine}
+                                        token={direction === MarketDirection.SELL ? 'Native' : token}
                                         border
                                         size={37}
                                     />
                                 </View>
 
-                                <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={styles.currencyLabel}>
-                                        {direction === MarketDirection.SELL
-                                            ? NetworkService.getNativeAsset()
-                                            : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
-                                    </Text>
+                                <View style={[AppStyles.column, AppStyles.centerContent, AppStyles.flexShrink1]}>
+                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                        <Text style={styles.currencyLabel}>
+                                            {direction === MarketDirection.SELL
+                                                ? NetworkService.getNativeAsset()
+                                                : token.getFormattedCurrency()}
+                                        </Text>
+                                        {direction === MarketDirection.BUY && (
+                                            <Text
+                                                numberOfLines={1}
+                                                style={[styles.issuerLabelSmall, AppStyles.flexShrink1]}
+                                            >
+                                                &nbsp;-&nbsp;{token.getFormattedIssuer()}
+                                            </Text>
+                                        )}
+                                    </View>
                                     <Text style={styles.subLabel}>
                                         {Localize.t('global.spendable')}:{' '}
                                         {Localize.formatNumber(this.getAvailableBalance())}
                                     </Text>
                                 </View>
                             </View>
-                            <View>
-                                <Button
-                                    secondary
-                                    roundedSmall
-                                    onPress={this.applyAllBalance}
-                                    label={Localize.t('global.all')}
-                                    icon="IconArrowDown"
-                                    iconSize={10}
-                                />
-                            </View>
+                            <Button
+                                light
+                                roundedMini
+                                onPress={this.applyAllBalance}
+                                label={Localize.t('global.all')}
+                                icon="IconArrowDown"
+                                iconSize={10}
+                            />
                         </View>
                         <Spacer />
 
@@ -633,7 +641,7 @@ class ExchangeView extends Component<Props, State> {
                             <View style={[AppStyles.row, AppStyles.flex1]}>
                                 <View style={styles.currencyImageContainer}>
                                     <TokenAvatar
-                                        token={direction === MarketDirection.BUY ? 'Native' : trustLine}
+                                        token={direction === MarketDirection.BUY ? 'Native' : token}
                                         border
                                         size={37}
                                     />
@@ -642,14 +650,10 @@ class ExchangeView extends Component<Props, State> {
                                     <Text style={styles.currencyLabel}>
                                         {direction === MarketDirection.BUY
                                             ? NetworkService.getNativeAsset()
-                                            : trustLine.currency.name ||
-                                              NormalizeCurrencyCode(trustLine.currency.currencyCode)}
+                                            : token.getFormattedCurrency()}
                                     </Text>
                                     {direction === MarketDirection.SELL && (
-                                        <Text style={styles.subLabel}>
-                                            {trustLine.counterParty.name}{' '}
-                                            {NormalizeCurrencyCode(trustLine.currency.currencyCode)}
-                                        </Text>
+                                        <Text style={styles.subLabel}>{token.getFormattedIssuer()}</Text>
                                     )}
                                 </View>
                             </View>

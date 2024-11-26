@@ -3,7 +3,7 @@
  * Interact with Xaman backend
  */
 
-import { get, isEmpty, map, reduce } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import moment from 'moment-timezone';
 import { Platform } from 'react-native';
 import { OptionsModalPresentationStyle } from 'react-native-navigation';
@@ -15,15 +15,11 @@ import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceUniqueId } from '@common/helpers/device';
 import { GetAppReadableVersion } from '@common/helpers/app';
 
-import { CurrencyModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
 import CoreRepository from '@store/repositories/core';
 import ProfileRepository from '@store/repositories/profile';
-import CounterPartyRepository from '@store/repositories/counterParty';
 import CurrencyRepository from '@store/repositories/currency';
-
-import Preferences from '@common/libs/preferences';
 
 import { Payload, PayloadType } from '@common/libs/payload';
 import { InAppPurchaseReceipt } from '@common/libs/iap';
@@ -98,80 +94,51 @@ class BackendService {
         });
     };
 
-    /**
-     * Starts syncing with the backend, including Curated IOUs.
-     */
-    public sync = () => {
-        this.logger.debug('Start Syncing with backend');
-        Promise.all([this.ping(), this.syncCuratedIOUs()]);
-    };
-
-    /**
-     * Updates Curated IOUs list from the backend.
-     */
-    syncCuratedIOUs = async () => {
+    syncTokensDetails = async (issuer: string): Promise<void> => {
         try {
-            // in case of not exist, then Number(LOCALE_VERSION) will be 0
-            const LOCALE_VERSION = await Preferences.get(Preferences.keys.CURATED_LIST_VERSION);
+            // get all issued currencies from this issuer
+            const issuedCurrencies = CurrencyRepository.findBy('issuer', issuer);
 
-            const { details, version, changed } = await this.getCuratedIOUs(Number(LOCALE_VERSION));
-
-            // nothing has been changed
-            if (!changed) {
+            // no currencies ?
+            if (issuedCurrencies.isEmpty()) {
                 return;
             }
 
-            // update the list
-            const updatedParties = await reduce(
-                details,
-                async (result: Promise<number[]>, value) => {
-                    const currenciesList = [] as CurrencyModel[];
+            // get issuer details and token details from backend
+            const { details } = await this.getCuratedIOUs({ issuer });
 
-                    await Promise.all(
-                        map(value.currencies, async (c) => {
-                            const currency = await CurrencyRepository.upsert({
-                                id: `${c.issuer}.${c.currency}`,
-                                issuer: c.issuer,
-                                currencyCode: c.currency,
-                                name: c.name,
-                                avatar: c.avatar || '',
-                                shortlist: c.shortlist === 1,
-                                xapp_identifier: c.xapp_identifier || '',
-                            });
-
-                            currenciesList.push(currency);
-                        }),
-                    );
-
-                    await CounterPartyRepository.upsert({
-                        id: value.id,
-                        name: value.name,
-                        domain: value.domain,
-                        avatar: value.avatar || '',
-                        shortlist: value.shortlist === 1,
-                        currencies: currenciesList,
-                    });
-
-                    (await result).push(value.id);
-                    return result;
-                },
-                Promise.resolve([]),
+            // try to find issuer details in the response
+            const issuerDetails = Object.values(details).find((cp) =>
+                Object.values(cp.currencies).some((c) => c.issuer === issuer),
             );
 
-            // delete removed parties from data store
-            const counterParties = CounterPartyRepository.findAll();
-            const removedParties = counterParties.filter((c) => {
-                return !updatedParties.includes(c.id);
-            });
+            for (const currency of issuedCurrencies) {
+                const currencyDetails = issuerDetails?.currencies[currency.currencyCode];
 
-            if (removedParties.length > 0) {
-                CounterPartyRepository.delete(removedParties);
+                const updatedDetails = {
+                    name: currencyDetails?.name ?? '',
+                    avatarUrl: currencyDetails?.avatar ?? '',
+                    issuerAvatarUrl: issuerDetails?.avatar ?? '',
+                    issuerName: issuerDetails?.name ?? '',
+                    shortlist: currencyDetails?.shortlist === 1,
+                    xappIdentifier: currencyDetails?.xapp_identifier ?? '',
+                };
+
+                // check if the details has been changed
+                const hasChanges = Object.entries(updatedDetails).some(
+                    ([key, value]) => (currency as any)[key] !== value,
+                );
+
+                // only update if the data has been changed
+                if (hasChanges) {
+                    await CurrencyRepository.updateCurrencyDetails({
+                        id: currency.id,
+                        ...updatedDetails,
+                    });
+                }
             }
-
-            // persist the latest version
-            await Preferences.set(Preferences.keys.CURATED_LIST_VERSION, String(version));
         } catch (error) {
-            this.logger.error('syncCuratedIOUs', error);
+            this.logger.error('syncTokensDetails', error);
         }
     };
 
@@ -330,8 +297,8 @@ class BackendService {
             });
     };
 
-    getCuratedIOUs = (version = 0, promoted = false): Promise<XamanBackend.CuratedIOUsResponse> => {
-        return ApiService.fetch(Endpoints.CuratedIOUs, 'GET', { version, promoted });
+    getCuratedIOUs = (params: { promoted?: boolean; issuer?: string }): Promise<XamanBackend.CuratedIOUsResponse> => {
+        return ApiService.fetch(Endpoints.CuratedIOUs, 'GET', params);
     };
 
     /**

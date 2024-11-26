@@ -42,24 +42,18 @@ class TokenAvatar extends PureComponent<Props, State> {
     }
 
     static getAvatar = (token: TrustLineModel | 'Native'): string => {
-        if (!token) {
-            return '';
-        }
-
-        // native
+        // native asset
         if (token === 'Native') {
             const { asset } = NetworkService.getNativeAssetIcons();
             return asset;
         }
 
-        // token
-        const { counterParty } = token;
-
-        if (counterParty.avatar) {
-            return counterParty.avatar;
+        // issuer avatar
+        if (token?.currency?.issuerAvatarUrl) {
+            return token.currency.issuerAvatarUrl;
         }
 
-        if (token.isLiquidityPoolToken()) {
+        if (token?.isLiquidityPoolToken()) {
             return StyleService.getImage('ImageUnknownAMM').uri;
         }
 

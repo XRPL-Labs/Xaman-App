@@ -63,7 +63,7 @@ class AuthenticationService extends EventEmitter {
         this.postSuccess = [
             AppService.checkVersionChange,
             AppService.checkAppUpdate,
-            BackendService.sync,
+            BackendService.ping,
             LinkingService.checkInitialDeepLink,
             PushNotificationsService.checkInitialNotification,
         ];

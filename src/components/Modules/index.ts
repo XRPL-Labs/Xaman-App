@@ -24,3 +24,4 @@ export * from './MutationWidgets';
 export * from './ReviewTransaction';
 export * from './MonetizationElement';
 export * from './ProductDetailsElement';
+export * from './TokenElement';

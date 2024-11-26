@@ -268,6 +268,21 @@ describe('Storage', () => {
             instance.close();
         });
 
+        it('should run v18 migrations successfully', async () => {
+            const instance = RealmTestUtils.getRealmInstanceWithVersion(18);
+            expect(instance.schemaVersion).toBe(18);
+
+            const currency = RealmTestUtils.getFirstModelItem(instance, 'Currency');
+
+            // renamed fields
+            expect(currency.xappIdentifier).toBeDefined();
+            expect(currency.avatarUrl).toBeDefined();
+            // force the token to update
+            expect(currency.updatedAt).toStrictEqual(new Date(0));
+
+            instance.close();
+        });
+
         afterAll(() => {
             RealmTestUtils.cleanup();
         });

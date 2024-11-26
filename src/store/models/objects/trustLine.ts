@@ -7,13 +7,15 @@
 
 import Realm from 'realm';
 
-import { Truncate } from '@common/utils/string';
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
-import CounterPartyModel from '@store/models/objects/counterParty';
 import CurrencyModel from '@store/models/objects/currency';
 
 import { TrustLineSchema } from '@store/models/schemas/latest';
+
+import { Truncate } from '@common/utils/string';
+
+import Localize from '@locale';
 
 /* Model  ==================================================================== */
 class TrustLine extends Realm.Object<TrustLine> {
@@ -53,70 +55,51 @@ class TrustLine extends Realm.Object<TrustLine> {
     public declare favorite?: boolean;
 
     /**
-     * Represents the counterparties details associated with this trust line.
-     *
-     * If the trust line is linked to an existing CounterParty model, it will
-     * return the name, avatar, and domain of that counterparty. Otherwise, it
-     * will truncate the currency issuer's name and default the avatar and domain.
-     *
-     * @returns {object} An object containing name, avatar, and domain of the counterparty.
-     */
-    get counterParty(): { name: string; avatar: string; domain: string } {
-        const counterParties = this.currency.linkingObjects<CounterPartyModel>('CounterParty', 'currencies');
-
-        if (!counterParties.isEmpty()) {
-            const { name, avatar, domain } = counterParties[0];
-            return { name, avatar, domain };
-        }
-
-        return {
-            name: Truncate(this.currency.issuer, 11),
-            avatar: '',
-            domain: '',
-        };
-    }
-
-    /**
      * Returns true if token is LP Token.
      *
      * @returns {boolean}
      */
     isLiquidityPoolToken(): boolean {
         // TODO: improve this check for LP token
-        return !!this.currency.currencyCode.startsWith('03');
+        return this.currency.currencyCode.startsWith('03');
     }
 
-    /**
-     * Retrieves the array of AMM pairs.
-     *
-     * @returns {Array<string | CurrencyModel>} - The array of AMM pairs.
-     */
-    getAssetPairs(): any | undefined {
-        const assetPair = this.linkingObjects('AmmPair', 'line');
-
-        if (!assetPair.isEmpty()) {
-            return assetPair[0];
-        }
-
-        return undefined;
-    }
-
-    getReadableCurrency(): string {
+    getFormattedCurrency(): string {
         // if there is a name for currency return the name
+
         if (this.currency.name) {
             return `${this.currency.name}`;
         }
 
         // LP token
         if (this.isLiquidityPoolToken()) {
-            return this.getAssetPairs()
-                ?.pairs.map((pair: string | CurrencyModel) =>
-                    typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currencyCode),
-                )
-                .join('/');
+            const assetPair = this.linkingObjects<{ pairs: Array<string | CurrencyModel> }>('AmmPair', 'line');
+
+            // return pairs currency code
+            if (!assetPair.isEmpty()) {
+                return assetPair[0]?.pairs
+                    .map((pair) => (typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currencyCode)))
+                    .join('/');
+            }
         }
 
+        // normalized currency code
         return NormalizeCurrencyCode(this.currency.currencyCode);
+    }
+
+    getFormattedIssuer(owner?: string): string {
+        // self issued
+        if (owner && this.currency.issuer === owner) {
+            return Localize.t('home.selfIssued');
+        }
+
+        // issuer name + currency code
+        if (this.currency.issuerName) {
+            return `${this.currency.issuerName} ${NormalizeCurrencyCode(this.currency.currencyCode)}`;
+        }
+
+        // issuer address
+        return Truncate(this.currency.issuer, 11);
     }
 }
 

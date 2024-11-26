@@ -379,7 +379,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
-        const { setDestinationInfo, amount, currency, destination, source } = this.context;
+        const { setDestinationInfo, amount, token, destination, source } = this.context;
         let { destinationInfo } = this.context;
 
         // double check, this should not be happening
@@ -451,7 +451,7 @@ class RecipientStep extends Component<Props, State> {
             if (!destinationInfo.exist) {
                 // account does not exist and cannot activate with IOU
                 // IMMEDIATE REJECT
-                if (typeof currency !== 'string') {
+                if (typeof token !== 'string') {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'warning',
@@ -474,10 +474,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if amount is not covering the creation of account
                 // IMMEDIATE REJECT
-                if (
-                    typeof currency === 'string' &&
-                    parseFloat(amount) < NetworkService.getNetworkReserve().BaseReserve
-                ) {
+                if (typeof token === 'string' && parseFloat(amount) < NetworkService.getNetworkReserve().BaseReserve) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'warning',
@@ -500,7 +497,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if the amount will create the account
                 if (
-                    typeof currency === 'string' &&
+                    typeof token === 'string' &&
                     parseFloat(amount) >= NetworkService.getNetworkReserve().BaseReserve &&
                     passedChecks.indexOf(PassableChecks.AMOUNT_CREATE_ACCOUNT) === -1
                 ) {
@@ -539,10 +536,10 @@ class RecipientStep extends Component<Props, State> {
             // check if recipient have proper trustline for receiving this IOU
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
-            if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
+            if (typeof token !== 'string' && token.currency.issuer !== destination.address) {
                 const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
-                    currency: currency.currency.currencyCode,
-                    issuer: currency.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                 });
 
                 // recipient does not have the proper trustline
@@ -596,9 +593,9 @@ class RecipientStep extends Component<Props, State> {
                         type: 'warning',
                         text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
                             currency:
-                                typeof currency === 'string'
+                                typeof token === 'string'
                                     ? NetworkService.getNativeAsset()
-                                    : NormalizeCurrencyCode(currency.currency.currencyCode),
+                                    : NormalizeCurrencyCode(token.currency.currencyCode),
                         }),
                         buttons: [
                             {
@@ -616,7 +613,7 @@ class RecipientStep extends Component<Props, State> {
             // check for xrp income disallow
             if (
                 destinationInfo.disallowIncomingXRP &&
-                typeof currency === 'string' &&
+                typeof token === 'string' &&
                 passedChecks.indexOf(PassableChecks.DISALLOWED_XRP_FLAG) === -1
             ) {
                 setTimeout(() => {
@@ -676,7 +673,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setIssuerFee, source, destination, currency } = this.context;
+        const { goNext, setIssuerFee, source, destination, token } = this.context;
 
         // double check, this should not be happening
         if (!destination || !source) {
@@ -691,12 +688,12 @@ class RecipientStep extends Component<Props, State> {
 
             // sending IOU && SENDER AND DESTINATION is not issuer, get issuer fee
             if (
-                typeof currency !== 'string' &&
-                source.address !== currency.currency.issuer &&
-                destination.address !== currency.currency.issuer
+                typeof token !== 'string' &&
+                source.address !== token.currency.issuer &&
+                destination.address !== token.currency.issuer
             ) {
                 // fetching/applying issuer fee from network
-                const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
+                const issuerFee = await LedgerService.getAccountTransferRate(token.currency.issuer);
                 if (issuerFee) {
                     setIssuerFee(issuerFee);
                 }

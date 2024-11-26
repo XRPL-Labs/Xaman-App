@@ -1,4 +1,4 @@
-import { schemas } from './v17';
+import { schemas } from './v18';
 
 export const {
     CoreSchema,
@@ -6,7 +6,6 @@ export const {
     AccountDetailsSchema,
     NodeSchema,
     NetworkSchema,
-    CounterPartySchema,
     ProfileSchema,
     TrustLineSchema,
     CurrencySchema,

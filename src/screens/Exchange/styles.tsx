@@ -35,7 +35,14 @@ const styles = StyleService.create({
     subLabel: {
         fontSize: AppFonts.subtext.size,
         fontFamily: AppFonts.base.familyMono,
-        color: '$grey',
+        color: '$textSecondary',
+        paddingTop: 5,
+    },
+    issuerLabelSmall: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.base.family,
+        color: '$textSecondary',
+        paddingTop: 5,
     },
     detailsLabel: {
         fontSize: AppFonts.subtext.size * 0.9,

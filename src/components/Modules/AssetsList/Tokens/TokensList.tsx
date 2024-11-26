@@ -8,7 +8,7 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { TrustLineRepository } from '@store/repositories';
+import { CurrencyRepository, TrustLineRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
@@ -68,11 +68,15 @@ class TokensList extends Component<Props, State> {
         // listen for token updates
         // this is needed when a single token favorite status changed
         TrustLineRepository.on('trustLineUpdate', this.onTrustLineUpdate);
+        // this is needed when using ResolveService to sync the currency details
+        CurrencyRepository.on('currencyDetailsUpdate', this.onCurrencyDetailsUpdate);
     }
 
     componentWillUnmount(): void {
         // remove trustLine update listener
         TrustLineRepository.off('trustLineUpdate', this.onTrustLineUpdate);
+        // remove listener
+        CurrencyRepository.off('currencyDetailsUpdate', this.onCurrencyDetailsUpdate);
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
@@ -153,7 +157,7 @@ class TokensList extends Component<Props, State> {
             filtered = filter(filtered, (item: TrustLineModel) => {
                 return (
                     toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
-                    toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
+                    toLower(item.currency?.issuerName).indexOf(normalizedSearch) > -1 ||
                     toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) > -1
                 );
             });
@@ -172,6 +176,11 @@ class TokensList extends Component<Props, State> {
         }
 
         return filtered ?? [];
+    };
+
+    onCurrencyDetailsUpdate = () => {
+        // update the token list if any of token details changed
+        this.forceUpdate();
     };
 
     onTrustLineUpdate = (updatedToken: TrustLineModel, changes: Partial<TrustLineModel>) => {
@@ -198,7 +207,7 @@ class TokensList extends Component<Props, State> {
         if (spendable) {
             Navigator.showOverlay<TokenSettingsOverlayProps>(
                 AppScreens.Overlay.TokenSettings,
-                { trustLine: token, account },
+                { token, account },
                 {
                     overlay: {
                         interceptTouchOutside: false,
