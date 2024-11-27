@@ -29,7 +29,7 @@ interface Props {
     account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
-
+    experimentalUI?: boolean;
     onChangeCategoryPress: () => void;
 }
 
@@ -80,12 +80,13 @@ class TokensList extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, spendable } = this.props;
+        const { discreetMode, spendable, experimentalUI } = this.props;
         const { dataSource, accountStateVersion, reorderEnabled, filters } = this.state;
 
         return (
             !isEqual(nextProps.spendable, spendable) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
+            !isEqual(nextProps.experimentalUI, experimentalUI) ||
             !isEqual(nextState.accountStateVersion, accountStateVersion) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
             !isEqual(nextState.filters, filters) ||
@@ -307,7 +308,7 @@ class TokensList extends Component<Props, State> {
     };
 
     renderItem = ({ item, index }: { item: TrustLineModel; index: number }) => {
-        const { discreetMode } = this.props;
+        const { discreetMode, experimentalUI } = this.props;
         const { account, reorderEnabled } = this.state;
 
         return (
@@ -316,6 +317,7 @@ class TokensList extends Component<Props, State> {
                 token={item}
                 reorderEnabled={reorderEnabled}
                 discreetMode={discreetMode}
+                saturate={experimentalUI}
                 selfIssued={item.currency.issuer === account.address}
                 onPress={this.onTokenItemPress}
                 onMoveTopPress={this.onItemMoveTopPress}
@@ -339,7 +341,7 @@ class TokensList extends Component<Props, State> {
     };
 
     render() {
-        const { account, style, spendable, discreetMode } = this.props;
+        const { account, style, spendable, discreetMode, experimentalUI } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
@@ -353,7 +355,7 @@ class TokensList extends Component<Props, State> {
                 />
                 <ListFilter
                     filters={filters}
-                    reorderEnabled={reorderEnabled}
+                    visible={!reorderEnabled && !experimentalUI}
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />

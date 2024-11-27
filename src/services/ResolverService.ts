@@ -109,7 +109,7 @@ class ResolverService {
 
     private onCurrencyUpsert = async (currency: CurrencyModel) => {
         // 24 hours considered outdated
-        const isCurrencyOutdated = moment(currency.updatedAt).isBefore(moment().subtract(24, 'minutes'));
+        const isCurrencyOutdated = moment(currency.updatedAt).isBefore(moment().subtract(24, 'hours'));
 
         // if currency is outdated then start syncing
         if (isCurrencyOutdated) {
@@ -190,6 +190,28 @@ class ResolverService {
             address,
             tag,
         };
+    };
+
+    public clearCache = async () => {
+        // clear resolver cache
+        this.accountNameCache.clear();
+
+        // get all currencies and set their last update to lowest
+        const currencies = CurrencyRepository.findAll();
+        return Promise.all(
+            currencies.map(async (currency) => {
+                await CurrencyRepository.update({
+                    id: currency.id,
+                    name: '',
+                    issuerAvatarUrl: '',
+                    avatarUrl: '',
+                    issuerName: '',
+                    xappIdentifier: '',
+                    shortlist: false,
+                    updatedAt: new Date(0),
+                });
+            }),
+        );
     };
 
     public getAccountName = async (

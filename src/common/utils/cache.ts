@@ -37,6 +37,10 @@ class LRUCache<K, V> {
     delete(key: K): void {
         this.cache.delete(key);
     }
+
+    clear(): void {
+        this.cache.clear();
+    }
 }
 
 export default LRUCache;

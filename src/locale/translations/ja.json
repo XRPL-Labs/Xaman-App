@@ -760,6 +760,7 @@
     "biometricAuthentication": "生体認証",
     "hapticFeedback": "触覚フィードバック",
     "developerMode": "開発者モード",
+    "developerSettings": "Developer settings",
     "useSystemSeparators": "システムの通貨形式を使用",
     "showReserveValue": "ホーム画面に準備金を表示",
     "enterOldPasscode": "古いパスコードを入力してください",
@@ -823,7 +824,13 @@
     "networkHaveOnlyOneNodeAsDefault": "このネットワークにはノードは1つしかなく、デフォルトとして設定済みです。",
     "networkUpdates": "ネットワークの更新情報",
     "everythingIsUpdateToDate": "全て最新です",
-    "networkAreUpdateToDate": "現在、ネットワーク設定の追加や変更はありません。"
+    "networkAreUpdateToDate": "現在、ネットワーク設定の追加や変更はありません。",
+    "experimental": "Experimental",
+    "experimentalSimplicityUi": "Simplicity UI",
+    "cache": "Cache",
+    "clearResolverCache": "Clear resolver cache",
+    "cacheClearedSuccessfully": "Cache Cleared Successfully",
+    "restartRequired": "A restart is required for these changes to take effect"
   },
   "account": {
     "addAccount": "アカウントを追加",
@@ -1195,9 +1202,9 @@
     "thankYouForUsingXaman": "Thank you for using Xaman!",
     "comingPaymentWarning": "You're still enjoying Xaman for free, but you're nearing our free limit. To support Xaman's innovation and security, a small in-app payment may be requested soon.",
     "paymentRequiredMessage": "A small payment is required to maintain unlimited access for the next 30 days. Alternatively, Xaman will switch to limited-use mode until your monthly limits reset automatically.",
-    "prePurchaseMessage": "Thank you for your support! Your payment unlocks a full month of unrestricted Xaman use.",
+    "prePurchaseMessage": "You're currently unable to open xApps and sign requests. A small payment is required to unlock 30 days of unrestricted access to Xaman.",
     "learnMore": "Learn more",
-    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
+    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a 30 days of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
     "allSet": "All set!",
     "thankYouForPurchase": "Thank you for your purchase.",
     "noPurchaseFound": "No Purchases Found",
@@ -1210,7 +1217,8 @@
     "benefitsTextOne": "Sign payloads",
     "benefitsTextTwo": "xApp access",
     "benefitsTextThree": "Premium support",
-    "prePurchaseTip": "Please note that this is a one-month purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
+    "unlockFullFunctionality": "Unlock full functionality with a small payment.",
+    "prePurchaseTip": "Please note that this is a 30 days purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",

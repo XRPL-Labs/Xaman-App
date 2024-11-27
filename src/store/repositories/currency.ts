@@ -54,6 +54,17 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
         });
     };
 
+    update = async (object: Partial<CurrencyModel>) => {
+        // the primary key should be in the object
+        if (this.model?.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {
+            throw new Error(`Update require primary key (${this.model.schema.primaryKey}) to be set`);
+        }
+
+        return this.create(object, true).then((updatedCurrency: CurrencyModel) => {
+            return updatedCurrency;
+        });
+    };
+
     updateCurrencyDetails = async (object: Partial<CurrencyModel>) => {
         // the primary key should be in the object
         if (this.model?.schema?.primaryKey && !has(object, this.model.schema.primaryKey)) {

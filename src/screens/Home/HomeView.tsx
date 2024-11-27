@@ -19,6 +19,8 @@ import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 
+import Preferences from '@common/libs/preferences';
+
 import { Button, RaisedButton } from '@components/General';
 import {
     MonetizationElement,
@@ -50,6 +52,7 @@ export interface State {
     selectedNetwork: NetworkModel;
     developerMode: boolean;
     discreetMode: boolean;
+    experimentalUI: boolean;
 }
 
 /* Component ==================================================================== */
@@ -78,6 +81,7 @@ class HomeView extends Component<Props, State> {
             selectedNetwork: coreSettings.network,
             developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
+            experimentalUI: false,
         };
     }
 
@@ -92,6 +96,15 @@ class HomeView extends Component<Props, State> {
 
         // update account status
         InteractionManager.runAfterInteractions(this.updateAccountStatus);
+
+        // get experimental status
+        Preferences.get(Preferences.keys.EXPERIMENTAL_SIMPLICITY_UI).then((experimentalUI) => {
+            if (experimentalUI === 'true') {
+                this.setState({
+                    experimentalUI: true,
+                });
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -246,7 +259,7 @@ class HomeView extends Component<Props, State> {
 
     renderAssets = () => {
         const { timestamp } = this.props;
-        const { account, discreetMode, isSpendable } = this.state;
+        const { account, discreetMode, isSpendable, experimentalUI } = this.state;
 
         // accounts is not activated
         if (account.balance === 0) {
@@ -255,6 +268,7 @@ class HomeView extends Component<Props, State> {
 
         return (
             <AssetsList
+                experimentalUI={experimentalUI}
                 account={account}
                 discreetMode={discreetMode}
                 spendable={isSpendable}
@@ -265,7 +279,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable } = this.state;
+        const { isSpendable, experimentalUI } = this.state;
 
         if (isSpendable) {
             return (
@@ -284,7 +298,9 @@ class HomeView extends Component<Props, State> {
                     <RaisedButton
                         small
                         testID="request-button"
-                        containerStyle={styles.requestButtonContainer}
+                        containerStyle={
+                            experimentalUI ? styles.requestButtonContainerGrey : styles.requestButtonContainer
+                        }
                         icon="IconCornerRightDown"
                         iconSize={18}
                         iconStyle={styles.requestButtonIcon}

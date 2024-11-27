@@ -7,7 +7,7 @@
 import React, { PureComponent } from 'react';
 import { Image, ImageStyle, View, ViewStyle } from 'react-native';
 
-import { NetworkService } from '@services';
+import { NetworkService, StyleService } from '@services';
 
 import { TrustLineModel } from '@store/models';
 
@@ -16,6 +16,7 @@ import { AppSizes } from '@theme';
 interface Props {
     token: TrustLineModel | 'Native';
     size?: number;
+    saturate?: boolean;
     containerStyle?: ViewStyle | ViewStyle[];
     style?: ImageStyle | ImageStyle[];
 }
@@ -65,18 +66,28 @@ class TokenIcon extends PureComponent<Props, State> {
     };
 
     render() {
-        const { size, style, containerStyle } = this.props;
+        const { saturate, size, style, containerStyle } = this.props;
         const { icon } = this.state;
 
         if (!icon) {
             return null;
         }
 
+        let iconUrl = icon;
+        if (iconUrl && saturate) {
+            const BASE_CDN_URL = '/cdn-cgi/image/';
+            const SATURATION_PARAM = `saturation=0,background=${StyleService.value('$background').replace('#', '%23')},`;
+
+            if (iconUrl) {
+                iconUrl = iconUrl.replace(BASE_CDN_URL, `${BASE_CDN_URL}${SATURATION_PARAM}`);
+            }
+        }
+
         return (
             <View style={containerStyle}>
                 <Image
                     style={[{ width: AppSizes.scale(size), height: AppSizes.scale(size) }, style]}
-                    source={{ uri: icon }}
+                    source={{ uri: iconUrl }}
                 />
             </View>
         );

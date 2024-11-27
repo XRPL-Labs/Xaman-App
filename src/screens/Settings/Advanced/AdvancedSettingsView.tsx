@@ -7,6 +7,7 @@ import { View, Text, ScrollView, Alert, Platform, Linking } from 'react-native';
 
 import PushNotificationsService from '@services/PushNotificationsService';
 import NetworkService from '@services/NetworkService';
+import BackendService from '@services/BackendService';
 
 import { CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { CoreModel, ProfileModel } from '@store/models';
@@ -17,19 +18,19 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { SetFlagSecure, GetAppVersionCode, GetAppReadableVersion } from '@common/helpers/app';
 
-import { TouchableDebounce, Header, Icon, Switch } from '@components/General';
+import { TouchableDebounce, Header, Icon, Switch, MultiPressDetector } from '@components/General';
 
 import Localize from '@locale';
 
 import { SessionLogViewProps } from '@screens/Settings/Advanced/Logs';
 import { NetworkSettingViewProps } from '@screens/Settings/Advanced/Network';
+import { DeveloperSettingViewProps } from '@screens/Settings/Advanced/DeveloperSettings';
 import { AuthenticateOverlayProps } from '@screens/Overlay/Authenticate';
 import { ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog';
 
 // style
 import { AppStyles } from '@theme';
 import styles from './styles';
-import BackendService from '@services/BackendService';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -242,6 +243,14 @@ class AdvancedSettingsView extends Component<Props, State> {
         Navigator.push<NetworkSettingViewProps>(AppScreens.Settings.Network.List, {});
     };
 
+    showDeveloperSettings = () => {
+        const { coreSettings } = this.state;
+
+        if (coreSettings.developerMode) {
+            Navigator.push<DeveloperSettingViewProps>(AppScreens.Settings.DeveloperSettings, {});
+        }
+    };
+
     render() {
         const { coreSettings, profile } = this.state;
 
@@ -298,14 +307,11 @@ class AdvancedSettingsView extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <TouchableDebounce
-                            style={[AppStyles.centerAligned, AppStyles.row]}
-                            onPress={this.showChangeLog}
-                        >
+                        <MultiPressDetector pressThreshold={3} onMultiPress={this.showDeveloperSettings}>
                             <Text selectable style={styles.value}>
                                 {GetAppReadableVersion()}
                             </Text>
-                        </TouchableDebounce>
+                        </MultiPressDetector>
                     </View>
                     <TouchableDebounce style={styles.row} onPress={this.showChangeLog}>
                         <View style={AppStyles.flex3}>
