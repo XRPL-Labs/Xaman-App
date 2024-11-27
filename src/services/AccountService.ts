@@ -57,7 +57,7 @@ class AccountService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set current default account
-                this.account = settings.account.address;
+                this.account = settings.account?.address;
 
                 // list for any default account change
                 CoreRepository.on('updateSettings', this.onSettingsUpdate);

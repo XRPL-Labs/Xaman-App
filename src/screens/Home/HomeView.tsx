@@ -299,13 +299,13 @@ class HomeView extends Component<Props, State> {
                         small
                         testID="request-button"
                         containerStyle={
-                            experimentalUI ? styles.requestButtonContainerGrey : styles.requestButtonContainer
+                            experimentalUI ? styles.requestButtonContainerClean : styles.requestButtonContainer
                         }
                         icon="IconCornerRightDown"
                         iconSize={18}
-                        iconStyle={styles.requestButtonIcon}
+                        iconStyle={experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon}
                         label={Localize.t('global.request')}
-                        textStyle={styles.requestButtonText}
+                        textStyle={experimentalUI ? styles.requestButtonTextClean : styles.requestButtonText}
                         onPress={this.onShowAccountQRPress}
                     />
                 </View>
