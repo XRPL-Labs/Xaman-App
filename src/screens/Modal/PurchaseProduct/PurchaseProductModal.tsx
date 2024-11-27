@@ -265,10 +265,11 @@ class PurchaseProductModal extends Component<Props, State> {
 
                         <Button
                             contrast
-                            label="Pay Now"
+                            label={Localize.t('monetization.payNow')}
                             onPress={this.lunchPurchaseFlow}
                             isLoading={isPurchasing}
                             isDisabled={!isDetailsResolved}
+                            loadingIndicatorStyle={StyleService.select({ dark: 'dark', light: 'light' })}
                         />
                         <View style={styles.separatorContainer}>
                             <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
