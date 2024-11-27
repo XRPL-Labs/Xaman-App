@@ -33,11 +33,22 @@ const CurrencySchema = {
         const oldObjects = oldRealm.objects(CurrencySchema.schema.name) as any;
         const newObjects = newRealm.objects(CurrencySchema.schema.name) as any;
 
+        const orphanObjects = [] as any;
+
+        // clear up orphan currencies
         for (let i = 0; i < newObjects.length; i++) {
-            newObjects[i].xappIdentifier = oldObjects.find((c: any) => c.id === newObjects[i].id).xapp_identifier;
-            newObjects[i].avatarUrl = oldObjects.find((c: any) => c.id === newObjects[i].id).avatar;
-            // NOTE: this will force update the token details
-            newObjects[i].updatedAt = new Date(0);
+            if (newObjects[i].linkingObjectsCount() > 0) {
+                newObjects[i].xappIdentifier = oldObjects.find((c: any) => c.id === newObjects[i].id).xapp_identifier;
+                newObjects[i].avatarUrl = oldObjects.find((c: any) => c.id === newObjects[i].id).avatar;
+                // NOTE: this will force update the token details
+                newObjects[i].updatedAt = new Date(0);
+            } else {
+                orphanObjects.push(newObjects[i]);
+            }
+        }
+
+        if (orphanObjects.length > 0) {
+            newRealm.delete(orphanObjects);
         }
     },
 };

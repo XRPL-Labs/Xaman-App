@@ -20,6 +20,14 @@ export default {
         registerAt: new Date(),
         updatedAt: new Date(),
     },
+
+    [schemas.CurrencySchema.schema.name]: {
+        id: 'ORPHAN.ORP',
+        issuer: 'ORPHAN',
+        currency: 'ORP',
+        name: 'Orphaned currency',
+        avatar: 'https://cdn.image.com',
+    },
     [schemas.AccountSchema.schema.name]: {
         address: 'rADDRESSxxxxxxxxxxxxxxxxxxxxxxxxxx',
         label: 'Personal account',
@@ -67,6 +75,7 @@ export default {
         registerAt: new Date(),
         updatedAt: new Date(),
     },
+
     [schemas.ProfileSchema.schema.name]: {
         username: 'my username',
         slug: 'my slug',
