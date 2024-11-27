@@ -15,7 +15,7 @@ module.exports = {
         'ios.simulator': {
             type: 'ios.simulator',
             headless: process.env.CI ? true : undefined,
-            device: { type: 'iPhone 15 Pro' },
+            device: { type: 'iPhone 16 Pro' },
         },
         'android.emulator': {
             type: 'android.apk',
