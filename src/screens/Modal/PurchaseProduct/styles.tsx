@@ -18,7 +18,7 @@ const styles = StyleService.create({
     actionContainer: {
         backgroundColor: StyleService.select({ light: '$white', dark: '$tint' }),
         borderRadius: AppSizes.borderRadius,
-        padding: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingSml,
         marginTop: AppSizes.padding,
     },
     productDescriptionText: {
@@ -26,7 +26,7 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size,
         textAlign: 'center',
         color: '$blue',
-        paddingBottom: AppSizes.paddingSml,
+        paddingVertical: AppSizes.paddingExtraSml,
     },
     notesText: {
         fontFamily: AppFonts.small.family,
@@ -85,13 +85,14 @@ const styles = StyleService.create({
         textDecorationLine: 'underline',
     },
     appIcon: {
-        width: AppSizes.scale(60),
-        height: AppSizes.scale(60),
+        width: AppSizes.verticalScale(60),
+        height: AppSizes.verticalScale(60),
         borderRadius: AppSizes.scale(75) / 4,
     },
     xamanLogo: {
-        width: AppSizes.screen.width * 0.3,
-        height: AppSizes.screen.height * 0.04,
+        width: AppSizes.verticalScale(100),
+        height: AppSizes.verticalScale(20),
+
         resizeMode: 'contain',
     },
     checkMarkImage: {
