@@ -72,7 +72,7 @@ class AccountService extends EventEmitter {
         });
     };
 
-    onSettingsUpdate = () => (settings: CoreModel, changes: Partial<CoreModel>) => {
+    onSettingsUpdate = (settings: CoreModel, changes: Partial<CoreModel>) => {
         if ('account' in changes && this.account !== settings.account.address) {
             this.onAccountChange(settings.account.address);
         }
