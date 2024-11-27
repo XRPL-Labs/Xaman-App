@@ -136,6 +136,12 @@ class BackendService {
                         ...updatedDetails,
                         updatedAt: new Date(),
                     });
+                } else {
+                    // update the time
+                    await CurrencyRepository.update({
+                        id: currency.id,
+                        updatedAt: new Date(),
+                    });
                 }
             }
         } catch (error) {

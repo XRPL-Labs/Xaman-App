@@ -230,14 +230,15 @@ class PurchaseProductModal extends Component<Props, State> {
                     <Button label={Localize.t('global.close')} onPress={this.onClose} light roundedMini />
                 </View>
 
-                <View style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.paddingHorizontal]}>
+                <View style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.paddingHorizontal]}>
                     <Image source={Images.XamanAppIcon} style={styles.appIcon} />
+                    <Image source={StyleService.getImage('XamanLogo')} style={styles.xamanLogo} />
                     <Text style={styles.productDescriptionText}>{productDescription}</Text>
                     <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
                 </View>
 
-                <View style={[AppStyles.flex3, styles.actionContainer]}>
-                    <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex5, styles.actionContainer]}>
+                    <View style={AppStyles.flex1}>
                         <ProductDetailsElement productId={productId} onDetailsResolved={this.onDetailsResolved} />
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.centerContent]}>
