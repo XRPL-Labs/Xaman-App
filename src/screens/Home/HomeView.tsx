@@ -353,9 +353,9 @@ class HomeView extends Component<Props, State> {
     };
 
     renderNetworkDetails = () => {
-        const { developerMode, selectedNetwork } = this.state;
+        const { developerMode, selectedNetwork, experimentalUI } = this.state;
 
-        if (!developerMode || !selectedNetwork) {
+        if (!developerMode || !selectedNetwork || experimentalUI) {
             return null;
         }
 

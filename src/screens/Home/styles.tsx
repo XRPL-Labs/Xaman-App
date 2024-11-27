@@ -44,12 +44,12 @@ const styles = StyleService.create({
         backgroundColor: '$green',
     },
 
-    requestButtonIcon: { tintColor: '$white' },
-    requestButtonText: { fontSize: AppFonts.base.size, color: '$white' },
+    requestButtonIcon: { tintColor: '$textPrimary' },
+    requestButtonText: { fontSize: AppFonts.base.size, color: '$textPrimary' },
 
     requestButtonContainerGrey: {
         marginLeft: 15,
-        backgroundColor: '$grey',
+        backgroundColor: '$tint',
     },
 
     QRButtonText: { fontSize: AppFonts.base.size },
