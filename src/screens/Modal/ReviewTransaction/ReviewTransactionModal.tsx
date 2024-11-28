@@ -243,7 +243,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
                 const validation = ValidationFactory.fromTransaction(transaction!);
-                if (typeof validation === 'function' && !payload.isMultiSign()) {
+                if (typeof validation === 'function' && !payload.isMultiSign() && payload.shouldSubmit()) {
                     await validation(transaction, source);
                 }
             } catch (validationError: any) {
