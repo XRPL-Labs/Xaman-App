@@ -19,6 +19,7 @@ interface Props {
     account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
+    experimentalUI?: boolean;
 }
 
 interface State {
@@ -67,7 +68,7 @@ class AssetsList extends Component<Props, State> {
     };
 
     render() {
-        const { style, timestamp, discreetMode, spendable, account } = this.props;
+        const { style, timestamp, discreetMode, spendable, experimentalUI, account } = this.props;
         const { category } = this.state;
 
         let AssetListComponent;
@@ -91,6 +92,7 @@ class AssetsList extends Component<Props, State> {
                 spendable={spendable}
                 onChangeCategoryPress={this.onChangeCategoryPress}
                 style={style}
+                experimentalUI={experimentalUI}
             />
         );
     }

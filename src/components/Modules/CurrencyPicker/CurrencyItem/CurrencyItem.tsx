@@ -7,7 +7,8 @@ import { AccountModel, TrustLineModel } from '@store/models';
 
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
-import { AmountText, TokenAvatar } from '@components/General';
+import { AmountText } from '@components/General';
+import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 
@@ -52,19 +53,17 @@ class CurrencyItem extends Component<Props> {
                     <TokenAvatar token={item} border size={35} />
                 </View>
                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                    <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
-                        {item.getReadableCurrency()}
-
-                        <Text
-                            style={[styles.currencyItemCounterPartyLabel, selected && styles.currencyItemLabelSelected]}
-                        >
-                            &nbsp;-&nbsp;{item.counterParty.name}
+                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                        <Text style={[styles.currencyItemLabel, selected && styles.currencyItemLabelSelected]}>
+                            {item.getFormattedCurrency()}
                         </Text>
-                    </Text>
-
+                        <Text style={[styles.currencyIssuerLabel, selected && styles.currencyItemLabelSelected]}>
+                            &nbsp;-&nbsp;{item.getFormattedIssuer()}
+                        </Text>
+                    </View>
                     <AmountText
                         prefix={`${Localize.t('global.balance')}: `}
-                        style={[styles.currencyBalance]}
+                        style={styles.currencyBalance}
                         value={item.balance}
                     />
                 </View>

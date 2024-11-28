@@ -20,17 +20,17 @@ interface ChildrenProps {
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
     iconStyle?: ImageStyle;
-    render?: any;
+    render?: () => JSX.Element | null;
     onPress?: () => void;
     extraComponent?: React.ReactNode;
 }
 
 interface Props {
     placement: placementType;
-    leftComponent?: ChildrenProps;
-    centerComponent?: ChildrenProps;
-    subComponent?: ChildrenProps;
-    rightComponent?: ChildrenProps;
+    leftComponent?: ChildrenProps | (() => JSX.Element);
+    centerComponent?: ChildrenProps | (() => JSX.Element);
+    subComponent?: ChildrenProps | (() => JSX.Element);
+    rightComponent?: ChildrenProps | (() => JSX.Element);
     backgroundColor?: string;
     containerStyle?: ViewStyle;
 }
@@ -50,8 +50,12 @@ const Children = ({
 }: {
     style: ViewStyle | ViewStyle[];
     placement: placementType;
-    children: ChildrenProps;
+    children: ChildrenProps | (() => JSX.Element);
 }) => {
+    if (typeof children === 'function') {
+        return children();
+    }
+
     if (!children) {
         return (
             <View
@@ -67,7 +71,7 @@ const Children = ({
     }
 
     if (children.render) {
-        return React.createElement(children.render);
+        return children.render();
     }
 
     const onPress = () => {

@@ -191,7 +191,7 @@ class ProductDetailsElement extends PureComponent<Props, State> {
         return (
             <View style={styles.container}>
                 <Text style={styles.description} numberOfLines={2}>
-                    {productDetails?.description || 'One full month of unrestricted Xaman use'}
+                    {productDetails?.description || '30 days of unrestricted Xaman use'}
                 </Text>
 
                 <View style={AppStyles.paddingExtraSml}>

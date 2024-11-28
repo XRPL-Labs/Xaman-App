@@ -11,15 +11,36 @@ export default StyleService.create({
         alignSelf: 'stretch',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: AppSizes.paddingSml,
+        gap: AppSizes.paddingExtraSml,
     },
     containerRequired: {
-        backgroundColor: '$lightGrey',
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: AppSizes.borderRadius,
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingVertical: AppSizes.paddingMid,
+        backgroundColor: '$lightGreen',
+        borderColor: '$darkGreen',
+        borderWidth: StyleService.hairlineWidth,
+        gap: AppSizes.paddingExtraSml,
+    },
+    infoIcon: {
+        tintColor: StyleService.isDarkMode() ? '$darkGreen' : '$darkGreen',
     },
     containerComingUp: {
         backgroundColor: '$lightOrange',
     },
+    learnMoreButton: {
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        borderRadius: AppSizes.borderRadius,
+    },
+    learnMoreButtonText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size * 0.9,
+    },
     okButton: {
+        marginTop: AppSizes.paddingExtraSml,
+        borderRadius: AppSizes.borderRadius,
         backgroundColor: '$orange',
     },
     okButtonText: {
@@ -27,7 +48,7 @@ export default StyleService.create({
         fontFamily: AppFonts.base.familyExtraBold,
     },
     messageTitle: {
-        fontFamily: AppFonts.base.familyBold,
+        fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
         textAlign: 'center',
@@ -37,6 +58,13 @@ export default StyleService.create({
         fontSize: AppFonts.subtext.size,
         color: '$textPrimary',
         textAlign: 'center',
+    },
+    messageTextSmall: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.small.size * 0.9,
+        color: '$textPrimary',
+        textAlign: 'left',
+        paddingRight: AppSizes.paddingExtraSml,
     },
     actionButtonContainer: {
         backgroundColor: '$contrast',

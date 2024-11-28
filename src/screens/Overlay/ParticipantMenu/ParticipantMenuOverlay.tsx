@@ -11,13 +11,13 @@ import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 
 import { ContactRepository } from '@store/repositories';
+import { AccountNameResolveType } from '@services/ResolverService';
 
 // components
 import { Button, Spacer, ActionPanel } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
 import { GetAccountLink } from '@common/utils/explorer';
-import { AccountNameType } from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
@@ -80,7 +80,7 @@ class ParticipantMenuOverlay extends Component<Props, State> {
         Navigator.dismissOverlay();
     };
 
-    onRecipientInfoUpdate = (info: AccountNameType) => {
+    onRecipientInfoUpdate = (info: AccountNameResolveType) => {
         if (info?.name) {
             this.setState({
                 participantName: info.name,

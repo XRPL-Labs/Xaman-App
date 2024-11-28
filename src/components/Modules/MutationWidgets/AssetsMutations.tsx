@@ -17,8 +17,7 @@ import { Props } from './types';
 interface State {
     mutatedDec: BalanceChangeType[];
     mutatedInc: BalanceChangeType[];
-    factorDec: MonetaryFactorType[];
-    factorInc: MonetaryFactorType[];
+    factor: MonetaryFactorType[];
     assets: AssetDetails[];
 }
 
@@ -30,8 +29,7 @@ class AssetsMutations extends PureComponent<Props, State> {
         this.state = {
             mutatedDec: [],
             mutatedInc: [],
-            factorDec: [],
-            factorInc: [],
+            factor: [],
             assets: [],
         };
     }
@@ -45,8 +43,7 @@ class AssetsMutations extends PureComponent<Props, State> {
             return {
                 mutatedDec: monetaryDetails?.mutate[OperationActions.DEC],
                 mutatedInc: monetaryDetails?.mutate[OperationActions.INC],
-                factorDec: monetaryDetails?.factor?.filter((f) => f.action === OperationActions.DEC) ?? [],
-                factorInc: monetaryDetails?.factor?.filter((f) => f.action === OperationActions.INC) ?? [],
+                factor: monetaryDetails?.factor,
                 assets: assetDetails,
             };
         }
@@ -135,7 +132,7 @@ class AssetsMutations extends PureComponent<Props, State> {
     };
 
     render() {
-        const { mutatedDec, mutatedInc, factorInc, factorDec, assets } = this.state;
+        const { mutatedDec, mutatedInc, factor, assets } = this.state;
 
         // Extract complex conditions to variables
         const hasMutatedDec = mutatedDec?.length > 0;
@@ -143,6 +140,11 @@ class AssetsMutations extends PureComponent<Props, State> {
         const hasEitherMutation = (hasMutatedDec && !hasMutatedInc) || (!hasMutatedDec && hasMutatedInc);
         const hasBothMutation = hasMutatedDec && hasMutatedInc;
         const hasNoMutations = !hasMutatedDec && !hasMutatedInc;
+
+        const factorDec = factor?.filter((f) => f.action === OperationActions.DEC);
+        const factorInc = factor?.filter((f) => f.action === OperationActions.INC);
+        const notEffected = factor?.filter((f) => !f.action);
+        const hasNotEffected = notEffected?.length > 0;
         const hasEitherFactors = !!factorInc?.length || !!factorDec?.length;
         const hasBothFactors = factorInc?.length > 0 && factorDec?.length > 0;
 
@@ -152,16 +154,19 @@ class AssetsMutations extends PureComponent<Props, State> {
                 {assets?.length > 0 &&
                     (hasEitherMutation || (hasNoMutations && hasEitherFactors)) &&
                     this.renderSwitchIcon()}
-                {mutatedDec?.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+                {mutatedDec?.map((m) => this.renderMonetaryElement(m, MonetaryStatus.IMMEDIATE_EFFECT))}
                 {hasBothMutation && this.renderSwitchIcon()}
-                {mutatedInc?.map((mutate) => this.renderMonetaryElement(mutate, MonetaryStatus.IMMEDIATE_EFFECT))}
+                {mutatedInc?.map((m) => this.renderMonetaryElement(m, MonetaryStatus.IMMEDIATE_EFFECT))}
                 {hasNoMutations && hasEitherFactors && (
                     <>
-                        {factorDec?.map((factor) => this.renderMonetaryElement(factor, factor?.effect))}
+                        {factorDec?.map((f) => this.renderMonetaryElement(f, f?.effect))}
                         {hasBothFactors && this.renderSwitchIcon()}
-                        {factorInc?.map((factor) => this.renderMonetaryElement(factor, factor?.effect))}
+                        {factorInc?.map((f) => this.renderMonetaryElement(f, f?.effect))}
                     </>
                 )}
+                {hasNoMutations &&
+                    hasNotEffected &&
+                    notEffected?.map((f) => this.renderMonetaryElement(f, MonetaryStatus.NO_EFFECT))}
             </View>
         );
     }

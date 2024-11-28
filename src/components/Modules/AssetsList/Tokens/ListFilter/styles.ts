@@ -57,7 +57,7 @@ export default StyleService.create({
         alignItems: 'center',
     },
     searchBarInput: {
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         color: '$grey',
         paddingLeft: 30,

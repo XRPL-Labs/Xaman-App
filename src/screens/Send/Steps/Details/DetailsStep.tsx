@@ -88,7 +88,7 @@ class DetailsStep extends Component<Props, State> {
     };
 
     getAvailableBalance = (): Promise<number | string> => {
-        const { source, currency } = this.context;
+        const { source, token } = this.context;
 
         return new Promise((resolve) => {
             if (!source) {
@@ -96,33 +96,33 @@ class DetailsStep extends Component<Props, State> {
                 return;
             }
 
-            if (typeof currency === 'string') {
-                // native currency
+            if (typeof token === 'string') {
+                // native token
                 resolve(CalculateAvailableBalance(source));
             } else {
                 // IOU
                 // we fetch the IOU directly from Ledger
                 LedgerService.getFilteredAccountLine(source.address, {
-                    issuer: currency.currency.issuer,
-                    currency: currency.currency.currencyCode,
+                    issuer: token.currency.issuer,
+                    currency: token.currency.currencyCode,
                 })
                     .then((line) => {
                         if (line) {
                             resolve(line.balance);
                             return;
                         }
-                        resolve(currency.balance);
+                        resolve(token.balance);
                     })
                     .catch(() => {
                         // in case of error just return IOU cached balance
-                        resolve(currency.balance);
+                        resolve(token.balance);
                     });
             }
         });
     };
 
     goNext = async () => {
-        const { goNext, currency, source, amount, setAmount } = this.context;
+        const { goNext, token, source, amount, setAmount } = this.context;
 
         // check if account is activated
         // if not just show an alert an return
@@ -133,7 +133,7 @@ class DetailsStep extends Component<Props, State> {
 
         // check for exceed amount
         // if sending IOU and obligation can send unlimited
-        if (typeof currency !== 'string' && currency.obligation) {
+        if (typeof token !== 'string' && token.obligation) {
             // go to next screen
             goNext();
             return;
@@ -161,9 +161,9 @@ class DetailsStep extends Component<Props, State> {
                 [
                     { text: Localize.t('global.cancel') },
                     {
-                        text: typeof currency === 'string' ? Localize.t('global.update') : Localize.t('global.next'),
+                        text: typeof token === 'string' ? Localize.t('global.update') : Localize.t('global.next'),
                         onPress: () => {
-                            if (typeof currency === 'string') {
+                            if (typeof token === 'string') {
                                 this.onAmountChange(String(availableBalance));
                             } else {
                                 setAmount(String(availableBalance));
@@ -183,14 +183,14 @@ class DetailsStep extends Component<Props, State> {
     };
 
     getCurrencyName = (): string => {
-        const { currency } = this.context;
+        const { token } = this.context;
 
         // native currency
-        if (typeof currency === 'string') {
+        if (typeof token === 'string') {
             return NetworkService.getNativeAsset();
         }
 
-        return NormalizeCurrencyCode(currency.currency.currencyCode);
+        return NormalizeCurrencyCode(token.currency.currencyCode);
     };
 
     applyAllBalance = async () => {
@@ -225,7 +225,7 @@ class DetailsStep extends Component<Props, State> {
 
     onAmountChange = (amount: string) => {
         const { currencyRate } = this.state;
-        const { currency, setAmount } = this.context;
+        const { token, setAmount } = this.context;
 
         setAmount(amount);
 
@@ -237,7 +237,7 @@ class DetailsStep extends Component<Props, State> {
             return;
         }
 
-        if (typeof currency === 'string' && currencyRate) {
+        if (typeof token === 'string' && currencyRate) {
             const inRate = new BigNumber(amount).multipliedBy(currencyRate.rate).decimalPlaces(8).toFixed();
             this.setState({
                 amountRate: inRate,
@@ -265,23 +265,23 @@ class DetailsStep extends Component<Props, State> {
     };
 
     onAccountChange = (item: AccountModel) => {
-        const { setSource, setCurrency } = this.context;
+        const { setSource, setToken } = this.context;
 
         // restore currency to default native currency
-        setCurrency(NetworkService.getNativeAsset());
+        setToken(NetworkService.getNativeAsset());
 
         // set new source
         setSource(item);
     };
 
-    onCurrencyChange = (item: string | TrustLineModel) => {
-        const { setCurrency, setAmount } = this.context;
+    onCurrencyChange = (item: TrustLineModel | string) => {
+        const { setToken, setAmount } = this.context;
 
         // native currency
         if (typeof item === 'string') {
-            setCurrency(NetworkService.getNativeAsset());
+            setToken(NetworkService.getNativeAsset());
         } else {
-            setCurrency(item);
+            setToken(item);
         }
 
         // clear amount and rate
@@ -293,9 +293,9 @@ class DetailsStep extends Component<Props, State> {
     };
 
     calcKeyboardAwareExtraOffset = (input: any, inputHeight: number) => {
-        const { currency } = this.context;
+        const { token } = this.context;
 
-        if (input === this.amountInput.current && typeof currency === 'string') {
+        if (input === this.amountInput.current && typeof token === 'string') {
             return inputHeight + Platform.select({ ios: 10, android: AppSizes.safeAreaBottomInset, default: 0 });
         }
         return 0;
@@ -303,7 +303,7 @@ class DetailsStep extends Component<Props, State> {
 
     render() {
         const { amountRate, currencyRate, isLoadingAvailableBalance, isCheckingBalance } = this.state;
-        const { goBack, accounts, source, currency, amount, coreSettings } = this.context;
+        const { goBack, accounts, source, token, amount, coreSettings } = this.context;
 
         return (
             <View testID="send-details-view" style={styles.container}>
@@ -341,7 +341,7 @@ class DetailsStep extends Component<Props, State> {
                                       ]
                                     : []
                             }
-                            selectedItem={currency}
+                            selectedItem={token}
                         />
                     </View>
 
@@ -372,9 +372,7 @@ class DetailsStep extends Component<Props, State> {
                                     ref={this.amountInput}
                                     testID="amount-input"
                                     value={amount}
-                                    valueType={
-                                        typeof currency === 'string' ? AmountValueType.Native : AmountValueType.IOU
-                                    }
+                                    valueType={typeof token === 'string' ? AmountValueType.Native : AmountValueType.IOU}
                                     fractional
                                     onChange={this.onAmountChange}
                                     style={styles.amountInput}
@@ -384,7 +382,7 @@ class DetailsStep extends Component<Props, State> {
                             </View>
                             <Button
                                 onPress={() => {
-                                    this.amountInput.current.focus();
+                                    this.amountInput.current?.focus();
                                 }}
                                 style={styles.editButton}
                                 roundedSmall
@@ -395,7 +393,7 @@ class DetailsStep extends Component<Props, State> {
                             />
                         </View>
                         {/* only show rate for native currency payments */}
-                        {typeof currency === 'string' && (
+                        {typeof token === 'string' && (
                             <View style={styles.amountRateContainer}>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={styles.amountRateInput}>~ </Text>

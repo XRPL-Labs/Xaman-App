@@ -1,7 +1,8 @@
 import { XrplDestination } from 'xumm-string-decode';
 
 import { Payment } from '@common/libs/ledger/transactions';
-import { AccountInfoType } from '@common/helpers/resolver';
+
+import { AccountAdvisoryResolveType } from '@services/ResolverService';
 
 import { Destination } from '@common/libs/ledger/parser/types';
 
@@ -24,7 +25,7 @@ export interface FeeItem {
 }
 
 export interface Props {
-    currency?: TrustLineModel;
+    token?: TrustLineModel;
     scanResult?: XrplDestination;
     amount?: string;
 }
@@ -34,8 +35,8 @@ export interface State {
     accounts: Array<AccountModel>;
     source?: AccountModel;
     destination?: Destination;
-    destinationInfo?: AccountInfoType;
-    currency: TrustLineModel | string;
+    destinationInfo?: AccountAdvisoryResolveType;
+    token: TrustLineModel | string;
     amount: string;
     memo?: string;
     selectedFee?: FeeItem;
@@ -48,7 +49,7 @@ export interface State {
 
 export interface ContextProps extends State {
     setSource: (source: AccountModel) => void;
-    setCurrency: (currency: TrustLineModel | string) => void;
+    setToken: (token: TrustLineModel | string) => void;
     setAmount: (amount: string) => void;
     setDestination: (destination: Destination | undefined) => void;
     setDestinationInfo: (info: any) => void;

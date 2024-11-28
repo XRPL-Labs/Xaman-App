@@ -9,6 +9,7 @@ const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
+        alignItems: 'center',
         backgroundColor: '$background',
         borderColor: '$tint',
         borderWidth: 1,

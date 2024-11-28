@@ -10,13 +10,14 @@ import { View, Text, Alert, Keyboard } from 'react-native';
 import { StringType, XrplDestination } from 'xumm-string-decode';
 import { libraries } from 'xrpl-accountlib';
 
-import { NormalizeDestination } from '@common/utils/codec';
+import { AppScreens } from '@common/constants';
 
-import AccountResolver from '@common/helpers/resolver';
+import ResolverService from '@services/ResolverService';
+
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
-import { AppScreens } from '@common/constants';
+import { NormalizeDestination } from '@common/utils/codec';
 
 import { ContactRepository } from '@store/repositories';
 
@@ -71,7 +72,7 @@ class AddContactView extends Component<Props, State> {
 
         // if everything is fine try to fetch the account name
         if (to) {
-            const accountInfo = await AccountResolver.getAccountName(to, tag);
+            const accountInfo = await ResolverService.getAccountName(to, tag);
 
             this.setState({
                 xAddress,
@@ -90,7 +91,7 @@ class AddContactView extends Component<Props, State> {
 
             // if payId try to resolve
             if (result.payId) {
-                const payIdInfo = await AccountResolver.getPayIdInfo(result.payId);
+                const payIdInfo = await ResolverService.getPayIdInfo(result.payId);
 
                 if (payIdInfo) {
                     await this.doNameLookup({
@@ -149,13 +150,6 @@ class AddContactView extends Component<Props, State> {
             name,
             address,
             destinationTag: tag || '',
-        });
-
-        // update resolver cache for this contact
-        AccountResolver.setCache(`${address}${tag ?? ''}`, {
-            address: address!,
-            name,
-            source: 'contacts',
         });
 
         Toast(Localize.t('settings.contactSuccessSaved'));

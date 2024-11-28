@@ -15,14 +15,13 @@ import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
 
-import AccountResolver from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { NormalizeDestination } from '@common/utils/codec';
 
-import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
+import { BackendService, LedgerService, NetworkService, StyleService, ResolverService } from '@services';
 
 import { Button, TextInput, Footer, InfoMessage } from '@components/General';
 import { AccountElement } from '@components/Modules';
@@ -106,7 +105,7 @@ class RecipientStep extends Component<Props, State> {
         const { to, tag } = NormalizeDestination(result);
 
         if (to) {
-            const accountInfo = await AccountResolver.getAccountName(to, tag);
+            const accountInfo = await ResolverService.getAccountName(to, tag);
 
             this.setState({
                 dataSource: this.getSearchResultSource([
@@ -209,7 +208,7 @@ class RecipientStep extends Component<Props, State> {
                                 res.matches.forEach(async (element: any) => {
                                     // if payid in result, then look for payId in local source as well
                                     if (element.source === 'payid') {
-                                        const internalResult = await AccountResolver.getAccountName(
+                                        const internalResult = await ResolverService.getAccountName(
                                             element.account,
                                             element.tag,
                                             true,
@@ -380,7 +379,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
-        const { setDestinationInfo, amount, currency, destination, source } = this.context;
+        const { setDestinationInfo, amount, token, destination, source } = this.context;
         let { destinationInfo } = this.context;
 
         // double check, this should not be happening
@@ -404,14 +403,14 @@ class RecipientStep extends Component<Props, State> {
 
             if (!destinationInfo) {
                 // check for account exist and potential destination tag required
-                destinationInfo = await AccountResolver.getAccountInfo(destination.address);
+                destinationInfo = await ResolverService.getAccountAdvisoryInfo(destination.address);
                 // set destination account info
                 setDestinationInfo(destinationInfo);
             }
 
             // check for account risk and scam
             if (
-                (destinationInfo.risk === 'PROBABLE' || destinationInfo.risk === 'HIGH_PROBABILITY') &&
+                (destinationInfo.danger === 'PROBABLE' || destinationInfo.danger === 'HIGH_PROBABILITY') &&
                 passedChecks.indexOf(PassableChecks.PROBABLE_SCAM) === -1
             ) {
                 setTimeout(() => {
@@ -437,7 +436,7 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
-            if (destinationInfo.risk === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
+            if (destinationInfo.danger === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
                 setTimeout(() => {
                     Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
                         destination: destination.address,
@@ -452,7 +451,7 @@ class RecipientStep extends Component<Props, State> {
             if (!destinationInfo.exist) {
                 // account does not exist and cannot activate with IOU
                 // IMMEDIATE REJECT
-                if (typeof currency !== 'string') {
+                if (typeof token !== 'string') {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'warning',
@@ -475,10 +474,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if amount is not covering the creation of account
                 // IMMEDIATE REJECT
-                if (
-                    typeof currency === 'string' &&
-                    parseFloat(amount) < NetworkService.getNetworkReserve().BaseReserve
-                ) {
+                if (typeof token === 'string' && parseFloat(amount) < NetworkService.getNetworkReserve().BaseReserve) {
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'warning',
@@ -501,7 +497,7 @@ class RecipientStep extends Component<Props, State> {
 
                 // check if the amount will create the account
                 if (
-                    typeof currency === 'string' &&
+                    typeof token === 'string' &&
                     parseFloat(amount) >= NetworkService.getNetworkReserve().BaseReserve &&
                     passedChecks.indexOf(PassableChecks.AMOUNT_CREATE_ACCOUNT) === -1
                 ) {
@@ -540,10 +536,10 @@ class RecipientStep extends Component<Props, State> {
             // check if recipient have proper trustline for receiving this IOU
             // ignore if the recipient is the issuer
             // IMMEDIATE REJECT
-            if (typeof currency !== 'string' && currency.currency.issuer !== destination.address) {
+            if (typeof token !== 'string' && token.currency.issuer !== destination.address) {
                 const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
-                    currency: currency.currency.currencyCode,
-                    issuer: currency.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                 });
 
                 // recipient does not have the proper trustline
@@ -597,9 +593,9 @@ class RecipientStep extends Component<Props, State> {
                         type: 'warning',
                         text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
                             currency:
-                                typeof currency === 'string'
+                                typeof token === 'string'
                                     ? NetworkService.getNativeAsset()
-                                    : NormalizeCurrencyCode(currency.currency.currencyCode),
+                                    : NormalizeCurrencyCode(token.currency.currencyCode),
                         }),
                         buttons: [
                             {
@@ -617,7 +613,7 @@ class RecipientStep extends Component<Props, State> {
             // check for xrp income disallow
             if (
                 destinationInfo.disallowIncomingXRP &&
-                typeof currency === 'string' &&
+                typeof token === 'string' &&
                 passedChecks.indexOf(PassableChecks.DISALLOWED_XRP_FLAG) === -1
             ) {
                 setTimeout(() => {
@@ -677,7 +673,7 @@ class RecipientStep extends Component<Props, State> {
     };
 
     goNext = async () => {
-        const { goNext, setIssuerFee, source, destination, currency } = this.context;
+        const { goNext, setIssuerFee, source, destination, token } = this.context;
 
         // double check, this should not be happening
         if (!destination || !source) {
@@ -692,12 +688,12 @@ class RecipientStep extends Component<Props, State> {
 
             // sending IOU && SENDER AND DESTINATION is not issuer, get issuer fee
             if (
-                typeof currency !== 'string' &&
-                source.address !== currency.currency.issuer &&
-                destination.address !== currency.currency.issuer
+                typeof token !== 'string' &&
+                source.address !== token.currency.issuer &&
+                destination.address !== token.currency.issuer
             ) {
                 // fetching/applying issuer fee from network
-                const issuerFee = await LedgerService.getAccountTransferRate(currency.currency.issuer);
+                const issuerFee = await LedgerService.getAccountTransferRate(token.currency.issuer);
                 if (issuerFee) {
                     setIssuerFee(issuerFee);
                 }

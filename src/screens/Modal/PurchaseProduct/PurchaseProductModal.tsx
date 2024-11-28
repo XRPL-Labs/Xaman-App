@@ -230,18 +230,18 @@ class PurchaseProductModal extends Component<Props, State> {
                     <Button label={Localize.t('global.close')} onPress={this.onClose} light roundedMini />
                 </View>
 
-                <View style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.paddingHorizontal]}>
+                <View style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.paddingHorizontal]}>
                     <Image source={Images.XamanAppIcon} style={styles.appIcon} />
                     <Text style={styles.productDescriptionText}>{productDescription}</Text>
                     <Text style={styles.prePurchaseText}>{Localize.t('monetization.prePurchaseMessage')}</Text>
                 </View>
 
-                <View style={[AppStyles.flex3, styles.actionContainer]}>
+                <View style={[AppStyles.flex6, styles.actionContainer]}>
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <ProductDetailsElement productId={productId} onDetailsResolved={this.onDetailsResolved} />
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.centerContent]}>
-                        <View style={[AppStyles.gapSml, AppStyles.paddingBottom]}>
+                        <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.gapExtraSml]}>
                             <Text style={styles.notesText}>{Localize.t('monetization.prePurchaseTip')}</Text>
                             <Text style={styles.notesText}>
                                 Read our{' '}
@@ -262,25 +262,28 @@ class PurchaseProductModal extends Component<Props, State> {
                             </Text>
                         </View>
 
-                        <Button
-                            contrast
-                            label="Pay Now"
-                            onPress={this.lunchPurchaseFlow}
-                            isLoading={isPurchasing}
-                            isDisabled={!isDetailsResolved}
-                        />
-                        <View style={styles.separatorContainer}>
-                            <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
+                        <View style={[AppStyles.flex2, AppStyles.centerContent]}>
+                            <Button
+                                contrast
+                                label={Localize.t('monetization.payNow')}
+                                onPress={this.lunchPurchaseFlow}
+                                isLoading={isPurchasing}
+                                isDisabled={!isDetailsResolved}
+                                loadingIndicatorStyle={StyleService.select({ dark: 'dark', light: 'light' })}
+                            />
+                            <View style={styles.separatorContainer}>
+                                <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
+                            </View>
+                            <Button
+                                textStyle={styles.restorePurchase}
+                                isLoading={isRestoring}
+                                loadingIndicatorStyle={StyleService.select({ dark: 'light', light: 'dark' })}
+                                onPress={this.restorePurchase}
+                                label={Localize.t('monetization.restorePurchase')}
+                                roundedMini
+                                transparent
+                            />
                         </View>
-                        <Button
-                            textStyle={styles.restorePurchase}
-                            isLoading={isRestoring}
-                            loadingIndicatorStyle={StyleService.select({ dark: 'light', light: 'dark' })}
-                            onPress={this.restorePurchase}
-                            label={Localize.t('monetization.restorePurchase')}
-                            roundedMini
-                            transparent
-                        />
                     </View>
                 </View>
             </>

@@ -1,5 +1,7 @@
 import StyleService from '@services/StyleService';
 
+import { HexToRgbA } from '@common/utils/color';
+
 import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
@@ -7,7 +9,15 @@ const styles = StyleService.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
+        borderRadius: AppSizes.borderRadius,
+    },
+    containerBlocked: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.8),
+        position: 'absolute',
+        borderRadius: AppSizes.borderRadius,
+        zIndex: 9999, // top of all
     },
     iconContainer: {
         borderColor: '$lightGrey',

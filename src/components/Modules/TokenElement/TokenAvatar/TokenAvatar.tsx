@@ -15,6 +15,7 @@ import { Avatar, AvatarProps } from '@components/General/Avatar';
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
     token: TrustLineModel | 'Native';
+    saturate?: boolean;
 }
 
 interface State {
@@ -42,24 +43,18 @@ class TokenAvatar extends PureComponent<Props, State> {
     }
 
     static getAvatar = (token: TrustLineModel | 'Native'): string => {
-        if (!token) {
-            return '';
-        }
-
-        // native
+        // native asset
         if (token === 'Native') {
             const { asset } = NetworkService.getNativeAssetIcons();
             return asset;
         }
 
-        // token
-        const { counterParty } = token;
-
-        if (counterParty.avatar) {
-            return counterParty.avatar;
+        // issuer avatar
+        if (token?.currency?.issuerAvatarUrl) {
+            return token.currency.issuerAvatarUrl;
         }
 
-        if (token.isLiquidityPoolToken()) {
+        if (token?.isLiquidityPoolToken()) {
             return StyleService.getImage('ImageUnknownAMM').uri;
         }
 
@@ -67,13 +62,24 @@ class TokenAvatar extends PureComponent<Props, State> {
     };
 
     render() {
-        const { size, imageScale, border, badge, badgeColor, containerStyle, backgroundColor } = this.props;
+        const { size, imageScale, border, badge, saturate, badgeColor, containerStyle, backgroundColor } = this.props;
         const { avatar } = this.state;
+
+        // add saturation to avatar before passing it
+        let avatarUrl = avatar;
+        if (avatarUrl && saturate) {
+            const BASE_CDN_URL = '/cdn-cgi/image/';
+            const SATURATION_PARAM = 'saturation=0,';
+
+            if (avatarUrl) {
+                avatarUrl = avatarUrl.replace(BASE_CDN_URL, `${BASE_CDN_URL}${SATURATION_PARAM}`);
+            }
+        }
 
         return (
             <Avatar
                 {...{ size, imageScale, border, badge, badgeColor, containerStyle, backgroundColor }}
-                source={{ uri: avatar }}
+                source={{ uri: avatarUrl }}
             />
         );
     }

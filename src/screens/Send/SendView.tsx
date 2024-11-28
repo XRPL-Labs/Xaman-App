@@ -68,8 +68,8 @@ class SendView extends Component<Props, State> {
             accounts: spendableAccounts,
             payment: new PaymentWithSigMixin(),
             source: find(spendableAccounts, { address: coreSettings.account.address }) ?? first(spendableAccounts),
-            currency: props.currency || NetworkService.getNativeAsset(),
-            amount: props.amount || '',
+            token: props.token ?? NetworkService.getNativeAsset(),
+            amount: props.amount ?? '',
             memo: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
@@ -108,9 +108,9 @@ class SendView extends Component<Props, State> {
         this.setState({ source });
     };
 
-    setCurrency = (currency: TrustLineModel | string) => {
+    setToken = (token: TrustLineModel | string) => {
         this.setState({
-            currency,
+            token,
         });
     };
 
@@ -148,7 +148,7 @@ class SendView extends Component<Props, State> {
     };
 
     getPaymentJsonForFee = () => {
-        const { currency, amount, destination, source, memo } = this.state;
+        const { token, amount, destination, source, memo } = this.state;
 
         const txJson = {
             TransactionType: 'Payment',
@@ -164,15 +164,15 @@ class SendView extends Component<Props, State> {
         }
 
         // set the amount
-        if (typeof currency === 'string') {
+        if (typeof token === 'string') {
             Object.assign(txJson, {
                 Amount: new AmountParser(amount, false).nativeToDrops().toString(),
             });
         } else {
             Object.assign(txJson, {
                 Amount: {
-                    currency: currency.currency.currencyCode,
-                    issuer: currency.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                     value: amount,
                 },
             });
@@ -243,7 +243,7 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { currency, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
+        const { token, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
 
         this.setState({
             isLoading: true,
@@ -263,8 +263,8 @@ class SendView extends Component<Props, State> {
             }
 
             // set the amount
-            if (typeof currency === 'string') {
-                // native currency
+            if (typeof token === 'string') {
+                // native token
                 payment.Amount = {
                     currency: NetworkService.getNativeAsset(),
                     value: amount,
@@ -274,8 +274,8 @@ class SendView extends Component<Props, State> {
                 // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
                 if (
                     issuerFee &&
-                    source!.address !== currency.currency.issuer &&
-                    destination!.address !== currency.currency.issuer
+                    source!.address !== token.currency.issuer &&
+                    destination!.address !== token.currency.issuer
                 ) {
                     payment.Flags = {
                         tfPartialPayment: true,
@@ -284,8 +284,8 @@ class SendView extends Component<Props, State> {
 
                 // set the amount
                 payment.Amount = {
-                    currency: currency.currency.currencyCode,
-                    issuer: currency.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                     value: amount,
                 };
             }
@@ -308,11 +308,11 @@ class SendView extends Component<Props, State> {
 
             // sign the transaction and then submit
             await payment.sign(source!).then(this.submit);
-        } catch (e: any) {
-            if (e) {
+        } catch (error: any) {
+            if (error) {
                 Navigator.showAlertModal({
                     type: 'error',
-                    text: e.message,
+                    text: error.message,
                     buttons: [
                         {
                             text: Localize.t('global.ok'),
@@ -402,7 +402,7 @@ class SendView extends Component<Props, State> {
                     goNext: this.goNext,
                     goBack: this.goBack,
                     setAmount: this.setAmount,
-                    setCurrency: this.setCurrency,
+                    setToken: this.setToken,
                     setFee: this.setFee,
                     setMemo: this.setMemo,
                     setIssuerFee: this.setIssuerFee,

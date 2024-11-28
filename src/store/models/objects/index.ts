@@ -1,5 +1,4 @@
 import ContactModel from './contact';
-import CounterPartyModel from './counterParty';
 import CurrencyModel from './currency';
 import TrustLineModel from './trustLine';
 import ProfileModel from './profile';
@@ -13,7 +12,6 @@ import UserInteractionModel from './userInteraction';
 
 export {
     ContactModel,
-    CounterPartyModel,
     CurrencyModel,
     TrustLineModel,
     ProfileModel,

@@ -18,7 +18,7 @@ export interface FiltersType {
 
 interface Props {
     filters?: FiltersType;
-    reorderEnabled: boolean;
+    visible: boolean;
     onFilterChange: (filters: FiltersType | undefined) => void;
     onReorderPress: () => void;
 }
@@ -50,11 +50,11 @@ class ListFilter extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
-        const { reorderEnabled } = this.props;
+        const { visible } = this.props;
         const { filterText, favoritesEnabled, hideZeroEnabled } = this.state;
 
         return (
-            !isEqual(nextProps.reorderEnabled, reorderEnabled) ||
+            !isEqual(nextProps.visible, visible) ||
             !isEqual(nextState.filterText, filterText) ||
             !isEqual(nextState.favoritesEnabled, favoritesEnabled) ||
             !isEqual(nextState.hideZeroEnabled, hideZeroEnabled)
@@ -178,11 +178,11 @@ class ListFilter extends Component<Props, State> {
     };
 
     render() {
-        const { reorderEnabled } = this.props;
+        const { visible } = this.props;
         const { favoritesEnabled, hideZeroEnabled } = this.state;
 
         // hide filters when reordering is enabled
-        if (reorderEnabled) {
+        if (!visible) {
             return null;
         }
 

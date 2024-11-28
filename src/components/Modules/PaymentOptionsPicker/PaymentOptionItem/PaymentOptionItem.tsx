@@ -9,7 +9,8 @@ import { Images } from '@common/helpers/images';
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CurrencyRepository } from '@store/repositories';
 
-import { AmountText, Avatar, TokenAvatar, TouchableDebounce } from '@components/General';
+import { AmountText, Avatar, TouchableDebounce } from '@components/General';
+import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import { AmountType } from '@common/libs/ledger/parser/types';
 
@@ -140,7 +141,6 @@ class PaymentOptionItem extends Component<Props> {
             return null;
         }
 
-        let counterParty;
         let currency;
         let issuer;
 
@@ -164,18 +164,14 @@ class PaymentOptionItem extends Component<Props> {
             });
         }
 
-        if (currency) {
-            counterParty = CurrencyRepository.getCounterParty(currency);
-        }
-
         return (
             <>
                 <View style={[AppStyles.row, AppStyles.flex3]}>
                     <View style={styles.currencyImageContainer}>
                         <Avatar
                             source={{
-                                uri: counterParty
-                                    ? counterParty.avatar
+                                uri: currency?.issuerAvatarUrl
+                                    ? currency?.issuerAvatarUrl
                                     : StyleService.getImage('ImageUnknownTrustLine')?.uri,
                             }}
                             border
@@ -184,10 +180,10 @@ class PaymentOptionItem extends Component<Props> {
                     </View>
                     <View>
                         <Text style={styles.currencyItemLabel}>
-                            {NormalizeCurrencyCode(currency?.name || source_amount.currency)}
+                            {currency?.name || NormalizeCurrencyCode(source_amount.currency)}
                         </Text>
                         <Text numberOfLines={1} style={styles.counterpartyLabel}>
-                            {counterParty?.name} {NormalizeCurrencyCode(source_amount.currency)}
+                            {currency?.issuerName} {NormalizeCurrencyCode(source_amount.currency)}
                         </Text>
                     </View>
                 </View>

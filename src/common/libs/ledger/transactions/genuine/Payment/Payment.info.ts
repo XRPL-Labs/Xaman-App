@@ -71,6 +71,7 @@ class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
 
     getParticipants() {
         // 3rd party consuming own offer
+        // or regular key
         if ([this.item.Account, this.item.Destination].indexOf(this.account.address) === -1) {
             return {
                 start: { address: this.item.Account, tag: this.item.SourceTag },

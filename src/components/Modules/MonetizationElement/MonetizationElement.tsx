@@ -10,7 +10,7 @@ import { InteractionTypes } from '@store/models/objects/userInteraction';
 
 import { PurchaseProductModalProps } from '@screens/Modal/PurchaseProduct';
 
-import { Button, RaisedButton } from '@components/General';
+import { Button, Icon } from '@components/General';
 
 import Localize from '@locale';
 
@@ -73,6 +73,13 @@ class MonetizationElement extends PureComponent<Props, State> {
         }
 
         const { monetization } = profile;
+
+        // clean up old suppress warning flag
+        if (suppressComingUpWarning && monetization.monetizationStatus === MonetizationStatus.NONE) {
+            UserInteractionRepository.updateInteraction(InteractionTypes.MONETIZATION, {
+                suppress_warning_on_home_screen: false,
+            });
+        }
 
         this.setState({
             suppressComingUpWarning,
@@ -138,19 +145,29 @@ class MonetizationElement extends PureComponent<Props, State> {
 
     renderPaymentRequired = () => {
         const { style } = this.props;
+        const { productForPurchase } = this.state;
+
+        // just making sure we are not ending up with unresponsive UI
+        if (!productForPurchase) {
+            return null;
+        }
 
         return (
-            <View style={[styles.container, styles.containerRequired, style]}>
-                <Text style={styles.messageText}>{Localize.t('monetization.paymentRequiredMessage')}</Text>
-                <View style={AppStyles.row}>
-                    <RaisedButton
-                        small
-                        onPress={this.purchaseProduct}
-                        label={Localize.t('monetization.learnMore')}
-                        containerStyle={styles.actionButtonContainer}
-                        textStyle={styles.actionButtonLabel}
-                    />
+            <View style={[styles.containerRequired, style]}>
+                <Icon name="IconInfo" style={styles.infoIcon} />
+                <View style={AppStyles.flex1}>
+                    <Text numberOfLines={2} style={styles.messageTextSmall}>
+                        {Localize.t('monetization.unlockFullFunctionality')}
+                    </Text>
                 </View>
+                <Button
+                    contrast
+                    roundedMini
+                    onPress={this.purchaseProduct}
+                    style={styles.learnMoreButton}
+                    textStyle={styles.learnMoreButtonText}
+                    label={Localize.t('monetization.learnMore')}
+                />
             </View>
         );
     };

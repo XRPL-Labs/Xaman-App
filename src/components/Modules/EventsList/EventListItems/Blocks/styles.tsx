@@ -63,6 +63,9 @@ const styles = StyleService.create({
     pendingIncColor: {
         color: '$grey',
     },
+    notEffectedColor: {
+        color: '$grey',
+    },
 });
 
 export default styles;

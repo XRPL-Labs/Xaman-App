@@ -40,7 +40,10 @@ const ColorsGeneral = {
     transparentBlack: HexToRgbA(colors.black, 0.7),
     transparentBlue: HexToRgbA(colors.blue, 0.7),
     transparentWhite: HexToRgbA(colors.white, 0.4),
+
     darkGrey: ColorLuminance(colors.grey, -0.75),
+    darkRed: ColorLuminance(colors.red, -0.3),
+    darkGreen: ColorLuminance(colors.green, -0.3),
 };
 
 const ColorsTheme = {

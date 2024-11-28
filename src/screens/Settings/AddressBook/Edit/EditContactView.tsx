@@ -8,11 +8,11 @@ import { View, Text, Alert, Keyboard, Platform, Share } from 'react-native';
 import { StringType } from 'xumm-string-decode';
 import { libraries } from 'xrpl-accountlib';
 
-import { StyleService } from '@services';
+import StyleService from '@services/StyleService';
+import ResolverService from '@services/ResolverService';
 
 import { NormalizeDestination } from '@common/utils/codec';
 
-import AccountResolver from '@common/helpers/resolver';
 import { Toast, Prompt, ActionSheet } from '@common/helpers/interface';
 
 import { Navigator } from '@common/helpers/navigator';
@@ -80,7 +80,7 @@ class EditContactView extends Component<Props, State> {
                     isLoading: true,
                 });
 
-                const payIdInfo = await AccountResolver.getPayIdInfo(result.payId);
+                const payIdInfo = await ResolverService.getPayIdInfo(result.payId);
 
                 if (payIdInfo) {
                     this.setState({
@@ -146,9 +146,6 @@ class EditContactView extends Component<Props, State> {
             destinationTag: tag || '',
         });
 
-        // update catch for this contact
-        AccountResolver.setCache(`${address}${tag ?? ''}`, { address: address!, name, source: 'contacts' });
-
         Toast(Localize.t('settings.contactSuccessUpdated'));
 
         // force re-render the app
@@ -169,9 +166,8 @@ class EditContactView extends Component<Props, State> {
                 {
                     text: Localize.t('global.doIt'),
                     onPress: () => {
-                        ContactRepository.deleteById(contact.id);
+                        ContactRepository.remove(contact);
                         Toast(Localize.t('settings.contactSuccessDeleted'));
-
                         Navigator.pop();
                     },
                     style: 'destructive',

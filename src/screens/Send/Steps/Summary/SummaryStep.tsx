@@ -17,6 +17,8 @@ import Preferences from '@common/libs/preferences';
 
 import { CalculateAvailableBalance } from '@common/utils/balance';
 
+import { TrustLineModel } from '@store/models';
+
 // components
 import {
     AmountText,
@@ -26,8 +28,8 @@ import {
     TextInput,
     SwipeButton,
     KeyboardAwareScrollView,
-    TokenAvatar,
 } from '@components/General';
+import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import { AccountPicker, FeePicker } from '@components/Modules';
 
@@ -169,8 +171,8 @@ class SummaryStep extends Component<Props, State> {
     };
 
     goNext = () => {
+        const { goNext, token, source, amount, destination, destinationInfo } = this.context;
         const { confirmedDestinationTag } = this.state;
-        const { goNext, currency, source, amount, destination, destinationInfo } = this.context;
 
         if (!amount || parseFloat(amount) === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('send.pleaseEnterAmount'));
@@ -183,7 +185,7 @@ class SummaryStep extends Component<Props, State> {
         }
 
         // if IOU and obligation can send unlimited
-        if (typeof currency !== 'string' && currency.obligation) {
+        if (typeof token !== 'string' && token.obligation) {
             // go to next screen
             goNext();
             return;
@@ -235,7 +237,7 @@ class SummaryStep extends Component<Props, State> {
         });
     };
 
-    renderCurrencyItem = (item: any) => {
+    renderCurrencyItem = (item: string | TrustLineModel) => {
         const { source } = this.context;
 
         // Native asset
@@ -265,10 +267,12 @@ class SummaryStep extends Component<Props, State> {
                         <TokenAvatar token={item} border size={35} />
                     </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text style={styles.currencyItemLabel}>
-                            {item.getReadableCurrency()}
-                            <Text style={styles.currencyItemCounterPartyLabel}> - {item.counterParty.name}</Text>
-                        </Text>
+                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                            <Text style={styles.currencyItemLabel}>{item.getFormattedCurrency()}</Text>
+                            <Text style={styles.currencyItemCounterPartyLabel}>
+                                &nbsp;-&nbsp;{item.getFormattedIssuer()}
+                            </Text>
+                        </View>
                         <AmountText
                             prefix={`${Localize.t('global.balance')}: `}
                             style={styles.currencyBalance}
@@ -283,10 +287,10 @@ class SummaryStep extends Component<Props, State> {
     renderAmountRate = () => {
         const { currencyRate } = this.state;
 
-        const { currency, amount } = this.context;
+        const { token, amount } = this.context;
 
         // only show rate for native currency
-        if (typeof currency === 'string' && currencyRate && amount) {
+        if (typeof token === 'string' && currencyRate && amount) {
             const rate = Number(amount) * currencyRate.rate;
             if (rate > 0) {
                 return (
@@ -303,17 +307,8 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const {
-            source,
-            amount,
-            destination,
-            currency,
-            issuerFee,
-            isLoading,
-            selectedFee,
-            setFee,
-            getPaymentJsonForFee,
-        } = this.context;
+        const { source, amount, destination, token, issuerFee, isLoading, selectedFee, setFee, getPaymentJsonForFee } =
+            this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
@@ -396,7 +391,7 @@ class SummaryStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <Spacer size={15} />
-                        <View style={styles.rowTitle}>{this.renderCurrencyItem(currency)}</View>
+                        <View style={styles.rowTitle}>{this.renderCurrencyItem(token)}</View>
                     </View>
 
                     {/* Amount */}

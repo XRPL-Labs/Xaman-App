@@ -18,29 +18,28 @@ const styles = StyleService.create({
     actionContainer: {
         backgroundColor: StyleService.select({ light: '$white', dark: '$tint' }),
         borderRadius: AppSizes.borderRadius,
-        padding: AppSizes.paddingSml,
+        paddingHorizontal: AppSizes.paddingSml,
         marginTop: AppSizes.padding,
     },
     productDescriptionText: {
-        fontFamily: AppFonts.h4.family,
-        fontSize: AppFonts.h4.size,
+        fontFamily: AppFonts.base.familyExtraBold,
+        fontSize: AppFonts.base.size,
         textAlign: 'center',
-        color: '$textPrimary',
-        fontWeight: '900',
-        paddingTop: AppSizes.padding,
-        paddingBottom: AppSizes.paddingExtraSml,
+        color: '$blue',
+        paddingVertical: AppSizes.paddingExtraSml,
     },
     notesText: {
         fontFamily: AppFonts.small.family,
-        fontSize: AppFonts.small.size,
+        fontSize: AppFonts.small.size * 0.9,
         textAlign: 'center',
-        color: '$grey',
+        color: '$textSecondary',
     },
     prePurchaseText: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         textAlign: 'center',
         color: '$textPrimary',
+        alignSelf: 'center',
     },
     successPurchaseText: {
         fontFamily: AppFonts.base.familyExtraBold,
@@ -86,9 +85,15 @@ const styles = StyleService.create({
         textDecorationLine: 'underline',
     },
     appIcon: {
-        width: AppSizes.scale(60),
-        height: AppSizes.scale(60),
+        width: AppSizes.verticalScale(60),
+        height: AppSizes.verticalScale(60),
         borderRadius: AppSizes.scale(75) / 4,
+    },
+    xamanLogo: {
+        width: AppSizes.verticalScale(100),
+        height: AppSizes.verticalScale(20),
+
+        resizeMode: 'contain',
     },
     checkMarkImage: {
         tintColor: '$green',

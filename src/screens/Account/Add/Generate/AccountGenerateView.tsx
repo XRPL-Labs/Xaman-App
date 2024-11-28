@@ -9,7 +9,6 @@ import { InteractionManager, Keyboard, View } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import AccountResolver from '@common/helpers/resolver';
 import { Toast } from '@common/helpers/interface';
 
 import { SHA256 } from '@common/libs/crypto';
@@ -157,13 +156,6 @@ class AccountGenerateView extends Component<Props, State> {
             // set the newly created account as default account
             CoreRepository.saveSettings({
                 account: createdAccount,
-            });
-
-            // update resolver cache for this account
-            AccountResolver.setCache(account.address!, {
-                address: account.address!,
-                name: account.label,
-                source: 'accounts',
             });
 
             // close the screen

@@ -3,11 +3,11 @@ import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-native';
 
-import NetworkService from '@services/NetworkService';
-
 import { WebLinks } from '@common/constants/endpoints';
 
-import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
+import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
+import NetworkService from '@services/NetworkService';
+
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Images } from '@common/helpers/images';
 
@@ -28,7 +28,7 @@ interface Props {
 }
 
 interface State {
-    issuerInfo?: AccountNameType;
+    issuerInfo?: AccountNameResolveType;
     isLoading: boolean;
 }
 
@@ -72,7 +72,7 @@ class CurrencyElement extends Component<Props, State> {
             });
         }
 
-        AccountResolver.getAccountName(issuer)
+        ResolverService.getAccountName(issuer)
             .then((res) => {
                 if (!isEmpty(res)) {
                     this.setState({

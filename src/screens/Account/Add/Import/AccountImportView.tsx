@@ -12,7 +12,6 @@ import * as AccountLib from 'xrpl-accountlib';
 import { XAppOrigin } from '@common/libs/payload';
 
 import { Toast } from '@common/helpers/interface';
-import AccountResolver from '@common/helpers/resolver';
 import { Navigator } from '@common/helpers/navigator';
 
 import { SHA256 } from '@common/libs/crypto';
@@ -425,13 +424,6 @@ class AccountImportView extends Component<Props, State> {
             // set the newly created account as default account
             CoreRepository.saveSettings({
                 account: createdAccount,
-            });
-
-            // update resolver cache for this account
-            AccountResolver.setCache(account.address!, {
-                address: account.address!,
-                name: account.label,
-                source: 'accounts',
             });
 
             // close the screen

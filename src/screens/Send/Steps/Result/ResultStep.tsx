@@ -110,7 +110,7 @@ class ResultStep extends Component<Props, State> {
     };
 
     renderDetailsCard = () => {
-        const { destination, amount, currency } = this.context;
+        const { destination, amount, token } = this.context;
 
         return (
             <View style={styles.detailsCard}>
@@ -120,9 +120,7 @@ class ResultStep extends Component<Props, State> {
                 <AmountText
                     style={[AppStyles.h4, AppStyles.monoBold]}
                     value={amount}
-                    currency={
-                        typeof currency === 'string' ? NetworkService.getNativeAsset() : currency.currency.currencyCode
-                    }
+                    currency={typeof token === 'string' ? NetworkService.getNativeAsset() : token.currency.currencyCode}
                     immutable
                 />
 

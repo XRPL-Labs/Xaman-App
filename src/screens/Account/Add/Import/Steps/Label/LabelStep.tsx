@@ -9,7 +9,7 @@ import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import { AppConfig } from '@common/constants';
 
-import AccountResolver from '@common/helpers/resolver';
+import ResolverService from '@services/ResolverService';
 
 import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
 
@@ -54,7 +54,7 @@ class LabelStep extends Component<Props, State> {
             });
         }
 
-        AccountResolver.getAccountName(account.address!)
+        ResolverService.getAccountName(account.address!)
             .then((res) => {
                 if (!isEmpty(res)) {
                     const { name } = res;

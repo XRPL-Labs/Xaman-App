@@ -88,7 +88,7 @@ class AddTokenOverlay extends Component<Props, State> {
                 });
             }
 
-            const { details } = await BackendService.getCuratedIOUs(0, true);
+            const { details } = await BackendService.getCuratedIOUs({ promoted: true });
 
             // set default selected party and currency to the first in the list
             const selectedParty = first(values(details));

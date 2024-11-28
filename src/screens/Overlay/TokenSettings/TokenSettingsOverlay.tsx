@@ -5,7 +5,7 @@ import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { Alert, Animated, Image, InteractionManager, Text, View } from 'react-native';
+import { Alert, Animated, InteractionManager, Text, View } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
@@ -27,16 +27,8 @@ import { AppScreens } from '@common/constants';
 import LedgerService from '@services/LedgerService';
 
 // components
-import {
-    AmountText,
-    Button,
-    Icon,
-    InfoMessage,
-    RaisedButton,
-    Spacer,
-    TokenAvatar,
-    TouchableDebounce,
-} from '@components/General';
+import { AmountText, Button, Icon, InfoMessage, RaisedButton, Spacer, TouchableDebounce } from '@components/General';
+import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 
@@ -70,8 +62,8 @@ class TokenSettingsOverlay extends Component<Props, State> {
         super(props);
 
         this.state = {
-            isFavorite: !!props.trustLine.favorite,
-            hasXAppIdentifier: !!props.trustLine.currency.xapp_identifier,
+            isFavorite: !!props.token.favorite,
+            hasXAppIdentifier: !!props.token.currency.xappIdentifier,
             isRemoving: false,
             isLoading: false,
             isReviewScreenVisible: false,
@@ -128,16 +120,47 @@ class TokenSettingsOverlay extends Component<Props, State> {
         });
     };
 
+    copyIssuerAddress = () => {
+        const { token } = this.props;
+
+        Clipboard.setString(token.currency.issuer);
+        Toast(Localize.t('asset.issuerAddressCopiedToClipboard'));
+    };
+
+    onCopyIssuerAddressPress = () => {
+        const { token } = this.props;
+
+        Navigator.showAlertModal({
+            type: 'warning',
+            text: Localize.t('asset.copyIssuerAddressWarning', {
+                issuerAddress: token.currency.issuer,
+            }),
+            buttons: [
+                {
+                    text: Localize.t('global.cancel'),
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: Localize.t('global.IUnderstand'),
+                    onPress: this.copyIssuerAddress,
+                    type: 'continue',
+                    light: false,
+                },
+            ],
+        });
+    };
+
     getLatestLineBalance = (): Promise<void> => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
 
         // ignore obligation lines
-        if (trustLine.obligation) return Promise.resolve();
+        if (token.obligation) return Promise.resolve();
 
         return new Promise((resolve) => {
             LedgerService.getFilteredAccountLine(account.address, {
-                issuer: trustLine.currency.issuer,
-                currency: trustLine.currency.currencyCode,
+                issuer: token.currency.issuer,
+                currency: token.currency.currencyCode,
             })
                 .then((line) => {
                     if (line) {
@@ -164,7 +187,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
     clearDustAmounts = async () => {
         const { latestLineBalance } = this.state;
-        const { trustLine, account } = this.props;
+        const { token, account } = this.props;
 
         try {
             this.setState({
@@ -174,17 +197,17 @@ class TokenSettingsOverlay extends Component<Props, State> {
             const paymentJson = {
                 TransactionType: TransactionTypes.Payment,
                 Account: account.address,
-                Destination: trustLine.currency.issuer,
+                Destination: token.currency.issuer,
                 DestinationTag: 0,
                 Amount: {
-                    currency: trustLine.currency.currencyCode,
-                    issuer: trustLine.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                     value: String(latestLineBalance),
                 },
             };
 
             // add PartialPayment flag if issuer have transferFee
-            const issuerAccountInfo = await LedgerService.getAccountInfo(trustLine.currency.issuer);
+            const issuerAccountInfo = await LedgerService.getAccountInfo(token.currency.issuer);
             // eslint-disable-next-line max-len
             if (has(issuerAccountInfo, ['account_data', 'TransferRate'])) {
                 Object.assign(paymentJson, {
@@ -258,7 +281,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     removeTrustLine = async () => {
-        const { trustLine, account } = this.props;
+        const { token, account } = this.props;
         const { latestLineBalance } = this.state;
 
         try {
@@ -268,7 +291,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     Localize.t('global.warning'),
                     Localize.t('asset.trustLineDustRemoveWarning', {
                         balance: new BigNumber(latestLineBalance).toFixed(),
-                        currency: NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                        currency: NormalizeCurrencyCode(token.currency.currencyCode),
                     }),
                     [
                         { text: Localize.t('global.cancel') },
@@ -302,8 +325,8 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 TransactionType: TransactionTypes.TrustSet,
                 Account: account.address,
                 LimitAmount: {
-                    currency: trustLine.currency.currencyCode,
-                    issuer: trustLine.currency.issuer,
+                    currency: token.currency.currencyCode,
+                    issuer: token.currency.issuer,
                     value: 0,
                 },
                 Flags: transactionFlags,
@@ -425,32 +448,32 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     onSendPress = async () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, { currency: trustLine });
+            Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, { token });
         });
     };
 
     onExchangePress = () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, trustLine });
+            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
         });
     };
 
     onDepositPress = async () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
 
         this.dismiss().then(() => {
             Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    identifier: trustLine.currency.xapp_identifier!,
+                    identifier: token.currency.xappIdentifier!,
                     params: {
-                        issuer: trustLine.currency.issuer,
-                        asset: trustLine.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                        asset: token.currency.currencyCode,
                         action: 'DEPOSIT',
                     },
                     origin: XAppOrigin.XUMM,
@@ -464,16 +487,16 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     onWithdrawPress = async () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
 
         this.dismiss().then(() => {
             Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
                 {
-                    identifier: trustLine.currency.xapp_identifier!,
+                    identifier: token.currency.xappIdentifier!,
                     params: {
-                        issuer: trustLine.currency.issuer,
-                        asset: trustLine.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                        asset: token.currency.currencyCode,
                         action: 'WITHDRAW',
                     },
                     origin: XAppOrigin.XUMM,
@@ -487,29 +510,29 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     onFavoritePress = () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
 
         this.setState({
-            isFavorite: !trustLine.favorite,
+            isFavorite: !token.favorite,
         });
 
         // update the trustline
         TrustLineRepository.update({
-            id: trustLine.id,
-            favorite: !trustLine.favorite,
+            id: token.id,
+            favorite: !token.favorite,
         });
     };
 
     disableRippling = async () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
 
         const trustSetJson = {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
-                currency: trustLine.currency.currencyCode,
-                issuer: trustLine.currency.issuer,
-                value: trustLine.limit,
+                currency: token.currency.currencyCode,
+                issuer: token.currency.issuer,
+                value: token.limit,
             },
             Flags: 131072, // tfSetNoRipple
         };
@@ -528,7 +551,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     updateLineLimit = async () => {
-        const { account, trustLine } = this.props;
+        const { account, token } = this.props;
 
         this.setState({
             isLoading: true,
@@ -538,8 +561,8 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         try {
             // set the trustline limit by gateway balance if it's more than our default value
-            const resp = await LedgerService.getGatewayBalances(trustLine.currency.issuer);
-            const gatewayBalances = get(resp, ['obligations', trustLine.currency.currencyCode]);
+            const resp = await LedgerService.getGatewayBalances(token.currency.issuer);
+            const gatewayBalances = get(resp, ['obligations', token.currency.currencyCode]);
 
             if (gatewayBalances && Number(gatewayBalances) > Number(lineLimit)) {
                 lineLimit = gatewayBalances;
@@ -556,8 +579,8 @@ class TokenSettingsOverlay extends Component<Props, State> {
             TransactionType: TransactionTypes.TrustSet,
             Account: account.address,
             LimitAmount: {
-                currency: trustLine.currency.currencyCode,
-                issuer: trustLine.currency.issuer,
+                currency: token.currency.currencyCode,
+                issuer: token.currency.issuer,
                 value: lineLimit,
             },
             Flags: 131072, // tfSetNoRipple
@@ -577,17 +600,17 @@ class TokenSettingsOverlay extends Component<Props, State> {
     };
 
     showConfigurationAlert = () => {
-        const { trustLine } = this.props;
+        const { token } = this.props;
 
         let explanation;
         let fixMethod;
 
-        if (trustLine.no_ripple === false) {
+        if (token.no_ripple === false) {
             explanation = Localize.t('asset.ripplingMisconfigurationWarning', {
-                token: NormalizeCurrencyCode(trustLine.currency.currencyCode),
+                token: NormalizeCurrencyCode(token.currency.currencyCode),
             });
             fixMethod = this.disableRippling;
-        } else if (Number(trustLine.limit) === 0) {
+        } else if (Number(token.limit) === 0) {
             explanation = Localize.t('asset.lineLimitMisconfigurationWarning');
             fixMethod = this.updateLineLimit;
         }
@@ -611,49 +634,18 @@ class TokenSettingsOverlay extends Component<Props, State> {
         });
     };
 
-    copyIssuerAddress = () => {
-        const { trustLine } = this.props;
-
-        Clipboard.setString(trustLine.currency.issuer);
-        Toast(Localize.t('asset.issuerAddressCopiedToClipboard'));
-    };
-
-    onCopyIssuerAddressPress = () => {
-        const { trustLine } = this.props;
-
-        Navigator.showAlertModal({
-            type: 'warning',
-            text: Localize.t('asset.copyIssuerAddressWarning', {
-                issuerAddress: trustLine.currency.issuer,
-            }),
-            buttons: [
-                {
-                    text: Localize.t('global.cancel'),
-                    type: 'dismiss',
-                    light: true,
-                },
-                {
-                    text: Localize.t('global.IUnderstand'),
-                    onPress: this.copyIssuerAddress,
-                    type: 'continue',
-                    light: false,
-                },
-            ],
-        });
-    };
-
     canSend = () => {
-        const { trustLine } = this.props;
-        return Number(trustLine.balance) >= 0.00000001 || trustLine.obligation;
+        const { token } = this.props;
+        return Number(token.balance) >= 0.00000001 || token.obligation;
     };
 
     canExchange = () => {
-        const { trustLine } = this.props;
-        return !trustLine.obligation && !trustLine.isLiquidityPoolToken();
+        const { token } = this.props;
+        return !token.obligation && !token.isLiquidityPoolToken();
     };
 
     render() {
-        const { trustLine } = this.props;
+        const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
         if (isReviewScreenVisible) {
@@ -688,39 +680,41 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         </View>
                     </View>
                     <View style={styles.contentContainer}>
-                        <View style={styles.currencyItem}>
+                        <View style={styles.tokenElement}>
                             <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={[styles.brandAvatarContainer]}>
-                                    <TokenAvatar token={trustLine} border size={35} />
+                                <View style={styles.brandAvatarContainer}>
+                                    <TokenAvatar token={token} border size={35} />
                                 </View>
                                 <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text style={styles.currencyItemLabelSmall}>{trustLine.getReadableCurrency()}</Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        style={styles.currencyItemLabelSmall}
+                                        ellipsizeMode="middle"
+                                    >
+                                        {token.getFormattedCurrency()}
+                                    </Text>
                                     <TouchableDebounce
                                         onPress={this.onCopyIssuerAddressPress}
                                         style={AppStyles.row}
                                         activeOpacity={1}
                                     >
-                                        <Text style={styles.issuerLabel}>
-                                            {trustLine.counterParty.name}{' '}
-                                            {trustLine.currency.name
-                                                ? NormalizeCurrencyCode(trustLine.currency.currencyCode)
-                                                : ''}
-                                        </Text>
+                                        <Text style={styles.issuerLabel}>{token.getFormattedIssuer()}</Text>
                                         <Icon style={styles.copyIcon} name="IconCopy" size={15} />
                                     </TouchableDebounce>
                                 </View>
                             </View>
                             <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                {!!trustLine.currency.avatar && (
-                                    <Image style={styles.currencyAvatar} source={{ uri: trustLine.currency.avatar }} />
-                                )}
-                                <AmountText value={trustLine.balance} style={[AppStyles.pbold, AppStyles.monoBold]} />
+                                <AmountText
+                                    value={token.balance}
+                                    style={[AppStyles.pbold, AppStyles.monoBold]}
+                                    prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
+                                />
                             </View>
                         </View>
 
-                        {(!trustLine.no_ripple || Number(trustLine.limit) === 0) &&
-                            !trustLine.obligation &&
-                            !trustLine.isLiquidityPoolToken() && (
+                        {(!token.no_ripple || Number(token.limit) === 0) &&
+                            !token.obligation &&
+                            !token.isLiquidityPoolToken() && (
                                 <>
                                     <Spacer />
                                     <InfoMessage
@@ -728,7 +722,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         containerStyle={styles.infoContainer}
                                         labelStyle={styles.infoText}
                                         label={
-                                            !trustLine.no_ripple
+                                            !token.no_ripple
                                                 ? Localize.t('asset.dangerousConfigurationDetected')
                                                 : Localize.t('asset.restrictingConfigurationDetected')
                                         }
@@ -775,7 +769,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         icon="IconCoins"
                                         iconSize={22}
                                         iconStyle={styles.depositButtonIcon}
-                                        label={`${Localize.t('global.add')} ${trustLine.getReadableCurrency()}`}
+                                        label={`${Localize.t('global.add')} ${token.getFormattedCurrency()}`}
                                         textStyle={styles.depositButtonText}
                                         onPress={this.onDepositPress}
                                     />
@@ -788,7 +782,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         iconPosition="left"
                                         iconSize={22}
                                         iconStyle={styles.withdrawButtonIcon}
-                                        label={`${Localize.t('global.withdraw')} ${trustLine.getReadableCurrency()}`}
+                                        label={`${Localize.t('global.withdraw')} ${token.getFormattedCurrency()}`}
                                         textStyle={styles.withdrawButtonText}
                                         onPress={this.onWithdrawPress}
                                     />

@@ -5,8 +5,16 @@ const RealmTestUtils = {
     RealmPath: './.jest/realmTemp',
     EncryptionKey: new Int8Array(64),
 
+    getAllModelItem: (instance: Realm, schemaName: string): any => {
+        return instance.objects(schemaName) as any;
+    },
+
     getFirstModelItem: (instance: Realm, schemaName: string): any => {
         return instance.objects(schemaName)[0] as any;
+    },
+
+    getSecondModelItem: (instance: Realm, schemaName: string): any => {
+        return instance.objects(schemaName)[1] as any;
     },
 
     getSchemaWithVersion: (version: number) => {

@@ -74,7 +74,11 @@ class Monetary extends PureComponent<IProps, State> {
                 prefix: undefined,
                 value: factor.at(0)?.value,
                 currency: factor.at(0)?.currency,
-                style: factor.at(0)?.action === OperationActions.INC ? styles.pendingIncColor : styles.pendingDecColor,
+                style: factor.at(0)?.action
+                    ? factor.at(0)?.action
+                        ? styles.pendingDecColor
+                        : styles.pendingIncColor
+                    : styles.notEffectedColor,
             };
         }
 

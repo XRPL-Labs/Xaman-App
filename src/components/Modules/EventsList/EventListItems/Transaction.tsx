@@ -3,6 +3,8 @@ import { isEmpty, isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { View, InteractionManager } from 'react-native';
 
+import { AppScreens } from '@common/constants';
+
 import { ExplainerFactory } from '@common/libs/ledger/factory';
 import { CombinedTransactions, Transactions } from '@common/libs/ledger/transactions/types';
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
@@ -12,16 +14,15 @@ import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
 import { AccountModel } from '@store/models';
 
-import { Navigator } from '@common/helpers/navigator';
-import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
+import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
 
-import { AppScreens } from '@common/constants';
+import { Navigator } from '@common/helpers/navigator';
 
 import { TouchableDebounce } from '@components/General';
 
-import * as Blocks from './Blocks';
-
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
+
+import * as Blocks from './Blocks';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
@@ -35,7 +36,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    participant?: AccountNameType;
+    participant?: AccountNameResolveType;
     explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
 }
 
@@ -121,7 +122,7 @@ class TransactionItem extends Component<Props, State> {
 
         try {
             // get participant details
-            const resp = await AccountResolver.getAccountName(otherParty.address, otherParty.tag);
+            const resp = await ResolverService.getAccountName(otherParty.address, otherParty.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,
@@ -159,6 +160,9 @@ class TransactionItem extends Component<Props, State> {
                 activeOpacity={0.6}
                 style={[styles.container, { height: TransactionItem.Height }]}
             >
+                {/* if participant is block the show an overlay to reduce the visibility */}
+                {participant?.blocked && <View style={styles.containerBlocked} />}
+
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     <Blocks.AvatarBlock participant={participant} item={item} />
                 </View>

@@ -9,6 +9,7 @@ import NetworkService from './NetworkService';
 import LedgerService from './LedgerService';
 import AccountService from './AccountService';
 import BackendService from './BackendService';
+import ResolverService from './ResolverService';
 import StyleService from './StyleService';
 
 export {
@@ -23,5 +24,6 @@ export {
     LedgerService,
     AccountService,
     BackendService,
+    ResolverService,
     StyleService,
 };

@@ -14,7 +14,7 @@ import BaseRepository from './base';
 export type AccountRepositoryEvent = {
     accountUpdate: (account: AccountModel, changes: Partial<AccountModel> | Partial<AccountDetailsModel>) => void;
     accountCreate: (account: AccountModel) => void;
-    accountRemove: () => void;
+    accountRemove: (account: Partial<AccountModel>) => void;
 };
 
 declare interface AccountRepository {
@@ -281,11 +281,14 @@ class AccountRepository extends BaseRepository<AccountModel> {
             await this.delete(line);
         }
 
+        // cache the address before removing the account object
+        const deletedAccount: Partial<AccountModel> = { address: account.address, publicKey: account.publicKey };
+
         // delete the account
         await this.delete(account);
 
         // emit account removal event
-        this.emit('accountRemove');
+        this.emit('accountRemove', deletedAccount);
 
         return true;
     };

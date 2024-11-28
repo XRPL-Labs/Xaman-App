@@ -101,6 +101,7 @@ const styles = StyleService.create({
         fontSize: AppFonts.small.size,
         fontFamily: AppFonts.base.family,
         color: '$textSecondary',
+        paddingTop: 5,
     },
 
     amountInput: {

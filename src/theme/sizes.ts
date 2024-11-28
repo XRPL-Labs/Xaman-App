@@ -15,6 +15,8 @@ const { bottom: bottomInset, top: topInset } = GetLayoutInsets();
 const guidelineBaseWidth = 350;
 const guidelineBaseHeight = 680;
 
+const isSmallDevice = width <= 375;
+
 // bottomTabs height
 const tabbarHeight = Platform.select({
     ios: bottomInset + 50,
@@ -59,6 +61,7 @@ const Sizes = {
         widthTwoThirds: width * 0.666,
         widthQuarter: width * 0.25,
         widthThreeQuarters: width * 0.75,
+        isSmallDevice,
     },
     statusBarHeight,
     tabbarHeight,
