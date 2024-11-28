@@ -445,9 +445,10 @@ class XAppBrowserModal extends Component<Props, State> {
         const { commands: AllowedCommands, special: SpecialPermissions } = app.permissions;
 
         // xApp doesn't have the permission to run this command
+        // ignore ready command
         if (!AllowedCommands.includes(command.toUpperCase())) {
             // show alert about command
-            if (coreSettings.developerMode) {
+            if (coreSettings.developerMode && command !== XAppMethods.Ready) {
                 Alert.alert(
                     Localize.t('global.error'),
                     Localize.t('xapp.xAppDoesNotHavePermissionToRunThisCommand', { command }),
