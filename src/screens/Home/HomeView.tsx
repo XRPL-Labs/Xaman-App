@@ -52,7 +52,7 @@ export interface State {
     selectedNetwork: NetworkModel;
     developerMode: boolean;
     discreetMode: boolean;
-    experimentalUI: boolean;
+    experimentalUI?: boolean;
 }
 
 /* Component ==================================================================== */
@@ -81,7 +81,7 @@ class HomeView extends Component<Props, State> {
             selectedNetwork: coreSettings.network,
             developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
-            experimentalUI: false,
+            experimentalUI: undefined,
         };
     }
 
@@ -355,7 +355,7 @@ class HomeView extends Component<Props, State> {
     renderNetworkDetails = () => {
         const { developerMode, selectedNetwork, experimentalUI } = this.state;
 
-        if (!developerMode || !selectedNetwork || experimentalUI) {
+        if (!developerMode || !selectedNetwork || typeof experimentalUI === 'undefined' || experimentalUI) {
             return null;
         }
 

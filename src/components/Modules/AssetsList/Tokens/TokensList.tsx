@@ -355,7 +355,7 @@ class TokensList extends Component<Props, State> {
                 />
                 <ListFilter
                     filters={filters}
-                    visible={!reorderEnabled && !experimentalUI}
+                    visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />
