@@ -98,13 +98,17 @@ class HomeView extends Component<Props, State> {
         InteractionManager.runAfterInteractions(this.updateAccountStatus);
 
         // get experimental status
-        Preferences.get(Preferences.keys.EXPERIMENTAL_SIMPLICITY_UI).then((experimentalUI) => {
-            if (experimentalUI === 'true') {
+        Preferences.get(Preferences.keys.EXPERIMENTAL_SIMPLICITY_UI)
+            .then((experimentalUI) => {
                 this.setState({
-                    experimentalUI: true,
+                    experimentalUI: experimentalUI === 'true',
                 });
-            }
-        });
+            })
+            .catch(() => {
+                this.setState({
+                    experimentalUI: false,
+                });
+            });
     }
 
     componentWillUnmount() {
