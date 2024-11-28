@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, ImageBackground, Linking, Image } from 'react-native';
+import { View, Text, Alert, ImageBackground, Linking, Image, Platform } from 'react-native';
 
 import BackendService from '@services/BackendService';
 import LoggerService from '@services/LoggerService';
@@ -242,7 +242,12 @@ class PurchaseProductModal extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.centerContent]}>
                         <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.gapExtraSml]}>
-                            <Text style={styles.notesText}>{Localize.t('monetization.prePurchaseTip')}</Text>
+                            <Text style={styles.notesText}>
+                                {Platform.select({
+                                    ios: Localize.t('monetization.prePurchaseTipIos'),
+                                    android: Localize.t('monetization.prePurchaseTipAndroid'),
+                                })}
+                            </Text>
                             <Text style={styles.notesText}>
                                 Read our{' '}
                                 <Text

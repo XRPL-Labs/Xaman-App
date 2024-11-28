@@ -1219,7 +1219,8 @@
     "benefitsTextTwo": "xApp access",
     "benefitsTextThree": "Premium support",
     "unlockFullFunctionality": "Unlock full functionality with a small payment.",
-    "prePurchaseTip": "Please note that this is a 30 days purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
+    "prePurchaseTipIos": "Please note that this is a 30 days purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button.",
+    "prePurchaseTipAndroid": "Please note that this is a 30 days purchase. Make sure your Google account is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
   },
   "errors": {
     "unableToLoadTermOfService": "Oeps! Kan de Algemene Voorwaarden niet ophalen",
