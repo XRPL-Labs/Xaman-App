@@ -112,12 +112,13 @@ class Account extends Realm.Object<Account> {
 
         const state = JSON.stringify(details.toJSON(), (key, val) => {
             if (val !== null && typeof val === 'object') {
-                if (['owners', 'currency'].includes(key)) {
+                if (['owners', 'currency', 'network'].includes(key)) {
                     return undefined; // exclude these fields
                 }
             }
             return val;
         });
+
         return StringIdentifier(state);
     }
 

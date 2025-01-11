@@ -4,11 +4,14 @@
  * This is the service we use for update accounts real time details and listen for ledger transactions
  */
 
-import EventEmitter from 'events';
-import { map, forEach, get, keys } from 'lodash';
+import BigNumber from 'bignumber.js';
 
-import { CurrencyModel, TrustLineModel } from '@store/models';
-import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
+import EventEmitter from 'events';
+import { get, keys, map } from 'lodash';
+
+import { CurrencyModel, TrustLineModel, CoreModel } from '@store/models';
+import { AccountRepository, AmmPairRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
+
 import { RewardInformation } from '@store/models/objects/accountDetails';
 
 import Meta from '@common/libs/ledger/parser/meta';
@@ -18,8 +21,6 @@ import NetworkService from '@services/NetworkService';
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
 import LedgerService from '@services/LedgerService';
 
-import { AccountTypes } from '@store/types';
-
 import {
     SubscribeRequest,
     SubscribeResponse,
@@ -27,7 +28,6 @@ import {
     UnsubscribeRequest,
     UnsubscribeResponse,
 } from '@common/libs/ledger/types/methods';
-import BigNumber from 'bignumber.js';
 
 /* Events  ==================================================================== */
 export type AccountServiceEvent = {
@@ -41,27 +41,26 @@ declare interface AccountService {
 }
 /* Service  ==================================================================== */
 class AccountService extends EventEmitter {
-    private accounts: string[];
     private transactionListener: any;
 
+    private account?: string;
     private logger: LoggerInstance;
 
     constructor() {
         super();
 
-        this.accounts = [];
+        this.account = undefined;
         this.logger = LoggerService.createLogger('Account');
     }
 
-    initialize = (): Promise<void> => {
+    initialize = (settings: CoreModel): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             try {
-                // load accounts
-                this.loadAccounts();
+                // set current default account
+                this.account = settings.account?.address;
 
-                // add listeners for account changes
-                AccountRepository.on('accountCreate', this.onAccountsChange);
-                AccountRepository.on('accountRemove', this.onAccountsChange);
+                // list for any default account change
+                CoreRepository.on('updateSettings', this.onSettingsUpdate);
 
                 // on network service connect
                 NetworkService.on('connect', this.onNetworkConnect);
@@ -73,14 +72,46 @@ class AccountService extends EventEmitter {
         });
     };
 
+    onSettingsUpdate = (settings: CoreModel, changes: Partial<CoreModel>) => {
+        if ('account' in changes && this.account !== settings.account.address) {
+            this.onAccountChange(settings.account.address);
+        }
+    };
+
+    /**
+     * When default account changed
+     */
+    onAccountChange = (account: string) => {
+        if (this.account) {
+            // unsubscribe from old account
+            this.unsubscribe(this.account);
+        }
+
+        // set the current account
+        this.account = account;
+
+        // subscribe again on new account
+        this.subscribe(account);
+
+        // update accounts info
+        this.updateAccountsDetails(account);
+    };
+
     /**
      * Update the details when connect to the network
      */
     onNetworkConnect = () => {
-        // update account details
-        this.updateAccountsDetails();
+        // no account
+        if (!this.account) {
+            return;
+        }
+
         // subscribe accounts for transactions stream
-        this.subscribe();
+        this.subscribe(this.account);
+
+        // update account details
+        this.updateAccountsDetails(this.account);
+
         // register on transaction event handler
         this.setTransactionListener();
     };
@@ -112,39 +143,14 @@ class AccountService extends EventEmitter {
 
             const effectedAccounts = [...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts])];
 
-            // update account details
-            this.updateAccountsDetails(effectedAccounts);
+            if (this.account && effectedAccounts.includes(this.account)) {
+                // update account details
+                this.updateAccountsDetails(this.account);
 
-            // emit onTransaction event
-            this.emit('transaction', transaction, effectedAccounts);
+                // emit onTransaction event
+                this.emit('transaction', transaction, effectedAccounts);
+            }
         }
-    };
-
-    /**
-     * Load accounts from data store
-     */
-    loadAccounts = () => {
-        // fetch accounts from store
-        const accounts = AccountRepository.getAccounts();
-
-        // no account is present in the app
-        if (accounts.length === 0) {
-            this.accounts = [];
-            return;
-        }
-
-        // log the existent accounts in the session log
-        this.logger.debug(
-            `Presented accounts: ${accounts.reduce(
-                (account, item) =>
-                    `${account}\n${item.address}-${item.accessLevel} ${
-                        item.flags?.disableMasterKey ? '[MasterDisabled]' : ''
-                    } ${item.type !== AccountTypes.Regular ? `[${item.type}]` : ''}`,
-                '',
-            )}`,
-        );
-
-        this.accounts = accounts.flatMap((account) => account.address);
     };
 
     /**
@@ -185,11 +191,9 @@ class AccountService extends EventEmitter {
             return;
         }
 
+        const { account_data, account_flags } = accountInfo;
         // fetch the normalized account lines
         const normalizedAccountLines = await this.getNormalizedAccountLines(account);
-
-        // if account FOUND and no error
-        const { account_data, account_flags } = accountInfo;
 
         // update account info
         await AccountRepository.updateDetails(account, {
@@ -225,7 +229,7 @@ class AccountService extends EventEmitter {
 
         const combinedLines = [...accountLines, ...accountObligations];
 
-        const normalizedList = await Promise.all(
+        return Promise.all(
             combinedLines.map(async (line) => {
                 const currency = await CurrencyRepository.upsert({
                     id: `${line.account}.${line.currency}`,
@@ -256,8 +260,6 @@ class AccountService extends EventEmitter {
                 };
             }),
         );
-
-        return normalizedList;
     };
 
     updateAMMPairs = async (address: string) => {
@@ -321,49 +323,25 @@ class AccountService extends EventEmitter {
      * Update accounts details through socket request
      * this will contain account trustLines etc ...
      */
-    updateAccountsDetails = (include?: string[]) => {
-        forEach(this.accounts, async (account) => {
-            // check if include present
-            if (Array.isArray(include) && include.length > 0) {
-                if (include.indexOf(account) === -1) return;
-            }
-
-            await this.updateAccountInfo(account).catch((error) => {
-                this.logger.error(`updateAccountInfo [${account}] `, error);
-            });
-
-            await this.updateAMMPairs(account).catch((error) => {
-                this.logger.error(`updateAMMPairs [${account}] `, error);
-            });
+    updateAccountsDetails = async (account: string) => {
+        await this.updateAccountInfo(account).catch((error) => {
+            this.logger.error(`updateAccountInfo [${account}] `, error);
         });
-    };
 
-    /**
-     * Watch for any account added or removed in store
-     */
-    onAccountsChange = () => {
-        // unsubscribe from old list
-        this.unsubscribe();
-
-        // reload accounts
-        this.loadAccounts();
-
-        // subscribe again on new account list
-        this.subscribe();
-
-        // update accounts info
-        this.updateAccountsDetails();
+        await this.updateAMMPairs(account).catch((error) => {
+            this.logger.error(`updateAMMPairs [${account}] `, error);
+        });
     };
 
     /**
      * Unsubscribe for streaming
      */
-    unsubscribe() {
-        this.logger.debug(`Unsubscribe to ${this.accounts.length} accounts`, this.accounts);
+    unsubscribe(account: string) {
+        this.logger.debug(`Unsubscribe account ${account} from network`);
 
         NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
-            accounts: this.accounts,
+            accounts: [account],
         }).catch((error) => {
             this.logger.warn('unsubscribe', error);
         });
@@ -372,12 +350,12 @@ class AccountService extends EventEmitter {
     /**
      * Subscribe for streaming
      */
-    subscribe() {
-        this.logger.debug(`Subscribed to ${this.accounts.length} accounts`, this.accounts);
+    subscribe(account: string) {
+        this.logger.debug(`Subscribed account ${account} to network`);
 
         NetworkService.send<SubscribeRequest, SubscribeResponse>({
             command: 'subscribe',
-            accounts: this.accounts,
+            accounts: [account],
         }).catch((error: Error) => {
             this.logger.warn('subscribe', error);
         });

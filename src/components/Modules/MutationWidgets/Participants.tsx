@@ -75,7 +75,7 @@ class Participants extends PureComponent<Props, State> {
         return (
             <>
                 <Icon name="IconArrowDown" style={[AppStyles.centerSelf, styles.iconArrow]} />
-                <Text style={styles.detailsLabelText}>{Localize.t('events.throughOfferBy')}</Text>
+                <Text style={styles.detailsLabelText}>{Localize.t('events.through')}</Text>
                 <AccountElement
                     address={through.address}
                     visibleElements={{ tag: true, avatar: true, menu: through.address !== account.address }}

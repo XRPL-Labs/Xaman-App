@@ -8,7 +8,7 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { TrustLineRepository } from '@store/repositories';
+import { CurrencyRepository, TrustLineRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
@@ -29,7 +29,7 @@ interface Props {
     account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
-
+    experimentalUI?: boolean;
     onChangeCategoryPress: () => void;
 }
 
@@ -68,20 +68,25 @@ class TokensList extends Component<Props, State> {
         // listen for token updates
         // this is needed when a single token favorite status changed
         TrustLineRepository.on('trustLineUpdate', this.onTrustLineUpdate);
+        // this is needed when using ResolveService to sync the currency details
+        CurrencyRepository.on('currencyDetailsUpdate', this.onCurrencyDetailsUpdate);
     }
 
     componentWillUnmount(): void {
         // remove trustLine update listener
         TrustLineRepository.off('trustLineUpdate', this.onTrustLineUpdate);
+        // remove listener
+        CurrencyRepository.off('currencyDetailsUpdate', this.onCurrencyDetailsUpdate);
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-        const { discreetMode, spendable } = this.props;
+        const { discreetMode, spendable, experimentalUI } = this.props;
         const { dataSource, accountStateVersion, reorderEnabled, filters } = this.state;
 
         return (
             !isEqual(nextProps.spendable, spendable) ||
             !isEqual(nextProps.discreetMode, discreetMode) ||
+            !isEqual(nextProps.experimentalUI, experimentalUI) ||
             !isEqual(nextState.accountStateVersion, accountStateVersion) ||
             !isEqual(nextState.reorderEnabled, reorderEnabled) ||
             !isEqual(nextState.filters, filters) ||
@@ -153,7 +158,7 @@ class TokensList extends Component<Props, State> {
             filtered = filter(filtered, (item: TrustLineModel) => {
                 return (
                     toLower(item.currency.name).indexOf(normalizedSearch) > -1 ||
-                    toLower(item.counterParty?.name).indexOf(normalizedSearch) > -1 ||
+                    toLower(item.currency?.issuerName).indexOf(normalizedSearch) > -1 ||
                     toLower(NormalizeCurrencyCode(item.currency.currencyCode)).indexOf(normalizedSearch) > -1
                 );
             });
@@ -172,6 +177,11 @@ class TokensList extends Component<Props, State> {
         }
 
         return filtered ?? [];
+    };
+
+    onCurrencyDetailsUpdate = () => {
+        // update the token list if any of token details changed
+        this.forceUpdate();
     };
 
     onTrustLineUpdate = (updatedToken: TrustLineModel, changes: Partial<TrustLineModel>) => {
@@ -198,7 +208,7 @@ class TokensList extends Component<Props, State> {
         if (spendable) {
             Navigator.showOverlay<TokenSettingsOverlayProps>(
                 AppScreens.Overlay.TokenSettings,
-                { trustLine: token, account },
+                { token, account },
                 {
                     overlay: {
                         interceptTouchOutside: false,
@@ -298,7 +308,7 @@ class TokensList extends Component<Props, State> {
     };
 
     renderItem = ({ item, index }: { item: TrustLineModel; index: number }) => {
-        const { discreetMode } = this.props;
+        const { discreetMode, experimentalUI } = this.props;
         const { account, reorderEnabled } = this.state;
 
         return (
@@ -307,6 +317,7 @@ class TokensList extends Component<Props, State> {
                 token={item}
                 reorderEnabled={reorderEnabled}
                 discreetMode={discreetMode}
+                saturate={experimentalUI}
                 selfIssued={item.currency.issuer === account.address}
                 onPress={this.onTokenItemPress}
                 onMoveTopPress={this.onItemMoveTopPress}
@@ -330,7 +341,7 @@ class TokensList extends Component<Props, State> {
     };
 
     render() {
-        const { account, style, spendable, discreetMode } = this.props;
+        const { account, style, spendable, discreetMode, experimentalUI } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
@@ -344,7 +355,7 @@ class TokensList extends Component<Props, State> {
                 />
                 <ListFilter
                     filters={filters}
-                    reorderEnabled={reorderEnabled}
+                    visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
                     onFilterChange={this.onFilterChange}
                     onReorderPress={this.toggleReordering}
                 />

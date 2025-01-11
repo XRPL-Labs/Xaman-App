@@ -15,7 +15,7 @@ const styles = StyleService.create({
     },
     monetizationContainer: {
         marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingSml,
+        marginBottom: AppSizes.paddingExtraSml,
     },
     tokenListContainer: {
         flex: 6,
@@ -46,6 +46,13 @@ const styles = StyleService.create({
 
     requestButtonIcon: { tintColor: '$white' },
     requestButtonText: { fontSize: AppFonts.base.size, color: '$white' },
+
+    requestButtonContainerClean: {
+        marginLeft: 15,
+        backgroundColor: '$tint',
+    },
+    requestButtonIconClean: { tintColor: '$textPrimary' },
+    requestButtonTextClean: { fontSize: AppFonts.base.size, color: '$textPrimary' },
 
     QRButtonText: { fontSize: AppFonts.base.size },
 

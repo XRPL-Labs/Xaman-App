@@ -7,7 +7,7 @@ import { Alert, BackHandler, Keyboard, Linking, NativeEventSubscription } from '
 
 import { AppScreens } from '@common/constants';
 
-import { NetworkService, PushNotificationsService } from '@services';
+import { NetworkService, PushNotificationsService, ResolverService } from '@services';
 
 import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
@@ -21,7 +21,6 @@ import { PatchSuccessType, PayloadOrigin } from '@common/libs/payload';
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
-import AccountResolver from '@common/helpers/resolver';
 
 import Localize from '@locale';
 
@@ -244,7 +243,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
                 const validation = ValidationFactory.fromTransaction(transaction!);
-                if (typeof validation === 'function' && !payload.isMultiSign()) {
+                if (typeof validation === 'function' && !payload.isMultiSign() && payload.shouldSubmit()) {
                     await validation(transaction, source);
                 }
             } catch (validationError: any) {
@@ -415,7 +414,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
             if (transaction.Type === TransactionTypes.Payment) {
                 try {
-                    const destinationInfo = await AccountResolver.getAccountInfo(transaction.Destination);
+                    const destinationInfo = await ResolverService.getAccountAdvisoryInfo(transaction.Destination);
 
                     // if sending to a blackHoled account
                     if (destinationInfo.blackHole) {

@@ -2,7 +2,7 @@ import { AccountModel, TrustLineModel } from '@store/models';
 
 export interface Props {
     account: AccountModel;
-    trustLine: TrustLineModel;
+    token: TrustLineModel;
 }
 
 export interface State {

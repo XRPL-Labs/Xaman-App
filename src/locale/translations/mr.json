@@ -565,7 +565,7 @@
     "openWithExplorer": "च्या सहाय्याने उघडणे %{explorer}\r\n",
     "openInExplorer": "Open in explorer",
     "showMemo": "मेमो दाखवा",
-    "throughOfferBy": "ऑफर द्वारे",
+    "through": "Through",
     "plannedOn": "वर नियोजित",
     "transactionId": "व्यवहार आयडी",
     "ledgerIndex": "लेजर इंडेक्स",
@@ -719,7 +719,9 @@
     "chooseAmount": "Choose amount",
     "aboutThisXApp": "About this xApp",
     "xAppSupportNetworkError": "This xApp is not available on the network you are connected with",
-    "switchToSupportedNetworks": "Please switch to one of the supported networks below"
+    "switchToSupportedNetworks": "Please switch to one of the supported networks below",
+    "xAppDoesNotHavePermissionToRunThisCommand": "This xApp does not have permission to run '%{command}' command. If you believe you need this permission, please contact support.",
+    "appReadyToAcceptCommands": "The xApp must be in a ready state to be able to accept commands."
   },
   "settings": {
     "generalSettings": "सामान्य",
@@ -758,6 +760,7 @@
     "biometricAuthentication": "बायोमेट्रिक प्रमाणीकरण",
     "hapticFeedback": "हॅप्टिक अभिप्राय",
     "developerMode": "विकसक मोड",
+    "developerSettings": "Developer settings",
     "useSystemSeparators": "सिस्टम चलन स्वरूप वापरा",
     "showReserveValue": "Show reserve value on home screen",
     "enterOldPasscode": "आपला जुना पासकोड प्रविष्ट करा",
@@ -821,7 +824,13 @@
     "networkHaveOnlyOneNodeAsDefault": "This network has only one node, which is already set as the default.",
     "networkUpdates": "Network updates",
     "everythingIsUpdateToDate": "Everything is up-to-date",
-    "networkAreUpdateToDate": "There are no added or changes for network settings at the moment."
+    "networkAreUpdateToDate": "There are no added or changes for network settings at the moment.",
+    "experimental": "Experimental",
+    "experimentalSimplicityUi": "Simplicity UI",
+    "cache": "Cache",
+    "clearResolverCache": "Clear resolver cache",
+    "cacheClearedSuccessfully": "Cache Cleared Successfully",
+    "restartRequired": "A restart is required for these changes to take effect"
   },
   "account": {
     "addAccount": "खाते जोडा",
@@ -1189,13 +1198,14 @@
     "oneTimeCharge": "One-time charge - not automatically renewing",
     "payWithApplePay": "Pay with Apple Pay",
     "payWithGooglePay": "Pay with Google Pay",
+    "payNow": "Pay now",
     "restorePurchase": "Restore Purchase",
     "thankYouForUsingXaman": "Thank you for using Xaman!",
     "comingPaymentWarning": "You're still enjoying Xaman for free, but you're nearing our free limit. To support Xaman's innovation and security, a small in-app payment may be requested soon.",
     "paymentRequiredMessage": "A small payment is required to maintain unlimited access for the next 30 days. Alternatively, Xaman will switch to limited-use mode until your monthly limits reset automatically.",
-    "prePurchaseMessage": "Thank you for your support! Your payment unlocks a full month of unrestricted Xaman use.",
+    "prePurchaseMessage": "You're currently unable to open xApps and sign requests. A small payment is required to unlock 30 days of unrestricted access to Xaman.",
     "learnMore": "Learn more",
-    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a full month of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
+    "monetizationRequiredForThisFeature": "You currently can’t open Sign Requests & xApps: a small payment is required to unlock a 30 days of unrestricted use of Xaman. Developing Xaman, building secure software takes a lot of resources. We hope you will support us continuing to build. If you decide not to: every month your limits will reset, allowing you to open xApps & Sign Requests again.",
     "allSet": "All set!",
     "thankYouForPurchase": "Thank you for your purchase.",
     "noPurchaseFound": "No Purchases Found",
@@ -1208,7 +1218,8 @@
     "benefitsTextOne": "Sign payloads",
     "benefitsTextTwo": "xApp access",
     "benefitsTextThree": "Premium support",
-    "prePurchaseTip": "Please note that this is a one-month purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
+    "unlockFullFunctionality": "Unlock full functionality with a small payment.",
+    "prePurchaseTip": "Please note that this is a 30 days purchase. Make sure your Apple ID is logged in and your payment information is up-to-date. For issues, use the 'Restore Purchase' button."
   },
   "errors": {
     "unableToLoadTermOfService": "Oops! Unable to Retrieve Terms of Service",

@@ -3,13 +3,11 @@ import isEqual from 'lodash/isEqual';
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { Button, AmountText, Icon, TokenAvatar, TokenIcon } from '@components/General';
+import { Button, AmountText, Icon } from '@components/General';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
+import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
 import { TrustLineModel } from '@store/models';
-
-import Localize from '@locale';
 
 import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
@@ -21,6 +19,7 @@ interface Props {
     selfIssued: boolean;
     reorderEnabled: boolean;
     discreetMode: boolean;
+    saturate?: boolean;
     onPress: (token: TrustLineModel, index: number) => void;
     onMoveTopPress: (token: TrustLineModel, index: number) => void;
 }
@@ -80,44 +79,25 @@ class TokenItem extends PureComponent<Props, State> {
         }
     };
 
-    getIssuerLabel = () => {
-        const { selfIssued, token } = this.props;
-
-        if (selfIssued) return Localize.t('home.selfIssued');
-
-        if (token.currency.name) {
-            return `${token.counterParty.name} ${NormalizeCurrencyCode(token.currency.currencyCode)}`;
-        }
-
-        return `${token.counterParty.name}`;
-    };
-
-    getCurrencyName = () => {
-        const { token } = this.props;
-
-        return token.getReadableCurrency();
-    };
-
-    getTokenAvatar = () => {
+    getTokenAvatarBadge = () => {
         const { token } = this.props;
         const { favorite, no_ripple, limit } = this.state;
 
-        let badge = null as any;
+        // show alert on top of avatar if rippling set
+        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLiquidityPoolToken()) {
+            return <Icon name="ImageTriangle" size={15} />;
+        }
 
+        // favorite token
         if (favorite) {
-            badge = (
+            return (
                 <View style={styles.iconFavoriteContainer}>
                     <Icon name="IconStarFull" size={10} style={styles.iconFavorite} />
                 </View>
             );
         }
 
-        // show alert on top of avatar if rippling set
-        if ((!no_ripple || Number(limit) === 0) && !token.obligation && !token.isLiquidityPoolToken()) {
-            badge = <Icon name="ImageTriangle" size={15} />;
-        }
-
-        return <TokenAvatar token={token} border size={35} badge={() => badge} />;
+        return null;
     };
 
     renderReorderButtons = () => {
@@ -150,7 +130,7 @@ class TokenItem extends PureComponent<Props, State> {
     };
 
     renderBalance = () => {
-        const { token, discreetMode } = this.props;
+        const { token, discreetMode, saturate } = this.props;
         const { balance } = this.state;
 
         return (
@@ -160,6 +140,7 @@ class TokenItem extends PureComponent<Props, State> {
                         token={token}
                         containerStyle={styles.tokenIconContainer}
                         style={discreetMode ? AppStyles.imgColorGrey : {}}
+                        saturate={saturate}
                     />
                 }
                 value={balance}
@@ -171,18 +152,26 @@ class TokenItem extends PureComponent<Props, State> {
     };
 
     render() {
-        const { token, reorderEnabled } = this.props;
+        const { token, saturate, reorderEnabled } = this.props;
 
         return (
             <View testID={`${token.currency.id}`} style={[styles.currencyItem, { height: TokenItem.Height }]}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={styles.tokenAvatarContainer}>{this.getTokenAvatar()}</View>
+                    <View style={styles.tokenAvatarContainer}>
+                        <TokenAvatar
+                            token={token}
+                            border
+                            size={35}
+                            badge={this.getTokenAvatarBadge}
+                            saturate={saturate}
+                        />
+                    </View>
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
-                        <Text numberOfLines={1} style={styles.currencyLabel}>
-                            {this.getCurrencyName()}
+                        <Text numberOfLines={1} style={styles.currencyLabel} ellipsizeMode="middle">
+                            {token.getFormattedCurrency()}
                         </Text>
                         <Text numberOfLines={1} style={styles.issuerLabel}>
-                            {this.getIssuerLabel()}
+                            {token.getFormattedIssuer()}
                         </Text>
                     </View>
                 </View>

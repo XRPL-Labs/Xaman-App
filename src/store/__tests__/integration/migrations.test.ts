@@ -268,6 +268,38 @@ describe('Storage', () => {
             instance.close();
         });
 
+        it('should run v18 migrations successfully', async () => {
+            const v17Instance = RealmTestUtils.getRealmInstanceWithVersion(17);
+            expect(v17Instance.schemaVersion).toBe(17);
+
+            const orphanCurrency = RealmTestUtils.getSecondModelItem(v17Instance, 'Currency');
+
+            expect(orphanCurrency).toBeDefined();
+            expect(orphanCurrency.id).toBe('ORPHAN.ORP');
+            expect(orphanCurrency.linkingObjectsCount()).toBe(0);
+
+            v17Instance.close();
+
+            const instance = RealmTestUtils.getRealmInstanceWithVersion(18);
+            expect(instance.schemaVersion).toBe(18);
+
+            // let's check if orphan objects has been removed
+            const newCurrencies = RealmTestUtils.getAllModelItem(instance, 'Currency');
+
+            for (const currency of newCurrencies) {
+                expect(currency.id).not.toBe('ORPHAN.ORP');
+            }
+
+            const currency = RealmTestUtils.getFirstModelItem(instance, 'Currency');
+            // // renamed fields
+            expect(currency.xappIdentifier).toBeDefined();
+            expect(currency.avatarUrl).toBeDefined();
+            // force the token to update
+            expect(currency.updatedAt).toStrictEqual(new Date(0));
+
+            instance.close();
+        });
+
         afterAll(() => {
             RealmTestUtils.cleanup();
         });

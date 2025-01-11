@@ -34,7 +34,7 @@ interface Props extends PropsWithChildren {
     numberOfLines?: number;
     isLoading?: boolean;
     isDisabled?: boolean;
-    loadingIndicatorStyle?: 'light' | 'dark';
+    loadingIndicatorStyle?: 'light' | 'dark' | 'default';
     onPress?: () => void;
     onLongPress?: () => void;
     label?: string;
@@ -91,7 +91,7 @@ export default class Button extends Component<Props> {
                 <LoadingIndicator
                     size="small"
                     style={styles.spinner}
-                    color={loadingIndicatorStyle || light ? 'default' : 'light'}
+                    color={loadingIndicatorStyle ?? (light ? 'default' : 'light')}
                 />
             );
         }

@@ -13,7 +13,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
+import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
 
 import { TouchableDebounce } from '@components/General';
 
@@ -36,7 +36,7 @@ export interface Props {
 
 export interface State {
     isLoading: boolean;
-    participant?: AccountNameType;
+    participant?: AccountNameResolveType;
     explainer?: ExplainerAbstract<Transactions | PseudoTransactions | LedgerObjects>;
 }
 
@@ -122,7 +122,7 @@ class LedgerObjectItem extends Component<Props, State> {
 
         try {
             // get participant details
-            const resp = await AccountResolver.getAccountName(otherParty.address, otherParty.tag);
+            const resp = await ResolverService.getAccountName(otherParty.address, otherParty.tag);
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,

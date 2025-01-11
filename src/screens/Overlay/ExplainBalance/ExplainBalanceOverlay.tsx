@@ -10,12 +10,12 @@ import { Navigator } from '@common/helpers/navigator';
 import { Toast } from '@common/helpers/interface';
 import { AppScreens } from '@common/constants';
 
+import { AccountRepository } from '@store/repositories';
 import { AccountModel, TrustLineModel } from '@store/models';
 
 import NetworkService from '@services/NetworkService';
 import LedgerService from '@services/LedgerService';
 
-import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
 import { DecodeAccountId } from '@common/utils/codec';
 
@@ -23,23 +23,15 @@ import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
 // components
-import {
-    ActionPanel,
-    Button,
-    Icon,
-    InfoMessage,
-    LoadingIndicator,
-    Spacer,
-    TokenAvatar,
-    TokenIcon,
-} from '@components/General';
+import { ActionPanel, Button, Icon, InfoMessage, LoadingIndicator, Spacer } from '@components/General';
+
+import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 
 // style
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
-import { AccessLevels } from '@store/types';
 
 /* types ==================================================================== */
 export interface Props {
@@ -51,6 +43,7 @@ export interface State {
     accountObjects: any;
     nfTokenPageCount: number;
     networkReserve: { BaseReserve: number; OwnerReserve: number };
+    isSignable: boolean;
 }
 
 /* Component ==================================================================== */
@@ -79,13 +72,22 @@ class ExplainBalanceOverlay extends Component<Props, State> {
             accountObjects: [],
             nfTokenPageCount: 0,
             networkReserve: NetworkService.getNetworkReserve(),
+            isSignable: true,
         };
 
         this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
+        const { account } = this.props;
+
         InteractionManager.runAfterInteractions(this.setAccountObjectsState);
+
+        // check if account is signable
+        const isSignable = AccountRepository.isSignable(account);
+        this.setState({
+            isSignable,
+        });
     }
 
     loadAccountObjects = async (
@@ -237,9 +239,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         </View>
                         <Text style={styles.rowLabel}>
                             {Localize.t('global.asset')}
-                            <Text style={styles.rowLabelSmall}>
-                                {` (${line.counterParty.name} ${NormalizeCurrencyCode(line.currency.currencyCode)})`}
-                            </Text>
+                            <Text style={styles.rowLabelSmall}>{` (${line.getFormattedIssuer()})`}</Text>
                         </Text>
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
@@ -360,7 +360,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
 
     render() {
         const { account } = this.props;
-        const { isLoading } = this.state;
+        const { isLoading, isSignable } = this.state;
 
         return (
             <ActionPanel
@@ -432,7 +432,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Spacer size={30} />
 
                         <Text style={styles.rowTitle}>{Localize.t('account.availableForSpending')}</Text>
-                        {account.accessLevel === AccessLevels.Readonly && (
+                        {!isSignable && (
                             <>
                                 <Spacer size={10} />
                                 <InfoMessage

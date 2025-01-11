@@ -30,7 +30,7 @@ const styles = StyleService.create({
     contentContainer: {
         padding: AppSizes.paddingSml,
     },
-    currencyItem: {
+    tokenElement: {
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 5,
@@ -146,6 +146,10 @@ const styles = StyleService.create({
         tintColor: '$grey',
         marginLeft: 5,
         alignSelf: 'center',
+    },
+
+    tokenIconContainer: {
+        marginRight: 5,
     },
 });
 

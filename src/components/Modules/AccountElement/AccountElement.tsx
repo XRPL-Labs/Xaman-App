@@ -3,7 +3,7 @@ import { isEqual, isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-native';
 
-import AccountResolver, { AccountNameType } from '@common/helpers/resolver';
+import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -37,16 +37,16 @@ interface Props {
     id?: string;
     address: string;
     tag?: number;
-    info?: AccountNameType;
+    info?: AccountNameResolveType;
     visibleElements?: VisibleElementsType;
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     onPress?: (account: AccountElementType) => void;
-    onInfoUpdate?: (info: AccountNameType) => void;
+    onInfoUpdate?: (info: AccountNameResolveType) => void;
 }
 
 interface State {
-    info?: AccountNameType;
+    info?: AccountNameResolveType;
     isLoading: boolean;
 }
 
@@ -125,7 +125,7 @@ class AccountElement extends Component<Props, State> {
             });
         }
 
-        AccountResolver.getAccountName(address, tag)
+        ResolverService.getAccountName(address, tag)
             .then((res) => {
                 if (!isEmpty(res) && this.mounted) {
                     this.setState(

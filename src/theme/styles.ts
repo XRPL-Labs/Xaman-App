@@ -445,6 +445,10 @@ export default StyleService.create({
         flex: 9,
     },
 
+    flexShrink1: {
+        flexShrink: 1,
+    },
+
     // Others
     overlayHeader: {
         flex: 1,
