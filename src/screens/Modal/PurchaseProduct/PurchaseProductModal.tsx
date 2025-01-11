@@ -33,7 +33,7 @@ export interface Props {
     productId: string;
     productDescription: string;
     onSuccessPurchase?: () => void;
-    onClose?: () => void;
+    onClose?: (successPayment: boolean) => void;
 }
 
 export interface State {
@@ -72,9 +72,10 @@ class PurchaseProductModal extends Component<Props, State> {
 
     onClose = async () => {
         const { onClose } = this.props;
+        const { purchaseSuccess } = this.state;
 
         if (typeof onClose === 'function') {
-            onClose();
+            onClose(purchaseSuccess);
         }
 
         // close modal

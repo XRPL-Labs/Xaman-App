@@ -52,6 +52,7 @@ export enum XAppMethods {
     Close = 'close',
     Ready = 'ready',
     NetworkSwitch = 'networkSwitch',
+    RequestInAppPurchase = 'requestInAppPurchase',
 }
 
 export enum XAppSpecialPermissions {
@@ -68,4 +69,5 @@ export interface IEvent {
     info?: AccountAdvisoryResolveType;
     result?: any;
     network?: string;
+    successPurchase?: boolean;
 }

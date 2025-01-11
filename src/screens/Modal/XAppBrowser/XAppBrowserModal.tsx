@@ -119,6 +119,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.webView = React.createRef();
 
+        // last message received from webview, preventing spamming
         this.lastMessageReceived = 0;
     }
 
@@ -237,6 +238,13 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
+    onInAppPurchaseResolve = (successPurchase: boolean) => {
+        this.sendEvent({
+            method: XAppMethods.RequestInAppPurchase,
+            successPurchase,
+        });
+    };
+
     showScanner = () => {
         Navigator.showModal<ScanModalProps>(
             AppScreens.Modal.Scan,
@@ -289,6 +297,20 @@ class XAppBrowserModal extends Component<Props, State> {
         } catch {
             // ignore
         }
+    };
+
+    requestInAppPurchase = async ({
+        productId,
+        productDescription,
+    }: {
+        productId: string;
+        productDescription: string;
+    }) => {
+        Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
+            productId,
+            productDescription,
+            onClose: this.onInAppPurchaseResolve,
+        });
     };
 
     navigateTo = (data: { xApp: string; title?: string; [key: string]: any }) => {
@@ -500,6 +522,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 break;
             case XAppMethods.Ready:
                 this.setAppReady();
+                break;
+            case XAppMethods.RequestInAppPurchase:
+                this.requestInAppPurchase(parsedData);
                 break;
             default:
                 break;
