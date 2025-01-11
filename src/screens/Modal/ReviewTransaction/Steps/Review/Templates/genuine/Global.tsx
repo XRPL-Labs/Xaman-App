@@ -12,13 +12,14 @@ import NetworkService from '@services/NetworkService';
 import { AccountRepository } from '@store/repositories';
 
 import { InfoMessage, ReadMore } from '@components/General';
-import { FeePicker, AccountElement } from '@components/Modules';
+import { FeePicker, AccountElement, HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
 import styles from '../styles';
 
 import { TemplateProps } from '../types';
+import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
@@ -253,6 +254,32 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderHookExplainer = () => {
+        const { transaction, source } = this.props;
+
+        // check if hooks is enabled in the current network
+        const network = NetworkService.getNetwork();
+
+        // only show if Hooks amendment is active on the network
+        // hide for SetHook transactions as we show the explainer in the beginning of the screen on top, no duplicate!!!
+        if (network?.isFeatureEnabled('Hooks') && transaction.Type !== TransactionTypes.SetHook) {
+            return (
+                <>
+                    <Text style={styles.label}>{Localize.t('global.hooks')}</Text>
+                    <View style={styles.contentBox}>
+                        <HooksExplainer
+                            transaction={transaction}
+                            account={source}
+                            origin={HookExplainerOrigin.ReviewPayload}
+                        />
+                    </View>
+                </>
+            );
+        }
+
+        return null;
+    };
+
     renderFee = () => {
         const { transaction } = this.props;
         const { showFeePicker } = this.state;
@@ -303,6 +330,7 @@ class GlobalTemplate extends Component<Props, State> {
                 {this.renderFlags()}
                 {this.renderFee()}
                 {this.renderWarnings()}
+                {this.renderHookExplainer()}
             </>
         );
     }
