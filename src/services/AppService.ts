@@ -9,20 +9,25 @@ import NetInfo from '@react-native-community/netinfo';
 
 import Localize from '@locale';
 
+import { AppScreens } from '@common/constants';
 import { WebLinks } from '@common/constants/endpoints';
 
 import { InAppPurchase } from '@common/libs/iap';
 import Preferences from '@common/libs/preferences';
 
 import { GetAppVersionCode } from '@common/helpers/app';
+import { Navigator } from '@common/helpers/navigator';
 import { VersionDiff } from '@common/utils/version';
 
 import LoggerService, { LoggerInstance } from '@services/LoggerService';
+
+import { Props as ChangeLogOverlayProps } from '@screens/Overlay/ChangeLog/types';
 
 /* Constants  ==================================================================== */
 const { AppUtilsModule, AppUpdateModule } = NativeModules;
 
 const Emitter = new NativeEventEmitter(AppUtilsModule);
+
 /* Types  ==================================================================== */
 export enum NetStateStatus {
     Connected = 'Connected',
@@ -85,11 +90,18 @@ class AppService extends EventEmitter {
         const currentVersionCode = GetAppVersionCode();
         const savedVersionCode = await Preferences.get(Preferences.keys.LATEST_VERSION_CODE);
 
-        if (!savedVersionCode || VersionDiff(currentVersionCode, savedVersionCode) > 0) {
+        // just installed the app
+        if (!savedVersionCode) {
+            await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
+            return;
+        }
+
+        // we have prev saved version, let's check if we need to show the change logs overlay
+        if (VersionDiff(currentVersionCode, savedVersionCode) > 0) {
             // showChangeLogModal
-            // Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, {
-            //     version: currentVersionCode,
-            // });
+            await Navigator.showOverlay<ChangeLogOverlayProps>(AppScreens.Overlay.ChangeLog, {
+                version: currentVersionCode,
+            });
 
             // update the latest version code
             await Preferences.set(Preferences.keys.LATEST_VERSION_CODE, currentVersionCode);
