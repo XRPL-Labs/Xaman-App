@@ -1017,7 +1017,7 @@
     "checkWhichAccountsNeedBetterEncryption": "Controleer welke accounts betere encryptie nodig hebben",
     "updateEncryption": "Encryptie bijwerken",
     "whyUseThisNewEncryptionMethod": "Waarom deze nieuwe encryptiemethode gebruiken?",
-    "newEncryptionExplain": "Onze encryptie & beveiliging is verbeterd naar nieuwe standaarden AES512 GCM. U zou uw account met deze nieuwe methode moeten versleutelen om extra veilig te zijn. Hoewel u al veilig bent, kan het geen kwaad om te upgraden naar de nieuwe standaarden.",
+    "newEncryptionExplain": "Onze encryptie & beveiliging is verbeterd naar nieuwe standaarden AES256 GCM. U zou uw account met deze nieuwe methode moeten versleutelen om extra veilig te zijn. Hoewel u al veilig bent, kan het geen kwaad om te upgraden naar de nieuwe standaarden.",
     "doNotTurnOffYourPhoneOrQuiteWhileMigration": "Zet uw telefoon niet uit en sluit de app niet af tijdens de encryptie.",
     "unableToFetchAccountNFTokens": "Kan de account NFT's niet ophalen. Zorg ervoor dat u verbonden bent met de %{network} node."
   },

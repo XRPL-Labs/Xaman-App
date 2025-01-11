@@ -1017,7 +1017,7 @@
     "checkWhichAccountsNeedBetterEncryption": "Check which accounts need better encryption",
     "updateEncryption": "Update encryption",
     "whyUseThisNewEncryptionMethod": "Why use this new encryption method?",
-    "newEncryptionExplain": "Our encryption & security is enhanced to new standards AES512 GCM. You should encrypt your account with this new method to be extra safe. Although you are already safe, it can't hurt to upgrade to the new standards.",
+    "newEncryptionExplain": "Our encryption & security is enhanced to new standards AES256 GCM. You should encrypt your account with this new method to be extra safe. Although you are already safe, it can't hurt to upgrade to the new standards.",
     "doNotTurnOffYourPhoneOrQuiteWhileMigration": "Don't turn off your phone or quit the app while doing the encryption.",
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },

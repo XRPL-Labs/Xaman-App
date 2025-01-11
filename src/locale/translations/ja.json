@@ -1017,7 +1017,7 @@
     "checkWhichAccountsNeedBetterEncryption": "暗号化方式の強化が必要なアカウントの確認",
     "updateEncryption": "暗号化方式の更新",
     "whyUseThisNewEncryptionMethod": "なぜ新しい暗号化方式を使うのですか？",
-    "newEncryptionExplain": "私たちの暗号化方式とセキュリティは、新しい規格であるAES512 GCMへと改善されています。より安全にご利用いただくために、この新しい方法でアカウントを暗号化する必要があります。すでに安全ではありますが、新しい規格にアップグレードして損はありません。",
+    "newEncryptionExplain": "私たちの暗号化方式とセキュリティは、新しい規格であるAES256 GCMへと改善されています。より安全にご利用いただくために、この新しい方法でアカウントを暗号化する必要があります。すでに安全ではありますが、新しい規格にアップグレードして損はありません。",
     "doNotTurnOffYourPhoneOrQuiteWhileMigration": "暗号化中にデバイスの電源を切ったり、アプリを終了したりしないでください。",
     "unableToFetchAccountNFTokens": "アカウントのNFTを取得できません。XRP Ledgerノードに接続していることを確認してください。"
   },
