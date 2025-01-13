@@ -561,7 +561,7 @@ class NetworkService extends EventEmitter {
                         this.logger.warn(
                             `server_definitions invalid format for key ${key}, got ${typeof definitionsResp[key]}`,
                         );
-                        return;
+                        continue;
                     }
                     // set the key
                     Object.assign(definitions, { [key]: definitionsResp[key] });

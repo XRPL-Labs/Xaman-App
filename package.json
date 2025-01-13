@@ -34,7 +34,7 @@
     "realm": "12.13.0",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "10.0.0",
-    "xrpl-accountlib": "3.6.2",
+    "xrpl-accountlib": "3.6.3",
     "xrpl-orderbook-reader": "0.4.0",
     "xumm-string-decode": "0.7.0"
   },
