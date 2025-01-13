@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import EventEmitter from 'events';
 import { get, keys, map } from 'lodash';
 
-import { CurrencyModel, TrustLineModel, CoreModel } from '@store/models';
+import { CurrencyModel, TrustLineModel, CoreModel, AccountModel } from '@store/models';
 import { AccountRepository, AmmPairRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 
 import { RewardInformation } from '@store/models/objects/accountDetails';
@@ -28,6 +28,7 @@ import {
     UnsubscribeRequest,
     UnsubscribeResponse,
 } from '@common/libs/ledger/types/methods';
+import { AccountTypes } from '@store/types';
 
 /* Events  ==================================================================== */
 export type AccountServiceEvent = {
@@ -57,11 +58,10 @@ class AccountService extends EventEmitter {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set current default account
-                this.account = settings.account?.address;
+                this.setCurrentAccount(settings.account);
 
                 // list for any default account change
                 CoreRepository.on('updateSettings', this.onSettingsUpdate);
-
                 // on network service connect
                 NetworkService.on('connect', this.onNetworkConnect);
 
@@ -74,27 +74,39 @@ class AccountService extends EventEmitter {
 
     onSettingsUpdate = (settings: CoreModel, changes: Partial<CoreModel>) => {
         if ('account' in changes && this.account !== settings.account.address) {
-            this.onAccountChange(settings.account.address);
+            this.onAccountChange(settings.account);
         }
+    };
+
+    setCurrentAccount = (account: AccountModel) => {
+        this.logger.debug(
+            `Presented: ${account.address} [${account.accessLevel} access] ${
+                account.flags?.disableMasterKey ? '[MasterDisabled]' : ''
+            } ${account.type !== AccountTypes.Regular ? `[${account.type}]` : ''}`,
+        );
+
+        this.account = account.address;
     };
 
     /**
      * When default account changed
      */
-    onAccountChange = (account: string) => {
+    onAccountChange = (account: AccountModel) => {
         if (this.account) {
             // unsubscribe from old account
             this.unsubscribe(this.account);
         }
 
+        const { address } = account;
+
         // set the current account
-        this.account = account;
+        this.setCurrentAccount(account);
 
         // subscribe again on new account
-        this.subscribe(account);
+        this.subscribe(address);
 
         // update accounts info
-        this.updateAccountsDetails(account);
+        this.updateAccountsDetails(address);
     };
 
     /**
@@ -337,7 +349,7 @@ class AccountService extends EventEmitter {
      * Unsubscribe for streaming
      */
     unsubscribe(account: string) {
-        this.logger.debug(`Unsubscribe account ${account} from network`);
+        this.logger.debug('Unsubscribe presented account from network');
 
         NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
@@ -351,7 +363,7 @@ class AccountService extends EventEmitter {
      * Subscribe for streaming
      */
     subscribe(account: string) {
-        this.logger.debug(`Subscribed account ${account} to network`);
+        this.logger.debug('Subscribed presented account to network');
 
         NetworkService.send<SubscribeRequest, SubscribeResponse>({
             command: 'subscribe',
