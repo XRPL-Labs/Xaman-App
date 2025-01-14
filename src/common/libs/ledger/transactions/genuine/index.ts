@@ -46,3 +46,7 @@ export * from './DIDSet';
 export * from './DIDDelete';
 export * from './OracleSet';
 export * from './OracleDelete';
+export * from './MPTokenIssuanceCreate';
+export * from './MPTokenIssuanceDestroy';
+export * from './MPTokenIssuanceSet';
+export * from './MPTokenAuthorize';

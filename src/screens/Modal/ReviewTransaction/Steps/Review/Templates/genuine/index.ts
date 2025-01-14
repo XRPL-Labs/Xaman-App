@@ -44,6 +44,10 @@ import DIDSet from './DIDSet';
 import DIDDelete from './DIDDelete';
 import OracleSet from './OracleSet';
 import OracleDelete from './OracleDelete';
+import MPTokenIssuanceCreate from './MPTokenIssuanceCreate';
+import MPTokenIssuanceSet from './MPTokenIssuanceSet';
+import MPTokenIssuanceDestroy from './MPTokenIssuanceDestroy';
+import MPTokenAuthorize from './MPTokenAuthorize';
 
 export {
     Global,
@@ -92,4 +96,8 @@ export {
     DIDDelete,
     OracleSet,
     OracleDelete,
+    MPTokenIssuanceCreate,
+    MPTokenIssuanceSet,
+    MPTokenIssuanceDestroy,
+    MPTokenAuthorize,
 };
