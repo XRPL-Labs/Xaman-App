@@ -50,3 +50,6 @@ export * from './MPTokenIssuanceCreate';
 export * from './MPTokenIssuanceDestroy';
 export * from './MPTokenIssuanceSet';
 export * from './MPTokenAuthorize';
+export * from './CredentialCreate';
+export * from './CredentialAccept';
+export * from './CredentialDelete';

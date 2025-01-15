@@ -48,6 +48,9 @@ import MPTokenIssuanceCreate from './MPTokenIssuanceCreate';
 import MPTokenIssuanceSet from './MPTokenIssuanceSet';
 import MPTokenIssuanceDestroy from './MPTokenIssuanceDestroy';
 import MPTokenAuthorize from './MPTokenAuthorize';
+import CredentialCreate from './CredentialCreate';
+import CredentialAccept from './CredentialAccept';
+import CredentialDelete from './CredentialDelete';
 
 export {
     Global,
@@ -100,4 +103,7 @@ export {
     MPTokenIssuanceSet,
     MPTokenIssuanceDestroy,
     MPTokenAuthorize,
+    CredentialCreate,
+    CredentialAccept,
+    CredentialDelete,
 };

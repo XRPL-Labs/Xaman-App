@@ -58,6 +58,9 @@ export enum TransactionTypes {
     MPTokenIssuanceDestroy = 'MPTokenIssuanceDestroy',
     MPTokenIssuanceSet = 'MPTokenIssuanceSet',
     MPTokenAuthorize = 'MPTokenAuthorize',
+    CredentialCreate = 'CredentialCreate',
+    CredentialAccept = 'CredentialAccept',
+    CredentialDelete = 'CredentialDelete',
 }
 
 /**

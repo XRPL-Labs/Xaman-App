@@ -22,26 +22,45 @@ describe('DepositPreauth', () => {
 
             expect(instance.Authorize).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
             expect(instance.Unauthorize).toBe('rrrrrrrrrrrrrrrrrrrrbzbvji');
+            expect(instance.AuthorizeCredentials).toMatchObject([
+                {
+                    Issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
+                    CredentialType: '4B5943',
+                },
+            ]);
+            expect(instance.UnauthorizeCredentials).toMatchObject([
+                {
+                    Issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
+                    CredentialType: '4B5943',
+                },
+            ]);
         });
     });
 
     describe('Info', () => {
         const { tx, meta }: any = depositPreauthTemplate;
         const MixedDepositPreauth = MutationsMixin(DepositPreauth);
-        const instanceAuthorize = new MixedDepositPreauth({ ...tx, ...{ Unauthorize: undefined } }, meta);
-        const instanceUnauthorize = new MixedDepositPreauth({ ...tx, ...{ Authorize: undefined } }, meta);
+        const instanceAuthorize = new MixedDepositPreauth(
+            { ...tx, ...{ Unauthorize: undefined, UnauthorizeCredentials: undefined } },
+            meta,
+        );
+        const instanceUnauthorize = new MixedDepositPreauth(
+            { ...tx, ...{ Authorize: undefined, AuthorizeCredentials: undefined } },
+            meta,
+        );
 
         describe('generateDescription()', () => {
             it('should return the expected description Authorize', () => {
                 const info = new DepositPreauthInfo(instanceAuthorize, {} as any);
-                const expectedDescription = 'It authorizes rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account';
+                const expectedDescription =
+                    'It authorizes rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account\nIt authorizes credential(s)\nrrrrrrrrrrrrrrrrrrrrbzbvji:4B5943';
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
             it('should return the expected description for Unauthorize', () => {
                 const info = new DepositPreauthInfo(instanceUnauthorize, {} as any);
                 const expectedDescription =
-                    'It removes the authorization for rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account';
+                    'It removes the authorization for rrrrrrrrrrrrrrrrrrrrbzbvji to send payments to this account\nIt un-authorizes credential(s)\nrrrrrrrrrrrrrrrrrrrrbzbvji:4B5943';
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
