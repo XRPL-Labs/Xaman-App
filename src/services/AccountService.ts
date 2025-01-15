@@ -159,7 +159,9 @@ class AccountService extends EventEmitter {
             const balanceChangesAccounts = keys(new Meta(meta).parseBalanceChanges());
             const ownerCountChangesAccounts = map(new Meta(meta).parseOwnerCountChanges(), 'address');
 
-            const effectedAccounts = [...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts])];
+            const effectedAccounts = [
+                ...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts, transaction.Account]),
+            ];
 
             if (this.account && effectedAccounts.includes(this.account)) {
                 // update account details
