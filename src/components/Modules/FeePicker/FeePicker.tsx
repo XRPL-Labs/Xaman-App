@@ -69,17 +69,17 @@ class FeePicker extends Component<Props, State> {
                     feeHooks: undefined,
                     error: false,
                 },
-                this.fetchAvailableFees,
+                this.fetchFees,
             );
         }
     }
 
     componentDidMount() {
         // fetch available fees from network
-        InteractionManager.runAfterInteractions(this.fetchAvailableFees);
+        InteractionManager.runAfterInteractions(this.fetchFees);
     }
 
-    fetchAvailableFees = debounce(() => {
+    fetchFees = (isFallback = false): Promise<void> => {
         const { txJson } = this.props;
         const { error } = this.state;
 
@@ -90,8 +90,8 @@ class FeePicker extends Component<Props, State> {
             });
         }
 
-        // calculate and persist the transaction fees
-        NetworkService.getAvailableNetworkFee(txJson)
+        // when it's retry with fallback then we don't include txJson
+        return NetworkService.getAvailableNetworkFee(!isFallback ? txJson : undefined)
             .then((res) => {
                 const { availableFees, feeHooks, suggested } = res;
 
@@ -104,11 +104,19 @@ class FeePicker extends Component<Props, State> {
                 this.onSelect(find(availableFees, { type: suggested })!);
             })
             .catch(() => {
+                // if it's not a retry fallback then let's try again
+                if (!isFallback) {
+                    this.fetchFees(true);
+                    return;
+                }
+                // let's give up
                 this.setState({
                     error: true,
                 });
             });
-    }, 300);
+    };
+
+    debouncedFetchFees = debounce(this.fetchFees, 300);
 
     onSelect = (item: FeeItem) => {
         const { onSelect } = this.props;
@@ -180,7 +188,7 @@ class FeePicker extends Component<Props, State> {
                     type="error"
                     actionButtonLabel={Localize.t('global.tryAgain')}
                     actionButtonIcon="IconRefresh"
-                    onActionButtonPress={this.fetchAvailableFees}
+                    onActionButtonPress={this.debouncedFetchFees}
                 />
             </View>
         );

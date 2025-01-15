@@ -2,14 +2,14 @@
  * Network service
  */
 
-import { isPlainObject, isArray, isString, find } from 'lodash';
+import { find, isArray, isPlainObject, isString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import Realm from 'realm';
 
 import { Platform } from 'react-native';
 
-import { XrplDefinitions, DefinitionsData, binary } from 'xrpl-accountlib';
+import { binary, DefinitionsData, XrplDefinitions } from 'xrpl-accountlib';
 
 import { XrplClient } from 'xrpl-client';
 
@@ -316,11 +316,11 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Get available fees on network base on the load
+     * Get available fees on network
      * NOTE: values are in drop
      */
     getAvailableNetworkFee = (
-        txJson: any,
+        txJson?: any | undefined,
     ): Promise<{
         availableFees: { type: string; value: string }[];
         feeHooks: number;
@@ -329,19 +329,27 @@ class NetworkService extends EventEmitter {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const resp = await this.send<FeeRequest, FeeResponse>({
+                const request = {
                     command: 'fee',
-                    tx_blob: PrepareTxForHookFee(txJson, this.getNetwork().definitions, this.getNetworkId()),
-                });
+                } as FeeRequest;
+
+                if (typeof txJson === 'object') {
+                    Object.assign(request, {
+                        tx_blob: PrepareTxForHookFee(txJson, this.getNetworkDefinitions(), this.getNetworkId()),
+                    });
+                }
+                const resp = await this.send<FeeRequest, FeeResponse>(request);
 
                 if ('error' in resp) {
-                    throw new Error(`got error from network ${resp.error}`);
+                    throw new Error(
+                        `Could not reliably detect fees (${resp.error || 'unknown error type'}), message: ${resp.error_exception || 'unknown error message'}`,
+                    );
                 }
 
                 resolve(NormalizeFeeDataSet(resp));
             } catch (error) {
-                this.logger.warn('Unable to calculate available network fees:', error);
-                reject(new Error('Unable to calculate available network fees!'));
+                this.logger.error('getAvailableNetworkFee', error);
+                reject(error);
             }
         });
     };
