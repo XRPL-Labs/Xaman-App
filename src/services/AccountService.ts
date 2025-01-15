@@ -73,12 +73,18 @@ class AccountService extends EventEmitter {
     };
 
     onSettingsUpdate = (settings: CoreModel, changes: Partial<CoreModel>) => {
-        if ('account' in changes && this.account !== settings.account.address) {
+        if ('account' in changes && settings.account?.address && this.account !== settings.account.address) {
             this.onAccountChange(settings.account);
         }
     };
 
     setCurrentAccount = (account: AccountModel) => {
+        // no account
+        if (!account) {
+            this.account = undefined;
+            return;
+        }
+
         this.logger.debug(
             `Presented: ${account.address} [${account.accessLevel} access] ${
                 account.flags?.disableMasterKey ? '[MasterDisabled]' : ''
