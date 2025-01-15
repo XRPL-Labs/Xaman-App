@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AccountModel } from '@store/models';
 
@@ -55,7 +55,7 @@ class SelectSigner extends Component<Props, State> {
     };
 
     render() {
-        const { signers, dismiss } = this.context;
+        const { signer, signerDelegate, dismiss } = this.context;
         const { selectedSigner } = this.state;
 
         return (
@@ -86,24 +86,34 @@ class SelectSigner extends Component<Props, State> {
                                 AppStyles.paddingTopSml,
                             ]}
                         >
-                            {Localize.t('account.thereAreAccountsEligibleToSign', { signersCount: signers?.length })}
+                            {Localize.t('account.thereAreAccountsEligibleToSign', { signersCount: 2 })}
                         </Text>
 
                         <Spacer size={40} />
 
-                        {signers?.map((signer) => {
-                            return (
-                                <RadioButton
-                                    key={`${signer.address}`}
-                                    testID={`signer-${signer.address}`}
-                                    onPress={this.onSignerSelect}
-                                    label={signer.label}
-                                    labelSmall={Truncate(signer.address, 22)}
-                                    value={signer}
-                                    checked={selectedSigner?.address === signer.address}
-                                />
-                            );
-                        })}
+                        {signer && (
+                            <RadioButton
+                                key={`${signer.address}`}
+                                testID={`signer-${signer.address}`}
+                                onPress={this.onSignerSelect}
+                                label={signer.label}
+                                labelSmall={Truncate(signer.address, 22)}
+                                value={signer}
+                                checked={selectedSigner?.address === signer.address}
+                            />
+                        )}
+
+                        {signerDelegate && (
+                            <RadioButton
+                                key={`${signerDelegate.address}`}
+                                testID={`signer-delegate-${signerDelegate.address}`}
+                                onPress={this.onSignerSelect}
+                                label={signerDelegate.label}
+                                labelSmall={Truncate(signerDelegate.address, 22)}
+                                value={signerDelegate}
+                                checked={selectedSigner?.address === signerDelegate.address}
+                            />
+                        )}
 
                         <Button
                             testID="sign-button"

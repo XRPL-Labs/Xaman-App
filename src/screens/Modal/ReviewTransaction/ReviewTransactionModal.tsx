@@ -130,10 +130,12 @@ class ReviewTransactionModal extends Component<Props, State> {
             .then(this.submit)
             .catch((error: Error) => {
                 if (this.mounted) {
-                    if (error?.message) {
-                        Alert.alert(Localize.t('global.error'), error.message);
-                    } else {
-                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                    if (error) {
+                        if (error?.message) {
+                            Alert.alert(Localize.t('global.error'), error.message);
+                        } else {
+                            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                        }
                     }
 
                     this.setState({
