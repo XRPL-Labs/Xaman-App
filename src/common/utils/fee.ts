@@ -9,7 +9,7 @@ import { sign, derive, XrplDefinitions } from 'xrpl-accountlib';
  * @param networkId
  * @returns string
  */
-const PrepareTxForHookFee = (txJson: any, definitions: any, networkId: number): string => {
+const PrepareTxForHookFee = (txJson: any, definitions: XrplDefinitions | undefined, networkId: number): string => {
     if (!txJson || typeof txJson !== 'object') {
         throw new Error('PrepareTxForHookFee requires a json transaction to calculate the fee for');
     }
@@ -47,14 +47,8 @@ const PrepareTxForHookFee = (txJson: any, definitions: any, networkId: number): 
         });
     }
 
-    // set the definitions if exist
-    let xrplDefinitions;
-    if (typeof definitions === 'object') {
-        xrplDefinitions = new XrplDefinitions(definitions);
-    }
-
     // sign the transaction with a dummy account
-    return sign(transaction, derive.passphrase(''), xrplDefinitions).signedTransaction;
+    return sign(transaction, derive.passphrase(''), definitions).signedTransaction;
 };
 
 /**

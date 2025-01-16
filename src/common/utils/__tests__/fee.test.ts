@@ -1,6 +1,6 @@
-import { NormalizeFeeDataSet, PrepareTxForHookFee } from '../fee';
-
 import * as AccountLib from 'xrpl-accountlib';
+
+import { NormalizeFeeDataSet, PrepareTxForHookFee } from '../fee';
 
 describe('Utils.Fee', () => {
     describe('NormalizeFeeDataSet', () => {
@@ -28,14 +28,17 @@ describe('Utils.Fee', () => {
                     availableFees: [
                         {
                             type: 'LOW',
+                            // @ts-ignore
                             value: baseFees[base][0],
                         },
                         {
                             type: 'MEDIUM',
+                            // @ts-ignore
                             value: baseFees[base][1],
                         },
                         {
                             type: 'HIGH',
+                            // @ts-ignore
                             value: baseFees[base][2],
                         },
                     ],
@@ -49,11 +52,11 @@ describe('Utils.Fee', () => {
     describe('PrepareTxForHookFee', () => {
         it('Should throw an error if txJson is not a valid object', () => {
             expect(() => {
-                PrepareTxForHookFee(undefined, {}, 0);
+                PrepareTxForHookFee(undefined, undefined, 0);
             }).toThrowError('PrepareTxForHookFee requires a json transaction to calculate the fee for');
 
             expect(() => {
-                PrepareTxForHookFee('invalid', {}, 0);
+                PrepareTxForHookFee('invalid', undefined, 0);
             }).toThrowError('PrepareTxForHookFee requires a json transaction to calculate the fee for');
         });
 
@@ -138,11 +141,11 @@ describe('Utils.Fee', () => {
             signSpy.mockClear();
         });
 
-        it('Should set xrplDefinitions if definitions is an object', () => {
+        it('Should set xrplDefinitions if definitions is set', () => {
             const txJson = {};
 
             const signSpy = jest.spyOn(AccountLib, 'sign');
-            PrepareTxForHookFee(txJson, AccountLib.binary.DEFAULT_DEFINITIONS, 0);
+            PrepareTxForHookFee(txJson, new AccountLib.XrplDefinitions(AccountLib.binary.DEFAULT_DEFINITIONS), 0);
             expect(signSpy).toBeCalledWith(
                 {
                     ...txJson,
