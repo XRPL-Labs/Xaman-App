@@ -355,7 +355,7 @@ class AccountService extends EventEmitter {
         for (const account of this.accounts) {
             // check if include present
             if (Array.isArray(include) && include.length > 0) {
-                if (include.indexOf(account) === -1) return;
+                if (!include.includes(account)) continue;
             }
 
             await this.updateAccountInfo(account).catch((error: Error) => {
