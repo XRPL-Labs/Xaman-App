@@ -9,8 +9,8 @@ import BigNumber from 'bignumber.js';
 import EventEmitter from 'events';
 import { get, keys, map } from 'lodash';
 
-import { CurrencyModel, TrustLineModel, CoreModel, AccountModel } from '@store/models';
-import { AccountRepository, AmmPairRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
+import { CurrencyModel, TrustLineModel } from '@store/models';
+import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
 
 import { RewardInformation } from '@store/models/objects/accountDetails';
 
@@ -44,24 +44,26 @@ declare interface AccountService {
 class AccountService extends EventEmitter {
     private transactionListener: any;
 
-    private account?: string;
+    private accounts?: string[];
     private logger: LoggerInstance;
 
     constructor() {
         super();
 
-        this.account = undefined;
+        this.accounts = undefined;
         this.logger = LoggerService.createLogger('Account');
     }
 
-    initialize = (settings: CoreModel): Promise<void> => {
+    initialize = (): Promise<void> => {
         return new Promise<void>((resolve, reject) => {
             try {
                 // set current default account
-                this.setCurrentAccount(settings.account);
+                this.loadAccounts();
 
-                // list for any default account change
-                CoreRepository.on('updateSettings', this.onSettingsUpdate);
+                // add listeners for account changes
+                AccountRepository.on('accountCreate', this.onAccountsChange);
+                AccountRepository.on('accountRemove', this.onAccountsChange);
+
                 // on network service connect
                 NetworkService.on('connect', this.onNetworkConnect);
 
@@ -72,47 +74,48 @@ class AccountService extends EventEmitter {
         });
     };
 
-    onSettingsUpdate = (settings: CoreModel, changes: Partial<CoreModel>) => {
-        if ('account' in changes && settings.account?.address && this.account !== settings.account.address) {
-            this.onAccountChange(settings.account);
-        }
-    };
+    /**
+     * Load accounts from data store
+     */
+    loadAccounts = () => {
+        // fetch accounts from store
+        const accounts = AccountRepository.getAccounts();
 
-    setCurrentAccount = (account: AccountModel) => {
-        // no account
-        if (!account) {
-            this.account = undefined;
+        // no account is present in the app
+        if (accounts.length === 0) {
+            this.accounts = [];
             return;
         }
 
+        // log the existent accounts in the session log
         this.logger.debug(
-            `Presented: ${account.address} [${account.accessLevel} access] ${
-                account.flags?.disableMasterKey ? '[MasterDisabled]' : ''
-            } ${account.type !== AccountTypes.Regular ? `[${account.type}]` : ''}`,
+            `Presented accounts: ${accounts.reduce(
+                (account, item) =>
+                    `${account}\n${item.address}-${item.accessLevel} ${
+                        item.flags?.disableMasterKey ? '[MasterDisabled]' : ''
+                    } ${item.type !== AccountTypes.Regular ? `[${item.type}]` : ''}`,
+                '',
+            )}`,
         );
 
-        this.account = account.address;
+        this.accounts = accounts.flatMap((account) => account.address);
     };
 
     /**
-     * When default account changed
+     * Watch for any account added or removed in store
      */
-    onAccountChange = (account: AccountModel) => {
-        if (this.account) {
-            // unsubscribe from old account
-            this.unsubscribe(this.account);
-        }
+    onAccountsChange = () => {
+        // unsubscribe from old list
+        this.unsubscribe();
 
-        const { address } = account;
+        // reload accounts
+        this.loadAccounts();
 
-        // set the current account
-        this.setCurrentAccount(account);
-
-        // subscribe again on new account
-        this.subscribe(address);
+        // subscribe again on new account list
+        this.subscribe();
 
         // update accounts info
-        this.updateAccountsDetails(address);
+        this.updateAccountsDetails();
     };
 
     /**
@@ -120,15 +123,15 @@ class AccountService extends EventEmitter {
      */
     onNetworkConnect = () => {
         // no account
-        if (!this.account) {
+        if (!this.accounts?.length) {
             return;
         }
 
         // subscribe accounts for transactions stream
-        this.subscribe(this.account);
+        this.subscribe();
 
-        // update account details
-        this.updateAccountsDetails(this.account);
+        // update all account details
+        this.updateAccountsDetails();
 
         // register on transaction event handler
         this.setTransactionListener();
@@ -162,13 +165,14 @@ class AccountService extends EventEmitter {
             const effectedAccounts = [
                 ...new Set([...balanceChangesAccounts, ...ownerCountChangesAccounts, transaction.Account]),
             ];
+            const effectedOwnAccounts = this.accounts?.filter((acc) => effectedAccounts.includes(acc));
 
-            if (this.account && effectedAccounts.includes(this.account)) {
-                // update account details
-                this.updateAccountsDetails(this.account);
+            if (effectedOwnAccounts?.length) {
+                // update account details only for own effected accounts
+                this.updateAccountsDetails(effectedOwnAccounts);
 
                 // emit onTransaction event
-                this.emit('transaction', transaction, effectedAccounts);
+                this.emit('transaction', transaction, effectedOwnAccounts);
             }
         }
     };
@@ -343,25 +347,40 @@ class AccountService extends EventEmitter {
      * Update accounts details through socket request
      * this will contain account trustLines etc ...
      */
-    updateAccountsDetails = async (account: string) => {
-        await this.updateAccountInfo(account).catch((error) => {
-            this.logger.error(`updateAccountInfo [${account}] `, error);
-        });
+    updateAccountsDetails = async (include?: string[]) => {
+        if (!this.accounts?.length) {
+            return;
+        }
 
-        await this.updateAMMPairs(account).catch((error) => {
-            this.logger.error(`updateAMMPairs [${account}] `, error);
-        });
+        for (const account of this.accounts) {
+            // check if include present
+            if (Array.isArray(include) && include.length > 0) {
+                if (include.indexOf(account) === -1) return;
+            }
+
+            await this.updateAccountInfo(account).catch((error: Error) => {
+                this.logger.error(`Update account info [${account}] `, error);
+            });
+
+            await this.updateAMMPairs(account).catch((error: Error) => {
+                this.logger.error(`Update amm pairs [${account}] `, error);
+            });
+        }
     };
 
     /**
      * Unsubscribe for streaming
      */
-    unsubscribe(account: string) {
-        this.logger.debug('Unsubscribe presented account from network');
+    unsubscribe() {
+        if (!this.accounts?.length) {
+            return;
+        }
+
+        this.logger.debug(`Unsubscribe from ${this.accounts.length} accounts`, this.accounts);
 
         NetworkService.send<UnsubscribeRequest, UnsubscribeResponse>({
             command: 'unsubscribe',
-            accounts: [account],
+            accounts: this.accounts,
         }).catch((error) => {
             this.logger.warn('unsubscribe', error);
         });
@@ -370,12 +389,16 @@ class AccountService extends EventEmitter {
     /**
      * Subscribe for streaming
      */
-    subscribe(account: string) {
-        this.logger.debug('Subscribed presented account to network');
+    subscribe() {
+        if (!this.accounts?.length) {
+            return;
+        }
+
+        this.logger.debug(`Subscribe to ${this.accounts.length} accounts`, this.accounts);
 
         NetworkService.send<SubscribeRequest, SubscribeResponse>({
             command: 'subscribe',
-            accounts: [account],
+            accounts: this.accounts,
         }).catch((error: Error) => {
             this.logger.warn('subscribe', error);
         });
