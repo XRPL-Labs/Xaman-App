@@ -18,8 +18,6 @@ import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
 import { Images } from '@common/helpers/images';
 
-import { TransactionTypes } from '@common/libs/ledger/types/enums';
-
 import { Button, Icon, InfoMessage, Spacer } from '@components/General';
 import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
 
@@ -190,20 +188,7 @@ class PreflightStep extends Component<Props, State> {
 
             try {
                 // get available accounts for signing
-                let availableAccounts: AccountModel[];
-
-                if (
-                    payload.isMultiSign() ||
-                    payload.isPseudoTransaction() ||
-                    payload.getTransactionType() === TransactionTypes.Import
-                ) {
-                    // account's that can sign the transaction
-                    // NOTE: for Import transaction, the transaction can be signed with not activated accounts
-                    availableAccounts = AccountRepository.getSignableAccounts();
-                } else {
-                    // account's that can sign the transaction and also activated
-                    availableAccounts = AccountRepository.getSpendableAccounts(true);
-                }
+                let availableAccounts = AccountRepository.getSignableAccounts();
 
                 // if no account for signing is available then just return
                 if (isEmpty(availableAccounts)) {
