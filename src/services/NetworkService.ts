@@ -518,13 +518,13 @@ class NetworkService extends EventEmitter {
      */
     updateNetworkDefinitions = async () => {
         try {
-            // include definitions hash if exist in the request
             const request: ServerDefinitionsRequest = {
                 command: 'server_definitions',
             };
 
             let definitionsHash = '';
 
+            // include definitions hash if exist in the request
             if (this.getNetwork().definitions) {
                 definitionsHash = this.getNetwork().definitions?.hash as string;
                 Object.assign(request, { hash: definitionsHash });
@@ -549,29 +549,47 @@ class NetworkService extends EventEmitter {
             }
 
             // validate the response
-            const respValidation = {
+            const requiredValidation = {
                 TYPES: isPlainObject,
                 TRANSACTION_RESULTS: isPlainObject,
                 TRANSACTION_TYPES: isPlainObject,
                 LEDGER_ENTRY_TYPES: isPlainObject,
-                TRANSACTION_FLAGS: isPlainObject,
-                TRANSACTION_FLAGS_INDICES: isPlainObject,
                 FIELDS: isArray,
                 hash: isString,
             } as { [key: string]: (value?: any) => boolean };
 
+            const optionalValidation = {
+                TRANSACTION_FLAGS: isPlainObject,
+                TRANSACTION_FLAGS_INDICES: isPlainObject,
+            } as { [key: string]: (value?: any) => boolean };
+
             const definitions = {};
 
-            for (const key in respValidation) {
-                if (Object.prototype.hasOwnProperty.call(respValidation, key)) {
+            for (const key in requiredValidation) {
+                if (Object.prototype.hasOwnProperty.call(requiredValidation, key)) {
                     // validate
-                    if (respValidation[key](definitionsResp[key]) === false) {
-                        this.logger.warn(
+                    if (!requiredValidation[key](definitionsResp[key])) {
+                        this.logger.error(
                             `server_definitions invalid format for key ${key}, got ${typeof definitionsResp[key]}`,
+                        );
+                        // do not continue and return
+                        return;
+                    }
+                    // set the key
+                    Object.assign(definitions, { [key]: definitionsResp[key] });
+                }
+            }
+
+            for (const key in optionalValidation) {
+                if (Object.prototype.hasOwnProperty.call(optionalValidation, key)) {
+                    // validate optional
+                    if (!optionalValidation[key](definitionsResp[key])) {
+                        this.logger.warn(
+                            `server_definitions invalid format for optional key ${key}, got ${typeof definitionsResp[key]}`,
                         );
                         continue;
                     }
-                    // set the key
+
                     Object.assign(definitions, { [key]: definitionsResp[key] });
                 }
             }

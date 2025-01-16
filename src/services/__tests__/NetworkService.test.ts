@@ -81,10 +81,10 @@ describe('NetworkService', () => {
                     TRANSACTION_RESULTS: returnedResponse.TRANSACTION_RESULTS,
                     TRANSACTION_TYPES: returnedResponse.TRANSACTION_TYPES,
                     LEDGER_ENTRY_TYPES: returnedResponse.LEDGER_ENTRY_TYPES,
-                    TRANSACTION_FLAGS: returnedResponse.TRANSACTION_FLAGS,
-                    TRANSACTION_FLAGS_INDICES: returnedResponse.TRANSACTION_FLAGS_INDICES,
                     FIELDS: returnedResponse.FIELDS,
                     hash: returnedResponse.hash,
+                    TRANSACTION_FLAGS: returnedResponse.TRANSACTION_FLAGS,
+                    TRANSACTION_FLAGS_INDICES: returnedResponse.TRANSACTION_FLAGS_INDICES,
                 }),
             });
 
@@ -176,7 +176,7 @@ describe('NetworkService', () => {
             const spy0 = jest.spyOn(networkService, 'send').mockImplementation(() => Promise.resolve(returnedResponse));
             const spy1 = jest.spyOn(NetworkRepository, 'update');
             // @ts-ignore
-            const spy2 = jest.spyOn(NetworkService.logger, 'warn');
+            const spy2 = jest.spyOn(NetworkService.logger, 'error');
 
             await networkService.updateNetworkDefinitions();
 
