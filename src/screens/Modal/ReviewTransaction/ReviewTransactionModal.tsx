@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 
 import { NetworkService, PushNotificationsService, ResolverService } from '@services';
 
-import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
@@ -32,6 +32,7 @@ import ErrorView from './Shared/ErrorView';
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
 import LedgerService from '@services/LedgerService';
+import BackendService from '@services/BackendService';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -252,40 +253,42 @@ class ReviewTransactionModal extends Component<Props, State> {
             // Live check if account is activated before continue for signing regular transaction
             // ignore pseudo and multi-sign transactions
             // ignore for "Import" transaction as it can be submitted even if account is not activated
-            if (
-                !payload.isPseudoTransaction() &&
-                !payload.isMultiSign() &&
-                transaction.Type !== TransactionTypes.Import
-            ) {
-                const sourceAccountInfo = await LedgerService.getAccountInfo(source.address).catch(() => {
-                    // do not catch
-                });
-
-                // if we couldn't get the account info then fallback to cached method
+            try {
                 if (
-                    (!sourceAccountInfo && source.balance === 0) ||
-                    (sourceAccountInfo && 'error' in sourceAccountInfo && sourceAccountInfo.error === 'actNotFound')
+                    !payload.isPseudoTransaction() &&
+                    !payload.isMultiSign() &&
+                    transaction.Type !== TransactionTypes.Import
                 ) {
-                    Navigator.showAlertModal({
-                        type: 'error',
-                        text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
-                        buttons: [
-                            {
-                                text: Localize.t('global.ok'),
-                                light: false,
-                            },
-                        ],
+                    const sourceAccountInfo = await LedgerService.getAccountInfo(source.address).catch(() => {
+                        // do not catch
                     });
 
-                    // do not continue
-                    return;
-                }
-            }
+                    if (!this.mounted) {
+                        return;
+                    }
 
-            // user may close the page at this point while we have been waiting for transaction validation
-            // we need to return if component is not mounted
-            if (!this.mounted) {
-                return;
+                    // if we couldn't get the account info then fallback to cached method
+                    if (
+                        (!sourceAccountInfo && source.balance === 0) ||
+                        (sourceAccountInfo && 'error' in sourceAccountInfo && sourceAccountInfo.error === 'actNotFound')
+                    ) {
+                        Navigator.showAlertModal({
+                            type: 'error',
+                            text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.ok'),
+                                    light: false,
+                                },
+                            ],
+                        });
+
+                        // do not continue
+                        return;
+                    }
+                }
+            } catch {
+                // ignore
             }
 
             try {
@@ -350,80 +353,97 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (transaction.Type === TransactionTypes.TrustSet) {
                 // if the token is not in the vetted list and user is creating new trust line
                 // show the warning
-                if (
-                    !CurrencyRepository.isVettedCurrency({
-                        issuer: transaction.Issuer,
-                        currency: transaction.Currency,
-                    }) &&
-                    !AccountRepository.hasCurrency(source, {
-                        issuer: transaction.Issuer,
-                        currency: transaction.Currency,
-                    })
-                ) {
-                    Navigator.showAlertModal({
-                        testID: 'new-trust-line-alert-overlay',
-                        type: 'warning',
-                        title: Localize.t('global.warning'),
-                        text: Localize.t('asset.addingTrustLineWarning'),
-                        buttons: [
-                            {
-                                testID: 'back-button',
-                                text: Localize.t('global.back'),
-                                light: false,
-                            },
-                            {
-                                testID: 'continue-button',
-                                text: Localize.t('global.continue'),
-                                onPress: this.prepareAndSignTransaction,
-                                type: 'dismiss',
-                                light: true,
-                            },
-                        ],
-                    });
+                try {
+                    const vettedCurrency = await BackendService.isVettedCurrency(
+                        transaction.Issuer,
+                        transaction.Currency,
+                    );
 
-                    // do not continue
-                    return;
+                    // user may close the page at this point while we have been waiting
+                    // we need to return if component is not mounted
+                    if (!this.mounted) {
+                        return;
+                    }
+
+                    if (
+                        !vettedCurrency &&
+                        !AccountRepository.hasCurrency(source, {
+                            issuer: transaction.Issuer,
+                            currency: transaction.Currency,
+                        })
+                    ) {
+                        Navigator.showAlertModal({
+                            testID: 'new-trust-line-alert-overlay',
+                            type: 'warning',
+                            title: Localize.t('global.warning'),
+                            text: Localize.t('asset.addingTrustLineWarning'),
+                            buttons: [
+                                {
+                                    testID: 'back-button',
+                                    text: Localize.t('global.back'),
+                                    light: false,
+                                },
+                                {
+                                    testID: 'continue-button',
+                                    text: Localize.t('global.continue'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+
+                        // do not continue
+                        return;
+                    }
+                } catch (error) {
+                    // ignore on error
                 }
             }
 
             // show alert if user trading not vetted tokens
             if (transaction.Type === TransactionTypes.OfferCreate) {
-                let shouldShowAlert = false;
+                // if the token is not in the vetted list and user is trading the token
+                try {
+                    const takerPays = transaction.TakerPays;
 
-                const takerPays = transaction.TakerPays;
+                    if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
+                        const vettedCurrency = await BackendService.isVettedCurrency(
+                            takerPays.issuer!,
+                            takerPays.currency,
+                        );
 
-                if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
-                    if (
-                        !CurrencyRepository.isVettedCurrency({
-                            issuer: takerPays.issuer!,
-                            currency: takerPays.currency,
-                        })
-                    ) {
-                        shouldShowAlert = true;
+                        // user may close the page at this point while we have been waiting
+                        // we need to return if component is not mounted
+                        if (!this.mounted) {
+                            return;
+                        }
+
+                        if (!vettedCurrency) {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                title: Localize.t('global.warning'),
+                                text: Localize.t('payload.notVettedTokenTradeWarning'),
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.back'),
+                                        light: false,
+                                    },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: this.prepareAndSignTransaction,
+                                        type: 'dismiss',
+                                        light: true,
+                                    },
+                                ],
+                            });
+
+                            // do not continue
+                            return;
+                        }
                     }
-                }
-
-                if (shouldShowAlert) {
-                    Navigator.showAlertModal({
-                        type: 'warning',
-                        title: Localize.t('global.warning'),
-                        text: Localize.t('payload.notVettedTokenTradeWarning'),
-                        buttons: [
-                            {
-                                text: Localize.t('global.back'),
-                                light: false,
-                            },
-                            {
-                                text: Localize.t('global.continue'),
-                                onPress: this.prepareAndSignTransaction,
-                                type: 'dismiss',
-                                light: true,
-                            },
-                        ],
-                    });
-
-                    // do not continue
-                    return;
+                } catch (error) {
+                    // ignore on error
                 }
             }
 
@@ -453,6 +473,10 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (transaction.Type === TransactionTypes.Payment) {
                 try {
                     const destinationInfo = await ResolverService.getAccountAdvisoryInfo(transaction.Destination);
+
+                    if (!this.mounted) {
+                        return;
+                    }
 
                     // if sending to a blackHoled account
                     if (destinationInfo.blackHole) {

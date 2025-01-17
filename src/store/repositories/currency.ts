@@ -3,8 +3,6 @@ import Realm from 'realm';
 
 import { CurrencyModel } from '@store/models';
 
-import { IssuedCurrency } from '@common/libs/ledger/types/common';
-
 import BaseRepository from './base';
 
 /* Types  ==================================================================== */
@@ -75,14 +73,6 @@ class CurrencyRepository extends BaseRepository<CurrencyModel> {
             this.emit('currencyDetailsUpdate', updatedCurrency, object);
             return updatedCurrency;
         });
-    };
-
-    isVettedCurrency = (issuedCurrency: IssuedCurrency): boolean => {
-        const currency = this.findOne({ issuer: issuedCurrency.issuer, currencyCode: issuedCurrency.currency });
-        if (!currency) {
-            return false;
-        }
-        return !!currency.name;
     };
 }
 

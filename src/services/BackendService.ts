@@ -595,6 +595,33 @@ class BackendService {
         });
     };
 
+    /**
+     * Checks whether a specific currency issued by a given issuer is vetted.
+     *
+     * This function retrieves a list of curated IOUs associated with the issuer
+     * and determines if the specified currency is vetted based on the presence of its name
+     *
+     * @param {string} issuer - The unique identifier of the issuer.
+     * @param {string} currency - The currency to check for vetting.
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the currency is vetted.
+     */
+    isVettedCurrency = (issuer: string, currency: string): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            this.getCuratedIOUs({
+                issuer,
+            })
+                .then(({ details }) => {
+                    const vettedCurrency =
+                        typeof details === 'object' &&
+                        Object.values(details).find((detail) => {
+                            return detail?.currencies?.[currency]?.name;
+                        });
+                    resolve(!!vettedCurrency);
+                })
+                .catch(reject);
+        });
+    };
+
     verifyPurchase = (purchases: InAppPurchaseReceipt) => {
         return ApiService.fetch(Endpoints.VerifyPurchase, 'POST', null, purchases);
     };
