@@ -31,6 +31,7 @@ import ErrorView from './Shared/ErrorView';
 
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
+import LedgerService from '@services/LedgerService';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -238,6 +239,52 @@ class ReviewTransactionModal extends Component<Props, State> {
                     });
                 }
 
+                // do not continue
+                return;
+            }
+
+            // user may close the page at this point while we have been waiting for transaction validation
+            // we need to return if component is not mounted
+            if (!this.mounted) {
+                return;
+            }
+
+            // Live check if account is activated before continue for signing regular transaction
+            // ignore pseudo and multi-sign transactions
+            // ignore for "Import" transaction as it can be submitted even if account is not activated
+            if (
+                !payload.isPseudoTransaction() &&
+                !payload.isMultiSign() &&
+                transaction.Type !== TransactionTypes.Import
+            ) {
+                const sourceAccountInfo = await LedgerService.getAccountInfo(source.address).catch(() => {
+                    // do not catch
+                });
+
+                // if we couldn't get the account info then fallback to cached method
+                if (
+                    (!sourceAccountInfo && source.balance === 0) ||
+                    (sourceAccountInfo && 'error' in sourceAccountInfo && sourceAccountInfo.error === 'actNotFound')
+                ) {
+                    Navigator.showAlertModal({
+                        type: 'error',
+                        text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
+                        buttons: [
+                            {
+                                text: Localize.t('global.ok'),
+                                light: false,
+                            },
+                        ],
+                    });
+
+                    // do not continue
+                    return;
+                }
+            }
+
+            // user may close the page at this point while we have been waiting for transaction validation
+            // we need to return if component is not mounted
+            if (!this.mounted) {
                 return;
             }
 
@@ -261,33 +308,14 @@ class ReviewTransactionModal extends Component<Props, State> {
                         ],
                     });
                 }
+
+                // do not continue
                 return;
             }
 
-            // user may close the page at this point
+            // user may close the page at this point while we have been waiting for transaction validation
             // we need to return if component is not mounted
             if (!this.mounted) {
-                return;
-            }
-
-            // account is not activated and want to sign a tx
-            // ignore for "Import" transaction as it can be submitted even if account is not activated
-            if (
-                !payload.isPseudoTransaction() &&
-                transaction.Type !== TransactionTypes.Import &&
-                !payload.isMultiSign() &&
-                source!.balance === 0
-            ) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            light: false,
-                        },
-                    ],
-                });
                 return;
             }
 
@@ -313,6 +341,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                         },
                     ],
                 });
+
+                // do not continue
                 return;
             }
 
@@ -350,6 +380,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                             },
                         ],
                     });
+
+                    // do not continue
                     return;
                 }
             }
@@ -389,6 +421,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                             },
                         ],
                     });
+
+                    // do not continue
                     return;
                 }
             }
@@ -411,6 +445,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                         },
                     ],
                 });
+
+                // do not continue
                 return;
             }
 
@@ -436,6 +472,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 },
                             ],
                         });
+
+                        // do not continue
                         return;
                     }
 
@@ -463,10 +501,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 },
                             ],
                         });
+
+                        // do not continue
                         return;
                     }
                 } catch {
                     Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+                    // do not continue
                     return;
                 }
             }
