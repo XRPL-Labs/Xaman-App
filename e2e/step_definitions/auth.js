@@ -17,18 +17,18 @@ Then('I enter my passcode', async () => {
 });
 
 Then('I type my passcode', async () => {
-    await element(by.id('pin-input')).typeText(passcode);
+    await element(by.id('pin-input')).typeText(`${passcode}\n`);
 });
 
 Then('I type my new passcode', async () => {
     passcode = '958347';
-    await element(by.id('pin-input')).typeText(passcode);
+    await element(by.id('pin-input')).typeText(`${passcode}\n`);
 });
 
 Then('I enter my passphrase in {string}', async (input) => {
-    await element(by.id(input)).typeText(passphrase);
+    await element(by.id(input)).typeText(`${passphrase}\n`);
 });
 
 Then('I enter my new passphrase in {string}', async (input) => {
-    await element(by.id(input)).typeText(newPassphrase);
+    await element(by.id(input)).typeText(`${newPassphrase}\n`);
 });
