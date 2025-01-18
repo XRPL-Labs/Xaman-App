@@ -225,7 +225,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { account } = this.props;
         const { networkReserve } = this.state;
 
-        if (account.lines?.length === 0) return null;
+        if (!account.lines?.isValid() || account.lines?.length === 0) return null;
 
         return account.lines?.map((line: TrustLineModel, index: number) => {
             // don't render obligation TrustLines
