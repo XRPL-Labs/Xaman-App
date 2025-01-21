@@ -6,8 +6,8 @@ apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
-def canonicalVersionName = "3.2.0"
-def canonicalVersionCode = 34
+def canonicalVersionName = "3.3.0"
+def canonicalVersionCode = 36
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
 def postFixSize = 30_000
@@ -213,7 +213,7 @@ dependencies {
     // qrcode generate
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
     // blur view
-    implementation 'com.github.Dimezis:BlurView:version-2.0.2'
+    implementation 'com.github.Dimezis:BlurView:version-2.0.6'
     // WebView
     implementation 'androidx.webkit:webkit:1.11.0'
     // inApp purchase

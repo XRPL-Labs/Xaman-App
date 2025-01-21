@@ -27,17 +27,39 @@ class DepositPreauthInfo extends ExplainerAbstract<DepositPreauth, MutationsMixi
     }
 
     generateDescription(): string {
+        const content = [];
+
         if (this.item.Authorize) {
-            return Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', { address: this.item.Authorize });
+            content.push(
+                Localize.t('events.itAuthorizesSendingPaymentsToThisAccount', { address: this.item.Authorize }),
+            );
         }
 
         if (this.item.Unauthorize) {
-            return Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', {
-                address: this.item.Unauthorize,
-            });
+            content.push(
+                Localize.t('events.itRemovesAuthorizesSendingPaymentsToThisAccount', {
+                    address: this.item.Unauthorize,
+                }),
+            );
         }
 
-        return 'No description, "Authorize" and "Unauthorize" field has not been set.';
+        if (this.item.AuthorizeCredentials) {
+            content.push(Localize.t('events.preauthorizeCredentials'));
+            content.push(
+                this.item.AuthorizeCredentials.map((credential) => `${credential.Issuer}:${credential.CredentialType}`),
+            );
+        }
+
+        if (this.item.UnauthorizeCredentials) {
+            content.push(Localize.t('events.unauthorizeCredentials'));
+            content.push(
+                this.item.UnauthorizeCredentials.map(
+                    (credential) => `${credential.Issuer}:${credential.CredentialType}`,
+                ),
+            );
+        }
+
+        return content.join('\n');
     }
 
     getParticipants() {

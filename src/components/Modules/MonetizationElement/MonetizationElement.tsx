@@ -89,22 +89,12 @@ class MonetizationElement extends PureComponent<Props, State> {
         });
     };
 
-    onSuccessPurchase = () => {
-        // purchase was successful clear the monetization status
-        ProfileRepository.saveProfile({
-            monetization: {
-                monetizationStatus: MonetizationStatus.NONE,
-            },
-        });
-    };
-
     purchaseProduct = () => {
         const { productForPurchase, monetizationType } = this.state;
 
         Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
             productId: productForPurchase!,
             productDescription: monetizationType!,
-            onSuccessPurchase: this.onSuccessPurchase,
         });
     };
 

@@ -83,6 +83,11 @@ export interface SignerEntry {
     WalletLocator?: string;
 }
 
+export interface Credential {
+    Issuer: string;
+    CredentialType: number;
+}
+
 export interface PriceData {
     /**
      * The primary asset in a trading pair. Any valid identifier, such as a stock symbol,

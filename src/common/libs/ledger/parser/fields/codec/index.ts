@@ -13,6 +13,7 @@ import { TransferFee } from './TransferFee';
 import { TradingFee } from './TradingFee';
 import { AuthAccounts } from './AuthAccounts';
 import { Amounts } from './Amounts';
+import { AuthorizeCredentials } from './AuthorizeCredentials';
 
 export {
     FlagIndices,
@@ -29,4 +30,5 @@ export {
     AuthAccounts,
     Amounts,
     PriceDataSeries,
+    AuthorizeCredentials,
 };

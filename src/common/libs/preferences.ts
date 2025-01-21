@@ -24,7 +24,7 @@ const Preferences = {
     /**
      * Get shared preferences by key
      */
-    get: async (key: Keys): Promise<string> => {
+    get: async (key: Keys): Promise<string | null> => {
         return SharedPreferencesModule.get(key);
     },
 

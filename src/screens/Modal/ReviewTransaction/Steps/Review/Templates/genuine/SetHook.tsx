@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Payload } from '@common/libs/payload';
 import { SetHook } from '@common/libs/ledger/transactions';
 
 import { AccountModel } from '@store/models';
 
-import { HooksExplainer } from '@components/Modules';
+import HooksExplainer, { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 
 import Localize from '@locale';
 
@@ -55,7 +55,12 @@ class SetHookTemplate extends Component<Props, State> {
                     </Text>
                 </View>
                 <View style={styles.contentBox}>
-                    <HooksExplainer account={source} payload={payload} transaction={transaction} />
+                    <HooksExplainer
+                        account={source}
+                        payload={payload}
+                        transaction={transaction}
+                        origin={HookExplainerOrigin.ReviewPayload}
+                    />
                 </View>
             </>
         );

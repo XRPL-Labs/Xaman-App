@@ -4,6 +4,22 @@
     "Account": "rrrrrrrrrrrrrrrrrrrrrholvtp",
     "Authorize": "rrrrrrrrrrrrrrrrrrrrbzbvji",
     "Unauthorize": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+    "AuthorizeCredentials": [
+      {
+        "Credential": {
+          "Issuer": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+          "CredentialType": "4B5943"
+        }
+      }
+    ],
+    "UnauthorizeCredentials": [
+      {
+        "Credential": {
+          "Issuer": "rrrrrrrrrrrrrrrrrrrrbzbvji",
+          "CredentialType": "4B5943"
+        }
+      }
+    ],
     "Fee": "10",
     "Flags": 2147483648,
     "Sequence": 2

@@ -2,8 +2,6 @@
  * Scan Modal
  */
 
-import { first } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
@@ -546,14 +544,16 @@ class ScanModal extends Component<Props, State> {
     };
 
     onGoogleVisionBarcodesDetected = ({ barcodes }: GoogleVisionBarcodesDetectedEvent) => {
+        // should ba array and not empty
         if (!Array.isArray(barcodes) || barcodes.length === 0) {
             return;
         }
         // get first barcode that exist
-        const { data } = first(barcodes)!;
+        const barcode = barcodes[0];
 
-        if (data) {
-            this.onReadCode(data);
+        // type check
+        if (typeof barcode === 'object' && barcode?.data) {
+            this.onReadCode(barcode?.data);
         }
     };
 

@@ -84,7 +84,7 @@ class AccountSwitchElement extends Component<Props, State> {
         const { account, discreet, containerStyle } = this.props;
         const { isSwitcherOpen } = this.state;
 
-        if (!account) {
+        if (!account?.isValid()) {
             return (
                 <View style={styles.container}>
                     <Text style={styles.accountLabelText} numberOfLines={1}>

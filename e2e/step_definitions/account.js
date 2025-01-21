@@ -82,7 +82,7 @@ Then('I generate testnet account', async () => {
 });
 
 Then('I enter the address in the input', async () => {
-    await element(by.id('address-input')).typeText(this.address);
+    await element(by.id('address-input')).typeText(`${this.address}\n`);
 });
 
 Then('I generate new family seed', async () => {
@@ -90,7 +90,7 @@ Then('I generate new family seed', async () => {
 });
 
 Then('I enter my seed in the input', async () => {
-    await element(by.id('seed-input')).typeText(this.seed);
+    await element(by.id('seed-input')).typeText(`${this.seed}\n`);
 });
 
 Then('I generate new mnemonic', async () => {

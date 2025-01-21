@@ -1,0 +1,11 @@
+{
+  "tx": {
+    "Account": "rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo",
+    "TransactionType": "MPTokenIssuanceSet",
+    "MPTokenIssuanceID": "004FD5D21BFB1ECDCD89560CBB2BB21F94559F32820FAD04",
+    "Holder": "rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo",
+    "Flags": 1
+  },
+  "meta": {}
+
+}

@@ -148,6 +148,21 @@ const styles = StyleService.create({
         borderBottomRightRadius: 12,
         borderTopColor: '$lightGrey',
     },
+    authorizeCredentialsContainer: {
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        marginBottom: 10,
+        backgroundColor: '$tint',
+        borderWidth: 2,
+        borderColor: '$tint',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+        borderTopColor: '$lightGrey',
+    },
+    attachedAccountElement: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+    },
     hookParamText: {
         backgroundColor: '$tint',
         borderRadius: 10,

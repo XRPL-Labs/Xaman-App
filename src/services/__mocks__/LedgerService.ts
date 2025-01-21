@@ -4,6 +4,7 @@ class LedgerService {
     getAccountInfo = jest.fn();
     getAccountAvailableBalance = jest.fn();
     getFilteredAccountLine = jest.fn();
+    getTransactions = jest.fn();
 
     getLedgerStatus = () => {
         return {

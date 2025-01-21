@@ -19,10 +19,17 @@ import Localize from '@locale';
 
 import { AppSizes } from '@theme';
 /* Types ==================================================================== */
+
+export enum HookExplainerOrigin {
+    TransactionDetails = 'TransactionDetails',
+    ReviewPayload = 'ReviewPayload',
+}
+
 interface Props {
     account: AccountModel;
     payload?: Payload;
     transaction?: TransactionsType | FallbackTransaction;
+    origin?: HookExplainerOrigin;
 }
 
 interface State {
@@ -40,7 +47,7 @@ class HooksExplainer extends Component<Props, State> {
     }
 
     getSource = () => {
-        const { account, payload, transaction } = this.props;
+        const { account, payload, transaction, origin } = this.props;
 
         const params = {
             network: NetworkService.getNetwork().key,
@@ -71,6 +78,12 @@ class HooksExplainer extends Component<Props, State> {
             });
         }
 
+        if (origin) {
+            Object.assign(params, {
+                origin,
+            });
+        }
+
         return {
             uri: `${WebLinks.HooksExplainerURL}/${Localize.getCurrentLocale()}`,
             method: 'POST',
@@ -84,13 +97,10 @@ class HooksExplainer extends Component<Props, State> {
 
     onMessage = (event: any) => {
         try {
-            // get passed data
-            const data = get(event, 'nativeEvent.data');
-
-            const parsedData = JSON.parse(data);
-
+            const parsedData = JSON.parse(get(event, 'nativeEvent.data', {}));
             const layoutHeight = get(parsedData, 'layout.height');
 
+            // we use this so the height of the container can be set by xApp running behind the explainer
             if (typeof layoutHeight === 'number') {
                 this.setState({
                     containerHeight: layoutHeight,

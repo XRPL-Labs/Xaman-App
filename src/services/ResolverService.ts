@@ -13,12 +13,12 @@ import ContactRepository, { ContactRepositoryEvent } from '@store/repositories/c
 import AccountRepository, { AccountRepositoryEvent } from '@store/repositories/account';
 
 import { AccountDetailsModel, AccountModel, ContactModel, CurrencyModel } from '@store/models';
+import { CurrencyRepository } from '@store/repositories';
+import { CurrencyRepositoryEvent } from '@store/repositories/currency';
 
 import Advisory from '@common/helpers/advisory';
 
 import LRUCache from '@common/utils/cache';
-import { CurrencyRepository } from '@store/repositories';
-import { CurrencyRepositoryEvent } from '@store/repositories/currency';
 import { PromiseQueue } from '@common/utils/queue';
 
 /* Types  ==================================================================== */

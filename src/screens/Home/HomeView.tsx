@@ -98,13 +98,17 @@ class HomeView extends Component<Props, State> {
         InteractionManager.runAfterInteractions(this.updateAccountStatus);
 
         // get experimental status
-        Preferences.get(Preferences.keys.EXPERIMENTAL_SIMPLICITY_UI).then((experimentalUI) => {
-            if (experimentalUI === 'true') {
+        Preferences.get(Preferences.keys.EXPERIMENTAL_SIMPLICITY_UI)
+            .then((experimentalUI) => {
                 this.setState({
-                    experimentalUI: true,
+                    experimentalUI: experimentalUI === 'true',
                 });
-            }
-        });
+            })
+            .catch(() => {
+                this.setState({
+                    experimentalUI: false,
+                });
+            });
     }
 
     componentWillUnmount() {
@@ -124,7 +128,7 @@ class HomeView extends Component<Props, State> {
             // Update account details when component didAppear and Socket is connected
             if (account?.isValid() && NetworkService.isConnected()) {
                 // only update current account details
-                AccountService.updateAccountsDetails(account.address);
+                AccountService.updateAccountsDetails([account.address]);
             }
         });
     }

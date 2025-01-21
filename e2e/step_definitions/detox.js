@@ -31,7 +31,7 @@ Then('I wait {int} sec for button {string} to be enabled', async (timeoutSec, bu
 });
 
 Then('I enter {string} in {string}', async (value, textInputId) => {
-    await element(by.id(textInputId)).typeText(value);
+    await element(by.id(textInputId)).typeText(`${value}\n`);
 });
 
 Given('I should have {string}', async (elementId) => {

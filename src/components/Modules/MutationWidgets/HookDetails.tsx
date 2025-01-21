@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
-import HooksExplainer from '@components/Modules/HooksExplainer/HooksExplainer';
+import HooksExplainer, { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 
 import Localize from '@locale';
 
@@ -32,7 +32,11 @@ class HookDetails extends PureComponent<Props> {
             return (
                 <View style={styles.detailContainer}>
                     <Text style={styles.detailsLabelText}>{Localize.t('global.hooks')}</Text>
-                    <HooksExplainer transaction={item} account={account} />
+                    <HooksExplainer
+                        transaction={item}
+                        account={account}
+                        origin={HookExplainerOrigin.TransactionDetails}
+                    />
                 </View>
             );
         }

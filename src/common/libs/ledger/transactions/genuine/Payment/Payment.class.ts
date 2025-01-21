@@ -4,7 +4,7 @@ import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { AccountID, Amount, Hash256, PathSet, UInt32 } from '@common/libs/ledger/parser/fields';
+import { AccountID, Amount, Hash256, PathSet, STArray, UInt32 } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -25,6 +25,7 @@ class Payment extends BaseGenuineTransaction {
         SendMax: { type: Amount },
         DeliverMin: { type: Amount },
         Paths: { type: PathSet },
+        CredentialIDs: { type: STArray },
     };
 
     declare Amount: FieldReturnType<typeof Amount>;
@@ -33,7 +34,8 @@ class Payment extends BaseGenuineTransaction {
     declare InvoiceID: FieldReturnType<typeof Hash256>;
     declare SendMax: FieldReturnType<typeof Amount>;
     declare DeliverMin: FieldReturnType<typeof Amount>;
-    declare Paths?: FieldReturnType<typeof PathSet>;
+    declare Paths: FieldReturnType<typeof PathSet>;
+    declare CredentialIDs: FieldReturnType<typeof STArray, string[]>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

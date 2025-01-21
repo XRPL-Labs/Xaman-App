@@ -46,4 +46,5 @@ export interface TransactionMetadata {
     HookEmissions?: { HookEmission: HookEmission }[];
     // "nftoken_id" is only present in transactions that involve NFTokens
     nftoken_id?: string;
+    mpt_issuance_id?: string;
 }

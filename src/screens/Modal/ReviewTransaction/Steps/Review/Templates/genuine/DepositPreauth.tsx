@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 
@@ -25,6 +27,58 @@ class DepositPreauthTemplate extends Component<Props, State> {
 
         this.state = {};
     }
+
+    renderAuthorizeCredentials = () => {
+        const { transaction } = this.props;
+
+        if (isEmpty(transaction.AuthorizeCredentials)) {
+            return (
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{Localize.t('global.empty')}</Text>
+                </View>
+            );
+        }
+
+        return transaction.AuthorizeCredentials.map((credential) => {
+            return (
+                <View key={credential.Issuer}>
+                    <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
+                    <View style={styles.authorizeCredentialsContainer}>
+                        <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                            {Localize.t('global.credentialType')}:{' '}
+                            <Text style={AppStyles.colorBlue}>{credential.CredentialType}</Text>
+                        </Text>
+                    </View>
+                </View>
+            );
+        });
+    };
+
+    renderUnauthorizeCredentials = () => {
+        const { transaction } = this.props;
+
+        if (isEmpty(transaction.UnauthorizeCredentials)) {
+            return (
+                <View style={styles.contentBox}>
+                    <Text style={styles.value}>{Localize.t('global.empty')}</Text>
+                </View>
+            );
+        }
+
+        return transaction.UnauthorizeCredentials.map((credential) => {
+            return (
+                <View key={credential.Issuer}>
+                    <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
+                    <View style={styles.authorizeCredentialsContainer}>
+                        <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                            {Localize.t('global.credentialType')}:{' '}
+                            <Text style={AppStyles.colorBlue}>{credential.CredentialType}</Text>
+                        </Text>
+                    </View>
+                </View>
+            );
+        });
+    };
 
     render() {
         const { transaction } = this.props;
@@ -58,6 +112,28 @@ class DepositPreauthTemplate extends Component<Props, State> {
                             address={transaction.Unauthorize}
                             containerStyle={[styles.contentBox, styles.addressContainer]}
                         />
+                    </>
+                )}
+
+                {transaction.AuthorizeCredentials && (
+                    <>
+                        <View style={styles.label}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.authorizeCredentials')}
+                            </Text>
+                        </View>
+                        {this.renderAuthorizeCredentials()}
+                    </>
+                )}
+
+                {transaction.UnauthorizeCredentials && (
+                    <>
+                        <View style={styles.label}>
+                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                                {Localize.t('global.unauthorizeCredentials')}
+                            </Text>
+                        </View>
+                        {this.renderUnauthorizeCredentials()}
                     </>
                 )}
             </>

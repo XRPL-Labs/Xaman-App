@@ -204,7 +204,7 @@ class PaymentTemplate extends Component<Props, State> {
 
             // set the transaction path
             if (path.paths_computed.length === 0) {
-                transaction.Paths = undefined;
+                transaction.Paths = undefined!;
             } else {
                 transaction.Paths = path.paths_computed;
             }
@@ -214,7 +214,7 @@ class PaymentTemplate extends Component<Props, State> {
         } else {
             // clear any set value
             transaction.SendMax = undefined;
-            transaction.Paths = undefined;
+            transaction.Paths = undefined!;
 
             // user cannot continue
             setReady(false);
@@ -380,6 +380,19 @@ class PaymentTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
                         <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.InvoiceID}</Text>
+                        </View>
+                    </>
+                )}
+
+                {transaction.CredentialIDs && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.credentialIDs')}</Text>
+                        <View style={styles.contentBox}>
+                            {transaction.CredentialIDs.map((id, index) => (
+                                <Text key={`credential-${index}`} style={styles.value}>
+                                    {id}
+                                </Text>
+                            ))}
                         </View>
                     </>
                 )}

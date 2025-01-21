@@ -118,10 +118,10 @@ build-android: | stop .pre-run .pre-android ## Build the Android app
 test: | .pre-run
 	@npm run test
 
-test-e2e: | .pre-run ## Runs e2e tests
+test-e2e:  ## Runs e2e tests
 	@npx detox clean-framework-cache;
 	@npx detox build-framework-cache;
-	@npx detox build e2e --configuration ${DETOX_CONFIGURATION} --if-missing;
+	@npx detox build e2e --configuration ${DETOX_CONFIGURATION};
 	@npx cucumber-js ./e2e test;
 
 bump-build-number: ## Bump build number for Android and iOS

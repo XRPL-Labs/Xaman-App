@@ -33,7 +33,8 @@ export interface Props {
 
 export interface State {
     step?: Steps;
-    signers?: AccountModel[];
+    signer?: AccountModel;
+    signerDelegate?: AccountModel;
     preferredSigner?: AccountModel;
     coreSettings: CoreModel;
     isSigning: boolean;

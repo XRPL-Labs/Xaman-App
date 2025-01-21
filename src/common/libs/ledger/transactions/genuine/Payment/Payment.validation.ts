@@ -73,7 +73,7 @@ const PaymentValidation: ValidationType<Payment> = (tx: Payment): Promise<void> 
                         return;
                     }
                 } catch (e) {
-                    reject(Localize.t('account.unableGetAccountInfo'));
+                    reject(new Error(Localize.t('account.unableGetAccountInfo')));
                     return;
                 }
             }

@@ -1,6 +1,8 @@
 import Preferences from '@common/libs/preferences';
 import * as AppHelpers from '@common/helpers/app';
 
+import { Navigator } from '@common/helpers/navigator';
+
 import AppService, { NetStateStatus, AppStateStatus } from '../AppService';
 
 describe('AppService', () => {
@@ -55,18 +57,34 @@ describe('AppService', () => {
         spy2.mockRestore();
     });
 
-    it('should record the latest update version to the store', async () => {
+    it('should show the changelogs if latest update version ', async () => {
+        const LATEST_VERSION_CODE = '3.5.1';
+        const OLD_VERSION_CODE = '3.5.0';
+
+        const spyShowChangeLog = jest.spyOn(Navigator, 'showOverlay');
         const spyUpdateVersionCode = jest.spyOn(Preferences, 'set');
 
         // mock current app version
-        const spy1 = jest.spyOn(AppHelpers, 'GetAppVersionCode').mockImplementation(() => '0.5.1');
-        const spy2 = jest.spyOn(Preferences, 'get').mockImplementation(async () => '0.4.9');
+        const spy1 = jest.spyOn(AppHelpers, 'GetAppVersionCode').mockImplementation(() => LATEST_VERSION_CODE);
+        const spy2 = jest.spyOn(Preferences, 'get').mockImplementation(async () => null);
 
+        // let's first check for first installations
         await appService.checkVersionChange();
 
-        expect(spyUpdateVersionCode).toBeCalledWith(Preferences.keys.LATEST_VERSION_CODE, '0.5.1');
+        expect(spyShowChangeLog).toBeCalledTimes(0);
+        expect(spyUpdateVersionCode).toBeCalledWith(Preferences.keys.LATEST_VERSION_CODE, LATEST_VERSION_CODE);
+
+        spy2.mockRestore();
+
+        const spy3 = jest.spyOn(Preferences, 'get').mockImplementation(async () => OLD_VERSION_CODE);
+        // let's  check again
+        await appService.checkVersionChange();
+
+        // it should show the change logs
+        expect(spyShowChangeLog).toBeCalled();
+        expect(spyUpdateVersionCode).toBeCalledWith(Preferences.keys.LATEST_VERSION_CODE, LATEST_VERSION_CODE);
 
         spy1.mockRestore();
-        spy2.mockRestore();
+        spy3.mockRestore();
     });
 });

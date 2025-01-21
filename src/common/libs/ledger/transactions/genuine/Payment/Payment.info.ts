@@ -66,6 +66,14 @@ class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
             );
         }
 
+        if (typeof this.item.CredentialIDs !== 'undefined') {
+            content.push(
+                Localize.t('events.thePaymentIncludesCredentialIds', {
+                    credentialIDs: this.item.CredentialIDs.join(', '),
+                }),
+            );
+        }
+
         return content.join(' \n');
     }
 

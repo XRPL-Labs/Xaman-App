@@ -54,6 +54,13 @@ export enum TransactionTypes {
     DIDSet = 'DIDSet',
     OracleSet = 'OracleSet',
     OracleDelete = 'OracleDelete',
+    MPTokenIssuanceCreate = 'MPTokenIssuanceCreate',
+    MPTokenIssuanceDestroy = 'MPTokenIssuanceDestroy',
+    MPTokenIssuanceSet = 'MPTokenIssuanceSet',
+    MPTokenAuthorize = 'MPTokenAuthorize',
+    CredentialCreate = 'CredentialCreate',
+    CredentialAccept = 'CredentialAccept',
+    CredentialDelete = 'CredentialDelete',
 }
 
 /**
