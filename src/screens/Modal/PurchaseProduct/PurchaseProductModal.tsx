@@ -19,6 +19,9 @@ import { ComplianceLinks } from '@common/constants/endpoints';
 import { Spacer, CountDown, Button, Icon, Footer } from '@components/General';
 import { ProductDetailsElement } from '@components/Modules/ProductDetailsElement';
 
+import { ProfileRepository } from '@store/repositories';
+import { MonetizationStatus } from '@store/types';
+
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
@@ -32,7 +35,6 @@ import styles from './styles';
 export interface Props {
     productId: string;
     productDescription: string;
-    onSuccessPurchase?: () => void;
     onClose?: (successPayment: boolean) => void;
 }
 
@@ -89,12 +91,16 @@ class PurchaseProductModal extends Component<Props, State> {
     };
 
     onSuccessPurchase = async () => {
-        const { onSuccessPurchase } = this.props;
+        // purchase was successful clear the monetization status
+        ProfileRepository.saveProfile({
+            monetization: {
+                monetizationStatus: MonetizationStatus.NONE,
+                productForPurchase: '',
+                monetizationType: '',
+            },
+        });
 
-        if (typeof onSuccessPurchase === 'function') {
-            onSuccessPurchase();
-        }
-
+        // set the state
         this.setState({
             purchaseSuccess: true,
         });

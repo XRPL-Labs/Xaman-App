@@ -871,7 +871,11 @@ class XAppBrowserModal extends Component<Props, State> {
         Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
             productId: monetization.productForPurchase!,
             productDescription: monetization.monetizationType!,
-            onSuccessPurchase: this.lunchApp,
+            onClose: (successPayment: boolean) => {
+                if (successPayment) {
+                    this.lunchApp();
+                }
+            },
         });
     };
 
