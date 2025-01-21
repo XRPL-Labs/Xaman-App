@@ -3,7 +3,7 @@
 
 OS := $(shell sh -c 'uname -s 2>/dev/null')
 VARIANT ?= Debug
-SIMULATOR ?= iPhone 15 Pro Max
+SIMULATOR ?= iPhone 16 Pro Max
 DETOX_CONFIGURATION ?= ios.simulator+xaman.ios
 
 # Function definitions ============================
