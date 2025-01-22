@@ -35,6 +35,10 @@ import DataStorage from '@store/storage';
 // services
 import * as services from '@services';
 
+// Textencoder/decoder polyfill TextEncoder TextDecoder
+// Needed for ripple-binary-codec/... isomorphic
+import '@common/helpers/textencoder';
+
 messaging().setBackgroundMessageHandler(async () => {
     // FIXME: temporary fix for error
     // Invariant Violation: Module AppRegistry is not a registered callable module (calling startHeadlessTask)
