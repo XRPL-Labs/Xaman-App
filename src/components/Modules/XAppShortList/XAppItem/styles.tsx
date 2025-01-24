@@ -30,6 +30,10 @@ const styles = StyleService.create({
     appIconPlaceholder: {
         backgroundColor: StyleService.select({ dark: '$darkGrey', light: '$silver' }),
     },
+    appIconPlaceholderText: {
+        opacity: 0.4,
+        lineHeight: AppFonts.subtext.size * 1.4,
+    },
 });
 
 export default styles;

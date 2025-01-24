@@ -4,6 +4,8 @@ import { View, Text, Animated, Image } from 'react-native';
 
 import { Spacer, TouchableDebounce } from '@components/General';
 
+import Localize from '@locale';
+
 import styles from './styles';
 
 /* types ==================================================================== */
@@ -115,27 +117,57 @@ class XAppItem extends Component<Props> {
     render() {
         const { app, index } = this.props;
 
-        if (typeof app === 'object' && !app?.title && Number(index || 0) > 0) {
+        if (typeof app === 'object' && !app?.title) {
             //  Nada
-            const invisible: { opacity: number } = { opacity: 0 };
+            const invisible: {
+                opacity: number;
+            } = { opacity: 0 };
+            const none: {
+                flex: number;
+                alignItems: 'center';
+                justifyContent: 'center';
+                alignSelf: 'stretch';
+            } = { 
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+            };
             return (
                 <View style={styles.container}>
                     <View
                         style={[
                             styles.appIcon,
                             styles.appIconPlaceholder,
-                            invisible,
+                            Number(index || 0) > 0 ? invisible : none,
                         ]}
-                    />
+                    >
+                        {
+                            Number(index || 0) === 0 && (
+                                <Text style={[ styles.appTitle, styles.appIconPlaceholderText ]}>
+                                    { Localize.t('global.none') }
+                                </Text>
+                            )
+                        }
+                    </View>
                     <Text
                         numberOfLines={1}
-                        style={[styles.appTitle, styles.appTitlePlaceholder, invisible]}
-                    />
+                        style={[
+                            styles.appTitle, styles.appTitlePlaceholder,
+                            Number(index || 0) > 0 ? invisible : undefined,
+                        ]}
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Text>
                     <Spacer size={2} />
                     <Text
                         numberOfLines={1}
-                        style={[styles.appTitle, styles.appTitlePlaceholder, invisible]}
-                    />
+                        style={[
+                            styles.appTitle, styles.appTitlePlaceholder,
+                            Number(index || 0) > 0 ? invisible : undefined,
+                        ]}
+                    >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </Text>
                 </View>
             );
         }
