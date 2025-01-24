@@ -71,7 +71,7 @@ describe('API', () => {
 
         it(`call with invalid json response`, async () => {
             await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: 'invalid_json' })).rejects.toMatchObject(
-                new ApiError('Response returned is not valid JSON Unexpected token i in JSON at position 0'),
+                new ApiError('Response returned is not valid JSON Unexpected token \'i\', \"invalid_json\" is not valid JSON'),
             );
         });
 
