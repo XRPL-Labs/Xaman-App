@@ -1,5 +1,4 @@
 import { AccountModel } from '@store/models';
-
 import { BaseTransaction } from '@common/libs/ledger/transactions/common';
 
 import {
@@ -8,8 +7,8 @@ import {
     OwnerCountChangeType,
     TransactionResult,
 } from '@common/libs/ledger/parser/types';
-import { SubmitResultType, VerifyResultType } from '@common/libs/ledger/types';
 import { HookExecution } from '@common/libs/ledger/types/common';
+import { SubmitResultType, VerifyResultType, SignedObjectType } from '@common/libs/ledger/types';
 
 export type BalanceChanges = {
     [OperationActions.INC]: BalanceChangeType[];
@@ -43,6 +42,8 @@ export interface SignMixinType {
     SignerPubKey?: string;
     SignMethod?: SignMethodType;
     SignerAccount?: string;
+    ServiceFee?: number;
+    ServiceFeeTx?: SignedObjectType;
 
     DefaultLastLedgerOffset: number;
 
@@ -54,6 +55,8 @@ export interface SignMixinType {
 
     get FinalResult(): TransactionResult;
 
+    setServiceFee(serviceFee: number): void;
+    setServiceFeeTx(serviceFeeTx: SignedObjectType): void;
     prepare(account: AccountModel): Promise<void>;
     populateFields(options?: { lastLedgerOffset?: number }): void;
     sign(account: AccountModel, multiSign?: boolean): Promise<string>;

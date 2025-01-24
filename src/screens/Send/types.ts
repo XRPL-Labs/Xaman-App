@@ -41,6 +41,7 @@ export interface State {
     memo?: string;
     selectedFee?: FeeItem;
     issuerFee?: number;
+    serviceFeeAmount?: FeeItem;
     payment: Payment & SignMixinType;
     scanResult?: XrplDestination;
     coreSettings: CoreModel;
@@ -55,6 +56,7 @@ export interface ContextProps extends State {
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;
+    setServiceFeeAmount: (amount: FeeItem) => void;
     setFee: (fee: FeeItem) => void;
     setMemo: (memo: string) => void;
     getPaymentJsonForFee: () => any;

@@ -31,7 +31,7 @@ import {
 } from '@components/General';
 import { TokenAvatar } from '@components/Modules/TokenElement';
 
-import { AccountPicker, FeePicker } from '@components/Modules';
+import { AccountPicker, FeePicker, ServiceFee } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -60,6 +60,8 @@ class SummaryStep extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        // console.log('SummaryStep constructor')
 
         this.state = {
             confirmedDestinationTag: undefined,
@@ -173,6 +175,8 @@ class SummaryStep extends Component<Props, State> {
     goNext = () => {
         const { goNext, token, source, amount, destination, destinationInfo } = this.context;
         const { confirmedDestinationTag } = this.state;
+
+        // console.log('SummaryStep constructor gonext')
 
         if (!amount || parseFloat(amount) === 0) {
             Alert.alert(Localize.t('global.error'), Localize.t('send.pleaseEnterAmount'));
@@ -307,8 +311,18 @@ class SummaryStep extends Component<Props, State> {
     };
 
     render() {
-        const { source, amount, destination, token, issuerFee, isLoading, selectedFee, setFee, getPaymentJsonForFee } =
-            this.context;
+        const {
+            source,
+            amount,
+            destination,
+            token,
+            issuerFee,
+            isLoading,
+            selectedFee,
+            setFee,
+            setServiceFeeAmount,
+            getPaymentJsonForFee,
+        } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
         return (
@@ -435,6 +449,20 @@ class SummaryStep extends Component<Props, State> {
                         />
                     </View>
 
+                    <View style={[styles.rowItem, AppStyles.centerContent]}>
+                        <View style={styles.rowTitle}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                Service fee
+                            </Text>
+                        </View>
+                        <ServiceFee
+                            txJson={getPaymentJsonForFee()}
+                            containerStyle={styles.feePickerContainer}
+                            textStyle={styles.feeText}
+                            onSelect={setServiceFeeAmount}
+                        />
+                    </View>
+    
                     {/* Memo */}
                     <View style={styles.rowItem}>
                         <View style={styles.rowTitle}>

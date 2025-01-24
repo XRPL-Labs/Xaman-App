@@ -455,6 +455,26 @@ class BackendService {
     };
 
     /**
+     * Get service fee
+     * NOTE: values are in drops
+     */
+    getServiceFee = async (
+        txJson?: any | undefined,
+    ): Promise<{
+        availableFees: { type: string; value: string }[];
+        feeHooks: number;
+        feePercentage: number;
+        suggested: string;
+    }> => {
+        const body = {
+            txJson,
+            network: NetworkService.network?.key,
+        };
+        const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
+        return networkFees;
+    };
+
+    /**
      * Gets translation data based on a UUID.
      * @param {string} uuid - The UUID for translation data.
      * @returns {Promise} A promise that resolves with translation json data.

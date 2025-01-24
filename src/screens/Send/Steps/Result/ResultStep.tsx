@@ -141,6 +141,11 @@ class ResultStep extends Component<Props, State> {
 
     renderSuccess = () => {
         const { showDetailsCard } = this.state;
+        // const { serviceFeeAmount, payment } = this.context;
+        // console.log('[ResultStep] context serviceFeeAmount', serviceFeeAmount);
+        // console.log('[ResultStep] context serviceFeeTx', serviceFeeTx);
+        // console.log('[ResultStep] Payment Service Fee', payment.ServiceFee);
+        // console.log('[ResultStep] Payment Service TX', payment.ServiceFeeTx);
 
         return (
             <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerSuccess]}>
@@ -274,6 +279,7 @@ class ResultStep extends Component<Props, State> {
             if (payment.VerifyResult?.success === false) {
                 return this.renderVerificationFailed();
             }
+
             return this.renderSuccess();
         }
 

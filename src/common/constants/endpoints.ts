@@ -36,6 +36,7 @@ export enum Endpoints {
     NftOffered = '/v1/app/nft-offered/{account}',
     NetworkRails = '/v1/app/rails',
     VerifyPurchase = '/v1/app/verify-purchase',
+    ServiceFee = '/v1/app/get-service-fee',
 }
 
 export enum WebLinks {

@@ -550,7 +550,7 @@ class LedgerService extends EventEmitter {
                 fail_hard: failHard,
             });
 
-            this.logger.debug('submitTransaction', submitResponse);
+            // this.logger.debug('submitTransaction', submitResponse);
 
             // assign hash we received from submitting the transaction
             // this is necessary for verifying the transaction in case of only tx_blob is available

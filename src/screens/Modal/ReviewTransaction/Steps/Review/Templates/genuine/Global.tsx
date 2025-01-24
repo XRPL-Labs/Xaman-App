@@ -12,7 +12,7 @@ import NetworkService from '@services/NetworkService';
 import { AccountRepository } from '@store/repositories';
 
 import { InfoMessage, ReadMore } from '@components/General';
-import { FeePicker, AccountElement, HooksExplainer } from '@components/Modules';
+import { FeePicker, ServiceFee, AccountElement, HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -24,6 +24,7 @@ import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExp
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
+    setServiceFee: (serviceFee: number) => void;
 }
 export interface State {
     warnings?: Array<string>;
@@ -73,6 +74,11 @@ class GlobalTemplate extends Component<Props, State> {
             currency: NetworkService.getNativeAsset(),
             value: new AmountParser(fee.value).dropsToNative().toString(),
         };
+    };
+
+    setServiceFeeAmount = (fee: any) => {
+        const { setServiceFee } = this.props;
+        setServiceFee(Number(fee?.value || 0));
     };
 
     renderWarnings = () => {
@@ -317,6 +323,23 @@ class GlobalTemplate extends Component<Props, State> {
         );
     };
 
+    renderServiceFee = () => {
+        const { transaction } = this.props;
+        // const { showFeePicker } = this.state;
+
+        return (
+            <>
+                <Text style={styles.label}>Service fee</Text>
+                <ServiceFee
+                    txJson={transaction.JsonForSigning}
+                    onSelect={this.setServiceFeeAmount}
+                    containerStyle={styles.contentBox}
+                    textStyle={styles.feeText}
+                />
+            </>
+        );
+    };
+
     render() {
         return (
             <>
@@ -329,6 +352,7 @@ class GlobalTemplate extends Component<Props, State> {
                 {this.renderMemos()}
                 {this.renderFlags()}
                 {this.renderFee()}
+                {this.renderServiceFee()}
                 {this.renderWarnings()}
                 {this.renderHookExplainer()}
             </>

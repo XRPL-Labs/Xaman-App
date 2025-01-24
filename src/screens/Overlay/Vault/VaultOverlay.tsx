@@ -60,7 +60,7 @@ class VaultOverlay extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
+        // console.log('Vault overlay constructor')
         this.state = {
             step: undefined,
             signer: undefined,
@@ -251,6 +251,7 @@ class VaultOverlay extends Component<Props, State> {
     };
 
     sign = (method: AuthMethods, options: SignOptions) => {
+        // console.log('Vault overlay SIGN')
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -275,6 +276,8 @@ class VaultOverlay extends Component<Props, State> {
         const { preferredSigner, signerDelegate } = this.state;
         const { account, transaction, multiSign } = this.props;
         const { encryptionKey } = options;
+        
+        // console.log('Vault overlay SIGN With private Key')
 
         try {
             if (!encryptionKey) {
@@ -328,7 +331,37 @@ class VaultOverlay extends Component<Props, State> {
                 signMethod: method,
             };
 
-            this.onSign(signedObject);
+            let signedServiceFeeObject = AccountLib.sign(
+                { 
+                    TransactionType: 'Payment',
+                    Account: transaction.JsonForSigning.Account,
+                    InvoiceID: signedObject.id,
+                    Memos: [
+                        { 
+                            Memo: {
+                                MemoData: Buffer.from('Xaman Service Fee', 'utf-8').toString('hex').toUpperCase(),
+                            },
+                        },
+                    ],
+
+                    // FEE DESTINATIONA DDRESS
+                    Destination: 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt',
+                    Sequence: (transaction.JsonForSigning?.Sequence || 0) + 1,
+                    Amount: String(transaction.ServiceFee),
+                    Fee: String(Number(transaction.JsonForSigning.Fee) || 100),
+                },
+                signerInstance,
+                definitions,
+            ) as SignedObjectType;
+
+            // console.log('Vault overlay [servicefeeobject]', String(transaction.ServiceFee));
+            signedServiceFeeObject = {
+                ...signedServiceFeeObject,
+                signerPubKey: signerInstance.keypair.publicKey ?? undefined,
+                signMethod: method,
+            };
+
+            this.onSign(signedObject, signedServiceFeeObject);
         } catch (e: any) {
             this.onSignError(method, e);
         } finally {
@@ -421,12 +454,14 @@ class VaultOverlay extends Component<Props, State> {
         }
     };
 
-    onSign = (signedObject: SignedObjectType) => {
+    onSign = (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => {
         const { onSign } = this.props;
+
+        // console.log('Vault overlay ONSIGN')
 
         // callback
         if (typeof onSign === 'function') {
-            onSign(signedObject);
+            onSign(signedObject, signedServiceFeeObject);
         }
 
         // close the overlay
