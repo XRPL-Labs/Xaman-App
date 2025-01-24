@@ -72,7 +72,7 @@ class XAppShortList extends Component<Props, State> {
         return (
             <View style={[styles.container, containerStyle]}>
                 {apps.map((app, index) => (
-                    <XAppItem key={index} app={app} onPress={onAppPress} />
+                    <XAppItem key={index} app={app} index={index} onPress={onAppPress} />
                 ))}
             </View>
         );

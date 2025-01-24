@@ -15,6 +15,7 @@ export type AppType = {
 
 export interface Props {
     app?: AppType;
+    index?: number;
     onPress?: (app: any) => void;
 }
 
@@ -53,6 +54,7 @@ class XAppItem extends Component<Props> {
         const { app } = this.props;
 
         // if app provided stop the placeholder animation
+
         if (app) {
             this.startFadeAnimation();
             return;
@@ -111,7 +113,32 @@ class XAppItem extends Component<Props> {
     };
 
     render() {
-        const { app } = this.props;
+        const { app, index } = this.props;
+
+        if (typeof app === 'object' && !app?.title && Number(index || 0) > 0) {
+            //  Nada
+            const invisible: { opacity: number } = { opacity: 0 };
+            return (
+                <View style={styles.container}>
+                    <View
+                        style={[
+                            styles.appIcon,
+                            styles.appIconPlaceholder,
+                            invisible,
+                        ]}
+                    />
+                    <Text
+                        numberOfLines={1}
+                        style={[styles.appTitle, styles.appTitlePlaceholder, invisible]}
+                    />
+                    <Spacer size={2} />
+                    <Text
+                        numberOfLines={1}
+                        style={[styles.appTitle, styles.appTitlePlaceholder, invisible]}
+                    />
+                </View>
+            );
+        }
 
         if (isEmpty(app)) {
             return this.renderPlaceholder();
