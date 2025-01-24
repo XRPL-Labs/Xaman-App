@@ -1091,7 +1091,7 @@
     "destinationTagIsRequired": "The destination tag is required for sending this payment.",
     "unableGetRecipientAccountInfoPleaseTryAgain": "Unable to get recipient account info please try again.",
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
-    "theDestinationAccountIsSetAsBlackHole": "The destination account is set as black hole, sending to this account will cause losing sent %{currency}.",
+    "theDestinationAccountIsSetAsBlackHole": "The destination account 'Black Holed', sending to this account will cause losing sent %{currency}.",
     "noDestinationTag": "No destination tag",
     "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "This address requires a Destination Tag",
