@@ -551,6 +551,7 @@
     "lpTokenOut": "LP Token Out",
     "lpTokenIn": "LP Token In",
     "tradingFee": "Trading Fee",
+    "serviceFee": "Service Fee",
     "authAccounts": "Auth Accounts",
     "genesisMint": "Genesis Mint",
     "enableAmendment": "Enable Amendment",

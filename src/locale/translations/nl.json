@@ -551,6 +551,7 @@
     "lpTokenOut": "LP Token Uit",
     "lpTokenIn": "LP Token In",
     "tradingFee": "Handelskosten",
+    "serviceFee": "Service Fee",
     "authAccounts": "Geautoriseerde Accounts",
     "genesisMint": "Genesis Mint",
     "enableAmendment": "Amendment Inschakelen",
