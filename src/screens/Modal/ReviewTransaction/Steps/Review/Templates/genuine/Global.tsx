@@ -331,7 +331,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>Service fee</Text>
+                <Text style={styles.label}>{Localize.t('events.serviceFee')}</Text>
                 <ServiceFee
                     txJson={transaction.JsonForSigning}
                     onSelect={this.setServiceFeeAmount}

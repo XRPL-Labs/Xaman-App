@@ -77,7 +77,6 @@ class SummaryStep extends Component<Props, State> {
 
     fetchCurrencyRate = () => {
         const { coreSettings } = this.context;
-
         const { currency } = coreSettings;
 
         BackendService.getCurrencyRate(currency)

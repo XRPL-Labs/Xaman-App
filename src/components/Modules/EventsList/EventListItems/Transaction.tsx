@@ -1,8 +1,12 @@
 import { isEmpty, isEqual } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, InteractionManager } from 'react-native';
+import { Text, View, InteractionManager } from 'react-native';
+import type { RatesType } from '@services/BackendService';
 
+import Localize from '@locale';
+
+import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
@@ -32,6 +36,11 @@ export interface Props {
     account: AccountModel;
     item: Transactions & MutationsMixinType;
     timestamp?: number;
+    rates?: {
+        fiatCurrency: string;
+        fiatRate: RatesType | undefined;
+        isLoadingRate: boolean;
+    };
 }
 
 export interface State {
@@ -43,6 +52,7 @@ export interface State {
 /* Component ==================================================================== */
 class TransactionItem extends Component<Props, State> {
     static Height = AppSizes.heightPercentageToDP(7.5);
+    static FeeHeight = AppSizes.heightPercentageToDP(4);
 
     private mounted = false;
 
@@ -151,30 +161,76 @@ class TransactionItem extends Component<Props, State> {
     };
 
     render() {
-        const { item, account } = this.props;
+        const { item, account, rates } = this.props;
         const { participant, explainer } = this.state;
 
+        const isFeeTransaction = participant?.address && AppConfig?.feeAccount &&
+            String(participant?.address || '') === String(AppConfig?.feeAccount || '') &&
+            typeof item.MetaData.delivered_amount === 'string' &&
+            (item as any)?._tx?.InvoiceID;
+
+        let feeText = '';
+        
+        if (isFeeTransaction) {
+            const feeFactor = explainer?.getMonetaryDetails()?.factor?.[0];
+            feeText = `${feeFactor?.value} ${feeFactor?.currency}`.trim();
+            if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
+                const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
+                if (effectiveAmount !== 0) {
+                    feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
+                    if (effectiveAmount < 0.01) {
+                        feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
+                    } 
+                }
+            }
+        }
+        
         return (
             <TouchableDebounce
                 onPress={this.onPress}
                 activeOpacity={0.6}
-                style={[styles.container, { height: TransactionItem.Height }]}
+                style={[styles.container, {
+                    height: isFeeTransaction
+                        ? TransactionItem.FeeHeight
+                        : TransactionItem.Height,
+                }]}
             >
                 {/* if participant is block the show an overlay to reduce the visibility */}
-                {participant?.blocked && <View style={styles.containerBlocked} />}
+                {(participant?.blocked && !isFeeTransaction) && <View style={styles.containerBlocked} />}
 
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Blocks.AvatarBlock participant={participant} item={item} />
+                    { isFeeTransaction && (
+                        <View style={[ styles.feeTxAvatar ]}>
+                            <Text>💸</Text>
+                        </View>
+                    )}
+                    { !isFeeTransaction && (
+                        <Blocks.AvatarBlock participant={participant} item={item} />
+                    )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                    <Blocks.LabelBlock item={item} account={account} participant={participant} />
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
-                        <Blocks.IndicatorIconBlock item={item} account={account} />
-                    </View>
+                    { !isFeeTransaction && (
+                        <Blocks.LabelBlock item={item} account={account} participant={participant} />
+                    )}
+                    { isFeeTransaction && (
+                        <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
+                    )}
+                    { !isFeeTransaction && (
+                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                            <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            <Blocks.IndicatorIconBlock item={item} account={account} />
+                        </View>
+                    )}
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                    <Blocks.MonetaryBlock explainer={explainer} />
+                    { isFeeTransaction && (
+                        <Text style={[ styles.requestTimeText, styles.naturalColor, styles.currency ]}>
+                            { feeText }
+                        </Text>
+                    )}
+                    { !isFeeTransaction && (
+                        <Blocks.MonetaryBlock explainer={explainer} />
+                    )}
                 </View>
             </TouchableDebounce>
         );

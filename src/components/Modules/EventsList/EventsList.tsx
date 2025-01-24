@@ -1,9 +1,13 @@
 import React, { PureComponent } from 'react';
-import { View, Text, RefreshControl, SectionList } from 'react-native';
+import { View, Text, RefreshControl, SectionList, InteractionManager } from 'react-native';
 
-import { AccountModel } from '@store/models';
+import has from 'lodash/has';
 
 import StyleService from '@services/StyleService';
+import BackendService, { RatesType } from '@services/BackendService';
+
+import { CoreRepository } from '@store/repositories';
+import { AccountModel, CoreModel } from '@store/models';
 
 import { Payload } from '@common/libs/payload';
 
@@ -28,6 +32,12 @@ export type DataSourceItem = {
     header: string;
 };
 
+interface State {
+    fiatCurrency: string;
+    fiatRate: RatesType | undefined;
+    isLoadingRate: boolean;
+}
+
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
@@ -40,7 +50,19 @@ interface Props {
 }
 
 /* Component ==================================================================== */
-class EventsList extends PureComponent<Props> {
+class EventsList extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
+
+        const coreSettings = CoreRepository.getSettings();
+
+        this.state = {
+            fiatCurrency: coreSettings.currency,
+            fiatRate: undefined,
+            isLoadingRate: false,
+        };
+    }
+
     renderListEmpty = () => {
         const { isLoading } = this.props;
 
@@ -69,6 +91,7 @@ class EventsList extends PureComponent<Props> {
 
     renderItem = ({ item }: { item: RowItemType }): React.ReactElement | null => {
         const { account, timestamp } = this.props;
+        const { fiatCurrency, fiatRate, isLoadingRate } = this.state;
 
         if (item instanceof Payload) {
             return React.createElement(EventListItems.Request, {
@@ -82,6 +105,7 @@ class EventsList extends PureComponent<Props> {
                 item,
                 account,
                 timestamp,
+                rates: { fiatCurrency, fiatRate, isLoadingRate },
             } as {
                 item: Transactions & MutationsMixinType;
                 account: AccountModel;
@@ -123,6 +147,62 @@ class EventsList extends PureComponent<Props> {
         );
     };
 
+    componentDidMount() {
+        // add listener for changes on currency and showReservePanel setting
+        CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
+        this.fetchCurrencyRate();
+    }
+
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
+    }
+
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        const { fiatCurrency } = this.state;
+
+        // currency changed
+        if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
+            this.setState({
+                fiatRate: undefined,
+                fiatCurrency: coreSettings.currency,
+            });
+        }
+
+        // default network changed
+        if (has(changes, 'network')) {
+            // clean up rate
+            this.setState({
+                fiatRate: undefined,
+            });
+
+            InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+        }
+    };
+
+    fetchCurrencyRate = () => {
+        const { fiatCurrency, isLoadingRate } = this.state;
+
+        if (!isLoadingRate) {
+            this.setState({
+                isLoadingRate: true,
+            });
+        }
+
+        BackendService.getCurrencyRate(fiatCurrency)
+            .then((rate: any) => {
+                this.setState({
+                    fiatRate: rate,
+                    isLoadingRate: false,
+                });
+            })
+            .catch(() => {
+                // Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                this.setState({
+                    isLoadingRate: false,
+                });
+            });
+    };
+
     keyExtractor = (item: any, index: number): string => {
         let key = '';
         if ([InstanceTypes.GenuineTransaction, InstanceTypes.FallbackTransaction].includes(item.InstanceType)) {
@@ -138,6 +218,7 @@ class EventsList extends PureComponent<Props> {
 
     render() {
         const { dataSource, onEndReached, headerComponent } = this.props;
+        
         return (
             <SectionList
                 style={styles.sectionList}

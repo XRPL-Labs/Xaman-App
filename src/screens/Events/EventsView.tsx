@@ -399,15 +399,11 @@ class EventsView extends Component<Props, State> {
                                     typeof transaction?.meta?.delivered_amount === 'string' &&
                                     Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
                                 ) {
-                                    const resolveDestination = String(transaction?.tx?.Destination || '');
+                                    // Only Acount (sender) counts, only hide if <SENT> to me
                                     const resolveAccount = String(transaction?.tx?.Account || '');
+                                    const accountResolver = await ResolverService.getAccountName(resolveAccount);
 
-                                    const [destinationResolver, accountResolver] = await Promise.all([
-                                        ResolverService.getAccountName(resolveDestination),
-                                        ResolverService.getAccountName(resolveAccount),
-                                    ]);
-
-                                    blocked = !!(destinationResolver?.blocked || accountResolver?.blocked);
+                                    blocked = !!accountResolver?.blocked;
                                 }
                             }
 
