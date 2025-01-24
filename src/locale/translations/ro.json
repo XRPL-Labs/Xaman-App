@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Imposibil de stabilit taxa de tranzacție, vă rugăm să încercați din nou.",
     "theDestinationAccountIsSetAsBlackHole": "Atenție: Contul destinar este setat ca ”gaură neagră”. Acest lucru înseamnă că fondurile trimise la această adresă nu vor mai putea fi vreodată recuperate.",
     "noDestinationTag": "Nicio etichetă pentru destinaţie",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Această adresă necesită o etichetă (tag).",
     "pleaseEnterAmount": "Vă rugăm să introduceți suma tranzacției.",
     "trustLineLimitExceeded": "Limita funcției TrusLine este depășită, acum: %{balance}, max: %{peer_limit}, disponibil pentru emiterea: %{available}. Destinatarul poate actualiza limita funcției TrustLine.",

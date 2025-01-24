@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "മുന്നറിയിപ്പ്: ഈ ലക്ഷ്യസ്ഥാന അക്കൗണ്ട് ഒരു തമോഗർത്തമായി സജ്ജമാക്കി. ഈ അക്ക to ണ്ടിലേക്ക് അയച്ച ഏത് എക്സ്ആർ‌പിയും ഫണ്ട് നഷ്‌ടപ്പെടും.",
     "noDestinationTag": "ഉദ്ദിഷ്ടസ്ഥാന ടാഗ് ഇല്ല",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "ഈ വിലാസത്തിന് ഒരു ലക്ഷ്യസ്ഥാന ടാഗ് ആവശ്യമാണ്.",
     "pleaseEnterAmount": "ഈ ഇടപാടിനായി തുക നൽകുക.",
     "trustLineLimitExceeded": "ട്രസ്റ്റ്‌ലൈൻ പരിധി കവിഞ്ഞു.\r\nഇപ്പോൾ: %{balance} \r\nപരമാവധി: %{peer_limit}\r\nനൽകുന്നതിന് ലഭ്യമാണ്: %{available}\r\nസ്വീകർത്താവിന് ട്രസ്റ്റ്‌ലൈൻ പരിധി അപ്‌ഡേറ്റുചെയ്യാനാകും.",

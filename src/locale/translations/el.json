@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "ΠΡΟΣΟΧΗ: Ο λογαριασμός του προορισμού έχει οριστεί ως \"μαύρη τρύπα\". Στέλνοντας XRP σε αυτό το λογαριασμό θα οδηγήσει στην απώλεια των χρημάτων.",
     "noDestinationTag": "Δεν υπάρχει ετικέτα προορισμού",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Αυτή η διεύθυνση απαιτεί ετικέτα προορισμού",
     "pleaseEnterAmount": "Παρακαλώ εισάγετε το ποσό αυτής της συναλλαγής.",
     "trustLineLimitExceeded": "Υπέρβαση του ορίου TrustLine: %{balance}, μέγιστο όριο: %{peer_limit}, διαθέσιμο για έκδοση: %{available}. Ο παραλήπτης μπορεί να ενημερώσει το όριο Trustline.",

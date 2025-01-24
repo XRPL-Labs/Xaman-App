@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "எச்சரிக்கை: இந்த இலக்கு கணக்கு கருந்துளையாக அமைக்கப்பட்டுள்ளது. இந்தக் கணக்கில் அனுப்பிய எந்த XRP நிதி இழப்பு ஏற்படுத்தும்!",
     "noDestinationTag": "இலக்கு குறிச்சொல் இல்லை",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "இந்த முகவரிக்கு இலக்கு குறிச்சொல் தேவை.",
     "pleaseEnterAmount": "இந்த பரிவர்த்தனைக்கான தொகையை உள்ளிடவும்.",
     "trustLineLimitExceeded": "டிரஸ்ட்லைன் வரம்பு மீறப்பட்டுள்ளது.\r\nஇப்போது: %{balance}\r\nஅதிகபட்சம்: %{peer_limit}\r\nவழங்குவதற்கு கிடைக்கிறது: %{available}\r\n\r\nபெறுநர் டிரஸ்ட்லைன் வரம்பை புதுப்பிக்க முடியும்.",

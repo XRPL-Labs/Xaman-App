@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Se kont lan destinasyon mete kòm twou nwa, voye nan kont sa a ap lakòz pèdi voye XRP.",
     "noDestinationTag": "Pa gen tag destinasyon",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Adrès sa a egzije yon etikèt destinasyon",
     "pleaseEnterAmount": "Tanpri antre kantite lajan tranzaksyon an",
     "trustLineLimitExceeded": "Limit KonfyansLiy depase.\r\n\r\nKounye a: %{balance}\r\nMaksimòm: %{peer_limit}\r\nDisponib pou founi dokiman yo: %{available}\r\nMoun k ap resevwa a ka mete ajou limit KonfyansLiy lan.",

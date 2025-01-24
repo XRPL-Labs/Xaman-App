@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Ne može se postaviti naknada za transakciju, molim pokušajte ponovno.",
     "theDestinationAccountIsSetAsBlackHole": "UPOZORENJE: Ovaj je odredišni račun postavljen kao crna rupa. Bilo koji XRP poslan na ovaj račun rezultirat će gubitkom sredstava!",
     "noDestinationTag": "Nema odredišne oznake (destination tag)",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Ova adresa zahtijeva odredišnu oznaku (destination tag)",
     "pleaseEnterAmount": "Molimo vas unesite iznos transakcije",
     "trustLineLimitExceeded": "Premašeno je ograničenje broja Linija povjeranje ('TrustLine'), trenutno stanje: %{balance}, maksimalno: %{peer_limit}, dostupno za izdavanje: %{available}. Primatelj može povećati broj maksimalnih Linija povjerenja.",

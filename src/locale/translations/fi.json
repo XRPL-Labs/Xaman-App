@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "VAROITUS! Määränpäätili on kirjattu musta aukko. Kaikki XRP-varat mitkä lähetetään tälle tilille katoavat pysyvästi!",
     "noDestinationTag": "Ei kohdetilin tagi-merkintää",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Tämä osoite edellyttää kohdetilin tagi-tunnistetta",
     "pleaseEnterAmount": "Anna transaktion määrä",
     "trustLineLimitExceeded": "TrustLine-raja on ylitetty. \r\n\r\nNyt: %{balance} \r\nMax: %{peer_limit} \r\nJulkaisusta käytettävissä: %{available}\r\n\r\nVastaanottaja voi päivittää Trustline-rajan.",

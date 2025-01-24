@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Sihtkonto on must auk, saates see konto põhjustab kaotades saadetud XRP.",
     "noDestinationTag": "Sihtmärgi silt puudub",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "See aadress nõuab sihtsilti",
     "pleaseEnterAmount": "Sisestage tehingu summa",
     "trustLineLimitExceeded": "TrustLine ülempiir on ületatud, nüüd: %{balance}, maksimum: %{peer_limit}, välja andmiseks: %{available}. Saaja saab uuendada Trustline limiiti.",

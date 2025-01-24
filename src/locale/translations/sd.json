@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "منزل وارو کاتو بليڪ هول طور مقرر ڪيو ويو آهي. XRP انهي اڪائونٽ تي موڪلڻ جي نتيجي ۾ فنڊز جي ضايع ٿيندي.",
     "noDestinationTag": "نه منزل ٽيگ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "هن ايڊريس کي منزل جي ٽيگ جي ضرورت آهي",
     "pleaseEnterAmount": "مهرباني ڪري موڪلڻ لاء رقم توهان چاهيو ۾ ڀريندا ڪريو",
     "trustLineLimitExceeded": "ٽرسٽ لائين جي حد وڌي وئي آهي.\r\nھاڻي: %{balance}\r\nوڌ کان وڌ: %{peer_limit}\r\nمسئلي لاءِ جاري ڪرڻ: %{available}\r\nوصول ڪندڙ ٽرسٽ لائن جي حد کي تازو ڪري سگھي ٿو.\r\n ",

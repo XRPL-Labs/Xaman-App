@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Сметката на местоназначение е определена като черна дупка, изпращане към тази сметка ще доведе до загуба на XRP.",
     "noDestinationTag": "Няма етикет на местоназначение (destination tag)",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Този адрес изисква етикет на местоназначение (destination tag)",
     "pleaseEnterAmount": "Моля, въведете сумата на транзакцията",
     "trustLineLimitExceeded": "Ограничението на TrustLine е надвишено, сега: %{balance}, макс .: %{peer_limit}, налична за издаване: %{available}. Получателят може да актуализира ограничението за TrustLine.",

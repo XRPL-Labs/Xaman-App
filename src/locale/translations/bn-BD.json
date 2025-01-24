@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "সতর্কতা: এই গন্তব্য অ্যাকাউন্টটি একটি ব্ল্যাকহোল হিসাবে সেট করা আছে। এই অ্যাকাউন্টে যে কোনও এক্সআরপি প্রেরণ করা হলে তহবিলের ক্ষতি হবে!",
     "noDestinationTag": "কোনও গন্তব্য ট্যাগ নেই",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "এই ঠিকানার জন্য একটি গন্তব্য ট্যাগ প্রয়োজন।",
     "pleaseEnterAmount": "এই লেনদেনের জন্য পরিমাণ লিখুন দয়া করে।",
     "trustLineLimitExceeded": "ট্রাস্টলাইন সীমাটি এখন ছাড়িয়ে গেছে: %{balance}, max: %{peer_limit}, জারি করার জন্য উপলব্ধ: %{available}. প্রাপক ট্রাস্টলাইন সীমা আপডেট করতে পারেন।",

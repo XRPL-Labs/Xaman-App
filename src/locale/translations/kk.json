@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Мақсатты шот қара тесік ретінде орнатылады, осы шотқа жіберу жіберілген XRP жоғалуына әкеледі.",
     "noDestinationTag": "Тағайындау тегі жоқ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Бұл мекен-жай тағайындалған тегті қажет етеді",
     "pleaseEnterAmount": "Сіз жібергіңіз келетін соманы толтырыңыз",
     "trustLineLimitExceeded": "Trustline шегі асып кетті.\r\n\r\nЕнді: %{balance}\r\nМакс: %{peer_limit}\r\nШығару үшін қол жетімді: %{available}\r\n\r\nАлушы сенім сызығының шегін жаңарта алады.",

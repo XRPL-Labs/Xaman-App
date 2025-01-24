@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Paskirties paskyra nustatyta kaip juodoji skylė. Siunčiant į šią sąskaitą bus prarasta išsiųsta XRP.",
     "noDestinationTag": "Nėra paskirties žymos",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Šis adresas reikalauja paskirties žymos",
     "pleaseEnterAmount": "Įveskite sumą, kurią norite pervesti",
     "trustLineLimitExceeded": "PasitikėjimoLinijos limitas viršytas.\r\n\r\nDabar: %{balance}\r\nMaks.: %{peer_limit}\r\nGalima išduoti: %{available}\r\n\r\nGavėjas gali atnaujinti PasitikėjimoLinijos limitą.",

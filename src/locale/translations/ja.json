@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "取引手数料を設定できません。再試行してください。",
     "theDestinationAccountIsSetAsBlackHole": "送信先のアカウントがブラックホールに設定されており、このアカウントに送信すると送信したXRPを失うことになります。",
     "noDestinationTag": "宛先タグなし",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "このアドレスには宛先タグが必要です",
     "pleaseEnterAmount": "取引金額を入力してください",
     "trustLineLimitExceeded": "トラストラインの制限を超えました。\r\n現在：%{balance}\r\n最大：%{peer_limit} \r\n発行可能：%{available} \r\n受取人はトラストラインの制限を更新することができます。",

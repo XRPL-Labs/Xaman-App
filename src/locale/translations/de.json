@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Die Transaktionsgebühr kann nicht festgelegt werden. Versuchen Sie es erneut.",
     "theDestinationAccountIsSetAsBlackHole": "WARNUNG: Dieser Ziel-Account wurde als \"schwarzes Loch\" gekennzeichnet. Alle XRP die an diesen Account gesendet werden, gehen verloren!",
     "noDestinationTag": "Kein Ziel-Tag (destination tag)",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Diese Adresse erfordert eine Bestimmungszahl (destination tag)",
     "pleaseEnterAmount": "Bitte geben Sie den Transaktionsbetrag ein",
     "trustLineLimitExceeded": "TrustLine-Limit wurde überschritten, jetzt: %{balance}, maximal: %{peer_limit}, zum Ausgeben verfügbar: %{available}. Der Empfänger kann das TrustLine-Limit aktualisieren.",

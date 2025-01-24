@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Helmugako kontua zulo beltz gisa ezarrita dago, kontu honetara bidaltzeak bidalitako XRP galtzea eragingo du.",
     "noDestinationTag": "Helmugako etiketarik ez",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Helbide honek helmuga etiketa behar du",
     "pleaseEnterAmount": "Mesedez sartu transakzioaren zenbatekoa",
     "trustLineLimitExceeded": "KonfiantzaLerro muga gainditzen da.\r\n\r\nOrain: %{balance}\r\nGehienez: %{peer_limit}\r\nJaulkitzeko erabilgarri: %{available}\r\n\r\nHartzaileak KonfiantzaLerro muga egunera dezake.",

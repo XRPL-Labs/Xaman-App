@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Nie można ustawić opłaty transakcyjnej. Spróbuj ponownie.",
     "theDestinationAccountIsSetAsBlackHole": "Konto docelowe jest ustawione jako czarna dziura, wysyłanie na to konto spowoduje utratę wysłanych XRP.",
     "noDestinationTag": "Brak tagu docelowego",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Ten adres wymaga tagu docelowego",
     "pleaseEnterAmount": "Wprowadź kwotę transakcji",
     "trustLineLimitExceeded": "Limit TrustLine został przekroczony, teraz: %{balance}, max: %{peer_limit}, dostępny do wydania: %{available}. Odbiorca może zaktualizować limit TrustLine.",

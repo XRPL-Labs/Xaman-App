@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Die bestemmingsrekening is an 'n swart gat gestel. As u na hierdie rekening stuur, kan die gestuurde XRP verloor word.",
     "noDestinationTag": "Geen bestemmingsplaatjie nie",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Hierdie adres vereis 'n bestemmingsplaatjie",
     "pleaseEnterAmount": "Voer asseblief die transaksiebedrag in",
     "trustLineLimitExceeded": "Vertrouenslyn-limiet word oorskry.\r\n\r\nNou: %{balance}\r\nMaks: %{peer_limit}\r\nBeskikbaar vir uitreiking: %{available}\r\n\r\nDie ontvanger kan die vertrouenslyn-limiet bywerk.",

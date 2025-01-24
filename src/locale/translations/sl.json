@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Ne morem nastaviti stroškov transakcije. Prosimo, poskusite znova.",
     "theDestinationAccountIsSetAsBlackHole": "OPOZORILO: Ciljni račun je nastavljen kot črna luknja, pošiljanje na ta račun pa bo povzročilo izgubo poslanih XRP.",
     "noDestinationTag": "Ni ciljne oznake",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Ta naslov zahteva ciljno oznako",
     "pleaseEnterAmount": "Prosimo, vnesite znesek transakcije",
     "trustLineLimitExceeded": "Omejitev zaupanja vredne povezave je presežena, zdaj: %{balance}, max: %{peer_limit}, na voljo za izdajo: %{available}. Prejemnik lahko posodobi omejitev zaupanja vredne povezave.",

@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Belgilangan hisob qora tuynuk sifatida o'rnatiladi. Ushbu hisob raqamiga XRP yuborish mablag'larning yo'qolishiga olib keladi.",
     "noDestinationTag": "Belgilangan yorliq (tag) yo'q",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Ushbu manzil manzil yorlig'i (Tag)ni talab qiladi",
     "pleaseEnterAmount": "Iltimos, yubormoqchi bo'lgan miqdorni to'ldiring",
     "trustLineLimitExceeded": "Ishonch yuli limitidan oshib ketdi.\r\n \r\nXozir: %{balance}\r\nYuqori: %{peer_limit}\r\nXozirda mavzud: %{available}\r\n \r\nQabul qiluvchiga Ishonch yuli limiti yangilanishi mumkin.",

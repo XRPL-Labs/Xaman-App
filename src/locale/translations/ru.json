@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Невозможно установить плату за транзакцию, повторите попытку.",
     "theDestinationAccountIsSetAsBlackHole": "ВНИМАНИЕ: целевой аккаунт обозначен как \"черная дыра\". Все XRP отправленные на этот акаунт будут потеряны.",
     "noDestinationTag": "Отсутствует тег назначения",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Для этого адреса требуется тег назначения",
     "pleaseEnterAmount": "Пожалуйста, введите сумму транзакции",
     "trustLineLimitExceeded": "Лимит линии доверия превышен.\r\nСейчас: %{balance}\r\nМаксимум: %{peer_limit}\r\nДоступен для выпуска: %{available}\r\nПолучатель может обновить лимит. ",

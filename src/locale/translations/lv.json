@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Saņēmēja konts iestatīts kā tukšums, sūtot uz šo kontu variet zaudēt nosūtītos XRP.",
     "noDestinationTag": "Nav autentifikatora",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Adresei nepieciešams autentifikators",
     "pleaseEnterAmount": "Lūdzu ievadiet summu, kuru vēlaties nosūtīt",
     "trustLineLimitExceeded": "TrustLine limits ir pārsniegts.\r\nTagad: Variable %{balance}\r\nMax: Variable %{peer_limit}\r\nPieejams izdošanai: Variable %{available}\r\n\r\nSaņēmējs var atjaunināt Trustline limitu.",

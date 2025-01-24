@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "Tài khoản đích được đặt là lỗ đen, việc gửi đến tài khoản này sẽ làm mất XRP đã gửi.",
     "noDestinationTag": "Không có thẻ nhận",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Địa chỉ này yêu cầu thẻ đích đến",
     "pleaseEnterAmount": "Vui lòng nhập số tiền giao dịch",
     "trustLineLimitExceeded": "Đã vượt quá giới hạn TrustLine, hiện tại: %{balance}, tối đa: %{peer_limit}, khả dụng để phát hành: %{available}. Người nhận có thể cập nhật giới hạn Trustline.",

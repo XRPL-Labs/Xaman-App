@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "ಎಚ್ಚರಿಕೆ: ಈ ಗಮ್ಯಸ್ಥಾನ ಖಾತೆಯನ್ನು ಕಪ್ಪು ಕುಳಿಯಂತೆ ಹೊಂದಿಸಲಾಗಿದೆ. ಈ ಖಾತೆಗೆ ಕಳುಹಿಸಿದ ಯಾವುದೇ ಎಕ್ಸ್‌ಆರ್‌ಪಿ ಹಣದ ನಷ್ಟಕ್ಕೆ ಕಾರಣವಾಗುತ್ತದೆ!",
     "noDestinationTag": "ಗಮ್ಯಸ್ಥಾನ ಟ್ಯಾಗ್ ಇಲ್ಲ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "ಈ ವಿಳಾಸಕ್ಕೆ ಗಮ್ಯಸ್ಥಾನ ಟ್ಯಾಗ್ ಅಗತ್ಯವಿದೆ",
     "pleaseEnterAmount": "ದಯವಿಟ್ಟು ವಹಿವಾಟಿನ ಪ್ರಮಾಣವನ್ನು ನಮೂದಿಸಿ",
     "trustLineLimitExceeded": "ಟ್ರಸ್ಟ್‌ಲೈನ್ ಮಿತಿಯನ್ನು ಮೀರಿದೆ, ಈಗ:%{balance}, ಗರಿಷ್ಠ:%{peer_limit}, ವಿತರಿಸಲು ಲಭ್ಯವಿದೆ:%{available}. ಸ್ವೀಕರಿಸುವವರು ಟ್ರಸ್ಟ್‌ಲೈನ್ ಮಿತಿಯನ್ನು ನವೀಕರಿಸಬಹುದು.",

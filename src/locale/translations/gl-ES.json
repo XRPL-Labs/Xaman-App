@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "AVISO: Esta conta de destino configúrase como un burato negro. Calquera XRP enviado a esta conta provocará a perda de fondos.",
     "noDestinationTag": "Non hai etiqueta de destino",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Esta dirección precisa dunha etiqueta de destino",
     "pleaseEnterAmount": "Por favor introduza a cantidade da transacción",
     "trustLineLimitExceeded": "Excedeuse o límite da Liña de Confianza: agora %{balance}, máximo %{peer_limit}, dispoñible para emisión: %{available}. O destinatario pode actualiza-lo límite da Liña de Confianza.",

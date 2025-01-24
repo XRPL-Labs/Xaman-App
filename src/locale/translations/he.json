@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "חשבון היעד מוגדר כחור שחור, שליחה לחשבון זה תגרום לאיבוד XRP שנשלח.",
     "noDestinationTag": "אין תג יעד",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "כתובת זו דורשת תג יעד",
     "pleaseEnterAmount": "אנא הזן את סכום העסקה",
     "trustLineLimitExceeded": "מגבלת TrustLine חורגת.\r\n\r\nעכשיו: %{balance}\r\nמקסימום: %{peer_limit}\r\nזמין להנפקה: %{available}\r\nהנמען יכול לעדכן את מגבלת ה- Trustline.",

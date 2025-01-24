@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "입금 계좌가 블랙홀로 설정되어 있으므로 이 계좌로 전송시 XRP가 손실됩니다.",
     "noDestinationTag": "목적지 태그 없음",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "이 주소에는 목적지 태그가 필요합니다.",
     "pleaseEnterAmount": "거래 금액을 입력하세요",
     "trustLineLimitExceeded": "TrustLine 한도가 초과되었습니다. \r\n\r\n지금: %{balance}\r\n최대: %{peer_limit}\r\n발행 가능: %{available}\r\n\r\n수신자는 TrustLine 한도를 바꿀 수 있습니다. ",

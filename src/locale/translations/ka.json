@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "ტრანზაქციის საკომისიოს დაყენება შეუძლებელია, გთხოვთ, სცადოთ ხელახლა.",
     "theDestinationAccountIsSetAsBlackHole": "მიმღები ანგარიში დაყენებულია როგროც შავი ხვრელი, ამ ანგარიშზე განხორციელებული გზავნილი გამოიწვევს თქვენი XRP-ის დაკარგვას.",
     "noDestinationTag": "მიმღები ანგარიშის თეგი ცარიელია",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "ამ მისამართზე მიმღები ანგარიშის თეგის შეყვანა სავალდებულოა ",
     "pleaseEnterAmount": "გთხოვთ შეიყვანეთ ტრანზაქციის რაოდენობა",
     "trustLineLimitExceeded": "\tTrustLine-ის ლიმიტი გადაჭარბებულია.\r\n\r\nახლა: %{balance}\r\nმაქსიმალური: %{peer_limit}\r\nგამოცემისთვის ხელმისაწვდომი: %{available}\r\n\r\nმიმღებ მისამართზე შესაძლებელია TrustLine-ის ლიმიტის განახლება.",

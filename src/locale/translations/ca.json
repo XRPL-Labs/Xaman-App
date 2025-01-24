@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "No s'han pogut establir les taxes de transacció, torna-ho a provar.",
     "theDestinationAccountIsSetAsBlackHole": "AVÍS: Aquest compte de destinació està establert com a forat negre. L'XRP que s'hi enviï  es perdrà per sempre!",
     "noDestinationTag": "Sense etiqueta de destinació",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Aquesta adreça requereix una etiqueta de destinació (Destination Tag)",
     "pleaseEnterAmount": "Si us plau, introdueix l'import de la transacció",
     "trustLineLimitExceeded": "S'ha superat el límit de la línia de confiança (TrustLine), ara: %{balance}, màxim: %{peer_limit}, disponible per emetre: %{available}. El destinatari pot actualitzar el límit de la línia de confiança.",

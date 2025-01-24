@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "İşlem ücreti ayarlanamıyor, lütfen yeniden deneyin.",
     "theDestinationAccountIsSetAsBlackHole": "UYARI: Hedef hesap bir kara delik olarak ayarlanmıştır. Bu hesaba XRP gönderimi fonların kaybına sebep olacaktır.",
     "noDestinationTag": "Hedef etiketi yok",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Bu adres bir hedef etiketi gerektirir",
     "pleaseEnterAmount": "Lütfen işlem miktarını girin",
     "trustLineLimitExceeded": "Güven ilişkisi sınırı aşıldı, şu anki: %{balance}, en fazla: %{peer_limit}, yayınlanmak için kullanılabilir: %{available}. Alıcı güven ilişkisi sınırını güncelleyebilir.",

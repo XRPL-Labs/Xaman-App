@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "تم تعيين حساب الوجهة على أنه ثقب أسود ، وسيؤدي الإرسال إلى هذا الحساب إلى فقد XRP المرسل.",
     "noDestinationTag": "لا توجد علامة وجهة",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "يتطلب هذا العنوان علامة الوجهة",
     "pleaseEnterAmount": "الرجاء إدخال مبلغ الصفقة",
     "trustLineLimitExceeded": "تم تخطي حدود خط الثقة، الآن : %{balance}, حد أقصى: %{peer_limit}، متاح لاصدار : %{available}. يمكن أن يقوم المستلم بتعديل حدود خط الثقة.",

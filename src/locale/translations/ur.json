@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "منزل مقصود کو بلیک ہول کی حیثیت سے ترتیب دیا گیا ہے۔ اس اکاؤنٹ میں XRP بھیجنے کے نتیجے میں فنڈز کا نقصان ہوگا۔",
     "noDestinationTag": "منزل مقصود نہیں",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "اس پتے کے لئے منزل مقصود ٹیگ کی ضرورت ہے",
     "pleaseEnterAmount": "براہ کرم لین دین کی رقم درج کریں",
     "trustLineLimitExceeded": "ٹرسٹ لائن کی حد سے تجاوز کرگیا۔\r\n\r\nاب: %{balance}\r\nزیادہ سے زیادہ: %{peer_limit}\r\nجاری کرنے کے لئے دستیاب: %{available}\r\n\r\nوصول کنندہ ٹرسٹ لائن کی حد کو اپ ڈیٹ کرسکتا ہے۔",

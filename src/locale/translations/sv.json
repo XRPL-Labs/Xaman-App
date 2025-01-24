@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Det går inte att ställa in transaktionsavgiftens. Försök igen.",
     "theDestinationAccountIsSetAsBlackHole": "Destinationskontot är inställt som svart hål, som skickar till det här kontot kommer att förlora skickat XRP.",
     "noDestinationTag": "Inget målmärkord",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Den här adressen kräver en måltagg",
     "pleaseEnterAmount": "Ange transaktionsbeloppet",
     "trustLineLimitExceeded": "Gränsen för TrustLine har överskridits. \r\nNu: %{balance}\r\nMax: %{peer_limit}\r\nTillgänglig för att utfärda: %{available}. \r\nMottagaren kan uppdatera gränsen för Trustline.",

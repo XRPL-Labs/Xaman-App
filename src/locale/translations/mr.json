@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "गंतव्य खाते ब्लॅक होल म्हणून सेट केले आहे, या खात्यावर पाठविल्यास पाठविलेला एक्सआरपी गमावेल.",
     "noDestinationTag": "गंतव्य टॅग नाही",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "या पत्त्यास गंतव्य टॅग आवश्यक आहे",
     "pleaseEnterAmount": "कृपया या व्यवहारासाठी रक्कम प्रविष्ट करा.",
     "trustLineLimitExceeded": "ट्रस्टलाइनची मर्यादा ओलांडली आहे.\r\nआता: %{balance}\r\nकमाल: %{peer_limit}\r\nजारी करण्यासाठी उपलब्ध: %{available}\r\nप्राप्तकर्ता ट्रस्टलाइन मर्यादा अद्यतनित करू शकतात.\r\n\r\n",

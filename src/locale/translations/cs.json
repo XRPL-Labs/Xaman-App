@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "POZOR! Cílový účet je nastaven jako černá díra, odeslání na tento účet způsobí ztrátu XRP.",
     "noDestinationTag": "Žádná cílová značka (tag)",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Tato adresa vyžaduje cílovou značku (tag)",
     "pleaseEnterAmount": "Zadejte prosím částku transakce",
     "trustLineLimitExceeded": "Limit pro tuto TrustLine překročen, nyní: %{balance}, max: %{peer_limit}, k dispozici pro vydání: %{available}. Limit pro Trustline může změnit příjemce.",

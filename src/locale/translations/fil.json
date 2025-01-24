@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Hindi makapagtakda ng mga bayarin sa transaksyon, pakisubukang muli.",
     "theDestinationAccountIsSetAsBlackHole": "Ang patutunguhang account ay itinakda bilang itim na butas, ang pagpapadala sa account na ito ay magiging sanhi ng pagkawala ng naipadala na XRP.",
     "noDestinationTag": "Walang patutunguhang tag",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Nangangailangan ang address na ito ng patutunguhang Tag",
     "pleaseEnterAmount": "Mangyaring ipasok ang halaga ng transaksyon",
     "trustLineLimitExceeded": "Lumagpas sa limitasyon ng TrustLine.\r\n\r\nNgayon: %{balance}\r\nMax: %{peer_limit}\r\nMagagamit para sa pag-isyu: %{available}\r\n\r\nMaaaring i-update ng tatanggap ang limitasyon ng Trustline.",

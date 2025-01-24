@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Impossible de définir les frais de transaction, veuillez réessayer.",
     "theDestinationAccountIsSetAsBlackHole": "ATTENTION : Le compte de destination est reconnu comme un trou noir. Tout XRP envoyé à ce compte entraînera la perte de vos fonds !",
     "noDestinationTag": "Aucun tag de destination",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Cette adresse requiert un tag de destination",
     "pleaseEnterAmount": "Veuillez entrer le montant de la transaction",
     "trustLineLimitExceeded": "La limite TrustLine est dépassée, maintenant: %{balance}, max: %{peer_limit}, disponible pour l'émission: %{available}. Le destinataire peut mettre à jour la limite de Trustline.",

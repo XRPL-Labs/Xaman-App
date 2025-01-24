@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Не могу да поставим трансакциони хонорар, покушајте поново.",
     "theDestinationAccountIsSetAsBlackHole": "УПОЗОРЕЊЕ: Овај одредишни рачун постављен је као црна рупа. Било који XRP послат на овај рачун резултираће губитком средстава!",
     "noDestinationTag": "Нема ознаке за одредиште",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Ова веб адреса захтева ознаку за одредиште ",
     "pleaseEnterAmount": "Унесите износ за ову трансакцију.",
     "trustLineLimitExceeded": "TrustLine је прекорачен.\r\n\r\nСада: %{balance}\r\nМaксимум: %{peer_limit}\r\nДоступан за издавање: %{available}\r\n\r\nПрималац може да ажурира Trustline ограничење .",

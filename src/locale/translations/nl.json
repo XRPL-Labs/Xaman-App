@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Kan transactiekosten niet instellen, probeer het opnieuw.",
     "theDestinationAccountIsSetAsBlackHole": "Het bestemmingsaccount is ingesteld als black hole, versturen naar dit account zal leiden tot verlies van verstuurde %{currency}.",
     "noDestinationTag": "Geen destination tag",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Dit adres vereist een Destination Tag",
     "pleaseEnterAmount": "Voer het transactiebedrag in",
     "trustLineLimitExceeded": "TrustLine limiet is overschreden.\r\n\r\nNu: %{balance}\r\nMax: %{peer_limit}\r\nBeschikbaar voor uitgeven: %{available}\r\n\r\nDe ontvanger kan de Trustline limiet bijwerken.",

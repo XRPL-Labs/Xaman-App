@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "ADVARSEL: denne destinasjonkontoen er konfigurert som et svart hull. Alt av XRP sent til denne kontoen vil resultere i tap av midler!",
     "noDestinationTag": "Blankt destinasjonsmerke",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Denne adressen krever et destinasjonsmerke",
     "pleaseEnterAmount": "Vennligst oppgi beløpet for transaksjonen",
     "trustLineLimitExceeded": "TillitsLinje-grense er overskredet, nåværende verdi: %{balance}, maks: %{peer_limit}, tilgjengelig for utstedelse: %{available}. Mottakeren kan oppdatere Tillitslinje-grense.",

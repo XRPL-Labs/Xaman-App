@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "ચેતવણી: આ લક્ષ્યસ્થાન એકાઉન્ટમાં એક બ્લેક હોલ તરીકે સેટ કરવામાં આવે છે. આ એકાઉન્ટ પર મોકલેલા કોઇ XRP ભંડોળના નુકશાન પરિણમશે!",
     "noDestinationTag": "કોઈ ગંતવ્ય ટેગ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "આ સરનામાં માટે ગંતવ્ય ટ tagગની જરૂર છે.",
     "pleaseEnterAmount": "કૃપા કરીને આ વ્યવહાર માટેની રકમ દાખલ કરો.",
     "trustLineLimitExceeded": "ટ્રસ્ટલાઈનની મર્યાદા ઓળંગી ગઈ છે.\r\nહવે: %{balance}\r\nમહત્તમ: %{peer_limit}\r\nજારી કરવા માટે ઉપલબ્ધ છે: %{available}\r\nપ્રાપ્તકર્તા ટ્રસ્ટલાઇન મર્યાદાને અપડેટ કરી શકે છે.",

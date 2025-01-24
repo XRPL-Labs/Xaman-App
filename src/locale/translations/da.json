@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Kan ikke angive transaktionsgebyr. Prøv venligst igen.",
     "theDestinationAccountIsSetAsBlackHole": "ADVARSEL! Denne destinationskonto er angivet som et sort hul. Alle XRP, der sendes til denne konto, vil gå tabt!",
     "noDestinationTag": "Ingen destinationskode",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Denne adresse kræver en destinationskode",
     "pleaseEnterAmount": "Angiv venligst beløbet for denne transaktion.",
     "trustLineLimitExceeded": "TrustLine-grænse er overskredet, nu: %{balance}, maks.: %{peer_limit}, tilgængelig for udstedelse: %{available}. Modtageren kan opdatere grænsen for TrustLine.",

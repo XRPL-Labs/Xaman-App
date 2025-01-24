@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Unable to set transaction fees, please try again.",
     "theDestinationAccountIsSetAsBlackHole": "ਚੇਤਾਵਨੀ: ਇਹ ਮੰਜ਼ਿਲ ਖਾਤਾ ਇੱਕ ਬਲੈਕ ਹੋਲ ਦੇ ਰੂਪ ਵਿੱਚ ਸੈਟ ਕੀਤਾ ਗਿਆ ਹੈ. ਇਸ ਖਾਤੇ ਨੂੰ ਭੇਜਿਆ ਗਿਆ ਕੋਈ ਵੀ ਐਕਸਆਰਪੀ ਫੰਡਾਂ ਦੇ ਨੁਕਸਾਨ ਦੇ ਨਤੀਜੇ ਵਜੋਂ ਹੋਵੇਗਾ!",
     "noDestinationTag": "ਕੋਈ ਮੰਜ਼ਿਲ ਟੈਗ ਨਹੀਂ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "ਇਸ ਪਤੇ ਲਈ ਇੱਕ ਟਿਕਾਣਾ ਟੈਗ ਚਾਹੀਦਾ ਹੈ.",
     "pleaseEnterAmount": "ਕਿਰਪਾ ਕਰਕੇ ਇਸ ਸੌਦੇ ਲਈ ਰਕਮ ਦਾਖਲ ਕਰੋ.",
     "trustLineLimitExceeded": "ਟਰੱਸਟਲਾਈਨ ਦੀ ਹੱਦ ਪਾਰ ਹੋ ਗਈ ਹੈ.\r\nਹੁਣ: %{balance}\r\nਅਧਿਕਤਮ: %{peer_limit}\r\nਜਾਰੀ ਕਰਨ ਲਈ ਉਪਲਬਧ ਹੈ: %{available}\r\nਪ੍ਰਾਪਤਕਰਤਾ ਟਰੱਸਟਲਾਈਨ ਸੀਮਾ ਨੂੰ ਅਪਡੇਟ ਕਰ ਸਕਦਾ ਹੈ.",

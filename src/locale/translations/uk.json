@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Не вдається встановити комісію за транзакцію, спробуйте ще раз.",
     "theDestinationAccountIsSetAsBlackHole": "Цільовий акаунт встановлений як чорна діра, надсилання на цей акаунт призведе до втрати відправлених XRP.",
     "noDestinationTag": "Відсутній тег призначення",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Для цієї адреси потрібен тег призначення",
     "pleaseEnterAmount": "Будь ласка, введіть суму транзакції",
     "trustLineLimitExceeded": "Ліміт лінії довіри перевищено.\r\nЗараз: %{balance}\r\nМаксимум: %{peer_limit}\r\nДоступний для випуску: %{available}\r\nОтримувач може оновити ліміт.",

@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "లావాదేవీ రుసుములను సెట్ చేయడం సాధ్యపడలేదు, దయచేసి మళ్లీ ప్రయత్నించండి",
     "theDestinationAccountIsSetAsBlackHole": "హెచ్చరిక: ఈ గమ్యం ఖాతా కాల రంధ్రంగా సెట్ చేయబడింది. ఈ ఖాతాకు పంపిన ఏదైనా XRP నిధుల నష్టానికి దారితీస్తుంది!",
     "noDestinationTag": "గమ్యం ట్యాగ్ లేదు",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "ఈ చిరునామాకు గమ్యం ట్యాగ్ అవసరం",
     "pleaseEnterAmount": "దయచేసి లావాదేవీ మొత్తాన్ని నమోదు చేయండి",
     "trustLineLimitExceeded": "ట్రీట్లైన్ పరిమితి అధికం, ఇప్పుడు: %{balance}, max: %{peer_limit}, జారీచేయడానికి అందుబాటులో ఉన్నాయి: %{available}. గ్రహీత ట్రస్ట్‌లైన్ పరిమితిని నవీకరించవచ్చు",

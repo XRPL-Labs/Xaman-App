@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Tidak dapat menset nilai transaksi, silakan coba lagi.",
     "theDestinationAccountIsSetAsBlackHole": "Akun tujuan ditetapkan sebagai lubang hitam, mengirim ke akun ini akan menyebabkan kehilangan XRP yang dikirim.",
     "noDestinationTag": "Tidak ada tag tujuan",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Alamat ini membutuhkan Tag Tujuan",
     "pleaseEnterAmount": "Harap masukkan jumlah transaksi",
     "trustLineLimitExceeded": "Batas TrustLine terlampaui.\r\n\r\nSekarang: %{balance}\r\nMaks .: %{peer_limit}\r\nTersedia untuk diterbitkan: %{available}\r\n\r\nPenerima dapat memperbarui batas Trustline.",

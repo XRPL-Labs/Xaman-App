@@ -1093,6 +1093,7 @@
     "unableToSetFeesPleaseTryAgain": "Impossibile impostare la tassa di transazione, riprovare.",
     "theDestinationAccountIsSetAsBlackHole": "L'account di destinazione è un black hole, gli XRP inviati non potranno più essere recuperati.",
     "noDestinationTag": "Nessun tag di destinazione ",
+    "addDestinationTag": "Add destination tag",
     "thisAddressRequiredDestinationTag": "Questo indirizzo richiede un tag di destinazione",
     "pleaseEnterAmount": "Inserisci l'importo della transazione",
     "trustLineLimitExceeded": "Il limite di TrustLine è stato superato, ora: %{balance}, massimo: %{peer_limit}, disponibile per l'emissione: %{available}. Il destinatario può aggiornare il limite di Trustline.",
