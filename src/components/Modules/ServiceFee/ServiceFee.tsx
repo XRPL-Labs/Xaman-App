@@ -212,7 +212,7 @@ class ServiceFee extends Component<Props, State> {
                                 String(this.getNormalizedFeePercentage()) === '0' &&
                                 String(this.getNormalizedFee()) === '0'
                             ) && (
-                                <Text style={textStyle}>None</Text>
+                                <Text style={textStyle}>{Localize.t('global.none')}</Text>
                             )
                         }
                         {
