@@ -218,23 +218,25 @@ class TokenSettingsOverlay extends Component<Props, State> {
             // TODO: test me
             const payload = Payload.build(paymentJson);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            // await this.dismiss();
+
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<Payment>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -244,9 +246,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
         }
@@ -334,23 +336,25 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
             const payload = Payload.build(trustSet.JsonForSigning);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            // await this.dismiss();
+
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -360,9 +364,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.overCurrentContext },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
@@ -648,9 +652,13 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
-        if (isReviewScreenVisible) {
-            return null;
-        }
+        const visibilityAndPointer: {
+            pointerEvents: 'auto' | 'none';
+            display?: 'flex' | 'none';
+        } =
+            isReviewScreenVisible
+                ? { pointerEvents: 'none', display: 'none' }
+                : { pointerEvents: 'auto' };
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -661,7 +669,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
             <Animated.View
                 needsOffscreenAlphaCompositing
                 testID="currency-settings-overlay"
-                style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
+                style={[styles.container, {
+                    opacity: this.animatedOpacity,
+                    backgroundColor: interpolateColor,
+                    ...visibilityAndPointer,
+                }]}
             >
                 <Animated.View style={styles.visibleContent}>
                     <View style={styles.headerContainer}>
