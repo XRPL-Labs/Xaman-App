@@ -126,7 +126,6 @@ class XAppItem extends Component<Props> {
                 flex: number;
                 alignItems: 'center';
                 justifyContent: 'center';
-                alignSelf: 'stretch';
             } = { 
                 flex: 1,
                 justifyContent: 'center',
