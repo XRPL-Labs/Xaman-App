@@ -334,8 +334,15 @@ class VaultOverlay extends Component<Props, State> {
                 signMethod: method,
             };
 
+            // console.log(transaction?.ServiceFee);
+
             let signedServiceFeeObject;
             if (Number(transaction?.ServiceFee || 0) > 0) {
+                const serviceFeeTxFee = String(Math.min(
+                    (Number(transaction.JsonForSigning.Fee) || 100),
+                    100,
+                ));
+
                 signedServiceFeeObject = AccountLib.sign(
                     { 
                         TransactionType: 'Payment',
@@ -351,14 +358,19 @@ class VaultOverlay extends Component<Props, State> {
 
                         // FEE DESTINATIONA DDRESS
                         Destination: AppConfig.feeAccount,
-                        Sequence: await LedgerService.getAccountSequence(transaction.JsonForSigning.Account),
+                        Sequence: transaction.JsonForSigning?.Sequence
+                            ? transaction.JsonForSigning.Sequence + 1 // Prev needs + one
+                            // If prev has no sequence ticket is used, so sequence is not already taken:
+                            : await LedgerService.getAccountSequence(transaction.JsonForSigning.Account),
                         NetworkID: transaction?.NetworkID,
                         Amount: String(transaction.ServiceFee),
-                        Fee: String(Number(transaction.JsonForSigning.Fee) || 100),
+                        Fee: serviceFeeTxFee,
                     },
                     signerInstance,
                     definitions,
                 ) as SignedObjectType;
+
+                // console.log(signedServiceFeeObject)
 
                 // console.log('Vault overlay [servicefeeobject]', String(transaction.ServiceFee));
                 signedServiceFeeObject = {
