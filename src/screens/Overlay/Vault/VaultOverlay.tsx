@@ -9,6 +9,8 @@ import { Alert, BackHandler, InteractionManager, Linking, NativeEventSubscriptio
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
+import LedgerService from '@services/LedgerService';
+
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
@@ -332,34 +334,38 @@ class VaultOverlay extends Component<Props, State> {
                 signMethod: method,
             };
 
-            let signedServiceFeeObject = AccountLib.sign(
-                { 
-                    TransactionType: 'Payment',
-                    Account: transaction.JsonForSigning.Account,
-                    InvoiceID: signedObject.id,
-                    Memos: [
-                        { 
-                            Memo: {
-                                MemoData: Buffer.from('Xaman Service Fee', 'utf-8').toString('hex').toUpperCase(),
+            let signedServiceFeeObject;
+            if (Number(transaction?.ServiceFee || 0) > 0) {
+                signedServiceFeeObject = AccountLib.sign(
+                    { 
+                        TransactionType: 'Payment',
+                        Account: transaction.JsonForSigning.Account,
+                        InvoiceID: signedObject.id,
+                        Memos: [
+                            { 
+                                Memo: {
+                                    MemoData: Buffer.from('Xaman Service Fee', 'utf-8').toString('hex').toUpperCase(),
+                                },
                             },
-                        },
-                    ],
+                        ],
 
-                    // FEE DESTINATIONA DDRESS
-                    Destination: AppConfig.feeAccount,
-                    Sequence: (transaction.JsonForSigning?.Sequence || 0) + 1,
-                    Amount: String(transaction.ServiceFee),
-                    Fee: String(Number(transaction.JsonForSigning.Fee) || 100),
-                },
-                signerInstance,
-                definitions,
-            ) as SignedObjectType;
+                        // FEE DESTINATIONA DDRESS
+                        Destination: AppConfig.feeAccount,
+                        Sequence: await LedgerService.getAccountSequence(transaction.JsonForSigning.Account),
+                        NetworkID: transaction?.NetworkID,
+                        Amount: String(transaction.ServiceFee),
+                        Fee: String(Number(transaction.JsonForSigning.Fee) || 100),
+                    },
+                    signerInstance,
+                    definitions,
+                ) as SignedObjectType;
 
-            // console.log('Vault overlay [servicefeeobject]', String(transaction.ServiceFee));
-            signedServiceFeeObject = {
-                ...signedServiceFeeObject,
-                signerPubKey: signerInstance.keypair.publicKey ?? undefined,
-                signMethod: method,
+                // console.log('Vault overlay [servicefeeobject]', String(transaction.ServiceFee));
+                signedServiceFeeObject = {
+                    ...signedServiceFeeObject,
+                    signerPubKey: signerInstance.keypair.publicKey ?? undefined,
+                    signMethod: method,
+                };
             };
 
             this.onSign(signedObject, signedServiceFeeObject);
