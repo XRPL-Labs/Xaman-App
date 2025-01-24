@@ -131,6 +131,12 @@ class GeneralSettingsView extends Component<Props, State> {
         Navigator.reRender();
     };
 
+    hideAdvisoryTransactionsChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            hideAdvisoryTransactions: value,
+        });
+    };
+
     hapticFeedbackChange = (value: boolean) => {
         CoreRepository.saveSettings({
             hapticFeedback: value,
@@ -298,6 +304,20 @@ class GeneralSettingsView extends Component<Props, State> {
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </View>
                     </TouchableDebounce>
+
+                    <View style={styles.row}>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.hideAdvisoryTransactions')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch
+                                checked={coreSettings.hideAdvisoryTransactions}
+                                onChange={this.hideAdvisoryTransactionsChange}
+                            />
+                        </View>
+                    </View>
 
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>

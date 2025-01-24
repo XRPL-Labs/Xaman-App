@@ -54,7 +54,9 @@ class ReviewStep extends Component<Props, State> {
 
     toggleCanScroll = () => {
         const { canScroll } = this.state;
-
+        
+        // console.log('ToggleCanScroll')
+        
         this.setState({
             canScroll: !canScroll,
         });

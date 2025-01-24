@@ -36,6 +36,8 @@ class GlobalTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // console.log('ReviewTx Global')
+
         this.state = {
             warnings: undefined,
             showFeePicker: typeof props.transaction.Fee === 'undefined' && !props.payload.isMultiSign(),
