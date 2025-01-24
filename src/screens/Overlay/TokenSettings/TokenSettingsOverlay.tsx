@@ -5,7 +5,7 @@ import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { Alert, Animated, InteractionManager, Text, View } from 'react-native';
+import { Platform, Alert, Animated, InteractionManager, Text, View } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
@@ -652,11 +652,17 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
+        if (Platform.OS === 'ios' && isReviewScreenVisible) {
+            // IOS will be at the back
+            return null;
+        }
+
+        // Android is screwed and needs fixes
         const visibilityAndPointer: {
             pointerEvents: 'auto' | 'none';
             display?: 'flex' | 'none';
         } =
-            isReviewScreenVisible
+            isReviewScreenVisible && Platform.OS === 'android'
                 ? { pointerEvents: 'none', display: 'none' }
                 : { pointerEvents: 'auto' };
 
