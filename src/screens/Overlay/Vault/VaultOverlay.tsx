@@ -27,6 +27,7 @@ import Keyboard from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 
+import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 import { WebLinks } from '@common/constants/endpoints';
 
@@ -345,7 +346,7 @@ class VaultOverlay extends Component<Props, State> {
                     ],
 
                     // FEE DESTINATIONA DDRESS
-                    Destination: 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt',
+                    Destination: AppConfig.feeAccount,
                     Sequence: (transaction.JsonForSigning?.Sequence || 0) + 1,
                     Amount: String(transaction.ServiceFee),
                     Fee: String(Number(transaction.JsonForSigning.Fee) || 100),
