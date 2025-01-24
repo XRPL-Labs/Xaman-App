@@ -372,29 +372,50 @@ class SummaryStep extends Component<Props, State> {
                             </View>
                         </View>
 
-                        <Spacer size={20} />
+                        <Spacer size={10} />
 
-                        <View style={AppStyles.row}>
-                            <View style={AppStyles.flex1}>
-                                <View style={styles.rowTitle}>
-                                    <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
-                                        {typeof destination!.tag !== 'undefined' &&
-                                            `${Localize.t('global.destinationTag')}: `}
-                                        <Text style={AppStyles.colorBlue}>
-                                            {destination!.tag || Localize.t('send.noDestinationTag')}
-                                        </Text>
-                                    </Text>
+                        {
+                            String(destination?.tag || '') === '' && (
+                                <View style={[ styles.rowTitle, AppStyles.paddingRightSml ]}>
+                                    <Button
+                                        activeOpacity={0.9}
+                                        roundedSmallBlock
+                                        onPress={this.showEnterDestinationTag}
+                                        icon="IconEdit"
+                                        iconSize={15}
+                                        label={Localize.t('send.addDestinationTag')}
+                                    />
                                 </View>
-                            </View>
-                            <Button
-                                onPress={this.showEnterDestinationTag}
-                                style={styles.editButton}
-                                roundedSmall
-                                iconSize={13}
-                                light
-                                icon="IconEdit"
-                            />
-                        </View>
+                            )
+                        }
+                        {
+                            String(destination?.tag || '') !== '' && (
+                                <View>
+                                    <Spacer size={10} />
+                                    <View style={AppStyles.row}>
+                                        <View style={AppStyles.flex1}>
+                                            <View style={styles.rowTitle}>
+                                                <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
+                                                    {typeof destination!.tag !== 'undefined' &&
+                                                        `${Localize.t('global.destinationTag')}: `}
+                                                    <Text style={AppStyles.colorBlue}>
+                                                        {destination!.tag || Localize.t('send.noDestinationTag')}
+                                                    </Text>
+                                                </Text>
+                                            </View>
+                                        </View>
+                                        <Button
+                                            onPress={this.showEnterDestinationTag}
+                                            style={styles.editButton}
+                                            roundedSmall
+                                            iconSize={13}
+                                            light
+                                            icon="IconEdit"
+                                        />
+                                    </View>
+                                </View>
+                            )
+                        }
                     </View>
 
                     {/* Currency */}
