@@ -779,6 +779,7 @@
     "changePasscode": "Změnit přístupové heslo",
     "biometricAuthentication": "Biometrické ověření",
     "hapticFeedback": "Odezva na dotek (haptická zpětná vazba)",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Režim vývojáře",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formát měny systému",

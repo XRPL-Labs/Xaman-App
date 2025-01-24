@@ -13,11 +13,13 @@ import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
+import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
+import type { AccountTxTransaction } from '@common/libs/ledger/types/methods/accountTx';
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
 import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
@@ -30,6 +32,8 @@ import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 
 import { MixingTypes } from '@common/libs/ledger/mixin/types';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterModal';
+
+import ResolverService from '@services/ResolverService';
 
 import {
     AccountService,
@@ -69,6 +73,7 @@ export interface State {
     lastMarker?: LedgerMarker;
     account: AccountModel;
     transactions: Array<Transactions>;
+    hideAdvisoryTransactions: boolean;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
     dataSource: Array<DataSourceItem>;
@@ -114,6 +119,7 @@ class EventsView extends Component<Props, State> {
             activeSection: EventSections.ALL,
             lastMarker: undefined,
             account: CoreRepository.getDefaultAccount(),
+            hideAdvisoryTransactions: CoreRepository.getSettings().hideAdvisoryTransactions,
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
@@ -203,6 +209,12 @@ class EventsView extends Component<Props, State> {
     };
 
     onCoreSettingsUpdate = (_coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        // force reload existing list if show/hide spam tx
+        if (has(changes, 'hideAdvisoryTransactions')) {
+            this.setState({ hideAdvisoryTransactions: !!changes.hideAdvisoryTransactions }, () => {
+                this.forceReload = true;
+            });
+        }
         // force reload if network or default account changed
         if (has(changes, 'network') || has(changes, 'account')) {
             this.forceReload = true;
@@ -351,7 +363,7 @@ class EventsView extends Component<Props, State> {
     };
 
     loadTransactions = (loadMore?: boolean): Promise<Transactions[]> => {
-        const { transactions, account, lastMarker } = this.state;
+        const { transactions, account, lastMarker, hideAdvisoryTransactions } = this.state;
 
         return new Promise((resolve) => {
             // return if no account exist
@@ -361,7 +373,7 @@ class EventsView extends Component<Props, State> {
             }
 
             LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
-                .then((resp) => {
+                .then(async (resp) => {
                     if ('error' in resp) {
                         resolve([]);
                         return;
@@ -377,11 +389,38 @@ class EventsView extends Component<Props, State> {
                     }
 
                     // only success transactions
-                    const tesSuccessTransactions = filter(txResp, (transaction) => {
-                        return (
-                            typeof transaction.meta === 'object' && transaction?.meta.TransactionResult === 'tesSUCCESS'
-                        );
-                    });
+                    const tesSuccessTransactions: AccountTxTransaction[] = (await Promise.all(
+                        txResp.map(async transaction => {
+                            let blocked = false;
+
+                            if (hideAdvisoryTransactions) {
+                                if (
+                                    transaction?.tx?.TransactionType === 'Payment' &&
+                                    typeof transaction?.meta?.delivered_amount === 'string' &&
+                                    Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
+                                ) {
+                                    const resolveDestination = String(transaction?.tx?.Destination || '');
+                                    const resolveAccount = String(transaction?.tx?.Account || '');
+
+                                    const [destinationResolver, accountResolver] = await Promise.all([
+                                        ResolverService.getAccountName(resolveDestination),
+                                        ResolverService.getAccountName(resolveAccount),
+                                    ]);
+
+                                    blocked = !!(destinationResolver?.blocked || accountResolver?.blocked);
+                                }
+                            }
+
+                            return typeof transaction.meta === 'object' &&
+                                transaction?.meta.TransactionResult === 'tesSUCCESS' &&
+                                !blocked ? transaction : null;
+                        }),
+                    )).filter(t => t !== null) as AccountTxTransaction[];
+                    // await Promise.all(
+                    //     filter(txResp, async (transaction) => {
+
+                    //     }) as AccountTxTransaction[],
+                    // );
 
                     let parsedList = flatMap(tesSuccessTransactions, (item) =>
                         TransactionFactory.fromLedger(item, [MixingTypes.Mutation]),

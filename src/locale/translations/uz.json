@@ -779,6 +779,7 @@
     "changePasscode": "Parolni o'zgartiring",
     "biometricAuthentication": "Biometrik autentifikatsiya",
     "hapticFeedback": "Taktil muloqot",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Ishlab chiqaruvchi rejimi",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Tizim valyuta formatidan foydalaning",

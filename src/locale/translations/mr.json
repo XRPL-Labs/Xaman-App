@@ -779,6 +779,7 @@
     "changePasscode": "पासकोड बदला",
     "biometricAuthentication": "बायोमेट्रिक प्रमाणीकरण",
     "hapticFeedback": "हॅप्टिक अभिप्राय",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "विकसक मोड",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "सिस्टम चलन स्वरूप वापरा",

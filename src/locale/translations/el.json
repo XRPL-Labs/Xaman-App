@@ -779,6 +779,7 @@
     "changePasscode": "Αλλαγή κωδικού πρόσβασης",
     "biometricAuthentication": "Βιομετρική ταυτοποίηση",
     "hapticFeedback": "Haptic σχόλια",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Λειτουργία προγραμματιστή",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Μορφοποίηση νομίσματος συστήματος",

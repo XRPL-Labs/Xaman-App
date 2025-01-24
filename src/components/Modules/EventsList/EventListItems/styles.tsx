@@ -14,7 +14,7 @@ const styles = StyleService.create({
     containerBlocked: {
         width: '100%',
         height: '100%',
-        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.8),
+        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.7),
         position: 'absolute',
         borderRadius: AppSizes.borderRadius,
         zIndex: 9999, // top of all

@@ -779,6 +779,7 @@
     "changePasscode": "പാസ്‌കോഡ് മാറ്റുക",
     "biometricAuthentication": "ബയോമെട്രിക് പ്രാമാണീകരണം",
     "hapticFeedback": "ഹപ്‌റ്റിക് ഫീഡ്‌ബാക്ക്",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "ഡവലപ്പർ മോഡ്",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "സിസ്റ്റം കറൻസി ഫോർമാറ്റ് ഉപയോഗിക്കുക",

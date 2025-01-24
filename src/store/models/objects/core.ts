@@ -43,6 +43,8 @@ class Core extends Realm.Object<Core> {
     public declare account: any;
     /** Indicates whether haptic feedback is enabled. */
     public declare hapticFeedback: boolean;
+    /** Indicates whether advisoryTransasctions are to be hidden. */
+    public declare hideAdvisoryTransactions: boolean;
     /** Indicates whether discreet mode is enabled. */
     public declare discreetMode: boolean;
     /** Indicates whether the reserve panel should be displayed in home screen. */

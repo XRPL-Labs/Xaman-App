@@ -779,6 +779,7 @@
     "changePasscode": "שנה קוד גישה",
     "biometricAuthentication": "אימות ביומטרי",
     "hapticFeedback": "משוב הפטי",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "מצב מפתח",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "שינוי מטבע להצגה",

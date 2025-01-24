@@ -779,6 +779,7 @@
     "changePasscode": "Cambiar código de acceso (PIN)",
     "biometricAuthentication": "Autenticación biométrica",
     "hapticFeedback": "Retroalimentación táctil",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Modalidad de programador",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formato de moneda del sistema",

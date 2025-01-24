@@ -779,6 +779,7 @@
     "changePasscode": "கடவுக்குறியீட்டை மாற்றவும்",
     "biometricAuthentication": "பயோமெட்ரிக் அங்கீகாரம்",
     "hapticFeedback": "தீண்டும் கருத்துக்களை",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "டெவலப்பர் பயன்முறை",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "கணினி நாணய வடிவமைப்பைப் பயன்படுத்தவும்",

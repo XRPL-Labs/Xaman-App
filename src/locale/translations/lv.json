@@ -779,6 +779,7 @@
     "changePasscode": "Mainīt paroli",
     "biometricAuthentication": "Biometriskā autentifikācija",
     "hapticFeedback": "Laimīgas atsauksmes",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Izstrādātāja režīms",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistēmas valūtas formatēšana",

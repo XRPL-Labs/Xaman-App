@@ -779,6 +779,7 @@
     "changePasscode": "Құпиясөзді өзгерту",
     "biometricAuthentication": "Биометриялық аутентификация",
     "hapticFeedback": "Тактильді кері байланыс",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Әзірлеуші режимі",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Валюта жүйесін пайдалану форматы",

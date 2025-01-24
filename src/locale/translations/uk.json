@@ -779,6 +779,7 @@
     "changePasscode": "Змінити ПІН-код",
     "biometricAuthentication": "Біометрична аутентифікація",
     "hapticFeedback": "Тактильний зворотний зв’язок",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Режим розробника",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Використовувати системний формат валюти",

@@ -138,7 +138,6 @@ class EventsList extends PureComponent<Props> {
 
     render() {
         const { dataSource, onEndReached, headerComponent } = this.props;
-
         return (
             <SectionList
                 style={styles.sectionList}

@@ -779,6 +779,7 @@
     "changePasscode": "Toegangscode wijzigen",
     "biometricAuthentication": "Biometrische authenticatie",
     "hapticFeedback": "Haptische feedback",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Ontwikkelaarsmodus",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Gebruik systeem valuta format",

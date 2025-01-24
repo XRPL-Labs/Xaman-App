@@ -779,6 +779,7 @@
     "changePasscode": "Palitan ang passcode",
     "biometricAuthentication": "Pagpapatotoo ng biometric",
     "hapticFeedback": "Haptic  puna",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Mode ng developer",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "sistema pera ayos",

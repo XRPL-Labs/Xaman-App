@@ -779,6 +779,7 @@
     "changePasscode": "Промени лозинку",
     "biometricAuthentication": "Биометријска потврда идентитета",
     "hapticFeedback": "Haptic подаци о резултатима",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Опција програмера ",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Користите одрђену валуту у систему",

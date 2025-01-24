@@ -779,6 +779,7 @@
     "changePasscode": "비밀번호 변경",
     "biometricAuthentication": "생체 인증",
     "hapticFeedback": "햅틱 피드백",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "개발자 모드",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "시스템 통화 포맷팅 사용하기",

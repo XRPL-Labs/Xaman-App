@@ -779,6 +779,7 @@
     "changePasscode": "更改密码",
     "biometricAuthentication": "生物特征认证",
     "hapticFeedback": "触觉反馈",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Developer mode",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "系统货币样式",

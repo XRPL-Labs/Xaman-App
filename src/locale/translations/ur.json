@@ -779,6 +779,7 @@
     "changePasscode": "پاس کوڈ تبدیل کریں",
     "biometricAuthentication": "بایومیٹرک تصدیق",
     "hapticFeedback": "حیرت انگیز آراء",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "ڈویلپر وضع",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "سسٹم کرنسی کی شکل استعمال کریں",

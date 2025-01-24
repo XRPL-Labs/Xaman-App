@@ -779,6 +779,7 @@
     "changePasscode": "Cambia il codice di sblocco",
     "biometricAuthentication": "Autenticazione biometrica",
     "hapticFeedback": "Feedback tattile",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Modalità sviluppatore",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formattazione della valuta di sistema",

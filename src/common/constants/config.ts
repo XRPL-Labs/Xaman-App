@@ -32,4 +32,7 @@ export default {
 
     // account label limit
     accountLabelLimit: 64,
+
+    // TX filtering in EventsView
+    belowDropsTxIsSpam: 10000, // 10k drops, 0.01 of asset
 };

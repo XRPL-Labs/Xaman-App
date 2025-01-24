@@ -779,6 +779,7 @@
     "changePasscode": "Aldatu pasakodea",
     "biometricAuthentication": "biometrikoa autentifikazioa",
     "hapticFeedback": "Iritzi haptikoa",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Garatzaile modua",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistemaren moneta formateatzea",

@@ -779,6 +779,7 @@
     "changePasscode": "Промяна на парола",
     "biometricAuthentication": "Биометрично удостоверяване",
     "hapticFeedback": "Хаптична обратна връзка",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Икономичен режим",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Форматиране на валута на системата",

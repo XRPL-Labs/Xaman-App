@@ -779,6 +779,7 @@
     "changePasscode": "Parolayı değiştir",
     "biometricAuthentication": "Biyometrik doğrulama",
     "hapticFeedback": "Dokunsal geribildirim",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Geliştirici modu",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistem para birimini kullan",

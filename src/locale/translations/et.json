@@ -779,6 +779,7 @@
     "changePasscode": "Muuda pääsukoodi",
     "biometricAuthentication": "Biomeetriline autentimine",
     "hapticFeedback": "Taktiline(haptiline) tagasiside",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Arendaja režiim",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Süsteemi valuuta vormindamine",

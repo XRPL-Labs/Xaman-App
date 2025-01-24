@@ -779,6 +779,7 @@
     "changePasscode": "Chanje paskod",
     "biometricAuthentication": "byometrik otantifikasyon",
     "hapticFeedback": "fidbak haptik",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "pwomotè mòd",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Fòma lajan sistèm lan",

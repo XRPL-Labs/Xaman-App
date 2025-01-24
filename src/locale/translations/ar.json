@@ -779,6 +779,7 @@
     "changePasscode": "تغيير الرمز السري",
     "biometricAuthentication": "المصادقة البيومترية",
     "hapticFeedback": "ردود الفعل اللمسية",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "وضع المطور",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "استخدم عملة الجهاز المحددة",

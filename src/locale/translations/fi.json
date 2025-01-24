@@ -779,6 +779,7 @@
     "changePasscode": "Muuta salasana",
     "biometricAuthentication": "Biometrinen tunnistus",
     "hapticFeedback": "Tuntoaistinen palaute",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Kehittäjätila",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Käytä järjestelmävaluutan muotoilua",

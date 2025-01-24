@@ -779,6 +779,7 @@
     "changePasscode": "პასკოდის შეცვლა",
     "biometricAuthentication": "ბიომეტრიული ავთენტიფიკაცია",
     "hapticFeedback": "ვიბრაცია უკუკავშირზე ",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "დეველოპერის რეჟიმი ",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "სისტემის ვალუტის ფორმატირება",

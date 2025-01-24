@@ -779,6 +779,7 @@
     "changePasscode": "Bytt kode",
     "biometricAuthentication": "Biometrisk autentisering",
     "hapticFeedback": "Haptisk tilbakemelding",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Utviklermodus",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formatering av systemvaluta",

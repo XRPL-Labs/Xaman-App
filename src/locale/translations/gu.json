@@ -779,6 +779,7 @@
     "changePasscode": "પાસકોડ બદલો",
     "biometricAuthentication": "બાયોમેટ્રિક પ્રમાણીકરણ",
     "hapticFeedback": "હેપ્ટિક પ્રતિસાદ",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "વિકાસકર્તા મોડ",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "સિસ્ટમ ચલણ ફોર્મેટનો ઉપયોગ કરો",

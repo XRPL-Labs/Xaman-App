@@ -779,6 +779,7 @@
     "changePasscode": "Ändern der Geheimzahl",
     "biometricAuthentication": "Biometrische Authentifizierung",
     "hapticFeedback": "Haptisches Feedback",
+    "hideAdvisoryTransactions": "Hide spam/scam transactions",
     "developerMode": "Entwicklermodus",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Systemwährung einstellen",
