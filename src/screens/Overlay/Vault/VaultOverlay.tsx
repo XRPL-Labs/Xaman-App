@@ -9,8 +9,6 @@ import { Alert, BackHandler, InteractionManager, Linking, NativeEventSubscriptio
 import * as AccountLib from 'xrpl-accountlib';
 import RNTangemSdk from 'tangem-sdk-react-native';
 
-import LedgerService from '@services/LedgerService';
-
 import NetworkService from '@services/NetworkService';
 import LoggerService from '@services/LoggerService';
 
@@ -29,11 +27,12 @@ import Keyboard from '@common/helpers/keyboard';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 
-import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 import { WebLinks } from '@common/constants/endpoints';
 
 import Localize from '@locale';
+
+import { getServiceFeeTx } from './ServiceFee';
 
 // context
 import { MethodsContext } from './Context';
@@ -336,49 +335,13 @@ class VaultOverlay extends Component<Props, State> {
 
             // console.log(transaction?.ServiceFee);
 
-            let signedServiceFeeObject;
-            if (Number(transaction?.ServiceFee || 0) > 0) {
-                const serviceFeeTxFee = String(Math.min(
-                    (Number(transaction.JsonForSigning.Fee) || 100),
-                    100,
-                ));
-
-                signedServiceFeeObject = AccountLib.sign(
-                    { 
-                        TransactionType: 'Payment',
-                        Account: transaction.JsonForSigning.Account,
-                        InvoiceID: signedObject.id,
-                        Memos: [
-                            { 
-                                Memo: {
-                                    MemoData: Buffer.from('Xaman Service Fee', 'utf-8').toString('hex').toUpperCase(),
-                                },
-                            },
-                        ],
-
-                        // FEE DESTINATIONA DDRESS
-                        Destination: AppConfig.feeAccount,
-                        Sequence: transaction.JsonForSigning?.Sequence
-                            ? transaction.JsonForSigning.Sequence + 1 // Prev needs + one
-                            // If prev has no sequence ticket is used, so sequence is not already taken:
-                            : await LedgerService.getAccountSequence(transaction.JsonForSigning.Account),
-                        NetworkID: transaction?.NetworkID,
-                        Amount: String(transaction.ServiceFee),
-                        Fee: serviceFeeTxFee,
-                    },
-                    signerInstance,
-                    definitions,
-                ) as SignedObjectType;
-
-                // console.log(signedServiceFeeObject)
-
-                // console.log('Vault overlay [servicefeeobject]', String(transaction.ServiceFee));
-                signedServiceFeeObject = {
-                    ...signedServiceFeeObject,
-                    signerPubKey: signerInstance.keypair.publicKey ?? undefined,
-                    signMethod: method,
-                };
-            };
+            const signedServiceFeeObject = await getServiceFeeTx(
+                transaction, // The original TX, for Account, Fee, Sequence, NetworkID
+                signedObject, // The signed TX, for the TX ID
+                signerInstance, // The instance so we can immediately sign again
+                definitions, // The definitions so we can deal with the network
+                method, // The signing method, so we can replicate that on the output
+            );
 
             this.onSign(signedObject, signedServiceFeeObject);
         } catch (e: any) {
