@@ -1,4 +1,4 @@
-import { find, isEqual, debounce, omit } from 'lodash';
+import { find, debounce } from 'lodash';
 
 import React, { Component } from 'react';
 import { View, Text, ViewStyle, InteractionManager, TextStyle } from 'react-native';
@@ -53,22 +53,24 @@ class ServiceFee extends Component<Props, State> {
         };
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>) {
-        const { txJson } = this.props;
-
-        // re-fetch the fees when received new transaction json
-        if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
-            this.setState(
-                {
-                    // availableFees: undefined,
-                    selected: undefined,
-                    feeHooks: undefined,
-                    error: false,
-                },
-                this.fetchFees,
-            );
-        }
-    }
+    // We don't update anymore, there's nothing that can
+    // change now that will change the fee. Amounts. etc.
+    // are already known here.
+    // componentDidUpdate(prevProps: Readonly<Props>) {
+    //     const { txJson } = this.props;
+    //     // re-fetch the fees when received new transaction json
+    //     if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
+    //         this.setState(
+    //             {
+    //                 // availableFees: undefined,
+    //                 selected: undefined,
+    //                 feeHooks: undefined,
+    //                 error: false,
+    //             },
+    //             this.fetchFees,
+    //         );
+    //     }
+    // }
 
     componentDidMount() {
         // fetch available fees from network
