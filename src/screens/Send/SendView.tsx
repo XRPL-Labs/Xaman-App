@@ -121,15 +121,13 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setFee = (selectedFee: FeeItem) => {
-        this.setState({ selectedFee });
-    };
-
-    setServiceFeeAmount = (serviceFeeAmount: FeeItem) => {
+    setFee = (selectedFee: FeeItem, serviceFee: FeeItem) => {
         const { payment } = this.state;
+        this.setState({ selectedFee });
+
         // console.log('SendView Service Fee Amount Set', serviceFeeAmount.value);
-        payment.setServiceFee(Number(serviceFeeAmount.value));
-        this.setState({ serviceFeeAmount });
+        payment.setServiceFee(Number(serviceFee.value));
+        this.setState({ serviceFeeAmount: serviceFee });
     };
 
     setIssuerFee = (issuerFee: number) => {

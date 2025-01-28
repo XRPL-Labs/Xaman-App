@@ -31,7 +31,7 @@ import {
 } from '@components/General';
 import { TokenAvatar } from '@components/Modules/TokenElement';
 
-import { AccountPicker, FeePicker, ServiceFee } from '@components/Modules';
+import { AccountPicker, FeePicker } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -458,7 +458,7 @@ class SummaryStep extends Component<Props, State> {
                     <View style={[styles.rowItem, AppStyles.centerContent]}>
                         <View style={styles.rowTitle}>
                             <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                {Localize.t('global.fee')}
+                                {Localize.t('events.txServiceFees')}
                             </Text>
                         </View>
                         <FeePicker
@@ -466,20 +466,6 @@ class SummaryStep extends Component<Props, State> {
                             containerStyle={styles.feePickerContainer}
                             textStyle={styles.feeText}
                             onSelect={setFee}
-                        />
-                    </View>
-
-                    <View style={[styles.rowItem, AppStyles.centerContent]}>
-                        <View style={styles.rowTitle}>
-                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                Service fee
-                            </Text>
-                        </View>
-                        <ServiceFee
-                            txJson={getPaymentJsonForFee()}
-                            containerStyle={styles.feePickerContainer}
-                            textStyle={styles.feeText}
-                            onSelect={setServiceFeeAmount}
                         />
                     </View>
     

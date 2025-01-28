@@ -83,6 +83,11 @@ class GlobalTemplate extends Component<Props, State> {
         setServiceFee(Number(fee?.value || 0));
     };
 
+    setFees = (txFee: any, serviceFee: any) => {
+        this.setTransactionFee(txFee);
+        this.setServiceFeeAmount(serviceFee);
+    };
+
     renderWarnings = () => {
         const { warnings } = this.state;
 
@@ -296,15 +301,29 @@ class GlobalTemplate extends Component<Props, State> {
         // either transaction fee has already been set in payload
         // or transaction is a multi sign tx
         if (!showFeePicker) {
+            // TODO: SET SERVICE FEE
+
             if (typeof transaction.Fee !== 'undefined') {
                 return (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                        <View style={styles.contentBox}>
-                            <Text style={styles.feeText}>
-                                {transaction.Fee.value} {NetworkService.getNativeAsset()}
-                            </Text>
-                        </View>
+                        <>
+                            <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                            <View style={styles.contentBox}>
+                                <Text style={styles.feeText}>
+                                    {transaction.Fee.value} {NetworkService.getNativeAsset()}
+                                </Text>
+                            </View>
+                        </>
+                        <>
+                            <Text style={styles.label}>{Localize.t('events.serviceFee')}</Text>
+                            <View style={styles.contentBox}>
+                                <ServiceFee
+                                    txJson={transaction.JsonForSigning}
+                                    textStyle={styles.feeText}
+                                    onSelect={this.setServiceFeeAmount}
+                                />
+                            </View>
+                        </>
                     </>
                 );
             }
@@ -314,27 +333,10 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                <Text style={styles.label}>{Localize.t('events.txServiceFees')}</Text>
                 <FeePicker
                     txJson={transaction.JsonForSigning}
-                    onSelect={this.setTransactionFee}
-                    containerStyle={styles.contentBox}
-                    textStyle={styles.feeText}
-                />
-            </>
-        );
-    };
-
-    renderServiceFee = () => {
-        const { transaction } = this.props;
-        // const { showFeePicker } = this.state;
-
-        return (
-            <>
-                <Text style={styles.label}>{Localize.t('events.serviceFee')}</Text>
-                <ServiceFee
-                    txJson={transaction.JsonForSigning}
-                    onSelect={this.setServiceFeeAmount}
+                    onSelect={this.setFees}
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}
                 />
@@ -354,7 +356,6 @@ class GlobalTemplate extends Component<Props, State> {
                 {this.renderMemos()}
                 {this.renderFlags()}
                 {this.renderFee()}
-                {this.renderServiceFee()}
                 {this.renderWarnings()}
                 {this.renderHookExplainer()}
             </>

@@ -16,6 +16,12 @@ import { FeeItem } from '@screens/Overlay/SelectFee/types';
 
 import { AppStyles } from '@theme';
 
+/**
+ * This module is ONLY loaded on a SIGN REQUEST with a FIXED payload
+ * where the service fee must be separately rendered. In all other
+ * occasions, the Service Fee is part of the REGULAR FEE PICKER.
+ */
+
 /* Types ==================================================================== */
 interface Props {
     txJson: any;
@@ -79,14 +85,6 @@ class ServiceFee extends Component<Props, State> {
 
     fetchFees = (isFallback = false): Promise<void> => {
         const { txJson } = this.props;
-        const { error } = this.state;
-
-        // clear any error for retrying again
-        if (error) {
-            this.setState({
-                error: false,
-            });
-        }
 
         // when it's retry with fallback then we don't include txJson
         return BackendService.getServiceFee(!isFallback ? txJson : undefined)
@@ -103,17 +101,7 @@ class ServiceFee extends Component<Props, State> {
                 // set the suggested fee by default
                 this.onSelect(find(availableFees, { type: suggested })!);
             })
-            .catch(() => {
-                // if it's not a retry fallback then let's try again
-                if (!isFallback) {
-                    this.fetchFees(true);
-                    return;
-                }
-                // let's give up
-                this.setState({
-                    error: true,
-                });
-            });
+            .catch(() => {});
     };
 
     debouncedFetchFees = debounce(this.fetchFees, 300);
@@ -194,8 +182,6 @@ class ServiceFee extends Component<Props, State> {
         const { containerStyle, textStyle } = this.props;
         const { selected, feeHooks, error } = this.state;
 
-        // error while fetching the fee
-        //  give the user ability to retry
         if (error) {
             return this.renderError();
         }

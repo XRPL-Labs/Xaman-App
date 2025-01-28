@@ -6,9 +6,10 @@ export interface FeeItem {
 export interface Props {
     availableFees: FeeItem[];
     selectedFee: FeeItem;
-    onSelect: (fee: FeeItem) => void;
+    serviceFee: FeeItem;
+    onSelect: (txFee: FeeItem, serviceFee?: FeeItem) => void;
 }
 
 export interface State {
-    selected: FeeItem;
+    selectedFee: FeeItem;
 }
