@@ -319,7 +319,6 @@ class SummaryStep extends Component<Props, State> {
             isLoading,
             selectedFee,
             setFee,
-            setServiceFeeAmount,
             getPaymentJsonForFee,
         } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;

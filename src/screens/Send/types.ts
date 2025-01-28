@@ -56,7 +56,7 @@ export interface ContextProps extends State {
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;
-    setServiceFeeAmount: (amount: FeeItem) => void;
+    // setServiceFeeAmount: (amount: FeeItem) => void;
     setFee: (txFee: FeeItem, serviceFee: FeeItem) => void;
     setMemo: (memo: string) => void;
     getPaymentJsonForFee: () => any;

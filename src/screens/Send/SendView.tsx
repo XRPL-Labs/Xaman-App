@@ -414,7 +414,6 @@ class SendView extends Component<Props, State> {
                     setFee: this.setFee,
                     setMemo: this.setMemo,
                     setIssuerFee: this.setIssuerFee,
-                    setServiceFeeAmount: this.setServiceFeeAmount,
                     setSource: this.setSource,
                     setDestination: this.setDestination,
                     setDestinationInfo: this.setDestinationInfo,
