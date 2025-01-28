@@ -526,13 +526,14 @@ class ExchangeView extends Component<Props, State> {
                         </View>
                     </View>
                 </View>
-                <Spacer size={40} />
+                <Spacer size={20} />
                 <Button
                     onPress={this.onExchangePress}
                     isLoading={isExchanging}
                     isDisabled={!amount || amount === '0' || !liquidity || isLoading}
                     label={Localize.t('global.exchange')}
                 />
+                <Spacer size={5} />
             </>
         );
     };
