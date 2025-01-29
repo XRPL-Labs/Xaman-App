@@ -68,16 +68,18 @@ class FeePicker extends Component<Props, State> {
         const { txJson } = this.props;
 
         // re-fetch the fees when received new transaction json
-        if (!isEqual(omit(txJson, 'Fee', 'Memos'), omit(prevProps.txJson, 'Fee', 'Memos'))) {
+        if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
             this.setState(
                 {
-                    availableFees: undefined,
-                    selectedTxFee: undefined,
-                    selectedServiceFee: undefined,
-                    feeHooks: undefined,
+                    // Just keep things as is to prevent them from bouncing
+                    // around while updating a tx memo.
+                    // availableFees: undefined,
+                    // selectedTxFee: undefined,
+                    // selectedServiceFee: undefined,
+                    // feeHooks: undefined,
                     error: false,
                 },
-                this.fetchFees,
+                this.debouncedFetchFees,
             );
         }
     }
@@ -127,7 +129,7 @@ class FeePicker extends Component<Props, State> {
 
     fetchFees = (isFallback = false): Promise<void> => {
         const { txJson } = this.props;
-        const { error, selectedServiceFee } = this.state;
+        const { error, selectedServiceFee, selectedTxFee } = this.state;
 
         // clear any error for retrying again
         if (error) {
@@ -149,7 +151,11 @@ class FeePicker extends Component<Props, State> {
                 });
 
                 // set the suggested fee by default
-                this.onSelect(find(availableFees, { type: suggested })!, selectedServiceFee);
+                this.onSelect(find(availableFees, {
+                    type: selectedTxFee && selectedTxFee?.type
+                        ? selectedTxFee.type
+                        : suggested,
+                })!, selectedServiceFee);
             })
             .catch(() => {
                 // if it's not a retry fallback then let's try again
@@ -164,7 +170,7 @@ class FeePicker extends Component<Props, State> {
             });
     };
 
-    debouncedFetchFees = debounce(this.fetchFees, 300);
+    debouncedFetchFees = debounce(this.fetchFees, 750);
 
     onSelect = (txFeeItem: FeeItem, serviceFeeItem?: FeeItem) => {
         const { onSelect } = this.props;
