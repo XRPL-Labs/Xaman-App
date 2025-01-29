@@ -194,8 +194,14 @@ class SummaryStep extends Component<Props, State> {
             return;
         }
 
-        // check if destination requires the destination tag
-        if (destinationInfo?.requireDestinationTag && (!destination!.tag || Number(destination!.tag) === 0)) {
+        const tagIsEnteredButLiteralZero = typeof destination?.tag === 'string' && destination?.tag === '0';
+
+        // Check if destination requires the Destination Tag
+        if (
+            destinationInfo?.requireDestinationTag &&
+            (!destination!.tag || Number(destination!.tag) === 0) &&
+            !tagIsEnteredButLiteralZero
+        ) {
             Alert.alert(Localize.t('global.warning'), Localize.t('send.destinationTagIsRequired'));
             return;
         }
