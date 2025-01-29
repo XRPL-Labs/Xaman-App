@@ -294,7 +294,7 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     renderFee = () => {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
         const { showFeePicker } = this.state;
 
         // we should not override the fee
@@ -337,6 +337,7 @@ class GlobalTemplate extends Component<Props, State> {
                 <FeePicker
                     txJson={transaction.JsonForSigning}
                     onSelect={this.setFees}
+                    source={source}
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}
                 />

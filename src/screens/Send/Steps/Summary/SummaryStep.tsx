@@ -462,6 +462,7 @@ class SummaryStep extends Component<Props, State> {
                         </View>
                         <FeePicker
                             txJson={getPaymentJsonForFee()}
+                            source={source}
                             containerStyle={styles.feePickerContainer}
                             textStyle={styles.feeText}
                             onSelect={setFee}

@@ -23,11 +23,15 @@ import { FeeItem, Props as SelectFeeOverlayProps } from '@screens/Overlay/Select
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { type AccountModel } from '@store/models';
+import { AccessLevels, AccountTypes } from '@store/types';
+
 /* Types ==================================================================== */
 interface Props {
     txJson: any;
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
+    source?: AccountModel;
     showHooksFee?: boolean;
     onSelect?: (txFee: any, serviceFee: any) => void;
 }
@@ -85,7 +89,26 @@ class FeePicker extends Component<Props, State> {
     }
 
     fetchServiceFee = (isFallback = false): Promise<void> => {
-        const { txJson } = this.props;
+        const { txJson, source } = this.props;
+
+        const noFee = () => {
+            this.setState({
+                selectedServiceFee: {
+                    type: 'LOW',
+                    value: '0',
+                },
+            });
+        };
+
+        if (source && source?.accessLevel === AccessLevels.Full && source?.type === AccountTypes.Tangem) {
+            // Tangem may sign this, no fees
+            return Promise.resolve(noFee());
+        }
+        
+        if (source && source?.accessLevel !== AccessLevels.Full) {
+            // We don't know what is going to sign this
+            return Promise.resolve(noFee());
+        }
         
         // when it's retry with fallback then we don't include txJson
         return BackendService.getServiceFee(!isFallback ? txJson : undefined)

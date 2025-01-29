@@ -82,7 +82,7 @@ class FallbackTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
         const { transactionJsonData, showFeePicker } = this.state;
 
         if (!transactionJsonData) {
@@ -121,6 +121,7 @@ class FallbackTemplate extends Component<Props, State> {
                             txJson={transaction.JsonForSigning}
                             onSelect={this.setTransactionFee}
                             containerStyle={styles.contentBox}
+                            source={source}
                             textStyle={styles.feeText}
                         />
                     </>
