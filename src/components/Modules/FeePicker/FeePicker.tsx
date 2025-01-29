@@ -68,7 +68,7 @@ class FeePicker extends Component<Props, State> {
         const { txJson } = this.props;
 
         // re-fetch the fees when received new transaction json
-        if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
+        if (!isEqual(omit(txJson, 'Fee', 'Memos'), omit(prevProps.txJson, 'Fee', 'Memos'))) {
             this.setState(
                 {
                     availableFees: undefined,
