@@ -163,7 +163,7 @@ class TransactionItem extends Component<Props, State> {
     };
 
     render() {
-        const { item, account, rates } = this.props;
+        const { item, account } = this.props; // , rates
         const { participant, explainer } = this.state;
 
         const isFeeTransaction = participant?.address && AppConfig?.feeAccount &&
@@ -176,16 +176,17 @@ class TransactionItem extends Component<Props, State> {
         if (isFeeTransaction) {
             const feeFactor = explainer?.getMonetaryDetails()?.factor?.[0];
             feeText = `${feeFactor?.value} ${feeFactor?.currency}`.trim();
-            if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
-                const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
-                if (effectiveAmount !== 0) {
-                    feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${NetworkService.getNativeAsset()}`.trim();
-                    // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
-                    // if (effectiveAmount < 0.01) {
-                    //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
-                    // } 
-                }
+            // if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
+            // const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
+            const effectiveAmount = Number(feeFactor?.value || 0);
+            if (effectiveAmount !== 0) {
+                feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${NetworkService.getNativeAsset()}`.trim();
+                // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
+                // if (effectiveAmount < 0.01) {
+                //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
+                // } 
             }
+            // }
         }
         
         return (

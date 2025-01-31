@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { View, Text, RefreshControl, SectionList, InteractionManager } from 'react-native';
+// import { View, Text, RefreshControl, SectionList, InteractionManager } from 'react-native';
+import { View, Text, RefreshControl, SectionList } from 'react-native';
 
 import has from 'lodash/has';
 
 import StyleService from '@services/StyleService';
-import BackendService, { RatesType } from '@services/BackendService';
+// import BackendService, { RatesType } from '@services/BackendService';
+import { type RatesType } from '@services/BackendService';
 
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
@@ -33,9 +35,9 @@ export type DataSourceItem = {
 };
 
 interface State {
-    fiatCurrency: string;
-    fiatRate: RatesType | undefined;
-    isLoadingRate: boolean;
+    fiatCurrency?: string;
+    fiatRate?: RatesType | undefined;
+    isLoadingRate?: boolean;
 }
 
 interface Props {
@@ -58,8 +60,8 @@ class EventsList extends PureComponent<Props, State> {
 
         this.state = {
             fiatCurrency: coreSettings.currency,
-            fiatRate: undefined,
-            isLoadingRate: false,
+            // fiatRate: undefined,
+            // isLoadingRate: false,
         };
     }
 
@@ -91,7 +93,7 @@ class EventsList extends PureComponent<Props, State> {
 
     renderItem = ({ item }: { item: RowItemType }): React.ReactElement | null => {
         const { account, timestamp } = this.props;
-        const { fiatCurrency, fiatRate, isLoadingRate } = this.state;
+        // const { fiatCurrency, fiatRate, isLoadingRate } = this.state;
 
         if (item instanceof Payload) {
             return React.createElement(EventListItems.Request, {
@@ -105,7 +107,7 @@ class EventsList extends PureComponent<Props, State> {
                 item,
                 account,
                 timestamp,
-                rates: { fiatCurrency, fiatRate, isLoadingRate },
+                // rates: { fiatCurrency, fiatRate, isLoadingRate },
             } as {
                 item: Transactions & MutationsMixinType;
                 account: AccountModel;
@@ -150,7 +152,7 @@ class EventsList extends PureComponent<Props, State> {
     componentDidMount() {
         // add listener for changes on currency and showReservePanel setting
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
-        this.fetchCurrencyRate();
+        // this.fetchCurrencyRate();
     }
 
     componentWillUnmount() {
@@ -163,45 +165,45 @@ class EventsList extends PureComponent<Props, State> {
         // currency changed
         if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
             this.setState({
-                fiatRate: undefined,
+                // fiatRate: undefined,
                 fiatCurrency: coreSettings.currency,
             });
         }
 
         // default network changed
-        if (has(changes, 'network')) {
-            // clean up rate
-            this.setState({
-                fiatRate: undefined,
-            });
+        // if (has(changes, 'network')) {
+        //     // clean up rate
+        //     this.setState({
+        //         fiatRate: undefined,
+        //     });
 
-            InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
-        }
+        //     InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+        // }
     };
 
-    fetchCurrencyRate = () => {
-        const { fiatCurrency, isLoadingRate } = this.state;
+    // fetchCurrencyRate = () => {
+    //     const { fiatCurrency, isLoadingRate } = this.state;
 
-        if (!isLoadingRate) {
-            this.setState({
-                isLoadingRate: true,
-            });
-        }
+    //     if (!isLoadingRate) {
+    //         this.setState({
+    //             isLoadingRate: true,
+    //         });
+    //     }
 
-        BackendService.getCurrencyRate(fiatCurrency)
-            .then((rate: any) => {
-                this.setState({
-                    fiatRate: rate,
-                    isLoadingRate: false,
-                });
-            })
-            .catch(() => {
-                // Toast(Localize.t('global.unableToFetchCurrencyRate'));
-                this.setState({
-                    isLoadingRate: false,
-                });
-            });
-    };
+    //     BackendService.getCurrencyRate(fiatCurrency)
+    //         .then((rate: any) => {
+    //             this.setState({
+    //                 fiatRate: rate,
+    //                 isLoadingRate: false,
+    //             });
+    //         })
+    //         .catch(() => {
+    //             // Toast(Localize.t('global.unableToFetchCurrencyRate'));
+    //             this.setState({
+    //                 isLoadingRate: false,
+    //             });
+    //         });
+    // };
 
     keyExtractor = (item: any, index: number): string => {
         let key = '';
