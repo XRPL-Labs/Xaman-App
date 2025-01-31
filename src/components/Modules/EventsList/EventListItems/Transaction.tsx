@@ -1,5 +1,7 @@
 import { isEmpty, isEqual } from 'lodash';
 
+import { NetworkService } from '@services';
+
 import React, { Component } from 'react';
 import { Text, View, InteractionManager } from 'react-native';
 import type { RatesType } from '@services/BackendService';
@@ -177,10 +179,11 @@ class TransactionItem extends Component<Props, State> {
             if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
                 const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
                 if (effectiveAmount !== 0) {
-                    feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
-                    if (effectiveAmount < 0.01) {
-                        feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
-                    } 
+                    feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${NetworkService.getNativeAsset()}`.trim();
+                    // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
+                    // if (effectiveAmount < 0.01) {
+                    //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
+                    // } 
                 }
             }
         }
@@ -201,7 +204,7 @@ class TransactionItem extends Component<Props, State> {
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                     { isFeeTransaction && (
                         <View style={[ styles.feeTxAvatar ]}>
-                            <Text>💸</Text>
+                            <Text>💝</Text>
                         </View>
                     )}
                     { !isFeeTransaction && (
