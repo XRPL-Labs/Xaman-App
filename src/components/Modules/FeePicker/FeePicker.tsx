@@ -138,36 +138,36 @@ class FeePicker extends Component<Props, State> {
             });
         }
 
-        this.fetchServiceFee();
-
         // when it's retry with fallback then we don't include txJson
-        return NetworkService.getAvailableNetworkFee(!isFallback ? txJson : undefined)
-            .then((res) => {
-                const { availableFees, feeHooks, suggested } = res;
+        return this.fetchServiceFee().then(() => {
+            NetworkService.getAvailableNetworkFee(!isFallback ? txJson : undefined)
+                .then((res) => {
+                    const { availableFees, feeHooks, suggested } = res;
 
-                this.setState({
-                    availableFees,
-                    feeHooks,
-                });
+                    this.setState({
+                        availableFees,
+                        feeHooks,
+                    });
 
-                // set the suggested fee by default
-                this.onSelect(find(availableFees, {
-                    type: selectedTxFee && selectedTxFee?.type
-                        ? selectedTxFee.type
-                        : suggested,
-                })!, selectedServiceFee);
-            })
-            .catch(() => {
-                // if it's not a retry fallback then let's try again
-                if (!isFallback) {
-                    this.fetchFees(true);
-                    return;
-                }
-                // let's give up
-                this.setState({
-                    error: true,
+                    // set the suggested fee by default
+                    this.onSelect(find(availableFees, {
+                        type: selectedTxFee && selectedTxFee?.type
+                            ? selectedTxFee.type
+                            : suggested,
+                    })!, selectedServiceFee);
+                })
+                .catch(() => {
+                    // if it's not a retry fallback then let's try again
+                    if (!isFallback) {
+                        this.fetchFees(true);
+                        return;
+                    }
+                    // let's give up
+                    this.setState({
+                        error: true,
+                    });
                 });
-            });
+        });
     };
 
     debouncedFetchFees = debounce(this.fetchFees, 750);
