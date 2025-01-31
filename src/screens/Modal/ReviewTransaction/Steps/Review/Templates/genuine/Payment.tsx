@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, InteractionManager } from 'react-native';
 
+import SummaryStepStyle from '@screens/Send/Steps/Summary/styles';
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 import { RatesType } from '@services/BackendService';
 
@@ -8,6 +9,10 @@ import { CoreRepository } from '@store/repositories';
 
 import { Payment } from '@common/libs/ledger/transactions';
 import { PathFindPathOption } from '@common/libs/ledger/types/methods';
+
+import { CalculateAvailableBalance } from '@common/utils/balance';
+
+import { TrustLineModel } from '@store/models';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
@@ -46,10 +51,24 @@ export interface State {
 class PaymentTemplate extends Component<Props, State> {
     amountInput: React.RefObject<typeof AmountInput | null>;
 
+    private currentCurrency: TrustLineModel | undefined;
+
     constructor(props: Props) {
         super(props);
+        const { source } = this.props;
 
         const { transaction } = props;
+
+        if (transaction.Amount?.currency && transaction.Amount?.issuer) {
+            this.currentCurrency = (source?.lines || [])
+                .filter(l => {
+                    return l.currency.currencyCode === transaction.Amount?.currency &&
+                        l.currency.issuer === transaction.Amount?.issuer;
+                })?.[0];
+
+            // console.log(this.currentCurrency?.balance);
+            // console.log(this.currentCurrency?.getFormattedCurrency());
+        };
 
         this.state = {
             account: undefined,
@@ -233,6 +252,7 @@ class PaymentTemplate extends Component<Props, State> {
         }
     };
 
+
     renderAmountRate = () => {
         const { amount, isLoadingRate, currencyRate } = this.state;
 
@@ -251,7 +271,7 @@ class PaymentTemplate extends Component<Props, State> {
                 return (
                     <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
-                            ~{currencyRate.code} {Localize.formatNumber(rate)}
+                            ~{currencyRate.code} {Localize.formatNumber(rate, 2)}
                         </Text>
                     </View>
                 );
@@ -262,7 +282,7 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction, payload } = this.props;
+        const { transaction, payload, source } = this.props;
         const {
             account,
             editableAmount,
@@ -272,7 +292,10 @@ class PaymentTemplate extends Component<Props, State> {
             isLoadingIssuerFee,
             issuerFee,
             selectedPath,
+            currencyRate,
         } = this.state;
+
+        const isNativeAsset = currencyRate && amount;
 
         // TODO: better handling this part
         if (!account) {
@@ -326,15 +349,54 @@ class PaymentTemplate extends Component<Props, State> {
                                     />
                                 </>
                             ) : (
-                                <AmountText
-                                    value={amount!}
-                                    currency={transaction.Amount?.currency}
-                                    style={styles.amountInput}
-                                    immutable
-                                />
+                                <View>
+                                    <AmountText
+                                        value={amount!}
+                                        currency={transaction.Amount?.currency}
+                                        style={styles.amountInput}
+                                        immutable
+                                    />
+                                </View>
                             )}
                         </TouchableOpacity>
-                        {this.renderAmountRate()}
+                        {/* <!-- 
+                            Todo: native shows equivalent = right
+                            non native = show below
+                        --> */}
+                        <View style={[
+                            !isNativeAsset
+                                ? AppStyles.column
+                                : AppStyles.row,
+                            AppStyles.stretchSelf,
+                        ]}>
+                            <View style={[AppStyles.flex1, AppStyles.flexStart]}>{this.renderAmountRate()}</View>
+                            <View style={[AppStyles.flex1, AppStyles.flexEnd]}>
+                                <Text style={[
+                                    !isNativeAsset
+                                        ? AppStyles.textLeftAligned
+                                        : AppStyles.textRightAligned,
+                                    SummaryStepStyle.currencyBalance,
+                                ]}>
+                                    {Localize.t('global.available')}:{' '}
+                                    {
+                                        !isNativeAsset
+                                            ? <AmountText
+                                                value={
+                                                    Math.floor(
+                                                        Number(this.currentCurrency?.balance || 0) * 100_000_000,
+                                                    ) / 100_000_000
+                                                }
+                                                currency={this.currentCurrency?.getFormattedCurrency()}
+                                                immutable
+                                            />    
+                                            : <Text>
+                                                {Localize.formatNumber(CalculateAvailableBalance(source!))}{' '}
+                                                {NetworkService.getNativeAsset()}
+                                            </Text>
+                                    }
+                                </Text>
+                            </View>
+                        </View>
                     </View>
                 </>
 
