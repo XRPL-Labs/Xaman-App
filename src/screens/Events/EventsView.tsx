@@ -538,6 +538,10 @@ class EventsView extends Component<Props, State> {
 
         this.setState({ isLoading: true });
 
+        // Ping to update red pending icon count
+        // in case push notifications are disabled
+        BackendService.ping();
+
         let sourceTypes = [] as DataSourceType[];
 
         switch (activeSection) {
