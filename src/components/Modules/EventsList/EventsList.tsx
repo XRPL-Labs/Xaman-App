@@ -68,17 +68,22 @@ class EventsList extends PureComponent<Props, State> {
     renderListEmpty = () => {
         const { isLoading } = this.props;
 
-        if (isLoading) {
-            return (
-                <View style={styles.listEmptyContainer}>
-                    <LoadingIndicator />
-                </View>
-            );
-        }
+        // This fixes the double spinner on loading @ Event list
+        // if (isLoading) {
+        //     return (
+        //         <View style={[styles.listEmptyContainer]}>
+        //             <LoadingIndicator />
+        //         </View>
+        //     );
+        // }
 
         return (
             <View style={styles.listEmptyContainer}>
-                <Text style={AppStyles.pbold}>{Localize.t('global.noInformationToShow')}</Text>
+                <Text style={AppStyles.pbold}>{
+                    !isLoading
+                        ? Localize.t('global.noInformationToShow')
+                        : ' ' // Localize.t('global.loading')
+                }</Text>
             </View>
         );
     };
@@ -134,6 +139,7 @@ class EventsList extends PureComponent<Props, State> {
         if (isLoadingMore) {
             return <LoadingIndicator />;
         }
+
         return null;
     };
 
