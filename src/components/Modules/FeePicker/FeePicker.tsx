@@ -316,6 +316,14 @@ class FeePicker extends Component<Props, State> {
                         />
                     </View>
                 )}
+                {selectedServiceFee?.note && (
+                    <View style={AppStyles.paddingTopSml}>
+                        <InfoMessage
+                            type="info"
+                            label={selectedServiceFee?.note || 'No note'}
+                        />
+                    </View>
+                )}
             </View>
         );
     }

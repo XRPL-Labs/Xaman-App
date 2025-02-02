@@ -1,6 +1,7 @@
 export interface FeeItem {
     type: string;
     value: string;
+    note?: string;
 }
 
 export interface Props {
