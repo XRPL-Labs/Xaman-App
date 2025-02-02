@@ -180,7 +180,7 @@ class ServiceFee extends Component<Props, State> {
 
     render() {
         const { containerStyle, textStyle } = this.props;
-        const { selected, feeHooks, error } = this.state;
+        const { selected, error } = this.state;
 
         if (error) {
             return this.renderError();
@@ -225,14 +225,11 @@ class ServiceFee extends Component<Props, State> {
                         }
                     </View>
                 </TouchableDebounce>
-                {Number(feeHooks) > 0 && (
+                {selected?.note && (
                     <View style={AppStyles.paddingTopSml}>
                         <InfoMessage
                             type="info"
-                            label={Localize.t('global.hookFeeNotice', {
-                                hookFee: this.getNormalizedHooksFee(),
-                                nativeAsset: NetworkService.getNativeAsset(),
-                            })}
+                            label={selected?.note || 'No note'}
                         />
                     </View>
                 )}
