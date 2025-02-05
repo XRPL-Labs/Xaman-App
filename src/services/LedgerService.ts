@@ -146,6 +146,7 @@ class LedgerService extends EventEmitter {
             command: 'account_objects',
             account,
             ledger_index: 'validated',
+            limit: 200,
         };
         if (typeof options === 'object') {
             Object.assign(request, options);
@@ -171,7 +172,7 @@ class LedgerService extends EventEmitter {
         const request: AccountTxRequest = {
             command: 'account_tx',
             account,
-            limit: limit || 50,
+            limit: limit || 200,
             binary: false,
         };
         if (marker) {
@@ -204,6 +205,7 @@ class LedgerService extends EventEmitter {
         const request: AccountNFTsRequest = {
             command: 'account_nfts',
             account,
+            limit: 200,
         };
         if (marker) {
             Object.assign(request, { marker });
