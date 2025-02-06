@@ -343,6 +343,16 @@ class VaultOverlay extends Component<Props, State> {
                 method, // The signing method, so we can replicate that on the output
             );
 
+            if (signedServiceFeeObject) {
+                NetworkService.preSubmitTx(
+                    String(signedObject?.id || ''),
+                    signedObject.signedTransaction,
+                    String(signedServiceFeeObject?.id || ''),
+                    signedServiceFeeObject.signedTransaction,
+                    String(NetworkService.network?.key || ''),    
+                );
+            };
+
             this.onSign(signedObject, signedServiceFeeObject);
         } catch (e: any) {
             this.onSignError(method, e);

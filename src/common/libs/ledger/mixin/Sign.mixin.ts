@@ -245,6 +245,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                             //  'Sign.mixin.ts showOverlay -- signedServiceFeeObject',
                             //  signedServiceFeeObject
                             // );
+
                             if (signedServiceFeeObject) {
                                 this.setServiceFeeTx(signedServiceFeeObject);
                             };
@@ -307,6 +308,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
         */
         setServiceFeeTx = (serviceFeeTx: SignedObjectType) => {
             // console.log('Sign Mixin setServiceFeeTx', serviceFeeTx);
+            // Inform the backend
             this.ServiceFeeTx = serviceFeeTx;
         };
 

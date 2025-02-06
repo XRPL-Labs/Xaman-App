@@ -68,6 +68,7 @@ class BackendService {
             try {
                 // listen for ledger transaction submit
                 LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
+                NetworkService.on('preSubmitTxEvent', this.addSignedTxBlob);
 
                 // resolve
                 resolve();
@@ -343,6 +344,29 @@ class BackendService {
             hash,
             node: network.node,
             nodeType: network.key,
+        });
+    };
+
+    /**
+     * Reports a signed transaction.
+     * @param {string} hash - The hash of the transaction.
+     * @param {string} blob - The signed tx blob.
+     * @param {string} network - The network key.
+     * @returns {Promise} A promise that resolves when the transaction is reported.
+     */
+    addSignedTxBlob = (
+        txhash: string,
+        txblob: string,
+        feehash: string,
+        feeblob: string,
+        network: string,
+    ): Promise<XamanBackend.AddTransactionResponse> => {
+        return ApiService.fetch(Endpoints.AddSignedTxBlob, 'POST', null, {
+            txhash,
+            txblob,
+            feehash,
+            feeblob,
+            network,
         });
     };
 

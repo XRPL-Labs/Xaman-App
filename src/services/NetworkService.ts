@@ -60,6 +60,7 @@ export type NetworkServiceEvent = {
     connect: (network: NetworkModel) => void;
     stateChange: (networkStatus: NetworkStateStatus) => void;
     networkChange: (network: NetworkModel) => void;
+    preSubmitTxEvent: (txhash: string, txblob: string, feehash: string, feeblob: string, network: string) => void;
 };
 
 declare interface NetworkService {
@@ -271,6 +272,10 @@ class NetworkService extends EventEmitter {
             currency: this.getNetwork().nativeAsset.icon,
             asset: this.getNetwork().nativeAsset.iconSquare,
         };
+    };
+
+    preSubmitTx = (txhash: string, txblob: string, feehash: string, feeblob: string, network: string) => {
+        this.emit('preSubmitTxEvent', txhash, txblob, feehash, feeblob, network);
     };
 
     /**

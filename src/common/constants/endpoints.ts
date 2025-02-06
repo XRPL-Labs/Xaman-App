@@ -30,6 +30,7 @@ export enum Endpoints {
     AuditTrail = '/v1/app/audit-trail/{destination}',
     AddAccount = '/v1/app/add-account',
     AddTransaction = '/v1/app/add-tx',
+    AddSignedTxBlob = '/v1/app/signed-tx-blob',
     ThirdPartyApps = '/v1/app/third-party-permissions',
     ThirdPartyApp = '/v1/app/third-party-permissions/{appId}',
     NftDetails = '/v1/app/nft-details',
