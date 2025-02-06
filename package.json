@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/cli.js start",
