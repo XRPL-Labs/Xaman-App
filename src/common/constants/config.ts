@@ -19,6 +19,7 @@ export default {
         nftInfo: 'xumm.nft-info',
         activateAccount: 'xumm.activateacc',
         xappDonation: 'xumm.xapp-donation',
+        swap: 'xaman.swap',
     },
 
     // localization config
@@ -38,4 +39,11 @@ export default {
 
     // Account to send fees to
     feeAccount: 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt',
+
+    // Networks with Swap for exchange instead of DEX
+    swapNetworks: [
+        'MAINNET',
+        'TESTNET',
+        'DEVNET',
+    ],
 };

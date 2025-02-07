@@ -11,6 +11,8 @@ export interface Props {
     account?: AccountModel;
     origin?: XAppOrigin;
     originData?: any;
+    noSwitching?: boolean;
+    nativeTitle?: string;
 }
 
 export interface State {

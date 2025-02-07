@@ -29,22 +29,28 @@ const styles = StyleService.create({
         flexDirection: 'row',
         marginBottom: 20,
         marginTop: 15,
-        marginHorizontal: AppSizes.paddingSml,
+        marginHorizontal: AppSizes.paddingSml - 4,
     },
     // SEND BUTTON
     sendButtonContainer: {
         backgroundColor: '$blue',
+        marginHorizontal: 4,
+    },
+    // SEND BUTTON
+    swapButtonContainer: {
+        backgroundColor: '$darkBlue',
+        marginHorizontal: 4,
     },
     sendButtonIcon: { tintColor: '$white' },
     sendButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     // REQUEST BUTTON
     requestButtonContainer: {
-        marginLeft: 15,
+        marginHorizontal: 4,
         backgroundColor: '$green',
     },
 
-    requestButtonIcon: { tintColor: '$white' },
+    requestButtonIcon: { tintColor: '$white', marginRight: -3 },
     requestButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     requestButtonContainerClean: {

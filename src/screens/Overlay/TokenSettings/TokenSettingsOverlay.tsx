@@ -22,9 +22,10 @@ import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 // components
 import { AmountText, Button, Icon, InfoMessage, RaisedButton, Spacer, TouchableDebounce } from '@components/General';
@@ -463,7 +464,28 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { account, token } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
+            if (AppConfig.swapNetworks.indexOf(NetworkService?.getNetwork()?.key) > -1) {
+                Navigator.showModal<XAppBrowserModalProps>(
+                    AppScreens.Modal.XAppBrowser,
+                    {
+                        identifier: AppConfig.xappIdentifiers.swap,
+                        noSwitching: true,
+                        nativeTitle: Localize.t('global.swap'),
+                        origin: XAppOrigin.XUMM,
+                        params: {
+                            issuer: token.currency.issuer,
+                            asset: token.currency.currencyCode,
+                            action: 'SWAP',
+                        },    
+                    },
+                    {
+                        modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                        modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    },
+                );
+            } else {
+                Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
+            }
         });
     };
 
@@ -757,7 +779,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 small
                                 isDisabled={!this.canSend()}
                                 containerStyle={styles.sendButton}
-                                icon="IconCornerLeftUp"
+                                icon="IconV2Send"
                                 iconSize={18}
                                 iconStyle={styles.sendButtonIcon}
                                 label={Localize.t('global.send')}
@@ -768,11 +790,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 small
                                 isDisabled={!this.canExchange()}
                                 containerStyle={styles.exchangeButton}
-                                icon="IconSwitchAccount"
+                                icon="IconV2Swap"
                                 iconSize={17}
                                 iconPosition="left"
                                 iconStyle={styles.exchangeButtonIcon}
-                                label={Localize.t('global.exchange')}
+                                label={Localize.t('global.swap')}
                                 textStyle={styles.exchangeButtonText}
                                 onPress={this.onExchangePress}
                             />

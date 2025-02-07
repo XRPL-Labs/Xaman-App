@@ -17,6 +17,9 @@ import {
     Text,
     View,
 } from 'react-native';
+
+import { NetworkLabel } from '@components/Modules/NetworkLabel';
+
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
@@ -55,6 +58,7 @@ import {
     RaisedButton,
     Spacer,
     WebView,
+    Header,
 } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
@@ -1152,12 +1156,37 @@ class XAppBrowserModal extends Component<Props, State> {
 
     renderHeader = () => {
         const { app, network, account } = this.state;
+        const { noSwitching, nativeTitle } = this.props;
+
+        if (nativeTitle && nativeTitle !== '') {
+            return (
+                <Header
+                    leftComponent={{
+                        icon: 'IconChevronLeft',
+                        onPress: this.onClose,
+                    }}
+                    centerComponent={{ text: nativeTitle, extraComponent: <NetworkLabel type="both" /> }}
+                    rightComponent={{
+                        icon: 'IconSlider',
+                        iconSize: 20,
+                        onPress: () => {
+                            this.navigateTo({
+                                xApp: AppConfig.xappIdentifiers.swap,
+                                pickSwapper: true,
+                            });
+                        },
+                    }}
+                />
+            );
+        }
 
         return (
             <XAppBrowserHeader
                 identifier={app?.identifier}
                 title={app?.title}
                 icon={app?.icon}
+                noSwitching={!!noSwitching}
+                nativeTitle={nativeTitle}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}

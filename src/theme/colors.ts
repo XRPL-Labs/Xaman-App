@@ -6,6 +6,7 @@ import { ColorLuminance, HexToRgbA } from '@common/utils/color';
 
 const colors = {
     blue: '#0030CF',
+    darkBlue: '#181D41',
     orange: '#F8BF4C',
     green: '#3BDC96',
     red: '#FF5B5B',
