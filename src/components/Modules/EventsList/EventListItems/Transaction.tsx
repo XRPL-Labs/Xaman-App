@@ -1,6 +1,6 @@
 import { isEmpty, isEqual } from 'lodash';
 
-import { NetworkService } from '@services';
+// import { NetworkService } from '@services';
 
 import React, { Component } from 'react';
 import { Text, View, InteractionManager } from 'react-native';
@@ -49,6 +49,8 @@ export interface State {
     isLoading: boolean;
     participant?: AccountNameResolveType;
     explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
+    isFeeTransaction?: boolean;
+    feeText?: string;
 }
 
 /* Component ==================================================================== */
@@ -69,15 +71,16 @@ class TransactionItem extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { item, timestamp } = this.props;
-        const { isLoading, participant, explainer } = this.state;
+        // const { item, timestamp } = this.props;
+        // const { isLoading, participant, explainer } = this.state;
+        const { isLoading } = this.state;
 
         return (
-            !isEqual(nextProps.item?.hash, item?.hash) ||
-            !isEqual(nextState.isLoading, isLoading) ||
-            !isEqual(nextState.participant, participant) ||
-            !isEqual(nextState.explainer, explainer) ||
-            !isEqual(nextProps.timestamp, timestamp)
+            // !isEqual(nextProps.item?.hash, item?.hash) ||
+            !isEqual(nextState.isLoading, isLoading) // ||
+            // !isEqual(nextState.participant, participant) ||
+            // !isEqual(nextState.explainer, explainer) // ||
+            // !isEqual(nextProps.timestamp, timestamp)
         );
     }
 
@@ -110,6 +113,8 @@ class TransactionItem extends Component<Props, State> {
         if (!isLoading) {
             this.setState({
                 isLoading: true,
+                feeText: '',
+                isFeeTransaction: false,
             });
         }
 
@@ -130,16 +135,44 @@ class TransactionItem extends Component<Props, State> {
                 ? participants.start
                 : participants.end?.address && participants.end?.address !== account.address
                   ? participants.end
-                  : { address: account.address };
+                  : { address: account.address };        
 
         try {
             // get participant details
             const resp = await ResolverService.getAccountName(otherParty.address, otherParty.tag);
+
+            const isFeeTransaction = resp?.address && AppConfig?.feeAccount &&
+                String(resp?.address || '') === String(AppConfig?.feeAccount || '') &&
+                typeof item.MetaData.delivered_amount === 'string' &&
+                (item as any)?._tx?.InvoiceID;
+
+            let feeText = '';
+            
+            if (isFeeTransaction) {
+                const feeFactor = explainer?.getMonetaryDetails()?.factor?.[0];
+                if (feeFactor) {
+                    feeText = `${feeFactor?.value} ${feeFactor?.currency}`.trim();
+                    // if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
+                    // const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
+                    const effectiveAmount = Number(feeFactor?.value || 0);
+                    if (effectiveAmount !== 0) {
+                        feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${feeFactor?.currency}`.trim();
+                        // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
+                        // if (effectiveAmount < 0.01) {
+                        //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
+                        // } 
+                    }
+                // }
+                }
+            }
+
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,
                     participant: resp,
                     isLoading: false,
+                    feeText,
+                    isFeeTransaction,
                 });
             }
         } catch (error) {
@@ -164,33 +197,8 @@ class TransactionItem extends Component<Props, State> {
 
     render() {
         const { item, account } = this.props; // , rates
-        const { participant, explainer } = this.state;
+        const { participant, explainer, isFeeTransaction, feeText } = this.state;
 
-        const isFeeTransaction = participant?.address && AppConfig?.feeAccount &&
-            String(participant?.address || '') === String(AppConfig?.feeAccount || '') &&
-            typeof item.MetaData.delivered_amount === 'string' &&
-            (item as any)?._tx?.InvoiceID;
-
-        let feeText = '';
-        
-        if (isFeeTransaction) {
-            const feeFactor = explainer?.getMonetaryDetails()?.factor?.[0];
-            if (feeFactor) {
-                feeText = `${feeFactor?.value} ${feeFactor?.currency}`.trim();
-                // if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
-                // const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
-                const effectiveAmount = Number(feeFactor?.value || 0);
-                if (effectiveAmount !== 0) {
-                    feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${NetworkService.getNativeAsset()}`.trim();
-                    // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
-                    // if (effectiveAmount < 0.01) {
-                    //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
-                    // } 
-                }
-            // }
-            }
-        }
-        
         return (
             <TouchableDebounce
                 onPress={this.onPress}
