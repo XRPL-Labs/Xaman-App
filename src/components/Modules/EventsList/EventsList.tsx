@@ -68,7 +68,7 @@ class EventsList extends PureComponent<Props, State> {
     renderListEmpty = () => {
         const { isLoading } = this.props;
 
-        // This fixes the double spinner on loading @ Event list
+        // // This fixes the double spinner on loading @ Event list
         // if (isLoading) {
         //     return (
         //         <View style={[styles.listEmptyContainer]}>
@@ -225,28 +225,41 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     render() {
-        const { dataSource, onEndReached, headerComponent } = this.props;
+        const { dataSource, onEndReached, headerComponent, isLoading } = this.props;
         
+        const renderSeparateLoadingIndicator = !!isLoading && (dataSource || []).length === 0;
+
         return (
-            <SectionList
-                style={styles.sectionList}
-                contentContainerStyle={styles.sectionListContainer}
-                sections={dataSource}
-                renderItem={this.renderItem}
-                renderSectionHeader={this.renderSectionHeader}
-                keyExtractor={this.keyExtractor}
-                ListEmptyComponent={this.renderListEmpty}
-                ListHeaderComponent={headerComponent}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.2}
-                ListFooterComponent={this.renderFooter}
-                windowSize={10}
-                maxToRenderPerBatch={10}
-                initialNumToRender={20}
-                refreshControl={this.renderRefreshControl()}
-                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
-                stickySectionHeadersEnabled={false}
-            />
+            <>
+                { renderSeparateLoadingIndicator &&
+                    <View style={[styles.listEmptyContainer]}>
+                        <LoadingIndicator />
+                        <Text>{' '}</Text>
+                        <Text>{' '}</Text>
+                    </View>        
+                }
+                { !renderSeparateLoadingIndicator && 
+                    <SectionList
+                        style={styles.sectionList}
+                        contentContainerStyle={styles.sectionListContainer}
+                        sections={dataSource}
+                        renderItem={this.renderItem}
+                        renderSectionHeader={this.renderSectionHeader}
+                        keyExtractor={this.keyExtractor}
+                        ListEmptyComponent={this.renderListEmpty}
+                        ListHeaderComponent={headerComponent}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.2}
+                        ListFooterComponent={this.renderFooter}
+                        windowSize={10}
+                        maxToRenderPerBatch={10}
+                        initialNumToRender={20}
+                        refreshControl={this.renderRefreshControl()}
+                        indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                        stickySectionHeadersEnabled={false}
+                    />
+                }
+            </>
         );
     }
 }
