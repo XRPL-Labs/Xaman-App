@@ -350,6 +350,9 @@ export default StyleService.create({
     paddingBottomSml: {
         paddingBottom: Sizes.paddingSml,
     },
+    paddingBottomExtraSml: {
+        paddingBottom: Sizes.paddingExtraSml,
+    },
     gap: {
         gap: Sizes.padding,
     },
