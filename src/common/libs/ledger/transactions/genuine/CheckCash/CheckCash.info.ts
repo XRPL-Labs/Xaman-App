@@ -43,12 +43,13 @@ class CheckCashInfo extends ExplainerAbstract<CheckCash, MutationsMixinType> {
     }
 
     getMonetaryDetails() {
+        const amountField = this.item.Amount || this.item.DeliverMin;
         return {
             mutate: this.item.BalanceChange(this.account.address),
             factor: [
                 {
-                    currency: this.item.Amount!.currency,
-                    value: this.item.Amount!.value,
+                    currency: amountField!.currency,
+                    value: amountField!.value,
                     effect: MonetaryStatus.IMMEDIATE_EFFECT,
                 },
             ],
