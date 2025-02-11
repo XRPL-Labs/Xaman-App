@@ -74,6 +74,7 @@ export interface State {
     account: AccountModel;
     transactions: Array<Transactions>;
     hideAdvisoryTransactions: boolean;
+    hideServiceFeeTransactions: boolean;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
     dataSource: Array<DataSourceItem>;
@@ -110,6 +111,11 @@ class EventsView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const {
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
+        } = CoreRepository.getSettings();
+
         this.state = {
             isLoading: true,
             isLoadingMore: false,
@@ -119,7 +125,8 @@ class EventsView extends Component<Props, State> {
             activeSection: EventSections.ALL,
             lastMarker: undefined,
             account: CoreRepository.getDefaultAccount(),
-            hideAdvisoryTransactions: CoreRepository.getSettings().hideAdvisoryTransactions,
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
@@ -212,6 +219,11 @@ class EventsView extends Component<Props, State> {
         // force reload existing list if show/hide spam tx
         if (has(changes, 'hideAdvisoryTransactions')) {
             this.setState({ hideAdvisoryTransactions: !!changes.hideAdvisoryTransactions }, () => {
+                this.forceReload = true;
+            });
+        }
+        if (has(changes, 'hideServiceFeeTransactions')) {
+            this.setState({ hideServiceFeeTransactions: !!changes.hideServiceFeeTransactions }, () => {
                 this.forceReload = true;
             });
         }
@@ -392,7 +404,13 @@ class EventsView extends Component<Props, State> {
     };
 
     loadTransactions = (loadMore?: boolean): Promise<Transactions[]> => {
-        const { transactions, account, lastMarker, hideAdvisoryTransactions } = this.state;
+        const {
+            transactions,
+            account,
+            lastMarker,
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
+         } = this.state;
 
         return new Promise((resolve) => {
             // return if no account exist
@@ -433,6 +451,15 @@ class EventsView extends Component<Props, State> {
                                     const accountResolver = await ResolverService.getAccountName(resolveAccount);
 
                                     blocked = !!accountResolver?.blocked;
+                                }
+                            }
+
+                            if (hideServiceFeeTransactions) {
+                                if (
+                                    transaction?.tx?.TransactionType === 'Payment' &&
+                                    transaction?.tx?.Destination === AppConfig?.feeAccount
+                                ) {
+                                    blocked = true;
                                 }
                             }
 
