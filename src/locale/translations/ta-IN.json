@@ -784,6 +784,7 @@
     "biometricAuthentication": "பயோமெட்ரிக் அங்கீகாரம்",
     "hapticFeedback": "தீண்டும் கருத்துக்களை",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "டெவலப்பர் பயன்முறை",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "கணினி நாணய வடிவமைப்பைப் பயன்படுத்தவும்",

@@ -784,6 +784,7 @@
     "biometricAuthentication": "ბიომეტრიული ავთენტიფიკაცია",
     "hapticFeedback": "ვიბრაცია უკუკავშირზე ",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "დეველოპერის რეჟიმი ",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "სისტემის ვალუტის ფორმატირება",

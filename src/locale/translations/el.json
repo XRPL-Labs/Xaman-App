@@ -784,6 +784,7 @@
     "biometricAuthentication": "Βιομετρική ταυτοποίηση",
     "hapticFeedback": "Haptic σχόλια",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Λειτουργία προγραμματιστή",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Μορφοποίηση νομίσματος συστήματος",

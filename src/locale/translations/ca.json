@@ -784,6 +784,7 @@
     "biometricAuthentication": "Autenticació biomètrica",
     "hapticFeedback": "Retroalimentació hàptica",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Mode de desenvolupador",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Format de la moneda del sistema",

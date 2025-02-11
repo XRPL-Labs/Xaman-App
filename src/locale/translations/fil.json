@@ -784,6 +784,7 @@
     "biometricAuthentication": "Pagpapatotoo ng biometric",
     "hapticFeedback": "Haptic  puna",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Mode ng developer",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "sistema pera ayos",

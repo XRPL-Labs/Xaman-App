@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometrik autentifikatsiya",
     "hapticFeedback": "Taktil muloqot",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Ishlab chiqaruvchi rejimi",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Tizim valyuta formatidan foydalaning",

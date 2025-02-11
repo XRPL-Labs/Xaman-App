@@ -784,6 +784,7 @@
     "biometricAuthentication": "אימות ביומטרי",
     "hapticFeedback": "משוב הפטי",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "מצב מפתח",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "שינוי מטבע להצגה",

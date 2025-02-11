@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometrinen tunnistus",
     "hapticFeedback": "Tuntoaistinen palaute",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Kehittäjätila",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Käytä järjestelmävaluutan muotoilua",

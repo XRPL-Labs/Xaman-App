@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biyometrik doğrulama",
     "hapticFeedback": "Dokunsal geribildirim",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Geliştirici modu",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistem para birimini kullan",

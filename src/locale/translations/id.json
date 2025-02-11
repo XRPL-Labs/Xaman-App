@@ -784,6 +784,7 @@
     "biometricAuthentication": "Autentikasi biometrik",
     "hapticFeedback": "Umpan balik sentuhan",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "mode pengembang",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Gunakan format mata uang sistem",

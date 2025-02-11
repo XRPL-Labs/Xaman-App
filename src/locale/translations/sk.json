@@ -784,6 +784,7 @@
     "biometricAuthentication": "Overenie biometriou",
     "hapticFeedback": "Haptická spätná väzba",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Režim vývojára",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formátovanie systémovej meny",

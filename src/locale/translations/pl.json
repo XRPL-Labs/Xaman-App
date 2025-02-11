@@ -784,6 +784,7 @@
     "biometricAuthentication": "Uwierzytelnianie biometryczne",
     "hapticFeedback": "Wibracje przy powiadomieniu",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Tryb programisty",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formatowanie walut według systemu operacyjnego",

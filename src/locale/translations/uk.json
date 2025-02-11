@@ -784,6 +784,7 @@
     "biometricAuthentication": "Біометрична аутентифікація",
     "hapticFeedback": "Тактильний зворотний зв’язок",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Режим розробника",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Використовувати системний формат валюти",

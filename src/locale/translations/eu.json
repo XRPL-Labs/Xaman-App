@@ -784,6 +784,7 @@
     "biometricAuthentication": "biometrikoa autentifikazioa",
     "hapticFeedback": "Iritzi haptikoa",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Garatzaile modua",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistemaren moneta formateatzea",

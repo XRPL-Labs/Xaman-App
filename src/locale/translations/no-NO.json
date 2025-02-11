@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometrisk autentisering",
     "hapticFeedback": "Haptisk tilbakemelding",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Utviklermodus",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formatering av systemvaluta",

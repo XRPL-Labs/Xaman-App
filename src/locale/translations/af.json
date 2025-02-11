@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometriese verifikasie",
     "hapticFeedback": "Haptiese terugvoer",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Ontwikkelaar modus",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Gebruik die stelsel-geldeenheid-formaat",

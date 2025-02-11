@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometrinių duomenų autentifikavimas",
     "hapticFeedback": "Feedback - grįžtamasis ryšys",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Kūrėjo režimas",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sistemos valiutos formatavimas",

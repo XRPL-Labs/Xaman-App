@@ -784,6 +784,7 @@
     "biometricAuthentication": "ਬਾਇਓਮੈਟ੍ਰਿਕ ਪ੍ਰਮਾਣਿਕਤਾ",
     "hapticFeedback": "ਹੈਪੇਟਿਕ ਫੀਡਬੈਕ",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "ਡਿਵੈਲਪਰ ਮੋਡ",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "ਸਿਸਟਮ ਮੁਦਰਾ ਦਾ ਫਾਰਮੈਟ ਵਰਤੋ",

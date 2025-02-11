@@ -784,6 +784,7 @@
     "biometricAuthentication": "生体認証",
     "hapticFeedback": "触覚フィードバック",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "開発者モード",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "システムの通貨形式を使用",

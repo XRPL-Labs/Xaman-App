@@ -784,6 +784,7 @@
     "biometricAuthentication": "బయోమెట్రిక్ ప్రామాణీకరణ\r\n",
     "hapticFeedback": "హాప్టిక్ ఫీడ్‌బ్యాక్\r\n",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "డెవలపర్ మోడ్",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "సిస్టమ్ కరెన్సీ ఆకృతీకరణ\r\n",

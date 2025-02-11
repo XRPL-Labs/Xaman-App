@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biometrijska provjera autentičnosti",
     "hapticFeedback": "Haptična povratna informacija",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Način za programere",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Formatiranje sistemske valute",

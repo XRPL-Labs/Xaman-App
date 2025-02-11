@@ -784,6 +784,7 @@
     "biometricAuthentication": "byometrik otantifikasyon",
     "hapticFeedback": "fidbak haptik",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "pwomotè mòd",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Fòma lajan sistèm lan",

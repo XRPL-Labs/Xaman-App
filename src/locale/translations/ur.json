@@ -784,6 +784,7 @@
     "biometricAuthentication": "بایومیٹرک تصدیق",
     "hapticFeedback": "حیرت انگیز آراء",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "ڈویلپر وضع",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "سسٹم کرنسی کی شکل استعمال کریں",

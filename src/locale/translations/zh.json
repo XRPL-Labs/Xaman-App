@@ -784,6 +784,7 @@
     "biometricAuthentication": "生物特征认证",
     "hapticFeedback": "触觉反馈",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Developer mode",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "系统货币样式",

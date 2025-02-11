@@ -784,6 +784,7 @@
     "biometricAuthentication": "Biomeetriline autentimine",
     "hapticFeedback": "Taktiline(haptiline) tagasiside",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Arendaja režiim",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Süsteemi valuuta vormindamine",

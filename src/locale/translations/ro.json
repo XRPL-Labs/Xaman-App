@@ -784,6 +784,7 @@
     "biometricAuthentication": "Autentificare biometrică",
     "hapticFeedback": "Feedback haptic",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Opțiuni dezvoltator",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Utilizează formatul Monedă",

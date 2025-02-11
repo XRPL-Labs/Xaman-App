@@ -784,6 +784,7 @@
     "biometricAuthentication": "Xác thực sinh trắc học",
     "hapticFeedback": "Phản hồi xúc giác",
     "hideAdvisoryTransactions": "Hide spam/scam transactions",
+    "hideServiceFeeTransactions": "Hide Service Fee events",
     "developerMode": "Chế độ nhà phát triển",
     "developerSettings": "Developer settings",
     "useSystemSeparators": "Sử dụng định dạng tiền tệ hệ thống",
