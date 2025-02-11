@@ -27,6 +27,7 @@ import Localize from '@locale';
 import styles from './styles';
 /* Types ==================================================================== */
 import { Props } from './types';
+import { AppStyles } from '@theme/index';
 
 enum ActionTypes {
     NEW_PAYMENT = 'NEW_PAYMENT',
@@ -354,7 +355,13 @@ class ActionButtons extends PureComponent<Props, State> {
         }
 
         return availableActions.map((type) => (
-            <ActionButton key={`action-button-${type}`} actionType={type} onPress={this.onActionButtonPress} />
+            <View style={[AppStyles.paddingBottomExtraSml]}>
+                <ActionButton
+                    key={`action-button-${type}`}
+                    actionType={type}
+                    onPress={this.onActionButtonPress}
+                />
+            </View>
         ));
     };
 
