@@ -88,7 +88,7 @@ const styles = StyleService.create({
         height: AppSizes.scale(25),
         paddingHorizontal: 12,
         alignSelf: 'center',
-        borderRadius: AppSizes.scale(25) / 2,
+        borderRadius: AppSizes.scale(25) / 4,
     },
     textButtonRoundedMini: {
         fontSize: AppFonts.base.size * 0.8,

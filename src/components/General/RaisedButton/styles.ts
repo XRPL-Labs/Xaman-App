@@ -7,7 +7,7 @@ export const styles = StyleService.create({
         flex: 1,
         width: '100%',
         backgroundColor: '$white',
-        borderRadius: 13,
+        borderRadius: 7,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '$grey',

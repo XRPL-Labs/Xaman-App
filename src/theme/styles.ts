@@ -383,6 +383,12 @@ export default StyleService.create({
     marginTop: {
         marginTop: Sizes.padding,
     },
+    marginTopNone: {
+        marginTop: 0,
+    },
+    marginTopNegativeSml: {
+        marginTop: -(Sizes.padding / 2),
+    },
     marginBottom: {
         marginBottom: Sizes.padding,
     },

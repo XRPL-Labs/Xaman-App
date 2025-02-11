@@ -5,10 +5,11 @@ import { AppFonts, AppSizes } from '@theme';
 export default StyleService.create({
     container: {
         flexDirection: 'row',
-        backgroundColor: '$tint',
-        borderRadius: 12,
-        padding: AppSizes.paddingExtraSml,
+        // backgroundColor: '$tint',
+        // borderRadius: 12,
+        // padding: AppSizes.paddingExtraSml,
         paddingHorizontal: AppSizes.paddingSml,
+        marginBottom: 5,
     },
     accountLabelText: {
         fontFamily: AppFonts.base.familyExtraBold,

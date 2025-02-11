@@ -5,10 +5,10 @@ import { AppFonts, AppSizes } from '@theme';
 export default StyleService.create({
     currencyItem: {
         justifyContent: 'space-between',
-        backgroundColor: '$lightBlue',
+        // backgroundColor: '$lightBlue',
         borderRadius: 10,
-        paddingHorizontal: 5,
-        paddingVertical: 5,
+        // paddingHorizontal: 5,
+        // paddingVertical: 5,
         marginHorizontal: AppSizes.paddingSml,
     },
     balanceRow: {

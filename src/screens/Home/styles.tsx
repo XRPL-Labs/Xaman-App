@@ -41,7 +41,7 @@ const styles = StyleService.create({
         backgroundColor: '$darkBlue',
         marginHorizontal: 4,
     },
-    sendButtonIcon: { tintColor: '$white' },
+    sendButtonIcon: { tintColor: '$white', marginRight: -3 },
     sendButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     // REQUEST BUTTON
