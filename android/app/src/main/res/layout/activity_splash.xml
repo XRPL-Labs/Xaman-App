@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/splash_screen_background"
     >
   <ImageView
@@ -14,11 +15,13 @@
       android:scaleType="centerCrop"
       android:src="@drawable/splash_screen_patterns" />
 
-  <ImageView
-      android:layout_width="200dp"
-      android:layout_height="200dp"
-      android:layout_centerInParent="true"
-      android:contentDescription="@string/splash_screen_foreground"
-      android:scaleType="fitCenter"
-      android:src="@drawable/formerly_logo" />
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="@string/splash_screen_foreground"
+        android:scaleType="fitCenter"
+        android:src="@drawable/formerly_logo" />
 </RelativeLayout>
