@@ -117,7 +117,7 @@ class EventsView extends Component<Props, State> {
         } = CoreRepository.getSettings();
 
         this.state = {
-            isLoading: true,
+            isLoading: false,
             isLoadingMore: false,
             canLoadMore: true,
             searchText: undefined,
@@ -169,6 +169,9 @@ class EventsView extends Component<Props, State> {
     componentDidDisappear() {
         // keep track of screen visibility
         this.isScreenVisible = false;
+        this.setState({
+            isLoading: false,
+        });
     }
 
     componentDidMount() {
@@ -210,6 +213,7 @@ class EventsView extends Component<Props, State> {
                 plannedTransactions: [],
                 lastMarker: undefined,
                 canLoadMore: true,
+                isLoading: true,
             },
             this.updateDataSource,
         );
