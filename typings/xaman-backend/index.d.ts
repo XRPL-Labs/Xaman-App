@@ -216,6 +216,7 @@ declare namespace XamanBackend {
     interface XappLunchTokenResponse {
         ott: string;
         xappTitle: string;
+        appid: string;
         allowForCurrentNetwork: boolean;
         xappSupportUrl: string;
         error: string;

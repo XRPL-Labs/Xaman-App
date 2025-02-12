@@ -21,6 +21,7 @@ export interface State {
         title?: string;
         icon?: string;
         identifier: string;
+        appid?: string;
         supportUrl?: string;
         permissions?: {
             special: string[];

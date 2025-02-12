@@ -105,6 +105,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 icon: props.icon,
                 identifier: props.identifier,
                 supportUrl: undefined,
+                appid: undefined,
                 permissions: undefined,
                 networks: undefined,
                 __ott: undefined,
@@ -668,7 +669,7 @@ class XAppBrowserModal extends Component<Props, State> {
             }
 
             const response = await BackendService.getXAppLaunchToken(app.identifier, data);
-            const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = response;
+            const { error, ott, xappTitle, xappSupportUrl, icon, permissions, appid } = response;
 
             // an error reported from backend
             if (error) {
@@ -686,6 +687,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 app: {
                     identifier: app.identifier,
                     title: xappTitle || app?.title,
+                    appid: appid || app?.appid,
                     supportUrl: xappSupportUrl,
                     icon,
                     permissions,
@@ -763,7 +765,7 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         return {
-            uri: `https://${HOSTNAME}/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+            uri: `https://${HOSTNAME}/detect/xapp:${app?.appid || app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
                 coreSettings.theme,
             )}`,
             headers: {
