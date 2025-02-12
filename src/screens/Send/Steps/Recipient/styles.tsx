@@ -3,20 +3,30 @@ import StyleService from '@services/StyleService';
 import { AppStyles, AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    accountList: {
+        marginLeft: -7, // For selection of Account
+        marginRight: -7, // For selection of Account
+    },
+    paddingHorizontal: {
+        paddingHorizontal: 25,
+    },
     inputText: {
         fontSize: AppStyles.p.fontSize,
-        fontFamily: AppStyles.monoBold.fontFamily,
+        fontFamily: AppStyles.baseText.fontFamily,
+        fontWeight: 200,
         color: '$blue',
-        paddingLeft: 15,
+        paddingLeft: 5,
     },
     inputContainer: {
-        borderWidth: 1,
-        borderColor: '$lightGrey',
+        marginTop: 5,
+        // borderWidth: 1,
+        // borderColor: '$lightGrey',
     },
     sectionHeader: {
         backgroundColor: '$background',
         paddingTop: 5,
         paddingBottom: 5,
+        marginLeft: 7,
         shadowColor: '$white',
     },
     listEmptyContainer: {

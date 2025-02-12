@@ -93,7 +93,7 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
 
     const { label, secondary } = buttonData;
 
-    return <Button rounded secondary={secondary} label={label} onPress={onActionPress} />;
+    return <Button style={[styles.actionButton]} secondary={secondary} label={label} onPress={onActionPress} />;
 };
 
 /* Component ==================================================================== */

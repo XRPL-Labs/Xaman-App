@@ -143,7 +143,7 @@ class Input extends Component<Props, State> {
                     placeholderTextColor={StyleService.value('$textSecondary')}
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
-                    multiline={false}
+                    multiline
                     style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
                     {...filteredProps}
                 />

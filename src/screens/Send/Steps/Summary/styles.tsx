@@ -8,7 +8,11 @@ const styles = StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
+        paddingHorizontal: 5,
         backgroundColor: '$background',
+    },
+    swipeFooterSize: {
+        width: '100%',
     },
     rowItemGrey: {
         backgroundColor: '$background',
@@ -17,8 +21,11 @@ const styles = StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
         // paddingTop: AppSizes.padding,
-        borderTopColor: '$lightGrey',
-        borderTopWidth: 1,
+        // borderTopColor: '$lightGrey',
+        // borderTopWidth: 1,
+    },
+    destinationTagBtn: {
+        borderRadius: 14,
     },
     rowItemMulti: {
         flexDirection: 'row',
@@ -26,7 +33,7 @@ const styles = StyleService.create({
         alignItems: 'center',
     },
     rowTitle: {
-        paddingLeft: 15,
+        paddingLeft: 0,
     },
     rowTitlePadding: {
         paddingBottom: 15,
@@ -107,7 +114,7 @@ const styles = StyleService.create({
     amountInput: {
         padding: 0,
         margin: 0,
-        paddingLeft: 15,
+        // paddingLeft: 15,
         fontSize: AppFonts.h3.size,
         fontFamily: AppFonts.base.familyMonoBold,
         fontWeight: '600',
@@ -115,8 +122,8 @@ const styles = StyleService.create({
     },
     inputStyle: {
         fontSize: AppFonts.p.size,
-        fontFamily: AppFonts.base.familyMonoBold,
-        fontWeight: '600',
+        fontFamily: AppFonts.base.family,
+        fontWeight: '400',
         textAlign: 'left',
     },
     editButton: {
@@ -129,7 +136,7 @@ const styles = StyleService.create({
         marginRight: 15,
     },
     rateContainer: {
-        paddingLeft: 15,
+        // paddingLeft: 15,
         paddingTop: 15,
     },
 
@@ -147,11 +154,11 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     feeContainer: {
-        paddingLeft: 15,
+        // paddingLeft: 15,
         paddingTop: 15,
     },
     feePickerContainer: {
-        paddingLeft: 15,
+        // paddingLeft: 15,
         paddingTop: 15,
     },
 });

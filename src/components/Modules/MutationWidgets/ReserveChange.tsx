@@ -140,7 +140,7 @@ class ReserveChange extends PureComponent<Props, State> {
                 </View>
                 <Button
                     roundedMini
-                    light
+                    // light
                     label={Localize.t('events.myBalanceAndReserve')}
                     onPress={this.showBalanceExplain}
                 />

@@ -298,7 +298,7 @@ class FeePicker extends Component<Props, State> {
                         <Button
                             onPress={this.showFeeSelectOverlay}
                             style={styles.editButton}
-                            roundedSmall
+                            roundedMini
                             iconSize={13}
                             light
                             icon="IconEdit"

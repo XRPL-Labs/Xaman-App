@@ -26,6 +26,9 @@ const styles = StyleService.create({
         paddingBottom: 25,
         paddingHorizontal: 25,
     },
+    actionButton: {
+        borderRadius: 12,
+    },
     detailContainer: {
         paddingBottom: AppSizes.padding,
         paddingHorizontal: 25,
@@ -36,8 +39,9 @@ const styles = StyleService.create({
     },
     participantContainer: {
         padding: 25,
-        borderTopColor: '$tint',
-        borderTopWidth: 1,
+        paddingTop: 5,
+        // borderTopColor: '$tint',
+        // borderTopWidth: 1,
     },
 
     detailsLabelText: {
@@ -61,10 +65,13 @@ const styles = StyleService.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '$tint',
-        paddingVertical: 20,
-        paddingHorizontal: 30,
-        borderRadius: 50,
+        // backgroundColor: '$tint',
+        borderWidth: 1,
+        borderColor: '$light',
+        width: '100%',
+        paddingVertical: 15,
+        paddingHorizontal: 50,
+        borderRadius: 10,
     },
     amountContainerSmall: {
         flexDirection: 'row',

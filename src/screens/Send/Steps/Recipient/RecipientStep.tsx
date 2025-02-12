@@ -730,6 +730,7 @@ class RecipientStep extends Component<Props, State> {
                         <Button
                             onPress={this.resetResult}
                             style={styles.clearSearchButton}
+                            roundedMini
                             light
                             label={Localize.t('global.clearSearch')}
                         />
@@ -833,7 +834,7 @@ class RecipientStep extends Component<Props, State> {
 
         return (
             <View testID="send-recipient-view" style={AppStyles.container}>
-                <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}>
+                <View style={[AppStyles.contentContainer, styles.paddingHorizontal]}>
                     <View style={AppStyles.row}>
                         <TextInput
                             placeholder={Localize.t('send.enterANameOrAddress')}
@@ -849,7 +850,7 @@ class RecipientStep extends Component<Props, State> {
                         />
                     </View>
 
-                    <View style={[AppStyles.flex8, AppStyles.paddingTopSml]}>
+                    <View style={[AppStyles.flex8, AppStyles.paddingTopSml, styles.accountList]}>
                         <SectionList
                             ListEmptyComponent={this.renderListEmptyComponent}
                             extraData={searchText}

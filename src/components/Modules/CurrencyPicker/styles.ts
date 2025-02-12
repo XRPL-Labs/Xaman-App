@@ -4,13 +4,13 @@ import StyleService from '@services/StyleService';
 export default StyleService.create({
     pickerContainer: {
         borderRadius: 15,
-        backgroundColor: '$tint',
-        height: 80,
-        paddingHorizontal: 17,
+        // backgroundColor: '$tint',
+        height: 40,
+        // paddingHorizontal: 17,
         justifyContent: 'center',
     },
     collapseButton: {
-        backgroundColor: '$black',
+        // backgroundColor: '$black',
         borderRadius: 8,
         height: 25,
         width: 40,
@@ -20,6 +20,6 @@ export default StyleService.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: '$white',
+        tintColor: '$dark',
     },
 });

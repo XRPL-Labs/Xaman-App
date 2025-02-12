@@ -4,10 +4,10 @@ import { AppStyles, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     pickerContainer: {
-        borderRadius: 15,
-        backgroundColor: '$tint',
-        height: 80,
-        paddingHorizontal: 17,
+        borderRadius: 8,
+        // backgroundColor: '$tint',
+        height: 40,
+        paddingHorizontal: 0,
         justifyContent: 'center',
     },
     collapseButton: {

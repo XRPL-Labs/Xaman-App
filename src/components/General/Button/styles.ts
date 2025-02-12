@@ -8,11 +8,11 @@ const styles = StyleService.create({
         alignItems: 'center',
     },
     button: {
-        height: AppSizes.scale(55),
+        height: AppSizes.scale(45),
         flexDirection: 'row',
         borderWidth: 1,
-        borderRadius: AppSizes.scale(75) / 4,
-        paddingHorizontal: 15,
+        borderRadius: AppSizes.scale(75) / 7,
+        paddingHorizontal: 25,
         alignSelf: 'stretch',
         justifyContent: 'center',
         borderColor: '$transparent',
@@ -88,7 +88,7 @@ const styles = StyleService.create({
         height: AppSizes.scale(25),
         paddingHorizontal: 12,
         alignSelf: 'center',
-        borderRadius: AppSizes.scale(25) / 4,
+        borderRadius: AppSizes.scale(25) / 3,
     },
     textButtonRoundedMini: {
         fontSize: AppFonts.base.size * 0.8,

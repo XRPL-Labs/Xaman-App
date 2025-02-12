@@ -380,10 +380,11 @@ class SummaryStep extends Component<Props, State> {
 
                         {
                             String(destination?.tag || '') === '' && (
-                                <View style={[ styles.rowTitle, AppStyles.paddingRightSml ]}>
+                                <View style={[ styles.rowTitle ]}>
                                     <Button
                                         activeOpacity={0.9}
                                         roundedSmallBlock
+                                        style={[styles.destinationTagBtn]}
                                         onPress={this.showEnterDestinationTag}
                                         icon="IconEdit"
                                         iconSize={15}
@@ -495,7 +496,7 @@ class SummaryStep extends Component<Props, State> {
                         />
                     </View>
 
-                    <Footer safeArea>
+                    <Footer style={[styles.swipeFooterSize]} safeArea>
                         <SwipeButton
                             color={this.getSwipeButtonColor()}
                             label={Localize.t('global.slideToSend')}

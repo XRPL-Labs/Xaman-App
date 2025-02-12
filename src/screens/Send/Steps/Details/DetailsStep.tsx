@@ -357,7 +357,7 @@ class DetailsStep extends Component<Props, State> {
                             <View>
                                 <Button
                                     light
-                                    roundedSmall
+                                    roundedMini
                                     isLoading={isLoadingAvailableBalance}
                                     onPress={this.applyAllBalance}
                                     label={Localize.t('global.all')}
