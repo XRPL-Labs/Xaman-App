@@ -21,7 +21,7 @@ const styles = StyleService.create({
         paddingLeft: 5,
     },
     inputContainer: {
-        marginTop: 5,
+        // marginTop: 5, // Makes the QR button move
         // borderWidth: 1,
         // borderColor: '$lightGrey',
     },

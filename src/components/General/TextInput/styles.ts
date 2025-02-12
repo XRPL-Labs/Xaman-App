@@ -29,8 +29,8 @@ export default StyleService.create({
         flex: 1,
         fontSize: AppFonts.base.size,
         color: '$blue',
-        fontFamily: AppFonts.base.familyMonoBold,
-        fontWeight: '600',
+        fontFamily: AppFonts.base.family,
+        // fontWeight: '600',
     },
     scanIcon: {
         tintColor: '$white',
@@ -38,7 +38,7 @@ export default StyleService.create({
     scanButton: {
         position: 'absolute',
         right: 4,
-        top: Platform.OS === 'ios' ? 10 : 9,
+        // top: Platform.OS === 'ios' ? 10 : 9,
         height: AppSizes.heightPercentageToDP(6),
         width: AppSizes.heightPercentageToDP(6),
         minHeight: 45,

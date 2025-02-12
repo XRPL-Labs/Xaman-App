@@ -803,7 +803,10 @@ class RecipientStep extends Component<Props, State> {
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
                         <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('send.searchResults')}</Text>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={[
+                        AppStyles.flex1,
+                        styles.restoreMarginRight,
+                    ]}>
                         <Button
                             onPress={() => {
                                 // clear search text
@@ -816,13 +819,15 @@ class RecipientStep extends Component<Props, State> {
                                 this.setDefaultDataSource();
                             }}
                             style={styles.clearSearchButton}
+                            roundedMini
                             light
-                            roundedSmall
                             label={Localize.t('global.clearSearch')}
                         />
                     </View>
                 </View>
-                <View style={AppStyles.paddingVerticalSml}>
+                <View style={[
+                    AppStyles.paddingVerticalSml,
+                ]}>
                     <InfoMessage type="warning" label={Localize.t('send.noSearchResult')} />
                 </View>
             </>
