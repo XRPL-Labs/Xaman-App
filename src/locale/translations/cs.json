@@ -349,6 +349,7 @@
     "support": "Support",
     "nfts": "NFTs",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp chce otevřít tuto adresu URL.\n\n%{url}",
+    "xAppWantsToSendSessionLogs": "This xApp is requesting your 'Session Logs'. Session Logs do not contain personal information, except for your your acount addresses and ledger connection logging.\r\n\r\nIf you want to inspect the contents of the session log first, visit Settings - Advanced - Session Log.\r\n\r\nDo you want to allow the application to access session log information?",
     "createPaymentRequestLink": "Vytvořit odkaz na platební požadavek",
     "transactionFeeIsNotSet": "Transaction fee is not set, please wait until transaction fee is set and try again!",
     "unableToSetAccountSequence": "Unable to set account Sequence, please check that you are connected to the internet.",

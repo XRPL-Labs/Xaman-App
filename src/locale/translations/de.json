@@ -349,6 +349,7 @@
     "support": "Support",
     "nfts": "NFTs",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp möchte diese URL öffnen.\r\n\r\n%{url}",
+    "xAppWantsToSendSessionLogs": "This xApp is requesting your 'Session Logs'. Session Logs do not contain personal information, except for your your acount addresses and ledger connection logging.\r\n\r\nIf you want to inspect the contents of the session log first, visit Settings - Advanced - Session Log.\r\n\r\nDo you want to allow the application to access session log information?",
     "createPaymentRequestLink": "Link für Zahlungsanforderung erstellen",
     "transactionFeeIsNotSet": "Die Transaktionsgebühr ist nicht festgelegt. Bitte warten Sie, bis die Transaktionsgebühr gesetzt ist, und versuchen Sie es erneut!",
     "unableToSetAccountSequence": "Die Kontenfolge kann nicht festgelegt werden. Überprüfen Sie, ob Sie mit dem Internet verbunden sind.",

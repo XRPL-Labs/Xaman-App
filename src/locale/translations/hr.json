@@ -349,6 +349,7 @@
     "support": "Support",
     "nfts": "NFTs",
     "xAppWantsToOpenURLNotice": "'%{xapp} xApp želi otvoriti ovaj URL.\r\n\r\n%{url}",
+    "xAppWantsToSendSessionLogs": "This xApp is requesting your 'Session Logs'. Session Logs do not contain personal information, except for your your acount addresses and ledger connection logging.\r\n\r\nIf you want to inspect the contents of the session log first, visit Settings - Advanced - Session Log.\r\n\r\nDo you want to allow the application to access session log information?",
     "createPaymentRequestLink": "Izradite vezu Zahtjev za plaćanje",
     "transactionFeeIsNotSet": "Naknada za transakciju nije postavljena, molim čekajte da se postavi naknada za transakciju i pokušajte ponovno!",
     "unableToSetAccountSequence": "Ne može se postaviti redoslijed računa, molimo vas da provjerite da li ste povezani s internetom.",

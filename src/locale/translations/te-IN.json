@@ -349,6 +349,7 @@
     "support": "Support",
     "nfts": "NFTs",
     "xAppWantsToOpenURLNotice": "'%{xapp}' xApp ఈ URL ను తెరవాలనుకుంటుంది.\r\n%{url}",
+    "xAppWantsToSendSessionLogs": "This xApp is requesting your 'Session Logs'. Session Logs do not contain personal information, except for your your acount addresses and ledger connection logging.\r\n\r\nIf you want to inspect the contents of the session log first, visit Settings - Advanced - Session Log.\r\n\r\nDo you want to allow the application to access session log information?",
     "createPaymentRequestLink": "పాయింట్ Request link సృష్టించుము",
     "transactionFeeIsNotSet": "లావాదేవీ రుసుము సెట్ చేయబడలేదు, దయచేసి లావాదేవీ రుసుము సెట్ చేయబడే వరకు వేచి ఉండి, మళ్లీ ప్రయత్నించండి!",
     "unableToSetAccountSequence": "ఖాతా క్రమాన్ని సెట్ చేయడం సాధ్యపడలేదు, దయచేసి మీరు ఇంటర్నెట్‌కి కనెక్ట్ అయ్యారో లేదో తనిఖీ చేయండి.",
