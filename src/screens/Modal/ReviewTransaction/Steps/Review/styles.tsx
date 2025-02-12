@@ -9,6 +9,9 @@ const styles = StyleService.create({
         flex: 1,
         backgroundColor: '$lightGrey',
     },
+    accountPickerPadding: {
+        paddingHorizontal: 5,
+    },
     transactionContent: {
         flex: 1,
         backgroundColor: '$background',

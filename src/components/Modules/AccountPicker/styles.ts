@@ -11,7 +11,7 @@ export default StyleService.create({
         justifyContent: 'center',
     },
     collapseButton: {
-        backgroundColor: '$black',
+        // backgroundColor: '$black',
         borderRadius: 8,
         height: 25,
         width: 40,
@@ -21,7 +21,7 @@ export default StyleService.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: '$white',
+        tintColor: '$fark',
     },
     accountItemTitle: {
         fontSize: AppStyles.baseText.fontSize,

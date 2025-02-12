@@ -26,7 +26,7 @@ const styles = StyleService.create({
         borderRadius: 15,
         zIndex: 2,
         paddingHorizontal: 5,
-        paddingVertical: 10,
+        paddingVertical: 0,
         marginBottom: AppSizes.paddingSml,
     },
     signersContainer: {

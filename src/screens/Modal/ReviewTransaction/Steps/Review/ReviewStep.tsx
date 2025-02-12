@@ -187,7 +187,13 @@ class ReviewStep extends Component<Props, State> {
                     <View style={styles.transactionContent}>
                         <View style={AppStyles.paddingHorizontalSml}>
                             <SignerLabel payload={payload} />
-                            <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
+                            <View style={styles.accountPickerPadding}>
+                                <AccountPicker
+                                    onSelect={setSource}
+                                    accounts={accounts}
+                                    selectedItem={source}
+                                />
+                            </View>
                         </View>
 
                         {/* in multi-sign transactions and in some cases in Import transaction */}

@@ -490,6 +490,7 @@ class SummaryStep extends Component<Props, State> {
                             placeholder={Localize.t('send.enterPublicMemo')}
                             inputStyle={styles.inputStyle}
                             maxLength={300}
+                            multiline
                             returnKeyType="done"
                             autoCapitalize="sentences"
                             numberOfLines={1}

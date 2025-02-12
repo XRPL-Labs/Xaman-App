@@ -384,8 +384,8 @@ class DetailsStep extends Component<Props, State> {
                                 onPress={() => {
                                     this.amountInput.current?.focus();
                                 }}
-                                style={styles.editButton}
-                                roundedSmall
+                                style={[styles.editButton, AppStyles.marginRightSml ]}
+                                roundedMini
                                 iconSize={15}
                                 iconStyle={AppStyles.imgColorGrey}
                                 light

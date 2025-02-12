@@ -7,13 +7,16 @@ const styles = StyleService.create({
         marginLeft: -7, // For selection of Account
         marginRight: -7, // For selection of Account
     },
+    restoreMarginRight: {
+        marginRight: 7,
+    },
     paddingHorizontal: {
         paddingHorizontal: 25,
     },
     inputText: {
         fontSize: AppStyles.p.fontSize,
         fontFamily: AppStyles.baseText.fontFamily,
-        fontWeight: 200,
+        // fontWeight: 400,
         color: '$blue',
         paddingLeft: 5,
     },

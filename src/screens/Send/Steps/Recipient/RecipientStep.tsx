@@ -726,7 +726,10 @@ class RecipientStep extends Component<Props, State> {
                             {title} {dataSource[0].data?.length > 0 && `(${dataSource[0].data?.length})`}
                         </Text>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={[
+                        AppStyles.flex1,
+                        styles.restoreMarginRight,
+                    ]}>
                         <Button
                             onPress={this.resetResult}
                             style={styles.clearSearchButton}

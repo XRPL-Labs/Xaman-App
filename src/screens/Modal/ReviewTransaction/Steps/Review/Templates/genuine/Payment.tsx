@@ -342,7 +342,7 @@ class PaymentTemplate extends Component<Props, State> {
                                     <Button
                                         onPress={this.onAmountEditPress}
                                         style={styles.editButton}
-                                        roundedSmall
+                                        roundedMini
                                         icon="IconEdit"
                                         iconSize={13}
                                         light
