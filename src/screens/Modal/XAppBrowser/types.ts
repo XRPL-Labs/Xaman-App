@@ -48,6 +48,7 @@ export enum XAppMethods {
     PayloadResolved = 'payloadResolved',
     XAppNavigate = 'xAppNavigate',
     OpenBrowser = 'openBrowser',
+    GetLogs = 'getLogs',
     TxDetails = 'txDetails',
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',
