@@ -344,7 +344,10 @@ class HomeView extends Component<Props, State> {
                         }
                         icon="IconV2Request"
                         iconSize={18}
-                        iconStyle={experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon}
+                        iconStyle={[
+                            styles.iconRotate,
+                            experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon,
+                        ]}
                         label={Localize.t('global.request')}
                         textStyle={experimentalUI ? styles.requestButtonTextClean : styles.requestButtonText}
                         onPress={this.onShowAccountQRPress}
