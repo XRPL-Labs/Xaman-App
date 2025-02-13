@@ -39,7 +39,7 @@
     "exchange": "Exchange",
     "exchanges": "Issuers",
     "scan": "Scan",
-    "request": "Request",
+    "request": "Receive",
     "details": "Details",
     "recipient": "Recipient",
     "destination": "Destination",
