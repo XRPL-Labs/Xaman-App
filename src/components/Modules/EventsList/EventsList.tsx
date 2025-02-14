@@ -43,6 +43,7 @@ interface State {
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
+    isVisible?: boolean;
     isLoadingMore?: boolean;
     dataSource: Array<DataSourceItem>;
     headerComponent?: any;
@@ -144,11 +145,11 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     renderRefreshControl = () => {
-        const { isLoading, onRefresh } = this.props;
+        const { isLoading, onRefresh, isVisible } = this.props;
 
         return (
             <RefreshControl
-                refreshing={!!isLoading}
+                refreshing={!!isLoading && !!isVisible}
                 onRefresh={onRefresh}
                 tintColor={StyleService.value('$contrast')}
             />
@@ -160,7 +161,7 @@ class EventsList extends PureComponent<Props, State> {
         CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
         // this.fetchCurrencyRate();
     }
-
+    
     componentWillUnmount() {
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
     }

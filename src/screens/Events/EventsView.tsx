@@ -1063,6 +1063,7 @@ class EventsView extends Component<Props, State> {
                     headerComponent={this.renderListHeader}
                     dataSource={dataSource}
                     isLoading={isLoading}
+                    isVisible={this.isScreenVisible}
                     isLoadingMore={isLoadingMore}
                     onEndReached={this.loadMore}
                     onRefresh={this.updateDataSource}
