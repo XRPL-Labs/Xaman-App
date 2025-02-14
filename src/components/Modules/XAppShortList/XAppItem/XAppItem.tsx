@@ -1,8 +1,7 @@
-import { isEmpty } from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Animated, Image } from 'react-native';
 
-import { Spacer, TouchableDebounce } from '@components/General';
+import { TouchableDebounce } from '@components/General';
 
 import Localize from '@locale';
 
@@ -84,36 +83,6 @@ class XAppItem extends Component<Props> {
         }
     };
 
-    renderPlaceholder = () => {
-        return (
-            <View style={styles.container}>
-                <Animated.View
-                    style={[
-                        styles.appIcon,
-                        styles.appIconPlaceholder,
-                        {
-                            opacity: this.placeholderAnimation,
-                        },
-                    ]}
-                />
-
-                <Animated.Text
-                    numberOfLines={1}
-                    style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}
-                >
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </Animated.Text>
-                <Spacer size={2} />
-                <Animated.Text
-                    numberOfLines={1}
-                    style={[styles.appTitle, styles.appTitlePlaceholder, { opacity: this.placeholderAnimation }]}
-                >
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                </Animated.Text>
-            </View>
-        );
-    };
-
     render() {
         const { app, index } = this.props;
 
@@ -149,41 +118,62 @@ class XAppItem extends Component<Props> {
                         }
                     </View>
                     <Text
-                        numberOfLines={1}
+                        numberOfLines={2}
                         style={[
                             styles.appTitle, styles.appTitlePlaceholder,
                             Number(index || 0) > 0 ? invisible : undefined,
                         ]}
                     >
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Text>
-                    <Spacer size={2} />
-                    <Text
-                        numberOfLines={1}
-                        style={[
-                            styles.appTitle, styles.appTitlePlaceholder,
-                            Number(index || 0) > 0 ? invisible : undefined,
-                        ]}
-                    >
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </Text>
                 </View>
             );
         }
 
-        if (isEmpty(app)) {
-            return this.renderPlaceholder();
-        }
-
         return (
-            <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
-                <TouchableDebounce activeOpacity={0.8} onPress={this.onPress}>
-                    <Image source={{ uri: app.icon }} style={styles.appIcon} />
-                    <Text numberOfLines={2} style={styles.appTitle}>
-                        {app.title}
-                    </Text>
-                </TouchableDebounce>
-            </Animated.View>
+            <>
+                { !app &&
+                    <View style={[
+                        styles.container,
+                    ]}>
+                        <Animated.View
+                            style={[
+                                styles.appIcon,
+                                styles.appIconPlaceholder,
+                                {
+                                    opacity: this.placeholderAnimation,
+                                },
+                            ]}
+                        />
+                        <Animated.Text
+                            numberOfLines={1}
+                            style={[
+                                styles.appTitle,
+                                styles.appTitlePlaceholder,
+                                { opacity: this.placeholderAnimation },
+                            ]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Animated.Text>
+                    </View>
+                }
+                { app &&
+                    <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
+                        <TouchableDebounce activeOpacity={0.8} onPress={this.onPress}>
+                            <Image source={{ uri: app.icon }} style={styles.appIcon} />
+                            <Text numberOfLines={2} style={styles.appTitle}>
+                                {app.title}
+                            </Text>
+                        </TouchableDebounce>
+                    </Animated.View>
+                }
+            </>
         );
     }
 }

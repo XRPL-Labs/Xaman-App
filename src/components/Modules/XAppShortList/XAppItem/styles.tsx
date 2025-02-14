@@ -10,11 +10,12 @@ const styles = StyleService.create({
         paddingHorizontal: AppSizes.paddingExtraSml,
     },
     appTitle: {
-        lineHeight: AppFonts.subtext.size * 0.9,
-        fontFamily: AppFonts.base.familyBold,
-        fontSize: AppFonts.subtext.size * 0.9,
+        lineHeight: AppFonts.subtext.size * 0.95,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size * 0.89,
         textAlign: 'center',
         color: '$textPrimary',
+        height: AppFonts.subtext.size * 2,
     },
     appTitlePlaceholder: {
         color: StyleService.select({ dark: '$darkGrey', light: '$light' }),
@@ -32,7 +33,7 @@ const styles = StyleService.create({
     },
     appIconPlaceholderText: {
         opacity: 0.4,
-        lineHeight: AppFonts.subtext.size * 1.4,
+        // lineHeight: AppFonts.subtext.size * 1.4,
     },
 });
 
