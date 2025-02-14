@@ -19,8 +19,15 @@ export default StyleService.create({
         borderWidth: 2,
         borderRadius: 10,
     },
-    nonMultiline: {
+    nonMultilineContainer: {
         height: AppSizes.heightPercentageToDP(7),
+    },
+    nonMultilineSecureInput: { // family seed entry
+        height: AppSizes.heightPercentageToDP(7),
+        // lineHeight: AppSizes.heightPercentageToDP(7) / 2,
+        marginVertical: Platform.OS === 'ios' ? 2 : 0,
+        borderColor: '$transparent',
+        borderWidth: 1,
     },
     multiline: {
         paddingVertical: Platform.OS === 'ios' ? 10 : 0,
@@ -30,7 +37,6 @@ export default StyleService.create({
         fontSize: AppFonts.base.size,
         color: '$blue',
         fontFamily: AppFonts.base.family,
-        // fontWeight: '600',
     },
     scanIcon: {
         tintColor: '$white',
