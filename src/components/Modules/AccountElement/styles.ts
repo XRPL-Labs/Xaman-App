@@ -7,13 +7,12 @@ export default StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 5,
-        marginBottom: 8,
-        backgroundColor: '$tint',
+        marginBottom: 0,
+        // backgroundColor: '$tint',
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: '$tint',
+        borderColor: '$transparent',
     },
-
     centerContent: {
         paddingLeft: 10,
     },

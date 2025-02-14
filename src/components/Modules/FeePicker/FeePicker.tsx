@@ -14,6 +14,7 @@ import { Navigator } from '@common/helpers/navigator';
 import { Capitalize } from '@common/utils/string';
 
 import { TouchableDebounce, Badge, Button, LoadingIndicator, InfoMessage } from '@components/General';
+import BackendService from '@services/BackendService';
 
 import Localize from '@locale';
 
@@ -22,18 +23,23 @@ import { FeeItem, Props as SelectFeeOverlayProps } from '@screens/Overlay/Select
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import { type AccountModel } from '@store/models';
+import { AccessLevels, AccountTypes } from '@store/types';
+
 /* Types ==================================================================== */
 interface Props {
     txJson: any;
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
+    source?: AccountModel;
     showHooksFee?: boolean;
-    onSelect?: (item: any) => void;
+    onSelect?: (txFee: any, serviceFee: any) => void;
 }
 
 interface State {
     availableFees?: FeeItem[];
-    selected?: FeeItem;
+    selectedTxFee?: FeeItem;
+    selectedServiceFee?: FeeItem;
     feeHooks?: number;
     error: boolean;
 }
@@ -51,7 +57,8 @@ class FeePicker extends Component<Props, State> {
 
         this.state = {
             availableFees: undefined,
-            selected: undefined,
+            selectedTxFee: undefined,
+            selectedServiceFee: undefined,
             feeHooks: undefined,
             error: false,
         };
@@ -64,12 +71,15 @@ class FeePicker extends Component<Props, State> {
         if (!isEqual(omit(txJson, 'Fee'), omit(prevProps.txJson, 'Fee'))) {
             this.setState(
                 {
-                    availableFees: undefined,
-                    selected: undefined,
-                    feeHooks: undefined,
+                    // Just keep things as is to prevent them from bouncing
+                    // around while updating a tx memo.
+                    // availableFees: undefined,
+                    // selectedTxFee: undefined,
+                    // selectedServiceFee: undefined,
+                    // feeHooks: undefined,
                     error: false,
                 },
-                this.fetchFees,
+                this.debouncedFetchFees,
             );
         }
     }
@@ -77,11 +87,49 @@ class FeePicker extends Component<Props, State> {
     componentDidMount() {
         // fetch available fees from network
         InteractionManager.runAfterInteractions(this.fetchFees);
+        // InteractionManager.runAfterInteractions(this.fetchServiceFee);
     }
+
+    fetchServiceFee = (isFallback = false): Promise<void> => {
+        const { txJson, source } = this.props;
+
+        const noFee = () => {
+            this.setState({
+                selectedServiceFee: {
+                    type: 'LOW',
+                    value: '0',
+                },
+            });
+        };
+
+        if (source && source?.accessLevel === AccessLevels.Full && source?.type === AccountTypes.Tangem) {
+            // Tangem may sign this, no fees
+            return Promise.resolve(noFee());
+        }
+        
+        if (source && source?.accessLevel !== AccessLevels.Full) {
+            // We don't know what is going to sign this
+            return Promise.resolve(noFee());
+        }
+        
+        // when it's retry with fallback then we don't include txJson
+        return BackendService.getServiceFee(!isFallback ? txJson : undefined)
+            .then((res) => {
+                // console.log('Picked backend service service fee', res);
+                const { availableFees } = res;
+
+                if (Array.isArray(availableFees) && availableFees.length > 0) {
+                    this.setState({
+                        selectedServiceFee: availableFees[0],
+                    });
+                };
+            })
+            .catch(() => {});
+    };
 
     fetchFees = (isFallback = false): Promise<void> => {
         const { txJson } = this.props;
-        const { error } = this.state;
+        const { error, selectedServiceFee, selectedTxFee } = this.state;
 
         // clear any error for retrying again
         if (error) {
@@ -91,66 +139,78 @@ class FeePicker extends Component<Props, State> {
         }
 
         // when it's retry with fallback then we don't include txJson
-        return NetworkService.getAvailableNetworkFee(!isFallback ? txJson : undefined)
-            .then((res) => {
-                const { availableFees, feeHooks, suggested } = res;
+        return this.fetchServiceFee().then(() => {
+            NetworkService.getAvailableNetworkFee(!isFallback ? txJson : undefined)
+                .then((res) => {
+                    const { availableFees, feeHooks, suggested } = res;
 
-                this.setState({
-                    availableFees,
-                    feeHooks,
-                });
+                    this.setState({
+                        availableFees,
+                        feeHooks,
+                    });
 
-                // set the suggested fee by default
-                this.onSelect(find(availableFees, { type: suggested })!);
-            })
-            .catch(() => {
-                // if it's not a retry fallback then let's try again
-                if (!isFallback) {
-                    this.fetchFees(true);
-                    return;
-                }
-                // let's give up
-                this.setState({
-                    error: true,
+                    // set the suggested fee by default
+                    this.onSelect(find(availableFees, {
+                        type: selectedTxFee && selectedTxFee?.type
+                            ? selectedTxFee.type
+                            : suggested,
+                    })!, selectedServiceFee);
+                })
+                .catch(() => {
+                    // if it's not a retry fallback then let's try again
+                    if (!isFallback) {
+                        this.fetchFees(true);
+                        return;
+                    }
+                    // let's give up
+                    this.setState({
+                        error: true,
+                    });
                 });
-            });
+        });
     };
 
-    debouncedFetchFees = debounce(this.fetchFees, 300);
+    debouncedFetchFees = debounce(this.fetchFees, 750);
 
-    onSelect = (item: FeeItem) => {
+    onSelect = (txFeeItem: FeeItem, serviceFeeItem?: FeeItem) => {
         const { onSelect } = this.props;
+        const { selectedServiceFee } = this.state;
 
         this.setState(
             {
-                selected: item,
+                selectedTxFee: txFeeItem,
+                selectedServiceFee: serviceFeeItem || selectedServiceFee,
             },
             () => {
                 if (typeof onSelect === 'function') {
-                    onSelect(item);
+                    onSelect(txFeeItem, serviceFeeItem || selectedServiceFee);
                 }
             },
         );
     };
 
     showFeeSelectOverlay = () => {
-        const { availableFees, selected } = this.state;
+        const { availableFees, selectedTxFee, selectedServiceFee } = this.state;
 
         Navigator.showOverlay<SelectFeeOverlayProps>(AppScreens.Overlay.SelectFee, {
             availableFees: availableFees!,
-            selectedFee: selected!,
+            selectedFee: selectedTxFee!,
+            serviceFee: selectedServiceFee!,
             onSelect: this.onSelect,
         });
     };
 
     getNormalizedFee = () => {
-        const { selected } = this.state;
+        const { selectedTxFee, selectedServiceFee } = this.state;
 
-        if (!selected) {
+        if (!selectedTxFee) {
             return 0;
         }
 
-        return new AmountParser(selected.value).dropsToNative().toString();
+        return new AmountParser(
+            Number(selectedTxFee.value) +
+            Number(selectedServiceFee?.value || 0),
+        ).dropsToNative().toString();
     };
 
     getNormalizedHooksFee = () => {
@@ -164,9 +224,9 @@ class FeePicker extends Component<Props, State> {
     };
 
     getFeeColor = () => {
-        const { selected } = this.state;
+        const { selectedTxFee } = this.state;
 
-        switch (selected?.type) {
+        switch (selectedTxFee?.type) {
             case 'LOW':
                 return StyleService.value('$green');
             case 'MEDIUM':
@@ -207,7 +267,7 @@ class FeePicker extends Component<Props, State> {
 
     render() {
         const { containerStyle, textStyle } = this.props;
-        const { selected, availableFees, feeHooks, error } = this.state;
+        const { selectedTxFee, selectedServiceFee, availableFees, feeHooks, error } = this.state;
 
         // error while fetching the fee
         //  give the user ability to retry
@@ -216,7 +276,7 @@ class FeePicker extends Component<Props, State> {
         }
 
         // nothing to show
-        if (!selected) {
+        if (!selectedTxFee || !selectedServiceFee) {
             return this.renderLoading();
         }
 
@@ -228,7 +288,7 @@ class FeePicker extends Component<Props, State> {
                             {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
                         </Text>
                         <Badge
-                            label={Capitalize(selected.type)}
+                            label={Capitalize(selectedTxFee.type)}
                             size="small"
                             color={this.getFeeColor()}
                             labelStyle={styles.badgeLabel}
@@ -238,7 +298,7 @@ class FeePicker extends Component<Props, State> {
                         <Button
                             onPress={this.showFeeSelectOverlay}
                             style={styles.editButton}
-                            roundedSmall
+                            roundedMini
                             iconSize={13}
                             light
                             icon="IconEdit"
@@ -253,6 +313,14 @@ class FeePicker extends Component<Props, State> {
                                 hookFee: this.getNormalizedHooksFee(),
                                 nativeAsset: NetworkService.getNativeAsset(),
                             })}
+                        />
+                    </View>
+                )}
+                {selectedServiceFee?.note && (
+                    <View style={AppStyles.paddingTopSml}>
+                        <InfoMessage
+                            type="info"
+                            label={selectedServiceFee?.note || 'No note'}
                         />
                     </View>
                 )}

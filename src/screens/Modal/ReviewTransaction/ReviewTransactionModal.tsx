@@ -52,6 +52,8 @@ class ReviewTransactionModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // console.log('Review TX Modal')
+
         this.state = {
             payload: props.payload,
             transaction: undefined,
@@ -60,6 +62,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             currentStep: Steps.Preflight,
             submitResult: undefined,
             isLoading: false,
+            serviceFee: undefined,
             isReady: true,
             isValidPayload: true,
             hasError: false,
@@ -113,7 +116,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     prepareAndSignTransaction = async () => {
-        const { source, transaction } = this.state;
+        const { source, transaction, serviceFee } = this.state;
         const { payload } = this.props;
 
         // if not mounted return
@@ -124,6 +127,11 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.setState({
             isLoading: true,
         });
+
+        // console.log({serviceFee}, transaction?.ServiceFee, transaction?.ServiceFeeTx);
+        if (serviceFee) {
+            transaction?.setServiceFee(serviceFee);
+        }
 
         // TODO: transaction!
         await transaction!
@@ -208,6 +216,9 @@ class ReviewTransactionModal extends Component<Props, State> {
     onAccept = async () => {
         const { payload } = this.props;
         const { source, transaction } = this.state;
+        // console.log('REVIEW TX MODAL ACCEPT SERVICE FEE', serviceFee);
+        // console.log('state', this.props)
+        // return
 
         if (!transaction || !source) {
             throw new Error('Transaction and Source instance is required!');
@@ -559,7 +570,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // we shouldn't override already set transaction
         if (transaction) {
-            throw new Error('Transaction is already set and cannot be overwrite!');
+            throw new Error('Transaction is already set and cannot be overwritten!');
         }
 
         this.setState({
@@ -613,6 +624,17 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.setState({
             isReady: ready,
         });
+    };
+
+    setServiceFee = (newServiceFee: number) => {
+        const { serviceFee } = this.state;
+        // console.log('ReviewTransactionModal servicefee', { serviceFee, newServiceFee });
+        if (serviceFee !== newServiceFee) {
+            // console.log('ReviewTransactionModal new Service Fee', { serviceFee, newServiceFee });
+            this.setState({
+                serviceFee: newServiceFee,
+            });
+        }
     };
 
     submit = async () => {
@@ -679,6 +701,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                         } else {
                             VibrateHapticFeedback('notificationError');
                         }
+                    }
+
+                    if (submitResult.success) {
+                        // All set
+                        // console.log(
+                        //     'TX Submit success, now service fee.',
+                        //     transaction.ServiceFee,
+                        //     transaction.ServiceFeeTx
+                        // );
                     }
                 } else if (coreSettings.hapticFeedback) {
                     VibrateHapticFeedback('notificationError');
@@ -785,6 +816,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                     setTransaction: this.setTransaction,
                     setAccounts: this.setAccounts,
                     setSource: this.setSource,
+                    setServiceFee: this.setServiceFee,
                     setError: this.setError,
                     setLoading: this.setLoading,
                     setReady: this.setReady,

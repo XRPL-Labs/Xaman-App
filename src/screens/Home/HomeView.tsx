@@ -7,14 +7,22 @@ import { find, has } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
 
-import { Navigation, EventSubscription } from 'react-native-navigation';
-
+import {
+    Navigation,
+    EventSubscription,
+    OptionsModalPresentationStyle,
+    OptionsModalTransitionStyle,
+} from 'react-native-navigation';
 import { AccountService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 
-import { AppScreens } from '@common/constants';
+import { XAppOrigin } from '@common/libs/payload';
+
+import { AppScreens, AppConfig } from '@common/constants';
+
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
 
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
@@ -241,6 +249,22 @@ class HomeView extends Component<Props, State> {
         Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, {});
     };
 
+    pushSwapScreen = () => {
+        Navigator.showModal<XAppBrowserModalProps>(
+            AppScreens.Modal.XAppBrowser,
+            {
+                identifier: AppConfig.xappIdentifiers.swap,
+                noSwitching: true,
+                nativeTitle: Localize.t('global.swap'),
+                origin: XAppOrigin.XUMM,
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+            },
+        );
+    };
+
     onAddAccountPress = () => {
         Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
@@ -283,7 +307,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable, experimentalUI } = this.state;
+        const { isSpendable, experimentalUI, selectedNetwork, isSignable } = this.state;
 
         if (isSpendable) {
             return (
@@ -292,22 +316,38 @@ class HomeView extends Component<Props, State> {
                         small
                         testID="send-button"
                         containerStyle={styles.sendButtonContainer}
-                        icon="IconCornerLeftUp"
+                        icon="IconV2Send"
                         iconSize={18}
                         iconStyle={styles.sendButtonIcon}
                         label={Localize.t('global.send')}
                         textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
                     />
+                    { AppConfig.swapNetworks.indexOf(selectedNetwork.key) > -1 && isSignable &&
+                        <RaisedButton
+                            small
+                            testID="swap-button"
+                            containerStyle={styles.swapButtonContainer}
+                            icon="IconV2Swap"
+                            iconSize={18}
+                            iconStyle={styles.sendButtonIcon}
+                            label={Localize.t('global.swap')}
+                            textStyle={styles.sendButtonText}
+                            onPress={this.pushSwapScreen}
+                        />
+                    }
                     <RaisedButton
                         small
                         testID="request-button"
                         containerStyle={
                             experimentalUI ? styles.requestButtonContainerClean : styles.requestButtonContainer
                         }
-                        icon="IconCornerRightDown"
+                        icon="IconV2Request"
                         iconSize={18}
-                        iconStyle={experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon}
+                        iconStyle={[
+                            styles.iconRotate,
+                            experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon,
+                        ]}
                         label={Localize.t('global.request')}
                         textStyle={experimentalUI ? styles.requestButtonTextClean : styles.requestButtonText}
                         onPress={this.onShowAccountQRPress}

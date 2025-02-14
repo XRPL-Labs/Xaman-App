@@ -78,7 +78,7 @@ const styles = StyleService.create({
     // exchange Button
     exchangeButton: {
         marginLeft: 5,
-        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$black',
+        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$darkBlue',
     },
     exchangeButtonIcon: { tintColor: '$white' },
     exchangeButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },

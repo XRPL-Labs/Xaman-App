@@ -1,4 +1,4 @@
-import { schemas } from './v18';
+import { schemas } from './v20';
 
 export const {
     CoreSchema,

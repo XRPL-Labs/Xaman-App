@@ -45,7 +45,7 @@ class AvatarBlock extends PureComponent<IProps> {
         return (
             <View style={styles.avatarContainer}>
                 <Avatar
-                    border
+                    // border
                     source={{ uri: `${WebLinks.AvatarURL}/${participant?.address}_180_50.png` }}
                     isLoading={!participant}
                     badge={badgeProps?.badge}

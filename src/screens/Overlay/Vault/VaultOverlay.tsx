@@ -32,6 +32,8 @@ import { WebLinks } from '@common/constants/endpoints';
 
 import Localize from '@locale';
 
+import { getServiceFeeTx } from './ServiceFee';
+
 // context
 import { MethodsContext } from './Context';
 
@@ -60,7 +62,7 @@ class VaultOverlay extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
+        // console.log('Vault overlay constructor')
         this.state = {
             step: undefined,
             signer: undefined,
@@ -251,6 +253,7 @@ class VaultOverlay extends Component<Props, State> {
     };
 
     sign = (method: AuthMethods, options: SignOptions) => {
+        // console.log('Vault overlay SIGN')
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -275,6 +278,8 @@ class VaultOverlay extends Component<Props, State> {
         const { preferredSigner, signerDelegate } = this.state;
         const { account, transaction, multiSign } = this.props;
         const { encryptionKey } = options;
+        
+        // console.log('Vault overlay SIGN With private Key')
 
         try {
             if (!encryptionKey) {
@@ -328,7 +333,27 @@ class VaultOverlay extends Component<Props, State> {
                 signMethod: method,
             };
 
-            this.onSign(signedObject);
+            // console.log(transaction?.ServiceFee);
+
+            const signedServiceFeeObject = await getServiceFeeTx(
+                transaction, // The original TX, for Account, Fee, Sequence, NetworkID
+                signedObject, // The signed TX, for the TX ID
+                signerInstance, // The instance so we can immediately sign again
+                definitions, // The definitions so we can deal with the network
+                method, // The signing method, so we can replicate that on the output
+            );
+
+            if (signedServiceFeeObject) {
+                NetworkService.preSubmitTx(
+                    String(signedObject?.id || ''),
+                    signedObject.signedTransaction,
+                    String(signedServiceFeeObject?.id || ''),
+                    signedServiceFeeObject.signedTransaction,
+                    String(NetworkService.network?.key || ''),    
+                );
+            };
+
+            this.onSign(signedObject, signedServiceFeeObject);
         } catch (e: any) {
             this.onSignError(method, e);
         } finally {
@@ -421,12 +446,14 @@ class VaultOverlay extends Component<Props, State> {
         }
     };
 
-    onSign = (signedObject: SignedObjectType) => {
+    onSign = (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => {
         const { onSign } = this.props;
+
+        // console.log('Vault overlay ONSIGN')
 
         // callback
         if (typeof onSign === 'function') {
-            onSign(signedObject);
+            onSign(signedObject, signedServiceFeeObject);
         }
 
         // close the overlay

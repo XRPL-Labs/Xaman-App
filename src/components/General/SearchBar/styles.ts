@@ -5,7 +5,7 @@ import { AppFonts } from '@theme';
 export default StyleService.create({
     searchContainer: {
         flexDirection: 'row',
-        backgroundColor: '$tint',
+        // backgroundColor: '$tint',
     },
     searchContainerBorder: {
         borderWidth: 1.5,
@@ -16,16 +16,16 @@ export default StyleService.create({
         alignSelf: 'center',
         alignItems: 'center',
         position: 'absolute',
-        left: 15,
+        left: 5,
         tintColor: '$textPrimary',
     },
     searchInput: {
         height: '100%',
-        paddingLeft: 50,
-        paddingRight: 50,
-        fontFamily: AppFonts.base.familyMonoBold,
+        paddingLeft: 35,
+        paddingRight: 35,
+        fontFamily: AppFonts.base.family,
         fontSize: AppFonts.p.size,
-        fontWeight: '600',
+        // fontWeight: '600',
         color: '$textPrimary',
         paddingVertical: 0,
     },

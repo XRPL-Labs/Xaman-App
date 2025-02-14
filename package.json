@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "3.3.0",
+  "version": "3.3.3",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/cli.js start",
@@ -34,8 +34,8 @@
     "realm": "12.13.0",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "10.0.0",
-    "xrpl-accountlib": "8.1.0",
-    "xrpl-orderbook-reader": "0.4.0",
+    "xrpl-accountlib": "^8.3.0",
+    "xrpl-orderbook-reader": "^1.0.0",
     "xumm-string-decode": "0.7.0"
   },
   "devDependencies": {

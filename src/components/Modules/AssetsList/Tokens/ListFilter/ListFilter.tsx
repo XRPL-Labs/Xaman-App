@@ -211,7 +211,6 @@ class ListFilter extends Component<Props, State> {
                     iconStyle={styles.searchBarIcon}
                     clearButtonVisibility="focus"
                     iconSize={15}
-                    border
                 />
                 <Animated.View
                     style={[

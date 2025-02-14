@@ -158,7 +158,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                 </Text>
                 <XAppShortList apps={apps} onAppPress={this.onAppPress} />
 
-                <Spacer size={15} />
+                <Spacer size={10} />
 
                 <Text numberOfLines={1} style={styles.rowTitle}>
                     {Localize.t('xapp.ourSuggestions')}

@@ -12,7 +12,7 @@ import NetworkService from '@services/NetworkService';
 import { AccountRepository } from '@store/repositories';
 
 import { InfoMessage, ReadMore } from '@components/General';
-import { FeePicker, AccountElement, HooksExplainer } from '@components/Modules';
+import { FeePicker, ServiceFee, AccountElement, HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -24,6 +24,7 @@ import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExp
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
+    setServiceFee: (serviceFee: number) => void;
 }
 export interface State {
     warnings?: Array<string>;
@@ -34,6 +35,8 @@ export interface State {
 class GlobalTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        // console.log('ReviewTx Global')
 
         this.state = {
             warnings: undefined,
@@ -73,6 +76,16 @@ class GlobalTemplate extends Component<Props, State> {
             currency: NetworkService.getNativeAsset(),
             value: new AmountParser(fee.value).dropsToNative().toString(),
         };
+    };
+
+    setServiceFeeAmount = (fee: any) => {
+        const { setServiceFee } = this.props;
+        setServiceFee(Number(fee?.value || 0));
+    };
+
+    setFees = (txFee: any, serviceFee: any) => {
+        this.setTransactionFee(txFee);
+        this.setServiceFeeAmount(serviceFee);
     };
 
     renderWarnings = () => {
@@ -281,22 +294,36 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     renderFee = () => {
-        const { transaction } = this.props;
+        const { transaction, source } = this.props;
         const { showFeePicker } = this.state;
 
         // we should not override the fee
         // either transaction fee has already been set in payload
         // or transaction is a multi sign tx
         if (!showFeePicker) {
+            // TODO: SET SERVICE FEE
+
             if (typeof transaction.Fee !== 'undefined') {
                 return (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                        <View style={styles.contentBox}>
-                            <Text style={styles.feeText}>
-                                {transaction.Fee.value} {NetworkService.getNativeAsset()}
-                            </Text>
-                        </View>
+                        <>
+                            <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                            <View style={styles.contentBox}>
+                                <Text style={styles.feeText}>
+                                    {transaction.Fee.value} {NetworkService.getNativeAsset()}
+                                </Text>
+                            </View>
+                        </>
+                        <>
+                            <Text style={styles.label}>{Localize.t('events.serviceFee')}</Text>
+                            <View style={styles.contentBox}>
+                                <ServiceFee
+                                    txJson={transaction.JsonForSigning}
+                                    textStyle={styles.feeText}
+                                    onSelect={this.setServiceFeeAmount}
+                                />
+                            </View>
+                        </>
                     </>
                 );
             }
@@ -306,10 +333,11 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                <Text style={styles.label}>{Localize.t('events.txServiceFees')}</Text>
                 <FeePicker
                     txJson={transaction.JsonForSigning}
-                    onSelect={this.setTransactionFee}
+                    onSelect={this.setFees}
+                    source={source}
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}
                 />

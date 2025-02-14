@@ -39,6 +39,7 @@ class CheckCashTemplate extends Component<Props, State> {
         super(props);
 
         const amountField = props.transaction.Amount ? 'Amount' : 'DeliverMin';
+    
         const currencyName = props.transaction[amountField]?.currency
             ? NormalizeCurrencyCode(props.transaction[amountField]!.currency)
             : NetworkService.getNativeAsset();
@@ -69,6 +70,11 @@ class CheckCashTemplate extends Component<Props, State> {
                 if (checkEntry) {
                     const checkObject = new CheckCreate(checkEntry);
 
+                    if (checkObject?.SendMax && typeof checkObject?.SendMax === 'object') {
+                        const currencyName = NormalizeCurrencyCode(checkObject?.SendMax.currency);
+                        this.setState({currencyName});
+                    }
+
                     this.setState(
                         {
                             checkObject,
@@ -88,21 +94,21 @@ class CheckCashTemplate extends Component<Props, State> {
 
     onAmountChange = (amount: string) => {
         const { transaction } = this.props;
-        const { amountField } = this.state;
+        const { amountField, currencyName, checkObject } = this.state;
 
         this.setState({
             cashAmount: amount,
         });
 
-        if (!transaction[amountField] || transaction[amountField]!.currency === NetworkService.getNativeAsset()) {
+        if (currencyName === NetworkService.getNativeAsset()) {
             transaction[amountField] = {
-                currency: NetworkService.getNativeAsset(),
+                currency: currencyName,
                 value: amount,
             };
         } else {
             transaction[amountField] = {
-                currency: transaction[amountField]?.currency!,
-                issuer: transaction[amountField]?.issuer!,
+                currency: checkObject?.SendMax?.currency || transaction[amountField]?.currency || '',
+                issuer: checkObject?.SendMax?.issuer || transaction[amountField]?.issuer || '',
                 value: amount,
             };
         }
@@ -136,7 +142,7 @@ class CheckCashTemplate extends Component<Props, State> {
                         <View style={styles.contentBox}>
                             <AmountText
                                 value={checkObject.SendMax!.value}
-                                currency={checkObject.SendMax!.currency}
+                                currency={checkObject.SendMax?.currency}
                                 style={styles.amount}
                                 immutable
                             />

@@ -30,10 +30,14 @@ class SubmittingStep extends Component<Props, State> {
     declare context: React.ContextType<typeof StepsContext>;
 
     constructor(props: Props) {
+        // console.log('props', props)
+        // console.log('SubmittingStep constructor')
         super(props);
     }
 
     render() {
+        // console.log('context', this.context)
+        // console.log('SubmittingStep render');
         const { currentStep } = this.context;
 
         return (

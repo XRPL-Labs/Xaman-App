@@ -28,7 +28,7 @@ export interface Props {
     transaction: SignableTransaction;
     multiSign?: boolean;
     onDismissed: () => void;
-    onSign: (signedObject: SignedObjectType) => void;
+    onSign: (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => void;
 }
 
 export interface State {

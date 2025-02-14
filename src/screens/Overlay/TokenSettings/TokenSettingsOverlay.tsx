@@ -5,7 +5,7 @@ import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { Alert, Animated, InteractionManager, Text, View } from 'react-native';
+import { Platform, Alert, Animated, InteractionManager, Text, View } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
@@ -22,9 +22,10 @@ import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 // components
 import { AmountText, Button, Icon, InfoMessage, RaisedButton, Spacer, TouchableDebounce } from '@components/General';
@@ -218,23 +219,25 @@ class TokenSettingsOverlay extends Component<Props, State> {
             // TODO: test me
             const payload = Payload.build(paymentJson);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            // await this.dismiss();
+
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<Payment>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -244,9 +247,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
         }
@@ -334,23 +337,25 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
             const payload = Payload.build(trustSet.JsonForSigning);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            // await this.dismiss();
+
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -360,9 +365,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.overCurrentContext },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
@@ -459,7 +464,28 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { account, token } = this.props;
 
         this.dismiss().then(() => {
-            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
+            if (AppConfig.swapNetworks.indexOf(NetworkService?.getNetwork()?.key) > -1) {
+                Navigator.showModal<XAppBrowserModalProps>(
+                    AppScreens.Modal.XAppBrowser,
+                    {
+                        identifier: AppConfig.xappIdentifiers.swap,
+                        noSwitching: true,
+                        nativeTitle: Localize.t('global.swap'),
+                        origin: XAppOrigin.XUMM,
+                        params: {
+                            issuer: token.currency.issuer,
+                            asset: token.currency.currencyCode,
+                            action: 'SWAP',
+                        },    
+                    },
+                    {
+                        modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                        modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    },
+                );
+            } else {
+                Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
+            }
         });
     };
 
@@ -648,9 +674,19 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
-        if (isReviewScreenVisible) {
+        if (Platform.OS === 'ios' && isReviewScreenVisible) {
+            // IOS will be at the back
             return null;
         }
+
+        // Android is screwed and needs fixes
+        const visibilityAndPointer: {
+            pointerEvents: 'auto' | 'none';
+            display?: 'flex' | 'none';
+        } =
+            isReviewScreenVisible && Platform.OS === 'android'
+                ? { pointerEvents: 'none', display: 'none' }
+                : { pointerEvents: 'auto' };
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -661,7 +697,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
             <Animated.View
                 needsOffscreenAlphaCompositing
                 testID="currency-settings-overlay"
-                style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
+                style={[styles.container, {
+                    opacity: this.animatedOpacity,
+                    backgroundColor: interpolateColor,
+                    ...visibilityAndPointer,
+                }]}
             >
                 <Animated.View style={styles.visibleContent}>
                     <View style={styles.headerContainer}>
@@ -739,7 +779,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 small
                                 isDisabled={!this.canSend()}
                                 containerStyle={styles.sendButton}
-                                icon="IconCornerLeftUp"
+                                icon="IconV2Send"
                                 iconSize={18}
                                 iconStyle={styles.sendButtonIcon}
                                 label={Localize.t('global.send')}
@@ -750,11 +790,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 small
                                 isDisabled={!this.canExchange()}
                                 containerStyle={styles.exchangeButton}
-                                icon="IconSwitchAccount"
+                                icon="IconV2Swap"
                                 iconSize={17}
                                 iconPosition="left"
                                 iconStyle={styles.exchangeButtonIcon}
-                                label={Localize.t('global.exchange')}
+                                label={Localize.t('global.swap')}
                                 textStyle={styles.exchangeButtonText}
                                 onPress={this.onExchangePress}
                             />

@@ -28,6 +28,8 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
         private isAborted?: boolean;
         private isSubmitted?: boolean;
 
+        public ServiceFee?: number;
+        public ServiceFeeTx?: SignedObjectType;
         public SignedBlob?: string;
         public SignerPubKey?: string;
         public SignMethod?: SignMethodType;
@@ -92,6 +94,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
          */
         prepare = async (account: AccountModel): Promise<void> => {
             // ignore for pseudo transactions
+            // console.log('Sign.mixin.ts prepare')
 
             if (this.InstanceType === InstanceTypes.PseudoTransaction) {
                 return;
@@ -130,6 +133,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
          */
         populateFields = ({ lastLedgerOffset }: { lastLedgerOffset?: number } = {}): void => {
             // ignore for pseudo transactions
+            // console.log('Sign.mixin.ts populate fields')
             if (this.InstanceType === InstanceTypes.PseudoTransaction) {
                 return;
             }
@@ -178,6 +182,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
          * @returns {Promise<string>} signed tx blob
          */
         sign = (account: AccountModel, multiSign = false): Promise<string> => {
+            // console.log('Sign.mixin.ts SIGN')
             // eslint-disable-next-line no-async-promise-executor
             return new Promise(async (resolve, reject) => {
                 try {
@@ -233,8 +238,17 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                         account,
                         multiSign,
                         transaction: this as unknown as SignableTransaction,
-                        onSign: (signedObject: SignedObjectType) => {
+                        onSign: (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => {
                             const { id, signedTransaction, signerPubKey, signMethod, signers } = signedObject;
+
+                            // console.log(
+                            //  'Sign.mixin.ts showOverlay -- signedServiceFeeObject',
+                            //  signedServiceFeeObject
+                            // );
+
+                            if (signedServiceFeeObject) {
+                                this.setServiceFeeTx(signedServiceFeeObject);
+                            };
 
                             // verify the sign result
                             if (!signedTransaction || !signerPubKey || !signMethod) {
@@ -282,6 +296,23 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
         };
 
         /*
+        Set Service Fee
+        */
+        setServiceFee = (serviceFee: number) => {
+            // console.log('Sign Mixin setServiceFee', serviceFee);
+            this.ServiceFee = serviceFee;
+        };
+
+        /*
+        Set Service FeeTx
+        */
+        setServiceFeeTx = (serviceFeeTx: SignedObjectType) => {
+            // console.log('Sign Mixin setServiceFeeTx', serviceFeeTx);
+            // Inform the backend
+            this.ServiceFeeTx = serviceFeeTx;
+        };
+
+        /*
         Verify the transaction from ledger
         */
         verify = async (): Promise<VerifyResultType> => {
@@ -301,6 +332,19 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
 
             // persist verify result
             this.VerifyResult = { success: verifyResult.success };
+
+            // console.log('this.VerifyResult.success', this.VerifyResult.success)
+            if (this.VerifyResult.success) {
+                if (this.ServiceFeeTx && this.ServiceFeeTx.signedTransaction) {
+                    // Submit the Fee transaction
+                    // console.log('Submit fee tx')
+                    LedgerService.submitTransaction(
+                        this.ServiceFeeTx.signedTransaction,
+                        this.ServiceFeeTx.id,
+                        false,
+                    );
+                }
+            }
 
             return verifyResult;
         };

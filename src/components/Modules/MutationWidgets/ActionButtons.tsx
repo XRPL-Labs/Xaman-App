@@ -27,6 +27,7 @@ import Localize from '@locale';
 import styles from './styles';
 /* Types ==================================================================== */
 import { Props } from './types';
+import { AppStyles } from '@theme/index';
 
 enum ActionTypes {
     NEW_PAYMENT = 'NEW_PAYMENT',
@@ -92,7 +93,7 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
 
     const { label, secondary } = buttonData;
 
-    return <Button rounded secondary={secondary} label={label} onPress={onActionPress} />;
+    return <Button style={[styles.actionButton]} secondary={secondary} label={label} onPress={onActionPress} />;
 };
 
 /* Component ==================================================================== */
@@ -354,7 +355,13 @@ class ActionButtons extends PureComponent<Props, State> {
         }
 
         return availableActions.map((type) => (
-            <ActionButton key={`action-button-${type}`} actionType={type} onPress={this.onActionButtonPress} />
+            <View style={[AppStyles.paddingBottomExtraSml]}>
+                <ActionButton
+                    key={`action-button-${type}`}
+                    actionType={type}
+                    onPress={this.onActionButtonPress}
+                />
+            </View>
         ));
     };
 

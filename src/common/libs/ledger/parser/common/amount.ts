@@ -7,7 +7,7 @@ class AmountParser {
     constructor(amount: string | number, drops = true) {
         // validate
 
-        if (typeof amount === 'string' && !drops) {
+        if (typeof amount === 'string' && !drops && amount !== '') {
             if (!amount.match(/^[+-]?\d+(?:[.]*\d*(?:[eE][+-]?\d+)?)?$/)) {
                 throw new Error(`invalid value '${amount}', should be a number`);
             } else if (amount === '.') {

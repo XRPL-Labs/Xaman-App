@@ -162,4 +162,8 @@ export const Images = {
     IconCopy: buildImageSource('IconCopy', 'icon_copy'),
     IconRadio: buildImageSource('IconRadio', 'icon_radio'),
     IconFlaskConical: buildImageSource('IconFlaskConical', 'icon_flask_conical'),
+    // V2
+    IconV2Swap: buildImageSource('IconV2Swap', 'icon_swap'),
+    IconV2Send: buildImageSource('IconV2Send', 'icon_send_v2'),
+    IconV2Request: buildImageSource('IconV2Request', 'icon_request'),
 };

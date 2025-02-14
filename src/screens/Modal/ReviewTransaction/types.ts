@@ -29,6 +29,7 @@ export interface State {
     source?: AccountModel;
     submitResult?: SubmitResultType;
     hasError: boolean;
+    serviceFee?: number;
     errorMessage?: string;
     isLoading: boolean;
     isReady: boolean;
@@ -41,6 +42,7 @@ export interface ContextProps extends State {
     setSource: (source: AccountModel) => void;
     setLoading: (loading: boolean) => void;
     setReady: (ready: boolean) => void;
+    setServiceFee: (serviceFee: number) => void;
     setError: (error: Error) => void;
     onPreflightPass: () => void;
     onClose: () => void;

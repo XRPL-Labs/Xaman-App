@@ -8,7 +8,7 @@ const styles = StyleService.create({
         paddingVertical: AppSizes.paddingSml,
     },
     button: {
-        borderRadius: AppSizes.scale(75) / 5,
+        // borderRadius: AppSizes.scale(75) / 5,
         marginRight: AppSizes.paddingExtraSml,
     },
     textContainer: {

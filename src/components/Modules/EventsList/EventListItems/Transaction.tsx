@@ -1,8 +1,14 @@
 import { isEmpty, isEqual } from 'lodash';
 
-import React, { Component } from 'react';
-import { View, InteractionManager } from 'react-native';
+// import { NetworkService } from '@services';
 
+import React, { Component } from 'react';
+import { Text, View, InteractionManager } from 'react-native';
+import type { RatesType } from '@services/BackendService';
+
+import Localize from '@locale';
+
+import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 
 import { ExplainerFactory } from '@common/libs/ledger/factory';
@@ -32,17 +38,25 @@ export interface Props {
     account: AccountModel;
     item: Transactions & MutationsMixinType;
     timestamp?: number;
+    rates?: {
+        fiatCurrency: string;
+        fiatRate: RatesType | undefined;
+        isLoadingRate: boolean;
+    };
 }
 
 export interface State {
     isLoading: boolean;
     participant?: AccountNameResolveType;
     explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
+    isFeeTransaction?: boolean;
+    feeText?: string;
 }
 
 /* Component ==================================================================== */
 class TransactionItem extends Component<Props, State> {
     static Height = AppSizes.heightPercentageToDP(7.5);
+    static FeeHeight = AppSizes.heightPercentageToDP(4);
 
     private mounted = false;
 
@@ -57,15 +71,16 @@ class TransactionItem extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { item, timestamp } = this.props;
-        const { isLoading, participant, explainer } = this.state;
+        // const { item, timestamp } = this.props;
+        // const { isLoading, participant, explainer } = this.state;
+        const { isLoading } = this.state;
 
         return (
-            !isEqual(nextProps.item?.hash, item?.hash) ||
-            !isEqual(nextState.isLoading, isLoading) ||
-            !isEqual(nextState.participant, participant) ||
-            !isEqual(nextState.explainer, explainer) ||
-            !isEqual(nextProps.timestamp, timestamp)
+            // !isEqual(nextProps.item?.hash, item?.hash) ||
+            !isEqual(nextState.isLoading, isLoading) // ||
+            // !isEqual(nextState.participant, participant) ||
+            // !isEqual(nextState.explainer, explainer) // ||
+            // !isEqual(nextProps.timestamp, timestamp)
         );
     }
 
@@ -98,6 +113,8 @@ class TransactionItem extends Component<Props, State> {
         if (!isLoading) {
             this.setState({
                 isLoading: true,
+                feeText: '',
+                isFeeTransaction: false,
             });
         }
 
@@ -118,16 +135,44 @@ class TransactionItem extends Component<Props, State> {
                 ? participants.start
                 : participants.end?.address && participants.end?.address !== account.address
                   ? participants.end
-                  : { address: account.address };
+                  : { address: account.address };        
 
         try {
             // get participant details
             const resp = await ResolverService.getAccountName(otherParty.address, otherParty.tag);
+
+            const isFeeTransaction = resp?.address && AppConfig?.feeAccount &&
+                String(resp?.address || '') === String(AppConfig?.feeAccount || '') &&
+                typeof item.MetaData.delivered_amount === 'string' &&
+                (item as any)?._tx?.InvoiceID;
+
+            let feeText = '';
+            
+            if (isFeeTransaction) {
+                const feeFactor = explainer?.getMonetaryDetails()?.factor?.[0];
+                if (feeFactor) {
+                    feeText = `${feeFactor?.value} ${feeFactor?.currency}`.trim();
+                    // if (rates?.fiatRate?.rate && rates?.fiatRate?.symbol) {
+                    // const effectiveAmount = Number(feeFactor?.value || 0) * Number(rates?.fiatRate?.rate || 0);
+                    const effectiveAmount = Number(feeFactor?.value || 0);
+                    if (effectiveAmount !== 0) {
+                        feeText = `${Localize.formatNumber(effectiveAmount, 6)} ${feeFactor?.currency}`.trim();
+                        // feeText = `${rates?.fiatRate?.symbol} ${Localize.formatNumber(effectiveAmount, 2)}`.trim();
+                        // if (effectiveAmount < 0.01) {
+                        //     feeText = `< ${rates?.fiatRate?.symbol} ${Localize.formatNumber(0.01, 2)}`.trim();
+                        // } 
+                    }
+                // }
+                }
+            }
+
             if (!isEmpty(resp) && this.mounted) {
                 this.setState({
                     explainer,
                     participant: resp,
                     isLoading: false,
+                    feeText,
+                    isFeeTransaction,
                 });
             }
         } catch (error) {
@@ -151,30 +196,55 @@ class TransactionItem extends Component<Props, State> {
     };
 
     render() {
-        const { item, account } = this.props;
-        const { participant, explainer } = this.state;
+        const { item, account } = this.props; // , rates
+        const { participant, explainer, isFeeTransaction, feeText } = this.state;
 
         return (
             <TouchableDebounce
                 onPress={this.onPress}
                 activeOpacity={0.6}
-                style={[styles.container, { height: TransactionItem.Height }]}
+                style={[styles.container, {
+                    height: isFeeTransaction
+                        ? TransactionItem.FeeHeight
+                        : TransactionItem.Height,
+                }]}
             >
                 {/* if participant is block the show an overlay to reduce the visibility */}
-                {participant?.blocked && <View style={styles.containerBlocked} />}
+                {(participant?.blocked && !isFeeTransaction) && <View style={styles.containerBlocked} />}
 
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Blocks.AvatarBlock participant={participant} item={item} />
+                    { isFeeTransaction && (
+                        <View style={[ styles.feeTxAvatar ]}>
+                            <Text>💝</Text>
+                        </View>
+                    )}
+                    { !isFeeTransaction && (
+                        <Blocks.AvatarBlock participant={participant} item={item} />
+                    )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
-                    <Blocks.LabelBlock item={item} account={account} participant={participant} />
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
-                        <Blocks.IndicatorIconBlock item={item} account={account} />
-                    </View>
+                    { !isFeeTransaction && (
+                        <Blocks.LabelBlock item={item} account={account} participant={participant} />
+                    )}
+                    { isFeeTransaction && (
+                        <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
+                    )}
+                    { !isFeeTransaction && (
+                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                            <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            <Blocks.IndicatorIconBlock item={item} account={account} />
+                        </View>
+                    )}
                 </View>
                 <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
-                    <Blocks.MonetaryBlock explainer={explainer} />
+                    { isFeeTransaction && (
+                        <Text style={[ styles.requestTimeText, styles.naturalColor, styles.currency ]}>
+                            { feeText }
+                        </Text>
+                    )}
+                    { !isFeeTransaction && (
+                        <Blocks.MonetaryBlock explainer={explainer} />
+                    )}
                 </View>
             </TouchableDebounce>
         );

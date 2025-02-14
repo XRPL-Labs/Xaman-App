@@ -8,10 +8,10 @@ export default StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 1,
-        backgroundColor: '$tint',
+        // backgroundColor: '$tint',
         borderColor: '$transparent',
         borderRadius: AppSizes.scale(18) / 2,
-        paddingHorizontal: 10,
+        // paddingHorizontal: 10,
     },
     buttonText: {
         fontFamily: AppFonts.base.familyExtraBold,

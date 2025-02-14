@@ -63,6 +63,8 @@ class SendView extends Component<Props, State> {
         const spendableAccounts = AccountRepository.getSpendableAccounts();
         const PaymentWithSigMixin = SignMixin(Payment);
 
+        // console.log('SendView constructor')
+
         this.state = {
             currentStep: Steps.Details,
             accounts: spendableAccounts,
@@ -73,6 +75,7 @@ class SendView extends Component<Props, State> {
             memo: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
+            serviceFeeAmount: undefined,
             destination: undefined,
             destinationInfo: undefined,
             scanResult: props.scanResult ?? undefined,
@@ -118,8 +121,15 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setFee = (selectedFee: FeeItem) => {
+    setFee = (selectedFee: FeeItem, serviceFee: FeeItem) => {
+        const { payment } = this.state;
         this.setState({ selectedFee });
+
+        // console.log('SendView Service Fee Amount Set', serviceFeeAmount.value);
+        if (serviceFee) {
+            payment.setServiceFee(Number(serviceFee.value));
+            this.setState({ serviceFeeAmount: serviceFee });
+        };
     };
 
     setIssuerFee = (issuerFee: number) => {

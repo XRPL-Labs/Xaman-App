@@ -14,12 +14,14 @@ const styles = StyleService.create({
     },
     fromContainer: {
         backgroundColor: '$background',
+        paddingTop: AppSizes.paddingSml,
         padding: AppSizes.padding,
-        paddingBottom: 40,
+        paddingBottom: 20,
     },
     toContainer: {
-        paddingTop: 50,
+        paddingTop: 30,
         padding: AppSizes.padding,
+        paddingBottom: AppSizes.paddingSml,
     },
     bottomContainer: {
         paddingHorizontal: AppSizes.padding,

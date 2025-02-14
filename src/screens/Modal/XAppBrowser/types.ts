@@ -11,6 +11,8 @@ export interface Props {
     account?: AccountModel;
     origin?: XAppOrigin;
     originData?: any;
+    noSwitching?: boolean;
+    nativeTitle?: string;
 }
 
 export interface State {
@@ -19,6 +21,7 @@ export interface State {
         title?: string;
         icon?: string;
         identifier: string;
+        appid?: string;
         supportUrl?: string;
         permissions?: {
             special: string[];
@@ -45,6 +48,7 @@ export enum XAppMethods {
     PayloadResolved = 'payloadResolved',
     XAppNavigate = 'xAppNavigate',
     OpenBrowser = 'openBrowser',
+    GetLogs = 'getLogs',
     TxDetails = 'txDetails',
     KycVeriff = 'kycVeriff',
     ScanQr = 'scanQr',

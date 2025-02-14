@@ -357,7 +357,7 @@ class DetailsStep extends Component<Props, State> {
                             <View>
                                 <Button
                                     light
-                                    roundedSmall
+                                    roundedMini
                                     isLoading={isLoadingAvailableBalance}
                                     onPress={this.applyAllBalance}
                                     label={Localize.t('global.all')}
@@ -384,8 +384,8 @@ class DetailsStep extends Component<Props, State> {
                                 onPress={() => {
                                     this.amountInput.current?.focus();
                                 }}
-                                style={styles.editButton}
-                                roundedSmall
+                                style={[styles.editButton, AppStyles.marginRightSml ]}
+                                roundedMini
                                 iconSize={15}
                                 iconStyle={AppStyles.imgColorGrey}
                                 light

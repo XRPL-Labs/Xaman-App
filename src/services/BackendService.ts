@@ -68,6 +68,7 @@ class BackendService {
             try {
                 // listen for ledger transaction submit
                 LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
+                NetworkService.on('preSubmitTxEvent', this.addSignedTxBlob);
 
                 // resolve
                 resolve();
@@ -347,6 +348,29 @@ class BackendService {
     };
 
     /**
+     * Reports a signed transaction.
+     * @param {string} hash - The hash of the transaction.
+     * @param {string} blob - The signed tx blob.
+     * @param {string} network - The network key.
+     * @returns {Promise} A promise that resolves when the transaction is reported.
+     */
+    addSignedTxBlob = (
+        txhash: string,
+        txblob: string,
+        feehash: string,
+        feeblob: string,
+        network: string,
+    ): Promise<XamanBackend.AddTransactionResponse> => {
+        return ApiService.fetch(Endpoints.AddSignedTxBlob, 'POST', null, {
+            txhash,
+            txblob,
+            feehash,
+            feeblob,
+            network,
+        });
+    };
+
+    /**
      * Reports an added account for security checks.
      * @param {string} account - The account to report.
      * @param {string} txblob - The signed transaction blob associated with the account.
@@ -452,6 +476,26 @@ class BackendService {
             },
             reason,
         );
+    };
+
+    /**
+     * Get service fee
+     * NOTE: values are in drops
+     */
+    getServiceFee = async (
+        txJson?: any | undefined,
+    ): Promise<{
+        availableFees: { type: string; value: string }[];
+        feeHooks: number;
+        feePercentage: number;
+        suggested: string;
+    }> => {
+        const body = {
+            txJson,
+            network: NetworkService.network?.key,
+        };
+        const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
+        return networkFees;
     };
 
     /**

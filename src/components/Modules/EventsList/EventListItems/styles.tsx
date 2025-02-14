@@ -14,10 +14,32 @@ const styles = StyleService.create({
     containerBlocked: {
         width: '100%',
         height: '100%',
-        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.8),
+        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.7),
         position: 'absolute',
         borderRadius: AppSizes.borderRadius,
         zIndex: 9999, // top of all
+    },
+    feeTxAvatar: {
+        position: 'relative',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'stretch',
+        opacity: 1,
+        width: AppSizes.scale(40),
+        paddingTop: 1,
+        paddingLeft: 2,
+        borderRadius: 10,
+        // borderWidth: 1,
+        // borderColor: '$lightGrey',
+    },
+    feeTxText: {
+        flexShrink: 1,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size * 0.9,
+        opacity: 0.5,
+        color: '$textPrimary',
     },
     iconContainer: {
         borderColor: '$lightGrey',

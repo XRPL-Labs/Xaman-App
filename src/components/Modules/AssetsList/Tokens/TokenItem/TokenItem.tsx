@@ -160,7 +160,7 @@ class TokenItem extends PureComponent<Props, State> {
                     <View style={styles.tokenAvatarContainer}>
                         <TokenAvatar
                             token={token}
-                            border
+                            // border
                             size={35}
                             badge={this.getTokenAvatarBadge}
                             saturate={saturate}
