@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Ste prepričani, da želite iti nazaj? (iz varnostnih razlogov morate ponovno vnesti vse podatke)",
     "accountType": "Vrsta računa",
     "secretType": "Tip skrivnosti",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Prosimo, izberite vrsto računa",
     "pleaseSelectAccountSecretType": "Izberite tip skrivnosti svojega računa",
     "fullAccess": "Polni dostop",

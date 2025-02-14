@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Segur que vols tornar enrere? (Si tornes enrere, hauràs de tornar a introduir totes les entrades per raons de seguretat)",
     "accountType": "Tipus de compte",
     "secretType": "Tipus de clau privada",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Si us plau, selecciona el tipus de compte",
     "pleaseSelectAccountSecretType": "Si us plau, selecciona el tipus de clau privada",
     "fullAccess": "Accés total",

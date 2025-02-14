@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "நீங்கள் திரும்பிச் செல்ல விரும்புகிறீர்களா?\r\n(பாதுகாப்பு காரணங்களுக்காக நீங்கள் அனைத்து உள்ளீடுகளையும் மீண்டும் நிரப்ப வேண்டும்)",
     "accountType": "கணக்கு வகை",
     "secretType": "ரகசிய வகை",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "உங்கள் கணக்கு வகையைத் தேர்ந்தெடுக்கவும்",
     "pleaseSelectAccountSecretType": "உங்கள் கணக்கு ரகசிய வகையைத் தேர்ந்தெடுக்கவும்",
     "fullAccess": "முழு அணுகல்",

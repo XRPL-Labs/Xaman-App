@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Are you sure you want to go back? \r\n (you have to re-fill all the inputs for security reasons)",
     "accountType": "Account type",
     "secretType": "Secret type",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Please select your account type",
     "pleaseSelectAccountSecretType": "Please select your account secret type",
     "fullAccess": "Full access",

@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Oled kindel, et tahad tagasi minna? \n (Te peate uuesti täitma kõik sisendid turvalisuse huvides)",
     "accountType": "Konto tüüp",
     "secretType": "Salajane tüüp",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Palun vali oma konto tüüp",
     "pleaseSelectAccountSecretType": "Palun vali oma konto salajane tüüp",
     "fullAccess": "Täielik juurdepääs",

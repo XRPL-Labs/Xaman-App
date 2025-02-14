@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Вы уверены, что хотите вернуться?\r\n(Вам придется заново заполнить все входные данные из соображений безопасности)",
     "accountType": "Тип аккаунта",
     "secretType": "Тип секретного ключа",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Пожалуйста, выберите тип Вашего аккаунта",
     "pleaseSelectAccountSecretType": "Пожалуйста, выберите тип секретного ключа Вашего аккаунт",
     "fullAccess": "Полный доступ",

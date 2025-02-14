@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Is jy seker jy wil teruggaan?\r\n(U moet al die insette vir sekuriteitsrede weer invul)",
     "accountType": "Tekening tipe",
     "secretType": "Geheime tipe",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Kies asseblief u rekeningtipe",
     "pleaseSelectAccountSecretType": "Kies asseblief u rekening geheime tipe",
     "fullAccess": "Volle toegang",

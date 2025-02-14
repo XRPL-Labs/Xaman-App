@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "നിങ്ങൾക്ക് തിരികെ പോകണമെന്ന് ഉറപ്പാണോ?\r\n(സുരക്ഷാ കാരണങ്ങളാൽ നിങ്ങൾ എല്ലാ ഇൻപുട്ടുകളും വീണ്ടും പൂരിപ്പിക്കണം)",
     "accountType": "അക്കൌണ്ട് തരം",
     "secretType": "രഹസ്യ തരം",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "നിങ്ങളുടെ അക്കൗണ്ട് തരം തിരഞ്ഞെടുക്കുക",
     "pleaseSelectAccountSecretType": "നിങ്ങളുടെ അക്കൗണ്ട് രഹസ്യ തരം തിരഞ്ഞെടുക്കുക",
     "fullAccess": "പൂർണ്ണ ആക്സസ്",

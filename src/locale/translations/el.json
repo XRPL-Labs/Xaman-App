@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Είστε σίγουρος ότι θέλετε να επιστρέψετε; \r\n(πρέπει να συμπληρώσετε ξανά όλες τις καταχωρήσεις για λόγους ασφαλείας)",
     "accountType": "Είδος λογαριασμού",
     "secretType": "Τύπος μυστικού",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Επιλέξτε το είδος λογαριασμού",
     "pleaseSelectAccountSecretType": "Επιλέξτε τον μυστικό τύπο του λογαριασμού σας",
     "fullAccess": "Πλήρης πρόσβαση",

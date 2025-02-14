@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "ನೀವು ಹಿಂತಿರುಗಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?\r\n(ಭದ್ರತಾ ಕಾರಣಗಳಿಗಾಗಿ ನೀವು ಎಲ್ಲಾ ಒಳಹರಿವುಗಳನ್ನು ಮತ್ತೆ ಭರ್ತಿ ಮಾಡಬೇಕು)",
     "accountType": "ಖಾತೆಯ ಪ್ರಕಾರ",
     "secretType": "ರಹಸ್ಯ ಪ್ರಕಾರ",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಖಾತೆ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     "pleaseSelectAccountSecretType": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಖಾತೆಯ ರಹಸ್ಯ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     "fullAccess": "ಪೂರ್ಣ ಪ್ರವೇಶ",

@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Naozaj sa chcete vrátiť späť?\r\n(z bezpečnostných dôvodov musíte znova vyplniť všetky vstupy)",
     "accountType": "Typ účtu",
     "secretType": "Typ tajných čísel",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Vyberte typ účtu",
     "pleaseSelectAccountSecretType": "Prosím vyberte typ tajných čísel vášho účtu",
     "fullAccess": "Úplný prístup",

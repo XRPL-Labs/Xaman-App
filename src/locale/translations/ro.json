@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Sunteţi sigur(ă) că doriţi să vă întoarceţi ?\r\n(Câmpurile completate vor trebui recompletate din motive de securitate) ",
     "accountType": "Tipul contului",
     "secretType": "Tipul cheii secrete  ",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Vă rugăm să selectaţi tipul contului.",
     "pleaseSelectAccountSecretType": "Vă rugăm să selectați tipul de cheie secretă a contului.",
     "fullAccess": "Acces complet",

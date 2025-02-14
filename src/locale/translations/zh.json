@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "您确定要返回吗？ （出于安全原因，您必须重新填写所有输入）",
     "accountType": "帐户类型",
     "secretType": "密钥类型",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "请选择您的账户类型",
     "pleaseSelectAccountSecretType": "请选择您的帐户密钥类型",
     "fullAccess": "完全访问",

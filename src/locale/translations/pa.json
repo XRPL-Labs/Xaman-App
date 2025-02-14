@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "ਕੀ ਤੁਸੀਂ ਪੱਕਾ ਵਾਪਸ ਜਾਣਾ ਚਾਹੁੰਦੇ ਹੋ?\r\n(ਤੁਹਾਨੂੰ ਸੁਰੱਖਿਆ ਦੇ ਕਾਰਨਾਂ ਕਰਕੇ ਸਾਰੀ ਜਾਣਕਾਰੀ ਨੂੰ ਦੁਬਾਰਾ ਭਰਨਾ ਪਏਗਾ)",
     "accountType": "ਖਾਤਾ ਕਿਸਮ",
     "secretType": "ਗੁਪਤ ਕਿਸਮ",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਖਾਤੇ ਦੀ ਕਿਸਮ ਦੀ ਚੋਣ ਕਰੋ",
     "pleaseSelectAccountSecretType": "ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਖਾਤੇ ਦੀ ਗੁਪਤ ਕਿਸਮ ਦੀ ਚੋਣ ਕਰੋ",
     "fullAccess": "ਪੂਰੀ ਪਹੁੰਚ",

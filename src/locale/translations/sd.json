@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "ڇا اوھان کي پڪ واپس وڃو ڪرڻ چاھيو ٿا؟\r\n(توهان کي سيڪيورٽي سببن لاءِ سڀني معلومات کي ٻيهر ڀرڻو پوندو)",
     "accountType": "کاتي جو قسم",
     "secretType": "راز جو قسم",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "مهرباني ڪري پنهنجي کاتي جو قسم چونڊيو",
     "pleaseSelectAccountSecretType": "مهرباني ڪري پنهنجي کاتي جي راز قسم چونڊيو",
     "fullAccess": "مڪمل رسائي",

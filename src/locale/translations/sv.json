@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Är du säker på att du vill åka tillbaka? \n (du måste fylla i alla indata av säkerhetsskäl)",
     "accountType": "Kontotyp",
     "secretType": "Hemlig typ",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Välj kontotyp",
     "pleaseSelectAccountSecretType": "Välj kontohemlig typ",
     "fullAccess": "Fullständig åtkomst",

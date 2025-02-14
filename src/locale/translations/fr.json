@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Êtes-vous sûr de vouloir revenir en arrière ? (vous devrez remplir à nouveau toutes les entrées pour des raisons de sécurité)",
     "accountType": "Type de compte",
     "secretType": "Type de secret",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Veuillez sélectionner votre type de compte",
     "pleaseSelectAccountSecretType": "Veuillez sélectionner votre type de clé secrète",
     "fullAccess": "Accès complet",

@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Weet u zeker dat u terug wilt gaan? \r\n (u moet om veiligheidsredenen alle invoervelden opnieuw invullen)",
     "accountType": "Account type",
     "secretType": "Geheim type",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Selecteer uw account type",
     "pleaseSelectAccountSecretType": "Selecteer uw account geheim type",
     "fullAccess": "Volledige toegang",

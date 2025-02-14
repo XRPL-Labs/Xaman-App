@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Bạn có chắc chắn muốn quay lại không?\r\n(bạn phải điền lại tất cả các đầu vào vì lý do bảo mật)",
     "accountType": "Loại tài khoản",
     "secretType": "Loại bí mật",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Vui lòng chọn loại tài khoản của bạn",
     "pleaseSelectAccountSecretType": "Vui lòng chọn loại bí mật tài khoản của bạn",
     "fullAccess": "Toàn quyền truy cập",

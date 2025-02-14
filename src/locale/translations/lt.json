@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Ar tikrai norite eiti atgal?\r\n(saugumo sumetimais turite iš naujo užpildyti visus įvestis)",
     "accountType": "Paskyros tipas",
     "secretType": "Slaptas tipas",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Pasirinkite savo paskyros tipą",
     "pleaseSelectAccountSecretType": "Pasirinkite savo paskyros slaptąjį tipą",
     "fullAccess": "Visiška prieiga",

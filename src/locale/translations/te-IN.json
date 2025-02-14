@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "మీరు ఖచ్చితంగా తిరిగి వెళ్లాలనుకుంటున్నారా?\r\n(భద్రతా కారణాల దృష్ట్యా మీరు అన్ని ఇన్‌పుట్‌లను తిరిగి నింపాలి)",
     "accountType": "ఖాతా రకం\r\n",
     "secretType": "రహస్య రకం",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "దయచేసి మీ ఖాతా రకాన్ని ఎంచుకోండి\r\n",
     "pleaseSelectAccountSecretType": "దయచేసి మీ ఖాతా రహస్య రకాన్ని ఎంచుకోండి\r\n",
     "fullAccess": "పూర్తి ప్రాప్యత",

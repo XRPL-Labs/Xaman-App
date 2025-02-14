@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "დარწმუნებული ხართ, რომ გსურთ უკან დაბრუნება?\r\n(უსაფრთხოებისათვის შეყვანილი ინფორმაციის ხელახლა შეყვანა დაგჭირდებათ)",
     "accountType": "ანგარიშის ტიპი",
     "secretType": "სეკრეტის ტიპი",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "გთხოვთ აირჩიოთ თქვენი ანგარიშის ტიპი",
     "pleaseSelectAccountSecretType": "გთხოვთ აირჩიოთ თქვენი ანგარიშის საიდუმლო ტიპი",
     "fullAccess": "სრული წვდომა",

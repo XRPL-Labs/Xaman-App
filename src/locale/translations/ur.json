@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "کیا آپ واقعی واپس جانا چاہتے ہیں؟\r\n(اگر آپ واپس چلے گئے تو ، آپ کو حفاظتی وجوہات کی بناء پر تمام آدانوں کو دوبارہ داخل کرنا پڑے گا)",
     "accountType": "اکاؤنٹ کی اقسام",
     "secretType": "خفیہ قسم",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "براہ کرم اپنے اکاؤنٹ کی قسم منتخب کریں",
     "pleaseSelectAccountSecretType": "براہ کرم اپنے اکاؤنٹ کی خفیہ قسم منتخب کریں",
     "fullAccess": "پوری اجازت",

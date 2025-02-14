@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "هل أنت متأكد أنك تريد العودة؟\r\n(عليك إعادة ملء جميع المدخلات لأسباب أمنية)",
     "accountType": "نوع الحساب",
     "secretType": "النوع السري",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "يرجى تحديد نوع حسابك",
     "pleaseSelectAccountSecretType": "يرجى تحديد نوع سر حسابك",
     "fullAccess": "الوصول الكامل",

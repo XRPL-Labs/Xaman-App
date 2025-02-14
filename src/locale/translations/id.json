@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Apakah Anda yakin ingin kembali? \r\n (Anda harus kembali mengisi semua masukan untuk alasan keamanan)",
     "accountType": "Jenis akun",
     "secretType": "Jenis rahasia",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Pilih jenis akun Anda",
     "pleaseSelectAccountSecretType": "Silakan pilih jenis rahasia akun Anda",
     "fullAccess": "Akses penuh",

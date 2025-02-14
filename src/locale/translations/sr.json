@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "Да ли сте сигурни да се желите вратити?\r\n(из сигурносних разлога морате поново попунити све уносе)",
     "accountType": "Тип налога",
     "secretType": "Тајни тип",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "Молимо вас одаберите врсту рачуна",
     "pleaseSelectAccountSecretType": "Молимо вас одаберите тајну врсту свог рачуна",
     "fullAccess": "Потпуни приступ \r\n",

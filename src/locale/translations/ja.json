@@ -906,6 +906,7 @@
     "goBackRefillTheInput": "本当に戻りますか？\r\n（セキュリティ上の理由により、全ての項目を再度入力する必要があります）",
     "accountType": "アカウントの種類",
     "secretType": "シークレットタイプ",
+    "keypairType": "Keypair type",
     "pleaseSelectAccountType": "アカウントの種類を選択してください",
     "pleaseSelectAccountSecretType": "アカウントのシークレットタイプを選択してください",
     "fullAccess": "全権アクセス",
