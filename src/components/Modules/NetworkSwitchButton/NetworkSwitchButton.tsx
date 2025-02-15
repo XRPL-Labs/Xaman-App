@@ -207,7 +207,9 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
 
         const networkName = network.key === 'MAINNET' && showAsSwitchPill // Home screen
             ? 'XRPL'
-            : 'XAHAU';
+            : network.key === 'XAHAU'
+            ? 'XAHAU' // upper case
+            : network.name;
 
         return (
             <View style={[
