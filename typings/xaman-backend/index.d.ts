@@ -119,7 +119,11 @@ declare namespace XamanBackend {
         done: boolean;
     }
     interface AddAccountResponse {
-        done: boolean;
+        account?: string;
+        added?: booleam;
+        card?: string;
+        is_card?: boolean;
+        switch_to_network?: string;
     }
     interface AccountInfoResponse {
         account: string;
