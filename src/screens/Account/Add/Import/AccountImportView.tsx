@@ -24,7 +24,12 @@ import { AppScreens } from '@common/constants';
 import BackendService from '@services/BackendService';
 import LedgerService from '@services/LedgerService';
 
-import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
+import {
+    AccountRepository,
+    CoreRepository,
+    ProfileRepository,
+    NetworkRepository,
+} from '@store/repositories';
 import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
@@ -38,6 +43,8 @@ import { AppStyles } from '@theme';
 
 import Steps from './Steps';
 import { StepsContext } from './Context';
+
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 import { ImportSteps, Props, SecretTypes, State } from './types';
@@ -375,9 +382,24 @@ class AccountImportView extends Component<Props, State> {
             if (account.accessLevel === AccessLevels.Full) {
                 // get the signature and add account
                 if (account.type === AccountTypes.Tangem) {
-                    BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!)).catch(() => {
-                        // ignore
-                    });
+                    await BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!))
+                        .then(async r => {
+                            if (typeof r?.switch_to_network === 'string') {
+                                if (NetworkService.getNetwork().key !== r.switch_to_network) {
+                                    const toNetwork = NetworkRepository.findBy('key', r.switch_to_network);
+                                    if (toNetwork.length === 1) {
+                                        try {
+                                            await NetworkService.switchNetwork(toNetwork[0]);
+                                        } catch (e) {
+                                            //
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            // ignore
+                        });
                 } else {
                     // include device UUID is signed transaction
                     const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
@@ -446,6 +468,9 @@ class AccountImportView extends Component<Props, State> {
                             modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
                         },
                     );
+                } else {
+                    // Go home
+                    Navigator.startDefault();
                 }
             });
         } catch (error) {
