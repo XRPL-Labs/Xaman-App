@@ -182,6 +182,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                     <View style={styles.accountSwitchContainer}>
                         <AccountSwitchElement
                             account={account}
+                            noPadding
                             onAccountSwitch={this.onDefaultAccountChange}
                             onSwitcherClose={this.toggleExpandedBar}
                         />

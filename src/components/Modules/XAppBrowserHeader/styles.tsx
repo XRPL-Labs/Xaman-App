@@ -69,6 +69,7 @@ const styles = StyleService.create({
 
     accountSwitchContainer: {
         marginBottom: AppSizes.paddingExtraSml,
+        padding: 0,
     },
 });
 

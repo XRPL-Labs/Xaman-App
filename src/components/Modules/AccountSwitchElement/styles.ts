@@ -11,6 +11,10 @@ export default StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
         marginBottom: 5,
     },
+    containerNoPadding: { // xApp header
+        paddingRight: 0,
+        paddingLeft: 3,
+    },
     accountLabelText: {
         fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.p.size,
