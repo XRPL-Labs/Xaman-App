@@ -270,7 +270,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderHeader = () => {
-        const { account } = this.state;
+        const { account, developerMode } = this.state;
 
         return (
             <Fragment key="header">
@@ -278,7 +278,7 @@ class HomeView extends Component<Props, State> {
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     <ProBadge />
                 </View>
-                <NetworkSwitchButton hidden={!account?.isValid()} />
+                <NetworkSwitchButton developerMode={developerMode} hidden={!account?.isValid()} />
             </Fragment>
         );
     };

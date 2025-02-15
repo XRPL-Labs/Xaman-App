@@ -6,6 +6,8 @@ import { AppScreens } from '@common/constants';
 
 import NetworkService, { NetworkStateStatus } from '@services/NetworkService';
 
+import { NetworkRepository } from '@store/repositories';
+
 import { Navigator } from '@common/helpers/navigator';
 
 import { NetworkModel } from '@store/models';
@@ -26,6 +28,7 @@ interface Props {
     onNetworkChange?: (network: NetworkModel) => void;
     onSwitcherClose?: () => void;
     containerStyle?: ViewStyle | ViewStyle[];
+    developerMode?: boolean;
 }
 
 interface State {
@@ -38,6 +41,7 @@ interface State {
 class NetworkSwitchButton extends PureComponent<Props, State> {
     public static CircleSize = AppSizes.scale(13);
     public static ButtonHeight = AppSizes.scale(30);
+    public static PillHeight = AppSizes.scale(31);
     private animation: Animated.Value;
 
     declare readonly props: Props & Required<Pick<Props, keyof typeof NetworkSwitchButton.defaultProps>>;
@@ -158,7 +162,24 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
         }
     };
 
-    onButtonPress = () => {
+    onButtonPressPillToggle = () => {
+        const { network } = this.state;
+        const toNetworkKey = network.key === 'XAHAU'
+            ? 'MAINNET'
+            : 'XAHAU';
+        if (NetworkService.getNetwork().key !== toNetworkKey) {
+            const toNetwork = NetworkRepository.findBy('key', toNetworkKey);
+            if (toNetwork.length === 1) {
+                try {
+                    NetworkService.switchNetwork(toNetwork[0]);
+                } catch (e) {
+                    //
+                }
+            }
+        }
+    };
+
+    onButtonPressSwitcher = () => {
         this.setState({
             isSwitcherOpen: true,
         });
@@ -170,81 +191,159 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
     };
 
     render() {
-        const { height, containerStyle, hidden, showChevronIcon } = this.props;
+        const { height, containerStyle, hidden, showChevronIcon, developerMode } = this.props;
         const { network, networkState, isSwitcherOpen } = this.state;
 
         if (hidden || !network) {
             return null;
         }
 
+        // const showAsSwitchPill = !showChevronIcon;
+        const isPillEligibleNetwork = network.key === 'XAHAU' || network.key === 'MAINNET';
+        const showAsSwitchPill = !showChevronIcon && !developerMode && isPillEligibleNetwork;
+
+        const showNetworkPillLeft = showAsSwitchPill && network.key === 'XAHAU';
+        const showNetworkPillRight = showAsSwitchPill && network.key === 'MAINNET';
+
+        const networkName = network.key === 'MAINNET' && showAsSwitchPill // Home screen
+            ? 'XRPL'
+            : 'XAHAU';
+
         return (
-            <TouchableDebounce
-                testID="network-switch-button"
-                accessibilityRole="button"
-                delayPressIn={0}
-                style={[styles.buttonContainer, containerStyle, { height: height || NetworkSwitchButton.ButtonHeight }]}
-                onPress={this.onButtonPress}
-                activeOpacity={0.8}
-            >
-                <View style={styles.pulseWrapper}>
-                    <Animated.View
-                        style={[
-                            styles.pulseCircle,
-                            {
-                                backgroundColor: network.color,
-                                borderRadius: (NetworkSwitchButton.CircleSize * 1.4) / 2,
-                                width: NetworkSwitchButton.CircleSize,
-                                height: NetworkSwitchButton.CircleSize,
-                                transform: [
+            <View style={[
+                styles.buttonContainer,
+                containerStyle,
+                showAsSwitchPill ? styles.switchPillContainer : {},
+            ]}>
+                <TouchableDebounce
+                    testID="network-switch-button"
+                    accessibilityRole="button"
+                    delayPressIn={0}
+                    style={[
+                        styles.buttonContainer,
+                        containerStyle,
+                        { 
+                            height: showAsSwitchPill
+                                ? NetworkSwitchButton.PillHeight
+                                : height || NetworkSwitchButton.ButtonHeight,
+                        },
+                        showAsSwitchPill ? {
+                            ...styles.borderW0,
+                         } : {
+                            ...styles.borderW1,
+                         },
+                    ]}
+                    onPress={
+                        showAsSwitchPill
+                            ? this.onButtonPressPillToggle
+                            : this.onButtonPressSwitcher
+                    }
+                    activeOpacity={0.8}
+                >
+                    { showNetworkPillLeft && 
+                        <View style={[
+                            styles.theOtherNetworkLeft,
+                        ]}>
+                            <Text style={[
+                                styles.buttonText,
+                                styles.theOtherNetworkText,
+                                showChevronIcon && AppStyles.flex4,
+                                showAsSwitchPill && styles.pillFontSize,
+                            ]} numberOfLines={1}>
+                                XRPL
+                            </Text>
+                        </View>
+                    }
+
+                    <View style={[
+                        styles.buttonContainer,
+                        showAsSwitchPill ? {
+                            ...styles.borderW0,
+                            ...styles.theSelectedNetwork,
+                         } : {
+                            ...styles.borderW1,
+                         },
+                    ]}>
+                        <View style={styles.pulseWrapper}>
+                            <Animated.View
+                                style={[
+                                    styles.pulseCircle,
                                     {
-                                        scale: this.animation.interpolate({
-                                            inputRange: [0, 1],
-                                            outputRange: [1, 1.7],
+                                        backgroundColor: network.color,
+                                        borderRadius: (NetworkSwitchButton.CircleSize * 1.4) / 2,
+                                        width: NetworkSwitchButton.CircleSize,
+                                        height: NetworkSwitchButton.CircleSize,
+                                        transform: [
+                                            {
+                                                scale: this.animation.interpolate({
+                                                    inputRange: [0, 1],
+                                                    outputRange: [1, 1.7],
+                                                }),
+                                            },
+                                        ],
+                                        opacity: this.animation.interpolate({
+                                            inputRange: [0.02, 1],
+                                            outputRange: [1, 0],
                                         }),
                                     },
-                                ],
-                                opacity: this.animation.interpolate({
-                                    inputRange: [0.02, 1],
-                                    outputRange: [1, 0],
-                                }),
-                            },
-                        ]}
-                    />
-                    <View
-                        key={`${network.id.toHexString()}`}
-                        style={[
-                            AppStyles.centerContent,
-                            AppStyles.centerAligned,
-                            {
-                                width: NetworkSwitchButton.CircleSize,
-                                height: NetworkSwitchButton.CircleSize,
-                                borderRadius: NetworkSwitchButton.CircleSize / 2,
-                                backgroundColor: network.color,
-                            },
-                        ]}
-                    >
-                        {networkState === NetworkStateStatus.Disconnected && (
-                            <Text adjustsFontSizeToFit style={styles.exclamationMarkText}>
-                                !
+                                ]}
+                            />
+                            <View
+                                key={`${network.id.toHexString()}`}
+                                style={[
+                                    AppStyles.centerContent,
+                                    AppStyles.centerAligned,
+                                    {
+                                        width: NetworkSwitchButton.CircleSize,
+                                        height: NetworkSwitchButton.CircleSize,
+                                        borderRadius: NetworkSwitchButton.CircleSize / 2,
+                                        backgroundColor: network.color,
+                                    },
+                                ]}
+                            >
+                                {networkState === NetworkStateStatus.Disconnected && (
+                                    <Text adjustsFontSizeToFit style={styles.exclamationMarkText}>
+                                        !
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+
+                        <Text style={[styles.
+                            buttonText,
+                            showChevronIcon && AppStyles.flex4,
+                            showAsSwitchPill && styles.pillFontSize,
+                        ]} numberOfLines={1}>
+                            {networkName}
+                        </Text>
+                    </View>
+
+                    { showNetworkPillRight && 
+                        <View style={[
+                            styles.theOtherNetworkRight,
+                        ]}>
+                            <Text style={[
+                                styles.buttonText,
+                                styles.theOtherNetworkText,
+                                showChevronIcon && AppStyles.flex4,
+                                showAsSwitchPill && styles.pillFontSize,
+                            ]} numberOfLines={1}>
+                                XAHAU
                             </Text>
-                        )}
-                    </View>
-                </View>
+                        </View>
+                    }
 
-                <Text style={[styles.buttonText, showChevronIcon && AppStyles.flex4]} numberOfLines={1}>
-                    {network.name}
-                </Text>
-
-                {showChevronIcon && (
-                    <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                        <Icon
-                            style={styles.iconChevron}
-                            size={25}
-                            name={isSwitcherOpen ? 'IconChevronUp' : 'IconChevronDown'}
-                        />
-                    </View>
-                )}
-            </TouchableDebounce>
+                    {showChevronIcon && (
+                        <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
+                            <Icon
+                                style={styles.iconChevron}
+                                size={25}
+                                name={isSwitcherOpen ? 'IconChevronUp' : 'IconChevronDown'}
+                            />
+                        </View>
+                    )}
+                </TouchableDebounce>
+            </View>
         );
     }
 }
