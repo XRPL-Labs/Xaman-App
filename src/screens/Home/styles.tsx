@@ -87,7 +87,7 @@ const styles = StyleService.create({
         fontSize: AppFonts.subtext.size * 0.8,
     },
     accountSwitchConainer: {
-        backgroundColor: '$light',
+        backgroundColor: '$tint',
         marginHorizontal: AppSizes.paddingSml,
         paddingTop: 7,
         paddingBottom: 4,

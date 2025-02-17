@@ -311,8 +311,8 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
                             </View>
                         </View>
 
-                        <Text style={[styles.
-                            buttonText,
+                        <Text style={[
+                            styles.buttonText,
                             showChevronIcon && AppStyles.flex4,
                             showAsSwitchPill && styles.pillFontSize,
                         ]} numberOfLines={1}>

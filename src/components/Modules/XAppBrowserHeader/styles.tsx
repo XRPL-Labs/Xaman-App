@@ -66,10 +66,18 @@ const styles = StyleService.create({
     iconChevronDown: {
         tintColor: '$contrast',
     },
-
+    networkSwitchBtn: {
+        backgroundColor: '$tint',
+        paddingRight: 4,
+    },
     accountSwitchContainer: {
         marginBottom: AppSizes.paddingExtraSml,
-        padding: 0,
+        paddingTop: 7,
+        paddingBottom: 4,
+        paddingLeft: 10,
+        paddingRight: 6,
+        borderRadius: 11,
+        backgroundColor: '$tint',
     },
 });
 
