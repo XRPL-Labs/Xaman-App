@@ -30,7 +30,7 @@ const styles = StyleService.create({
     },
     buttonRow: {
         flexDirection: 'row',
-        marginBottom: 20,
+        marginBottom: 15,
         marginTop: 15,
         marginHorizontal: AppSizes.paddingSml - 4,
     },
@@ -86,8 +86,17 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.subtext.size * 0.8,
     },
-    accountSwitchElement: {
+    accountSwitchConainer: {
+        backgroundColor: '$light',
         marginHorizontal: AppSizes.paddingSml,
+        paddingTop: 7,
+        paddingBottom: 4,
+        paddingLeft: 10,
+        paddingRight: 6,
+        borderRadius: 11,
+    },
+    accountSwitchElement: {
+        marginHorizontal: 0,
     },
 });
 

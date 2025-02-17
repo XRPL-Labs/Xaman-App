@@ -417,12 +417,17 @@ class HomeView extends Component<Props, State> {
         const { account, discreetMode } = this.state;
 
         return (
-            <AccountSwitchElement
-                account={account}
-                discreet={discreetMode}
-                showAddAccountButton
-                containerStyle={styles.accountSwitchElement}
-            />
+            <View style={[
+                styles.accountSwitchConainer,
+            ]}>
+                <AccountSwitchElement
+                    account={account}
+                    discreet={discreetMode}
+                    showAddAccountButton
+                    noPadding
+                    containerStyle={styles.accountSwitchElement}
+                />
+            </View>
         );
     };
 
