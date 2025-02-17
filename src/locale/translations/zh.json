@@ -22,6 +22,7 @@
     "balance": "余额",
     "spendable": "可用余额",
     "home": "首页",
+    "accounttxpush": "Transaction Push Notifications",
     "events": "账本记录",
     "profile": "个人资料",
     "pro": "Pro Beta",

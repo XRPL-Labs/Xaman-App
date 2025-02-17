@@ -22,6 +22,7 @@
     "balance": "残高",
     "spendable": "利用可能残高",
     "home": "ホーム",
+    "accounttxpush": "Transaction Push Notifications",
     "events": "取引履歴",
     "profile": "プロフィール",
     "pro": "Pro Beta",

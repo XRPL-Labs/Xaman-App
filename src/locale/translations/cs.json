@@ -22,6 +22,7 @@
     "balance": "Zůstatek",
     "spendable": "Použitelný zůstatek",
     "home": "Domů",
+    "accounttxpush": "Transaction Push Notifications",
     "events": "Transakce",
     "profile": "Profil",
     "pro": "Pro Beta",
