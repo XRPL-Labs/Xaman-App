@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Platform, Switch as RNSwitch, TextStyle } from 'react-native';
+import { View, Text, Platform, Switch as RNSwitch, TextStyle, ViewStyle } from 'react-native';
 
 import { AppColors } from '@theme';
 import styles from './styles';
@@ -8,6 +8,7 @@ interface Props {
     testID?: string;
     title?: string;
     titleStyle?: TextStyle;
+    style?: ViewStyle | ViewStyle[];
     direction?: 'right' | 'left';
     checked: boolean;
     isDisabled?: boolean;
@@ -30,7 +31,7 @@ class Switch extends Component<Props> {
     };
 
     render() {
-        const { title, direction, checked, isDisabled, testID } = this.props;
+        const { title, direction, checked, isDisabled, testID, style } = this.props;
 
         let extraProps = {};
 
@@ -41,18 +42,27 @@ class Switch extends Component<Props> {
                 thumbColor: AppColors.light,
             };
         }
+        
+        const opacity = { opacity: isDisabled && Platform.OS === 'android' ? 0.5 : 1 };
 
         return (
             <View style={styles.container}>
                 {direction === 'right' && title && <Text style={styles.title}>{title}</Text>}
-                <View style={styles.switch}>
+                <View style={[
+                    styles.switch,
+                    style,
+                ]}>
                     <View>
                         <RNSwitch
                             testID={testID}
                             disabled={isDisabled}
                             onValueChange={this.onValueChange}
                             // eslint-disable-next-line react-native/no-inline-styles
-                            style={[styles.switch, { opacity: isDisabled && Platform.OS === 'android' ? 0.5 : 1 }]}
+                            style={[
+                                styles.switch,
+                                style,
+                                opacity,
+                            ]}
                             value={checked}
                             // eslint-disable-next-line react/jsx-props-no-spreading
                             {...extraProps}

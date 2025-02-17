@@ -386,6 +386,25 @@ class BackendService {
     };
 
     /**
+     * Retrieve/Persist account information
+     * @param {string} account - The account to report.
+     * @param {string} name - The name of the account as present in Xaman
+     * @param {boolean} push - Enable or disable push notifications
+     * @returns {Promise} A promise that resolves when the account information persisted.
+     */
+    privateAccountInfo = (
+        account?: string,
+        name?: string,
+        push?: boolean,
+    ): Promise<XamanBackend.PrivateAccountInfoResponse> => {
+        return ApiService.fetch(Endpoints.PrivateAccountInfo, 'POST', null, {
+            account,
+            name,
+            push,
+        });
+    };
+
+    /**
      * Gets details for an account address.
      * @param {string} address - The account address.
      * @returns {Promise} A promise that resolves with account information.

@@ -125,6 +125,9 @@ declare namespace XamanBackend {
         is_card?: boolean;
         switch_to_network?: string;
     }
+    interface PrivateAccountInfoResponse {
+        push?: boolean;
+    }
     interface AccountInfoResponse {
         account: string;
         name: string | null;

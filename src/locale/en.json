@@ -22,6 +22,7 @@
     "balance": "Balance",
     "spendable": "Spendable",
     "home": "Home",
+    "accounttxpush": "Transaction Push Notifications",
     "events": "Events",
     "profile": "Profile",
     "pro": "Pro Beta",

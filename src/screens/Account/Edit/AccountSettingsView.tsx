@@ -6,6 +6,8 @@ import { first, filter } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
+import PushNotificationsService from '@services/PushNotificationsService';
+
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -16,7 +18,7 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
-import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@components/General';
+import { Button, Header, Icon, Spacer, Switch, TouchableDebounce, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -29,6 +31,7 @@ import { PassphraseAuthenticationOverlayProps } from '@screens/Overlay/Passphras
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import BackendService from '@services/BackendService';
 
 /* types ==================================================================== */
 export interface Props {
@@ -37,6 +40,10 @@ export interface Props {
 
 export interface State {
     account: AccountModel;
+    fetchingPushState: boolean;
+    pushAvailable: boolean;
+    pushEnabled: boolean;
+    accountCanSign: boolean;
 }
 
 /* Component ==================================================================== */
@@ -54,11 +61,33 @@ class AccountSettingsView extends Component<Props, State> {
 
         this.state = {
             account: props.account,
+            fetchingPushState: true,
+            pushAvailable: false,
+            pushEnabled: false,
+            accountCanSign: false,
         };
     }
 
     componentDidMount() {
+        const { account } = this.state;
+
         AccountRepository.on('accountUpdate', this.onAccountUpdate);
+
+        const accountCanSign = this.canAccountSign(account);
+        this.setState({ accountCanSign });
+
+        if (accountCanSign) {
+            Promise.all([
+                PushNotificationsService.checkPermission(),
+                BackendService.privateAccountInfo(account.address, account.label),
+            ]).then(pushState => {
+                this.setState({
+                    fetchingPushState: false,
+                    pushAvailable: pushState[0],
+                    pushEnabled: !!pushState[1]?.push,
+                });
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -68,8 +97,10 @@ class AccountSettingsView extends Component<Props, State> {
     onAccountUpdate = (updateAccount: AccountModel) => {
         const { account } = this.state;
 
-        if (account?.isValid() && updateAccount?.address === account.address) {
-            this.setState({ account: updateAccount });
+        if (account?.isValid() && updateAccount?.address === account.address) {           
+            this.setState({
+                account: updateAccount,
+            });
         }
     };
 
@@ -106,6 +137,9 @@ class AccountSettingsView extends Component<Props, State> {
             address: account.address,
             label: labelClean,
         });
+
+        // Update name.
+        BackendService.privateAccountInfo(account.address, labelClean);
     };
 
     showAccessLevelPicker = () => {
@@ -259,6 +293,21 @@ class AccountSettingsView extends Component<Props, State> {
         );
     };
 
+    onTxPushChange = (value: boolean) => {
+        const { account } = this.props;
+
+        this.setState({
+            pushEnabled: value,
+            fetchingPushState: true,
+        });
+
+        BackendService.privateAccountInfo(account.address, account.label, value).then(() => {
+            this.setState({
+                fetchingPushState: false,
+            });    
+        });
+    };
+
     onHiddenChange = (value: boolean) => {
         const { account } = this.props;
 
@@ -288,8 +337,23 @@ class AccountSettingsView extends Component<Props, State> {
         });
     };
 
+    canAccountSign = (account: AccountModel) => {
+        if (account.accessLevel === AccessLevels.Full) {
+            return true;
+        };
+        
+        if (account.accessLevel === AccessLevels.Readonly && account.regularKey) {
+            const regularKeyAccount = AccountRepository.findOne({ address: account.regularKey });
+            if (regularKeyAccount && regularKeyAccount.accessLevel === AccessLevels.Full) {
+                return true;
+            }
+        };
+
+        return false;
+    };
+
     render() {
-        const { account } = this.state;
+        const { account, fetchingPushState, pushAvailable, pushEnabled, accountCanSign } = this.state;
 
         if (!account?.isValid()) return null;
 
@@ -347,6 +411,34 @@ class AccountSettingsView extends Component<Props, State> {
                             </Text>
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </TouchableDebounce>
+
+                        {/* Push notifications */}
+                        { accountCanSign && 
+                            (
+                                <View style={styles.row}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('global.accounttxpush')}
+                                    </Text>
+                                    <View style={[
+                                        AppStyles.flex1,
+                                        styles.loaderInline,
+                                    ]}>
+                                        { fetchingPushState && (
+                                            <LoadingIndicator style={styles.inlineLoader} />
+                                            )
+                                        }
+                                        <Switch
+                                            style={[
+                                                styles.switchRight,
+                                            ]}
+                                            checked={pushEnabled}
+                                            isDisabled={fetchingPushState || !pushAvailable}
+                                            onChange={this.onTxPushChange}
+                                        /> 
+                                    </View>
+                                </View>
+                            )
+                        }
 
                         {/* Account Access Level */}
                         {account.type === AccountTypes.Regular && (
