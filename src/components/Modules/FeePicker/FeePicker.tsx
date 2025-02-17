@@ -265,9 +265,23 @@ class FeePicker extends Component<Props, State> {
         const { containerStyle, textStyle } = this.props;
 
         return (
-            <View style={[AppStyles.row, containerStyle]}>
-                <Text style={textStyle}>{Localize.t('global.loading')}...&nbsp;</Text>
-                <LoadingIndicator />
+            <View style={[
+                styles.outerContainer,
+                AppStyles.row,
+                containerStyle,
+            ]}>
+                <View style={[
+                    styles.loaderContainer,
+                ]}>
+                    <LoadingIndicator
+                        style={styles.loader}
+                        size='small'
+                    />
+                    <Text style={[
+                        styles.loaderText,
+                        textStyle,
+                    ]}>{Localize.t('global.loading')}...&nbsp;</Text>
+                </View>
             </View>
         );
     };
@@ -288,7 +302,10 @@ class FeePicker extends Component<Props, State> {
         }
 
         return (
-            <View style={containerStyle}>
+            <View style={[
+                styles.outerContainer,
+                containerStyle,
+            ]}>
                 <TouchableDebounce activeOpacity={0.8} style={AppStyles.row} onPress={this.showFeeSelectOverlay}>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                         <Text style={textStyle}>
