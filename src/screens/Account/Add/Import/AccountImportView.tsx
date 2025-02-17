@@ -448,13 +448,12 @@ class AccountImportView extends Component<Props, State> {
                 account: createdAccount,
             });
 
-            // close the screen
-            Navigator.popToRoot().then(() => {
-                // if account imported with alternative seed alphabet and xApp present
-                // route user to the xApp
-                if (has(alternativeSeedAlphabet, 'params.xapp')) {
+            if (has(alternativeSeedAlphabet, 'params.xapp')) {
+                Navigator.popToRoot().then(() => {
+                    // if account imported with alternative seed alphabet and xApp present
+                    // route user to the xApp
                     const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp') as string;
-
+    
                     Navigator.showModal<XAppBrowserModalProps>(
                         AppScreens.Modal.XAppBrowser,
                         {
@@ -468,11 +467,18 @@ class AccountImportView extends Component<Props, State> {
                             modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
                         },
                     );
-                } else {
-                    // Go home
+                });
+            } else {
+                // No alternative seed import
+                // First account = already at home
+                if (AccountRepository.getAccounts().length > 1) {
                     Navigator.startDefault();
-                }
-            });
+                } else {
+                    // Otherwise, just return
+                    Navigator.popToRoot();
+                };
+            }
+
         } catch (error) {
             // this should never happen but in case just show error that something went wrong
             Toast(Localize.t('global.unexpectedErrorOccurred'));
