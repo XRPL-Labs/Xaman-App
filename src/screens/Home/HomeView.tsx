@@ -29,7 +29,7 @@ import { Prompt } from '@common/helpers/interface';
 
 import Preferences from '@common/libs/preferences';
 
-import { Button, RaisedButton } from '@components/General';
+import { Button, RaisedButton, LoadingIndicator } from '@components/General';
 import {
     MonetizationElement,
     ProBadge,
@@ -288,6 +288,15 @@ class HomeView extends Component<Props, State> {
     renderAssets = () => {
         const { timestamp } = this.props;
         const { account, discreetMode, isSpendable, experimentalUI } = this.state;
+
+        if ((account?.details || []).length === 0) {
+            // No account information loaded/cached yet, so not saying "not activated"
+            return (
+                <View style={AppStyles.flex1}>
+                    <LoadingIndicator size='large' />
+                </View>
+            );
+        }
 
         // accounts is not activated
         if (account.balance === 0) {
