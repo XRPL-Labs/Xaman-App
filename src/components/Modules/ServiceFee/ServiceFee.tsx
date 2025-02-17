@@ -10,6 +10,8 @@ import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import { TouchableDebounce, LoadingIndicator, InfoMessage } from '@components/General';
 
+import { type Payload } from '@common/libs/payload';
+
 import Localize from '@locale';
 
 import { FeeItem } from '@screens/Overlay/SelectFee/types';
@@ -28,6 +30,7 @@ interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     showHooksFee?: boolean;
+    payload?: Payload;
     onSelect?: (item: any) => void;
 }
 
@@ -84,10 +87,14 @@ class ServiceFee extends Component<Props, State> {
     }
 
     fetchFees = (isFallback = false): Promise<void> => {
-        const { txJson } = this.props;
+        const { txJson, payload } = this.props;
+
+        const payloadUuid = payload
+            ? payload?.getPayloadUUID()
+            : undefined;
 
         // when it's retry with fallback then we don't include txJson
-        return BackendService.getServiceFee(!isFallback ? txJson : undefined)
+        return BackendService.getServiceFee(!isFallback ? txJson : undefined, payloadUuid)
             .then((res) => {
                 // console.log('Picked backend service service fee', res);
                 const { availableFees, feeHooks, suggested, feePercentage } = res;

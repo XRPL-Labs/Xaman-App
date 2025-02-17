@@ -484,6 +484,7 @@ class BackendService {
      */
     getServiceFee = async (
         txJson?: any | undefined,
+        payloadUuid?: string,
     ): Promise<{
         availableFees: { type: string; value: string }[];
         feeHooks: number;
@@ -493,6 +494,7 @@ class BackendService {
         const body = {
             txJson,
             network: NetworkService.network?.key,
+            payload: payloadUuid,
         };
         const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
         return networkFees;
