@@ -5,6 +5,8 @@
 import { find } from 'lodash';
 import Realm from 'realm';
 
+import BackendService from '@services/BackendService';
+
 import React, { Component } from 'react';
 import { View, Text, Image, ImageBackground, InteractionManager } from 'react-native';
 
@@ -23,7 +25,8 @@ import { AccessLevels, EncryptionLevels } from '@store/types';
 
 import StyleService from '@services/StyleService';
 
-import { Button, Icon, Header, SortableFlatList, Spacer } from '@components/General';
+import { Button, Icon, Header, SortableFlatList, Spacer, LoadingIndicator } from '@components/General';
+import { ProBadge } from '@components/Modules';
 
 import Localize from '@locale';
 
@@ -44,6 +47,10 @@ export interface State {
     signableAccount: Array<AccountModel>;
     reorderEnabled: boolean;
     isMigrationRequired: boolean;
+    fetchingPro: boolean;
+    proStatus?: {
+        [key: string]: boolean;
+    };
 }
 
 /* Component ==================================================================== */
@@ -70,11 +77,34 @@ class AccountListView extends Component<Props, State> {
             signableAccount: AccountRepository.getSignableAccounts(),
             reorderEnabled: false,
             isMigrationRequired: false,
+            fetchingPro: true,
         };
     }
 
     componentDidMount() {
+        const { accounts } = this.state;
         this.navigationListener = Navigation.events().bindComponent(this);
+
+        Promise.all(accounts.map(item => {
+            return BackendService.getAddressInfo(item.address).then(r => {
+                return Promise.resolve({
+                    account: item.address,
+                    pro: !!r?.proSubscription,
+                });
+            });
+        })).then(items => {
+            return Promise.resolve(items.reduce((a, b) => {
+                return {
+                    ...a,
+                    [b.account]: b.pro,
+                };
+            }, {}));
+        }).then(proStatus => {
+            this.setState({
+                proStatus,
+                fetchingPro: false,
+            });
+        });
 
         InteractionManager.runAfterInteractions(this.checkMigrationRequired);
     }
@@ -177,7 +207,7 @@ class AccountListView extends Component<Props, State> {
     };
 
     renderItem = ({ item }: { item: AccountModel }) => {
-        const { signableAccount, reorderEnabled } = this.state;
+        const { signableAccount, reorderEnabled, fetchingPro, proStatus } = this.state;
 
         if (!item?.isValid()) return null;
 
@@ -210,11 +240,19 @@ class AccountListView extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
+        const hasPro = signable && proStatus && proStatus[item.address];
+
         return (
-            <View style={styles.rowContainer}>
+            <View style={[
+                styles.rowContainer,
+                hasPro && styles.hasProBorder,
+            ]}>
                 <View style={[AppStyles.row, styles.rowHeader, AppStyles.centerContent]}>
                     <View style={AppStyles.flex6}>
-                        <Text numberOfLines={1} style={styles.accountLabel}>
+                        <Text numberOfLines={1} style={[
+                            styles.accountLabel,
+                            hasPro && styles.accountLabelDark,
+                        ]}>
                             {item.label}
                         </Text>
                         <View style={styles.accessLevelContainer}>
@@ -238,8 +276,9 @@ class AccountListView extends Component<Props, State> {
                             </View>
                         ) : (
                             <Button
+                                // light
+                                roundedMini
                                 light
-                                roundedSmall
                                 icon="IconEdit"
                                 iconSize={15}
                                 textStyle={styles.buttonEditText}
@@ -253,10 +292,14 @@ class AccountListView extends Component<Props, State> {
                 </View>
                 <View style={[AppStyles.row, styles.subRow]}>
                     <View style={AppStyles.flex1}>
-                        <Text style={[AppStyles.monoBold, AppStyles.colorGrey, styles.subLabel]}>
+                        <Text style={[AppStyles.smalltext, AppStyles.bold, AppStyles.colorGrey, styles.subLabel]}>
                             {Localize.t('global.address')}:
                         </Text>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorBlue]}>{item.address}</Text>
+                        <View style={[styles.proBadge]}>
+                            { fetchingPro && <LoadingIndicator /> }
+                            { !fetchingPro && <ProBadge hasPro={hasPro} /> }
+                        </View>
                     </View>
                 </View>
             </View>
