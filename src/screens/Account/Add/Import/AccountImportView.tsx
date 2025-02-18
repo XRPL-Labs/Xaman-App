@@ -384,6 +384,9 @@ class AccountImportView extends Component<Props, State> {
                 if (account.type === AccountTypes.Tangem) {
                     await BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!))
                         .then(async r => {
+                            setTimeout(() => {
+                                BackendService.privateAccountInfo(account?.address, account?.label);
+                            }, 2000);    
                             if (typeof r?.switch_to_network === 'string') {
                                 if (NetworkService.getNetwork().key !== r.switch_to_network) {
                                     const toNetwork = NetworkRepository.findBy('key', r.switch_to_network);
@@ -411,7 +414,9 @@ class AccountImportView extends Component<Props, State> {
                         importedAccount,
                     );
                     BackendService.addAccount(account.address!, signedTransaction).catch(() => {
-                        // ignore
+                        setTimeout(() => {
+                            BackendService.privateAccountInfo(account?.address, account?.label);
+                        }, 2000);
                     });
                 }
             }

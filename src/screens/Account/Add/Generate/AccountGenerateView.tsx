@@ -128,7 +128,9 @@ class AccountGenerateView extends Component<Props, State> {
             );
 
             backendService.addAccount(account.address!, signedTransaction).catch(() => {
-                // ignore
+                setTimeout(() => {
+                    backendService.privateAccountInfo(account?.address, account?.label);
+                }, 2000);
             });
 
             let encryptionKey;
