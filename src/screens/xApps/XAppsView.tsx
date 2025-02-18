@@ -215,7 +215,9 @@ class XAppsView extends Component<Props, State> {
             },
             () => {
                 if (!searchEnabled) {
-                    this.searchBarRef?.current?.focus();
+                    requestAnimationFrame(() => {
+                        this.searchBarRef?.current?.focus();
+                    });
                 }
             },
         );
