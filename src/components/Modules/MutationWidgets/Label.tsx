@@ -42,7 +42,10 @@ class Label extends PureComponent<Props, State> {
     renderItemLabel = () => {
         const { label } = this.state;
 
-        return <Text style={AppStyles.h5}>{label}</Text>;
+        return <Text style={[
+            AppStyles.h4,
+            styles.noBold,
+        ]}>{label}</Text>;
     };
 
     renderStatus = () => {

@@ -8,7 +8,7 @@ const styles = StyleService.create({
         width: AppSizes.screen.width,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 25,
+        padding: 15,
         gap: AppSizes.paddingExtraSml,
     },
     advisoryContainer: {
@@ -43,7 +43,9 @@ const styles = StyleService.create({
         // borderTopColor: '$tint',
         // borderTopWidth: 1,
     },
-
+    noBold: {
+        fontFamily: AppFonts.base.family,
+    },
     detailsLabelText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
@@ -66,7 +68,7 @@ const styles = StyleService.create({
         alignItems: 'center',
         // backgroundColor: '$tint',
         borderWidth: 1,
-        borderColor: '$light',
+        borderColor: '$tint',
         width: '100%',
         paddingVertical: 15,
         paddingHorizontal: 50,
@@ -152,7 +154,7 @@ const styles = StyleService.create({
     },
     participant: {
         borderWidth: 1,
-        borderColor: '$light',
+        borderColor: '$tint',
     },
 });
 
