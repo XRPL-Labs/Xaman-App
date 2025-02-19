@@ -884,6 +884,8 @@ class RecipientStep extends Component<Props, State> {
                             isLoading={isLoading}
                             textStyle={AppStyles.strong}
                             isDisabled={!destination}
+                            icon="IconChevronRight"
+                            iconPosition="right"
                             label={Localize.t('global.next')}
                             onPress={this.checkAndNext}
                         />
