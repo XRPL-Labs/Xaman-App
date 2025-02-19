@@ -17,7 +17,7 @@ export default StyleService.create({
         minHeight: 55,
         width: '100%',
         borderWidth: 2,
-        borderRadius: 10,
+        borderRadius: AppSizes.scale(75) / 5.5,
     },
     nonMultilineContainer: {
         height: AppSizes.heightPercentageToDP(7),
@@ -43,7 +43,7 @@ export default StyleService.create({
     },
     scanButton: {
         position: 'absolute',
-        right: 4,
+        right: 5,
         // top: Platform.OS === 'ios' ? 10 : 9,
         height: AppSizes.heightPercentageToDP(6),
         width: AppSizes.heightPercentageToDP(6),

@@ -35,7 +35,7 @@ const styles = StyleService.create({
         paddingLeft: 20,
         marginLeft: 0,
         backgroundColor: '$lightGrey',
-        borderRadius: 10,
+        borderRadius: AppSizes.scale(75) / 5,
     },
     amountInput: {
         padding: 0,

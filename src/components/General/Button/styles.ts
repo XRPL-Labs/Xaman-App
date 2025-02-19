@@ -11,7 +11,7 @@ const styles = StyleService.create({
         height: AppSizes.scale(45),
         flexDirection: 'row',
         borderWidth: 1,
-        borderRadius: AppSizes.scale(75) / 7,
+        borderRadius: AppSizes.scale(75) / 5,
         paddingHorizontal: 25,
         alignSelf: 'stretch',
         justifyContent: 'center',
