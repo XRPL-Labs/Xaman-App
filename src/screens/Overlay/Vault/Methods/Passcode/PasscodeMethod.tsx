@@ -182,7 +182,9 @@ class PasscodeMethod extends Component<Props, State> {
                     this.securePinInputRef.current.clearInput();
                 }
                 if (e?.message === Localize.t('global.invalidPasscode')) {
-                    onInvalidAuth(AuthMethods.PIN);
+                    onInvalidAuth(AuthMethods.PIN, () => {
+                        this.securePinInputRef?.current?.focus();
+                    });
                 } else {
                     Alert.alert(Localize.t('global.error'), e.message);
                 }

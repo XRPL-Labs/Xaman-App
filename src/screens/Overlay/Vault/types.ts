@@ -43,6 +43,6 @@ export interface State {
 export interface ContextProps extends State {
     sign: (method: AuthMethods, options: SignOptions) => void;
     onPreferredSignerSelect: (signer: AccountModel) => void;
-    onInvalidAuth: (method: AuthMethods) => void;
+    onInvalidAuth: (method: AuthMethods, reFocusInput?: () => void) => void;
     dismiss: () => void;
 }
