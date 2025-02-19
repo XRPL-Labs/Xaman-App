@@ -380,13 +380,18 @@ class AccountImportView extends Component<Props, State> {
 
             // if account is imported as full access report to the backend for security checks
             if (account.accessLevel === AccessLevels.Full) {
+                const persistPrivateAccountInfo = () => {
+                    setTimeout(() => {
+                        BackendService.privateAccountInfo(account?.address, account?.label, true);
+                        // Push by default
+                    }, 2000);                
+                };
+                
                 // get the signature and add account
                 if (account.type === AccountTypes.Tangem) {
                     await BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!))
                         .then(async r => {
-                            setTimeout(() => {
-                                BackendService.privateAccountInfo(account?.address, account?.label);
-                            }, 2000);    
+                            persistPrivateAccountInfo();
                             if (typeof r?.switch_to_network === 'string') {
                                 if (NetworkService.getNetwork().key !== r.switch_to_network) {
                                     const toNetwork = NetworkRepository.findBy('key', r.switch_to_network);
@@ -413,11 +418,13 @@ class AccountImportView extends Component<Props, State> {
                         },
                         importedAccount,
                     );
-                    BackendService.addAccount(account.address!, signedTransaction).catch(() => {
-                        setTimeout(() => {
-                            BackendService.privateAccountInfo(account?.address, account?.label);
-                        }, 2000);
-                    });
+                    BackendService.addAccount(account.address!, signedTransaction)
+                        .then(() => {
+                            persistPrivateAccountInfo();
+                        })
+                        .catch(() => {
+                            // ignore
+                        });
                 }
             }
 
