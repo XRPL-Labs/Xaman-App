@@ -869,7 +869,7 @@
     "generateNewAccount": "Create a new account",
     "confirmPrivateTitle": "Confirm your secret numbers",
     "confirmPrivateDescription": "Please provide the numbers, this is for your own safety: we want you to confirm you wrote it down.",
-    "invalidSecretNumber": "Invalid secret number key entered",
+    "invalidSecretNumber": "The numbers entered do not match the requested row of numbers.", 
     "accountSetupCompleted": "Account setup is complete.",
     "YouJustCreatedAccount": "You have just created a new fresh account.",
     "yeahLetsGo": "Hooray, let's go!",

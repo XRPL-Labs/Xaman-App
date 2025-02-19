@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 import { SafeAreaView, View, Text, Alert } from 'react-native';
 
-import { Prompt } from '@common/helpers/interface';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 import Localize from '@locale';
 // components
 import { Button, Footer } from '@components/General';
@@ -14,6 +14,7 @@ import { SecretNumberInput } from '@components/Modules';
 
 // style
 import { AppStyles } from '@theme';
+import styles from './styles';
 
 import { StepsContext } from '../../Context';
 /* types ==================================================================== */
@@ -43,52 +44,64 @@ class ConfirmStep extends Component<Props, State> {
     }
 
     goNext = () => {
-        const { generatedAccount, goNext } = this.context;
+        const { currentRow } = this.state;
+        const { goNext } = this.context;
 
-        const secretNumber = this.secretNumberInputRef.current?.getNumbers();
+        VibrateHapticFeedback(
+            currentRow < 7
+                ? 'impactHeavy'
+                : 'notificationSuccess',
+        );
 
-        if (isEqual(generatedAccount?.secret.secretNumbers, secretNumber)) {
-            goNext('ViewPublicKey');
-        } else {
-            Alert.alert('Invalid', Localize.t('account.invalidSecretNumber'));
+        this.clearPin();
+
+        if (currentRow < 8) {
+            this.setState({ currentRow: currentRow + 1 });
+
+            if (currentRow === 7) {
+                goNext('ViewPublicKey');
+            }
         }
     };
 
     goBack = () => {
         const { goBack } = this.context;
+        const { currentRow } = this.state;
 
-        Prompt(
-            Localize.t('global.pleaseNote'),
-            Localize.t('account.goBackClearTheInput'),
-            [
-                {
-                    text: Localize.t('global.goBack'),
-                    onPress: goBack,
-                    style: 'destructive',
-                },
-                { text: Localize.t('global.cancel') },
-            ],
-            { type: 'default' },
-        );
+        VibrateHapticFeedback('impactHeavy');
+
+        if (currentRow > 0) {
+            this.clearPin();
+            this.setState({ currentRow: currentRow - 1 });                
+        } else {
+            goBack();
+        }
     };
 
-    validateRow = (row: number, numbers: string) => {
+    clearPin = () => {
+        this.setState({ allFilled: false });
+        this.secretNumberInputRef.current?.clearPin();
+    };
+
+    validateRow = (numbers: string) => {
+        const { currentRow } = this.state;
         const { generatedAccount } = this.context;
 
-        // TODO: type check
-        return isEqual(generatedAccount?.secret.secretNumbers![row], numbers);
-    };
+        const validates = isEqual(generatedAccount?.secret.secretNumbers![currentRow], numbers);
+        if (!validates) {
+            VibrateHapticFeedback('notificationError');
+            Alert.alert(
+                'Invalid', 
+                `${Localize.t('account.invalidSecretNumber')}\n\n${Localize.t('account.confirmNumbersOfRow', { row: 'abcdefgh'[currentRow].toUpperCase() })}`,
+                [ { onPress: this.clearPin } ],
+            );
+        } else {
+            setTimeout(() => {
+                this.goNext();
+            }, 150);
+        }
 
-    onSecretNumberAllFilled = (filled: boolean) => {
-        this.setState({
-            allFilled: filled,
-        });
-    };
-
-    onSecretNumberRowChange = (row: number) => {
-        this.setState({
-            currentRow: row,
-        });
+        return validates;
     };
 
     render() {
@@ -99,6 +112,26 @@ class ConfirmStep extends Component<Props, State> {
             <SafeAreaView testID="account-generate-confirm-private-view" style={AppStyles.container}>
                 {currentRow < 8 ? (
                     <>
+                        <View style={[
+                            styles.letterBlockWapper,
+                        ]}>
+                            <View
+                                style={[
+                                    styles.letterBlock,
+                                    // AppStyles.centerContent,
+                                    // AppStyles.centerAligned,
+                                    // rowChecksumCorrect && !readonly && styles.rowStyleInnerGreen,
+                                ]}
+                            >
+                                <Text style={[
+                                    styles.letterBlockText,
+                                    // styles.RowId,
+                                    // rowChecksumCorrect && !readonly && styles.rowStyleInnerGreenText
+                                ]}>
+                                    {abcdefgh[currentRow]}
+                                </Text>
+                            </View>
+                        </View>
                         <Text style={[AppStyles.p, AppStyles.bold]}>
                             {Localize.t('account.confirmNumbersOfRow', {
                                 row: abcdefgh[currentRow],
@@ -117,8 +150,6 @@ class ConfirmStep extends Component<Props, State> {
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
                         ref={this.secretNumberInputRef}
-                        onAllFilled={this.onSecretNumberAllFilled}
-                        onRowChanged={this.onSecretNumberRowChange}
                         validateRow={this.validateRow}
                     />
                 </View>

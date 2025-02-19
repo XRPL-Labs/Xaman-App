@@ -6,6 +6,9 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert } from 'react-native';
 
 import { derive } from 'xrpl-accountlib';
+import { Utils } from 'xrpl-secret-numbers';
+
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 
 import Localize from '@locale';
 // components
@@ -14,13 +17,14 @@ import { SecretNumberInput } from '@components/Modules';
 
 // style
 import { AppStyles } from '@theme';
-
+import styles from '../../../Generate/Steps/ConfirmSeed/styles';
 import { StepsContext } from '../../Context';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
+    currentRow: number;
     allFilled: boolean;
 }
 
@@ -30,30 +34,31 @@ class EnterSecretNumbers extends Component<Props, State> {
     declare context: React.ContextType<typeof StepsContext>;
 
     private secretNumberInputRef: React.RefObject<SecretNumberInput>;
+    private secretNumbers: string[];
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             allFilled: false,
+            currentRow: 0,
         };
 
         this.secretNumberInputRef = React.createRef();
+        this.secretNumbers = ['','','','','','','',''];
     }
 
     goNext = () => {
         const { goNext, setImportedAccount, importOfflineSecretNumber } = this.context;
 
-        const secretNumber = this.secretNumberInputRef.current?.getNumbers();
-
         try {
             // double check, this should never happen
-            if (!secretNumber || !Array.isArray(secretNumber)) {
+            if (!this.secretNumbers || !Array.isArray(this.secretNumbers)) {
                 Alert.alert(Localize.t('global.error'), 'No secret number provided!');
                 return;
             }
 
-            const account = derive.secretNumbers(secretNumber, importOfflineSecretNumber);
+            const account = derive.secretNumbers(this.secretNumbers, importOfflineSecretNumber);
 
             // set imported account
             setImportedAccount(account, () => {
@@ -65,6 +70,41 @@ class EnterSecretNumbers extends Component<Props, State> {
         }
     };
 
+    clearPin = () => {
+        this.setState({ allFilled: false });
+        this.secretNumberInputRef.current?.clearPin();
+    };
+
+    validateRow = (numbers: string) => {
+        const { currentRow } = this.state;
+
+        const validates = !!Utils.checkChecksum(currentRow, numbers);
+        if (!validates) {
+            VibrateHapticFeedback('notificationError');
+            Alert.alert(
+                'Invalid', 
+                `${Localize.t('account.invalidSecretNumber')}\n\n${Localize.t('account.confirmNumbersOfRow', { row: 'abcdefgh'[currentRow].toUpperCase() })}`,
+                [ { onPress: this.clearPin } ],
+            );
+        } else {
+            setTimeout(() => {
+                this.clearPin();
+                this.secretNumbers[currentRow] = numbers;
+                if (currentRow < 7) {
+                    this.setState({
+                        currentRow: currentRow + 1,
+                    });
+                } else {
+                    // Done
+                    this.goNext();
+                }
+            }, 150);
+        }
+
+        return validates;
+    };
+
+
     onAllFilled = (filled: boolean) => {
         this.setState({
             allFilled: filled,
@@ -72,7 +112,7 @@ class EnterSecretNumbers extends Component<Props, State> {
     };
 
     render() {
-        const { allFilled } = this.state;
+        const { allFilled, currentRow } = this.state;
         const { goBack, importOfflineSecretNumber } = this.context;
 
         return (
@@ -82,11 +122,32 @@ class EnterSecretNumbers extends Component<Props, State> {
                 >
                     {Localize.t('account.pleaseEnterYourSecretNumber')}
                 </Text>
+                <View style={[
+                    AppStyles.marginTop,
+                    styles.letterBlockWapper,
+                ]}>
+                    <View
+                        style={[
+                            styles.letterBlock,
+                            // AppStyles.centerContent,
+                            // AppStyles.centerAligned,
+                            // rowChecksumCorrect && !readonly && styles.rowStyleInnerGreen,
+                        ]}
+                    >
+                        <Text style={[
+                            styles.letterBlockText,
+                            // styles.RowId,
+                            // rowChecksumCorrect && !readonly && styles.rowStyleInnerGreenText
+                        ]}>
+                            {'abcdefgh'?.[currentRow]?.toUpperCase()}
+                        </Text>
+                    </View>
+                </View>
 
                 <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.centerAligned]}>
                     <SecretNumberInput
                         ref={this.secretNumberInputRef}
-                        onAllFilled={this.onAllFilled}
+                        validateRow={this.validateRow}
                         checksum={!importOfflineSecretNumber}
                     />
                 </View>

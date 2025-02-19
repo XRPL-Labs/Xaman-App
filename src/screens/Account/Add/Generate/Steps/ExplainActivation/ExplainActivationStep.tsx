@@ -34,8 +34,7 @@ class ExplainActivationStep extends Component<Props, State> {
     };
 
     render() {
-        const { goBack } = this.context;
-
+        // const { goBack } = this.context;
         return (
             <SafeAreaView testID="account-generate-explain-activation-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginVerticalSml]}>
@@ -75,7 +74,7 @@ class ExplainActivationStep extends Component<Props, State> {
                 </View>
 
                 <Footer style={[AppStyles.row, AppStyles.centerAligned]}>
-                    <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
+                    {/* <View style={[AppStyles.flex3, AppStyles.paddingRightSml]}>
                         <Button
                             testID="back-button"
                             light
@@ -83,8 +82,8 @@ class ExplainActivationStep extends Component<Props, State> {
                             icon="IconChevronLeft"
                             onPress={goBack}
                         />
-                    </View>
-                    <View style={AppStyles.flex5}>
+                    </View> */}
+                    <View style={AppStyles.flex1}>
                         <Button
                             testID="next-button"
                             label={Localize.t('global.nextIUnderstand')}

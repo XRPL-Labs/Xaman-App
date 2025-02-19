@@ -869,7 +869,7 @@
     "generateNewAccount": "Create a new account",
     "confirmPrivateTitle": "Confirm your secret numbers",
     "confirmPrivateDescription": "Kérem, adja meg a számokat, a saját biztonsága érdekében: azt akarjuk, hogy erősítse meg, hogy leírta.",
-    "invalidSecretNumber": "Invalid secret number key entered",
+    "invalidSecretNumber": "The numbers entered do not match the requested row of numbers.", 
     "accountSetupCompleted": "A fiók beállítása befejeződött.",
     "YouJustCreatedAccount": "Létrehozott egy új új számlát.",
     "yeahLetsGo": "Hurrá, gyerünk!",
