@@ -71,21 +71,21 @@ class ChangePasscodeView extends Component<Props, State> {
     }
 
     cleanPinInput = () => {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             if (this.pinInput.current) {
                 this.pinInput.current?.setState({
                     digits: '',
                 });    
             }
-        }, 100);
+        });
     };
 
     focusPinInput = () => {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             if (this.pinInput.current) {
                 this.pinInput.current.focus();
             }
-        }, 100);
+        });
     };
 
     changeStep = (step: Steps) => {
