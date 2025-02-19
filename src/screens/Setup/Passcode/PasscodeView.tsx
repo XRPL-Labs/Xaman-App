@@ -359,7 +359,7 @@ class PasscodeSetupView extends Component<Props, State> {
         return (
             <View testID="pin-code-entry-view" style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.stretchSelf]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerAligned]}>
-                    <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.stretchSelf]}>
+                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
                         {currentStep === Steps.ENTER_PASSCODE
                             ? Localize.t('setupPasscode.setPasscode')
                             : Localize.t('setupPasscode.repeatPasscode')}
@@ -371,6 +371,7 @@ class PasscodeSetupView extends Component<Props, State> {
                         // autoFocus
                         ref={this.pinInputRef}
                         virtualKeyboard
+                        condensed
                         // checkStrength={currentStep === Steps.ENTER_PASSCODE}
                         length={6}
                         supportBiometric={false}

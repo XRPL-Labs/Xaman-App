@@ -30,6 +30,7 @@ import styles from './styles';
 interface Props {
     virtualKeyboard: boolean;
     supportBiometric: boolean;
+    condensed?: boolean;
     length: number;
     clearOnFinish: boolean;
     enableHapticFeedback?: boolean;
@@ -287,7 +288,7 @@ class SecurePinInput extends Component<Props, State> {
     };
 
     render() {
-        const { virtualKeyboard, length, isLoading, pinPadStyle } = this.props;
+        const { condensed, virtualKeyboard, length, isLoading, pinPadStyle } = this.props;
         const { digits } = this.state;
 
         let props: {};
@@ -321,12 +322,16 @@ class SecurePinInput extends Component<Props, State> {
                             {...props}
                         />
                     )}
-                    <View style={styles.digits}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
+                    <View style={[
+                        styles.digits,
+                        condensed && styles.digitsCondensed,
+                    ]}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
                         <View testID="virtual-keyboard" style={[
                             styles.keyboardWrap,
                             pinPadStyle,
+                            condensed && styles.keyboardWrapCondensed,
                         ]}>
                             {this.renderNum()}
                         </View>
