@@ -54,6 +54,7 @@ class Participants extends PureComponent<Props, State> {
                 <AccountElement
                     address={start.address}
                     tag={start.tag}
+                    containerStyle={styles.participant}
                     visibleElements={{
                         tag: true,
                         avatar: true,
@@ -78,6 +79,7 @@ class Participants extends PureComponent<Props, State> {
                 <Text style={styles.detailsLabelText}>{Localize.t('events.through')}</Text>
                 <AccountElement
                     address={through.address}
+                    containerStyle={styles.participant}
                     visibleElements={{ tag: true, avatar: true, menu: through.address !== account.address }}
                 />
             </>
@@ -99,6 +101,7 @@ class Participants extends PureComponent<Props, State> {
                 <AccountElement
                     address={end.address}
                     tag={end.tag}
+                    containerStyle={styles.participant}
                     visibleElements={{
                         tag: true,
                         avatar: true,
