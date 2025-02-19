@@ -14,6 +14,7 @@ import {
     Platform,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
+    ViewStyle,
 } from 'react-native';
 
 import StyleService from '@services/StyleService';
@@ -33,6 +34,7 @@ interface Props {
     clearOnFinish: boolean;
     enableHapticFeedback?: boolean;
     isLoading?: boolean;
+    pinPadStyle?: ViewStyle | ViewStyle[];
     onInputFinish: (pin: string) => void;
     onBiometryPress: () => void;
 }
@@ -285,7 +287,7 @@ class SecurePinInput extends Component<Props, State> {
     };
 
     render() {
-        const { virtualKeyboard, length, isLoading } = this.props;
+        const { virtualKeyboard, length, isLoading, pinPadStyle } = this.props;
         const { digits } = this.state;
 
         let props: {};
@@ -322,7 +324,10 @@ class SecurePinInput extends Component<Props, State> {
                     <View style={styles.digits}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
-                        <View testID="virtual-keyboard" style={styles.keyboardWrap}>
+                        <View testID="virtual-keyboard" style={[
+                            styles.keyboardWrap,
+                            pinPadStyle,
+                        ]}>
                             {this.renderNum()}
                         </View>
                     )}

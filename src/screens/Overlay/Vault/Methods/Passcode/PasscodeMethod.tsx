@@ -14,7 +14,7 @@ import Keyboard from '@common/helpers/keyboard';
 
 import { BiometricErrors } from '@common/libs/biometric';
 
-import { BiometryType } from '@store/types';
+// import { BiometryType } from '@store/types';
 
 import Localize from '@locale';
 
@@ -29,7 +29,7 @@ export interface Props {}
 
 export interface State {
     isBiometricAvailable: boolean;
-    biometricMethod: BiometryType;
+    // biometricMethod: BiometryType;
     hapticFeedback: boolean;
     offsetBottom: number;
 }
@@ -52,7 +52,7 @@ class PasscodeMethod extends Component<Props, State> {
         this.state = {
             isBiometricAvailable: false,
             hapticFeedback: coreSettings.hapticFeedback,
-            biometricMethod: coreSettings.biometricMethod,
+            // biometricMethod: coreSettings.biometricMethod,
             offsetBottom: 0,
         };
 
@@ -193,7 +193,8 @@ class PasscodeMethod extends Component<Props, State> {
 
     render() {
         const { dismiss, isSigning } = this.context;
-        const { offsetBottom, hapticFeedback, biometricMethod, isBiometricAvailable } = this.state;
+        const { offsetBottom, hapticFeedback, isBiometricAvailable } = this.state;
+        // biometricMethod,
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
@@ -239,11 +240,15 @@ class PasscodeMethod extends Component<Props, State> {
                                 ref={this.securePinInputRef}
                                 isLoading={isSigning}
                                 length={6}
+                                virtualKeyboard
                                 enableHapticFeedback={hapticFeedback}
                                 onInputFinish={this.onPasscodeEntered}
+                                supportBiometric={isBiometricAvailable}
+                                onBiometryPress={this.requestBiometricAuthenticate}
+                                pinPadStyle={styles.pinInputPadding}
                             />
 
-                            {isBiometricAvailable && (
+                            {/* {isBiometricAvailable && (
                                 <View style={AppStyles.paddingTopSml}>
                                     <Button
                                         label={`${biometricMethod}`}
@@ -254,7 +259,7 @@ class PasscodeMethod extends Component<Props, State> {
                                         onPress={this.requestBiometricAuthenticate}
                                     />
                                 </View>
-                            )}
+                            )} */}
                         </View>
                     </View>
                 </View>

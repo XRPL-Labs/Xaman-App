@@ -19,6 +19,13 @@ const styles = StyleService.create({
         shadowOpacity: 0.4,
         ...AppStyles.paddingSml,
     },
+    pinInputPadding: {
+        // borderColor: 'purple',
+        // borderWidth: 3,
+        paddingHorizontal: 15,
+        marginTop: 15,
+        width: '100%',
+    },
 });
 
 export default styles;

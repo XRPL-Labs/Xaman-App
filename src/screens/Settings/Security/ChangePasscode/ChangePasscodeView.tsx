@@ -8,6 +8,8 @@ import { View, Text, Alert, InteractionManager } from 'react-native';
 import { CoreRepository, AccountRepository } from '@store/repositories';
 import { EncryptionLevels } from '@store/types';
 
+import { CoreModel } from '@store/models';
+
 import Vault from '@common/libs/vault';
 import { Navigator } from '@common/helpers/navigator';
 import { Prompt } from '@common/helpers/interface';
@@ -16,7 +18,7 @@ import { AuthenticationService } from '@services';
 
 import { AppScreens } from '@common/constants';
 
-import { Header, PinInput } from '@components/General';
+import { Header, SecurePinInput } from '@components/General';
 
 import Localize from '@locale';
 
@@ -35,6 +37,7 @@ enum Steps {
 export interface Props {}
 
 export interface State {
+    coreSettings: CoreModel;
     newPasscode: string;
     currentStep: Steps;
     stepDescription: string;
@@ -42,7 +45,7 @@ export interface State {
 /* Component ==================================================================== */
 class ChangePasscodeView extends Component<Props, State> {
     static screenName = AppScreens.Settings.ChangePasscode;
-    private readonly pinInput: React.RefObject<PinInput>;
+    private readonly pinInput: React.RefObject<SecurePinInput>;
 
     static options() {
         return {
@@ -54,6 +57,7 @@ class ChangePasscodeView extends Component<Props, State> {
         super(props);
 
         this.state = {
+            coreSettings: CoreRepository.getSettings(),
             newPasscode: '',
             currentStep: Steps.ENTER_OLD_PASSCODE,
             stepDescription: Localize.t('settings.enterOldPasscode'),
@@ -69,7 +73,9 @@ class ChangePasscodeView extends Component<Props, State> {
     cleanPinInput = () => {
         setTimeout(() => {
             if (this.pinInput.current) {
-                this.pinInput.current.clean();
+                this.pinInput.current?.setState({
+                    digits: '',
+                });    
             }
         }, 100);
     };
@@ -261,7 +267,7 @@ class ChangePasscodeView extends Component<Props, State> {
     };
 
     render() {
-        const { currentStep, stepDescription } = this.state;
+        const { stepDescription, coreSettings } = this.state;
 
         return (
             <View testID="change-passcode-screen" style={styles.container}>
@@ -272,17 +278,26 @@ class ChangePasscodeView extends Component<Props, State> {
                     }}
                     centerComponent={{ text: Localize.t('settings.changePasscode') }}
                 />
-                <View style={[AppStyles.flex3, AppStyles.flexEnd]}>
-                    <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>{stepDescription}</Text>
+                
+                <View style={[AppStyles.flex1, AppStyles.flexStart, AppStyles.paddingTop]}>
+                    <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>{stepDescription}</Text>
                 </View>
                 <View style={[AppStyles.flex8, AppStyles.paddingSml, AppStyles.centerAligned]}>
-                    <PinInput
+                    <SecurePinInput
+                        ref={this.pinInput}
+                        virtualKeyboard
+                        onInputFinish={this.onPasscodeEntered}
+                        supportBiometric={false}
+                        enableHapticFeedback={coreSettings.hapticFeedback}
+                        length={6}
+                    />
+                    {/* <PinInput
                         ref={this.pinInput}
                         autoFocus={false}
                         codeLength={6}
                         checkStrength={currentStep === Steps.ENTER_NEW_PASSCODE}
                         onFinish={this.onPasscodeEntered}
-                    />
+                    /> */}
                 </View>
             </View>
         );

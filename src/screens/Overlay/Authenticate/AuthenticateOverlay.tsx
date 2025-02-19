@@ -234,7 +234,7 @@ class AuthenticateOverlay extends Component<Props, State> {
         const { coreSettings, isBiometricAvailable } = this.state;
         const { canAuthorizeBiometrics } = this.props;
 
-        const { biometricMethod } = coreSettings;
+        // const { biometricMethod } = coreSettings;
 
         return (
             <View style={[AppStyles.container, AppStyles.centerContent]}>
@@ -247,9 +247,13 @@ class AuthenticateOverlay extends Component<Props, State> {
                     onInputFinish={this.onPasscodeEntered}
                     length={6}
                     enableHapticFeedback={coreSettings.hapticFeedback}
+                    supportBiometric={isBiometricAvailable && canAuthorizeBiometrics}
+                    onBiometryPress={this.requestBiometricAuthenticate}
+                    pinPadStyle={styles.pinInputPadding}
+                    virtualKeyboard
                 />
 
-                {isBiometricAvailable && canAuthorizeBiometrics && (
+                {/* {isBiometricAvailable && canAuthorizeBiometrics && (
                     <View style={AppStyles.paddingTopSml}>
                         <Button
                             label={`${biometricMethod}`}
@@ -260,7 +264,7 @@ class AuthenticateOverlay extends Component<Props, State> {
                             onPress={this.requestBiometricAuthenticate}
                         />
                     </View>
-                )}
+                )} */}
             </View>
         );
     };
