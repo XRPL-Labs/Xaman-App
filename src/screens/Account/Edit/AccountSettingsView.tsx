@@ -243,6 +243,9 @@ class AccountSettingsView extends Component<Props, State> {
     removeAccount = () => {
         const { account } = this.state;
 
+        // Disable push
+        BackendService.privateAccountInfo(account.address, '[REMOVED]', false);
+
         // get current core settings
         const coreSettings = CoreRepository.getSettings();
 
