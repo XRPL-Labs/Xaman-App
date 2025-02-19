@@ -6,6 +6,7 @@ import { TouchableDebounce } from '@components/General';
 import Localize from '@locale';
 
 import styles from './styles';
+// import { AppStyles } from '@theme/index';
 
 /* types ==================================================================== */
 export type AppType = {
@@ -111,9 +112,17 @@ class XAppItem extends Component<Props> {
                     >
                         {
                             Number(index || 0) === 0 && (
-                                <Text style={[ styles.appTitle, styles.appIconPlaceholderText ]}>
-                                    { Localize.t('global.none') }
-                                </Text>
+                                <View style={[
+                                    // AppStyles.column,
+                                    // AppStyles.borderGreen,
+                                ]}>
+                                    <Text style={[
+                                        // styles.appTitle,
+                                        styles.appIconPlaceholderText,
+                                    ]}>
+                                        { Localize.t('global.none') }
+                                    </Text>
+                                </View>
                             )
                         }
                     </View>

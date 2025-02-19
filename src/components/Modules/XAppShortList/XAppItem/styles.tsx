@@ -34,6 +34,11 @@ const styles = StyleService.create({
     appIconPlaceholderText: {
         opacity: 0.4,
         // lineHeight: AppFonts.subtext.size * 1.4,
+        // lineHeight: AppFonts.subtext.size,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size,
+        color: '$textSecondary',
+        // height: AppFonts.subtext.size,
     },
 });
 
