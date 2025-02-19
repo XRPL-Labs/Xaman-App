@@ -786,7 +786,7 @@ class RecipientStep extends Component<Props, State> {
                         setDestination({
                             name: item.name,
                             address: item.address,
-                            tag: item.tag,
+                            tag: item.tag === null ? undefined : (toNumber(item.tag) || undefined),
                         });
                     } else {
                         setDestination(undefined);
