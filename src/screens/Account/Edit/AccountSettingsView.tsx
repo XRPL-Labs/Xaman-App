@@ -242,6 +242,17 @@ class AccountSettingsView extends Component<Props, State> {
         Navigator.push<ChangeTangemSecurityViewProps>(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
     };
 
+    selectNextAccount = (skipAddress?: string) => {
+        // check if we are removing default account, then we need to select another account as default
+        const accounts = AccountRepository.getAccounts();
+        const newAccount = first(filter(accounts, (a: any) => a.address !== skipAddress && !a?.hidden));
+        CoreRepository.saveSettings({ account: newAccount });
+
+        setTimeout(() => {
+            this.reEnableFirstAccountIfNeeded(skipAddress);
+        }, 100);
+    };
+
     removeAccount = () => {
         const { account } = this.state;
 
@@ -249,18 +260,15 @@ class AccountSettingsView extends Component<Props, State> {
         BackendService.privateAccountInfo(account.address, '[REMOVED]', false);
 
         // get current core settings
-        const coreSettings = CoreRepository.getSettings();
-
+        // const coreSettings = CoreRepository.getSettings();
         // check if we are removing default account, then we need to select another account as default
-        if (account.address === coreSettings.account?.address) {
-            const accounts = AccountRepository.getAccounts();
-            CoreRepository.saveSettings({
-                account: first(filter(accounts, (a: any) => a.address !== account.address)),
-            });
-        }
+        // if (account.address === coreSettings.account?.address) {
+        // }
 
         // remove account
+        const skipAddress = account?.address;
         AccountRepository.purge(account);
+        this.selectNextAccount(skipAddress);
 
         // pop the screen
         Navigator.pop();
@@ -313,26 +321,51 @@ class AccountSettingsView extends Component<Props, State> {
         });
     };
 
+    reEnableFirstAccountIfNeeded = (skipAddress?: string) => {
+        // If everything is hidden now, then re-enable the first one.
+        setTimeout(() => {
+            const visibleAccounts = AccountRepository
+                .getAccounts({ hidden: false })
+                .filter(a => a.address !== skipAddress);
+
+            if (visibleAccounts.length === 0) {
+                const allAccounts = AccountRepository
+                    .getAccounts()
+                    .filter(a => a.address !== skipAddress);
+
+                if (allAccounts.length > 0) {
+                    const firstAccount = first(allAccounts);
+                    if (firstAccount) {
+                        AccountRepository.update({ address: firstAccount.address, hidden: false });
+                        CoreRepository.saveSettings({ account: firstAccount });
+                    }
+                }
+            }
+        }, 100);
+    };
+
     onHiddenChange = (value: boolean) => {
         const { account } = this.props;
 
-        const coreSettings = CoreRepository.getSettings();
+        // const coreSettings = CoreRepository.getSettings();
 
         if (value) {
-            const allAccounts = AccountRepository.getAccounts();
-            const hiddenAccounts = AccountRepository.getAccounts({ hidden: true });
+            // const allAccounts = AccountRepository.getAccounts();
+            // const hiddenAccounts = AccountRepository.getAccounts({ hidden: true });
+            const visibleAccounts = AccountRepository.getAccounts({ hidden: false });
 
             // check if we are hiding all accounts
-            if (allAccounts.length - hiddenAccounts.length === 1) {
+            if (visibleAccounts.filter(a => a.address !== account.address).length === 0) {
                 Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideAllAccountsError'));
                 return;
             }
 
-            // check if we are hiding the default account
-            if (coreSettings.account?.address === account.address) {
-                Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideDefaultAccountError'));
-                return;
-            }
+            // // check if we are hiding the default account
+            // if (coreSettings.account?.address === account.address) {
+            //     // Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideDefaultAccountError'));
+            //     // return;
+            //     this.selectNextAccount(account);
+            // }
         }
 
         // update account hidden value
@@ -340,6 +373,8 @@ class AccountSettingsView extends Component<Props, State> {
             address: account.address,
             hidden: value,
         });
+
+        this.reEnableFirstAccountIfNeeded();
     };
 
     canAccountSign = (account: AccountModel) => {
