@@ -28,7 +28,7 @@ const styles = StyleService.create({
         // borderWidth: 3,
         paddingHorizontal: 15,
         marginTop: 15,
-        width: '100%',
+        // width: '100%',
     },
 });
 
