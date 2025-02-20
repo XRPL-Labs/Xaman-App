@@ -405,6 +405,15 @@ class BackendService {
     };
 
     /**
+     * Get native account specific info for multiple addresses
+     * @param {string[]} address - The account address.
+     * @returns {Promise} A promise that resolves with an object with account as key, and native account information.
+     */
+    getMultiAddressNativeInfo = (addresses: string[]): Promise<XamanBackend.MultiAddressNativeInfoResponse> => {
+        return ApiService.fetch(Endpoints.MultiAccountNativeInfo, 'POST', {}, addresses);
+    };
+
+    /**
      * Gets details for an account address.
      * @param {string} address - The account address.
      * @returns {Promise} A promise that resolves with account information.

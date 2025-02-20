@@ -48,9 +48,7 @@ export interface State {
     reorderEnabled: boolean;
     isMigrationRequired: boolean;
     fetchingPro: boolean;
-    proStatus?: {
-        [key: string]: boolean;
-    };
+    nativeAccountInfo?: XamanBackend.MultiAddressNativeInfoResponse;
 }
 
 /* Component ==================================================================== */
@@ -85,23 +83,9 @@ class AccountListView extends Component<Props, State> {
         const { accounts } = this.state;
         this.navigationListener = Navigation.events().bindComponent(this);
 
-        Promise.all(accounts.map(item => {
-            return BackendService.getAddressInfo(item.address).then(r => {
-                return Promise.resolve({
-                    account: item.address,
-                    pro: !!r?.proSubscription,
-                });
-            });
-        })).then(items => {
-            return Promise.resolve(items.reduce((a, b) => {
-                return {
-                    ...a,
-                    [b.account]: b.pro,
-                };
-            }, {}));
-        }).then(proStatus => {
+        BackendService.getMultiAddressNativeInfo(accounts.map(a => a.address)).then(nativeAccountInfo => {
             this.setState({
-                proStatus,
+                nativeAccountInfo,
                 fetchingPro: false,
             });
         });
@@ -156,14 +140,17 @@ class AccountListView extends Component<Props, State> {
     };
 
     onItemPress = (account: AccountModel) => {
-        const { reorderEnabled } = this.state;
+        const { reorderEnabled, nativeAccountInfo } = this.state;
 
         if (!account?.isValid()) {
             return;
         }
 
         if (!reorderEnabled) {
-            Navigator.push<AccountSettingsViewProps>(AppScreens.Account.Edit.Settings, { account });
+            Navigator.push<AccountSettingsViewProps>(AppScreens.Account.Edit.Settings, {
+                account,
+                nativeAccountInfo: nativeAccountInfo && nativeAccountInfo?.[account.address],
+            });
         }
     };
 
@@ -207,7 +194,7 @@ class AccountListView extends Component<Props, State> {
     };
 
     renderItem = ({ item }: { item: AccountModel }) => {
-        const { signableAccount, reorderEnabled, fetchingPro, proStatus } = this.state;
+        const { signableAccount, reorderEnabled, fetchingPro, nativeAccountInfo } = this.state;
 
         if (!item?.isValid()) return null;
 
@@ -240,7 +227,7 @@ class AccountListView extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
-        const hasPro = signable && proStatus && proStatus[item.address];
+        const hasPro = signable && nativeAccountInfo && nativeAccountInfo?.[item.address]?.hasPro;
 
         return (
             <View style={[

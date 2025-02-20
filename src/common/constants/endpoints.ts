@@ -39,6 +39,7 @@ export enum Endpoints {
     VerifyPurchase = '/v1/app/verify-purchase',
     ServiceFee = '/v1/app/get-service-fee',
     PrivateAccountInfo = '/v1/app/private-account-info',
+    MultiAccountNativeInfo = '/v1/app/multi-account-info',
 }
 
 export enum WebLinks {

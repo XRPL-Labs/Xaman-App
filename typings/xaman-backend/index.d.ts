@@ -29,6 +29,15 @@ declare namespace XamanBackend {
         };
     }
 
+    interface MultiAddressNativeInfoItem {
+        hasPro: boolean;
+        hasPush: boolean;
+    }
+
+    interface MultiAddressNativeInfoResponse {
+        [key: string]: MultiAddressNativeInfoItem;
+    }
+
     interface CuratedIOUsResponse {
         version: number;
         changed: boolean;

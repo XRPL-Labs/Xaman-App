@@ -36,6 +36,7 @@ import BackendService from '@services/BackendService';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
+    nativeAccountInfo?: XamanBackend.MultiAddressNativeInfoItem;
 }
 
 export interface State {
@@ -58,12 +59,13 @@ class AccountSettingsView extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        const { nativeAccountInfo } = props;
 
         this.state = {
             account: props.account,
             fetchingPushState: true,
             pushAvailable: false,
-            pushEnabled: false,
+            pushEnabled: !!nativeAccountInfo?.hasPush,
             accountCanSign: false,
         };
     }
