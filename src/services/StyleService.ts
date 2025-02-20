@@ -113,6 +113,14 @@ class StyleService {
         return this.themeName !== 'light';
     };
 
+    getBackdropInterpolateColor = () => {
+        if (this.themeName === 'dark' || this.themeName === 'moonlight') {
+            return ['rgba(50,50,50,0)', 'rgba(50,50,50,0.7)'];
+        }
+
+        return ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'];
+    };
+
     select<T extends string | number>(spec: { light?: T; dark?: T; default?: T }): T | undefined {
         return 'light' in spec && !this.isDarkMode()
             ? spec.light
