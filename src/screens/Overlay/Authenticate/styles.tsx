@@ -19,12 +19,29 @@ const styles = StyleService.create({
         shadowOpacity: 0.4,
         ...AppStyles.paddingSml,
     },
+    blurView: {
+        zIndex: 99999,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: AppSizes.screen.width,
+        height: AppSizes.screen.height,
+    },
+    safeAreaContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: AppSizes.paddingSml,
+        marginBottom: AppSizes.safeAreaBottomInset,
+    },
     pinInputPadding: {
         // borderColor: 'purple',
         // borderWidth: 3,
-        paddingHorizontal: 15,
+        // paddingHorizontal: 15,
         marginTop: 15,
-        width: '100%',
+        // width: '100%',
     },
 });
 
