@@ -285,7 +285,7 @@ class AccountListView extends Component<Props, State> {
                         <Text style={[AppStyles.monoSubText, AppStyles.colorBlue]}>{item.address}</Text>
                         <View style={[styles.proBadge]}>
                             { fetchingPro && <LoadingIndicator /> }
-                            { !fetchingPro && <ProBadge hasPro={hasPro} /> }
+                            { !fetchingPro && <ProBadge hasPro={hasPro ? 1 : 0} /> }
                         </View>
                     </View>
                 </View>

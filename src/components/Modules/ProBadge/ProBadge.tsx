@@ -9,7 +9,7 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props {
-    hasPro?: boolean;
+    hasPro?: number;
     style?: ViewStyle | ViewStyle[];
 }
 
@@ -25,10 +25,12 @@ class ProBadge extends PureComponent<Props, State> {
 
         const { hasPro } = this.props;
 
-        const hasProFromProps = typeof hasPro !== 'undefined';
+        const hasProFromProps = typeof hasPro === 'number';
 
         this.state = {
-            hasPro: hasProFromProps ? hasPro : false,
+            hasPro: hasProFromProps
+                ? hasPro > 0
+                : false,
             hasProFromProps,
         };
     }
