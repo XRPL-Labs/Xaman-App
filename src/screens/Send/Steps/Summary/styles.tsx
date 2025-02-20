@@ -133,7 +133,7 @@ const styles = StyleService.create({
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginRight: 15,
+        // marginRight: 15,
     },
     rateContainer: {
         // paddingLeft: 15,

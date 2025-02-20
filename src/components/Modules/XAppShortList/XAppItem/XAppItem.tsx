@@ -126,18 +126,22 @@ class XAppItem extends Component<Props> {
                             )
                         }
                     </View>
-                    <Text
-                        numberOfLines={2}
-                        style={[
-                            styles.appTitle, styles.appTitlePlaceholder,
-                            Number(index || 0) > 0 ? invisible : undefined,
-                        ]}
-                    >
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    </Text>
+                    <View style={[
+                        styles.appTitlePlaceholderContainer,
+                    ]}>
+                        <Text
+                            numberOfLines={2}
+                            style={[
+                                styles.appTitle, styles.appTitlePlaceholder,
+                                Number(index || 0) > 0 ? invisible : undefined,
+                            ]}
+                        >
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </Text>
+                    </View>
                 </View>
             );
         }
@@ -157,28 +161,36 @@ class XAppItem extends Component<Props> {
                                 },
                             ]}
                         />
-                        <Animated.Text
-                            numberOfLines={1}
-                            style={[
-                                styles.appTitle,
-                                styles.appTitlePlaceholder,
-                                { opacity: this.placeholderAnimation },
-                            ]}
-                        >
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </Animated.Text>
+                        <View style={[
+                            styles.appTitlePlaceholderContainer,
+                        ]}>
+                            <Animated.Text
+                                numberOfLines={2}
+                                style={[
+                                    styles.appTitle,
+                                    styles.appTitlePlaceholder,
+                                    { opacity: this.placeholderAnimation },
+                                ]}
+                            >
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </Animated.Text>
+                        </View>
                     </View>
                 }
                 { app &&
                     <Animated.View style={[styles.container, { opacity: this.fadeAnimation }]}>
                         <TouchableDebounce activeOpacity={0.8} onPress={this.onPress}>
                             <Image source={{ uri: app.icon }} style={styles.appIcon} />
-                            <Text numberOfLines={2} style={styles.appTitle}>
-                                {app.title}
-                            </Text>
+                            <View style={[
+                                styles.appTitleContainer,
+                            ]}>
+                                <Text numberOfLines={2} style={styles.appTitle}>
+                                    {app.title}
+                                </Text>
+                            </View>
                         </TouchableDebounce>
                     </Animated.View>
                 }

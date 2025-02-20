@@ -192,7 +192,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             </View>
                         </View>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={AppStyles.flex1} shouldRasterizeIOS renderToHardwareTextureAndroid>
                         <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
                     </View>
                 </View>

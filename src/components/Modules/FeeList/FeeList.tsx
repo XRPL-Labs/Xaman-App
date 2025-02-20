@@ -32,7 +32,11 @@ class FeeList extends PureComponent<Props> {
             return <Text>No Fee available!</Text>;
         }
 
-        return <View style={containerStyle}>{items.map(this.renderItem)}</View>;
+        return <View
+            shouldRasterizeIOS
+            renderToHardwareTextureAndroid
+            style={containerStyle}
+        >{items.map(this.renderItem)}</View>;
     }
 }
 
