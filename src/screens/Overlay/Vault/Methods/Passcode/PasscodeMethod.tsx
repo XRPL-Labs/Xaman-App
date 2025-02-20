@@ -7,6 +7,8 @@ import { Alert, View, Text, Animated, LayoutAnimation, KeyboardEvent, Interactio
 
 import { SecurePinInput, Button } from '@components/General';
 
+import StyleService from '@services/StyleService';
+
 import { AuthenticationService } from '@services';
 
 import { Prompt } from '@common/helpers/interface';
@@ -198,7 +200,7 @@ class PasscodeMethod extends Component<Props, State> {
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
+            outputRange: StyleService.getBackdropInterpolateColor(),
         });
 
         return (
