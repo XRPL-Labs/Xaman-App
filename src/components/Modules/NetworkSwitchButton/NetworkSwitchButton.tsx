@@ -315,7 +315,6 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
                             styles.buttonText,
                             showChevronIcon && AppStyles.flex4,
                             showAsSwitchPill && styles.pillFontSize,
-                            developerMode && AppStyles.colorPrimary,
                         ]} numberOfLines={1}>
                             {networkName}
                         </Text>

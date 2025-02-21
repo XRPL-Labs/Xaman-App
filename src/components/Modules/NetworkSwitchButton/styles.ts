@@ -20,7 +20,7 @@ export default StyleService.create({
     buttonText: {
         fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.subtext.size,
-        color: '$textDark',
+        color: '$textPrimary',
         textAlign: 'left',
         paddingHorizontal: 5,
         paddingTop: 2,
