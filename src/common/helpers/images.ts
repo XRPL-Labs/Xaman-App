@@ -165,4 +165,9 @@ export const Images = {
     IconV2Swap: buildImageSource('IconV2Swap', 'icon_swap'),
     IconV2Send: buildImageSource('IconV2Send', 'icon_send_v2'),
     IconV2Request: buildImageSource('IconV2Request', 'icon_request'),
+    // 4.0.0 Onboarding
+    Notification: buildImageSource('Notification', 'notification'),
+    Pincode: buildImageSource('Pincode', 'pincode'),
+    PhonesLight: buildImageSource('PhonesLight', 'phones_light'),
+    PhonesDark: buildImageSource('PhonesDark', 'phones_dark'),
 };
