@@ -138,6 +138,18 @@ class StyleService {
         return get(Images, image);
     };
 
+    getImageIfLightModeIfDarkMode = (
+        imageIfLightMode: Extract<keyof typeof Images, string>,
+        imageIfDarkMode: Extract<keyof typeof Images, string>,
+    ): { uri: string } => {
+        // if dark mode and there is a light mode for image return light
+        if (this.isDarkMode() && `${imageIfDarkMode}` in Images) {
+            return get(Images, `${imageIfDarkMode}`)!;
+        }
+
+        return get(Images, imageIfLightMode);
+    };
+
     getCurrentTheme = (): string => {
         return this.themeName;
     };
