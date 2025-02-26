@@ -15,6 +15,7 @@
     "remove": "Eltávolítás",
     "go": "Mehet",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Bezárás",
     "save": "Mentés",
     "confirm": "Rendben",
@@ -399,7 +400,11 @@
     "slideThree_title": "Security first",
     "slideThree_desc": "The Xumm application and platform are built with security as a priority. Never enter your secrets again, sign transactions from your own, trusted device.",
     "slideFour_title": "Send and receive",
-    "slideFour_desc": "You can send and receive XRP and other trusted tokens as well"
+    "slideFour_desc": "You can send and receive XRP and other trusted tokens as well",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Setup a passcode",
@@ -869,7 +874,7 @@
     "generateNewAccount": "Create a new account",
     "confirmPrivateTitle": "Confirm your secret numbers",
     "confirmPrivateDescription": "Kérem, adja meg a számokat, a saját biztonsága érdekében: azt akarjuk, hogy erősítse meg, hogy leírta.",
-    "invalidSecretNumber": "The numbers entered do not match the requested row of numbers.", 
+    "invalidSecretNumber": "The numbers entered do not match the requested row of numbers.",
     "accountSetupCompleted": "A fiók beállítása befejeződött.",
     "YouJustCreatedAccount": "Létrehozott egy új új számlát.",
     "yeahLetsGo": "Hurrá, gyerünk!",

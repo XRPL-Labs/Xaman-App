@@ -15,6 +15,7 @@
     "remove": "Tanggalin",
     "go": "pumunta",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Isara",
     "save": "Save",
     "confirm": "Kumpirmahin",
@@ -399,7 +400,11 @@
     "slideThree_title": "seguridad unang",
     "slideThree_desc": "Ang application at platform ng Xumm ay binuo na may seguridad bilang isang priyoridad. Huwag ipasok muli ang iyong mga lihim, mag-sign ng mga transaksyon mula sa iyong sarili, pinagkakatiwalaang aparato.",
     "slideFour_title": "Magpadala at tumanggap",
-    "slideFour_desc": "Maaari kang magpadala at tumanggap ng XRP at iba pang mga pinagkakatiwalaang token din"
+    "slideFour_desc": "Maaari kang magpadala at tumanggap ng XRP at iba pang mga pinagkakatiwalaang token din",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Mag-setup ng isang passcode",

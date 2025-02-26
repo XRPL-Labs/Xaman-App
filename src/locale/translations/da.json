@@ -15,6 +15,7 @@
     "remove": "Fjern",
     "go": "Videre",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Luk",
     "save": "Gem",
     "confirm": "Bekræft",
@@ -399,7 +400,11 @@
     "slideThree_title": "Sikkerhed først",
     "slideThree_desc": "Xumm-applikationen og -platformen er bygget med sikkerhed for øje. Indtast aldrig dine hemmelige nøgler igen. Underskriv i stedet transaktioner fra din egen, betroede enhed.",
     "slideFour_title": "Send og modtag",
-    "slideFour_desc": "Du kan sende og modtage XRP og andre betroede aktiver (IOU'er)"
+    "slideFour_desc": "Du kan sende og modtage XRP og andre betroede aktiver (IOU'er)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Indstil en adgangskode",

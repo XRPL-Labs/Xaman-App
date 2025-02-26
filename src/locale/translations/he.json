@@ -15,6 +15,7 @@
     "remove": "לְהַסִיר",
     "go": "המשך",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "סגור",
     "save": "לשמור",
     "confirm": "לְאַשֵׁר",
@@ -399,7 +400,11 @@
     "slideThree_title": "קודם אבטחה ",
     "slideThree_desc": "היישום והפלטפורמה של Xumm בנויים עם עדיפות לאבטחה. לעולם אל תיכנס שוב לסודות שלך, חתום על עסקאות ממכשיר משלך ואמין.",
     "slideFour_title": "שליחה וקבלה",
-    "slideFour_desc": "אתה יכול לשלוח ולקבל גם XRP ואסימונים מהימנים אחרים"
+    "slideFour_desc": "אתה יכול לשלוח ולקבל גם XRP ואסימונים מהימנים אחרים",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "הגדרת קוד סיסמה",

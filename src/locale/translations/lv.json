@@ -15,6 +15,7 @@
     "remove": "Noņemt",
     "go": "Ieiet",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Aizvērt",
     "save": "Saglabāt",
     "confirm": "Apstiprināt",
@@ -399,7 +400,11 @@
     "slideThree_title": "Drošība pirmajā vietā",
     "slideThree_desc": "XUMM aplikācija veidota uz viedās drošības pamata. Nekad neievadiet savas pieejas atslēgas aplikācijā vēlreiz! Apstipriniet transakciju no uzticamas ierīces.",
     "slideFour_title": "Sūtīt un saņemt",
-    "slideFour_desc": "Jūs varat nosūtīt un saņemt XRP monētas un citus uzticamus aktīvus (IOU), kā arī"
+    "slideFour_desc": "Jūs varat nosūtīt un saņemt XRP monētas un citus uzticamus aktīvus (IOU), kā arī",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Pieejas koda iestatījumi",

@@ -15,6 +15,7 @@
     "remove": "Hapus",
     "go": "Lanjutkan",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Tutup",
     "save": "Simpan",
     "confirm": "Konfirmasi",
@@ -399,7 +400,11 @@
     "slideThree_title": "Keamanan dulu",
     "slideThree_desc": "Aplikasi dan platform Xumm dibangun dengan keamanan sebagai prioritas. Jangan pernah memasukkan rahasia Anda lagi, tanda tangani transaksi dari perangkat Anda sendiri yang tepercaya.",
     "slideFour_title": "Kirim dan terima",
-    "slideFour_desc": "Anda juga dapat mengirim dan menerima XRP dan token tepercaya lainnya"
+    "slideFour_desc": "Anda juga dapat mengirim dan menerima XRP dan token tepercaya lainnya",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Siapkan kode sandi",

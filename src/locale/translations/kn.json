@@ -15,6 +15,7 @@
     "remove": "ತೆಗೆದುಹಾಕಿ",
     "go": "ಹೋಗಿ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "ಮುಚ್ಚಿ",
     "save": "ಉಳಿಸಿ",
     "confirm": "ದೃಢೀಕರಿಸಿ",
@@ -399,7 +400,11 @@
     "slideThree_title": "ಮೊದಲು ಭದ್ರತೆ",
     "slideThree_desc": "Xumm ಅಪ್ಲಿಕೇಶನ್ ಮತ್ತು ಪ್ಲಾಟ್‌ಫಾರ್ಮ್ ಅನ್ನು ಸುರಕ್ಷತೆಯನ್ನು ಗಮನದಲ್ಲಿಟ್ಟುಕೊಂಡು ನಿರ್ಮಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ರಹಸ್ಯಗಳನ್ನು ಮತ್ತೆ ನಮೂದಿಸಬೇಡಿ, ನಿಮ್ಮ ಸ್ವಂತ, ವಿಶ್ವಾಸಾರ್ಹ ಸಾಧನದಿಂದ ವ್ಯವಹಾರಕ್ಕೆ ಸಹಿ ಮಾಡಿ.",
     "slideFour_title": "ಕಳುಹಿಸಿ ಮತ್ತು ಸ್ವೀಕರಿಸಿ",
-    "slideFour_desc": "ನೀವು XRP ಮತ್ತು ಇತರ ವಿಶ್ವಾಸಾರ್ಹ ಸ್ವತ್ತುಗಳನ್ನು (ಐಒಯು) ಕಳುಹಿಸಬಹುದು ಮತ್ತು ಸ್ವೀಕರಿಸಬಹುದು"
+    "slideFour_desc": "ನೀವು XRP ಮತ್ತು ಇತರ ವಿಶ್ವಾಸಾರ್ಹ ಸ್ವತ್ತುಗಳನ್ನು (ಐಒಯು) ಕಳುಹಿಸಬಹುದು ಮತ್ತು ಸ್ವೀಕರಿಸಬಹುದು",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "ಪಾಸ್ಕೋಡ್ ಅನ್ನು ಹೊಂದಿಸಿ",

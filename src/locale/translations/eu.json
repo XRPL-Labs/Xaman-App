@@ -15,6 +15,7 @@
     "remove": "Kendu",
     "go": "Zoaz",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Itxi",
     "save": "Gorde",
     "confirm": "Berretsi",
@@ -399,7 +400,11 @@
     "slideThree_title": "Segurtasuna lehenik",
     "slideThree_desc": "Xumm aplikazioa eta plataforma segurtasuna lehentasunez eraikita daude. Ez sartu berriro zure sekretuak, sinatu transakzioak zure gailu fidagarritik.",
     "slideFour_title": "Bidali eta jaso",
-    "slideFour_desc": "XRP eta konfiantzazko beste token batzuk ere bidali eta jaso ditzakezu"
+    "slideFour_desc": "XRP eta konfiantzazko beste token batzuk ere bidali eta jaso ditzakezu",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Konfiguratu pasakode bat",

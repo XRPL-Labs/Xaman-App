@@ -15,6 +15,7 @@
     "remove": "Odstrániť",
     "go": "Pokračovať",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Zatvoriť",
     "save": "Uložiť",
     "confirm": "Potvrdiť",
@@ -399,7 +400,11 @@
     "slideThree_title": "Bezpečnosť na prvom mieste",
     "slideThree_desc": "Aplikácia a platforma xumm sú vytvorené s ohľadom na bezpečnosť. Už nikdy viac nezadávajte svoje secrets, podpisujte transakcie z vlastného dôveryhodného zariadenia.",
     "slideFour_title": "Posielajte a prijímajte",
-    "slideFour_desc": "Môžete tiež odosielať a prijímať XRP a ďalšie dôveryhodné aktíva (IOU)"
+    "slideFour_desc": "Môžete tiež odosielať a prijímať XRP a ďalšie dôveryhodné aktíva (IOU)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Nastavte prístupový kód",

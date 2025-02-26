@@ -15,6 +15,7 @@
     "remove": "Poista",
     "go": "Jatka",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Sulje",
     "save": "Tallenna",
     "confirm": "Vahvista",
@@ -399,7 +400,11 @@
     "slideThree_title": "Turvallisuus ensin",
     "slideThree_desc": "Xumm-sovellus ja alusta on rakennettu turvallisuus tärkeimpänä . Älä enää koskaan syötä salaisuuksiasi uudelleen, allekirjoita tapahtumat vain omalla, luotetulla laitteellasi.",
     "slideFour_title": "Lähetä ja vastaanota",
-    "slideFour_desc": "Voit lähettää ja vastaanottaa XRP :tä ja muita luotettavia varoja (IOU :t)"
+    "slideFour_desc": "Voit lähettää ja vastaanottaa XRP :tä ja muita luotettavia varoja (IOU :t)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Määritä salasana",

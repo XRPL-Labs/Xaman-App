@@ -15,6 +15,7 @@
     "remove": "काढा",
     "go": "जा",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "बंद",
     "save": "जतन करा",
     "confirm": "पुष्टी",
@@ -399,7 +400,11 @@
     "slideThree_title": "सुरक्षा प्रथम",
     "slideThree_desc": "प्राधान्य म्हणून झूमम अ‍ॅप्लिकेशन आणि प्लॅटफॉर्म सुरक्षिततेसह तयार केले गेले आहेत. पुन्हा कधीही आपली रहस्ये प्रविष्ट करु नका, आपल्या स्वत: च्या, विश्वसनीय डिव्हाइसवरून व्यवहारांवर स्वाक्षरी करा.",
     "slideFour_title": "पाठवा आणि प्राप्त करा",
-    "slideFour_desc": "आपण एक्सआरपी तसेच इतर विश्वासार्ह मालमत्ता (आयओयू) पाठवू आणि प्राप्त करू शकता"
+    "slideFour_desc": "आपण एक्सआरपी तसेच इतर विश्वासार्ह मालमत्ता (आयओयू) पाठवू आणि प्राप्त करू शकता",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "पासकोड सेट अप करा",

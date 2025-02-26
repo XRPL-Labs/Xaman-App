@@ -15,6 +15,7 @@
     "remove": "Премахни",
     "go": "Напред",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Затвори",
     "save": "Запази",
     "confirm": "Потвърждение",
@@ -399,7 +400,11 @@
     "slideThree_title": "Сигурност на първо място",
     "slideThree_desc": "Приложението и платформата Xumm са изградени като приоритет е сигурността. Никога повече не въвеждайте тайните си, подписвайте транзакции от вашето собствено надеждно устройство.",
     "slideFour_title": "Изпращайте и получавайте",
-    "slideFour_desc": "Можете да изпращате и получавате XRP, както и други надеждни активи (IOU)"
+    "slideFour_desc": "Можете да изпращате и получавате XRP, както и други надеждни активи (IOU)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Настройте парола",

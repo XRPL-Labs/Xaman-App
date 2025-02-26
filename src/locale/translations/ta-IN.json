@@ -15,6 +15,7 @@
     "remove": "நீக்கு",
     "go": "செல்",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "மூடு",
     "save": "சேமி",
     "confirm": "உறுதிபடுத்து",
@@ -399,7 +400,11 @@
     "slideThree_title": "முதலில் பாதுகாப்பு",
     "slideThree_desc": "Xumm பயன்பாடு மற்றும் இயங்குதளம் முன்னுரிமையாக பாதுகாப்போடு கட்டப்பட்டுள்ளன. உங்கள் ரகசியங்களை மீண்டும் ஒருபோதும் உள்ளிட வேண்டாம், உங்கள் சொந்த, நம்பகமான சாதனத்திலிருந்து பரிவர்த்தனைகளில் கையொப்பமிடுங்கள்.",
     "slideFour_title": "அனுப்பவும் பெறவும்",
-    "slideFour_desc": "நீங்கள் XRP மற்றும் பிற நம்பகமான சொத்துக்களை (IOU கள்) அனுப்பலாம் மற்றும் பெறலாம்."
+    "slideFour_desc": "நீங்கள் XRP மற்றும் பிற நம்பகமான சொத்துக்களை (IOU கள்) அனுப்பலாம் மற்றும் பெறலாம்.",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "கடவுக்குறியீட்டை அமைக்கவும்",

@@ -15,6 +15,7 @@
     "remove": "Вилучити",
     "go": "Вперед",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Закрити",
     "save": "Зберегти",
     "confirm": "Підтвердити",
@@ -399,7 +400,11 @@
     "slideThree_title": "Безпека насамперед",
     "slideThree_desc": "Додаток та платформа Xumm будуються з пріоритетом на безпеку. Підписуйте транзакції зі свого власного, надійного пристрою.",
     "slideFour_title": "Надіслати і отримати",
-    "slideFour_desc": "Ви можете надсилати та отримувати XRP та інші активи, в тому числі активи (IOU) емітентів яким довіряєте"
+    "slideFour_desc": "Ви можете надсилати та отримувати XRP та інші активи, в тому числі активи (IOU) емітентів яким довіряєте",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Встановіть ПІН-код",

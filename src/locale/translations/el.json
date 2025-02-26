@@ -15,6 +15,7 @@
     "remove": "Αφαίρεση",
     "go": "Ξεκινήστε",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Κλείσιμο",
     "save": "Αποθήκευση",
     "confirm": "Επιβεβαίωση",
@@ -399,7 +400,11 @@
     "slideThree_title": "Πρώτα η ασφάλεια",
     "slideThree_desc": "Η εφαρμογή xumm είναι χτισμένη με πρότυπο την ασφάλεια του χρήστη. Ποτέ μην εισάγετε τους μυστικούς σας αριθμούς κάπου αλλού, επιβεβαιώστε τις συναλλαγές από τη δική σας αξιόπιστη συσκευή.",
     "slideFour_title": "Αποστολή και λήψη",
-    "slideFour_desc": "Μπορείτε να στείλετε και να λάβετε το XRP και άλλα νομίσματα (IOUs) επίσης"
+    "slideFour_desc": "Μπορείτε να στείλετε και να λάβετε το XRP και άλλα νομίσματα (IOUs) επίσης",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Ρύθμιση κωδικού πρόσβασης",

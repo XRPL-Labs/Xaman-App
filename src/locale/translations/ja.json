@@ -15,6 +15,7 @@
     "remove": "削除する",
     "go": "進む",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "閉じる",
     "save": "保存する",
     "confirm": "確認",
@@ -399,7 +400,11 @@
     "slideThree_title": "セキュリティ第一主義",
     "slideThree_desc": "Xamanアプリケーションとプラットフォームは、セキュリティを最優先に作成されています。秘密鍵は決して他では入力しないでください。また、あなたが保有し信頼できるデバイス以外からトランザクションへの署名は行わないでください。",
     "slideFour_title": "送受信",
-    "slideFour_desc": "XRPやその他の信頼できる資産(IOU)の送受信も可能です。"
+    "slideFour_desc": "XRPやその他の信頼できる資産(IOU)の送受信も可能です。",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "パスコードを設定する",

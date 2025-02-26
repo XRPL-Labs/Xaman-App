@@ -15,6 +15,7 @@
     "remove": "Înlăturare",
     "go": "Go",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Închidere",
     "save": "Salvare",
     "confirm": "Confirmare",
@@ -399,7 +400,11 @@
     "slideThree_title": "Securitatea are prioritate.",
     "slideThree_desc": "Aplicaţia Xumm şi platforma sunt construite sa fie sigure. Nu mai introduceţi niciodată datele contului din XRPL, semnaţi o tranzacţie din propriul dumneavoastră dispozitiv de încredere.",
     "slideFour_title": "Trimitere şi primire",
-    "slideFour_desc": "Puteţi trimite/primi XRP şi alte active ( IOU-uri )."
+    "slideFour_desc": "Puteţi trimite/primi XRP şi alte active ( IOU-uri ).",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Creați un cod de acces",

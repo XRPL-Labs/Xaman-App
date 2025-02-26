@@ -15,6 +15,7 @@
     "remove": "احذف",
     "go": "إبدأ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "إغلاق",
     "save": "حفظ",
     "confirm": "تأكيد",
@@ -399,7 +400,11 @@
     "slideThree_title": "الأمن أولاً",
     "slideThree_desc": "تم تصميم تطبيق ومنصة xumm مع وضع الأمان في الاعتبار. لا تدخل أسرارك مرة أخرى ، قم بتوقيع التحويل من جهازك الموثوق به.",
     "slideFour_title": "ارسل و استقبل",
-    "slideFour_desc": "يمكنك إرسال واستلام XRP والعملات الورقية الأخرى الموثوقة (سندات الدين) أيضًا"
+    "slideFour_desc": "يمكنك إرسال واستلام XRP والعملات الورقية الأخرى الموثوقة (سندات الدين) أيضًا",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "قم بإعداد رمز سري",

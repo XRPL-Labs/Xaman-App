@@ -15,6 +15,7 @@
     "remove": "هٽايو",
     "go": "وڃ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "بند ڪريو",
     "save": "محفوظ ڪريو",
     "confirm": "پڪ ڪريو",
@@ -399,7 +400,11 @@
     "slideThree_title": "سيڪيورٽي پهرين",
     "slideThree_desc": "Xumm ايپليڪيشن ۽ پليٽ فارم سيڪيورٽي سان گڏ ترجيح طور تي تعمير ڪيا ويا آهن. ڪڏهن به پنهنجو راز ٻيهر نه لکو ، پنهنجي ، اعتماد واري ڊوائيس مان ٽرانس ٽرانزيڪشن ڪريو.",
     "slideFour_title": "موڪليو ۽ حاصل ڪريو",
-    "slideFour_desc": "توهان XRP سان گڏ ٻيون قابل اعتماد اثاثو (IOUs) موڪلي ۽ وصول ڪري سگهو ٿا"
+    "slideFour_desc": "توهان XRP سان گڏ ٻيون قابل اعتماد اثاثو (IOUs) موڪلي ۽ وصول ڪري سگهو ٿا",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "پاس ڪوڊ قائم ڪريو",

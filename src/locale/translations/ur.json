@@ -15,6 +15,7 @@
     "remove": "دور",
     "go": "جاؤ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "بند کریں",
     "save": "محفوظ کریں",
     "confirm": "تصدیق کریں",
@@ -399,7 +400,11 @@
     "slideThree_title": "پہلے سیکیورٹی",
     "slideThree_desc": "زومم ایپلی کیشن اور پلیٹ فارم کو ترجیح کے طور پر سیکیورٹی کے ساتھ بنایا گیا ہے۔ کبھی بھی اپنے راز درج نہ کریں ، اپنے ، قابل بھروسہ آلہ سے لین دین پر دستخط کریں۔",
     "slideFour_title": "بھیجیں اور وصول کریں",
-    "slideFour_desc": "آپ کو بھیجنے اور XRP ساتھ ساتھ کے طور پر دیگر بھروسہ مند اثاثوں وصول کر سکتے ہیں (IOUs)"
+    "slideFour_desc": "آپ کو بھیجنے اور XRP ساتھ ساتھ کے طور پر دیگر بھروسہ مند اثاثوں وصول کر سکتے ہیں (IOUs)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "پاس کوڈ سیٹ کریں",

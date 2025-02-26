@@ -15,6 +15,7 @@
     "remove": "ਰਿਮੂਵ",
     "go": "ਜਾਣਾ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "ਕਲੋਜ਼",
     "save": "ਸੇਵ",
     "confirm": "ਪੁਸ਼ਟੀ ਕਰੋ",
@@ -399,7 +400,11 @@
     "slideThree_title": "ਸੁਰੱਖਿਆ ਪਹਿਲਾਂ",
     "slideThree_desc": "Xumm ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਧਿਆਨ ਵਿੱਚ ਰੱਖਦੇ ਹੋਏ ਬਣਾਇਆ ਗਿਆ ਹੈ. ਆਪਣੀਆਂ ਪ੍ਰਾਈਵੇਟ ਕੁੰਜੀਆਂ ਮੁੜ ਕਦੇ ਨਾ ਭਰੋ! ਆਪਣੀ ਖੁਦ ਦੀ, ਭਰੋਸੇਮੰਦ ਡਿਵਾਈਸ ਤੋਂ ਸੌਦੇ ਤੇ ਦਸਤਖਤ ਕਰੋ.",
     "slideFour_title": "ਭੇਜੋ ਅਤੇ ਪ੍ਰਾਪਤ ਕਰੋ",
-    "slideFour_desc": "ਤੁਸੀਂ ਐਕਸਆਰਪੀ ਭੇਜ ਸਕਦੇ ਹੋ ਅਤੇ ਪ੍ਰਾਪਤ ਕਰ ਸਕਦੇ ਹੋ ਅਤੇ ਨਾਲ ਹੀ ਹੋਰ ਭਰੋਸੇਯੋਗ ਸੰਪਤੀਆਂ (ਆਈਯੂਯੂ)"
+    "slideFour_desc": "ਤੁਸੀਂ ਐਕਸਆਰਪੀ ਭੇਜ ਸਕਦੇ ਹੋ ਅਤੇ ਪ੍ਰਾਪਤ ਕਰ ਸਕਦੇ ਹੋ ਅਤੇ ਨਾਲ ਹੀ ਹੋਰ ਭਰੋਸੇਯੋਗ ਸੰਪਤੀਆਂ (ਆਈਯੂਯੂ)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "ਇੱਕ ਪਾਸਕੋਡ ਸੈਟ ਅਪ ਕਰੋ",

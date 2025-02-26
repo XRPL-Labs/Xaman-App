@@ -15,6 +15,7 @@
     "remove": "Eliminar",
     "go": "Ir",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Cerrar",
     "save": "Guardar",
     "confirm": "Confirmar",
@@ -399,7 +400,11 @@
     "slideThree_title": "La seguridad primero",
     "slideThree_desc": "Tanto la aplicación como la plataforma XUMM han sido desarrolladas con la seguridad en mente. Nunca introduzcas tus secretos de nuevo, firma transacciones desde tu propio dispositivo de confianza.",
     "slideFour_title": "Enviar y recibir",
-    "slideFour_desc": "Puede enviar y recibir XRP así como otros activos de confianza (IOUs)."
+    "slideFour_desc": "Puede enviar y recibir XRP así como otros activos de confianza (IOUs).",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Configurar una contraseña",

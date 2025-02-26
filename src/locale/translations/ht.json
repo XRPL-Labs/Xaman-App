@@ -15,6 +15,7 @@
     "remove": "Retire",
     "go": "Ale",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Fèmen",
     "save": "Sove",
     "confirm": "Konfime",
@@ -399,7 +400,11 @@
     "slideThree_title": "Sekirite an premye",
     "slideThree_desc": "Aplikasyon an Xumm ak platfòm yo bati ak sekirite kòm yon priyorite. Pa janm antre nan sekrè ou ankò, siyen tranzaksyon soti nan aparèy pwòp ou a, ou fè konfyans.",
     "slideFour_title": "Voye ak resevwa",
-    "slideFour_desc": "Ou ka voye ak resevwa XRP ak lòt marqueur ou fè konfyans tou"
+    "slideFour_desc": "Ou ka voye ak resevwa XRP ak lòt marqueur ou fè konfyans tou",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Enstalasyon yon paskod",

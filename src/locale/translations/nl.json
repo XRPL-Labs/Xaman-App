@@ -15,6 +15,7 @@
     "remove": "Verwijderen",
     "go": "Ga",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Sluiten",
     "save": "Opslaan",
     "confirm": "Bevestigen",
@@ -399,7 +400,11 @@
     "slideThree_title": "Veiligheid eerst",
     "slideThree_desc": "De Xaman applicatie en platform zijn gebouwd met veiligheid als prioriteit. Voer nooit meer uw geheimen in, onderteken transacties vanaf uw eigen, vertrouwde apparaat.",
     "slideFour_title": "Versturen en ontvangen",
-    "slideFour_desc": "U kunt XRP en andere vertrouwde tokens versturen en ontvangen"
+    "slideFour_desc": "U kunt XRP en andere vertrouwde tokens versturen en ontvangen",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Stel een toegangscode in",

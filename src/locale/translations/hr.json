@@ -15,6 +15,7 @@
     "remove": "Ukloni",
     "go": "Idi",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Zatvori",
     "save": "Spremi",
     "confirm": "Potvrda",
@@ -399,7 +400,11 @@
     "slideThree_title": "Sigurnost na prvom mjestu",
     "slideThree_desc": "Xumm aplikacija i platforma izgrađena je s naglaskom na sigurnost. Nikada nemojte unositi svoje tajne brojeve, a potpis transakcija radite sa svojih pouzdanih uređaja.",
     "slideFour_title": "Slanje i primanje",
-    "slideFour_desc": "Možete poslati i primiti XRP i druga pouzdana sredstva (IOU's) također"
+    "slideFour_desc": "Možete poslati i primiti XRP i druga pouzdana sredstva (IOU's) također",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Postavljanje lozinke",

@@ -15,6 +15,7 @@
     "remove": "Xóa bỏ",
     "go": "Đi",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Đóng",
     "save": "Lưu",
     "confirm": "Xác nhận",
@@ -399,7 +400,11 @@
     "slideThree_title": "Bảo mật trước tiên",
     "slideThree_desc": "Ứng dụng và nền tảng Xumm được ưu tiên xây dựng với bảo mật. Không bao giờ nhập lại các bí mật của bạn, hãy ký các giao dịch từ thiết bị đáng tin cậy của riêng bạn.",
     "slideFour_title": "Gửi và nhận",
-    "slideFour_desc": "Bạn cũng có thể gửi và nhận XRP cũng như các mã thông báo đáng tin cậy khác"
+    "slideFour_desc": "Bạn cũng có thể gửi và nhận XRP cũng như các mã thông báo đáng tin cậy khác",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Thiết lập mật mã",

@@ -15,6 +15,7 @@
     "remove": "წაშლა",
     "go": "დაყენება",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "დახურვა",
     "save": "დამახსოვრება",
     "confirm": "დადასტურება",
@@ -399,7 +400,11 @@
     "slideThree_title": "უსაფრთხოება პირველ რიგში ",
     "slideThree_desc": "XUMM აპლიკაციის და მისი პლატფორმის აწყობის პროცესში, პირველ ადგილას ყოველთვის უსაფრთხოება იდგა. აპლიკაციაში სეკრეტის ხელმეორედ შეყვანა აღარ დაგჭირდებათ, დაამოწმეთ ტრანზაქციები თქვენი პირადი-სანდო მოწყობილობიდან.",
     "slideFour_title": "Გაგზავნა და მიღება",
-    "slideFour_desc": "თქვენ შეგიძლიათ გააგზავნოთ და მიიღოთ, როგორც XRP ასევე სხვადასხვა Trustline-ის მიერ გამოცემული აქტივები."
+    "slideFour_desc": "თქვენ შეგიძლიათ გააგზავნოთ და მიიღოთ, როგორც XRP ასევე სხვადასხვა Trustline-ის მიერ გამოცემული აქტივები.",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "დააყენეთ პასკოდი",

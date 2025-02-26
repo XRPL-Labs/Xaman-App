@@ -15,6 +15,7 @@
     "remove": "നീക്കംചെയ്യുക",
     "go": "പോകൂ",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "അടയ്ക്കുക",
     "save": "രക്ഷിക്കും",
     "confirm": "സ്ഥിരീകരിക്കുക",
@@ -399,7 +400,11 @@
     "slideThree_title": "ആദ്യം സുരക്ഷ",
     "slideThree_desc": "സുരക്ഷ കണക്കിലെടുത്ത് xumm ആപ്ലിക്കേഷൻ നിർമ്മിച്ചിരിക്കുന്നു. നിങ്ങളുടെ സ്വകാര്യ കീകൾ വീണ്ടും നൽകരുത്! നിങ്ങളുടെ സ്വന്തം, വിശ്വസനീയമായ ഉപകരണത്തിൽ നിന്ന് ഒരു ഇടപാട് ഒപ്പിടുക.",
     "slideFour_title": "അയച്ച് സ്വീകരിക്കുക",
-    "slideFour_desc": "നിങ്ങൾക്ക് എക്സ്ആർ‌പിയും മറ്റ് വിശ്വസനീയ ആസ്തികളും (ഐ‌യു‌എസ്) അയയ്‌ക്കാനും സ്വീകരിക്കാനും കഴിയും"
+    "slideFour_desc": "നിങ്ങൾക്ക് എക്സ്ആർ‌പിയും മറ്റ് വിശ്വസനീയ ആസ്തികളും (ഐ‌യു‌എസ്) അയയ്‌ക്കാനും സ്വീകരിക്കാനും കഴിയും",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "ഒരു പാസ്‌കോഡ് സജ്ജമാക്കുക",

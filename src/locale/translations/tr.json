@@ -15,6 +15,7 @@
     "remove": "Kaldır",
     "go": "Devam",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Kapat",
     "save": "Kaydet",
     "confirm": "Doğrula",
@@ -399,7 +400,11 @@
     "slideThree_title": "Önce güvenlik",
     "slideThree_desc": "Xumm uygulaması ve platformu güvenlik önceliğiyle geliştirildi. Gizli anahtarınızı bir daha asla girmeyiniz, güvenilir cihazınızla işlemleri imzalayınız.",
     "slideFour_title": "Gönder ve al",
-    "slideFour_desc": "XRP ile birlikte diğer güvenilir varlıklarları da (IOU'lar) gönderip alabilirsiniz."
+    "slideFour_desc": "XRP ile birlikte diğer güvenilir varlıklarları da (IOU'lar) gönderip alabilirsiniz.",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Parola belirle",

@@ -15,6 +15,7 @@
     "remove": "Verwyder",
     "go": "Gaan",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Toe",
     "save": "Stoor",
     "confirm": "Bevestig",
@@ -399,7 +400,11 @@
     "slideThree_title": "Veiligheid eers",
     "slideThree_desc": "Die Xumm-toepassing en -platform is gebou met veiligheid as prioriteit. Moet nooit weer u geheime betree nie, onderteken transaksies vanaf u eie, vertroude toestel.",
     "slideFour_title": "Stuur en ontvang",
-    "slideFour_desc": "U kan ook XRP en ander betroubare tokens stuur en ontvang"
+    "slideFour_desc": "U kan ook XRP en ander betroubare tokens stuur en ontvang",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Stel 'n wagkode op",

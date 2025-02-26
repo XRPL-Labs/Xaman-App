@@ -15,6 +15,7 @@
     "remove": "Өшіру",
     "go": "Барыңыз",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Жабу",
     "save": "Сақтау",
     "confirm": "Растау",
@@ -399,7 +400,11 @@
     "slideThree_title": "Ең алдымен қауіпсіздік",
     "slideThree_desc": "Xumm қосымшасы мен платформасы қауіпсіздікті басымдық ретінде қарастырады. Ешқашан өз құпияңызды енгізбеңіз, өзіңіздің сенімді құрылғыңыздан транзакцияларға қол қойыңыз.",
     "slideFour_title": "Жіберу және алу",
-    "slideFour_desc": "Сондай-ақ XRP және басқа сенімді белгілерді жіберуге және алуға болады"
+    "slideFour_desc": "Сондай-ақ XRP және басқа сенімді белгілерді жіберуге және алуға болады",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Құпия сөзді орнату",

@@ -15,6 +15,7 @@
     "remove": "অপসারণ",
     "go": "যাওয়া",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "বন্ধ",
     "save": "সংরক্ষণ",
     "confirm": "কনফার্ম",
@@ -399,7 +400,11 @@
     "slideThree_title": "সুরক্ষা আগে",
     "slideThree_desc": "Xumm অ্যাপ্লিকেশন এবং প্ল্যাটফর্মটি অগ্রাধিকার হিসাবে সুরক্ষা দিয়ে তৈরি। আপনার গোপনীয়তা আর কখনও প্রবেশ করবেন না, নিজের, বিশ্বস্ত ডিভাইস থেকে লেনদেনগুলিতে স্বাক্ষর করুন।",
     "slideFour_title": "প্রেরণ এবং গ্রহন",
-    "slideFour_desc": "আপনি এক্সআরপি পাশাপাশি অন্যান্য বিশ্বস্ত সম্পদ (আইইউ) প্রেরণ এবং গ্রহণ করতে পারেন"
+    "slideFour_desc": "আপনি এক্সআরপি পাশাপাশি অন্যান্য বিশ্বস্ত সম্পদ (আইইউ) প্রেরণ এবং গ্রহণ করতে পারেন",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "একটি পাসকোড সেটআপ করুন",

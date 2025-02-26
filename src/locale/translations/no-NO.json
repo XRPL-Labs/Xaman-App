@@ -15,6 +15,7 @@
     "remove": "Fjern",
     "go": "Gå",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Lukk",
     "save": "Lagre",
     "confirm": "Bekreft",
@@ -399,7 +400,11 @@
     "slideThree_title": "Sikkerhet først",
     "slideThree_desc": "XUMM applikasjonen og plattformen er bygget med sikkerhet i fokus. Du trenger aldri oppgi din hemmlige nøkkel igjen, signer transaksjoner med din egen klarerte enhet.",
     "slideFour_title": "Send og motta",
-    "slideFour_desc": "Du kan sende og motta XRP samt andre pålitelige aktiva (IOU) i tillegg"
+    "slideFour_desc": "Du kan sende og motta XRP samt andre pålitelige aktiva (IOU) i tillegg",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Oppsett av kode",

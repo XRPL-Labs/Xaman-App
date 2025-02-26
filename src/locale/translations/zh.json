@@ -15,6 +15,7 @@
     "remove": "移除",
     "go": "去设置",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "关闭",
     "save": "保存",
     "confirm": "确认",
@@ -399,7 +400,11 @@
     "slideThree_title": "安全第一",
     "slideThree_desc": "xumm应用程序和平台在构建时考虑了安全性。永远不要再输入您的密钥，而要通过自己信任的设备签署交易。",
     "slideFour_title": "发送和接收",
-    "slideFour_desc": "您可以发送和接收XRP以及其它授信的资产（IOU's）"
+    "slideFour_desc": "您可以发送和接收XRP以及其它授信的资产（IOU's）",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "设置密码",

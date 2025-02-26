@@ -15,6 +15,7 @@
     "remove": "Ta bort",
     "go": "Gå",
     "none": "None",
+    "okLetsGo": "Ok, let's go!",
     "close": "Stäng",
     "save": "Spara",
     "confirm": "Bekräfta",
@@ -399,7 +400,11 @@
     "slideThree_title": "Säkerhet först",
     "slideThree_desc": "Xumm applikationen och plattformen är byggd med säkerhet i åtanke. Ange aldrig mer dina hemliga kod-ord igen (24 kod-ord), signera transaktioner från din egen betrodda enhet.",
     "slideFour_title": "Skicka och ta emot",
-    "slideFour_desc": "Du kan skicka och ta emot XRP och andra betrodda tillgångar (IOU)"
+    "slideFour_desc": "Du kan skicka och ta emot XRP och andra betrodda tillgångar (IOU)",
+    "v2main1": "The Leading Self-Custody Wallet.",
+    "v2main2": "Secure Your Crypto with Confidence.",
+    "v2homepage_noacc1": "Welcome to Xaman",
+    "v2homepage_noacc2": "Import your existing account or create a new account."
   },
   "setupPasscode": {
     "setupAPasscode": "Ange en pinkod",
