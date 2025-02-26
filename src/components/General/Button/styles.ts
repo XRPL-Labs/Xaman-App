@@ -119,6 +119,15 @@ const styles = StyleService.create({
     textButtonRounded: {
         fontSize: AppFonts.base.size,
     },
+    buttonNonBlock: {
+        height: AppSizes.scale(42),
+        paddingHorizontal: 30,
+        alignSelf: 'center',
+        borderRadius: AppSizes.scale(75) / 5,
+    },
+    textButtonNonBlock: {
+        fontSize: AppFonts.base.size,
+    },
     iconLeft: {
         marginRight: 3,
         tintColor: '$white',

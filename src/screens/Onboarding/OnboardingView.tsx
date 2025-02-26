@@ -9,8 +9,7 @@ import StyleService from '@services/StyleService';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
-
-import { Slider, Slide, Spacer } from '@components/General';
+import { Footer, Button } from '@components/General';
 
 import Localize from '@locale';
 
@@ -21,7 +20,6 @@ import styles from './styles';
 
 /* types ==================================================================== */
 export interface Props {}
-
 export interface State {}
 
 /* Component ==================================================================== */
@@ -29,11 +27,7 @@ class OnboardingView extends Component<Props, State> {
     static screenName = AppScreens.Onboarding;
 
     static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
+        return { topBar: { visible: false } };
     }
 
     onFinish = () => {
@@ -44,68 +38,63 @@ class OnboardingView extends Component<Props, State> {
         return (
             <ImageBackground
                 testID="onboarding-screen"
-                source={StyleService.getImage('BackgroundPattern')}
+                resizeMode="cover"
+                source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
                 style={styles.container}
                 imageStyle={styles.backgroundImageStyle}
             >
-                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
+                <SafeAreaView style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.padding]}>
+                    <Image
+                        style={styles.logo}
+                        source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
+                    />
+                    <View style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.paddingHorizontal]}>
+                        <Text style={[
+                            AppStyles.h4,
+                            AppStyles.textCenterAligned,
+                            AppStyles.strong,
+                            AppStyles.marginHorizontal,
+                            AppStyles.marginBottomSml,
+                        ]}>
+                            {Localize.t('onboarding.v2main1')}
+                        </Text>
+                        <Text style={[
+                            AppStyles.p,
+                            AppStyles.textCenterAligned,
+                            AppStyles.marginHorizontal,
+                            AppStyles.marginTopNegativeSml,
+                            AppStyles.colorSilver,
+                        ]}>
+                            {Localize.t('onboarding.v2main2')}
+                        </Text>
+                    </View>
                 </SafeAreaView>
-                <SafeAreaView style={AppStyles.flex8}>
-                    <Slider onFinish={this.onFinish} scrollAutomatically>
-                        <Slide>
-                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Text style={[AppStyles.h4, AppStyles.strong]}>
-                                    {Localize.t('onboarding.slideOne_title')}
-                                </Text>
-                            </View>
-                        </Slide>
-                        <Slide>
-                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image
-                                    style={AppStyles.emptyIcon}
-                                    source={StyleService.getImage('ImageManageAccounts')}
-                                />
-                                <Spacer size={50} />
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideTwo_title')}
-                                </Text>
-                                <Spacer size={10} />
-                                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideTwo_desc')}
-                                </Text>
-                            </View>
-                        </Slide>
-                        <Slide>
-                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image
-                                    style={AppStyles.emptyIcon}
-                                    source={StyleService.getImage('ImageSecurityFirst')}
-                                />
-                                <Spacer size={50} />
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideThree_title')}
-                                </Text>
-                                <Spacer size={10} />
-                                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideThree_desc')}
-                                </Text>
-                            </View>
-                        </Slide>
-                        <Slide>
-                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                                <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageSendReceive')} />
-                                <Spacer size={50} />
-                                <Text style={[AppStyles.h5, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideFour_title')}
-                                </Text>
-                                <Spacer size={10} />
-                                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                                    {Localize.t('onboarding.slideFour_desc')}
-                                </Text>
-                            </View>
-                        </Slide>
-                    </Slider>
+                <SafeAreaView style={[
+                    AppStyles.flex4,
+                    AppStyles.marginTop,
+                ]}>
+                    <SafeAreaView style={[
+                        styles.container,
+                    ]}>
+                        <ImageBackground
+                            testID="onboarding-screen"
+                            resizeMode="contain"
+                            source={StyleService.getImageIfLightModeIfDarkMode('PhonesLight', 'PhonesDark')}
+                            style={[
+                                styles.container,
+                            ]}
+                        />
+                        <Footer style={[
+                            AppStyles.paddingBottom,
+                            AppStyles.paddingTopNone,
+                        ]}>
+                            <Button
+                                testID="onboarding-btn"
+                                onPress={this.onFinish}
+                                label={Localize.t('global.start')}
+                            />
+                        </Footer>
+                    </SafeAreaView>
                 </SafeAreaView>
             </ImageBackground>
         );

@@ -3,15 +3,15 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Alert, Image } from 'react-native';
+import { SafeAreaView, View, Text, Alert, Image, ImageBackground } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
 import { BiometryType } from '@store/types';
 
+import { Images } from '@common/helpers/images';
 import { Biometric } from '@common/libs/biometric';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Images } from '@common/helpers/images';
 import { AppScreens } from '@common/constants';
 
 import { PushNotificationsService, StyleService } from '@services';
@@ -25,6 +25,7 @@ import { PushNotificationSetupViewProps } from '@screens/Setup/PushNotification'
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import onboardingStyles from '../../Onboarding/styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -50,11 +51,7 @@ class BiometrySetupView extends Component<Props, State> {
     }
 
     static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
+        return { topBar: { visible: false } };
     }
 
     onYesPress = async () => {
@@ -126,44 +123,69 @@ class BiometrySetupView extends Component<Props, State> {
         const { isButtonsDisabled, isSkipButtonLoading, isSaveButtonLoading } = this.state;
 
         return (
-            <SafeAreaView testID="biometric-setup-view" style={[AppStyles.container]}>
-                <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
-                </View>
-
-                <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
-                    <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <Image style={[AppStyles.emptyIcon]} source={Images.ImageBiometric} />
+            <ImageBackground
+                testID="biometric-setup-view"
+                resizeMode="cover"
+                source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
+                style={onboardingStyles.container}
+                imageStyle={onboardingStyles.backgroundImageStyle}
+            >
+                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                    <Image
+                        style={onboardingStyles.logo}
+                        source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
+                    />
+                </SafeAreaView>
+                <View style={[
+                    AppStyles.flex5,
+                ]}>
+                    <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
+                        <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                            <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                {Localize.t('setupBiometry.useBiometry')}
+                            </Text>
+                            <Spacer size={10} />
+                            <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.colorSilver]}>
+                                {Localize.t('setupBiometry.biometryDescription')}
+                            </Text>
+                            <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
+                                <Image style={[styles.icon]} source={Images.ImageBiometric} />
+                            </View>
+                        </View>
                     </View>
 
-                    <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong]}>{Localize.t('setupBiometry.useBiometry')}</Text>
-                        <Spacer size={10} />
-                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                            {Localize.t('setupBiometry.biometryDescription')}
-                        </Text>
-                    </View>
                 </View>
-
-                <Footer style={[AppStyles.paddingBottom]}>
-                    <Button
-                        light
-                        testID="skip-button"
-                        label={Localize.t('global.maybeLater')}
-                        onPress={this.onSkipPress}
-                        isDisabled={isButtonsDisabled && !isSkipButtonLoading}
-                        isLoading={isSkipButtonLoading}
-                    />
-                    <Spacer />
-                    <Button
-                        testID="yes-button"
-                        label={Localize.t('global.yes')}
-                        onPress={this.onYesPress}
-                        isDisabled={isButtonsDisabled}
-                        isLoading={isSaveButtonLoading}
-                    />
-                </Footer>
-            </SafeAreaView>
+                <SafeAreaView style={[
+                    AppStyles.flex2,
+                    AppStyles.marginTop,
+                ]}>
+                    <SafeAreaView style={[
+                        onboardingStyles.container,
+                    ]}>
+                        <Footer style={[
+                            AppStyles.paddingBottom,
+                            AppStyles.paddingTopNone,
+                        ]}>
+                            <Button
+                                light
+                                testID="skip-button"
+                                label={Localize.t('global.maybeLater')}
+                                onPress={this.onSkipPress}
+                                isDisabled={isButtonsDisabled && !isSkipButtonLoading}
+                                isLoading={isSkipButtonLoading}
+                            />
+                            <Spacer />
+                            <Button
+                                testID="yes-button"
+                                label={Localize.t('global.yes')}
+                                onPress={this.onYesPress}
+                                isDisabled={isButtonsDisabled}
+                                isLoading={isSaveButtonLoading}
+                            />
+                        </Footer>
+                    </SafeAreaView>
+                </SafeAreaView>
+            </ImageBackground>
         );
     }
 }

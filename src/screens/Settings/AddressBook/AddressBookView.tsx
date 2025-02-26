@@ -184,20 +184,23 @@ class AddressBookView extends Component<Props, State> {
                         }}
                         centerComponent={{ text: Localize.t('global.addressBook') }}
                     />
-                    <View style={[AppStyles.contentContainer, AppStyles.padding]}>
+                    <View style={[AppStyles.contentContainer]}>
                         <ImageBackground
-                            source={StyleService.getImage('BackgroundShapes')}
-                            imageStyle={AppStyles.BackgroundShapes}
+                            resizeMode="cover"
+                            source={
+                                StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                            }
                             style={[AppStyles.BackgroundShapesWH, AppStyles.centerContent]}
                         >
                             <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNoContacts')} />
                             <Text style={[AppStyles.emptyText]}>{Localize.t('settings.getStartedCreateContact')}</Text>
                             <Button
-                                rounded
+                                nonBlock
                                 icon="IconPlus"
                                 iconStyle={AppStyles.imgColorWhite}
                                 label={Localize.t('settings.addContact')}
                                 onPress={this.onAddContactPress}
+                                style={AppStyles.marginBottom}
                             />
                         </ImageBackground>
                     </View>

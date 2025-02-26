@@ -325,17 +325,26 @@ class AccountListView extends Component<Props, State> {
 
                 {accounts.isEmpty() ? (
                     <ImageBackground
-                        source={StyleService.getImage('BackgroundShapes')}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.contentContainer, AppStyles.padding]}
+                        resizeMode="cover"
+                        source={
+                            StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                        }
+                        style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.paddingBottom]}
                     >
                         <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageFirstAccount')} />
-                        <Text style={AppStyles.emptyText}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
+                        <Spacer size={10} />
+                        <Text style={[
+                            AppStyles.emptyText,
+                            AppStyles.p,
+                        ]}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
                         <Button
                             label={Localize.t('home.addAccount')}
                             icon="IconPlus"
                             iconStyle={AppStyles.imgColorWhite}
-                            rounded
+                            nonBlock
+                            style={[
+                                AppStyles.marginBottom,
+                            ]}
                             onPress={() => {
                                 Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
                             }}

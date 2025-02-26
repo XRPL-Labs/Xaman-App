@@ -29,7 +29,7 @@ import { Prompt } from '@common/helpers/interface';
 
 import Preferences from '@common/libs/preferences';
 
-import { Button, RaisedButton, LoadingIndicator } from '@components/General';
+import { Button, Spacer, RaisedButton, LoadingIndicator } from '@components/General';
 import {
     MonetizationElement,
     ProBadge,
@@ -47,6 +47,9 @@ import { ShareAccountOverlayProps } from '@screens/Overlay/ShareAccount';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import onboardingStyles from '../Onboarding/styles';
+import { AccountGenerateViewProps } from '@screens/Account/Add/Generate';
+import { AccountImportViewProps } from '@screens/Account/Add/Import';
 
 /* types ==================================================================== */
 export interface Props {
@@ -269,6 +272,26 @@ class HomeView extends Component<Props, State> {
         Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
+    onCreateAccountPress = () => {
+        Navigator.push<AccountGenerateViewProps>(AppScreens.Account.Generate, {});
+    };
+
+    onImportAccountPress = () => {
+        Navigator.push<AccountImportViewProps>(AppScreens.Account.Import, {});
+    };
+
+    onTangemAccountPress = () => {
+        let resolveNavigationPromise: (value: void | PromiseLike<void>) => void;
+        const navigationPromise = new Promise<void>((resolve) => {
+            resolveNavigationPromise = resolve;
+        });
+
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {
+            DefaultTangem: true,
+            NavigationReadyPromise: navigationPromise,
+        }).then(() => resolveNavigationPromise());
+    };
+
     renderHeader = () => {
         const { account, developerMode } = this.state;
 
@@ -383,23 +406,96 @@ class HomeView extends Component<Props, State> {
     renderEmpty = () => {
         return (
             <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
-                <View style={styles.headerContainer}>{this.renderHeader()}</View>
+                {/* <View style={styles.headerContainer}>{this.renderHeader()}</View> */}
 
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
-                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                    resizeMode="cover"
+                    source={StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')}
+                    style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}
                 >
-                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageFirstAccount')} />
-                    <Text style={AppStyles.emptyText}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
-                    <Button
-                        testID="add-account-button"
-                        label={Localize.t('home.addAccount')}
-                        icon="IconPlus"
-                        iconStyle={AppStyles.imgColorWhite}
-                        rounded
-                        onPress={this.onAddAccountPress}
-                    />
+                    <View style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                        <Image
+                            style={onboardingStyles.logo}
+                            source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
+                        />
+                    </View>
+                    <View style={[
+                        AppStyles.flex2,
+                    ]}>
+                        <View style={[AppStyles.flex1, AppStyles.paddingSml]}>
+                            <View style={[AppStyles.centerAligned, AppStyles.flexEnd]}>
+                                <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                    {Localize.t('onboarding.v2homepage_noacc1')}
+                                </Text>
+                                <Spacer size={10} />
+                                <Text style={[AppStyles.p, AppStyles.colorGrey, AppStyles.textCenterAligned]}>
+                                    {Localize.t('onboarding.v2homepage_noacc2')}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={[
+                        AppStyles.flex5,
+                        AppStyles.paddingBottom,
+                    ]}>
+                        <View style={[
+                            onboardingStyles.container,
+                        ]}>
+                            <Button
+                                testID="add-account-button"
+                                label={Localize.t('account.generateNewAccount')}
+                                icon="IconPlus"
+                                iconStyle={AppStyles.imgColorWhite}
+                                nonBlock
+                                onPress={this.onCreateAccountPress}
+                            />
+                            <Spacer size={12} />
+                            <Button
+                                testID="add-account-button-import"
+                                label={Localize.t('account.importExisting')}
+                                icon="IconCornerRightDown"
+                                iconStyle={AppStyles.imgColorWhite}
+                                nonBlock
+                                secondary
+                                onPress={this.onImportAccountPress}
+                            />
+                            <Spacer size={12} />
+                            <Text style={[
+                                AppStyles.textCenterAligned,
+                                AppStyles.smalltext,
+                                AppStyles.bold,
+                                AppStyles.colorGrey,
+                            ]}>{Localize.t('global.or').toUpperCase()}</Text>
+                            <Spacer size={12} />
+                            <Button
+                                testID="add-account-button-tangem"
+                                label={Localize.t('account.addTangemCard')}
+                                icon="IconRadio"
+                                iconStyle={AppStyles.imgColorContrast}
+                                nonBlock
+                                contrast
+                                onPress={this.onTangemAccountPress}
+                            />
+                            <Spacer size={12} />
+                            {/* <Footer style={[
+                                AppStyles.paddingBottom,
+                                AppStyles.paddingTopNone,
+                            ]}>
+                                <Button numberOfLines={1}
+                                    light
+                                    label={Localize.t('global.maybeLater')}
+                                    onPress={this.nextStep}
+                                />
+                                <Spacer />
+                                <Button
+                                    isLoading={isLoading}
+                                    numberOfLines={1}
+                                    label={Localize.t('global.yes')}
+                                    onPress={this.requestPermission}
+                                />
+                            </Footer> */}
+                        </View>
+                    </View>
                 </ImageBackground>
             </View>
         );

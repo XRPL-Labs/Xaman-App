@@ -45,7 +45,7 @@ import {
 } from '@services';
 import { AppStateStatus } from '@services/AppService';
 
-import { Button, Header, SearchBar, SegmentButtons } from '@components/General';
+import { Spacer, Button, Header, SearchBar, SegmentButtons } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
 import Localize from '@locale';
@@ -974,18 +974,27 @@ class EventsView extends Component<Props, State> {
                     }}
                 />
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
+                    resizeMode="cover"
+                    source={
+                        StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                    }
                     style={[AppStyles.contentContainer, AppStyles.padding]}
                 >
                     <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageNoEvents')} />
-                    <Text style={AppStyles.emptyText}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Spacer size={10} />
+                    <Text style={[
+                        AppStyles.emptyText,
+                        AppStyles.p,
+                    ]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                     <Button
                         testID="add-account-button"
                         label={Localize.t('home.addAccount')}
                         icon="IconPlus"
                         iconStyle={AppStyles.imgColorWhite}
-                        rounded
+                        nonBlock
+                        style={[
+                            AppStyles.marginBottom,
+                        ]}
                         onPress={this.onAddAccountPress}
                     />
                 </ImageBackground>

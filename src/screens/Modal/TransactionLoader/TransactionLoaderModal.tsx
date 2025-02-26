@@ -285,8 +285,10 @@ class TransactionLoaderModal extends Component<Props, State> {
 
         return (
             <ImageBackground
-                source={StyleService.getImage('BackgroundShapes')}
-                imageStyle={styles.backgroundShapes}
+                resizeMode="cover"
+                source={
+                    StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                }
                 style={styles.container}
             >
                 <View style={styles.contentContainer}>{this.renderContent()}</View>

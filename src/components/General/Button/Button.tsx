@@ -23,6 +23,7 @@ interface Props extends PropsWithChildren {
     light?: boolean;
     contrast?: boolean;
     rounded?: boolean;
+    nonBlock?: boolean;
     roundedSmall?: boolean;
     roundedMini?: boolean;
     roundedSmallBlock?: boolean;
@@ -72,6 +73,7 @@ export default class Button extends Component<Props> {
             light,
             contrast,
             rounded,
+            nonBlock,
             roundedSmall,
             roundedSmallBlock,
             roundedMini,
@@ -122,6 +124,7 @@ export default class Button extends Component<Props> {
                             secondary && styles.textButtonSecondary,
                             light && styles.textButtonLight,
                             contrast && styles.textButtonContrast,
+                            nonBlock && styles.textButtonNonBlock,
                             rounded && styles.textButtonRounded,
                             roundedSmall && styles.textButtonRoundedSmall,
                             roundedMini && styles.textButtonRoundedMini,
@@ -177,6 +180,7 @@ export default class Button extends Component<Props> {
             light,
             contrast,
             rounded,
+            nonBlock,
             roundedSmall,
             roundedSmallBlock,
             roundedMini,
@@ -197,6 +201,7 @@ export default class Button extends Component<Props> {
                         secondary && styles.buttonSecondary,
                         light && styles.buttonLight,
                         contrast && styles.buttonContrast,
+                        nonBlock && styles.buttonNonBlock,
                         rounded && styles.buttonRounded,
                         roundedSmall && styles.buttonRoundedSmall,
                         roundedSmallBlock && styles.buttonRoundedSmallBlock,
@@ -229,6 +234,7 @@ export default class Button extends Component<Props> {
                     light && styles.buttonLight,
                     contrast && styles.buttonContrast,
                     rounded && styles.buttonRounded,
+                    nonBlock && styles.buttonNonBlock,
                     roundedSmall && styles.buttonRoundedSmall,
                     roundedSmallBlock && styles.buttonRoundedSmallBlock,
                     roundedMini && styles.buttonRoundedMini,

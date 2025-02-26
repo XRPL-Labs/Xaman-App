@@ -620,7 +620,10 @@ class ScanModal extends Component<Props, State> {
     renderNotAuthorizedView = () => {
         return (
             <ImageBackground
-                source={StyleService.getImage('BackgroundShapes')}
+                resizeMode="cover"
+                source={
+                    StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                }
                 style={[AppStyles.container, AppStyles.paddingSml]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
@@ -636,12 +639,20 @@ class ScanModal extends Component<Props, State> {
                     </Text>
                     <Spacer size={50} />
                     <Button
+                        secondary
+                        label={Localize.t('global.close')}
+                        onPress={this.onClose}
+                        style={{ backgroundColor: AppColors.silver }}
+                        icon="IconX"
+                    />
+                    <Spacer size={15} />
+                    <Button
                         style={{ backgroundColor: AppColors.green }}
                         label={Localize.t('global.approvePermissions')}
+                        // nonBlock
                         onPress={this.requestPermissions}
+                        icon="IconCheck"
                     />
-                    <Spacer size={20} />
-                    <Button light label={Localize.t('global.close')} onPress={this.onClose} />
                 </View>
             </ImageBackground>
         );
@@ -660,15 +671,17 @@ class ScanModal extends Component<Props, State> {
                 });
                 break;
             default:
-                description = Localize.t('scan.aimAtTheCode');
+                description = '';
                 break;
         }
 
         if (isLoading) {
             return (
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
+                    resizeMode="cover"
+                    source={
+                        StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                    }
                     style={[AppStyles.container, AppStyles.paddingSml]}
                 >
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
@@ -708,28 +721,39 @@ class ScanModal extends Component<Props, State> {
                         <View style={styles.bottomLeft} />
                         <View style={styles.bottomRight} />
                     </View>
-                    <View style={[AppStyles.centerSelf, styles.tip]}>
-                        <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
-                            {description}
-                        </Text>
-                    </View>
+                    {
+                        description && description !== '' && (
+                            <View style={[AppStyles.centerSelf, styles.tip]}>
+                                <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
+                                    {description}
+                                </Text>
+                            </View>
+                        )
+                    }
+                    <Spacer size={20} />
                     <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
                             onPress={this.checkClipboardContent}
                             label={Localize.t('scan.importFromClipboard')}
-                            icon="IconClipboard"
+                            // icon="IconClipboard"
                             secondary
-                            roundedSmall
+                            roundedMini
+                            style={[
+                                AppStyles.paddingHorizontal,
+                            ]}
                         />
-                        <Spacer size={20} />
+                        <Spacer size={15} />
                         <Button
                             numberOfLines={1}
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
-                            rounded
                             onPress={this.onClose}
-                            style={styles.close}
+                            icon="IconX"
+                            style={[
+                                styles.close,
+                                AppStyles.paddingHorizontal,
+                            ]}
                         />
                     </View>
                 </RNCamera>

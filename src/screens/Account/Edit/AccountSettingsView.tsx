@@ -267,8 +267,8 @@ class AccountSettingsView extends Component<Props, State> {
 
         // remove account
         const skipAddress = account?.address;
-        AccountRepository.purge(account);
         this.selectNextAccount(skipAddress);
+        AccountRepository.purge(account);
 
         // pop the screen
         Navigator.pop();
