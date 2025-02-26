@@ -318,6 +318,9 @@ export default StyleService.create({
     paddingTop: {
         paddingTop: Sizes.padding,
     },
+    paddingTopNone: {
+        paddingTop: 0,
+    },
     paddingBottom: {
         paddingBottom: Sizes.padding,
     },
@@ -497,8 +500,6 @@ export default StyleService.create({
         height: 80,
         marginBottom: 30,
     },
-
-    // Empty view
     emptyIcon: {
         resizeMode: 'contain',
         width: Sizes.scale(140),
@@ -506,6 +507,10 @@ export default StyleService.create({
         alignSelf: 'center',
         marginBottom: 20,
         overflow: 'visible',
+    },
+    emptyIconSm: {
+        width: Sizes.scale(110),
+        height: Sizes.scale(110),
     },
     emptyText: {
         width: '90%',
@@ -516,10 +521,6 @@ export default StyleService.create({
         paddingHorizontal: Sizes.padding,
         alignSelf: 'center',
         color: '$textPrimary',
-    },
-    BackgroundShapes: {
-        resizeMode: 'contain',
-        opacity: 0.4,
     },
     BackgroundShapesWH: {
         width: '100%',
