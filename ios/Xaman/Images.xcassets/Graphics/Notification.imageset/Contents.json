@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "image_biometric_light.png",
+      "filename" : "Notification@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "image_biometric_light@2x.png",
+      "filename" : "Notification@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "image_biometric_light@3x.png",
+      "filename" : "Notification@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
