@@ -98,7 +98,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                     />
                 </SafeAreaView>
                 <View style={[
-                    AppStyles.flex5,
+                    AppStyles.flex4,
                 ]}>
                     <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
                         <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>

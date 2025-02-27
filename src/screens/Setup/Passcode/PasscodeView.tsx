@@ -346,7 +346,7 @@ class PasscodeSetupView extends Component<Props, State> {
         return (
             <View testID="pin-code-entry-view" style={[
                 AppStyles.paddingTop,
-                AppStyles.marginTopSml,
+                AppStyles.marginTop,
                 AppStyles.paddingHorizontal,
             ]}>
                 <Text style={[
@@ -364,12 +364,12 @@ class PasscodeSetupView extends Component<Props, State> {
                         AppStyles.bold,
                         AppStyles.textCenterAligned,
                         AppStyles.marginTopNegativeSml,
-                        AppStyles.colorSilver,
+                        AppStyles.colorPrimary,
                     ]}>
                         {Localize.t('setupPasscode.warnNeedPasscode')}
                     </Text>
                 }
-                <Spacer size={11} />
+                {/* <Spacer size={11} /> */}
                 <SecurePinInput
                     // autoFocus
                     ref={this.pinInputRef}
@@ -377,6 +377,8 @@ class PasscodeSetupView extends Component<Props, State> {
                     condensed
                     // checkStrength={currentStep === Steps.ENTER_PASSCODE}
                     length={6}
+                    pinPadStyle={[
+                    ]}
                     supportBiometric={false}
                     enableHapticFeedback={coreSettings.hapticFeedback}
                     onInputFinish={this.onPasscodeEnter}
@@ -394,19 +396,15 @@ class PasscodeSetupView extends Component<Props, State> {
                 style={onboardingStyles.container}
                 imageStyle={onboardingStyles.backgroundImageStyle}
             >
-                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                <SafeAreaView style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.padding]}>
                     <Image
                         style={onboardingStyles.logo}
                         source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
                     />
                 </SafeAreaView>
-                <View style={[
-                    AppStyles.flex6,
-                ]}>
-                    {this.renderContent()}
-                </View>
+                {this.renderContent()}
                 <SafeAreaView style={[
-                    AppStyles.flex1,
+                    AppStyles.flex2,
                     AppStyles.marginTop,
                 ]}>
                     <SafeAreaView style={[

@@ -25,6 +25,7 @@ import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import styles from './styles';
+import { AppStyles } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props {
@@ -193,7 +194,10 @@ class SecurePinInput extends Component<Props, State> {
                         }}
                         onLongPress={this.clearInput}
                     >
-                        <Icon name="IconChevronLeft" style={styles.iconStyle} size={35} />
+                        <Icon name="IconChevronLeft" style={[
+                            styles.iconStyle,
+                            AppStyles.marginTopNegativeSml,
+                        ]} size={35} />
                     </TouchableHighlight>
                 );
             }

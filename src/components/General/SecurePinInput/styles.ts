@@ -18,7 +18,7 @@ export default StyleService.create({
     digitsCondensed: {
         height: AppSizes.screen.height < 800
             ? AppSizes.verticalScale(50)
-            : AppSizes.verticalScale(80),
+            : AppSizes.verticalScale(65),
     },
     keyboardWrapCondensed: {
         marginTop: AppSizes.screen.height < 800
