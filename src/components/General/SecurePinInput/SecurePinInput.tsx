@@ -182,8 +182,11 @@ class SecurePinInput extends Component<Props, State> {
                 return (
                     <TouchableHighlight
                         testID="x-key"
-                        underlayColor={StyleService.value('$tint')}
-                        style={styles.line}
+                        underlayColor={StyleService.value('$transparentContrast')}
+                        activeOpacity={0.7}
+                        style={[
+                            styles.line,
+                        ]}
                         key="x-key"
                         onPress={() => {
                             this.onInput('Backspace');
@@ -199,8 +202,10 @@ class SecurePinInput extends Component<Props, State> {
                     return (
                         <TouchableHighlight
                             testID="y-key"
-                            underlayColor={StyleService.value('$tint')}
-                            style={styles.line}
+                            underlayColor={StyleService.value('$transparentContrast')}
+                            style={[
+                                styles.line,
+                            ]}
                             key="y-key"
                             onPress={() => {
                                 if (onBiometryPress) {
@@ -236,8 +241,10 @@ class SecurePinInput extends Component<Props, State> {
             return (
                 <TouchableHighlight
                     testID={`${item}-key`}
-                    underlayColor={StyleService.value('$tint')}
-                    style={styles.line}
+                    underlayColor={StyleService.value('$transparentContrast')}
+                    style={[
+                        styles.line,
+                    ]}
                     activeOpacity={0.7}
                     key={`${item}-key`}
                     onPress={() => {
