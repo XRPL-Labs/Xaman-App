@@ -4,7 +4,7 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 export default StyleService.create({
     currencyItem: {
-        width: AppSizes.screen.width,
+        width: AppSizes.screen.uncorrectedWidth, // Fixes fold devices
         flexDirection: 'row',
         backgroundColor: '$background',
         paddingHorizontal: AppSizes.paddingList,

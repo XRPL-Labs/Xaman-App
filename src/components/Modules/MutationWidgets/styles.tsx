@@ -5,7 +5,7 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     labelContainer: {
-        width: AppSizes.screen.width,
+        width: AppSizes.screen.uncorrectedWidth, // Fixes square fold devices
         justifyContent: 'center',
         alignItems: 'center',
         padding: 15,
@@ -19,7 +19,6 @@ const styles = StyleService.create({
         backgroundColor: '$red',
     },
     itemContainer: {
-        width: AppSizes.screen.width,
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 10,
