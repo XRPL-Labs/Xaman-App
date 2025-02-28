@@ -351,7 +351,10 @@ class AccountListView extends Component<Props, State> {
                         />
                     </ImageBackground>
                 ) : (
-                    <View style={AppStyles.flex1}>
+                    <View style={[
+                        AppStyles.flex1,
+                        AppStyles.windowSize,
+                    ]}>
                         {isMigrationRequired && !reorderEnabled ? (
                             <View style={styles.rowMigrationContainer}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold]}>
