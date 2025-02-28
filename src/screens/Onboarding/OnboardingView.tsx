@@ -40,7 +40,7 @@ class OnboardingView extends Component<Props, State> {
                 testID="onboarding-screen"
                 resizeMode="cover"
                 source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
-                style={styles.container}
+                style={styles.backgroundImageStyle}
                 imageStyle={styles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.padding]}>

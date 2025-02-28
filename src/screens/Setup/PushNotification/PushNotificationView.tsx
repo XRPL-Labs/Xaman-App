@@ -88,7 +88,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                 testID="permission-setup-view"
                 resizeMode="cover"
                 source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
-                style={onboardingStyles.container}
+                style={onboardingStyles.backgroundImageStyle}
                 imageStyle={onboardingStyles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>

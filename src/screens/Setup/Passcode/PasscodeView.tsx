@@ -393,7 +393,7 @@ class PasscodeSetupView extends Component<Props, State> {
                 testID="setup-passcode-screen"
                 resizeMode="cover"
                 source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
-                style={onboardingStyles.container}
+                style={onboardingStyles.backgroundImageStyle}
                 imageStyle={onboardingStyles.backgroundImageStyle}
             >
                 <SafeAreaView style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.padding]}>
