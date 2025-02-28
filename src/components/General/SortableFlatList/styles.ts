@@ -3,7 +3,7 @@ import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
-        width: AppSizes.screen.uncorrectedWidth, // Will auto width - this fixes Fold devices
+        width: AppSizes.screen.width, // Will auto width - this fixes Fold devices
     },
     contentContainerStyle: {
         flexGrow: 0,
