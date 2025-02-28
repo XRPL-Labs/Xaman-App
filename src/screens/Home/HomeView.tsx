@@ -73,11 +73,7 @@ class HomeView extends Component<Props, State> {
     private navigationListener: EventSubscription | undefined;
 
     static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
+        return { topBar: { visible: false } };
     }
 
     constructor(props: Props) {

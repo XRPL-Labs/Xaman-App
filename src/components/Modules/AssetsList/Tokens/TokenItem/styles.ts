@@ -30,7 +30,7 @@ export default StyleService.create({
         paddingTop: 2,
         paddingLeft: 4,
         paddingRight: 3,
-        height: AppFonts.subtext.size * 0.92,
+        height: AppFonts.subtext.size * 0.95,
     },
     balanceContainer: {
         flex: 1,
