@@ -19,6 +19,7 @@ const styles = StyleService.create({
         backgroundColor: '$red',
     },
     itemContainer: {
+        width: AppSizes.screen.uncorrectedWidth,
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 10,
