@@ -11,6 +11,7 @@ import { NetworkService, StyleService } from '@services';
 import { TrustLineModel } from '@store/models';
 
 import { Avatar, AvatarProps } from '@components/General/Avatar';
+// import { AppStyles } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
@@ -75,10 +76,24 @@ class TokenAvatar extends PureComponent<Props, State> {
                 avatarUrl = avatarUrl.replace(BASE_CDN_URL, `${BASE_CDN_URL}${SATURATION_PARAM}`);
             }
         }
+        
+        const _containerStyle = containerStyle || {
+            backgroundColor: 'transparent',
+        };
 
         return (
             <Avatar
-                {...{ size, imageScale, border, badge, badgeColor, containerStyle, backgroundColor }}
+                {...
+                    {
+                        size,
+                        imageScale,
+                        border,
+                        badge,
+                        badgeColor,
+                        containerStyle: _containerStyle,
+                        backgroundColor,
+                    }
+                }
                 source={{ uri: avatarUrl }}
             />
         );
