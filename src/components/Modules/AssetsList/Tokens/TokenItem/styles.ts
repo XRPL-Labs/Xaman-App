@@ -23,6 +23,15 @@ export default StyleService.create({
         fontFamily: AppFonts.base.family,
         color: '$grey',
     },
+    lpBadgeContainer: {
+        height: AppFonts.subtext.size * 0.85,
+    },
+    lpBadge: {
+        paddingTop: 2,
+        paddingLeft: 4,
+        paddingRight: 3,
+        height: AppFonts.subtext.size * 0.92,
+    },
     balanceContainer: {
         flex: 1,
         flexDirection: 'row',

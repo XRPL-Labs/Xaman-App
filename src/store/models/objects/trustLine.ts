@@ -79,7 +79,7 @@ class TrustLine extends Realm.Object<TrustLine> {
             if (!assetPair.isEmpty()) {
                 return assetPair[0]?.pairs
                     .map((pair) => (typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currencyCode)))
-                    .join('/');
+                    .join(' / ');
             }
         }
 
