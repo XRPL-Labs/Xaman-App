@@ -84,12 +84,12 @@ const getTabBarIcons = (): {
         [AppScreens.TabBar.Home]: {
             icon: StyleService.getImage('IconTabBarHome'),
             iconSelected: StyleService.getImage('IconTabBarHomeSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Events]: {
             icon: StyleService.getImage('IconTabBarEvents'),
             iconSelected: StyleService.getImage('IconTabBarEventsSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Actions]: {
             icon: StyleService.getImage('IconTabBarActions'),
@@ -99,7 +99,7 @@ const getTabBarIcons = (): {
         [AppScreens.TabBar.XApps]: {
             icon: StyleService.getImage('IconTabBarXapp'),
             iconSelected: StyleService.getImage('IconTabBarXappSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Settings]: {
             icon: StyleService.getImage('IconTabBarSettings'),

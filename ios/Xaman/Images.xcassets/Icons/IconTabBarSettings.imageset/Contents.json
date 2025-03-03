@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "IconTabBarSettings.png",
+      "filename" : "s.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "IconTabBarSettings@2x.png",
+      "filename" : "s@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "IconTabBarSettings@3x.png",
+      "filename" : "s@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

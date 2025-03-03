@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "IconTabBarXapp.png",
+      "filename" : "xApps grey.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "IconTabBarXapp@2x.png",
+      "filename" : "xApps grey@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "IconTabBarXapp@3x.png",
+      "filename" : "xApps grey@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
