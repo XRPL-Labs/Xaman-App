@@ -14,6 +14,7 @@ import { TouchableDebounce, Avatar, Badge, Icon, LoadingIndicator } from '@compo
 import Localize from '@locale';
 
 import { Props as ParticipantMenuOverlayProps } from '@screens/Overlay/ParticipantMenu/types';
+import { type cachedTokenDetailsState } from '@components/Modules/EventsList/EventListItems/Transaction';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -43,6 +44,7 @@ interface Props {
     textStyle?: TextStyle | TextStyle[];
     onPress?: (account: AccountElementType) => void;
     onInfoUpdate?: (info: AccountNameResolveType) => void;
+    tokenDetails?: cachedTokenDetailsState;
 }
 
 interface State {
@@ -174,7 +176,7 @@ class AccountElement extends Component<Props, State> {
     };
 
     renderAvatar = () => {
-        const { address, visibleElements } = this.props;
+        const { address, visibleElements, tokenDetails } = this.props;
         const { info } = this.state;
 
         if (!visibleElements?.avatar) return null;
@@ -183,6 +185,10 @@ class AccountElement extends Component<Props, State> {
 
         if (info?.kycApproved) {
             badge = 'IconCheckXaman';
+        }
+
+        if (tokenDetails && tokenDetails.account === address) {
+            return tokenDetails.icon;
         }
 
         return <Avatar source={{ uri: `${WebLinks.AvatarURL}/${address}_180_50.png` }} badge={badge} />;
@@ -201,8 +207,19 @@ class AccountElement extends Component<Props, State> {
     };
 
     renderName = () => {
-        const { textStyle } = this.props;
+        const { address, textStyle, tokenDetails } = this.props;
         const { isLoading, info } = this.state;
+
+        if (tokenDetails && tokenDetails.account === address) {
+            return (
+                <View style={[AppStyles.flex1, AppStyles.row]}>
+                    <Text numberOfLines={1} style={[styles.nameText, textStyle]}>
+                        {tokenDetails.title}
+                    </Text>
+                    {this.renderSource()}
+                </View>
+            );
+        }
 
         if (isLoading || typeof info === 'undefined') {
             return (

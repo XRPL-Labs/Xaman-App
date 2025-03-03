@@ -163,7 +163,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     };
 
     render() {
-        const { account, item, componentType } = this.props;
+        const { account, item, componentType, cachedTokenDetails } = this.props;
         const { advisory, explainer } = this.state;
 
         const widgetsList: WidgetKey[] = [
@@ -211,6 +211,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                             explainer,
                             advisory,
                             componentType,
+                            cachedTokenDetails,
                         });
                     })}
                 </ScrollView>

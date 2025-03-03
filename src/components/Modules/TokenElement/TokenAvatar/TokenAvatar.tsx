@@ -17,7 +17,8 @@ import styles from './styles';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
-    token: TrustLineModel | 'Native';
+    token?: TrustLineModel | 'Native';
+    tokenPair?: (TrustLineModel | string)[];
     saturate?: boolean;
     networkService?: typeof NetworkService;
 }
@@ -52,6 +53,7 @@ class TokenAvatar extends PureComponent<Props, State> {
     render() {
         const {
             token,
+            tokenPair,
             size,
             imageScale,
             border,
@@ -76,11 +78,20 @@ class TokenAvatar extends PureComponent<Props, State> {
         
         const _containerStyle = containerStyle || { backgroundColor: 'transparent' };
 
-        const lp = typeof token !== 'string' && token.getLpAssetPair() || undefined;
         const nativeAsset = (networkService || NetworkService).getNativeAsset();
 
-        if (lp && lp?.[0] && lp?.[1] && lp?.[0] !== '' && lp?.[1] !== '') {
-            const [t1, t2] = lp;
+        const TokenPair = token
+            ? typeof token !== 'string' && token.getLpAssetPair() || undefined
+            : tokenPair && typeof tokenPair === 'object' && tokenPair.length === 2 ? tokenPair.map(_token => {
+                return typeof _token === 'object' && _token?.currency?.issuerAvatarUrl
+                    ? _token.currency.issuerAvatarUrl
+                    : typeof _token === 'string' && _token === nativeAsset
+                    ? _token
+                    : StyleService.getImage('ImageUnknownTrustLine').uri;
+            }) : undefined;
+
+        if (TokenPair && TokenPair?.[0] && TokenPair?.[1] && TokenPair?.[0] !== '' && TokenPair?.[1] !== '') {
+            const [t1, t2] = TokenPair;
             const img1 = t1 === nativeAsset
                 ? (networkService || NetworkService).getNativeAssetIcons().asset
                 : t1 === ''
@@ -118,7 +129,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         }
 
         if (!avatarUrl || avatarUrl === '') {
-            return <Text>No</Text>;
+            return <Text>?</Text>;
         }
 
         return (

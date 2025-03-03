@@ -11,6 +11,13 @@ const styles = StyleService.create({
         alignItems: 'center',
         borderRadius: AppSizes.borderRadius,
     },
+    ammIcon: {
+        marginLeft: 8,
+    },
+    boldTitle: {
+        fontFamily: AppFonts.base.familyBold,
+        color: '$textPrimary',
+    },
     containerBlocked: {
         width: '100%',
         height: '100%',

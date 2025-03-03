@@ -19,12 +19,13 @@ import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
 
 import { AccountModel } from '@store/models';
+import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { TouchableDebounce } from '@components/General';
+import { TouchableDebounce, Badge, BadgeType } from '@components/General';
 
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
@@ -32,8 +33,16 @@ import * as Blocks from './Blocks';
 
 import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
+import lpStyles from '@components/Modules/AssetsList/Tokens/TokenItem/styles';
+import trustLine from '@store/repositories/trustLine';
 
 /* types ==================================================================== */
+export interface cachedTokenDetailsState {
+    title?: React.JSX.Element;
+    icon?: React.JSX.Element;
+    account?: string;
+};
+
 export interface Props {
     account: AccountModel;
     item: Transactions & MutationsMixinType;
@@ -51,6 +60,7 @@ export interface State {
     explainer?: ExplainerAbstract<CombinedTransactions | LedgerObjects>;
     isFeeTransaction?: boolean;
     feeText?: string;
+    cachedTokenDetails: cachedTokenDetailsState;
 }
 
 /* Component ==================================================================== */
@@ -67,17 +77,23 @@ class TransactionItem extends Component<Props, State> {
             isLoading: true,
             participant: undefined,
             explainer: undefined,
+            cachedTokenDetails: {
+                title: undefined,
+                icon: undefined,
+                account: undefined,
+            },
         };
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         // const { item, timestamp } = this.props;
         // const { isLoading, participant, explainer } = this.state;
-        const { isLoading } = this.state;
+        const { isLoading, cachedTokenDetails } = this.state;
 
         return (
             // !isEqual(nextProps.item?.hash, item?.hash) ||
-            !isEqual(nextState.isLoading, isLoading) // ||
+            !isEqual(nextState.isLoading, isLoading) ||
+            !isEqual(nextState.cachedTokenDetails.account, cachedTokenDetails.account)
             // !isEqual(nextState.participant, participant) ||
             // !isEqual(nextState.explainer, explainer) // ||
             // !isEqual(nextProps.timestamp, timestamp)
@@ -184,20 +200,134 @@ class TransactionItem extends Component<Props, State> {
                 });
             }
         }
+
+        this.getTokenDetails();
     };
 
     onPress = () => {
         const { item, account } = this.props;
+        const { cachedTokenDetails } = this.state;
 
         Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
             item,
             account,
+            cachedTokenDetails,
         });
     };
 
+    getTokenDetails() {
+        const { item, account } = this.props;
+        const { participant, cachedTokenDetails } = this.state;
+
+        if (cachedTokenDetails?.icon) return;
+
+        let changesToAmmLine;
+        let changesSwap;
+
+        if ([
+            'AMMCreate',
+            'AMMDeposit',
+            'AMMWithdraw',
+        ].indexOf(item.TransactionType) > -1) {
+            changesToAmmLine = Object.values(item.MetaData)
+                .flat().filter(f => typeof f === 'object')
+                .map(f => Object.values(f))
+                .flat().filter(f => typeof f === 'object')
+                .map(f => Object.values(f) as any)
+                .flat().filter(f => typeof f.AMMID === 'string' && typeof f.Account === 'string')
+                .map(f => f.Account)
+                .map(issuer => trustLine.findBy('currency.issuer', issuer)?.[0])
+                .filter(line => typeof line === 'object' && line && line?.currency)?.[0];
+        }
+
+        if (item.TransactionType === 'Payment' && item.Account === (item as any)?.Destination) {
+            // Payment to self
+            const itemAsAny = (item as any);
+            const fieldsToCheck = ['SendMax', 'Amount', 'DeliverMin']; // In this order for logical from/to
+            const mutations = fieldsToCheck
+                .map(field => itemAsAny?.[field])
+                .filter(field => !!field && field?.currency)
+                .map(field => `${field.currency} ${field?.issuer || ''}`.trim())
+                .reduce((a: string[], v: string) => {
+                    if (a.indexOf(v) < 0) a.push(v);
+                    return a;
+                }, []);
+
+            if (mutations.length === 2) {
+                changesSwap = mutations.map(mutation => {
+                    const [currency, issuer] = mutation.split(' ');
+                    return trustLine.findBy('currency.currencyCode', currency)
+                        .filter(line => line.currency.issuer === issuer)?.[0] || mutation;
+                });
+            }
+        }
+
+        if (changesToAmmLine) {
+            this.setState({cachedTokenDetails: {
+                account: changesToAmmLine.currency.issuer,
+                title: (
+                    <Text style={styles.boldTitle}>
+                        {changesToAmmLine.getFormattedCurrency()}
+                        {
+                            changesToAmmLine.isLiquidityPoolToken() && (
+                                <View style={lpStyles.lpBadgeContainer}>
+                                    <Badge
+                                        label="LP"
+                                        type={BadgeType.Planned}
+                                        containerStyle={lpStyles.lpBadge}
+                                    />
+                                </View>
+                            )
+                        }
+                    </Text>
+                ),
+                icon: (
+                    <View style={styles.ammIcon}>
+                        <TokenAvatar
+                            token={changesToAmmLine}
+                            // border
+                            size={35}
+                        />
+                    </View>
+                ),
+            }});
+        } else if (changesSwap) {
+            const tokenNames = changesSwap.map(token => {
+                return typeof token?.currency?.currencyCode === 'string'
+                    ? token.getFormattedCurrency()
+                    : typeof token === 'string'
+                    ? token
+                    : '?';
+            }).join(' / ');
+            this.setState({cachedTokenDetails: {
+                account: item.Account,
+                title: (
+                    <Text style={styles.boldTitle}>
+                        {tokenNames}
+                    </Text>
+                ),
+                icon: (
+                    <View style={styles.ammIcon}>
+                        <TokenAvatar
+                            tokenPair={changesSwap}
+                            // border
+                            size={35}
+                        />
+                    </View>
+                ),
+            }});  
+        } else {
+            this.setState({cachedTokenDetails: {
+                account: account.address,
+                title: <Blocks.LabelBlock item={item} account={account} participant={participant} />,
+                icon: <Blocks.AvatarBlock participant={participant} item={item} />,
+            }});
+        }
+    }
+
     render() {
         const { item, account } = this.props; // , rates
-        const { participant, explainer, isFeeTransaction, feeText } = this.state;
+        const { participant, explainer, isFeeTransaction, feeText, cachedTokenDetails } = this.state;
 
         return (
             <TouchableDebounce
@@ -219,12 +349,12 @@ class TransactionItem extends Component<Props, State> {
                         </View>
                     )}
                     { !isFeeTransaction && (
-                        <Blocks.AvatarBlock participant={participant} item={item} />
+                        cachedTokenDetails?.icon
                     )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     { !isFeeTransaction && (
-                        <Blocks.LabelBlock item={item} account={account} participant={participant} />
+                        cachedTokenDetails?.title
                     )}
                     { isFeeTransaction && (
                         <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
