@@ -1198,8 +1198,8 @@ class XAppBrowserModal extends Component<Props, State> {
                     }}
                     centerComponent={{ text: nativeTitle, extraComponent: <NetworkLabel type="both" /> }}
                     rightComponent={{
-                        icon: 'IconSlider',
-                        iconSize: 20,
+                        icon: 'IconTabBarSettingsSelected',
+                        iconSize: 25,
                         onPress: () => {
                             this.navigateTo({
                                 xApp: AppConfig.xappIdentifiers.swap,
