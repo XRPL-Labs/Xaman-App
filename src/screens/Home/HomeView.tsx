@@ -440,7 +440,7 @@ class HomeView extends Component<Props, State> {
                             <Button
                                 testID="add-account-button"
                                 label={Localize.t('account.generateNewAccount')}
-                                icon="IconPlus"
+                                icon="IconCreate"
                                 iconStyle={AppStyles.imgColorWhite}
                                 nonBlock
                                 onPress={this.onCreateAccountPress}
@@ -449,7 +449,7 @@ class HomeView extends Component<Props, State> {
                             <Button
                                 testID="add-account-button-import"
                                 label={Localize.t('account.importExisting')}
-                                icon="IconCornerRightDown"
+                                icon="IconImport"
                                 iconStyle={AppStyles.imgColorWhite}
                                 nonBlock
                                 secondary
@@ -466,7 +466,7 @@ class HomeView extends Component<Props, State> {
                             <Button
                                 testID="add-account-button-tangem"
                                 label={Localize.t('account.addTangemCard')}
-                                icon="IconRadio"
+                                icon="IconTangem"
                                 iconStyle={AppStyles.imgColorContrast}
                                 nonBlock
                                 contrast

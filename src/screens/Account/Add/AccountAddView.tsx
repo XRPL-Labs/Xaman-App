@@ -312,7 +312,7 @@ class AccountAddView extends Component<Props, State> {
                                         // numberOfLines={1}
                                         testID="account-generate-button"
                                         label={Localize.t('account.generateNewAccount')}
-                                        icon="IconPlus"
+                                        icon="IconCreate"
                                         iconStyle={AppStyles.imgColorWhite}
                                         nonBlock
                                         onPress={this.goToGenerate}
@@ -325,7 +325,7 @@ class AccountAddView extends Component<Props, State> {
                                         // numberOfLines={1}
                                         testID="account-import-button"
                                         label={Localize.t('account.importExisting')}
-                                        icon="IconCornerRightDown"
+                                        icon="IconImport"
                                         iconStyle={AppStyles.imgColorWhite}
                                         nonBlock
                                         onPress={this.goToImport}
@@ -341,7 +341,7 @@ class AccountAddView extends Component<Props, State> {
                                     <Spacer size={12} />
 
                                     <Button
-                                        icon="IconRadio"
+                                        icon="IconTangem"
                                         iconStyle={AppStyles.imgColorContrast}
                                         nonBlock
                                         contrast

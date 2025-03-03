@@ -170,4 +170,8 @@ export const Images = {
     Pincode: buildImageSource('Pincode', 'pincode'),
     PhonesLight: buildImageSource('PhonesLight', 'phones_light'),
     PhonesDark: buildImageSource('PhonesDark', 'phones_dark'),
+    // 4.0.0 Cards
+    IconCreate: buildImageSource('IconCreate', 'create'),
+    IconImport: buildImageSource('IconImport', 'icon_import'),
+    IconTangem: buildImageSource('IconTangem', 'tangem'),
 };

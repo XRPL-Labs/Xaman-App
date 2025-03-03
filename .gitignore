@@ -78,4 +78,5 @@ e2e/artifacts/*
 
 # Imageprepare scripts
 scripts/imageprepare-app/*.svg
+scripts/imageprepare-app/*.png
 scripts/imageprepare-app/*/*
