@@ -185,7 +185,7 @@ class RequestItem extends Component<Props, State> {
                 style={[styles.container, { height: RequestItem.Height }]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                    <Avatar border source={{ uri: item.getApplicationIcon() }} />
+                    <Avatar source={{ uri: item.getApplicationIcon() }} />
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent]}>
                     <Text style={styles.label}>{item.getApplicationName()}</Text>
