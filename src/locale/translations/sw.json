@@ -498,7 +498,7 @@
     "onDate": "on",
     "paymentReceived": "Payment received",
     "paymentSent": "Payment sent",
-    "exchangedAssets": "Exchanged tokens",
+    "exchangedAssets": "Swapped tokens",
     "addedATrustLine": "Added a token (TrustLine)",
     "removedATrustLine": "Removed a token (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",
