@@ -154,10 +154,13 @@ class EventsView extends Component<Props, State> {
 
     componentDidAppear() {
         // keep track of screen visibility
-        this.isScreenVisible = true;
 
+        // console.log('appeared')
+        this.isScreenVisible = true;
+        
         // check if we need to reload the screen
         if (this.forceReload) {
+            // console.log('reloading')
             // set the flag to false
             this.forceReload = false;
 
@@ -423,8 +426,10 @@ class EventsView extends Component<Props, State> {
                 return;
             }
             
-            LedgerService.getTransactions(account.address, loadMore && lastMarker, 200)
-            .then(async (resp) => {
+            const fetchAmount = 15;
+
+            LedgerService.getTransactions(account.address, loadMore && lastMarker, fetchAmount)
+                .then(async (resp) => {
                     if ('error' in resp) {
                         resolve([]);
                         return;
@@ -435,7 +440,7 @@ class EventsView extends Component<Props, State> {
 
                     // if we got less than 50 transaction, means there is no transaction
                     // also only handle recent 1000 transactions
-                    if (txResp.length < 200 || transactions.length >= 1000) {
+                    if (txResp.length < fetchAmount || transactions.length >= 1000) {
                         canLoadMore = false;
                     }
 
@@ -489,6 +494,18 @@ class EventsView extends Component<Props, State> {
                     this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
                         resolve(parsedList);
                     });
+
+                    // console.log('txResp.length', txResp.length)
+                    // console.log('transactions.length', transactions.length)
+                    // console.log('parsedList.length', parsedList.length)
+                    if (parsedList.length < fetchAmount) {
+                        // Initial query didn't result in full lengt list
+                        if (canLoadMore && marker) {
+                            // Can load more, there's a marker
+                            // Immediately load one more
+                            this.loadMore(true);
+                        }
+                    }
                 })
                 .catch(() => {
                     // TODO: BETTER ERROR HANDLING AND ONLY SHOW WHEN SCREEN IS VISIBLE
@@ -498,11 +515,15 @@ class EventsView extends Component<Props, State> {
         });
     };
 
-    loadMore = async () => {
+    loadMore = async (forced = false) => {
         const { canLoadMore, filters, searchText, isLoadingMore, isLoading, activeSection } = this.state;
 
-        if (isLoading || isLoadingMore || !canLoadMore || activeSection !== EventSections.ALL) return;
-
+        // console.log('loadingmore', canLoadMore, isLoadingMore)
+        if (!forced) {
+            if (isLoading || isLoadingMore || !canLoadMore || activeSection !== EventSections.ALL) return;
+        }
+        // console.log('loadingmoremore')
+        
         this.setState({ isLoadingMore: true });
 
         await this.loadTransactions(true);
@@ -600,9 +621,10 @@ class EventsView extends Component<Props, State> {
 
         // Ping to update red pending icon count
         // in case push notifications are disabled
-        BackendService.ping();
 
         let sourceTypes = [] as DataSourceType[];
+
+        BackendService.ping();
 
         switch (activeSection) {
             case EventSections.ALL:
@@ -626,10 +648,13 @@ class EventsView extends Component<Props, State> {
         // update data sources
         for (const source of sourceTypes) {
             if (source === DataSourceType.PENDING_REQUESTS) {
+                // console.log('loadpending')
                 await this.loadPendingRequests();
             } else if (source === DataSourceType.TRANSACTIONS) {
+                // console.log('load--transactions---', this.isScreenVisible)
                 await this.loadTransactions();
             } else if (source === DataSourceType.PLANNED_TRANSACTIONS) {
+                // console.log('loadplan')
                 await this.loadPlannedTransactions();
             }
         }
@@ -1075,7 +1100,7 @@ class EventsView extends Component<Props, State> {
                     isVisible={this.isScreenVisible}
                     isLoadingMore={isLoadingMore}
                     onEndReached={this.loadMore}
-                    onRefresh={this.updateDataSource}
+                    // /Refresh={this.updateDataSource}
                     timestamp={timestamp}
                 />
             </View>

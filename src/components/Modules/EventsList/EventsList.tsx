@@ -101,6 +101,8 @@ class EventsList extends PureComponent<Props, State> {
         const { account, timestamp } = this.props;
         // const { fiatCurrency, fiatRate, isLoadingRate } = this.state;
 
+        // console.log('renderItem')
+
         if (item instanceof Payload) {
             return React.createElement(EventListItems.Request, {
                 item,
