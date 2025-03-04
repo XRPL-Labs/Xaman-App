@@ -29,12 +29,15 @@ export const Biometric = {
      * Authenticate with biometrics
      */
     authenticate: (reason: string): Promise<BiometryType> => {
+        // console.log('bio auth')
         return new Promise((resolve, reject) => {
             BiometricModule.authenticate(reason)
                 .then((biometryType: BiometryType) => {
+                    // console.log('bio auth reason')
                     resolve(biometryType);
                 })
                 .catch((error: any) => {
+                    // console.log('bio auth reason catch')
                     reject(Biometric.normalizeError(error.code));
                 });
         });
@@ -44,12 +47,15 @@ export const Biometric = {
      * check if any sensor is available
      */
     isSensorAvailable: (): Promise<BiometryType> => {
+        // console.log('bio available?')
         return new Promise((resolve, reject) => {
             BiometricModule.isSensorAvailable()
                 .then((biometryType: BiometryType) => {
+                    // console.log('bio available? then')
                     resolve(biometryType);
                 })
                 .catch((error: any) => {
+                    // console.log('bio available? catch', error)
                     reject(Biometric.normalizeError(error.code));
                 });
         });

@@ -179,12 +179,15 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     isBiometricSupported = () => {
+        // console.log('isBiometricSupported')
         return new Promise((resolve) => {
             Biometric.isSensorAvailable()
                 .then(() => {
+                    // console.log('isBiometricSupported true')
                     resolve(true);
                 })
                 .catch(() => {
+                    // console.log('isBiometricSupported false')
                     resolve(false);
                 });
         });

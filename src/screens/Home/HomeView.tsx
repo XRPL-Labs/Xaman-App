@@ -557,8 +557,9 @@ class HomeView extends Component<Props, State> {
                 resizeMode: 'cover',
                 source: StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes'),
             }
-            : {};
-
+            : {
+                // Nada for `View`
+            };
 
         return (
             <View testID="home-tab-view" style={AppStyles.tabContainer}>

@@ -31,6 +31,7 @@ export interface Props {}
 
 export interface State {
     isBiometricAvailable: boolean;
+    fullBiometricsView: boolean;
     // biometricMethod: BiometryType;
     hapticFeedback: boolean;
     offsetBottom: number;
@@ -53,6 +54,7 @@ class PasscodeMethod extends Component<Props, State> {
 
         this.state = {
             isBiometricAvailable: false,
+            fullBiometricsView: true,
             hapticFeedback: coreSettings.hapticFeedback,
             // biometricMethod: coreSettings.biometricMethod,
             offsetBottom: 0,
@@ -113,11 +115,14 @@ class PasscodeMethod extends Component<Props, State> {
     };
 
     setBiometricStatus = () => {
+        const { fullBiometricsView } = this.state;
+
         return new Promise((resolve) => {
             AuthenticationService.isBiometricAvailable().then((status) => {
                 this.setState(
                     {
                         isBiometricAvailable: status,
+                        fullBiometricsView: fullBiometricsView && status,
                     },
                     () => resolve(null),
                 );
@@ -153,15 +158,15 @@ class PasscodeMethod extends Component<Props, State> {
         AuthenticationService.authenticateBiometrics(Localize.t('global.signingTheTransaction'))
             .then(this.onSuccessBiometricAuthenticate)
             .catch((error: any) => {
+                this.setState({ fullBiometricsView: false });
+
                 let errorMessage;
                 // biometric's has been changed
                 if (error.name === BiometricErrors.ERROR_BIOMETRIC_HAS_BEEN_CHANGED) {
                     errorMessage = Localize.t('global.biometricChangeError');
                     // disable biometrics and start authentication again
                     this.setState(
-                        {
-                            isBiometricAvailable: false,
-                        },
+                        { isBiometricAvailable: false },
                         this.startAuthentication,
                     );
                 } else if (error.name !== BiometricErrors.ERROR_USER_CANCEL) {
@@ -195,7 +200,7 @@ class PasscodeMethod extends Component<Props, State> {
 
     render() {
         const { dismiss, isSigning } = this.context;
-        const { offsetBottom, hapticFeedback, isBiometricAvailable } = this.state;
+        const { offsetBottom, hapticFeedback, isBiometricAvailable, fullBiometricsView } = this.state;
         // biometricMethod,
 
         const interpolateColor = this.animatedColor.interpolate({
@@ -203,7 +208,9 @@ class PasscodeMethod extends Component<Props, State> {
             outputRange: StyleService.getBackdropInterpolateColor(),
         });
 
-        return (
+        const needsToShowPinPad = !fullBiometricsView || !isBiometricAvailable;
+
+        return needsToShowPinPad && (
             <Animated.View
                 onStartShouldSetResponder={() => true}
                 style={[styles.container, { backgroundColor: interpolateColor }]}
