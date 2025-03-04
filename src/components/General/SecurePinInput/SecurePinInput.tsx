@@ -210,6 +210,7 @@ class SecurePinInput extends Component<Props, State> {
                             style={[
                                 styles.line,
                             ]}
+                            activeOpacity={0.7}
                             key="y-key"
                             onPress={() => {
                                 if (onBiometryPress) {
