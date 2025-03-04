@@ -37,10 +37,9 @@ export default StyleService.create({
         marginRight: 15,
         tintColor: '$grey',
     },
-
     messageContainer: {
         alignItems: 'center',
-        backgroundColor: '$lightRed',
+        backgroundColor: '$lightBlue',
         margin: AppSizes.paddingSml,
         padding: AppSizes.paddingSml,
         borderRadius: AppSizes.borderRadius,

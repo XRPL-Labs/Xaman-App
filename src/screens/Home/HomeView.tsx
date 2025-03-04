@@ -4,8 +4,17 @@
 
 import { find, has } from 'lodash';
 
-import React, { Component, Fragment } from 'react';
-import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
+import React, { Component, Fragment, ComponentType } from 'react';
+import {
+    View,
+    Text,
+    Image,
+    ImageBackground,
+    InteractionManager,
+    Alert,
+    ViewProps,
+    ImageBackgroundProps,
+} from 'react-native';
 
 import {
     Navigation,
@@ -539,6 +548,18 @@ class HomeView extends Component<Props, State> {
             return this.renderEmpty();
         }
 
+        const Container: ComponentType<ViewProps | ImageBackgroundProps> = account.balance === 0
+            ? ImageBackground
+            : View;
+
+        const containerProps = account.balance === 0
+            ? {
+                resizeMode: 'cover',
+                source: StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes'),
+            }
+            : {};
+
+
         return (
             <View testID="home-tab-view" style={AppStyles.tabContainer}>
                 {/* Header */}
@@ -550,12 +571,13 @@ class HomeView extends Component<Props, State> {
                 </Fragment>
 
                 {/* Content */}
-                <View style={AppStyles.contentContainer}>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Container style={AppStyles.contentContainer} {...containerProps}>
                     {this.renderNetworkDetails()}
                     {this.renderAccountAddress()}
                     {this.renderButtons()}
                     {this.renderAssets()}
-                </View>
+                </Container>
             </View>
         );
     }
