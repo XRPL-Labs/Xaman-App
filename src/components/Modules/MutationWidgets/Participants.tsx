@@ -68,8 +68,7 @@ class Participants extends PureComponent<Props, State> {
                     visibleElements={{
                         tag: true,
                         avatar: true,
-                        menu: !this.getTokenDetails() && start.address !== account.address,
-                                // ^^ not if AMM / special pair, not if self
+                        menu: start.address !== account.address,
                     }}
                 />
             </>
@@ -95,8 +94,7 @@ class Participants extends PureComponent<Props, State> {
                     visibleElements={{
                         tag: true,
                         avatar: true,
-                        menu: !this.getTokenDetails() && through.address !== account.address,
-                                // ^^ not if AMM / special pair, not if self
+                        menu: through.address !== account.address,
                     }}
                 />
             </>
@@ -123,8 +121,7 @@ class Participants extends PureComponent<Props, State> {
                     visibleElements={{
                         tag: true,
                         avatar: true,
-                        menu: !this.getTokenDetails() && end.address !== account.address,
-                                // ^^ not if AMM / special pair, not if self
+                        menu: end.address !== account.address,
                     }}
                 />
             </>
