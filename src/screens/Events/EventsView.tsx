@@ -516,13 +516,17 @@ class EventsView extends Component<Props, State> {
     };
 
     loadMore = async (forced = false) => {
+        //            ^^ danger: called elsewhere natively by RN adds {distanceFromEnd: float} so must be
+        //               not only truthy but also boolean
         const { canLoadMore, filters, searchText, isLoadingMore, isLoading, activeSection } = this.state;
 
         // console.log('loadingmore', canLoadMore, isLoadingMore)
-        if (!forced) {
+        if (!forced || typeof forced !== 'boolean') {
+            // only force return if NOT forced (if forced continue)
+            // or if FORCED but forced isn't bool (see fn enter comment)
             if (isLoading || isLoadingMore || !canLoadMore || activeSection !== EventSections.ALL) return;
         }
-        // console.log('loadingmoremore')
+        // console.log('loadingmoremore', forced)
         
         this.setState({ isLoadingMore: true });
 
