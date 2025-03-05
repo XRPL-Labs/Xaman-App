@@ -49,6 +49,13 @@ export interface State {
     isMigrationRequired: boolean;
     fetchingPro: boolean;
     nativeAccountInfo?: XamanBackend.MultiAddressNativeInfoResponse;
+    loadingAccountDetails: boolean;
+    accountDetails: null | {
+        [key: string]: {
+            isRegularKeyFor: string | false;
+            isSignable: boolean;
+        };
+    };
 }
 
 /* Component ==================================================================== */
@@ -76,6 +83,8 @@ class AccountListView extends Component<Props, State> {
             reorderEnabled: false,
             isMigrationRequired: false,
             fetchingPro: true,
+            loadingAccountDetails: true,
+            accountDetails: null,
         };
     }
 
@@ -106,6 +115,31 @@ class AccountListView extends Component<Props, State> {
         });
     }
 
+    getAccountDetails = () => {
+        const { accounts, signableAccount } = this.state;
+        const accountDetails = accounts.map(account => {
+            const isRegularKeyFor = this.isRegularKey(account);
+            const isSignable = find(signableAccount, { address: account.address });
+            return {
+                _key: account.address,
+                isRegularKeyFor,
+                isSignable,
+            };
+        }).reduce((acc, itm) => {
+            Object.assign(acc, {
+                [itm._key]: {
+                    ...itm,
+                    _key: undefined,
+                },
+            });
+            return acc;
+        }, {});
+        this.setState({
+            accountDetails,
+            loadingAccountDetails: false,
+        });
+    };
+
     loadAccounts = () => {
         const accounts = AccountRepository.getAccounts().sorted([['order', false]]);
 
@@ -114,6 +148,8 @@ class AccountListView extends Component<Props, State> {
             dataSource: accounts,
             signableAccount: AccountRepository.getSignableAccounts(),
         });
+
+        this.getAccountDetails();
     };
 
     checkMigrationRequired = () => {
@@ -194,7 +230,12 @@ class AccountListView extends Component<Props, State> {
     };
 
     renderItem = ({ item }: { item: AccountModel }) => {
-        const { signableAccount, reorderEnabled, fetchingPro, nativeAccountInfo } = this.state;
+        const {
+            reorderEnabled,
+            fetchingPro,
+            nativeAccountInfo,
+            accountDetails,
+        } = this.state;
 
         if (!item?.isValid()) return null;
 
@@ -202,7 +243,8 @@ class AccountListView extends Component<Props, State> {
         let accessLevelLabel = Localize.t('account.fullAccess');
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
-        const signable = find(signableAccount, { address: item.address });
+        // const signable = find(signableAccount, { address: item.address });
+        const signable = accountDetails && accountDetails[item.address].isSignable;
 
         if (!signable) {
             // if master key is disabled then show it in the label
@@ -220,7 +262,7 @@ class AccountListView extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
-        const regularKeyFor = this.isRegularKey(item);
+        const regularKeyFor = accountDetails && accountDetails[item.address].isRegularKeyFor;
 
         if (regularKeyFor) {
             accessLevelLabel = `${Localize.t('account.regularKeyFor')} ${regularKeyFor}`;
@@ -294,7 +336,7 @@ class AccountListView extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, dataSource, reorderEnabled, isMigrationRequired } = this.state;
+        const { accounts, dataSource, reorderEnabled, isMigrationRequired, loadingAccountDetails } = this.state;
 
         return (
             <View testID="accounts-list-screen" style={AppStyles.container}>
@@ -355,7 +397,7 @@ class AccountListView extends Component<Props, State> {
                         AppStyles.flex1,
                         AppStyles.windowSize,
                     ]}>
-                        {isMigrationRequired && !reorderEnabled ? (
+                        {isMigrationRequired && !reorderEnabled && !loadingAccountDetails ? (
                             <View style={styles.rowMigrationContainer}>
                                 <Text style={[AppStyles.subtext, AppStyles.bold]}>
                                     {Localize.t('account.newEncryptionMethodAvailable')}
@@ -391,7 +433,7 @@ class AccountListView extends Component<Props, State> {
                                     </Text>
                                 </View>
                             </View>
-                        ) : (
+                        ) : !loadingAccountDetails && (
                             <View style={styles.rowAddContainer}>
                                 <Button
                                     testID="add-account-button"
@@ -406,17 +448,25 @@ class AccountListView extends Component<Props, State> {
                             </View>
                         )}
 
-                        <SortableFlatList
-                            testID="account-list-scroll"
-                            itemHeight={styles.rowContainer.height}
-                            separatorHeight={10}
-                            dataSource={dataSource}
-                            keyExtractor={this.itemKeyExtractor}
-                            renderItem={this.renderItem}
-                            onDataChange={this.onAccountReorder}
-                            onItemPress={this.onItemPress}
-                            sortable={reorderEnabled}
-                        />
+                        { loadingAccountDetails && (
+                            <View style={AppStyles.paddingTop}>
+                                <LoadingIndicator size="large" />
+                            </View>
+                        ) }
+                        
+                        { !loadingAccountDetails && (
+                            <SortableFlatList
+                                testID="account-list-scroll"
+                                itemHeight={styles.rowContainer.height}
+                                separatorHeight={10}
+                                dataSource={dataSource}
+                                keyExtractor={this.itemKeyExtractor}
+                                renderItem={this.renderItem}
+                                onDataChange={this.onAccountReorder}
+                                onItemPress={this.onItemPress}
+                                sortable={reorderEnabled}
+                            />
+                        ) }
                     </View>
                 )}
             </View>
