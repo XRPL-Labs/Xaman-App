@@ -354,7 +354,7 @@ class HomeView extends Component<Props, State> {
         const { timestamp } = this.props;
         const { account, discreetMode, isSpendable, experimentalUI } = this.state;
 
-        if ((account?.details || []).length === 0) {
+        if ((account?.details || []).length === 0 || account.getStateVersion() === 0) {
             // No account information loaded/cached yet, so not saying "not activated"
             return (
                 <View style={AppStyles.flex1}>
