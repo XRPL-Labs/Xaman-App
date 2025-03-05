@@ -1197,7 +1197,7 @@ class XAppBrowserModal extends Component<Props, State> {
                         onPress: this.onClose,
                     }}
                     centerComponent={{ text: nativeTitle, extraComponent: <NetworkLabel type="both" /> }}
-                    rightComponent={{
+                    rightComponent={ String(app?.title || '').match(/swap/i) ? {
                         icon: 'IconTabBarSettingsSelected',
                         iconSize: 25,
                         onPress: () => {
@@ -1206,7 +1206,7 @@ class XAppBrowserModal extends Component<Props, State> {
                                 pickSwapper: true,
                             });
                         },
-                    }}
+                    } : undefined }
                 />
             );
         }
