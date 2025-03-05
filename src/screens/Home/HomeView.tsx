@@ -38,6 +38,8 @@ import { Prompt } from '@common/helpers/interface';
 
 import Preferences from '@common/libs/preferences';
 
+import RNTangemSdk, { EventCallback } from 'tangem-sdk-react-native';
+
 import { Button, Spacer, RaisedButton, LoadingIndicator } from '@components/General';
 import {
     MonetizationElement,
@@ -73,6 +75,8 @@ export interface State {
     developerMode: boolean;
     discreetMode: boolean;
     experimentalUI?: boolean;
+    NFCSupported: boolean;
+    NFCEnabled: boolean;
 }
 
 /* Component ==================================================================== */
@@ -80,6 +84,7 @@ class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
 
     private navigationListener: EventSubscription | undefined;
+    private nfcChangeListener?: EventSubscription;
 
     static options() {
         return { topBar: { visible: false } };
@@ -91,6 +96,8 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
+            NFCSupported: false,
+            NFCEnabled: false,
             account: coreSettings.account,
             isSpendable: false,
             isSignable: false,
@@ -125,7 +132,29 @@ class HomeView extends Component<Props, State> {
                     experimentalUI: false,
                 });
             });
+
+
+        InteractionManager.runAfterInteractions(() => {
+            this.nfcChangeListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
+            // on NFC state change (Android)
+
+            // get current NFC status
+            RNTangemSdk.getNFCStatus().then((status) => {
+                const { support, enabled } = status;
+
+                this.setState({
+                    NFCSupported: support,
+                    NFCEnabled: enabled,
+                });
+            });
+        });
     }
+
+    onNFCStateChange = ({ enabled }: EventCallback) => {
+        this.setState({
+            NFCEnabled: enabled,
+        });
+    };
 
     componentWillUnmount() {
         // remove listeners
@@ -135,6 +164,14 @@ class HomeView extends Component<Props, State> {
 
         AccountRepository.off('accountUpdate', this.onAccountUpdate);
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
+
+        if (this.nfcChangeListener) {
+            this.nfcChangeListener.remove();
+        }
+
+        RNTangemSdk.stopSession().catch(() => {
+            // ignore
+        });
     }
 
     componentDidAppear() {
@@ -409,6 +446,8 @@ class HomeView extends Component<Props, State> {
     };
 
     renderEmpty = () => {
+        const { NFCSupported, NFCEnabled } = this.state;
+
         return (
             <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
                 {/* <View style={styles.headerContainer}>{this.renderHeader()}</View> */}
@@ -464,41 +503,31 @@ class HomeView extends Component<Props, State> {
                                 secondary
                                 onPress={this.onImportAccountPress}
                             />
+                            { 
+                                NFCSupported && NFCEnabled && (
+                                    <View>
+                                        <Spacer size={12}/>
+                                        <Text style={[
+                                            AppStyles.textCenterAligned,
+                                            AppStyles.smalltext,
+                                            AppStyles.bold,
+                                            AppStyles.colorGrey,
+                                        ]}>{Localize.t('global.or').toUpperCase()}</Text>
+                                        <Spacer size={12}/>
+                                        <Button
+                                            testID="add-account-button-tangem"
+                                            label={Localize.t('account.addTangemCard')}
+                                            icon="IconTangem"
+                                            iconStyle={AppStyles.imgColorContrast}
+                                            nonBlock
+                                            contrast
+                                            onPress={this.onTangemAccountPress}
+                                        />
+                                    </View>
+                                )
+                            }
+
                             <Spacer size={12} />
-                            <Text style={[
-                                AppStyles.textCenterAligned,
-                                AppStyles.smalltext,
-                                AppStyles.bold,
-                                AppStyles.colorGrey,
-                            ]}>{Localize.t('global.or').toUpperCase()}</Text>
-                            <Spacer size={12} />
-                            <Button
-                                testID="add-account-button-tangem"
-                                label={Localize.t('account.addTangemCard')}
-                                icon="IconTangem"
-                                iconStyle={AppStyles.imgColorContrast}
-                                nonBlock
-                                contrast
-                                onPress={this.onTangemAccountPress}
-                            />
-                            <Spacer size={12} />
-                            {/* <Footer style={[
-                                AppStyles.paddingBottom,
-                                AppStyles.paddingTopNone,
-                            ]}>
-                                <Button numberOfLines={1}
-                                    light
-                                    label={Localize.t('global.maybeLater')}
-                                    onPress={this.nextStep}
-                                />
-                                <Spacer />
-                                <Button
-                                    isLoading={isLoading}
-                                    numberOfLines={1}
-                                    label={Localize.t('global.yes')}
-                                    onPress={this.requestPermission}
-                                />
-                            </Footer> */}
                         </View>
                     </View>
                 </ImageBackground>

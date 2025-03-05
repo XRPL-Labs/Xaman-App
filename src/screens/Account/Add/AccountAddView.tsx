@@ -266,7 +266,7 @@ class AccountAddView extends Component<Props, State> {
 
     render() {
         const {DefaultTangem} = this.props;
-        const {HasLaunchedTangem} = this.state;
+        const {HasLaunchedTangem, NFCSupported, NFCEnabled} = this.state;
 
         if (DefaultTangem && !HasLaunchedTangem) {
             return (
@@ -331,28 +331,39 @@ class AccountAddView extends Component<Props, State> {
                                         onPress={this.goToImport}
                                     />
 
-                                    <Spacer size={12} />
-                                    <Text style={[
-                                        AppStyles.textCenterAligned,
-                                        AppStyles.smalltext,
-                                        AppStyles.bold,
-                                        AppStyles.colorGrey,
-                                    ]}>{Localize.t('global.or').toUpperCase()}</Text>
-                                    <Spacer size={12} />
+                                    <Spacer size={
+                                        NFCSupported && NFCEnabled
+                                            ? 12
+                                            : AppStyles.marginBottom.marginBottom
+                                    }/>
 
-                                    <Button
-                                        icon="IconTangem"
-                                        iconStyle={AppStyles.imgColorContrast}
-                                        nonBlock
-                                        contrast
-                                        testID="tangem-import-button"
-                                        label={Localize.t('account.addTangemCard')}
-                                        onPress={this.onAddTangemCardPress}
-                                        style={[
-                                            {backgroundColor: StyleService.value('$contrast') },
-                                            AppStyles.marginBottom,
-                                        ]}
-                                    />
+                                    { 
+                                        NFCSupported && NFCEnabled && (
+                                            <View>
+                                                <Text style={[
+                                                    AppStyles.textCenterAligned,
+                                                    AppStyles.smalltext,
+                                                    AppStyles.bold,
+                                                    AppStyles.colorGrey,
+                                                ]}>{Localize.t('global.or').toUpperCase()}</Text>
+                                                <Spacer size={12} />
+
+                                                <Button
+                                                    icon="IconTangem"
+                                                    iconStyle={AppStyles.imgColorContrast}
+                                                    nonBlock
+                                                    contrast
+                                                    testID="tangem-import-button"
+                                                    label={Localize.t('account.addTangemCard')}
+                                                    onPress={this.onAddTangemCardPress}
+                                                    style={[
+                                                        {backgroundColor: StyleService.value('$contrast') },
+                                                        AppStyles.marginBottom,
+                                                    ]}
+                                                />
+                                            </View>
+                                        )
+                                    }
                                 </View>
                             </View>
                         </SafeAreaView>
