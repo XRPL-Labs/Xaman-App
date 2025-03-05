@@ -261,10 +261,15 @@ class Application {
                         return;
                     }
                 } else if (Platform.OS === 'ios') {
-                    const isJailBroken = await IsDeviceJailBroken();
-                    if (isJailBroken) {
-                        reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
-                        return;
+                    if (process?.env?.NODE_ENV === 'development') {
+                        // That's fine
+                    } else {
+                        const isJailBroken = await IsDeviceJailBroken();
+
+                        if (isJailBroken) {
+                            reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
+                            return;
+                        }
                     }
                 }
 
