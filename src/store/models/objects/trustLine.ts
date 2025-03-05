@@ -120,7 +120,7 @@ class TrustLine extends Realm.Object<TrustLine> {
         return NormalizeCurrencyCode(this.currency.currencyCode);
     }
 
-    getFormattedIssuer(owner?: string): string {
+    getFormattedIssuer(owner?: string, maxLength = 11): string {
         // self issued
         if (owner && this.currency.issuer === owner) {
             return Localize.t('home.selfIssued');
@@ -132,7 +132,7 @@ class TrustLine extends Realm.Object<TrustLine> {
         }
 
         // issuer address
-        return Truncate(this.currency.issuer, 11);
+        return Truncate(this.currency.issuer, maxLength);
     }
 }
 
