@@ -5,7 +5,7 @@ import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { Platform, Alert, Animated, InteractionManager, Text, View } from 'react-native';
+import { Platform, Alert, Animated, InteractionManager, Text, View, GestureResponderEvent } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
@@ -670,6 +670,30 @@ class TokenSettingsOverlay extends Component<Props, State> {
         return !token.obligation && !token.isLiquidityPoolToken();
     };
 
+    startTouch = (event: GestureResponderEvent) => {
+        const targetInstance = event && typeof event === 'object'
+            ? (event as any)?._targetInst
+            : {};
+        
+        if (
+            targetInstance &&
+            typeof targetInstance === 'object' &&
+            targetInstance?.pendingProps
+        ) {
+            if (
+                targetInstance.pendingProps?.testID &&
+                targetInstance.pendingProps?.testID === 'currency-settings-overlay' &&
+                targetInstance.pendingProps?.style &&
+                typeof targetInstance.pendingProps?.style === 'object' &&
+                targetInstance.pendingProps?.style?.opacity === 0
+            ) {
+                event?.preventDefault();
+                event?.stopPropagation();
+                this.dismiss();
+            }
+        }
+    };
+
     render() {
         const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
@@ -702,6 +726,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     backgroundColor: interpolateColor,
                     ...visibilityAndPointer,
                 }]}
+                onTouchStart={this.startTouch}
             >
                 <Animated.View style={styles.visibleContent}>
                     <View style={styles.headerContainer}>
