@@ -151,29 +151,50 @@ class AlertOverlay extends Component<Props, State> {
         const { buttons } = this.props;
 
         if (!buttons) {
-            return <Button testID="back-button" onPress={this.dismiss} light label={Localize.t('global.back')} />;
+            return (
+                <>
+                    <Spacer size={30} />
+                    <Button testID="back-button" onPress={this.dismiss} light label={Localize.t('global.back')} />;
+                </>
+            );
         }
 
+        const totalTextLength = buttons.reduce((acc, cur) => acc + cur.text.length, 0);
+        const maxLengthForSideBySide = 15;
+
         return (
-            <View style={[AppStyles.row]}>
-                {buttons.map((b: any, index: number) => {
-                    return (
-                        <View
-                            key={`${index}`}
-                            style={[AppStyles.flex1, index === 0 && buttons.length > 1 && AppStyles.paddingRightSml]}
-                        >
-                            <Button
-                                testID={b.testID}
-                                onPress={() => {
-                                    this.dismiss(b.onPress);
-                                }}
-                                light={b.light}
-                                label={b.text}
-                            />
-                        </View>
-                    );
-                })}
-            </View>
+            <>
+                <Spacer size={totalTextLength >= maxLengthForSideBySide ? 15 : 30} />
+                <View style={[
+                    totalTextLength < maxLengthForSideBySide && AppStyles.row,
+                    // AppStyles.borderGreen,
+                ]}>
+                    {buttons.map((b: any, index: number) => {
+                        return (
+                            <View
+                                key={`${index}`}
+                                style={[
+                                    totalTextLength >= maxLengthForSideBySide && styles.marginTop,
+                                    totalTextLength < maxLengthForSideBySide && AppStyles.flex1,
+                                    index === 0 &&
+                                        buttons.length > 1 &&
+                                        totalTextLength < maxLengthForSideBySide &&
+                                        AppStyles.paddingRightSml,
+                                ]}
+                            >
+                                <Button
+                                    testID={b.testID}
+                                    onPress={() => {
+                                        this.dismiss(b.onPress);
+                                    }}
+                                    light={b.light}
+                                    label={b.text}
+                                />
+                            </View>
+                        );
+                    })}
+                </View>
+            </>
         );
     };
 
@@ -204,8 +225,12 @@ class AlertOverlay extends Component<Props, State> {
                     {this.renderTitle()}
                     <Spacer size={20} />
                     <Text style={styles.subTitle}>{text}</Text>
-                    <Spacer size={30} />
-                    {this.renderButtons()}
+                    <View style={[
+                        // AppStyles.borderRed,
+                        styles.fullWidth,
+                    ]}>
+                        {this.renderButtons()}
+                    </View>
                 </Animated.View>
             </Animated.View>
         );
