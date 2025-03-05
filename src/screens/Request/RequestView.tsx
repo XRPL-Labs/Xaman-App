@@ -89,7 +89,7 @@ class RequestView extends Component<Props, State> {
             amount: undefined,
             currencyRate: undefined,
             amountRate: undefined,
-            withAmount: false,
+            withAmount: true,
         };
 
         this.amountInputRef = React.createRef();

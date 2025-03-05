@@ -31,7 +31,7 @@ export interface Props {
 
 export interface State {}
 
-let ogBrightness = -1;
+let ogBrightness: number | null = null;
 let keepBrightness = false;
 
 /* Component ==================================================================== */
@@ -60,7 +60,9 @@ class ShareAccountOverlay extends Component<Props, State> {
 
     componentDidMount() {
         DeviceBrightness.getBrightnessLevel().then(brightness => {
-            ogBrightness = brightness;
+            if (typeof ogBrightness !== 'number') {
+                ogBrightness = brightness;
+            }
             setTimeout(() => {
                 DeviceBrightness.setBrightnessLevel(1);
             }, 400);
@@ -69,7 +71,7 @@ class ShareAccountOverlay extends Component<Props, State> {
 
     componentWillUnmount(): void {
         if (!keepBrightness) {
-            DeviceBrightness.setBrightnessLevel(Platform.OS === 'android' ? -1 : ogBrightness);
+            DeviceBrightness.setBrightnessLevel(Number(Platform.OS === 'android' ? -1 : ogBrightness));
         }
     }
 
@@ -106,7 +108,7 @@ class ShareAccountOverlay extends Component<Props, State> {
 
         setTimeout(() => {
             Navigator.push<RequestViewProps>(AppScreens.Transaction.Request, {
-                ogBrightness,
+                ogBrightness: Number(ogBrightness || 1),
             });
         }, 500);
     };
