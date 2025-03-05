@@ -16,6 +16,8 @@ import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
+import DropShadow from 'react-native-drop-shadow';
+
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Prompt, Toast } from '@common/helpers/interface';
@@ -729,6 +731,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
             outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
         });
 
+        const needsTlFix = (!token.no_ripple || Number(token.limit) === 0) &&
+            !token.obligation &&
+            !token.isLiquidityPoolToken();
+
         return (
             <Animated.View
                 needsOffscreenAlphaCompositing
@@ -756,84 +762,125 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             <Button label={Localize.t('global.close')} roundedSmall light onPress={this.dismiss} />
                         </View>
                     </View>
-                    <View style={styles.contentContainer}>
-                        <View style={styles.tokenElement}>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={styles.brandAvatarContainer}>
-                                    <TokenAvatar token={token} border size={35} />
-                                </View>
-                                <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text
-                                        numberOfLines={1}
-                                        style={styles.currencyItemLabelSmall}
-                                        ellipsizeMode="middle"
-                                    >
-                                        {token.getFormattedCurrency()}
-                                    </Text>
-                                    <TouchableDebounce
-                                        onPress={this.onCopyIssuerAddressPress}
-                                        style={AppStyles.row}
-                                        activeOpacity={1}
-                                    >
-                                        <Text style={styles.issuerLabel}>{token.getFormattedIssuer()}</Text>
-                                        <Icon style={styles.copyIcon} name="IconCopy" size={15} />
-                                    </TouchableDebounce>
-                                </View>
-                            </View>
-                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <AmountText
-                                    value={token.balance}
-                                    style={[AppStyles.pbold, AppStyles.monoBold]}
-                                    prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
-                                />
-                            </View>
-                        </View>
-
-                        {(!token.no_ripple || Number(token.limit) === 0) &&
-                            !token.obligation &&
-                            !token.isLiquidityPoolToken() && (
-                                <>
-                                    <Spacer />
-                                    <InfoMessage
-                                        type="warning"
-                                        containerStyle={styles.infoContainer}
-                                        labelStyle={styles.infoText}
-                                        label={
-                                            !token.no_ripple
-                                                ? Localize.t('asset.dangerousConfigurationDetected')
-                                                : Localize.t('asset.restrictingConfigurationDetected')
-                                        }
-                                        actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
-                                        actionButtonIcon="IconInfo"
-                                        isActionButtonLoading={isLoading}
-                                        onActionButtonPress={this.showConfigurationAlert}
+                    <View style={[
+                        styles.contentContainer,
+                    ]}>
+                        <DropShadow style={[
+                            styles.contentContainerShadow,
+                        ]}>
+                            <View style={[
+                                styles.contentContainerAmount,
+                                !this.canSend() && styles.contentContainerAmountNoSend,
+                                this.canSend() && styles.contentContainerAmountSend,
+                            ]}>
+                                <View style={[
+                                    // AppStyles.flex4,
+                                    // AppStyles.row,
+                                    AppStyles.column,
+                                    // AppStyles.centerAligned,
+                                    // AppStyles.flexEnd,
+                                    // AppStyles.borderGreen,
+                                    AppStyles.centerAligned,
+                                ]}>
+                                    <AmountText
+                                        value={token.balance}
+                                        valueContainerStyle={[
+                                            // AppStyles.borderRed,
+                                            AppStyles.centerAligned,
+                                            AppStyles.centerContent,
+                                            AppStyles.centerSelf,
+                                        ]}
+                                        style={[
+                                            AppStyles.pbold,
+                                            AppStyles.h3,
+                                            AppStyles.textCenterAligned,
+                                            AppStyles.monoBold,
+                                        ]}
+                                        prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
                                     />
-                                </>
-                            )}
+                                </View>
+                                <View style={[
+                                    styles.tokenElement,
+                                    // AppStyles.borderGreen,
+                                    AppStyles.column,
+                                    AppStyles.centerAligned,
+                                ]}>
+                                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                        <View style={styles.brandAvatarContainer}>
+                                            <TokenAvatar token={token} size={35} />
+                                        </View>
+                                        <View style={[AppStyles.column, AppStyles.centerContent]}>
+                                            <Text
+                                                numberOfLines={1}
+                                                style={styles.currencyItemLabelSmall}
+                                                ellipsizeMode="middle"
+                                            >
+                                                {token.getFormattedCurrency()}
+                                            </Text>
+                                            <TouchableDebounce
+                                                onPress={this.onCopyIssuerAddressPress}
+                                                style={AppStyles.row}
+                                                activeOpacity={1}
+                                            >
+                                                <Text style={styles.issuerLabel}>{
+                                                    token.getFormattedIssuer(undefined, 25)
+                                                }</Text>
+                                                <Icon style={styles.copyIcon} name="IconCopy" size={15} />
+                                            </TouchableDebounce>
+                                        </View>
+                                    </View>
+                                </View>
+                                {
+                                    this.canSend() && (
+                                        <View style={[
+                                            styles.buttonRow,
+                                            styles.embeddedSendButtonContainer,
+                                        ]}>
+                                            <RaisedButton
+                                                // small
+                                                containerStyle={[
+                                                    styles.sendButton,
+                                                    styles.embeddedSendButton,
+                                                ]}
+                                                icon="IconV2Send"
+                                                iconSize={18}
+                                                iconStyle={styles.sendButtonIcon}
+                                                label={Localize.t('global.send')}
+                                                textStyle={styles.sendButtonText}
+                                                onPress={this.onSendPress}
+                                            />
+                                        </View>
+                                    )
+                                }
+                            </View>
+                        </DropShadow>
 
-                        <Spacer size={20} />
+                        { needsTlFix && (
+                            <>
+                                <Spacer />
+                                <InfoMessage
+                                    type="warning"
+                                    containerStyle={styles.infoContainer}
+                                    labelStyle={styles.infoText}
+                                    label={
+                                        !token.no_ripple
+                                            ? Localize.t('asset.dangerousConfigurationDetected')
+                                            : Localize.t('asset.restrictingConfigurationDetected')
+                                    }
+                                    actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
+                                    actionButtonIcon="IconInfo"
+                                    isActionButtonLoading={isLoading}
+                                    onActionButtonPress={this.showConfigurationAlert}
+                                />
+                            </>
+                        )}
+
+                        <Spacer size={15} />
 
                         <View style={[
                             styles.buttonRow,
                             styles.secondButtonRow,
                         ]}>
-                            {
-                                this.canSend() && !this.isSwapNetwork() && (
-                                    <RaisedButton
-                                        small
-                                        containerStyle={[
-                                            styles.sendButton,
-                                            styles.spaceRight,
-                                        ]}
-                                        icon="IconV2Send"
-                                        iconSize={18}
-                                        iconStyle={styles.sendButtonIcon}
-                                        label={Localize.t('global.send')}
-                                        textStyle={styles.sendButtonText}
-                                        onPress={this.onSendPress}
-                                    />
-                                )
-                            }
                             <RaisedButton
                                 small
                                 isDisabled={!this.canExchange()}
@@ -872,31 +919,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 </View>
                             )
                         }
-                        {
-                            this.canSend() && this.isSwapNetwork() && (
-                                <View style={[
-                                    styles.buttonRow,
-                                    styles.secondButtonRow,
-                                ]}>
-                                    <RaisedButton
-                                        small
-                                        containerStyle={[
-                                            styles.sendButton,
-                                        ]}
-                                        icon="IconV2Send"
-                                        iconSize={18}
-                                        iconStyle={styles.sendButtonIcon}
-                                        label={Localize.t('global.send')}
-                                        textStyle={styles.sendButtonText}
-                                        onPress={this.onSendPress}
-                                    />
-                                </View>
-                            )
-                        }
                         
                         {/* <Spacer size={20} /> */}
 
-                        {hasXAppIdentifier && (
+                        {hasXAppIdentifier && !needsTlFix && (
                             <>
                                 <Spacer size={10} />
                                 <View style={AppStyles.row}>

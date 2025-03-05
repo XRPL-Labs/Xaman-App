@@ -11,6 +11,43 @@ const styles = StyleService.create({
         backgroundColor: '$tint',
         borderRadius: 20,
     },
+    contentContainerShadow: {
+        shadowColor: '$black',
+        shadowOffset: {
+            height: 3,
+            width: 0,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+    },
+    contentContainerAmount: {
+        backgroundColor: '$background',
+        borderRadius: 15,
+        borderWidth: 0,
+        borderColor: '$black',
+        paddingTop: 15,
+        paddingBottom: 8,
+        overflow: 'hidden',
+        // height: 170,
+    },
+    contentContainerAmountSend: {
+        height: 170,
+    },
+    contentContainerAmountNoSend: {
+        height: 170 - 45,
+    },
+    embeddedSendButton: {
+        borderRadius: 0,
+        borderTopEndRadius: 0,
+        borderTopStartRadius: 0,
+        height: 45,
+    },
+    embeddedSendButtonContainer: {
+        // marginBottom: -9,
+        position: 'absolute',
+        bottom: -15,
+        paddingHorizontal: 0,
+    },
     headerContainer: {
         backgroundColor: '$background',
         borderTopRightRadius: 20,
@@ -40,6 +77,7 @@ const styles = StyleService.create({
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 5,
+        marginTop: 0,
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
@@ -115,10 +153,10 @@ const styles = StyleService.create({
     removeButtonText: { color: '$red' },
 
     infoContainer: {
-        backgroundColor: '$blue',
+        backgroundColor: '$orange',
     },
     infoText: {
-        color: '$white',
+        color: '$dark',
     },
     removeButtonContainer: {
         flexDirection: 'row',
@@ -155,7 +193,8 @@ const styles = StyleService.create({
     },
 
     tokenIconContainer: {
-        marginRight: 5,
+        marginRight: 8,
+        marginTop: -4,
     },
 });
 
