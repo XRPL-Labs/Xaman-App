@@ -13,6 +13,7 @@ import analytics from '@react-native-firebase/analytics';
 import {
     Navigation,
     ComponentDidAppearEvent,
+    ComponentWillAppearEvent,
     BottomTabLongPressedEvent,
     BottomTabPressedEvent,
     ModalDismissedEvent,
@@ -78,6 +79,7 @@ class NavigationService extends EventEmitter {
                 analytics().setAnalyticsCollectionEnabled(true);
                 // navigation event listeners
                 Navigation.events().registerComponentDidAppearListener(this.componentDidAppear);
+                Navigation.events().registerComponentWillAppearListener(this.componentWillAppear);
                 Navigation.events().registerCommandListener(this.navigatorCommandListener);
                 Navigation.events().registerModalDismissedListener(this.modalDismissedListener);
                 Navigation.events().registerBottomTabLongPressedListener(this.bottomTabLongPressedListener);
@@ -220,12 +222,32 @@ class NavigationService extends EventEmitter {
                 if (get(passProps, 'componentType') === ComponentTypes.Modal) {
                     this.setCurrentModal(componentName as AppScreenKeys);
                 } else {
+                    // Also set beforehand by componentWillAppear
                     this.setCurrentScreen(componentName as AppScreenKeys);
                 }
                 break;
             case ComponentTypes.TabBar:
                 this.setCurrentScreen(componentName as AppScreenKeys);
                 break;
+            default:
+                break;
+        }
+    };
+
+    componentWillAppear = ({ componentName, passProps }: ComponentWillAppearEvent) => {
+        // Register a full page nav immediately (not Did appear, after animation slide)
+        // so the next navigation is immediately aware of the current screen for follow up navigation
+        // which prevents navigation breaking if one presses a button in the next screen faster than
+        // the animation of the screen is complete.
+        switch (this.getComponentType(componentName)) {
+            case ComponentTypes.Screen:
+                if (get(passProps, 'componentType') !== ComponentTypes.Modal) {
+                    this.setCurrentScreen(componentName as AppScreenKeys);
+                }
+                break;
+            case ComponentTypes.TabBar:
+                this.setCurrentScreen(componentName as AppScreenKeys);
+                    break;    
             default:
                 break;
         }
