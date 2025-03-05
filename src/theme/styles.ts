@@ -51,7 +51,6 @@ export default StyleService.create({
         height: Sizes.screen.height,
         width: Sizes.screen.width,
     },
-
     borderGrey: {
         borderWidth: 1,
         borderColor: '$grey',

@@ -269,10 +269,16 @@ class AmountText extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.container, valueContainerStyle]}>
+            <View style={[
+                styles.container,
+                valueContainerStyle,
+            ]}>
                 {typeof prefix === 'function' && prefix()}
                 {typeof prefix === 'object' && prefix}
-                <Text testID={testID} numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
+                <Text testID={testID} numberOfLines={numberOfLines || 1} style={[
+                    style,
+                    discreet && discreetStyle,
+                ]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}
                 </Text>
