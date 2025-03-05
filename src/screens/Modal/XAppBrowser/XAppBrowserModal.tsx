@@ -1188,7 +1188,7 @@ class XAppBrowserModal extends Component<Props, State> {
     renderHeader = () => {
         const { app, network, account } = this.state;
         const { noSwitching, nativeTitle } = this.props;
-console.log(app?.identifier)
+
         if (nativeTitle && nativeTitle !== '') {
             return (
                 <Header
