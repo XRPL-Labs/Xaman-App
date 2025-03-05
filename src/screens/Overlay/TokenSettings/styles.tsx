@@ -30,6 +30,12 @@ const styles = StyleService.create({
     contentContainer: {
         padding: AppSizes.paddingSml,
     },
+    spaceRight: {
+        marginRight: 8,
+    },
+    secondButtonRow: {
+        marginTop: -5,
+    },
     tokenElement: {
         paddingTop: 10,
         paddingBottom: 10,
@@ -69,15 +75,15 @@ const styles = StyleService.create({
 
     // send Button
     sendButton: {
-        marginRight: 5,
+        // marginRight: 5,
         backgroundColor: '$blue',
     },
-    sendButtonIcon: { tintColor: '$white' },
+    sendButtonIcon: { tintColor: '$white', transform: [{ rotateY: '180deg' }] },
     sendButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },
 
     // exchange Button
     exchangeButton: {
-        marginLeft: 5,
+        // marginLeft: 5,
         backgroundColor: StyleService.isDarkMode() ? '$grey' : '$darkBlue',
     },
     exchangeButtonIcon: { tintColor: '$white' },

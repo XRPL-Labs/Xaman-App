@@ -460,11 +460,15 @@ class TokenSettingsOverlay extends Component<Props, State> {
         });
     };
 
-    onExchangePress = () => {
-        const { account, token } = this.props;
+    isSwapNetwork = () => {
+        return AppConfig.swapNetworks.indexOf(NetworkService?.getNetwork()?.key) > -1;
+    };
+
+    onSwapPress = () => {
+        const { token } = this.props;
 
         this.dismiss().then(() => {
-            if (AppConfig.swapNetworks.indexOf(NetworkService?.getNetwork()?.key) > -1) {
+            if (this.isSwapNetwork()) {
                 Navigator.showModal<XAppBrowserModalProps>(
                     AppScreens.Modal.XAppBrowser,
                     {
@@ -484,8 +488,16 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     },
                 );
             } else {
-                Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
+                this.onExchangePress();
             }
+        });
+    };
+
+    onExchangePress = () => {
+        const { account, token } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
         });
     };
 
@@ -799,34 +811,94 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 </>
                             )}
 
-                        <View style={styles.buttonRow}>
-                            <RaisedButton
-                                small
-                                isDisabled={!this.canSend()}
-                                containerStyle={styles.sendButton}
-                                icon="IconV2Send"
-                                iconSize={18}
-                                iconStyle={styles.sendButtonIcon}
-                                label={Localize.t('global.send')}
-                                textStyle={styles.sendButtonText}
-                                onPress={this.onSendPress}
-                            />
+                        <Spacer size={20} />
+
+                        <View style={[
+                            styles.buttonRow,
+                            styles.secondButtonRow,
+                        ]}>
+                            {
+                                this.canSend() && !this.isSwapNetwork() && (
+                                    <RaisedButton
+                                        small
+                                        containerStyle={[
+                                            styles.sendButton,
+                                            styles.spaceRight,
+                                        ]}
+                                        icon="IconV2Send"
+                                        iconSize={18}
+                                        iconStyle={styles.sendButtonIcon}
+                                        label={Localize.t('global.send')}
+                                        textStyle={styles.sendButtonText}
+                                        onPress={this.onSendPress}
+                                    />
+                                )
+                            }
                             <RaisedButton
                                 small
                                 isDisabled={!this.canExchange()}
-                                containerStyle={styles.exchangeButton}
-                                icon="IconV2Swap"
+                                containerStyle={[
+                                    styles.exchangeButton,
+                                ]}
+                                icon="IconSwitchAccount"
                                 iconSize={17}
                                 iconPosition="left"
                                 iconStyle={styles.exchangeButtonIcon}
-                                label={Localize.t('global.swap')}
+                                label={Localize.t('global.exchange')}
                                 textStyle={styles.exchangeButtonText}
                                 onPress={this.onExchangePress}
                             />
                         </View>
+                        {
+                            this.isSwapNetwork() && (
+                                <View style={[
+                                    styles.buttonRow,
+                                    styles.secondButtonRow,
+                                ]}>
+                                    <RaisedButton
+                                        small
+                                        isDisabled={!this.canExchange()}
+                                        containerStyle={[
+                                            styles.exchangeButton,
+                                        ]}
+                                        icon="IconV2Swap"
+                                        iconSize={17}
+                                        iconPosition="left"
+                                        iconStyle={styles.exchangeButtonIcon}
+                                        label={Localize.t('global.swap3p')}
+                                        textStyle={styles.exchangeButtonText}
+                                        onPress={this.onSwapPress}
+                                    />
+                                </View>
+                            )
+                        }
+                        {
+                            this.canSend() && this.isSwapNetwork() && (
+                                <View style={[
+                                    styles.buttonRow,
+                                    styles.secondButtonRow,
+                                ]}>
+                                    <RaisedButton
+                                        small
+                                        containerStyle={[
+                                            styles.sendButton,
+                                        ]}
+                                        icon="IconV2Send"
+                                        iconSize={18}
+                                        iconStyle={styles.sendButtonIcon}
+                                        label={Localize.t('global.send')}
+                                        textStyle={styles.sendButtonText}
+                                        onPress={this.onSendPress}
+                                    />
+                                </View>
+                            )
+                        }
+                        
+                        {/* <Spacer size={20} /> */}
 
                         {hasXAppIdentifier && (
                             <>
+                                <Spacer size={10} />
                                 <View style={AppStyles.row}>
                                     <RaisedButton
                                         small
