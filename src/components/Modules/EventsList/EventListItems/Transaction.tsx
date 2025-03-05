@@ -39,6 +39,7 @@ import trustLine from '@store/repositories/trustLine';
 /* types ==================================================================== */
 export interface cachedTokenDetailsState {
     title?: React.JSX.Element;
+    participant?: string;
     icon?: React.JSX.Element;
     account?: string;
 };
@@ -81,6 +82,7 @@ class TransactionItem extends Component<Props, State> {
                 title: undefined,
                 icon: undefined,
                 account: undefined,
+                participant: undefined,
             },
         };
     }
@@ -265,6 +267,7 @@ class TransactionItem extends Component<Props, State> {
         if (changesToAmmLine) {
             this.setState({cachedTokenDetails: {
                 account: changesToAmmLine.currency.issuer,
+                participant: changesToAmmLine.currency.issuer,
                 title: (
                     <Text style={styles.boldTitle}>
                         {changesToAmmLine.getFormattedCurrency()}
@@ -299,8 +302,10 @@ class TransactionItem extends Component<Props, State> {
                     ? token
                     : '?';
             }).join(' / ');
+
             this.setState({cachedTokenDetails: {
                 account: item.Account,
+                participant: participant?.address,
                 title: (
                     <Text style={styles.boldTitle}>
                         {tokenNames}
@@ -319,6 +324,7 @@ class TransactionItem extends Component<Props, State> {
         } else {
             this.setState({cachedTokenDetails: {
                 account: account.address,
+                participant: participant?.address,
                 title: <Blocks.LabelBlock item={item} account={account} participant={participant} />,
                 icon: <Blocks.AvatarBlock participant={participant} item={item} />,
             }});

@@ -40,11 +40,12 @@ class Participants extends PureComponent<Props, State> {
         });
     };
 
-    getTokenDetails = () => {
+    getTokenDetails = (forced = false) => {
         const { cachedTokenDetails } = this.props;
         const { participants } = this.state;
         // Not if self (token swap)
-        return participants?.start?.address !== participants?.end?.address && cachedTokenDetails
+
+        return (forced || participants?.start?.address !== participants?.end?.address) && cachedTokenDetails
             ? cachedTokenDetails
             : undefined;
     };
@@ -66,7 +67,7 @@ class Participants extends PureComponent<Props, State> {
                     tokenDetails={this.getTokenDetails()}
                     containerStyle={styles.participant}
                     visibleElements={{
-                        tag: true,
+                        tag: start.address !== account.address,
                         avatar: true,
                         menu: start.address !== account.address,
                     }}
@@ -116,7 +117,7 @@ class Participants extends PureComponent<Props, State> {
                 <AccountElement
                     address={end.address}
                     tag={end.tag}
-                    tokenDetails={this.getTokenDetails()}
+                    tokenDetails={this.getTokenDetails(true)}
                     containerStyle={styles.participant}
                     visibleElements={{
                         tag: true,

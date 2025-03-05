@@ -187,7 +187,7 @@ class AccountElement extends Component<Props, State> {
             badge = 'IconCheckXaman';
         }
 
-        if (tokenDetails && tokenDetails.account === address) {
+        if (tokenDetails && tokenDetails?.participant === address) {
             return tokenDetails.icon;
         }
 
@@ -209,8 +209,8 @@ class AccountElement extends Component<Props, State> {
     renderName = () => {
         const { address, textStyle, tokenDetails } = this.props;
         const { isLoading, info } = this.state;
-
-        if (tokenDetails && tokenDetails.account === address) {
+        
+        if (tokenDetails && tokenDetails?.participant === address) {
             return (
                 <View style={[AppStyles.flex1, AppStyles.row]}>
                     <Text numberOfLines={1} style={[styles.nameText, textStyle]}>
