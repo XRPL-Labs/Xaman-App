@@ -392,7 +392,10 @@ class HomeView extends Component<Props, State> {
                         containerStyle={styles.sendButtonContainer}
                         icon="IconV2Send"
                         iconSize={18}
-                        iconStyle={styles.sendButtonIcon}
+                        iconStyle={[
+                            styles.sendButtonIcon,
+                            styles.iconRotateY,
+                        ]}
                         label={Localize.t('global.send')}
                         textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
@@ -419,7 +422,7 @@ class HomeView extends Component<Props, State> {
                         icon="IconV2Request"
                         iconSize={18}
                         iconStyle={[
-                            styles.iconRotate,
+                            styles.iconRotateX,
                             experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon,
                         ]}
                         label={Localize.t('global.request')}

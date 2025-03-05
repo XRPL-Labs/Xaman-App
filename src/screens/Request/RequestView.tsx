@@ -8,11 +8,14 @@ import Realm from 'realm';
 
 import React, { Component } from 'react';
 import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
+import { Clipboard } from '@common/helpers/clipboard';
 
 import BackendService, { RatesType } from '@services/BackendService';
 
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
+
+import NetworkService from '@services/NetworkService';
 
 import { AppScreens } from '@common/constants';
 import { HOSTNAME } from '@common/constants/endpoints';
@@ -29,10 +32,14 @@ import {
     CheckBox,
     HorizontalLine,
     KeyboardAwareScrollView,
+    Spacer,
+    Button,
 } from '@components/General';
 
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
+
+import DeviceBrightness from '@adrianso/react-native-device-brightness';
 
 // local
 import Localize from '@locale';
@@ -42,7 +49,9 @@ import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    ogBrightness?: number;
+}
 
 export interface State {
     coreSettings: CoreModel;
@@ -89,7 +98,15 @@ class RequestView extends Component<Props, State> {
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+        DeviceBrightness.setBrightnessLevel(1);
     }
+
+    componentWillUnmount(): void {
+        const {ogBrightness} = this.props;
+        if (typeof ogBrightness === 'number') {
+            DeviceBrightness.setBrightnessLevel(Platform.OS === 'android' ? -1 : ogBrightness);
+        }
+    };
 
     fetchCurrencyRate = () => {
         const { coreSettings } = this.state;
@@ -197,7 +214,15 @@ class RequestView extends Component<Props, State> {
         setTimeout(Navigator.pop, 10);
     };
 
-    onHeaderSharePress = () => {
+    onCopyAddressPress = () => {
+        Clipboard.setString(this.getLink());
+
+        // setTimeout(() => {
+        Toast(Localize.t('global.requestCopied'));
+        // }, 10);
+    };
+
+    onSharePress = () => {
         Share.share({
             message: this.getLink(),
             url: undefined,
@@ -230,6 +255,9 @@ class RequestView extends Component<Props, State> {
                             placeholderTextColor={AppColors.grey}
                             returnKeyType="done"
                         />
+                    </View>
+                    <View style={styles.currencySymbolTextContainer}>
+                        <Text style={styles.currencySymbolText}>{NetworkService.getNativeAsset()}</Text>
                     </View>
                 </View>
 
@@ -269,55 +297,111 @@ class RequestView extends Component<Props, State> {
                         onPress: this.onHeaderBackPress,
                     }}
                     centerComponent={{ text: 'Request' }}
-                    rightComponent={{
-                        icon: 'IconShare',
-                        iconSize: 23,
-                        onPress: this.onHeaderSharePress,
-                    }}
+                    // rightComponent={{
+                    //     icon: 'IconShare',
+                    //     iconSize: 23,
+                    //     onPress: this.onHeaderSharePress,
+                    // }}
                 />
 
                 <KeyboardAwareScrollView
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
                     calculateExtraOffset={this.calcKeyboardAwareExtraOffset}
                 >
-                    <View style={styles.qrCodeContainer}>
-                        <View style={styles.qrCode}>
-                            <QRCode size={AppSizes.moderateScale(150)} value={this.getLink()} />
-                        </View>
-                    </View>
-
-                    <HorizontalLine />
-
-                    <View style={styles.rowItem}>
-                        <View style={styles.rowTitle}>
-                            <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
-                                {Localize.t('global.to')}
+                    <View style={[ styles.rowItem ]}>
+                        <View style={[ styles.rowTitle ]}>
+                            <Text style={AppStyles.colorGrey}>
+                                {Localize.t('global.receiveOnAccount')}:
                             </Text>
                         </View>
-                        <View style={styles.accountPickerContainer}>
+                        <View style={[ styles.accountPickerContainer]}>
                             <AccountPicker onSelect={this.onAccountChange} accounts={accounts} selectedItem={source} />
                         </View>
                     </View>
 
                     {/* Amount */}
-                    <View style={styles.rowItem}>
+                    <View style={[ styles.rowItem ]}>
                         <TouchableDebounce
                             activeOpacity={0.8}
-                            style={[AppStyles.row, styles.rowTitle]}
+                            style={[styles.checkboxView, styles.rowTitle]}
                             onPress={this.toggleUseAmount}
                         >
-                            <View style={[AppStyles.flex5, AppStyles.centerContent]}>
-                                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
+                            <View style={[ AppStyles.centerContent, styles.checkboxLabelContainer ]}>
+                                {/* <Text style={AppStyles.borderOrange}>X</Text> */}
+                                <Text style={[AppStyles.subtext, AppStyles.colorPrimary]}>
                                     {Localize.t('global.requestWithAmount')}
                                 </Text>
                             </View>
-                            <View style={AppStyles.flex1}>
-                                <CheckBox checked={withAmount} onPress={this.toggleUseAmount} />
+                            <View style={[
+                                // AppStyles.borderGrey,
+                                styles.checkboxContainer,
+                            ]}>
+                                <View style={[
+                                    styles.checkboxWrapper,
+                                ]}>
+                                    <CheckBox
+                                        style={[
+                                            AppStyles.flexEnd,
+                                            styles.checkbox,
+                                        ]}
+                                        checked={withAmount}
+                                        onPress={this.toggleUseAmount}
+                                    />
+                                </View>
                             </View>
                         </TouchableDebounce>
 
                         {this.renderAmountInput()}
                     </View>
+
+                    <HorizontalLine />
+
+                    <Spacer size={12} />
+
+                    <View style={[
+                        AppStyles.paddingHorizontalSml,
+                        AppStyles.marginBottomSml,
+                    ]}>
+                        <Text style={AppStyles.colorGrey}>
+                            {Localize.t('global.requestLinkNow')}:
+                        </Text>
+                        <View style={[
+                            AppStyles.row,
+                        ]}>
+                            <Button
+                                numberOfLines={1}
+                                icon="IconShare"
+                                // iconStyle={AppStyles.imgColorBlue}
+                                label={Localize.t('global.share')}
+                                onPress={this.onSharePress}
+                                style={[AppStyles.flex1, styles.sharebtnLeft]}
+                            />
+                            <Button
+                                numberOfLines={1}
+                                icon="IconClipboard"
+                                // iconStyle={AppStyles.imgColorBlue}
+                                label={Localize.t('global.copy')}
+                                onPress={this.onCopyAddressPress}
+                                style={[AppStyles.flex1, styles.sharebtnRight]}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={[ AppStyles.paddingHorizontalSml, AppStyles.marginTopNegativeSml ]}>
+                        <Text style={AppStyles.colorGrey}>
+                            {Localize.t('global.orShareQr')}:
+                        </Text>
+                        <View style={[
+                            styles.qrCodeContainer,
+                        ]}>
+                            <View style={styles.qrCode}>
+                                <View style={styles.qrImgContainer}>
+                                    <QRCode size={140} value={`${this.getLink()}`} />
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
                 </KeyboardAwareScrollView>
             </View>
         );

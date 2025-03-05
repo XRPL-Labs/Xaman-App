@@ -20,8 +20,11 @@ const styles = StyleService.create({
     tokenListContainer: {
         flex: 6,
     },
-    iconRotate: {
+    iconRotateX: {
         transform: [{ rotateX: '180deg' }],
+    },
+    iconRotateY: {
+        transform: [{ rotateY: '180deg' }],
     },
     logo: {
         width: AppSizes.scale(120),
