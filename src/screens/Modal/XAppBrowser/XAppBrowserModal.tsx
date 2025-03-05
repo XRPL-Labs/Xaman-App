@@ -1188,7 +1188,7 @@ class XAppBrowserModal extends Component<Props, State> {
     renderHeader = () => {
         const { app, network, account } = this.state;
         const { noSwitching, nativeTitle } = this.props;
-
+console.log(app?.identifier)
         if (nativeTitle && nativeTitle !== '') {
             return (
                 <Header
@@ -1197,7 +1197,7 @@ class XAppBrowserModal extends Component<Props, State> {
                         onPress: this.onClose,
                     }}
                     centerComponent={{ text: nativeTitle, extraComponent: <NetworkLabel type="both" /> }}
-                    rightComponent={ String(app?.title || '').match(/swap/i) ? {
+                    rightComponent={ String(app?.identifier || '') === 'xaman.swap' ? {
                         icon: 'IconTabBarSettingsSelected',
                         iconSize: 25,
                         onPress: () => {
