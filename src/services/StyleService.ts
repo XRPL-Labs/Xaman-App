@@ -35,34 +35,6 @@ class StyleService {
     constructor() {
         this.regularValues.set('themeName', 'light');
         this.regularValues.set('currentStyle', { ...ColorsTheme.light, ...ColorsGeneral });
-
-        // setInterval(() => {
-        //     const colorScheme = this.regularValues.get('themeName') === 'light' ? 'dark' : 'light';
-        //     console.log('new scheme', colorScheme)
-        //     CoreRepository.saveSettings({ theme: colorScheme });
-        //     if (colorScheme === 'dark' || colorScheme === 'light') {
-        //         // Todo: respect variant of dark
-        //         console.log('switching theme')
-
-        //         this.setTheme(colorScheme);
-        //         Application.initializeServices('StyleService');
-        //         // TODO: THIS SHOULD NOT BE NECCESARY
-        //         Navigator.startDefault();        
-        //     }
-        // }, 15_000)
-
-        // TODO: LIVE SWITCH
-        // Appearance.addChangeListener(({ colorScheme }) => {
-        //     console.log('new scheme', colorScheme)
-        //     if (colorScheme === 'dark' || colorScheme === 'light') {
-        //         // Todo: respect variant of dark
-        //         console.log('switching theme')
-
-        //         this.setTheme(colorScheme);
-        //         // Application.initializeServices('StyleService');
-        //         // Navigator.startDefault();        
-        //     }
-        // });
     }
 
     // Update all living references with fresh values
