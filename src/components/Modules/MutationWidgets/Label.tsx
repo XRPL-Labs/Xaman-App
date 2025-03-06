@@ -72,7 +72,9 @@ class Label extends PureComponent<Props, State> {
         const { item } = this.props;
 
         if ('Date' in item) {
-            return <Text style={styles.dateText}>{moment(item.Date).format('LLLL')}</Text>;
+            return <Text style={[
+                styles.dateText,
+            ]}>{moment(item.Date).format('LLLL')}</Text>;
         }
 
         return null;

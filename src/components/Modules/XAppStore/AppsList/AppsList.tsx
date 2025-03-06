@@ -73,7 +73,7 @@ class AppsList extends Component<Props, State> {
         if (!leadingItem || !trailingSection) {
             return null;
         }
-        return <HorizontalLine />;
+        return <HorizontalLine style={AppStyles.marginTopSml} />;
     };
 
     renderRefreshControl = () => {

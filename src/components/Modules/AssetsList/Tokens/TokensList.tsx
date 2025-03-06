@@ -22,6 +22,7 @@ import { NativeItem } from '@components/Modules/AssetsList/Tokens/NativeItem';
 import { ListHeader } from '@components/Modules/AssetsList/Tokens/ListHeader';
 import { ListEmpty } from '@components/Modules/AssetsList/Tokens/ListEmpty';
 import { ListFilter, FiltersType } from '@components/Modules/AssetsList/Tokens/ListFilter';
+import { AppSizes } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props {
@@ -354,12 +355,14 @@ class TokensList extends Component<Props, State> {
                     onTokenAddPress={this.onTokenAddButtonPress}
                     onTitlePress={this.onCategoryChangePress}
                 />
-                <ListFilter
-                    filters={filters}
-                    visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
-                    onFilterChange={this.onFilterChange}
-                    onReorderPress={this.toggleReordering}
-                />
+                <View style={{height: AppSizes.scale(41)}}>
+                    <ListFilter
+                        filters={filters}
+                        visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
+                        onFilterChange={this.onFilterChange}
+                        onReorderPress={this.toggleReordering}
+                    />
+                </View>
                 <NativeItem
                     account={account}
                     discreetMode={discreetMode}
