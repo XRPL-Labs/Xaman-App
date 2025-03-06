@@ -3,14 +3,16 @@
  */
 
 import { uniqBy, sortBy, toLower } from 'lodash';
+// import Application from '../../../app';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
+// import { Navigation } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings } from '@common/helpers/device';
-import { ExitApp } from '@common/helpers/app';
-import { Prompt } from '@common/helpers/interface';
+// import { ExitApp } from '@common/helpers/app';
+// import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
@@ -27,6 +29,8 @@ import { CurrencyPickerModalProps } from '@screens/Modal/CurrencyPicker';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import StyleService from '@services/StyleService';
+// import Styles from '@components/General/SwipeButton/styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -164,29 +168,40 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     changeTheme = (theme: Themes) => {
+        const { coreSettings } = this.state;
         // save in store
         CoreRepository.saveSettings({ theme });
 
+        requestAnimationFrame(() => {
+            StyleService.initialize(coreSettings).then(() => {
+                requestAnimationFrame(() => {
+                    Navigator.startDefault();
+                });
+            });
+        });
+        // StyleService.setTheme(theme);
+        // Application.initializeServices('StyleService');
         // exit the app
-        ExitApp();
+        // ExitApp();
     };
 
     onThemeSelect = (selected: Themes) => {
-        Prompt(
-            Localize.t('global.warning'),
-            Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
-            [
-                { text: Localize.t('global.cancel') },
-                {
-                    text: Localize.t('global.quitApp'),
-                    onPress: () => {
-                        this.changeTheme(selected);
-                    },
-                    style: 'destructive',
-                },
-            ],
-            { type: 'default' },
-        );
+        this.changeTheme(selected);
+        // Prompt(
+        //     Localize.t('global.warning'),
+        //     Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
+        //     [
+        //         { text: Localize.t('global.cancel') },
+        //         {
+        //             text: Localize.t('global.quitApp'),
+        //             onPress: () => {
+        //                 this.changeTheme(selected);
+        //             },
+        //             style: 'destructive',
+        //         },
+        //     ],
+        //     { type: 'default' },
+        // );
     };
 
     renderThemeButton = (theme: Themes, { title, description }: any) => {
