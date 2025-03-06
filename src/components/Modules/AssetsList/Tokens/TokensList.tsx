@@ -355,14 +355,16 @@ class TokensList extends Component<Props, State> {
                     onTokenAddPress={this.onTokenAddButtonPress}
                     onTitlePress={this.onCategoryChangePress}
                 />
-                <View style={{height: AppSizes.scale(41)}}>
-                    <ListFilter
-                        filters={filters}
-                        visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
-                        onFilterChange={this.onFilterChange}
-                        onReorderPress={this.toggleReordering}
-                    />
-                </View>
+                { !reorderEnabled && (
+                    <View style={{height: AppSizes.scale(41)}}>
+                        <ListFilter
+                            filters={filters}
+                            visible={typeof experimentalUI !== 'undefined' && !experimentalUI}
+                            onFilterChange={this.onFilterChange}
+                            onReorderPress={this.toggleReordering}
+                        />
+                    </View>
+                )}
                 <NativeItem
                     account={account}
                     discreetMode={discreetMode}

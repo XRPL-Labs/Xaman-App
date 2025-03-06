@@ -122,35 +122,37 @@ class ListFilter extends Component<Props, State> {
     onFavoritePress = () => {
         const { favoritesEnabled } = this.state;
 
-        this.setState(
-            {
+        this.setState({
+            filterText: undefined,
+        }, () => {
+            this.setState({
                 ownUpdate: true,
+                filterText: undefined,
                 favoritesEnabled: !favoritesEnabled,
-            },
-            this.onFilterChange,
-        );
+            }, this.onFilterChange);
+        });
     };
 
     onHideZeroPress = () => {
         const { hideZeroEnabled } = this.state;
 
-        this.setState(
-            {
+        this.setState({
+            filterText: undefined,
+        }, () => {
+            this.setState({
                 ownUpdate: true,
                 hideZeroEnabled: !hideZeroEnabled,
-            },
-            this.onFilterChange,
-        );
+            }, this.onFilterChange);    
+        });
     };
 
     onFilterTextChange = (filterText: string) => {
-        this.setState(
-            {
-                ownUpdate: true,
-                filterText,
-            },
-            this.onFilterChange,
-        );
+        this.setState({
+            ownUpdate: true,
+            hideZeroEnabled: false,
+            favoritesEnabled: false,
+            filterText,
+        }, this.onFilterChange);
     };
 
     onSearchInputFocus = () => {
