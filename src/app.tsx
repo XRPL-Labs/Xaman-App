@@ -179,12 +179,14 @@ class Application {
     };
 
     // initialize all the services
-    initializeServices = () => {
+    initializeServices = (onlyService?: string) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map((key) => {
+                Object.keys(services).filter(key => {
+                    return !onlyService || onlyService === key;
+                }).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
