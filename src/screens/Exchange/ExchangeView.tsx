@@ -512,7 +512,10 @@ class ExchangeView extends Component<Props, State> {
                                         ? token.currency.currencyCode
                                         : NetworkService.getNativeAsset()
                                 }
-                                style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
+                                style={[
+                                    styles.detailsValue,
+                                    AppStyles.textRightAligned,
+                                ]}
                                 immutable
                             />
                         </View>
