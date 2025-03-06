@@ -69,9 +69,11 @@ declare namespace XamanBackend {
         pong: boolean;
         env: {
             hasPro: boolean;
+            hasKyc: boolean;
             appVersion: string;
             appLanguage: string;
             appCurrency: string;
+            swapNetworks: string;
         };
         tosAndPrivacyPolicyVersion: number;
         railsVersion: number;

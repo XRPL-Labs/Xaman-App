@@ -268,6 +268,7 @@ class BackendService {
                         username: user.name,
                         slug: user.slug,
                         uuid: user.uuidv4,
+                        swapNetworks: env.swapNetworks,
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                         hasPro,
