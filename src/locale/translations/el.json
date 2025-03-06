@@ -130,6 +130,7 @@
     "day": "ημέρα",
     "days": "days",
     "week": "εβδομάδα",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Αυτόματο κλείδωμα",
     "suggested": "Suggested",
     "low": "Low",

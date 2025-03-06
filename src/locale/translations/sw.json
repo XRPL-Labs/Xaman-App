@@ -130,6 +130,7 @@
     "day": "siku",
     "days": "days",
     "week": "wiki",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Auto lock",
     "suggested": "Suggested",
     "low": "Low",

@@ -130,6 +130,7 @@
     "day": "Päivä",
     "days": "days",
     "week": "Viikko",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Automaattinen lukitus",
     "suggested": "Suggested",
     "low": "Low",

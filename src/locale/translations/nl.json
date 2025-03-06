@@ -130,6 +130,7 @@
     "day": "dag",
     "days": "dagen",
     "week": "week",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Automatisch vergrendelen",
     "suggested": "Voorgesteld",
     "low": "Laag",

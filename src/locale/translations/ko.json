@@ -130,6 +130,7 @@
     "day": "일",
     "days": "days",
     "week": "주",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "자동 잠금",
     "suggested": "Suggested",
     "low": "Low",

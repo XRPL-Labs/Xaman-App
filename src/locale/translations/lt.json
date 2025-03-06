@@ -130,6 +130,7 @@
     "day": "diena",
     "days": "days",
     "week": "Savaitė",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Automatinis užraktas",
     "suggested": "Suggested",
     "low": "Low",

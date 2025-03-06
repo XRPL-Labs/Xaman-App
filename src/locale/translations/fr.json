@@ -130,6 +130,7 @@
     "day": "jour",
     "days": "days",
     "week": "semaine",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Verrouillage automatique",
     "suggested": "Suggérés",
     "low": "Faible",

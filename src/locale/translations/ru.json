@@ -130,6 +130,7 @@
     "day": "день",
     "days": "days",
     "week": "неделя",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Автоматическая блокировка",
     "suggested": "Предложено",
     "low": "Низкий",

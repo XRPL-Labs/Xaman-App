@@ -335,20 +335,24 @@ class TransactionItem extends Component<Props, State> {
         const { item, account } = this.props; // , rates
         const { participant, explainer, isFeeTransaction, feeText, cachedTokenDetails } = this.state;
 
+        // if participant is block the show an overlay to reduce the visibility
+        const showHalfTransparent = participant?.blocked && !isFeeTransaction;
+        const opacity = { opacity: showHalfTransparent ? 0.3 : 1 };
+
         return (
             <TouchableDebounce
                 onPress={this.onPress}
-                activeOpacity={0.6}
-                style={[styles.container, {
-                    height: isFeeTransaction
-                        ? TransactionItem.FeeHeight
-                        : TransactionItem.Height,
-                }]}
+                activeOpacity={Math.min(0.2, 0.6 * opacity.opacity)}
+                style={[
+                    styles.container,
+                    {
+                        height: isFeeTransaction
+                            ? TransactionItem.FeeHeight
+                            : TransactionItem.Height,
+                    },
+                ]}
             >
-                {/* if participant is block the show an overlay to reduce the visibility */}
-                {(participant?.blocked && !isFeeTransaction) && <View style={styles.containerBlocked} />}
-
-                <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent, opacity]}>
                     { isFeeTransaction && (
                         <View style={[ styles.feeTxAvatar ]}>
                             <Text>💝</Text>
@@ -358,21 +362,24 @@ class TransactionItem extends Component<Props, State> {
                         cachedTokenDetails?.icon
                     )}
                 </View>
-                <View style={[AppStyles.flex3, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex3, AppStyles.centerContent, opacity]}>
                     { !isFeeTransaction && (
                         cachedTokenDetails?.title
                     )}
                     { isFeeTransaction && (
                         <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
                     )}
-                    { !isFeeTransaction && (
+                    { !isFeeTransaction && !participant?.blocked && (
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
                             <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
                             <Blocks.IndicatorIconBlock item={item} account={account} />
                         </View>
                     )}
+                    { !isFeeTransaction && participant?.blocked && (
+                        <Text style={styles.feeTxText}>{Localize.t('global.unusualTransaction')}</Text>
+                    )}
                 </View>
-                <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent]}>
+                <View style={[AppStyles.flex2, AppStyles.rightAligned, AppStyles.centerContent, opacity]}>
                     { isFeeTransaction && (
                         <Text style={[ styles.requestTimeText, styles.naturalColor, styles.currency ]}>
                             { feeText }

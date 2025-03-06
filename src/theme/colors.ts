@@ -38,8 +38,8 @@ const ColorsGeneral = {
     ...colors,
     // testBlue: ColorLuminance(colors.blue, -0.5),
     // lightBlue: ColorLuminance(colors.blue, -0.5),
-    transparentBlack: HexToRgbA(colors.black, 0.7),
     transparentBlue: HexToRgbA(colors.blue, 0.7),
+    transparentBlack: HexToRgbA(colors.black, 0.7),
     transparentWhite: HexToRgbA(colors.white, 0.4),
 
     darkGrey: ColorLuminance(colors.grey, -0.75),

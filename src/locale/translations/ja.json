@@ -130,6 +130,7 @@
     "day": "日",
     "days": "日",
     "week": "週",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "自動ロック",
     "suggested": "推奨",
     "low": "低",

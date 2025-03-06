@@ -130,6 +130,7 @@
     "day": "dag",
     "days": "days",
     "week": "uke",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Automatisk lås",
     "suggested": "Foreslått",
     "low": "Lav",

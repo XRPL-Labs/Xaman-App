@@ -130,6 +130,7 @@
     "day": "eguna",
     "days": "days",
     "week": "astea",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Blokeo automatikoa",
     "suggested": "Suggested",
     "low": "Low",

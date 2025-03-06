@@ -130,6 +130,7 @@
     "day": "päev",
     "days": "days",
     "week": "Nädal",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Automaatne lukustus",
     "suggested": "Suggested",
     "low": "Low",

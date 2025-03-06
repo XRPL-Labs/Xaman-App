@@ -130,6 +130,7 @@
     "day": "kun",
     "days": "days",
     "week": "hafta",
+    "unusualTransaction": "Spam / Scam transaction",
     "autoLock": "Avtomatik qulflash",
     "suggested": "Suggested",
     "low": "Low",
