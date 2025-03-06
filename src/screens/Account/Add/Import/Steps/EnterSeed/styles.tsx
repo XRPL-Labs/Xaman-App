@@ -12,6 +12,11 @@ const styles = StyleService.create({
     inputTextEmpty: {
         fontFamily: AppFonts.base.family,
     },
+    textInput: {
+        borderColor: 'transparent',
+        borderWidth: 0,
+        width: '100%',
+    }, 
     value: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,

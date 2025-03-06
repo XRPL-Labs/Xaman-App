@@ -226,6 +226,7 @@ class EnterSeedStep extends Component<Props, State> {
                             String(secret || '') === '' ? styles.inputTextEmpty : styles.inputText
                         }
                         onChangeText={this.onTextChange}
+                        style={styles.textInput}
                         value={secret}
                         showScanner
                         scannerType={StringType.XrplSecret}
