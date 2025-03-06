@@ -29,10 +29,11 @@ export interface Props {
     account: AccountModel;
 }
 
-export interface State {}
+export interface State {
+    ogBrightness: number | null;
+    keepBrightness: boolean;
+}
 
-let ogBrightness: number | null = null;
-let keepBrightness = false;
 
 /* Component ==================================================================== */
 class ShareAccountOverlay extends Component<Props, State> {
@@ -55,13 +56,20 @@ class ShareAccountOverlay extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        this.state = {
+            ogBrightness: null,
+            keepBrightness: false,
+        };
+
         this.actionPanelRef = React.createRef();
     }
 
     componentDidMount() {
+        const { ogBrightness } = this.state;
+
         DeviceBrightness.getBrightnessLevel().then(brightness => {
             if (typeof ogBrightness !== 'number') {
-                ogBrightness = brightness;
+                this.setState({ ogBrightness: brightness });
             }
             setTimeout(() => {
                 DeviceBrightness.setBrightnessLevel(1);
@@ -70,6 +78,7 @@ class ShareAccountOverlay extends Component<Props, State> {
     }
 
     componentWillUnmount(): void {
+        const { ogBrightness, keepBrightness } = this.state;
         if (!keepBrightness) {
             DeviceBrightness.setBrightnessLevel(Number(Platform.OS === 'android' ? -1 : ogBrightness));
         }
@@ -102,9 +111,11 @@ class ShareAccountOverlay extends Component<Props, State> {
     };
 
     onPaymentRequestPress = () => {
+        const { ogBrightness } = this.state;
+
         this.actionPanelRef?.current?.slideDown();
 
-        keepBrightness = true;
+        this.setState({ keepBrightness: true });
 
         setTimeout(() => {
             Navigator.push<RequestViewProps>(AppScreens.Transaction.Request, {
