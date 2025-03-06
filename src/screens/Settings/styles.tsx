@@ -5,8 +5,8 @@ import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     rowContainer: {
-        paddingTop: AppSizes.heightPercentageToDP(2.5),
-        paddingBottom: AppSizes.heightPercentageToDP(2.5),
+        paddingTop: AppSizes.heightPercentageToDP(2),
+        paddingBottom: AppSizes.heightPercentageToDP(2),
     },
     rowLabel: {
         fontFamily: AppFonts.base.familyBold,
@@ -17,8 +17,9 @@ const styles = StyleService.create({
         tintColor: '$textPrimary',
     },
     hr: {
-        borderBottomColor: '$tint',
-        borderBottomWidth: 2,
+        borderBottomColor: '$contrast',
+        opacity: 0.15,
+        borderBottomWidth: 1,
         marginTop: 7,
         marginBottom: 7,
     },
