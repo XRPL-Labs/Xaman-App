@@ -257,9 +257,9 @@ class SwitchAccountOverlay extends Component<Props, State> {
         return (
             <ActionPanel height={contentHeight} onSlideDown={this.onPanelSlideDown} ref={this.actionPanelRef}>
                 <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text numberOfLines={1} style={AppStyles.h5}>
-                            {Localize.t('account.myAccounts')}
+                    <View style={[AppStyles.flex1]}>
+                        <Text numberOfLines={1} style={[ AppStyles.h5,  AppStyles.textCenterAligned ]}>
+                            {Localize.t('global.accounts')}
                         </Text>
                     </View>
                     {showAddAccountButton && (
