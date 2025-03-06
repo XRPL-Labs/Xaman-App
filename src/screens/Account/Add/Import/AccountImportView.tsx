@@ -484,9 +484,10 @@ class AccountImportView extends Component<Props, State> {
                 // No alternative seed import
                 // First account = already at home
                 if (AccountRepository.getAccounts().length > 1) {
-                    Navigator.startDefault();
+                    Navigator.navigateToTab('Home');
                 } else {
                     // Otherwise, just return
+                    // TODO: check if home (import wizard) or settings
                     Navigator.popToRoot();
                 };
             }
