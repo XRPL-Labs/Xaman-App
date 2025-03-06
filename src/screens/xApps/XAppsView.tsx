@@ -38,7 +38,9 @@ export type SectionData = {
     data: XamanBackend.AppCategory[];
 };
 
-export interface Props {}
+export interface Props {
+    timestamp?: number;
+}
 
 export interface State {
     message?: MessageType;
@@ -409,6 +411,8 @@ class XAppsView extends Component<Props, State> {
     };
 
     render() {
+        const { timestamp } = this.props;
+
         return (
             <View testID="xapp-store-tab-view" style={AppStyles.tabContainer}>
                 <Header
@@ -423,7 +427,7 @@ class XAppsView extends Component<Props, State> {
                     }}
                 />
 
-                <View style={styles.contentContainer}>{this.renderContent()}</View>
+                <View key={`xappsview-${timestamp}`} style={styles.contentContainer}>{this.renderContent()}</View>
             </View>
         );
     }

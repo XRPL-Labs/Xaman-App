@@ -22,6 +22,8 @@ export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
 
 type EnforcedProps<P extends { [K in keyof P]: any }> = P;
 
+const allScreens = new Set();
+
 /* Constants ==================================================================== */
 const getDefaultOptions = (): Options => {
     return {
@@ -38,9 +40,11 @@ const getDefaultOptions = (): Options => {
             backgroundColor: StyleService.value('$tint'),
         },
         statusBar: {
+            // @ts-ignore
             style: Platform.select({
                 android: undefined,
-                ios: StyleService.isDarkMode() ? 'light' : 'dark',
+                // @ts-ignore
+                ios: StyleService.value(StyleService.select({ light: 'dark', dark: 'light' })),
             }),
             drawBehind: false,
         },
@@ -53,12 +57,16 @@ const getDefaultOptions = (): Options => {
             titleDisplayMode: 'alwaysShow',
             elevation: 10,
             hideShadow: Platform.OS === 'android',
+            // @ts-ignore
             shadow: Platform.select({
                 android: undefined,
                 ios: {
-                    opacity: StyleService.isDarkMode() ? 0.13 : 0.07,
-                    color: StyleService.isDarkMode() ? 'white' : 'black',
-                    radius: StyleService.isDarkMode() ? 12 : 8,
+                    // @ts-ignore
+                    opacity: StyleService.value(StyleService.select({ light: 0.07, dark: 0.13 })),
+                    // @ts-ignore
+                    color: StyleService.value(StyleService.select({ light: 'black', dark: 'white' })),
+                    // @ts-ignore
+                    radius: StyleService.value(StyleService.select({ light: 8, dark: 12 })),
                 },
             }),
         },
@@ -111,6 +119,8 @@ const getTabBarIcons = (): {
     };
 };
 
+const bottomTabsChildren: LayoutTabsChildren[] = [];
+
 /* Lib ==================================================================== */
 
 const Navigator = {
@@ -134,8 +144,6 @@ const Navigator = {
         });
 
         const TabBarIcons = getTabBarIcons();
-
-        const bottomTabsChildren: LayoutTabsChildren[] = [];
 
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
@@ -227,6 +235,7 @@ const Navigator = {
     ): Promise<string | boolean> {
         const currentScreen = NavigationService.getCurrentScreen() ?? '';
         if (currentScreen !== nextScreen) {
+            allScreens.add(nextScreen);
             return Navigation.push(currentScreen, {
                 component: {
                     name: nextScreen,
@@ -441,16 +450,94 @@ const Navigator = {
      *
      * @return {void}
      */
-    reRender(): void {
+    reRender(settingsTabFirst = false): void {
         // update the tabbar
-        Object.keys(AppScreens.TabBar).forEach((tab) => {
-            Navigation.mergeOptions(`bottomTab-${tab}`, {
-                bottomTab: {
-                    text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                },
-            });
+        const defaultOptions = getDefaultOptions();
+        Navigation.setDefaultOptions(defaultOptions);
 
-            Navigation.updateProps(get(AppScreens.TabBar, tab), { timestamp: +new Date() });
+        const bottomTabStyles = StyleService.applyTheme({
+            textColor: '$grey',
+            selectedTextColor: '$textPrimary',
+            fontFamily: AppFonts.base.familyExtraBold,
+            iconInsets: {
+                top: HasBottomNotch() ? 4 : 1,
+            },
+        });
+
+        // Update ALL active screens/stacks
+        ;(allScreens as unknown as string[]).forEach(allScreenIterator => {
+            Navigation.mergeOptions(allScreenIterator, { ...defaultOptions });
+            Navigation.updateProps(allScreenIterator, { timestamp: +new Date() });
+        });
+
+        const TabBarIcons = getTabBarIcons();
+
+        const updateTab = (tab: string) => {
+            const tabId = `bottomTab-${tab}`;
+            bottomTabsChildren
+                .filter(b => b.stack?.id === tabId)?.[0].stack?.children?.forEach(child => {
+                    if (child.component?.id) {
+                        Navigation.mergeOptions(child.component.id, { ...defaultOptions });
+                        Navigation.updateProps(child.component.id, { timestamp: +new Date() });
+                    }
+                });
+
+            const currentBottomTab = bottomTabsChildren
+                .filter(b => b.stack?.id === tabId)?.[0].stack?.options?.bottomTab;
+
+            if (currentBottomTab) {
+                const getTab = get(AppScreens.TabBar, tab);
+                Navigation.mergeOptions(getTab, {
+                    bottomTab: {
+                        ...currentBottomTab,
+                        text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                        icon: {
+                            scale: TabBarIcons[getTab].scale,
+                            ...TabBarIcons[getTab].icon,
+                        },
+                        selectedIcon: {
+                            scale: TabBarIcons[getTab].scale,
+                            ...TabBarIcons[getTab].iconSelected,
+                        },
+                        ...bottomTabStyles,
+                    },
+                    // ...defaultOptions,
+                });
+
+                Navigation.updateProps(getTab, { timestamp: +new Date() });
+            }
+        };
+
+        // First the settings tab
+        if (typeof settingsTabFirst === 'boolean' && settingsTabFirst) {
+            requestAnimationFrame(() => {
+                updateTab('Settings');
+            });
+        }
+
+        // Then the rest
+        requestAnimationFrame(() => {
+            // Update the root with defaultOptions
+            Navigation.mergeOptions(RootType.DefaultRoot, { ...defaultOptions });
+            Navigation.updateProps(RootType.DefaultRoot, { timestamp: +new Date() });
+
+            Object.keys(AppScreens.TabBar)
+                .filter(tab => tab !== 'Settings' || typeof settingsTabFirst !== 'boolean' || !settingsTabFirst)
+                .forEach(tab => updateTab(tab));
+        });
+
+        requestAnimationFrame(() => {
+            // Update any active modals
+            const currentModal = NavigationService.getCurrentModal();
+            if (currentModal) {
+                Navigation.mergeOptions(currentModal, { ...defaultOptions });
+                Navigation.updateProps(currentModal, { timestamp: +new Date() });
+            }
+            const currentOverlay = NavigationService.getCurrentOverlay();
+            if (currentOverlay) {
+                Navigation.mergeOptions(currentOverlay, { ...defaultOptions });
+                Navigation.updateProps(currentOverlay, { timestamp: +new Date() });
+            }
         });
     },
 };

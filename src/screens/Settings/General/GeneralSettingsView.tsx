@@ -169,20 +169,12 @@ class GeneralSettingsView extends Component<Props, State> {
 
     changeTheme = (theme: Themes) => {
         const { coreSettings } = this.state;
-        // save in store
+
         CoreRepository.saveSettings({ theme });
 
-        requestAnimationFrame(() => {
-            StyleService.initialize(coreSettings).then(() => {
-                requestAnimationFrame(() => {
-                    Navigator.startDefault();
-                });
-            });
+        StyleService.initialize(coreSettings).then(() => {
+            Navigator.reRender(true);
         });
-        // StyleService.setTheme(theme);
-        // Application.initializeServices('StyleService');
-        // exit the app
-        // ExitApp();
     };
 
     onThemeSelect = (selected: Themes) => {

@@ -336,9 +336,10 @@ class HomeView extends Component<Props, State> {
 
     renderHeader = () => {
         const { account, developerMode } = this.state;
+        const { timestamp } = this.props;
 
         return (
-            <Fragment key="header">
+            <Fragment key={`header-${timestamp}`}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     <ProBadge />

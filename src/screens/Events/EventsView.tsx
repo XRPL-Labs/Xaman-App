@@ -1075,6 +1075,7 @@ class EventsView extends Component<Props, State> {
                 />
                 <SegmentButtons
                     activeButton={activeSection}
+                    key={`eventsview-segmentbuttons-${timestamp}`}
                     containerStyle={[
                         AppStyles.paddingHorizontalSml,
                         AppStyles.marginTopNegativeSml,
@@ -1098,6 +1099,7 @@ class EventsView extends Component<Props, State> {
                 />
                 <EventsList
                     account={account}
+                    key={`eventsview-eventslist-${timestamp}`}
                     headerComponent={this.renderListHeader}
                     dataSource={dataSource}
                     isLoading={isLoading}
