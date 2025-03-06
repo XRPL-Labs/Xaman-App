@@ -22,6 +22,7 @@ interface Props {
     selectedItem?: TrustLineModel | string;
     onSelect?: (item: any) => void;
     containerStyle?: ViewStyle;
+    timestamp?: number;
 }
 
 interface State {
@@ -89,7 +90,11 @@ class CurrencyPicker extends Component<Props, State> {
         }
 
         return (
-            <TouchableDebounce activeOpacity={0.9} onPress={this.showPicker} style={[styles.pickerContainer]}>
+            <TouchableDebounce
+                activeOpacity={0.9}
+                onPress={this.showPicker}
+                style={[styles.pickerContainer]}
+            >
                 <View style={AppStyles.row}>
                     <View style={AppStyles.flex1}>
                         <CurrencyItem account={account} item={selectedItem} />

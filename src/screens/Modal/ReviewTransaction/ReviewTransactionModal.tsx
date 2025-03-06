@@ -778,6 +778,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     render() {
         const { currentStep, hasError, errorMessage } = this.state;
+        const { timestamp } = this.props;
 
         // don't render if any error happened
         // this can happen if there is a missing field in the payload or any unexpected error
@@ -811,6 +812,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         return (
             <StepsContext.Provider
+                key={`reviewtxmodal-${timestamp}`}
                 value={{
                     ...this.state,
                     setTransaction: this.setTransaction,

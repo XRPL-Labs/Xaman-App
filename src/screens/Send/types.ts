@@ -25,6 +25,7 @@ export interface FeeItem {
 }
 
 export interface Props {
+    timestamp?: number;
     token?: TrustLineModel;
     scanResult?: XrplDestination;
     amount?: string;
@@ -49,6 +50,7 @@ export interface State {
 }
 
 export interface ContextProps extends State {
+    timestamp?: number;
     setSource: (source: AccountModel) => void;
     setToken: (token: TrustLineModel | string) => void;
     setAmount: (amount: string) => void;

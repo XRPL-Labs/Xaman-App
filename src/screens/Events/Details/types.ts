@@ -13,6 +13,7 @@ export interface Props {
     item: ((Transactions | FallbackTransaction) & MutationsMixinType) | LedgerObjects;
     account: AccountModel;
     cachedTokenDetails?: cachedTokenDetailsState;
+    timestamp?: number;
 }
 
 export interface State {

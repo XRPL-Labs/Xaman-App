@@ -27,6 +27,7 @@ import styles from './styles';
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
+    timestamp?: number;
 }
 
 export interface State {
@@ -129,7 +130,7 @@ class ShareAccountOverlay extends Component<Props, State> {
     };
 
     render() {
-        const { account } = this.props;
+        const { account, timestamp } = this.props;
 
         return (
             <ActionPanel
@@ -177,6 +178,7 @@ class ShareAccountOverlay extends Component<Props, State> {
                             <Button
                                 light
                                 roundedMini
+                                key={`share-account-overlay-${timestamp}-btn1`}
                                 numberOfLines={1}
                                 icon="IconShare"
                                 // iconStyle={AppStyles.imgColorBlue}
@@ -187,6 +189,7 @@ class ShareAccountOverlay extends Component<Props, State> {
                             <Button
                                 light
                                 roundedMini
+                                key={`share-account-overlay-${timestamp}-btn2`}
                                 numberOfLines={1}
                                 icon="IconClipboard"
                                 // iconStyle={AppStyles.imgColorBlue}

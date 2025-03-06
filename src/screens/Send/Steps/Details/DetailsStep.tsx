@@ -33,7 +33,8 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 /* Types  ==================================================================== */
-interface Props {}
+interface Props {
+}
 
 interface State {
     isLoadingAvailableBalance: boolean;
@@ -303,7 +304,7 @@ class DetailsStep extends Component<Props, State> {
 
     render() {
         const { amountRate, currencyRate, isLoadingAvailableBalance, isCheckingBalance } = this.state;
-        const { goBack, accounts, source, token, amount, coreSettings } = this.context;
+        const { goBack, accounts, source, token, amount, coreSettings, timestamp } = this.context;
 
         return (
             <View testID="send-details-view" style={styles.container}>
@@ -328,6 +329,7 @@ class DetailsStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <CurrencyPicker
+                            timestamp={timestamp}
                             account={source!}
                             onSelect={this.onCurrencyChange}
                             currencies={
