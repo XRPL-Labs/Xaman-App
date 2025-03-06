@@ -62,10 +62,12 @@ const getDefaultOptions = (): Options => {
                 },
             }),
         },
-
         animations: {
             pop: {
                 enabled: Platform.OS === 'ios',
+            },
+            setRoot: {
+                waitForRender: true, // Wait for the component to render before ANY transitions
             },
         },
         popGesture: true,
@@ -299,6 +301,12 @@ const Navigator = {
                         layout: {
                             backgroundColor: 'transparent',
                             componentBackgroundColor: 'transparent',
+                        },
+                        // Disable automatic splash screen dismissal
+                        animations: {
+                            setRoot: {
+                              waitForRender: true, // Wait for the component to render before ANY transitions
+                            },
                         },
                         ...options,
                     },
