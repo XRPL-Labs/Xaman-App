@@ -86,7 +86,7 @@ const styles = StyleService.create({
     dateText: {
         fontFamily: AppFonts.base.family,
         fontSize: AppFonts.small.size,
-        color: '$primary',
+        color: '$textPrimary',
         textAlign: 'center',
     },
     hashText: {
