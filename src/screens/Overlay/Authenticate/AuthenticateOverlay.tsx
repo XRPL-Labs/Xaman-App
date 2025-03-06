@@ -306,7 +306,7 @@ class AuthenticateOverlay extends Component<Props, State> {
             <BlurView
                 style={styles.blurView}
                 blurAmount={Platform.OS === 'ios' ? 15 : 20}
-                blurType={StyleService.select({ dark: 'dark', light: 'light' })}
+                blurType={StyleService.isDarkMode() ? 'dark' : 'light'}
             >
                 <SafeAreaView testID="lock-overlay" style={styles.safeAreaContainer}>
                     <Animated.View style={[{ transform, opacity: this.animatedOpacity }]}>
