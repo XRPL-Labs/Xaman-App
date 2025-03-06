@@ -193,6 +193,33 @@ const Navigator = {
     },
 
     /**
+     * Navigates to a specific tab by name.
+     *
+     * @param {string} tabName - The name of the tab to navigate to (e.g., 'Home', 'Events', 'XApps', 'Settings').
+     * @return {void}
+     */
+    navigateToTab(tabName: string): void {   
+        const tabId = `bottomTab-${tabName}`;
+    
+        // Ensure the root is the bottom tab layout
+        Navigation.setRoot({
+            root: {
+                bottomTabs: {
+                    id: RootType.DefaultRoot,
+                    children: bottomTabsChildren,
+                },
+            },
+        });
+    
+        // Switch to the specified tab
+        Navigation.mergeOptions(RootType.DefaultRoot, {
+            bottomTabs: {
+                currentTabId: tabId,
+            },
+        });
+    },
+
+    /**
      * Starts the app navigation in onboarding screen
      *
      * @return {void}
