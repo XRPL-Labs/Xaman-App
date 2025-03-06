@@ -224,7 +224,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
                         </View>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={AppStyles.flex1} shouldRasterizeIOS renderToHardwareTextureAndroid>
                         <View style={[styles.radioCircle, AppStyles.rightSelf]} />
                     </View>
                 </View>

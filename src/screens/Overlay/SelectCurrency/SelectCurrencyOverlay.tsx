@@ -158,6 +158,7 @@ class SelectCurrencyOverlay extends Component<Props, State> {
                     <CurrencyItem account={account} item={item} selected={isSelected} />
                     <View style={[AppStyles.flex1]}>
                         <View
+                            shouldRasterizeIOS renderToHardwareTextureAndroid
                             style={[isSelected ? styles.radioCircleSelected : styles.radioCircle, AppStyles.rightSelf]}
                         />
                     </View>
