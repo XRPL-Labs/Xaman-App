@@ -78,7 +78,7 @@ class NetworkSwitchButton extends PureComponent<Props, State> {
 
     componentWillUnmount() {
         NetworkService.off('stateChange', this.onNetworkStateChange);
-        NetworkService.off('networkChange', this.onNetworkChange);
+        NetworkService.off('networkChange', this.debouncedOnNetworkChange);
     }
 
     onNetworkStateChange = (state: NetworkStateStatus) => {
