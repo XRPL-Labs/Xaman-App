@@ -336,6 +336,12 @@ export default StyleService.create({
     paddingHorizontalSml: {
         paddingHorizontal: Sizes.paddingSml,
     },
+    paddingLeftExtraSml: {
+        paddingLeft: Sizes.paddingExtraSml,
+    },
+    paddingRightExtraSml: {
+        paddingRight: Sizes.paddingExtraSml,
+    },
     paddingHorizontalExtraSml: {
         paddingHorizontal: Sizes.paddingExtraSml,
     },

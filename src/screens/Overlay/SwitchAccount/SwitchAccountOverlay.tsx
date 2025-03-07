@@ -256,9 +256,14 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel height={contentHeight} onSlideDown={this.onPanelSlideDown} ref={this.actionPanelRef}>
-                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
+                <View style={[
+                    AppStyles.row,
+                    AppStyles.centerAligned,
+                    AppStyles.paddingBottomSml,
+                    AppStyles.paddingLeftExtraSml,
+                ]}>
                     <View style={[AppStyles.flex1]}>
-                        <Text numberOfLines={1} style={[ AppStyles.h5,  AppStyles.textCenterAligned ]}>
+                        <Text numberOfLines={1} style={[ AppStyles.h5, AppStyles.textLeftAligned ]}>
                             {Localize.t('global.accounts')}
                         </Text>
                     </View>
