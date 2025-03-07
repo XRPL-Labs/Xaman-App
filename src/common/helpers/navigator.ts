@@ -479,60 +479,64 @@ const Navigator = {
                 : false;
     },
 
+    awaitSafeThemeSwitch(): Promise<void> {
+        return new Promise(resolve => {
+            if (!Navigator.isInstantThemeSwitchPage(NavigationService.getCurrentScreen() || '')) {
+                // console.log('Wait till back at main pages, now at', NavigationService.getCurrentScreen());
+                const pageListener = Navigation
+                    .events()
+                    .registerComponentDidAppearListener(({ componentId }) => {
+                        // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
+                        if (Navigator.isInstantThemeSwitchPage(componentId)) {
+                            // console.log('Awaited page to one of main tab pages so going now')
+                            pageListener.remove();
+                            resolve();
+                        }
+                    });
+    
+                return;
+            }
+    
+            const modalOpen = NavigationService.getCurrentModal();
+            if (modalOpen) {
+                // We wait with all the updates till it closes
+                // console.log('Wait cause modal open', modalOpen)
+                const modalDismissListener = Navigation
+                    .events()
+                    .registerModalDismissedListener(({ componentId }) => {
+                        if (componentId === modalOpen) {
+                            // console.log('Awaited modal close so going now', modalOpen)
+                            modalDismissListener.remove();
+                            resolve();
+                        }
+                    });
+                return;
+            }
+    
+            const overlayOpen = NavigationService.getCurrentOverlay();
+            if (overlayOpen) {
+                // We wait with all the updates till it closes
+                // console.log('Wait cause overlay open', overlayOpen)
+                const overlayDismissListener = Navigation
+                    .events()
+                    .registerComponentDidDisappearListener(({ componentId }) => {
+                        if (componentId === overlayOpen) {
+                            // console.log('Awaited overlay close so going now', overlayOpen)
+                            overlayDismissListener.remove();
+                            resolve();
+                        }
+                    });
+                return;
+            }
+    
+            resolve();
+        });
+    },
+
     switchTheme(): void {
-        const go = () => {
+        Navigator.awaitSafeThemeSwitch().then(() => {
             Navigator.reRender();
-        };
-
-        if (!Navigator.isInstantThemeSwitchPage(NavigationService.getCurrentScreen() || '')) {
-            // console.log('Wait till back at main pages, now at', NavigationService.getCurrentScreen());
-            const pageListener = Navigation
-                .events()
-                .registerComponentDidAppearListener(({ componentId }) => {
-                    // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
-                    if (Navigator.isInstantThemeSwitchPage(componentId)) {
-                        // console.log('Awaited page to one of main tab pages so going now')
-                        pageListener.remove();
-                        go();
-                    }
-                });
-
-            return;
-        }
-
-        const modalOpen = NavigationService.getCurrentModal();
-        if (modalOpen) {
-            // We wait with all the updates till it closes
-            // console.log('Wait cause modal open', modalOpen)
-            const modalDismissListener = Navigation
-                .events()
-                .registerModalDismissedListener(({ componentId }) => {
-                    if (componentId === modalOpen) {
-                        // console.log('Awaited modal close so going now', modalOpen)
-                        modalDismissListener.remove();
-                        go();
-                    }
-                });
-            return;
-        }
-
-        const overlayOpen = NavigationService.getCurrentOverlay();
-        if (overlayOpen) {
-            // We wait with all the updates till it closes
-            // console.log('Wait cause overlay open', overlayOpen)
-            const overlayDismissListener = Navigation
-                .events()
-                .registerComponentDidDisappearListener(({ componentId }) => {
-                    if (componentId === overlayOpen) {
-                        // console.log('Awaited overlay close so going now', overlayOpen)
-                        overlayDismissListener.remove();
-                        go();
-                    }
-                });
-            return;
-        }
-
-        go();
+        });
     },
 
     /**

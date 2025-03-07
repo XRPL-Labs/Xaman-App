@@ -184,12 +184,14 @@ class Application {
                             ) {
                                 // Switch to light/dark
                                 // console.log('Foreground appstatechange theme switch')
-                                services.StyleService.initialize(coreSettings)
+                                Navigator.awaitSafeThemeSwitch().then(() => {
+                                    services.StyleService.initialize(coreSettings)
                                     .then(() => {
                                         requestAnimationFrame(() => {
                                             Navigator.switchTheme();
                                         });
                                     });
+                                });
                             }
                         }
                     }
@@ -200,12 +202,14 @@ class Application {
                     // console.log('Theme changed to:', colorScheme);
                     const coreSettings = CoreRepository.getSettings();
                     if (coreSettings.themeAutoSwitch) {
-                        services.StyleService.initialize(coreSettings)
+                        Navigator.awaitSafeThemeSwitch().then(() => {
+                            services.StyleService.initialize(coreSettings)
                             .then(() => {
                                 requestAnimationFrame(() => {
                                     Navigator.switchTheme();
                                 });
                             });
+                        });
                     }
                 });
             });
