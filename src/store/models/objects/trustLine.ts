@@ -128,7 +128,7 @@ class TrustLine extends Realm.Object<TrustLine> {
 
         // issuer name + currency code
         if (this.currency.issuerName) {
-            return `${this.currency.issuerName} ${NormalizeCurrencyCode(this.currency.currencyCode)}`;
+            return `${Truncate(this.currency.issuerName, maxLength)} ${Truncate(NormalizeCurrencyCode(this.currency.currencyCode), 11)}`;
         }
 
         // issuer address

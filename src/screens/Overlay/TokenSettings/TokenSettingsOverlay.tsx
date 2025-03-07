@@ -823,7 +823,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                                 activeOpacity={1}
                                             >
                                                 <Text style={styles.issuerLabel}>{
-                                                    token.getFormattedIssuer(undefined, 25)
+                                                    token.getFormattedIssuer(undefined, 19)
                                                 }</Text>
                                                 <Icon style={styles.copyIcon} name="IconCopy" size={15} />
                                             </TouchableDebounce>

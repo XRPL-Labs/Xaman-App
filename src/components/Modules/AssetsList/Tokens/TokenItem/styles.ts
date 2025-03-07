@@ -1,6 +1,7 @@
 import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
+
 /* Styles ==================================================================== */
 export default StyleService.create({
     currencyItem: {
@@ -42,7 +43,11 @@ export default StyleService.create({
         marginRight: 10,
     },
     tokenIconContainer: {
-        paddingRight: 5,
+        marginRight: 5,
+        borderRadius: 3,
+        borderColor: '$background',
+        borderWidth: 1,
+        overflow: 'hidden',
     },
     reorderButtonContainer: {
         flexDirection: 'row',

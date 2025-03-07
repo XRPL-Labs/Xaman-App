@@ -195,6 +195,7 @@ const styles = StyleService.create({
     tokenIconContainer: {
         marginRight: 8,
         marginTop: -4,
+        borderRadius: 3,
     },
 });
 
