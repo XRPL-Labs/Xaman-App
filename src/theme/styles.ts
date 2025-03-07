@@ -36,7 +36,9 @@ export default StyleService.create({
         height: Sizes.moderateScale(60),
         marginTop: 0,
         paddingTop: 0,
-        paddingHorizontal: Sizes.padding,
+        paddingHorizontal: Sizes.paddingSml,
+        // borderWidth: 3,
+        // borderColor: 'red',
     },
     headerBorder: {
         borderBottomWidth: 1,
