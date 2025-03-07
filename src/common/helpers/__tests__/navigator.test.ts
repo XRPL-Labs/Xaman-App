@@ -56,6 +56,11 @@ describe('Navigator helper', () => {
                 id: overlay,
                 passProps: { componentType: ComponentTypes.Overlay },
                 options: {
+                    animations: {
+                        setRoot: {
+                            waitForRender: true,
+                        },
+                    },
                     overlay: {
                         handleKeyboardEvents: true,
                     },

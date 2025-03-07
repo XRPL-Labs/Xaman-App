@@ -33,7 +33,7 @@ exports[`[InfoMessage] renders correctly Error 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
@@ -94,7 +94,7 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
@@ -155,7 +155,7 @@ exports[`[InfoMessage] renders correctly Warning 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
@@ -246,7 +246,7 @@ exports[`[InfoMessage] should render with icon Error 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
@@ -337,7 +337,7 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
@@ -428,7 +428,7 @@ exports[`[InfoMessage] should render with icon Warning 1`] = `
       style={
         {
           "flex": 1,
-          "paddingVertical": 10,
+          "paddingVertical": 5,
         }
       }
     >
