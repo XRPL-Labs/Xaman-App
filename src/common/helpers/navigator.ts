@@ -200,17 +200,7 @@ const Navigator = {
      */
     navigateToTab(tabName: string): void {   
         const tabId = `bottomTab-${tabName}`;
-    
-        // Ensure the root is the bottom tab layout
-        Navigation.setRoot({
-            root: {
-                bottomTabs: {
-                    id: RootType.DefaultRoot,
-                    children: bottomTabsChildren,
-                },
-            },
-        });
-    
+      
         // Switch to the specified tab
         Navigation.mergeOptions(RootType.DefaultRoot, {
             bottomTabs: {
