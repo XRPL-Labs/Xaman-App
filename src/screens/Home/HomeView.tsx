@@ -400,7 +400,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable, experimentalUI, selectedNetwork, isSignable } = this.state;
+        const { isSpendable, experimentalUI, isSignable } = this.state;
 
         if (isSpendable) {
             return (
@@ -419,7 +419,7 @@ class HomeView extends Component<Props, State> {
                         textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
                     />
-                    { AppConfig.swapNetworks.indexOf(selectedNetwork.key) > -1 && isSignable &&
+                    { NetworkService.hasSwap() && isSignable &&
                         <RaisedButton
                             small
                             testID="swap-button"

@@ -462,15 +462,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
         });
     };
 
-    isSwapNetwork = () => {
-        return AppConfig.swapNetworks.indexOf(NetworkService?.getNetwork()?.key) > -1;
-    };
-
     onSwapPress = () => {
         const { token } = this.props;
 
         this.dismiss().then(() => {
-            if (this.isSwapNetwork()) {
+            if (NetworkService.hasSwap()) {
                 Navigator.showModal<XAppBrowserModalProps>(
                     AppScreens.Modal.XAppBrowser,
                     {
@@ -915,7 +911,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             />
                         </View>
                         {
-                            this.isSwapNetwork() && (
+                            NetworkService.hasSwap() && (
                                 <View style={[
                                     styles.buttonRow,
                                     styles.secondButtonRow,
