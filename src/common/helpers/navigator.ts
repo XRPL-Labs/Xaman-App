@@ -472,13 +472,75 @@ const Navigator = {
         Navigation.updateProps(currentScreen, props);
     },
 
+    isInstantThemeSwitchPage(screenId: string): string | false {
+        return ([ 'app.Settings.General', ...Object.values(AppScreens.TabBar) ] as string[])
+            .indexOf(screenId) > -1
+                ? screenId
+                : false;
+    },
+
+    switchTheme(): void {
+        const go = () => {
+            Navigator.reRender();
+        };
+
+        if (!Navigator.isInstantThemeSwitchPage(NavigationService.getCurrentScreen() || '')) {
+            // console.log('Wait till back at main pages, now at', NavigationService.getCurrentScreen());
+            const pageListener = Navigation
+                .events()
+                .registerComponentDidAppearListener(({ componentId }) => {
+                    // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
+                    if (Navigator.isInstantThemeSwitchPage(componentId)) {
+                        // console.log('Awaited page to one of main tab pages so going now')
+                        pageListener.remove();
+                        go();
+                    }
+                });
+
+            return;
+        }
+
+        const modalOpen = NavigationService.getCurrentModal();
+        if (modalOpen) {
+            // We wait with all the updates till it closes
+            // console.log('Wait cause modal open', modalOpen)
+            const modalDismissListener = Navigation
+                .events()
+                .registerModalDismissedListener(({ componentId }) => {
+                    if (componentId === modalOpen) {
+                        // console.log('Awaited modal close so going now', modalOpen)
+                        modalDismissListener.remove();
+                        go();
+                    }
+                });
+            return;
+        }
+
+        const overlayOpen = NavigationService.getCurrentOverlay();
+        if (overlayOpen) {
+            // We wait with all the updates till it closes
+            // console.log('Wait cause overlay open', overlayOpen)
+            const overlayDismissListener = Navigation
+                .events()
+                .registerComponentDidDisappearListener(({ componentId }) => {
+                    if (componentId === overlayOpen) {
+                        // console.log('Awaited overlay close so going now', overlayOpen)
+                        overlayDismissListener.remove();
+                        go();
+                    }
+                });
+            return;
+        }
+
+        go();
+    },
+
     /**
      * Updates the tabbar and re-renders the AppScreens.TabBar component.
      *
      * @return {void}
      */
-    reRender(settingsTabFirst = false): void {
-        // update the tabbar
+    reRender(): void {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
@@ -534,11 +596,24 @@ const Navigator = {
                 Navigation.updateProps(getTab, { timestamp: +new Date() });
             }
         };
+    
+        let navSections = (NavigationService.getCurrentScreen() || '').split('.');
+        let isAtMainTab = false;
 
-        // First the settings tab
-        if (typeof settingsTabFirst === 'boolean' && settingsTabFirst) {
+        if (navSections?.[0] === 'app' && navSections?.[1] === 'TabBar') {
+            isAtMainTab = true;
+        }
+
+        if (NavigationService.getCurrentScreen() === 'app.Settings.General') {
+            // Mock settings for return
+            isAtMainTab = true;
+            navSections = ['app', 'TabBar', 'Settings'];
+        }
+
+        // First the artive tab
+        if (isAtMainTab && navSections?.[2]) {
             requestAnimationFrame(() => {
-                updateTab('Settings');
+                updateTab(navSections?.[2]);
             });
         }
 
@@ -549,7 +624,7 @@ const Navigator = {
             Navigation.updateProps(RootType.DefaultRoot, { timestamp: +new Date() });
 
             Object.keys(AppScreens.TabBar)
-                .filter(tab => tab !== 'Settings' || typeof settingsTabFirst !== 'boolean' || !settingsTabFirst)
+                .filter(tab => !isAtMainTab || (navSections?.[2] && tab !== navSections?.[2]) || !navSections?.[2])
                 .forEach(tab => updateTab(tab));
         });
 
@@ -557,12 +632,15 @@ const Navigator = {
             // Update any active modals
             const currentModal = NavigationService.getCurrentModal();
             if (currentModal) {
+                // ^^ don't switch xapp browser as it borks webview state
                 Navigation.mergeOptions(currentModal, { ...defaultOptions });
                 Navigation.updateProps(currentModal, { timestamp: +new Date() });
             }
             const currentOverlay = NavigationService.getCurrentOverlay();
             if (currentOverlay) {
-                Navigation.mergeOptions(currentOverlay, { ...defaultOptions });
+                // console.log(defaultOptions)
+                // Navigation.mergeOptions(currentOverlay, { ...defaultOptions });
+                // ^^ No need & if enabled it kills transparency on the backdrops
                 Navigation.updateProps(currentOverlay, { timestamp: +new Date() });
             }
         });

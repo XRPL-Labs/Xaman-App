@@ -3,16 +3,12 @@
  */
 
 import { uniqBy, sortBy, toLower } from 'lodash';
-// import Application from '../../../app';
 
 import React, { Component } from 'react';
 import { View, Text, ScrollView } from 'react-native';
-// import { Navigation } from 'react-native-navigation';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings } from '@common/helpers/device';
-// import { ExitApp } from '@common/helpers/app';
-// import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
@@ -30,7 +26,6 @@ import { CurrencyPickerModalProps } from '@screens/Modal/CurrencyPicker';
 import { AppStyles } from '@theme';
 import styles from './styles';
 import StyleService from '@services/StyleService';
-// import Styles from '@components/General/SwipeButton/styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -168,13 +163,13 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     changeTheme = (theme: Themes) => {
-        const { coreSettings } = this.state;
-
-        CoreRepository.saveSettings({ theme });
-
-        StyleService.initialize(coreSettings).then(() => {
-            Navigator.reRender(true);
-        });
+        CoreRepository.saveSettings({theme});
+        StyleService.initialize(CoreRepository.getSettings())
+            .then(() => {
+                requestAnimationFrame(() => {
+                    Navigator.switchTheme();
+                });
+            });
     };
 
     onThemeSelect = (selected: Themes) => {

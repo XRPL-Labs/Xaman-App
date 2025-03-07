@@ -3,10 +3,8 @@
  */
 import { has, get } from 'lodash';
 import { Appearance, StyleSheet } from 'react-native';
-// import Application from '../app';
 
 import { Images } from '@common/helpers/images';
-// import { Navigator } from '@common/helpers/navigator';
 
 import CoreRepository from '@store/repositories/core';
 import CoreModel from '@store/models/objects/core';
@@ -16,6 +14,7 @@ import { Themes } from '@store/types';
 import { ColorsGeneral, ColorsTheme } from '@theme/colors';
 
 import { ImageStyle, TextStyle, ViewStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+
 /* Types  ==================================================================== */
 type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
 export type StyleType = Record<string, any>;

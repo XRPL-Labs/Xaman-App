@@ -815,6 +815,7 @@ class ReviewTransactionModal extends Component<Props, State> {
                 key={`reviewtxmodal-${timestamp}`}
                 value={{
                     ...this.state,
+                    timestamp,
                     setTransaction: this.setTransaction,
                     setAccounts: this.setAccounts,
                     setSource: this.setSource,
