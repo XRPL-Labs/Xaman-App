@@ -13,9 +13,12 @@ exports[`[Switch] renders correctly 1`] = `
 >
   <View
     style={
-      {
-        "alignSelf": "center",
-      }
+      [
+        {
+          "alignSelf": "center",
+        },
+        undefined,
+      ]
     }
   >
     <View>
@@ -60,9 +63,12 @@ exports[`[Switch] renders with given label 1`] = `
 >
   <View
     style={
-      {
-        "alignSelf": "center",
-      }
+      [
+        {
+          "alignSelf": "center",
+        },
+        undefined,
+      ]
     }
   >
     <View>

@@ -31,7 +31,6 @@ exports[`[SearchBar] renders correctly 1`] = `
   onStartShouldSetResponder={[Function]}
   style={
     {
-      "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
@@ -46,7 +45,7 @@ exports[`[SearchBar] renders correctly 1`] = `
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
-        "left": 15,
+        "left": 5,
         "position": "absolute",
         "tintColor": "#000000",
       }
@@ -91,12 +90,11 @@ exports[`[SearchBar] renders correctly 1`] = `
         [
           {
             "color": "#000000",
-            "fontFamily": "UbuntuMono-Bold",
+            "fontFamily": "ProximaNova-Regular",
             "fontSize": 34.285714285714285,
-            "fontWeight": "600",
             "height": "100%",
-            "paddingLeft": 50,
-            "paddingRight": 50,
+            "paddingLeft": 35,
+            "paddingRight": 35,
             "paddingVertical": 0,
           },
           {
@@ -143,7 +141,6 @@ exports[`[SearchBar] should clear text 1`] = `
   onStartShouldSetResponder={[Function]}
   style={
     {
-      "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
@@ -158,7 +155,7 @@ exports[`[SearchBar] should clear text 1`] = `
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
-        "left": 15,
+        "left": 5,
         "position": "absolute",
         "tintColor": "#000000",
       }
@@ -203,12 +200,11 @@ exports[`[SearchBar] should clear text 1`] = `
         [
           {
             "color": "#000000",
-            "fontFamily": "UbuntuMono-Bold",
+            "fontFamily": "ProximaNova-Regular",
             "fontSize": 34.285714285714285,
-            "fontWeight": "600",
             "height": "100%",
-            "paddingLeft": 50,
-            "paddingRight": 50,
+            "paddingLeft": 35,
+            "paddingRight": 35,
             "paddingVertical": 0,
           },
           {
@@ -255,7 +251,6 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   onStartShouldSetResponder={[Function]}
   style={
     {
-      "backgroundColor": "#F3F6FA",
       "borderRadius": 18.375,
       "flexDirection": "row",
       "height": 73.5,
@@ -270,7 +265,7 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
         "alignItems": "center",
         "alignSelf": "center",
         "flexDirection": "column",
-        "left": 15,
+        "left": 5,
         "position": "absolute",
         "tintColor": "#000000",
       }
@@ -315,12 +310,11 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
         [
           {
             "color": "#000000",
-            "fontFamily": "UbuntuMono-Bold",
+            "fontFamily": "ProximaNova-Regular",
             "fontSize": 34.285714285714285,
-            "fontWeight": "600",
             "height": "100%",
-            "paddingLeft": 50,
-            "paddingRight": 50,
+            "paddingLeft": 35,
+            "paddingRight": 35,
             "paddingVertical": 0,
           },
           {
