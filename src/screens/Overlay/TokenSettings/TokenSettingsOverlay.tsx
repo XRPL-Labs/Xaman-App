@@ -476,7 +476,25 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     {
                         identifier: AppConfig.xappIdentifiers.swap,
                         noSwitching: true,
-                        nativeTitle: Localize.t('global.swap'),
+                        altHeader: {
+                            left: {
+                                icon: 'IconChevronLeft',
+                                onPress: 'onClose',
+                            },
+                            center: {
+                                text: Localize.t('global.swap'),
+                                showNetworkLabel: true,
+                            },
+                            right: {
+                                icon: 'IconTabBarSettingsSelected',
+                                iconSize: 25,
+                                onPress: 'navigateTo',
+                                onPressOptions: {
+                                    xApp: AppConfig.xappIdentifiers.swap,
+                                    pickSwapper: true,
+                                },
+                            },
+                        },
                         origin: XAppOrigin.XUMM,
                         params: {
                             issuer: token.currency.issuer,

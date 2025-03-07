@@ -2,6 +2,8 @@ import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 import { XAppOrigin } from '@common/libs/payload';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { AccountAdvisoryResolveType } from '@services/ResolverService';
+import { Images } from '@common/helpers/images';
+// import { type ChildrenProps } from '@components/General/Header/Header';
 
 export interface Props {
     identifier: string;
@@ -12,7 +14,28 @@ export interface Props {
     origin?: XAppOrigin;
     originData?: any;
     noSwitching?: boolean;
-    nativeTitle?: string;
+    altHeader?: {
+        left?: {
+            icon?: Extract<keyof typeof Images, string>;
+            iconSize?: number;
+            onPress?: string;
+            onPressOptions?: {
+                [key: string]: any;
+            };
+        };
+        center?: {
+            text?: string;
+            showNetworkLabel?: boolean;
+        };
+        right?: {
+            icon?: Extract<keyof typeof Images, string>;
+            iconSize?: number;
+            onPress?: string;
+            onPressOptions?: {
+                [key: string]: any;
+            };
+        };
+    };
 }
 
 export interface State {

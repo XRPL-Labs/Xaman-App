@@ -1187,25 +1187,31 @@ class XAppBrowserModal extends Component<Props, State> {
 
     renderHeader = () => {
         const { app, network, account } = this.state;
-        const { noSwitching, nativeTitle } = this.props;
+        const { noSwitching, altHeader } = this.props;
 
-        if (nativeTitle && nativeTitle !== '') {
+        if (altHeader) {
             return (
                 <Header
                     leftComponent={{
-                        icon: 'IconChevronLeft',
-                        onPress: this.onClose,
-                    }}
-                    centerComponent={{ text: nativeTitle, extraComponent: <NetworkLabel type="both" /> }}
-                    rightComponent={ String(app?.identifier || '') === 'xaman.swap' ? {
-                        icon: 'IconTabBarSettingsSelected',
-                        iconSize: 25,
+                        icon: altHeader?.left?.icon,
+                        iconSize: altHeader?.left?.iconSize,
                         onPress: () => {
-                            this.navigateTo({
-                                xApp: AppConfig.xappIdentifiers.swap,
-                                pickSwapper: true,
-                            });
+                            const fn = this?.[(altHeader?.left?.onPress || '_') as keyof this];
+                            if (typeof fn === 'function') fn(altHeader?.left?.onPressOptions);
                         },
+                    }}
+                    centerComponent={{
+                        text: altHeader?.center?.text,
+                        extraComponent: altHeader?.center?.showNetworkLabel && <NetworkLabel type="both" />,
+                    }}
+                    rightComponent={ String(app?.identifier || '') === 'xaman.swap' ? {
+                        icon: altHeader?.right?.icon,
+                        iconSize: altHeader?.right?.iconSize,
+                        onPress: () => {
+                            const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
+                            if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
+                        },
+
                     } : undefined }
                 />
             );
@@ -1217,7 +1223,6 @@ class XAppBrowserModal extends Component<Props, State> {
                 title={app?.title}
                 icon={app?.icon}
                 noSwitching={!!noSwitching}
-                nativeTitle={nativeTitle}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}
