@@ -339,7 +339,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
             const payload = Payload.build(trustSet.JsonForSigning);
 
-            // await this.dismiss();
+            await this.dismiss(); // Needed for interaction with the sign request to be possible
 
             this.setState(
                 {
