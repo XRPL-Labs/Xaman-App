@@ -21,7 +21,7 @@ export default StyleService.create({
     },
     filterButton: {
         height: 35,
-        // borderRadius: AppSizes.scale(30) / 2,
+        borderRadius: AppSizes.scale(35) / 4,
         // backgroundColor: '$tint',
         paddingHorizontal: 8,
         marginHorizontal: 3,
