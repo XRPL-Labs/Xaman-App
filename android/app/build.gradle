@@ -6,8 +6,8 @@ apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
-def canonicalVersionName = "3.3.3"
-def canonicalVersionCode = 61
+def canonicalVersionName = "4.0.0"
+def canonicalVersionCode = 80
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
 def postFixSize = 30_000
@@ -123,11 +123,22 @@ android {
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
+    bundle {
+        language {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
     splits {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
+            universalApk true  // If true, also generate a universal APK
             include(*reactNativeArchitectures())
         }
     }

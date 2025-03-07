@@ -1,6 +1,6 @@
 import StyleService from '@services/StyleService';
 
-import { HexToRgbA } from '@common/utils/color';
+// import { HexToRgbA } from '@common/utils/color';
 
 import { AppFonts, AppSizes } from '@theme';
 
@@ -11,13 +11,12 @@ const styles = StyleService.create({
         alignItems: 'center',
         borderRadius: AppSizes.borderRadius,
     },
-    containerBlocked: {
-        width: '100%',
-        height: '100%',
-        backgroundColor: HexToRgbA(StyleService.value('$background'), 0.7),
-        position: 'absolute',
-        borderRadius: AppSizes.borderRadius,
-        zIndex: 9999, // top of all
+    ammIcon: {
+        marginLeft: 8,
+    },
+    boldTitle: {
+        fontFamily: AppFonts.base.familyBold,
+        color: '$textPrimary',
     },
     feeTxAvatar: {
         position: 'relative',

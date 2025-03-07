@@ -20,8 +20,8 @@ export default StyleService.create({
         flexDirection: 'row',
     },
     filterButton: {
-        height: AppSizes.scale(30),
-        // borderRadius: AppSizes.scale(30) / 2,
+        height: 35,
+        borderRadius: AppSizes.scale(35) / 4,
         // backgroundColor: '$tint',
         paddingHorizontal: 8,
         marginHorizontal: 3,

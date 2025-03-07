@@ -4,7 +4,7 @@
 
 import moment from 'moment-timezone';
 
-import { UIManager, I18nManager, Platform, Alert, Text, TextInput } from 'react-native';
+import { UIManager, I18nManager, Platform, Alert, Text, TextInput, Appearance } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { Navigation } from 'react-native-navigation';
@@ -56,7 +56,7 @@ class Application {
         this.initialized = false;
     }
 
-    run() {
+    run() {     
         // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
@@ -167,6 +167,51 @@ class Application {
             // lock the app and the start the app
             AuthenticationService.checkLockScreen().then(() => {
                 Navigator.startDefault();
+
+                // Switch theme if back from background and changed
+                services.AppService.on('appStateChange', newState => {
+                    if (newState === 'Active') {
+                        const coreSettings = CoreRepository.getSettings();
+                        if (coreSettings.themeAutoSwitch) {
+                            if (
+                                (
+                                    Appearance.getColorScheme() === 'light' &&
+                                    services.StyleService.getCurrentTheme() !== 'light'
+                                ) || (
+                                    Appearance.getColorScheme() === 'dark' &&
+                                    services.StyleService.getCurrentTheme() === 'light'
+                                )
+                            ) {
+                                // Switch to light/dark
+                                // console.log('Foreground appstatechange theme switch')
+                                Navigator.awaitSafeThemeSwitch().then(() => {
+                                    services.StyleService.initialize(coreSettings)
+                                    .then(() => {
+                                        requestAnimationFrame(() => {
+                                            Navigator.switchTheme();
+                                        });
+                                    });
+                                });
+                            }
+                        }
+                    }
+                });
+
+                // Auto switch theme based on OS notification
+                Appearance.addChangeListener(() => { // { colorScheme }
+                    // console.log('Theme changed to:', colorScheme);
+                    const coreSettings = CoreRepository.getSettings();
+                    if (coreSettings.themeAutoSwitch) {
+                        Navigator.awaitSafeThemeSwitch().then(() => {
+                            services.StyleService.initialize(coreSettings)
+                            .then(() => {
+                                requestAnimationFrame(() => {
+                                    Navigator.switchTheme();
+                                });
+                            });
+                        });
+                    }
+                });
             });
         } else {
             Navigator.startOnboarding();
@@ -179,12 +224,14 @@ class Application {
     };
 
     // initialize all the services
-    initializeServices = () => {
+    initializeServices = (onlyService?: string) => {
         return new Promise<void>((resolve, reject) => {
             try {
                 const coreSettings = CoreRepository.getSettings();
                 const servicesPromise = [] as Array<Promise<any>>;
-                Object.keys(services).map((key) => {
+                Object.keys(services).filter(key => {
+                    return !onlyService || onlyService === key;
+                }).map((key) => {
                     // @ts-ignore
                     const service = services[key];
                     if (typeof service.initialize === 'function') {
@@ -261,10 +308,15 @@ class Application {
                         return;
                     }
                 } else if (Platform.OS === 'ios') {
-                    const isJailBroken = await IsDeviceJailBroken();
-                    if (isJailBroken) {
-                        reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
-                        return;
+                    if (process?.env?.NODE_ENV === 'development') {
+                        // That's fine
+                    } else {
+                        const isJailBroken = await IsDeviceJailBroken();
+
+                        if (isJailBroken) {
+                            reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
+                            return;
+                        }
                     }
                 }
 

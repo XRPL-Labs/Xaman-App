@@ -19,7 +19,7 @@ Feature: Upgrade Account
         Then I tap 'next-button'
         Given I should have 'account-import-finish-view'
         Then I tap 'finish-button'
-        Then I tap 'tab-Home'
+#        Then I tap 'tab-Home'
         Given I should have 'home-tab-view'
         Given I should see same account address
 
@@ -44,8 +44,8 @@ Feature: Upgrade Account
         Then I tap 'next-button'
         Given I should have 'account-import-finish-view'
         Then I tap 'finish-button'
-        Given I should have 'settings-tab-screen'
-        Then I tap 'tab-Home'
+#        Given I should have 'settings-tab-screen'
+#        Then I tap 'tab-Home'
         Given I should have 'home-tab-view'
         Given I should see same account address
 
@@ -101,8 +101,8 @@ Feature: Upgrade Account
         Then I tap 'next-button'
         Given I should have 'account-import-finish-view'
         Then I tap 'finish-button'
-        Given I should have 'settings-tab-screen'
-        Then I tap 'tab-Home'
+#        Given I should have 'settings-tab-screen'
+#        Then I tap 'tab-Home'
         Given I should have 'home-tab-view'
         Given I should see same account address
 

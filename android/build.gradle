@@ -1,7 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 import groovy.json.JsonSlurper
 
-
 buildscript {
     ext {
         buildToolsVersion = "34.0.0"
@@ -44,7 +43,6 @@ allprojects {
         google()
         maven { url 'https://jitpack.io' }
         maven { url "https://cdn.veriff.me/android/" } // veriff
-
     }
 }
 

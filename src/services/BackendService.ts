@@ -268,6 +268,7 @@ class BackendService {
                         username: user.name,
                         slug: user.slug,
                         uuid: user.uuidv4,
+                        swapNetworks: env.swapNetworks,
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                         hasPro,
@@ -386,6 +387,34 @@ class BackendService {
     };
 
     /**
+     * Retrieve/Persist account information
+     * @param {string} account - The account to report.
+     * @param {string} name - The name of the account as present in Xaman
+     * @param {boolean} push - Enable or disable push notifications
+     * @returns {Promise} A promise that resolves when the account information persisted.
+     */
+    privateAccountInfo = (
+        account?: string,
+        name?: string,
+        push?: boolean,
+    ): Promise<XamanBackend.PrivateAccountInfoResponse> => {
+        return ApiService.fetch(Endpoints.PrivateAccountInfo, 'POST', null, {
+            account,
+            name,
+            push,
+        });
+    };
+
+    /**
+     * Get native account specific info for multiple addresses
+     * @param {string[]} address - The account address.
+     * @returns {Promise} A promise that resolves with an object with account as key, and native account information.
+     */
+    getMultiAddressNativeInfo = (addresses: string[]): Promise<XamanBackend.MultiAddressNativeInfoResponse> => {
+        return ApiService.fetch(Endpoints.MultiAccountNativeInfo, 'POST', {}, addresses);
+    };
+
+    /**
      * Gets details for an account address.
      * @param {string} address - The account address.
      * @returns {Promise} A promise that resolves with account information.
@@ -484,6 +513,7 @@ class BackendService {
      */
     getServiceFee = async (
         txJson?: any | undefined,
+        payloadUuid?: string,
     ): Promise<{
         availableFees: { type: string; value: string }[];
         feeHooks: number;
@@ -493,6 +523,7 @@ class BackendService {
         const body = {
             txJson,
             network: NetworkService.network?.key,
+            payload: payloadUuid,
         };
         const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
         return networkFees;

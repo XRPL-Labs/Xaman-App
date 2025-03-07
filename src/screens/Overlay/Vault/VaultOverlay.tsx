@@ -182,7 +182,7 @@ class VaultOverlay extends Component<Props, State> {
         return true;
     };
 
-    onInvalidAuth = (method: AuthMethods) => {
+    onInvalidAuth = (method: AuthMethods, reFocusInput?: () => void) => {
         const { coreSettings } = this.state;
 
         // wrong passcode entered
@@ -215,7 +215,16 @@ class VaultOverlay extends Component<Props, State> {
                     text: Localize.t('global.troubleshoot'),
                     onPress: this.openTroubleshootLink,
                 },
-                { text: Localize.t('global.tryAgain') },
+                {
+                    text: Localize.t('global.tryAgain'),
+                    onPress: () => {
+                        if (typeof reFocusInput === 'function') {
+                            requestAnimationFrame(() => {
+                                reFocusInput();
+                            });
+                        }
+                    },
+                },
             ],
             { type: 'default' },
         );

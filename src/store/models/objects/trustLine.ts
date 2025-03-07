@@ -64,6 +64,39 @@ class TrustLine extends Realm.Object<TrustLine> {
         return this.currency.currencyCode.startsWith('03');
     }
 
+    getLpAssetPair(): string[] {
+        if (this.isLiquidityPoolToken()) {
+            const assetPair = this.linkingObjects<{ pairs: Array<string | CurrencyModel> }>('AmmPair', 'line');
+            
+            // return pairs currency code
+            if (!assetPair.isEmpty()) {
+                if (
+                    typeof assetPair?.[0]?.pairs === 'object' &&
+                    assetPair[0].pairs &&
+                    assetPair[0].pairs?.length === 2
+                ) {
+                    const img1 = typeof assetPair[0].pairs[0] === 'string'
+                        ? assetPair[0].pairs[0]
+                        : typeof assetPair[0].pairs[0] === 'object' && assetPair[0].pairs[0]
+                        ? assetPair[0].pairs[0]?.avatarUrl || assetPair[0].pairs[0]?.issuerAvatarUrl || ''
+                        : '';
+                    const img2 = typeof assetPair[0].pairs[1] === 'string'
+                        ? assetPair[0].pairs[1]
+                        : typeof assetPair[0].pairs[1] === 'object' && assetPair[0].pairs[1]
+                        ? assetPair[0].pairs[1]?.avatarUrl || assetPair[0].pairs[1]?.issuerAvatarUrl || ''
+                        : '';
+
+                    return [
+                        img1,
+                        img2,
+                    ];
+                }
+            }
+        }
+
+        return ['', ''];
+    }
+
     getFormattedCurrency(): string {
         // if there is a name for currency return the name
 
@@ -79,7 +112,7 @@ class TrustLine extends Realm.Object<TrustLine> {
             if (!assetPair.isEmpty()) {
                 return assetPair[0]?.pairs
                     .map((pair) => (typeof pair === 'string' ? pair : NormalizeCurrencyCode(pair.currencyCode)))
-                    .join('/');
+                    .join(' / ');
             }
         }
 
@@ -87,7 +120,7 @@ class TrustLine extends Realm.Object<TrustLine> {
         return NormalizeCurrencyCode(this.currency.currencyCode);
     }
 
-    getFormattedIssuer(owner?: string): string {
+    getFormattedIssuer(owner?: string, maxLength = 11): string {
         // self issued
         if (owner && this.currency.issuer === owner) {
             return Localize.t('home.selfIssued');
@@ -95,11 +128,11 @@ class TrustLine extends Realm.Object<TrustLine> {
 
         // issuer name + currency code
         if (this.currency.issuerName) {
-            return `${this.currency.issuerName} ${NormalizeCurrencyCode(this.currency.currencyCode)}`;
+            return `${Truncate(this.currency.issuerName, maxLength)} ${Truncate(NormalizeCurrencyCode(this.currency.currencyCode), 11)}`;
         }
 
         // issuer address
-        return Truncate(this.currency.issuer, 11);
+        return Truncate(this.currency.issuer, maxLength);
     }
 }
 

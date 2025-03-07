@@ -1,10 +1,11 @@
 import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
+
 /* Styles ==================================================================== */
 export default StyleService.create({
     currencyItem: {
-        width: AppSizes.screen.width,
+        width: AppSizes.screen.uncorrectedWidth, // Fixes fold devices
         flexDirection: 'row',
         backgroundColor: '$background',
         paddingHorizontal: AppSizes.paddingList,
@@ -23,6 +24,15 @@ export default StyleService.create({
         fontFamily: AppFonts.base.family,
         color: '$grey',
     },
+    lpBadgeContainer: {
+        height: AppFonts.subtext.size * 0.85,
+    },
+    lpBadge: {
+        paddingTop: 2,
+        paddingLeft: 4,
+        paddingRight: 3,
+        height: AppFonts.subtext.size * 0.95,
+    },
     balanceContainer: {
         flex: 1,
         flexDirection: 'row',
@@ -33,7 +43,11 @@ export default StyleService.create({
         marginRight: 10,
     },
     tokenIconContainer: {
-        paddingRight: 5,
+        marginRight: 5,
+        borderRadius: 3,
+        borderColor: '$background',
+        borderWidth: 1,
+        overflow: 'hidden',
     },
     reorderButtonContainer: {
         flexDirection: 'row',

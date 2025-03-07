@@ -4,8 +4,17 @@
 
 import { find, has } from 'lodash';
 
-import React, { Component, Fragment } from 'react';
-import { View, Text, Image, ImageBackground, InteractionManager, Alert } from 'react-native';
+import React, { Component, Fragment, ComponentType } from 'react';
+import {
+    View,
+    Text,
+    Image,
+    ImageBackground,
+    InteractionManager,
+    Alert,
+    ViewProps,
+    ImageBackgroundProps,
+} from 'react-native';
 
 import {
     Navigation,
@@ -29,7 +38,9 @@ import { Prompt } from '@common/helpers/interface';
 
 import Preferences from '@common/libs/preferences';
 
-import { Button, RaisedButton } from '@components/General';
+import RNTangemSdk, { EventCallback } from 'tangem-sdk-react-native';
+
+import { Button, Spacer, RaisedButton, LoadingIndicator } from '@components/General';
 import {
     MonetizationElement,
     ProBadge,
@@ -47,6 +58,9 @@ import { ShareAccountOverlayProps } from '@screens/Overlay/ShareAccount';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import onboardingStyles from '../Onboarding/styles';
+import { AccountGenerateViewProps } from '@screens/Account/Add/Generate';
+import { AccountImportViewProps } from '@screens/Account/Add/Import';
 
 /* types ==================================================================== */
 export interface Props {
@@ -61,6 +75,8 @@ export interface State {
     developerMode: boolean;
     discreetMode: boolean;
     experimentalUI?: boolean;
+    NFCSupported: boolean;
+    NFCEnabled: boolean;
 }
 
 /* Component ==================================================================== */
@@ -68,13 +84,10 @@ class HomeView extends Component<Props, State> {
     static screenName = AppScreens.TabBar.Home;
 
     private navigationListener: EventSubscription | undefined;
+    private nfcChangeListener?: EventSubscription;
 
     static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
+        return { topBar: { visible: false } };
     }
 
     constructor(props: Props) {
@@ -83,6 +96,8 @@ class HomeView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
 
         this.state = {
+            NFCSupported: false,
+            NFCEnabled: false,
             account: coreSettings.account,
             isSpendable: false,
             isSignable: false,
@@ -117,7 +132,29 @@ class HomeView extends Component<Props, State> {
                     experimentalUI: false,
                 });
             });
+
+
+        InteractionManager.runAfterInteractions(() => {
+            this.nfcChangeListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
+            // on NFC state change (Android)
+
+            // get current NFC status
+            RNTangemSdk.getNFCStatus().then((status) => {
+                const { support, enabled } = status;
+
+                this.setState({
+                    NFCSupported: support,
+                    NFCEnabled: enabled,
+                });
+            });
+        });
     }
+
+    onNFCStateChange = ({ enabled }: EventCallback) => {
+        this.setState({
+            NFCEnabled: enabled,
+        });
+    };
 
     componentWillUnmount() {
         // remove listeners
@@ -127,6 +164,14 @@ class HomeView extends Component<Props, State> {
 
         AccountRepository.off('accountUpdate', this.onAccountUpdate);
         CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
+
+        if (this.nfcChangeListener) {
+            this.nfcChangeListener.remove();
+        }
+
+        RNTangemSdk.stopSession().catch(() => {
+            // ignore
+        });
     }
 
     componentDidAppear() {
@@ -255,7 +300,25 @@ class HomeView extends Component<Props, State> {
             {
                 identifier: AppConfig.xappIdentifiers.swap,
                 noSwitching: true,
-                nativeTitle: Localize.t('global.swap'),
+                altHeader: {
+                    left: {
+                        icon: 'IconChevronLeft',
+                        onPress: 'onClose',
+                    },
+                    center: {
+                        text: Localize.t('global.swap'),
+                        showNetworkLabel: true,
+                    },
+                    right: {
+                        icon: 'IconTabBarSettingsSelected',
+                        iconSize: 25,
+                        onPress: 'navigateTo',
+                        onPressOptions: {
+                            xApp: AppConfig.xappIdentifiers.swap,
+                            pickSwapper: true,
+                        },
+                    },
+                },
                 origin: XAppOrigin.XUMM,
             },
             {
@@ -269,16 +332,37 @@ class HomeView extends Component<Props, State> {
         Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
 
+    onCreateAccountPress = () => {
+        Navigator.push<AccountGenerateViewProps>(AppScreens.Account.Generate, {});
+    };
+
+    onImportAccountPress = () => {
+        Navigator.push<AccountImportViewProps>(AppScreens.Account.Import, {});
+    };
+
+    onTangemAccountPress = () => {
+        let resolveNavigationPromise: (value: void | PromiseLike<void>) => void;
+        const navigationPromise = new Promise<void>((resolve) => {
+            resolveNavigationPromise = resolve;
+        });
+
+        Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {
+            DefaultTangem: true,
+            NavigationReadyPromise: navigationPromise,
+        }).then(() => resolveNavigationPromise());
+    };
+
     renderHeader = () => {
-        const { account } = this.state;
+        const { account, developerMode } = this.state;
+        const { timestamp } = this.props;
 
         return (
-            <Fragment key="header">
+            <Fragment key={`header-${timestamp}`}>
                 <View style={[AppStyles.flex1, AppStyles.row, AppStyles.flexStart]}>
                     <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
                     <ProBadge />
                 </View>
-                <NetworkSwitchButton hidden={!account?.isValid()} />
+                <NetworkSwitchButton developerMode={developerMode} hidden={!account?.isValid()} />
             </Fragment>
         );
     };
@@ -288,6 +372,15 @@ class HomeView extends Component<Props, State> {
     renderAssets = () => {
         const { timestamp } = this.props;
         const { account, discreetMode, isSpendable, experimentalUI } = this.state;
+
+        if ((account?.details || []).length === 0 || account.getStateVersion() === 0) {
+            // No account information loaded/cached yet, so not saying "not activated"
+            return (
+                <View style={AppStyles.flex1}>
+                    <LoadingIndicator size='large' />
+                </View>
+            );
+        }
 
         // accounts is not activated
         if (account.balance === 0) {
@@ -307,7 +400,7 @@ class HomeView extends Component<Props, State> {
     };
 
     renderButtons = () => {
-        const { isSpendable, experimentalUI, selectedNetwork, isSignable } = this.state;
+        const { isSpendable, experimentalUI, isSignable } = this.state;
 
         if (isSpendable) {
             return (
@@ -318,12 +411,15 @@ class HomeView extends Component<Props, State> {
                         containerStyle={styles.sendButtonContainer}
                         icon="IconV2Send"
                         iconSize={18}
-                        iconStyle={styles.sendButtonIcon}
+                        iconStyle={[
+                            styles.sendButtonIcon,
+                            styles.iconRotateY,
+                        ]}
                         label={Localize.t('global.send')}
                         textStyle={styles.sendButtonText}
                         onPress={this.pushSendScreen}
                     />
-                    { AppConfig.swapNetworks.indexOf(selectedNetwork.key) > -1 && isSignable &&
+                    { NetworkService.hasSwap() && isSignable &&
                         <RaisedButton
                             small
                             testID="swap-button"
@@ -345,7 +441,7 @@ class HomeView extends Component<Props, State> {
                         icon="IconV2Request"
                         iconSize={18}
                         iconStyle={[
-                            styles.iconRotate,
+                            styles.iconRotateX,
                             experimentalUI ? styles.requestButtonIconClean : styles.requestButtonIcon,
                         ]}
                         label={Localize.t('global.request')}
@@ -372,25 +468,90 @@ class HomeView extends Component<Props, State> {
     };
 
     renderEmpty = () => {
+        const { NFCSupported, NFCEnabled } = this.state;
+
         return (
             <View testID="home-tab-empty-view" style={AppStyles.tabContainer}>
-                <View style={styles.headerContainer}>{this.renderHeader()}</View>
+                {/* <View style={styles.headerContainer}>{this.renderHeader()}</View> */}
 
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
-                    style={[AppStyles.contentContainer, AppStyles.padding]}
+                    resizeMode="cover"
+                    source={StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')}
+                    style={[AppStyles.contentContainer, AppStyles.paddingHorizontal]}
                 >
-                    <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageFirstAccount')} />
-                    <Text style={AppStyles.emptyText}>{Localize.t('home.emptyAccountAddFirstAccount')}</Text>
-                    <Button
-                        testID="add-account-button"
-                        label={Localize.t('home.addAccount')}
-                        icon="IconPlus"
-                        iconStyle={AppStyles.imgColorWhite}
-                        rounded
-                        onPress={this.onAddAccountPress}
-                    />
+                    <View style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                        <Image
+                            style={onboardingStyles.logo}
+                            source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
+                        />
+                    </View>
+                    <View style={[
+                        AppStyles.flex2,
+                    ]}>
+                        <View style={[AppStyles.flex1, AppStyles.paddingSml]}>
+                            <View style={[AppStyles.centerAligned, AppStyles.flexEnd]}>
+                                <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                    {Localize.t('onboarding.v2homepage_noacc1')}
+                                </Text>
+                                <Spacer size={10} />
+                                <Text style={[AppStyles.p, AppStyles.colorGrey, AppStyles.textCenterAligned]}>
+                                    {Localize.t('onboarding.v2homepage_noacc2')}
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={[
+                        AppStyles.flex5,
+                        AppStyles.paddingBottom,
+                    ]}>
+                        <View style={[
+                            onboardingStyles.container,
+                        ]}>
+                            <Button
+                                testID="add-account-button"
+                                label={Localize.t('account.generateNewAccount')}
+                                icon="IconCreate"
+                                iconStyle={AppStyles.imgColorWhite}
+                                nonBlock
+                                onPress={this.onCreateAccountPress}
+                            />
+                            <Spacer size={12} />
+                            <Button
+                                testID="add-account-button-import"
+                                label={Localize.t('account.importExisting')}
+                                icon="IconImport"
+                                iconStyle={AppStyles.imgColorWhite}
+                                nonBlock
+                                secondary
+                                onPress={this.onImportAccountPress}
+                            />
+                            { 
+                                NFCSupported && NFCEnabled && (
+                                    <View>
+                                        <Spacer size={12}/>
+                                        <Text style={[
+                                            AppStyles.textCenterAligned,
+                                            AppStyles.smalltext,
+                                            AppStyles.bold,
+                                            AppStyles.colorGrey,
+                                        ]}>{Localize.t('global.or').toUpperCase()}</Text>
+                                        <Spacer size={12}/>
+                                        <Button
+                                            testID="add-account-button-tangem"
+                                            label={Localize.t('account.addTangemCard')}
+                                            icon="IconTangem"
+                                            iconStyle={AppStyles.imgColorContrast}
+                                            nonBlock
+                                            contrast
+                                            onPress={this.onTangemAccountPress}
+                                        />
+                                    </View>
+                                )
+                            }
+
+                            <Spacer size={12} />
+                        </View>
+                    </View>
                 </ImageBackground>
             </View>
         );
@@ -417,12 +578,17 @@ class HomeView extends Component<Props, State> {
         const { account, discreetMode } = this.state;
 
         return (
-            <AccountSwitchElement
-                account={account}
-                discreet={discreetMode}
-                showAddAccountButton
-                containerStyle={styles.accountSwitchElement}
-            />
+            <View style={[
+                styles.accountSwitchConainer,
+            ]}>
+                <AccountSwitchElement
+                    account={account}
+                    discreet={discreetMode}
+                    showAddAccountButton
+                    noPadding
+                    containerStyle={styles.accountSwitchElement}
+                />
+            </View>
         );
     };
 
@@ -432,6 +598,19 @@ class HomeView extends Component<Props, State> {
         if (!account?.isValid()) {
             return this.renderEmpty();
         }
+
+        const Container: ComponentType<ViewProps | ImageBackgroundProps> = account.balance === 0
+            ? ImageBackground
+            : View;
+
+        const containerProps = account.balance === 0
+            ? {
+                resizeMode: 'cover',
+                source: StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes'),
+            }
+            : {
+                // Nada for `View`
+            };
 
         return (
             <View testID="home-tab-view" style={AppStyles.tabContainer}>
@@ -444,12 +623,13 @@ class HomeView extends Component<Props, State> {
                 </Fragment>
 
                 {/* Content */}
-                <View style={AppStyles.contentContainer}>
+                {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+                <Container style={AppStyles.contentContainer} {...containerProps}>
                     {this.renderNetworkDetails()}
                     {this.renderAccountAddress()}
                     {this.renderButtons()}
                     {this.renderAssets()}
-                </View>
+                </Container>
             </View>
         );
     }

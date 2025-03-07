@@ -12,6 +12,26 @@ const styles = StyleService.create({
         flexDirection: 'column',
         // backgroundColor: '$grey,
     },
+    loaderInline: {
+        flexDirection: 'row',
+        // borderWidth: 1,
+        // borderColor: '#ffcc00',
+        // paddingHorizontal: 8,
+    },
+    switchRight: {
+        alignSelf: 'flex-end',
+        flex: 1,
+        // borderWidth: 2,
+        // borderColor: '#ffcc00',
+    },
+    inlineLoader: {
+        right: 60,
+        height: '100%',
+        position: 'absolute',
+        width: 35,
+        // borderWidth: 2,
+        // borderColor: 'purple',
+    },
     accountIcon: {
         width: AppSizes.screen.width * 0.07,
         height: AppSizes.screen.width * 0.07,

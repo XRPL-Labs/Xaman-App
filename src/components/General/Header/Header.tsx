@@ -13,7 +13,7 @@ import styles from './styles';
 /* Types ==================================================================== */
 type placementType = 'left' | 'right' | 'center';
 
-interface ChildrenProps {
+export interface ChildrenProps {
     testID?: string;
     text?: string;
     textStyle?: TextStyle | TextStyle[];

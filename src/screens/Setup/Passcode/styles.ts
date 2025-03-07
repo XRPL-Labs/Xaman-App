@@ -8,7 +8,12 @@ const styles = StyleSheet.create({
         height: AppSizes.screen.height * 0.1,
         resizeMode: 'contain',
     },
-
+    instructionImage: {
+        width: AppSizes.screen.width * 0.8,
+        height: AppSizes.screen.height * 0.3,
+        marginTop: AppSizes.screen.height * 0.08,
+        resizeMode: 'contain',
+    },
     IconChevronLeft: {
         marginLeft: 4,
         width: AppSizes.screen.width * 0.09,

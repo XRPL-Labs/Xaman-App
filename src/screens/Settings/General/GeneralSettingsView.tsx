@@ -5,12 +5,10 @@
 import { uniqBy, sortBy, toLower } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Appearance } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { GetDeviceLocaleSettings } from '@common/helpers/device';
-import { ExitApp } from '@common/helpers/app';
-import { Prompt } from '@common/helpers/interface';
 
 import { AppScreens } from '@common/constants';
 
@@ -27,6 +25,8 @@ import { CurrencyPickerModalProps } from '@screens/Modal/CurrencyPicker';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import StyleService from '@services/StyleService';
+import { Prompt } from '@common/helpers/interface';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -137,6 +137,22 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
+    themeAutoSwitch = (value: boolean) => {
+        const { coreSettings } = this.state;
+        if (value) {
+            // Auto switch
+            if (
+                (coreSettings.theme === 'light' && Appearance.getColorScheme() !== 'light') ||
+                (coreSettings.theme !== 'light' && Appearance.getColorScheme() === 'light')
+            ) {
+                // Mismatch, we switch
+                this.changeTheme(Appearance.getColorScheme() as Themes);
+            }
+        }
+
+        CoreRepository.saveSettings({ themeAutoSwitch: value });
+    };
+
     hideServiceFeeTransactionsChange = (value: boolean) => {
         CoreRepository.saveSettings({
             hideServiceFeeTransactions: value,
@@ -164,29 +180,54 @@ class GeneralSettingsView extends Component<Props, State> {
     };
 
     changeTheme = (theme: Themes) => {
-        // save in store
-        CoreRepository.saveSettings({ theme });
+        const {coreSettings} = this.state;
 
-        // exit the app
-        ExitApp();
+        if (
+            (coreSettings.themeAutoSwitch && theme !== 'light') || 
+            !coreSettings.themeAutoSwitch
+         ) {
+            CoreRepository.saveSettings({theme});
+        }
+
+        if (coreSettings.themeAutoSwitch && theme !== 'light') {
+            if (Appearance.getColorScheme() === 'light') {
+                Prompt(
+                    Localize.t('global.info'),
+                    Localize.t('settings.notChangingYetBecauseLightMode'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                    { type: 'default' },
+                );
+                return; // We do not switch because it's light time
+            }
+        }
+
+        StyleService.initialize(CoreRepository.getSettings())
+            .then(() => {
+                requestAnimationFrame(() => {
+                    Navigator.switchTheme();
+                });
+            });
     };
 
     onThemeSelect = (selected: Themes) => {
-        Prompt(
-            Localize.t('global.warning'),
-            Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
-            [
-                { text: Localize.t('global.cancel') },
-                {
-                    text: Localize.t('global.quitApp'),
-                    onPress: () => {
-                        this.changeTheme(selected);
-                    },
-                    style: 'destructive',
-                },
-            ],
-            { type: 'default' },
-        );
+        this.changeTheme(selected);
+        // Prompt(
+        //     Localize.t('global.warning'),
+        //     Localize.t('settings.changingThemeNeedsRestartToTakeEffect'),
+        //     [
+        //         { text: Localize.t('global.cancel') },
+        //         {
+        //             text: Localize.t('global.quitApp'),
+        //             onPress: () => {
+        //                 this.changeTheme(selected);
+        //             },
+        //             style: 'destructive',
+        //         },
+        //     ],
+        //     { type: 'default' },
+        // );
     };
 
     renderThemeButton = (theme: Themes, { title, description }: any) => {
@@ -280,10 +321,34 @@ class GeneralSettingsView extends Component<Props, State> {
                             <Text style={AppStyles.pbold}>{Localize.t('global.theme')}</Text>
                         </View>
                     </View>
+                    <View style={styles.row}>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.themeAutoSwitch')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch
+                                checked={coreSettings.themeAutoSwitch}
+                                onChange={this.themeAutoSwitch}
+                            />
+                        </View>
+                    </View>
                     <View style={styles.rowNoBorder}>
                         <View style={AppStyles.flex1}>
-                            {/* @ts-ignore */}
-                            {Object.keys(themeItems).map((key: Themes) => this.renderThemeButton(key, themeItems[key]))}
+                            {
+                                Object.keys(themeItems)
+                                    // @ts-ignore
+                                    .filter((key: Themes) => {
+                                        if (coreSettings.themeAutoSwitch) {
+                                            if (key === 'light') return false;
+                                        }
+                                        
+                                        return true;
+                                    })
+                                    // @ts-ignore
+                                    .map((key: Themes) => this.renderThemeButton(key, themeItems[key]))
+                            }
                         </View>
                     </View>
 

@@ -33,8 +33,7 @@ export const Images = {
     ImageSendReceiveLight: buildImageSource('ImageSendReceiveLight', 'image_send_receive_light'),
     ImagePincode: buildImageSource('ImagePincode', 'image_pincode'),
     ImagePincodeLight: buildImageSource('ImagePincodeLight', 'image_pincode_light'),
-    ImageBiometric: buildImageSource('ImageBiometric', 'image_biometric'),
-    ImageBiometricLight: buildImageSource('ImageBiometricLight', 'image_biometric_light'),
+    ImageBiometric: buildImageSource('ImageBiometric', 'icon_fingerprint'),
     ImageNotifications: buildImageSource('ImageNotifications', 'image_notifications'),
     ImageNotificationsLight: buildImageSource('ImageNotificationsLight', 'image_notifications_light'),
     ImageComplete: buildImageSource('ImageComplete', 'image_complete'),
@@ -126,7 +125,7 @@ export const Images = {
     IconChevronDown: buildImageSource('IconChevronDown', 'icon_chevron_down'),
     IconChevronUp: buildImageSource('IconChevronUp', 'icon_chevron_up'),
     IconClipboard: buildImageSource('IconClipboard', 'icon_clipboard'),
-    IconFingerprint: buildImageSource('IconFingerprint', 'icon_fingerprint'),
+    IconFingerprint: buildImageSource('IconFingerprint', 'icon_fingerprintx'),
     IconThumbsUp: buildImageSource('IconThumbsUp', 'icon_thumbs_up'),
     IconLink: buildImageSource('IconLink', 'icon_link'),
     IconExternalLink: buildImageSource('IconExternalLink', 'icon_external_link'),
@@ -166,4 +165,13 @@ export const Images = {
     IconV2Swap: buildImageSource('IconV2Swap', 'icon_swap'),
     IconV2Send: buildImageSource('IconV2Send', 'icon_send_v2'),
     IconV2Request: buildImageSource('IconV2Request', 'icon_request'),
+    // 4.0.0 Onboarding
+    Notification: buildImageSource('Notification', 'notification'),
+    Pincode: buildImageSource('Pincode', 'pincode'),
+    PhonesLight: buildImageSource('PhonesLight', 'phones_light'),
+    PhonesDark: buildImageSource('PhonesDark', 'phones_dark'),
+    // 4.0.0 Cards
+    IconCreate: buildImageSource('IconCreate', 'create'),
+    IconImport: buildImageSource('IconImport', 'icon_import'),
+    IconTangem: buildImageSource('IconTangem', 'tangem'),
 };

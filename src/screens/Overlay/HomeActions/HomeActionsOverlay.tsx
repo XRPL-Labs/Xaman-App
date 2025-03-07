@@ -29,7 +29,9 @@ import { AppStyles, AppSizes } from '@theme';
 import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    timestamp?: number;
+}
 
 export interface State {
     account: AccountModel;
@@ -145,6 +147,7 @@ class HomeActionsOverlay extends Component<Props, State> {
 
     render() {
         const { apps, featured } = this.state;
+        const { timestamp } = this.props;
 
         return (
             <ActionPanel
@@ -156,16 +159,18 @@ class HomeActionsOverlay extends Component<Props, State> {
                 <Text numberOfLines={1} style={[styles.rowTitle, styles.rowTitleFirst]}>
                     {Localize.t('xapp.recentlyUsed')}
                 </Text>
-                <XAppShortList apps={apps} onAppPress={this.onAppPress} />
+
+                <XAppShortList key={`shortlisttop-${timestamp}`} apps={apps} onAppPress={this.onAppPress} />
 
                 <Spacer size={10} />
 
                 <Text numberOfLines={1} style={styles.rowTitle}>
                     {Localize.t('xapp.ourSuggestions')}
                 </Text>
-                <XAppShortList apps={featured} onAppPress={this.onAppPress} />
 
-                <View style={styles.actionButtonContainer}>
+                <XAppShortList key={`shortlistbottom-${timestamp}`} apps={featured} onAppPress={this.onAppPress} />
+
+                <View style={styles.actionButtonContainer} key={`qrbtn-${timestamp}`}>
                     <Button
                         contrast
                         numberOfLines={1}

@@ -163,7 +163,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     };
 
     render() {
-        const { account, item, componentType } = this.props;
+        const { account, item, componentType, cachedTokenDetails, timestamp } = this.props;
         const { advisory, explainer } = this.state;
 
         const widgetsList: WidgetKey[] = [
@@ -185,7 +185,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         ];
 
         return (
-            <View style={AppStyles.container}>
+            <View key={`txdetailsview-${timestamp}`} style={AppStyles.container}>
                 <Header
                     leftComponent={{ icon: 'IconChevronLeft', onPress: this.close }}
                     centerComponent={{ text: Localize.t('events.transactionDetails') }}
@@ -211,6 +211,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                             explainer,
                             advisory,
                             componentType,
+                            cachedTokenDetails,
                         });
                     })}
                 </ScrollView>

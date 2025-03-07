@@ -7,7 +7,6 @@ const styles = StyleService.create({
     container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     scrollContainer: {
         flexGrow: 1,
-        paddingBottom: AppSizes.padding,
     },
     rowContainer: {
         flexDirection: 'row',

@@ -124,6 +124,9 @@ test-e2e:  ## Runs e2e tests
 	@npx detox build e2e --configuration ${DETOX_CONFIGURATION};
 	@npx cucumber-js ./e2e test;
 
+retest-e2e:  ## Runs e2e tests
+	@DETOX_LOGLEVEL=trace DETOX_REUSE=yes npx cucumber-js ./e2e test;
+
 bump-build-number: ## Bump build number for Android and iOS
 	@./scripts/bump-build-number.sh;
 

@@ -23,9 +23,7 @@ RCT_EXPORT_MODULE();
 +(void)initialise {
   dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     // generate key if not exist
-    if(![SecurityProvider isKeyReady]){
-      [SecurityProvider generateKey];
-    }
+    [SecurityProvider ensureKeyIsReady];
   });
 }
 
@@ -58,7 +56,7 @@ RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     LAContext *context = [[LAContext alloc] init];
     NSString *error = [self getSensorError:context];
     
@@ -67,8 +65,15 @@ RCT_EXPORT_METHOD(isSensorAvailable:(RCTPromiseResolveBlock)resolve
       
       // if sensor is available but the key is not generated
       if(![SecurityProvider isKeyReady]){
-        reject(ERROR_NOT_MEET_SECURITY_REQUIREMENTS, nil, nil);
-        return;
+        // NSLog(@"BiometricModule: Key not ready, attempting to generate key");
+        BOOL keyGenerated = [SecurityProvider ensureKeyIsReady];
+        
+        if (!keyGenerated) {
+          // NSLog(@"BiometricModule: Key generation failed");
+          reject(ERROR_NOT_MEET_SECURITY_REQUIREMENTS, nil, nil);
+          return;
+        }
+        // NSLog(@"BiometricModule: Key generated successfully");
       }
       
       resolve([self getBiometryType:context]);

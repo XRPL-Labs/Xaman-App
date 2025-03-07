@@ -24,7 +24,12 @@ import { AppScreens } from '@common/constants';
 import BackendService from '@services/BackendService';
 import LedgerService from '@services/LedgerService';
 
-import { AccountRepository, CoreRepository, ProfileRepository } from '@store/repositories';
+import {
+    AccountRepository,
+    CoreRepository,
+    ProfileRepository,
+    NetworkRepository,
+} from '@store/repositories';
 import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
@@ -38,6 +43,8 @@ import { AppStyles } from '@theme';
 
 import Steps from './Steps';
 import { StepsContext } from './Context';
+
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 import { ImportSteps, Props, SecretTypes, State } from './types';
@@ -366,18 +373,40 @@ class AccountImportView extends Component<Props, State> {
     importAccount = async () => {
         const { tangemCard } = this.props;
         const { account, importedAccount, passphrase, alternativeSeedAlphabet, tangemSignature } = this.state;
-
         try {
             let encryptionKey;
             let createdAccount: AccountModel;
 
             // if account is imported as full access report to the backend for security checks
             if (account.accessLevel === AccessLevels.Full) {
+                const persistPrivateAccountInfo = () => {
+                    setTimeout(() => {
+                        BackendService.privateAccountInfo(account?.address, account?.label, true);
+                        // Push by default
+                    }, 2000);                
+                };
+                
                 // get the signature and add account
                 if (account.type === AccountTypes.Tangem) {
-                    BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!)).catch(() => {
-                        // ignore
-                    });
+                    await BackendService.addAccount(account.address!, tangemSignature!, GetCardId(tangemCard!))
+                        .then(async r => {
+                            persistPrivateAccountInfo();
+                            if (typeof r?.switch_to_network === 'string') {
+                                if (NetworkService.getNetwork().key !== r.switch_to_network) {
+                                    const toNetwork = NetworkRepository.findBy('key', r.switch_to_network);
+                                    if (toNetwork.length === 1) {
+                                        try {
+                                            await NetworkService.switchNetwork(toNetwork[0]);
+                                        } catch (e) {
+                                            //
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            // ignore
+                        });
                 } else {
                     // include device UUID is signed transaction
                     const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
@@ -388,9 +417,13 @@ class AccountImportView extends Component<Props, State> {
                         },
                         importedAccount,
                     );
-                    BackendService.addAccount(account.address!, signedTransaction).catch(() => {
-                        // ignore
-                    });
+                    BackendService.addAccount(account.address!, signedTransaction)
+                        .then(() => {
+                            persistPrivateAccountInfo();
+                        })
+                        .catch(() => {
+                            // ignore
+                        });
                 }
             }
 
@@ -426,13 +459,12 @@ class AccountImportView extends Component<Props, State> {
                 account: createdAccount,
             });
 
-            // close the screen
-            Navigator.popToRoot().then(() => {
-                // if account imported with alternative seed alphabet and xApp present
-                // route user to the xApp
-                if (has(alternativeSeedAlphabet, 'params.xapp')) {
+            if (has(alternativeSeedAlphabet, 'params.xapp')) {
+                Navigator.popToRoot().then(() => {
+                    // if account imported with alternative seed alphabet and xApp present
+                    // route user to the xApp
                     const xappIdentifier = get(alternativeSeedAlphabet, 'params.xapp') as string;
-
+    
                     Navigator.showModal<XAppBrowserModalProps>(
                         AppScreens.Modal.XAppBrowser,
                         {
@@ -446,8 +478,15 @@ class AccountImportView extends Component<Props, State> {
                             modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
                         },
                     );
-                }
-            });
+                });
+            } else {
+                Navigator.popToRoot().then(() => {
+                    requestAnimationFrame(() => {
+                        Navigator.navigateToTab('Home');
+                    });
+                });
+            }
+
         } catch (error) {
             // this should never happen but in case just show error that something went wrong
             Toast(Localize.t('global.unexpectedErrorOccurred'));

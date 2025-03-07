@@ -22,6 +22,8 @@ export type AppScreenKeys<T = typeof AppScreens, L0 = T[keyof T]> =
 
 type EnforcedProps<P extends { [K in keyof P]: any }> = P;
 
+const allScreens = new Set();
+
 /* Constants ==================================================================== */
 const getDefaultOptions = (): Options => {
     return {
@@ -38,9 +40,11 @@ const getDefaultOptions = (): Options => {
             backgroundColor: StyleService.value('$tint'),
         },
         statusBar: {
+            // @ts-ignore
             style: Platform.select({
                 android: undefined,
-                ios: StyleService.isDarkMode() ? 'light' : 'dark',
+                // @ts-ignore
+                ios: StyleService.value(StyleService.select({ light: 'dark', dark: 'light' })),
             }),
             drawBehind: false,
         },
@@ -53,19 +57,25 @@ const getDefaultOptions = (): Options => {
             titleDisplayMode: 'alwaysShow',
             elevation: 10,
             hideShadow: Platform.OS === 'android',
+            // @ts-ignore
             shadow: Platform.select({
                 android: undefined,
                 ios: {
-                    opacity: StyleService.isDarkMode() ? 0.13 : 0.07,
-                    color: StyleService.isDarkMode() ? 'white' : 'black',
-                    radius: StyleService.isDarkMode() ? 12 : 8,
+                    // @ts-ignore
+                    opacity: StyleService.value(StyleService.select({ light: 0.07, dark: 0.13 })),
+                    // @ts-ignore
+                    color: StyleService.value(StyleService.select({ light: 'black', dark: 'white' })),
+                    // @ts-ignore
+                    radius: StyleService.value(StyleService.select({ light: 8, dark: 12 })),
                 },
             }),
         },
-
         animations: {
             pop: {
                 enabled: Platform.OS === 'ios',
+            },
+            setRoot: {
+                waitForRender: true, // Wait for the component to render before ANY transitions
             },
         },
         popGesture: true,
@@ -84,12 +94,12 @@ const getTabBarIcons = (): {
         [AppScreens.TabBar.Home]: {
             icon: StyleService.getImage('IconTabBarHome'),
             iconSelected: StyleService.getImage('IconTabBarHomeSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Events]: {
             icon: StyleService.getImage('IconTabBarEvents'),
             iconSelected: StyleService.getImage('IconTabBarEventsSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Actions]: {
             icon: StyleService.getImage('IconTabBarActions'),
@@ -99,7 +109,7 @@ const getTabBarIcons = (): {
         [AppScreens.TabBar.XApps]: {
             icon: StyleService.getImage('IconTabBarXapp'),
             iconSelected: StyleService.getImage('IconTabBarXappSelected'),
-            scale: GetBottomTabScale(),
+            scale: GetBottomTabScale(0.9),
         },
         [AppScreens.TabBar.Settings]: {
             icon: StyleService.getImage('IconTabBarSettings'),
@@ -108,6 +118,8 @@ const getTabBarIcons = (): {
         },
     };
 };
+
+const bottomTabsChildren: LayoutTabsChildren[] = [];
 
 /* Lib ==================================================================== */
 
@@ -132,8 +144,6 @@ const Navigator = {
         });
 
         const TabBarIcons = getTabBarIcons();
-
-        const bottomTabsChildren: LayoutTabsChildren[] = [];
 
         Object.keys(AppScreens.TabBar).forEach((tab) => {
             bottomTabsChildren.push({
@@ -183,6 +193,23 @@ const Navigator = {
     },
 
     /**
+     * Navigates to a specific tab by name.
+     *
+     * @param {string} tabName - The name of the tab to navigate to (e.g., 'Home', 'Events', 'XApps', 'Settings').
+     * @return {void}
+     */
+    navigateToTab(tabName: string): void {   
+        const tabId = `bottomTab-${tabName}`;
+      
+        // Switch to the specified tab
+        Navigation.mergeOptions(RootType.DefaultRoot, {
+            bottomTabs: {
+                currentTabId: tabId,
+            },
+        });
+    },
+
+    /**
      * Starts the app navigation in onboarding screen
      *
      * @return {void}
@@ -225,6 +252,7 @@ const Navigator = {
     ): Promise<string | boolean> {
         const currentScreen = NavigationService.getCurrentScreen() ?? '';
         if (currentScreen !== nextScreen) {
+            allScreens.add(nextScreen);
             return Navigation.push(currentScreen, {
                 component: {
                     name: nextScreen,
@@ -299,6 +327,12 @@ const Navigator = {
                         layout: {
                             backgroundColor: 'transparent',
                             componentBackgroundColor: 'transparent',
+                        },
+                        // Disable automatic splash screen dismissal
+                        animations: {
+                            setRoot: {
+                              waitForRender: true, // Wait for the component to render before ANY transitions
+                            },
                         },
                         ...options,
                     },
@@ -428,21 +462,181 @@ const Navigator = {
         Navigation.updateProps(currentScreen, props);
     },
 
+    isInstantThemeSwitchPage(screenId: string): string | false {
+        return ([ 'app.Settings.General', ...Object.values(AppScreens.TabBar) ] as string[])
+            .indexOf(screenId) > -1
+                ? screenId
+                : false;
+    },
+
+    awaitSafeThemeSwitch(): Promise<void> {
+        return new Promise(resolve => {
+            if (!Navigator.isInstantThemeSwitchPage(NavigationService.getCurrentScreen() || '')) {
+                // console.log('Wait till back at main pages, now at', NavigationService.getCurrentScreen());
+                const pageListener = Navigation
+                    .events()
+                    .registerComponentDidAppearListener(({ componentId }) => {
+                        // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
+                        if (Navigator.isInstantThemeSwitchPage(componentId)) {
+                            // console.log('Awaited page to one of main tab pages so going now')
+                            pageListener.remove();
+                            resolve();
+                        }
+                    });
+    
+                return;
+            }
+    
+            const modalOpen = NavigationService.getCurrentModal();
+            if (modalOpen) {
+                // We wait with all the updates till it closes
+                // console.log('Wait cause modal open', modalOpen)
+                const modalDismissListener = Navigation
+                    .events()
+                    .registerModalDismissedListener(({ componentId }) => {
+                        if (componentId === modalOpen) {
+                            // console.log('Awaited modal close so going now', modalOpen)
+                            modalDismissListener.remove();
+                            resolve();
+                        }
+                    });
+                return;
+            }
+    
+            const overlayOpen = NavigationService.getCurrentOverlay();
+            if (overlayOpen) {
+                // We wait with all the updates till it closes
+                // console.log('Wait cause overlay open', overlayOpen)
+                const overlayDismissListener = Navigation
+                    .events()
+                    .registerComponentDidDisappearListener(({ componentId }) => {
+                        if (componentId === overlayOpen) {
+                            // console.log('Awaited overlay close so going now', overlayOpen)
+                            overlayDismissListener.remove();
+                            resolve();
+                        }
+                    });
+                return;
+            }
+    
+            resolve();
+        });
+    },
+
+    switchTheme(): void {
+        Navigator.awaitSafeThemeSwitch().then(() => {
+            Navigator.reRender();
+        });
+    },
+
     /**
      * Updates the tabbar and re-renders the AppScreens.TabBar component.
      *
      * @return {void}
      */
     reRender(): void {
-        // update the tabbar
-        Object.keys(AppScreens.TabBar).forEach((tab) => {
-            Navigation.mergeOptions(`bottomTab-${tab}`, {
-                bottomTab: {
-                    text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
-                },
-            });
+        const defaultOptions = getDefaultOptions();
+        Navigation.setDefaultOptions(defaultOptions);
 
-            Navigation.updateProps(get(AppScreens.TabBar, tab), { timestamp: +new Date() });
+        const bottomTabStyles = StyleService.applyTheme({
+            textColor: '$grey',
+            selectedTextColor: '$textPrimary',
+            fontFamily: AppFonts.base.familyExtraBold,
+            iconInsets: {
+                top: HasBottomNotch() ? 4 : 1,
+            },
+        });
+
+        // Update ALL active screens/stacks
+        ;(allScreens as unknown as string[]).forEach(allScreenIterator => {
+            Navigation.mergeOptions(allScreenIterator, { ...defaultOptions });
+            Navigation.updateProps(allScreenIterator, { timestamp: +new Date() });
+        });
+
+        const TabBarIcons = getTabBarIcons();
+
+        const updateTab = (tab: string) => {
+            const tabId = `bottomTab-${tab}`;
+            bottomTabsChildren
+                .filter(b => b.stack?.id === tabId)?.[0].stack?.children?.forEach(child => {
+                    if (child.component?.id) {
+                        Navigation.mergeOptions(child.component.id, { ...defaultOptions });
+                        Navigation.updateProps(child.component.id, { timestamp: +new Date() });
+                    }
+                });
+
+            const currentBottomTab = bottomTabsChildren
+                .filter(b => b.stack?.id === tabId)?.[0].stack?.options?.bottomTab;
+
+            if (currentBottomTab) {
+                const getTab = get(AppScreens.TabBar, tab);
+                Navigation.mergeOptions(getTab, {
+                    bottomTab: {
+                        ...currentBottomTab,
+                        text: tab !== 'Actions' ? Localize.t(`global.${tab.toLowerCase()}`) : '',
+                        icon: {
+                            scale: TabBarIcons[getTab].scale,
+                            ...TabBarIcons[getTab].icon,
+                        },
+                        selectedIcon: {
+                            scale: TabBarIcons[getTab].scale,
+                            ...TabBarIcons[getTab].iconSelected,
+                        },
+                        ...bottomTabStyles,
+                    },
+                    // ...defaultOptions,
+                });
+
+                Navigation.updateProps(getTab, { timestamp: +new Date() });
+            }
+        };
+    
+        let navSections = (NavigationService.getCurrentScreen() || '').split('.');
+        let isAtMainTab = false;
+
+        if (navSections?.[0] === 'app' && navSections?.[1] === 'TabBar') {
+            isAtMainTab = true;
+        }
+
+        if (NavigationService.getCurrentScreen() === 'app.Settings.General') {
+            // Mock settings for return
+            isAtMainTab = true;
+            navSections = ['app', 'TabBar', 'Settings'];
+        }
+
+        // First the artive tab
+        if (isAtMainTab && navSections?.[2]) {
+            requestAnimationFrame(() => {
+                updateTab(navSections?.[2]);
+            });
+        }
+
+        // Then the rest
+        requestAnimationFrame(() => {
+            // Update the root with defaultOptions
+            Navigation.mergeOptions(RootType.DefaultRoot, { ...defaultOptions });
+            Navigation.updateProps(RootType.DefaultRoot, { timestamp: +new Date() });
+
+            Object.keys(AppScreens.TabBar)
+                .filter(tab => !isAtMainTab || (navSections?.[2] && tab !== navSections?.[2]) || !navSections?.[2])
+                .forEach(tab => updateTab(tab));
+        });
+
+        requestAnimationFrame(() => {
+            // Update any active modals
+            const currentModal = NavigationService.getCurrentModal();
+            if (currentModal) {
+                // ^^ don't switch xapp browser as it borks webview state
+                Navigation.mergeOptions(currentModal, { ...defaultOptions });
+                Navigation.updateProps(currentModal, { timestamp: +new Date() });
+            }
+            const currentOverlay = NavigationService.getCurrentOverlay();
+            if (currentOverlay) {
+                // console.log(defaultOptions)
+                // Navigation.mergeOptions(currentOverlay, { ...defaultOptions });
+                // ^^ No need & if enabled it kills transparency on the backdrops
+                Navigation.updateProps(currentOverlay, { timestamp: +new Date() });
+            }
         });
     },
 };

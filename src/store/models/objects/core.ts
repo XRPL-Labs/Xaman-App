@@ -57,6 +57,8 @@ class Core extends Realm.Object<Core> {
     public declare developerMode: boolean;
     /** Selected theme for the application. */
     public declare theme: Themes;
+    /** Auto switching. */
+    public declare themeAutoSwitch: boolean;
 }
 
 export default Core;

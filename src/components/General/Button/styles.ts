@@ -11,7 +11,7 @@ const styles = StyleService.create({
         height: AppSizes.scale(45),
         flexDirection: 'row',
         borderWidth: 1,
-        borderRadius: AppSizes.scale(75) / 7,
+        borderRadius: AppSizes.scale(75) / 5,
         paddingHorizontal: 25,
         alignSelf: 'stretch',
         justifyContent: 'center',
@@ -117,6 +117,15 @@ const styles = StyleService.create({
         borderRadius: AppSizes.scale(42) / 2,
     },
     textButtonRounded: {
+        fontSize: AppFonts.base.size,
+    },
+    buttonNonBlock: {
+        height: AppSizes.scale(42),
+        paddingHorizontal: 30,
+        alignSelf: 'center',
+        borderRadius: AppSizes.scale(75) / 5,
+    },
+    textButtonNonBlock: {
         fontSize: AppFonts.base.size,
     },
     iconLeft: {

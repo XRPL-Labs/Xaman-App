@@ -113,6 +113,7 @@ class Input extends Component<Props, State> {
             keyboardType,
             autoCapitalize,
             multiline,
+            secureTextEntry,
         } = this.props;
 
         const filteredProps = { ...this.props };
@@ -141,7 +142,7 @@ class Input extends Component<Props, State> {
                 styles.wrapper,
                 containerStyle,
                 focused && activeContainerStyle,
-                multiline ? styles.multiline : styles.nonMultiline,
+                multiline ? styles.multiline : styles.nonMultilineContainer,
             ]}>
                 <TextInput
                     ref={this.instanceRef}
@@ -151,7 +152,13 @@ class Input extends Component<Props, State> {
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
                     multiline={!!multiline}
-                    style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
+                    style={[
+                        styles.input,
+                        { paddingRight: scannerPadding },
+                        inputStyle,
+                        focused && activeInputStyle,
+                        !multiline && secureTextEntry ? styles.nonMultilineSecureInput : undefined,
+                    ]}
                     {...filteredProps}
                 />
             </View>

@@ -381,6 +381,7 @@ class SendView extends Component<Props, State> {
 
     renderStep = () => {
         const { currentStep } = this.state;
+        const { timestamp } = this.props;
 
         let Step;
 
@@ -409,6 +410,7 @@ class SendView extends Component<Props, State> {
             <StepsContext.Provider
                 value={{
                     ...this.state,
+                    timestamp,
                     goNext: this.goNext,
                     goBack: this.goBack,
                     setAmount: this.setAmount,
@@ -457,8 +459,15 @@ class SendView extends Component<Props, State> {
     };
 
     render() {
+        const {timestamp} = this.props;
+
         return (
-            <View onResponderRelease={() => Keyboard.dismiss()} testID="send-screen" style={styles.container}>
+            <View
+                key={`sendview-${timestamp}`}
+                onResponderRelease={() => Keyboard.dismiss()}
+                testID="send-screen"
+                style={styles.container}
+            >
                 {this.renderHeader()}
                 {this.renderStep()}
             </View>

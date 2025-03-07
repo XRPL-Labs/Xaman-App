@@ -10,7 +10,8 @@ const { startDeviceLogStream } = require('../helpers/simulator');
 BeforeAll(async () => {
     await detox.init({
         argv: {
-            reuse: false,
+            // reuse: false,
+            reuse: String(process.env?.DETOX_REUSE || 'no').toLowerCase() === 'yes',
         },
     });
 

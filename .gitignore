@@ -75,3 +75,8 @@ e2e/artifacts/*
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
+
+# Imageprepare scripts
+scripts/imageprepare-app/*.svg
+scripts/imageprepare-app/*.png
+scripts/imageprepare-app/*/*

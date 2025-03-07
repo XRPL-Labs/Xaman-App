@@ -20,7 +20,17 @@ const styles = StyleService.create({
         shadowOpacity: 0.4,
         ...AppStyles.paddingSml,
     },
-
+    marginTop: {
+        marginTop: 10,
+    },
+    fullWidth: {
+        width: '100%',
+        position: 'relative',
+        left: 0,
+        right: 0,
+        // borderWidth: 4,
+        // borderColor: 'pink',
+    },
     iconError: {
         tintColor: '$red',
     },

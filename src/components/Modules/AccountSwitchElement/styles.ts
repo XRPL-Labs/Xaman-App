@@ -11,14 +11,20 @@ export default StyleService.create({
         paddingHorizontal: AppSizes.paddingSml,
         marginBottom: 5,
     },
+    containerNoPadding: { // xApp header
+        paddingRight: 0,
+        paddingLeft: 3,
+    },
     accountLabelText: {
         fontFamily: AppFonts.base.familyExtraBold,
         fontSize: AppFonts.p.size,
+        lineHeight: AppFonts.p.size * 1.4,
         color: '$textPrimary',
     },
     accountAddressText: {
         fontFamily: AppFonts.base.familyMono,
         fontSize: AppFonts.small.size,
+        lineHeight: AppFonts.small.size * 1.1,
         color: '$textSecondary',
     },
     iconChevron: {

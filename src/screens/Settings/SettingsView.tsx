@@ -11,7 +11,7 @@ import { XAppOrigin } from '@common/libs/payload';
 import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 
-import { TouchableDebounce, Header, Icon, HorizontalLine } from '@components/General';
+import { TouchableDebounce, Header, Icon } from '@components/General';
 import { MonetizationElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -98,7 +98,7 @@ class SettingsView extends Component<Props, State> {
                 <View style={AppStyles.contentContainer}>
                     <ScrollView
                         style={AppStyles.flex1}
-                        contentContainerStyle={[AppStyles.paddingRight, AppStyles.paddingLeft]}
+                        contentContainerStyle={[AppStyles.paddingRightSml, AppStyles.paddingLeft]}
                     >
                         {this.renderRow(
                             'IconAccount',
@@ -106,7 +106,7 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Account.List,
                             'accounts-button',
                         )}
-                        <HorizontalLine />
+                        <View style={styles.hr} />
                         {this.renderRow(
                             'IconSlider',
                             Localize.t('global.general'),

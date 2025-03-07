@@ -3,6 +3,7 @@ import StyleService from '@services/StyleService';
 import { AppSizes } from '@theme';
 
 import { HasBottomNotch } from '@common/helpers/device';
+
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     container: {
@@ -19,9 +20,19 @@ const styles = StyleService.create({
         borderTopLeftRadius: 30,
         paddingVertical: AppSizes.padding,
     },
+    shadow: {
+        shadowColor: '$contrast',
+        shadowOffset: {
+            height: 0,
+            width: 0,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+    },
     xamanAppBackground: {
-        resizeMode: 'cover',
-        opacity: 0.03,
+        // resizeMode: 'cover',
+        // opacity: 0.65,
+        top: '-20%',
     },
     detailsContainer: {
         paddingHorizontal: AppSizes.paddingSml,

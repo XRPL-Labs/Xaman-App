@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View, Text, InteractionManager } from 'react-native';
+import { View, Text, InteractionManager, ViewStyle } from 'react-native';
 
 import { ProfileRepository } from '@store/repositories';
 
@@ -8,10 +8,14 @@ import { Icon } from '@components/General';
 import styles from './styles';
 
 /* Types ==================================================================== */
-interface Props {}
+interface Props {
+    hasPro?: number;
+    style?: ViewStyle | ViewStyle[];
+}
 
 interface State {
     hasPro: boolean;
+    hasProFromProps: boolean;
 }
 
 /* Component ==================================================================== */
@@ -19,24 +23,45 @@ class ProBadge extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const { hasPro } = this.props;
+
+        const hasProFromProps = typeof hasPro === 'number';
+
         this.state = {
-            hasPro: false,
+            hasPro: hasProFromProps
+                ? hasPro > 0
+                : false,
+            hasProFromProps,
         };
     }
 
     componentDidMount() {
         // get the has pro status
-        InteractionManager.runAfterInteractions(this.getProStatus);
+        const { hasProFromProps } = this.state;
 
-        // update the badge visibility when updated
-        ProfileRepository.on('profileUpdate', this.getProStatus);
+        if (!hasProFromProps) {
+            InteractionManager.runAfterInteractions(this.getProStatus);
+
+            // update the badge visibility when updated
+            ProfileRepository.on('profileUpdate', this.getProStatus);
+        }
     }
 
     componentWillUnmount() {
-        ProfileRepository.off('profileUpdate', this.getProStatus);
+        const { hasProFromProps } = this.state;
+
+        if (!hasProFromProps) {
+            ProfileRepository.off('profileUpdate', this.getProStatus);
+        }
     }
 
     getProStatus = () => {
+        const { hasProFromProps } = this.state;
+        
+        if (hasProFromProps) {
+            return;
+        }
+
         const profile = ProfileRepository.getProfile();
 
         // no profile found
@@ -50,6 +75,7 @@ class ProBadge extends PureComponent<Props, State> {
     };
 
     render() {
+        const { style } = this.props;
         const { hasPro } = this.state;
 
         if (!hasPro) {
@@ -57,7 +83,10 @@ class ProBadge extends PureComponent<Props, State> {
         }
 
         return (
-            <View style={styles.proBadgeContainer}>
+            <View style={[
+                styles.proBadgeContainer,
+                style,
+            ]}>
                 <Icon name="IconPro" size={15} />
                 <Text style={styles.proBadgeLabel}>Pro</Text>
             </View>

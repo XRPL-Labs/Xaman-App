@@ -412,7 +412,7 @@ class SummaryStep extends Component<Props, State> {
                                         <Button
                                             onPress={this.showEnterDestinationTag}
                                             style={styles.editButton}
-                                            roundedSmall
+                                            roundedMini
                                             iconSize={13}
                                             light
                                             icon="IconEdit"

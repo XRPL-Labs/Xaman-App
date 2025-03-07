@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import "SecurityProvider.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
@@ -29,6 +30,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  // Initialize security key early
+  [SecurityProvider ensureKeyIsReady];
+
   // bootstrap rnn
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   [ReactNativeNavigation bootstrapWithBridge:bridge];

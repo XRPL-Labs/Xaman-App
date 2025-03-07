@@ -22,7 +22,7 @@ interface State {
 class Participants extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
-
+        
         this.state = {
             participants: undefined,
         };
@@ -40,6 +40,16 @@ class Participants extends PureComponent<Props, State> {
         });
     };
 
+    getTokenDetails = (forced = false) => {
+        const { cachedTokenDetails } = this.props;
+        const { participants } = this.state;
+        // Not if self (token swap)
+
+        return (forced || participants?.start?.address !== participants?.end?.address) && cachedTokenDetails
+            ? cachedTokenDetails
+            : undefined;
+    };
+
     renderStart = (start: Account | undefined) => {
         const { account } = this.props;
 
@@ -54,8 +64,10 @@ class Participants extends PureComponent<Props, State> {
                 <AccountElement
                     address={start.address}
                     tag={start.tag}
+                    tokenDetails={this.getTokenDetails()}
+                    containerStyle={styles.participant}
                     visibleElements={{
-                        tag: true,
+                        tag: start.address !== account.address,
                         avatar: true,
                         menu: start.address !== account.address,
                     }}
@@ -78,7 +90,13 @@ class Participants extends PureComponent<Props, State> {
                 <Text style={styles.detailsLabelText}>{Localize.t('events.through')}</Text>
                 <AccountElement
                     address={through.address}
-                    visibleElements={{ tag: true, avatar: true, menu: through.address !== account.address }}
+                    tokenDetails={this.getTokenDetails()}
+                    containerStyle={styles.participant}
+                    visibleElements={{
+                        tag: true,
+                        avatar: true,
+                        menu: through.address !== account.address,
+                    }}
                 />
             </>
         );
@@ -99,6 +117,8 @@ class Participants extends PureComponent<Props, State> {
                 <AccountElement
                     address={end.address}
                     tag={end.tag}
+                    tokenDetails={this.getTokenDetails(true)}
+                    containerStyle={styles.participant}
                     visibleElements={{
                         tag: true,
                         avatar: true,
@@ -111,6 +131,7 @@ class Participants extends PureComponent<Props, State> {
 
     render() {
         const { participants } = this.state;
+        // const { cachedTokenDetails } = this.props;
 
         // nothing to show
         if (typeof participants === 'undefined') {
@@ -120,6 +141,7 @@ class Participants extends PureComponent<Props, State> {
         return (
             <View style={styles.participantContainer}>
                 {this.renderStart(participants.start)}
+                {/* <Text>{cachedTokenDetails?.account}</Text> */}
                 {this.renderThrough(participants.through)}
                 {this.renderEnd(participants.end)}
             </View>

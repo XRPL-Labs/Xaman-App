@@ -1106,6 +1106,8 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
+  - react-native-device-brightness (1.2.7):
+    - React
   - react-native-netinfo (11.3.2):
     - React-Core
   - react-native-sdk (7.1.0):
@@ -1423,6 +1425,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - "react-native-device-brightness (from `../node_modules/@adrianso/react-native-device-brightness`)"
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - "react-native-sdk (from `../node_modules/@veriff/react-native-sdk`)"
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
@@ -1546,6 +1549,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-device-brightness:
+    :path: "../node_modules/@adrianso/react-native-device-brightness"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
   react-native-sdk:
@@ -1663,6 +1668,7 @@ SPEC CHECKSUMS:
   React-logger: 29fa3e048f5f67fe396bc08af7606426d9bd7b5d
   React-Mapbuffer: bf56147c9775491e53122a94c423ac201417e326
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
+  react-native-device-brightness: 886cfbfb49a32b6de4ccfc1f720776dc5f381d24
   react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
   react-native-sdk: f5e5134a8855b4b6d7e923c8332d236a5fd814b2
   React-nativeconfig: 9f223cd321823afdecf59ed00861ab2d69ee0fc1

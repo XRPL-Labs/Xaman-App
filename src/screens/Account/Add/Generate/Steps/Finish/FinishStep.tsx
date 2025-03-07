@@ -55,9 +55,10 @@ class FinishStep extends Component<Props, State> {
             <SafeAreaView style={AppStyles.flex1}>
                 <ImageBackground
                     testID="account-generate-finish-view"
-                    source={StyleService.getImage('BackgroundPattern')}
+                    source={StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')}
                     style={[AppStyles.container]}
                     imageStyle={styles.backgroundImageStyle}
+                    resizeMode="cover"
                 >
                     <View
                         style={[

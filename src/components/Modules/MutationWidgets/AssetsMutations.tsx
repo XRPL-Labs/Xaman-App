@@ -107,6 +107,7 @@ class AssetsMutations extends PureComponent<Props, State> {
                     value={change.value}
                     currency={change.currency}
                     prefix={change.action === OperationActions.DEC && '-'}
+                    truncateLp
                     style={[
                         styles.amountText,
                         {

@@ -49,12 +49,14 @@ const styles = StyleService.create({
     detailsLabel: {
         fontSize: AppFonts.subtext.size * 0.9,
         fontFamily: AppFonts.base.family,
-        color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+        // color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+        color: StyleService.select({ dark: '$silver', light: '$grey' }),
     },
     detailsValue: {
         fontSize: AppFonts.subtext.size * 0.9,
-        fontFamily: AppFonts.base.familyMono,
-        color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+        fontFamily: AppFonts.base.familyMonoBold,
+        // color: StyleService.isDarkMode() ? '$light' : '$darkGrey',
+        color: StyleService.select({ dark: '$light', light: '$blue' }),
     },
     inputContainer: {
         left: 0,
@@ -109,8 +111,8 @@ const styles = StyleService.create({
     },
     detailsContainer: {
         paddingHorizontal: 20,
-        paddingTop: 20,
-        paddingBottom: 10,
+        paddingTop: 15,
+        paddingBottom: 2,
         backgroundColor: '$tint',
         borderRadius: 15,
         borderColor: '$tint',

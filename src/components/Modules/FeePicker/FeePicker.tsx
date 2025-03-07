@@ -16,6 +16,8 @@ import { Capitalize } from '@common/utils/string';
 import { TouchableDebounce, Badge, Button, LoadingIndicator, InfoMessage } from '@components/General';
 import BackendService from '@services/BackendService';
 
+import { type Payload } from '@common/libs/payload';
+
 import Localize from '@locale';
 
 import { FeeItem, Props as SelectFeeOverlayProps } from '@screens/Overlay/SelectFee/types';
@@ -32,6 +34,7 @@ interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     textStyle?: TextStyle | TextStyle[];
     source?: AccountModel;
+    payload?: Payload;
     showHooksFee?: boolean;
     onSelect?: (txFee: any, serviceFee: any) => void;
 }
@@ -91,7 +94,7 @@ class FeePicker extends Component<Props, State> {
     }
 
     fetchServiceFee = (isFallback = false): Promise<void> => {
-        const { txJson, source } = this.props;
+        const { txJson, source, payload } = this.props;
 
         const noFee = () => {
             this.setState({
@@ -111,9 +114,13 @@ class FeePicker extends Component<Props, State> {
             // We don't know what is going to sign this
             return Promise.resolve(noFee());
         }
+
+        const payloadUuid = payload
+            ? payload?.getPayloadUUID()
+            : undefined;
         
         // when it's retry with fallback then we don't include txJson
-        return BackendService.getServiceFee(!isFallback ? txJson : undefined)
+        return BackendService.getServiceFee(!isFallback ? txJson : undefined, payloadUuid)
             .then((res) => {
                 // console.log('Picked backend service service fee', res);
                 const { availableFees } = res;
@@ -258,9 +265,23 @@ class FeePicker extends Component<Props, State> {
         const { containerStyle, textStyle } = this.props;
 
         return (
-            <View style={[AppStyles.row, containerStyle]}>
-                <Text style={textStyle}>{Localize.t('global.loading')}...&nbsp;</Text>
-                <LoadingIndicator />
+            <View style={[
+                styles.outerContainer,
+                AppStyles.row,
+                containerStyle,
+            ]}>
+                <View style={[
+                    styles.loaderContainer,
+                ]}>
+                    <LoadingIndicator
+                        style={styles.loader}
+                        size='small'
+                    />
+                    <Text style={[
+                        styles.loaderText,
+                        textStyle,
+                    ]}>{Localize.t('global.loading')}...&nbsp;</Text>
+                </View>
             </View>
         );
     };
@@ -281,7 +302,10 @@ class FeePicker extends Component<Props, State> {
         }
 
         return (
-            <View style={containerStyle}>
+            <View style={[
+                styles.outerContainer,
+                containerStyle,
+            ]}>
                 <TouchableDebounce activeOpacity={0.8} style={AppStyles.row} onPress={this.showFeeSelectOverlay}>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                         <Text style={textStyle}>

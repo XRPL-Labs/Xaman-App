@@ -15,6 +15,7 @@ export enum Steps {
 
 export interface Props<T = CombinedTransactions> {
     payload: Payload;
+    timestamp?: number;
     onResolve?: (transaction: T & SignMixinType & MutationsMixinType, payload: Payload) => void;
     onDecline?: (payload: Payload) => void;
     onClose?: () => void;
@@ -37,6 +38,7 @@ export interface State {
 }
 
 export interface ContextProps extends State {
+    timestamp?: number;
     setTransaction: (tx: SignableMutatedTransaction) => void;
     setAccounts: (accounts: AccountModel[]) => void;
     setSource: (source: AccountModel) => void;

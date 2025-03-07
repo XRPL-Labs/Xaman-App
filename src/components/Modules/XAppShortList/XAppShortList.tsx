@@ -70,7 +70,7 @@ class XAppShortList extends Component<Props, State> {
         const { apps } = this.state;
 
         return (
-            <View style={[styles.container, containerStyle]}>
+            <View style={[styles.container, containerStyle]} shouldRasterizeIOS renderToHardwareTextureAndroid>
                 {apps.map((app, index) => (
                     <XAppItem key={index} app={app} index={index} onPress={onAppPress} />
                 ))}

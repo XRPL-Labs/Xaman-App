@@ -12,6 +12,20 @@ NSString *const ENCRYPTION_SUCCESS = @"ENCRYPTION_SUCCESS";
 
 @implementation SecurityProvider
 
++ (BOOL)ensureKeyIsReady {
+    // First check if the key is already ready
+    if ([self isKeyReady]) {
+        return YES;
+    }
+    
+    // If not ready, generate the key
+    // Call your existing key generation method which is void
+    [self generateKey]; // or whatever your void key generation method is named
+    
+    // Check again if the key is ready after generation
+    return [self isKeyReady];
+}
+
 + (void) generateKey {
   CFErrorRef error = NULL;
   SecAccessControlRef access =

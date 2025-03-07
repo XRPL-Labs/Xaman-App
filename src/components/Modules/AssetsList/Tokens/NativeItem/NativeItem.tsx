@@ -145,7 +145,7 @@ class NativeItem extends Component<Props, State> {
     };
 
     getTokenAvatar = () => {
-        return <TokenAvatar token="Native" border size={35} />;
+        return <TokenAvatar token="Native" networkService={NetworkService} size={35} />;
     };
 
     getTokenIcon = () => {

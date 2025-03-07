@@ -9,6 +9,8 @@ import Keyboard from '@common/helpers/keyboard';
 
 import { PasswordInput, Button, Spacer } from '@components/General';
 
+import StyleService from '@services/StyleService';
+
 import Localize from '@locale';
 
 // style
@@ -132,7 +134,7 @@ class PassphraseMethod extends Component<Props, State> {
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
+            outputRange: StyleService.getBackdropInterpolateColor(),
         });
 
         return (

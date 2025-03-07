@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "3.3.3",
+  "version": "4.0.0",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/cli.js start",
@@ -14,6 +14,7 @@
     "cosmos": "cosmos-native --config .cosmos/cosmos.config.json"
   },
   "dependencies": {
+    "@adrianso/react-native-device-brightness": "^1.2.7",
     "@react-native-community/netinfo": "11.3.2",
     "@react-native-firebase/analytics": "20.4.0",
     "@react-native-firebase/app": "20.4.0",
@@ -29,6 +30,7 @@
     "react": "18.2.0",
     "react-native": "0.74.2",
     "react-native-camera": "4.2.1",
+    "react-native-drop-shadow": "^1.0.0",
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.40.1",
     "realm": "12.13.0",

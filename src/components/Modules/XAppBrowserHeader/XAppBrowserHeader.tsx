@@ -182,6 +182,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                     <View style={styles.accountSwitchContainer}>
                         <AccountSwitchElement
                             account={account}
+                            noPadding
                             onAccountSwitch={this.onDefaultAccountChange}
                             onSwitcherClose={this.toggleExpandedBar}
                         />
@@ -195,10 +196,14 @@ class XAppBrowserHeader extends Component<Props, State> {
                             label={Localize.t('xapp.aboutThisXApp')}
                             onPress={this.showXAppInfo}
                             activeOpacity={0.8}
-                            style={[AppStyles.flex1, styles.headerButton]}
+                            style={[AppStyles.flex3, styles.headerButton]}
                         />
                         <NetworkSwitchButton
-                            containerStyle={[AppStyles.flex1, { marginLeft: AppSizes.paddingSml }]}
+                            containerStyle={[
+                                AppStyles.flex4,
+                                { marginLeft: AppSizes.paddingSml },
+                                styles.networkSwitchBtn,
+                            ]}
                             loadingAnimation={false}
                             showChevronIcon
                             height="100%"

@@ -20,6 +20,6 @@ export default StyleService.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: '$dark',
+        tintColor: '$contrast',
     },
 });

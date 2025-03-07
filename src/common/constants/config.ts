@@ -39,11 +39,4 @@ export default {
 
     // Account to send fees to
     feeAccount: 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt',
-
-    // Networks with Swap for exchange instead of DEX
-    swapNetworks: [
-        'MAINNET',
-        'TESTNET',
-        'DEVNET',
-    ],
 };

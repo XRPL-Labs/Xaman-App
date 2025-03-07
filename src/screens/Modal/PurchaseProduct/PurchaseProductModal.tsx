@@ -281,7 +281,7 @@ class PurchaseProductModal extends Component<Props, State> {
                                 onPress={this.lunchPurchaseFlow}
                                 isLoading={isPurchasing}
                                 isDisabled={!isDetailsResolved}
-                                loadingIndicatorStyle={StyleService.select({ dark: 'dark', light: 'light' })}
+                                loadingIndicatorStyle={StyleService.isDarkMode() ? 'dark' : 'light'}
                             />
                             <View style={styles.separatorContainer}>
                                 <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
@@ -289,7 +289,7 @@ class PurchaseProductModal extends Component<Props, State> {
                             <Button
                                 textStyle={styles.restorePurchase}
                                 isLoading={isRestoring}
-                                loadingIndicatorStyle={StyleService.select({ dark: 'light', light: 'dark' })}
+                                loadingIndicatorStyle={StyleService.isDarkMode() ? 'light' : 'dark'}
                                 onPress={this.restorePurchase}
                                 label={Localize.t('monetization.restorePurchase')}
                                 roundedMini

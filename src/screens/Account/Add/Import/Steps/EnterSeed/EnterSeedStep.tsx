@@ -5,12 +5,26 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Alert, KeyboardTypeOptions, Platform } from 'react-native';
 
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+
 import { derive } from 'xrpl-accountlib';
 import { StringType, XrplSecret } from 'xumm-string-decode';
 
+import { PickerModalProps } from '@screens/Global/Picker';
+
 import Localize from '@locale';
 // components
-import { Button, TextInput, Spacer, KeyboardAwareScrollView, Footer } from '@components/General';
+import {
+    Button,
+    TextInput,
+    Spacer,
+    KeyboardAwareScrollView,
+    Footer,
+    TouchableDebounce,
+    // Switch,
+    Icon,
+} from '@components/General';
 
 import { ConvertCodecAlphabet } from '@common/utils/codec';
 
@@ -25,6 +39,7 @@ export interface Props {}
 
 export interface State {
     secret?: string;
+    secretType?: string;
     showSecret: boolean;
     keyboardType: KeyboardTypeOptions;
 }
@@ -39,6 +54,7 @@ class EnterSeedStep extends Component<Props, State> {
 
         this.state = {
             secret: undefined,
+            secretType: 'secp256k1',
             showSecret: false,
             keyboardType: 'default',
         };
@@ -46,7 +62,7 @@ class EnterSeedStep extends Component<Props, State> {
 
     driveFamilySeed = () => {
         const { alternativeSeedAlphabet } = this.context;
-        const { secret } = this.state;
+        const { secret, secretType } = this.state;
 
         try {
             if (!secret) {
@@ -61,7 +77,9 @@ class EnterSeedStep extends Component<Props, State> {
                     xrplSecret = ConvertCodecAlphabet(secret, alphabet);
                 }
             }
-            const account = derive.familySeed(xrplSecret);
+            const account = derive.familySeed(xrplSecret, secretType === 'ed25519' ? {
+                algorithm: secretType,
+            } : undefined);
 
             this.goNext(account);
         } catch (error) {
@@ -138,9 +156,49 @@ class EnterSeedStep extends Component<Props, State> {
         this.setState({ secret: value.replace(/[^a-z0-9]/gi, '') });
     };
 
+    getSecretType = (): string => {
+        const { secretType } = this.state;
+        return secretType || 'secp256k1';
+    };
+
+    showKeypairTypePicker = () => {
+        const { secretType } = this.state;
+
+        // let normalizedLocales = [];
+
+        // for (const locale of locales) {
+        //     normalizedLocales.push({
+        //         value: locale.code,
+        //         title: locale.nameLocal,
+        //     });
+        // }
+
+        // normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
+
+        Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
+            title: Localize.t('global.language'),
+            description: Localize.t('settings.selectLanguage'),
+            items: [
+                { value: 'secp256k1', title: `secp256k1 (${Localize.t('global.default')})` },
+                { value: 'ed25519', title: 'ed25519' },
+            ],
+            selected: secretType || 'secp256k1',
+            onSelect: v => {
+                this.setState({
+                    secretType: v.value,
+                });
+            },
+        });
+    };
+
     render() {
         const { goBack, alternativeSeedAlphabet } = this.context;
         const { secret, showSecret, keyboardType } = this.state;
+
+        const isEligibleForKeyTypePicker = typeof secret === 'string' &&
+            secret.trim().length > 15 &&
+            secret.trim().match(/^s/) &&
+            !secret.trim().match(/^sed/i);
 
         return (
             <SafeAreaView testID="account-import-enter-family-seed-view" style={AppStyles.container}>
@@ -164,8 +222,11 @@ class EnterSeedStep extends Component<Props, State> {
                         autoCorrect={false}
                         secureTextEntry={!showSecret}
                         keyboardType={keyboardType}
-                        inputStyle={styles.inputText}
+                        inputStyle={
+                            String(secret || '') === '' ? styles.inputTextEmpty : styles.inputText
+                        }
                         onChangeText={this.onTextChange}
+                        style={styles.textInput}
                         value={secret}
                         showScanner
                         scannerType={StringType.XrplSecret}
@@ -182,6 +243,20 @@ class EnterSeedStep extends Component<Props, State> {
                         label={showSecret ? Localize.t('account.hideSecret') : Localize.t('account.showSecret')}
                         onPress={this.toggleShowSecret}
                     />
+                    <Spacer size={20} />
+                    { isEligibleForKeyTypePicker && 
+                        <TouchableDebounce style={styles.row} onPress={this.showKeypairTypePicker}>
+                            <View style={AppStyles.flex3}>
+                                <Text numberOfLines={1} style={styles.label}>
+                                    {Localize.t('account.keypairType')}
+                                </Text>
+                            </View>
+                            <View style={[AppStyles.centerAligned, AppStyles.row]}>
+                                <Text style={styles.value}>{this.getSecretType()}</Text>
+                                <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
+                            </View>
+                        </TouchableDebounce>
+                    }
                 </KeyboardAwareScrollView>
 
                 <Footer style={[AppStyles.centerAligned, AppStyles.row]}>

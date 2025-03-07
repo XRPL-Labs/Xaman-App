@@ -5,10 +5,10 @@ import { AppFonts, AppSizes } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     labelContainer: {
-        width: AppSizes.screen.width,
+        width: AppSizes.screen.uncorrectedWidth, // Fixes square fold devices
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 25,
+        padding: 15,
         gap: AppSizes.paddingExtraSml,
     },
     advisoryContainer: {
@@ -19,7 +19,7 @@ const styles = StyleService.create({
         backgroundColor: '$red',
     },
     itemContainer: {
-        width: AppSizes.screen.width,
+        width: AppSizes.screen.uncorrectedWidth,
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: 10,
@@ -43,7 +43,9 @@ const styles = StyleService.create({
         // borderTopColor: '$tint',
         // borderTopWidth: 1,
     },
-
+    noBold: {
+        fontFamily: AppFonts.base.family,
+    },
     detailsLabelText: {
         fontFamily: AppFonts.base.familyBold,
         fontSize: AppFonts.base.size,
@@ -51,7 +53,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     detailsValueText: {
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.family,
         lineHeight: 20,
         fontSize: AppFonts.base.size * 0.9,
         color: '$textPrimary',
@@ -60,14 +62,13 @@ const styles = StyleService.create({
     itemContainerGap: {
         gap: AppSizes.paddingExtraSml,
     },
-
     amountContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         // backgroundColor: '$tint',
         borderWidth: 1,
-        borderColor: '$light',
+        borderColor: '$tint',
         width: '100%',
         paddingVertical: 15,
         paddingHorizontal: 50,
@@ -82,12 +83,11 @@ const styles = StyleService.create({
         paddingHorizontal: 30,
         borderRadius: 50,
     },
-
     dateText: {
-        fontFamily: AppFonts.base.familyMonoBold,
+        fontFamily: AppFonts.base.family,
         fontSize: AppFonts.small.size,
-        color: '$grey',
-        textAlign: 'left',
+        color: '$textPrimary',
+        textAlign: 'center',
     },
     hashText: {
         fontFamily: AppFonts.base.familyMono,
@@ -132,12 +132,10 @@ const styles = StyleService.create({
         color: '$grey',
         tintColor: '$grey',
     },
-
     iconArrow: {
         marginTop: 12,
         marginBottom: -12,
     },
-
     nfTokenContainer: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -153,6 +151,10 @@ const styles = StyleService.create({
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderRadius: 50,
+    },
+    participant: {
+        borderWidth: 1,
+        borderColor: '$tint',
     },
 });
 

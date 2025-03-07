@@ -29,6 +29,15 @@ declare namespace XamanBackend {
         };
     }
 
+    interface MultiAddressNativeInfoItem {
+        hasPro: boolean;
+        hasPush: boolean;
+    }
+
+    interface MultiAddressNativeInfoResponse {
+        [key: string]: MultiAddressNativeInfoItem;
+    }
+
     interface CuratedIOUsResponse {
         version: number;
         changed: boolean;
@@ -60,9 +69,11 @@ declare namespace XamanBackend {
         pong: boolean;
         env: {
             hasPro: boolean;
+            hasKyc: boolean;
             appVersion: string;
             appLanguage: string;
             appCurrency: string;
+            swapNetworks: string;
         };
         tosAndPrivacyPolicyVersion: number;
         railsVersion: number;
@@ -119,7 +130,14 @@ declare namespace XamanBackend {
         done: boolean;
     }
     interface AddAccountResponse {
-        done: boolean;
+        account?: string;
+        added?: booleam;
+        card?: string;
+        is_card?: boolean;
+        switch_to_network?: string;
+    }
+    interface PrivateAccountInfoResponse {
+        push?: boolean;
     }
     interface AccountInfoResponse {
         account: string;
