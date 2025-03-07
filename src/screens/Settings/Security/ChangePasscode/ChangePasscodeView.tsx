@@ -19,6 +19,7 @@ import { AuthenticationService } from '@services';
 import { AppScreens } from '@common/constants';
 
 import { Header, SecurePinInput } from '@components/General';
+import { isStrong } from '@components/General/PinInput/PinInput';
 
 import Localize from '@locale';
 
@@ -196,8 +197,8 @@ class ChangePasscodeView extends Component<Props, State> {
             });
     };
 
-    checkNewPasscode = (newPasscode: string, isStrong: boolean) => {
-        if (isStrong) {
+    checkNewPasscode = (newPasscode: string) => {
+        if (isStrong(newPasscode)) {
             this.setState({
                 newPasscode,
             });
@@ -248,7 +249,7 @@ class ChangePasscodeView extends Component<Props, State> {
         await this.changePasscode();
     };
 
-    onPasscodeEntered = (passcode: string, isStrong?: boolean) => {
+    onPasscodeEntered = (passcode: string) => {
         const { currentStep } = this.state;
 
         switch (currentStep) {
@@ -256,7 +257,7 @@ class ChangePasscodeView extends Component<Props, State> {
                 this.checkOldPasscode(passcode);
                 break;
             case Steps.ENTER_NEW_PASSCODE:
-                this.checkNewPasscode(passcode, isStrong!);
+                this.checkNewPasscode(passcode);
                 break;
             case Steps.CONFIRM_NEW_PASSCODE:
                 this.checkConfirmPasscode(passcode);

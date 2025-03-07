@@ -20,6 +20,7 @@ import { VibrateHapticFeedback, Toast, Prompt } from '@common/helpers/interface'
 import { PushNotificationsService, StyleService } from '@services';
 
 import { Button, Spacer, Footer, SecurePinInput } from '@components/General';
+import { isStrong } from '@components/General/PinInput/PinInput';
 
 import Localize from '@locale';
 
@@ -204,8 +205,8 @@ class PasscodeSetupView extends Component<Props, State> {
         });
     };
 
-    checkPasscode = (passcode: string, isStrong: boolean) => {
-        if (isStrong) {
+    checkPasscode = (passcode: string) => {
+        if (isStrong(passcode)) {
             VibrateHapticFeedback('impactLight');
             this.setState({
                 passcode,
@@ -271,12 +272,12 @@ class PasscodeSetupView extends Component<Props, State> {
         });
     };
 
-    onPasscodeEnter = (code: string, isStrong?: boolean) => {
+    onPasscodeEnter = (code: string) => {
         const { currentStep } = this.state;
 
         switch (currentStep) {
             case Steps.ENTER_PASSCODE:
-                this.checkPasscode(code, isStrong!);
+                this.checkPasscode(code);
                 break;
             case Steps.CONFIRM_PASSCODE:
                 this.checkPasscodeConfirm(code);

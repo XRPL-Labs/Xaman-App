@@ -29,6 +29,100 @@ interface State {
     code: string;
 }
 
+export const isStrong = (code: string): boolean => {
+    const mostUsedPin = [
+        '123456',
+        '123123',
+        '111111',
+        '121212',
+        '123321',
+        '666666',
+        '000000',
+        '654321',
+        '696969',
+        '112233',
+        '159753',
+        '292513',
+        '131313',
+        '123654',
+        '222222',
+        '789456',
+        '999999',
+        '101010',
+        '777777',
+        '007007',
+        '65432',
+        '555555',
+        '987654',
+        '888888',
+        '456789',
+        '333333',
+        '246810',
+        '159357',
+        '232323',
+        '252525',
+        '147258',
+        '147852',
+    ];
+
+    // pin code is in frequently used codes
+    if (mostUsedPin.indexOf(code) > -1) {
+        return false;
+    }
+
+    // at least 3 unique digits.
+    let uniqueDigits = code.length;
+    for (let i = 0; i < code.length; i++) {
+        for (let j = i + 1; j < code.length; j++) {
+            if (code[i] === code[j]) {
+                uniqueDigits -= 1;
+            }
+        }
+    }
+    if (uniqueDigits < 3) {
+        return false;
+    }
+
+    // start searching for pattern for where each digit can be start of the pattern
+    let totalSequence = 0;
+    let index = 0;
+    while (index < code.length) {
+        let following = index + 2;
+        let sequence = 0;
+        let repeating = 0;
+
+        const shift = Number(code[index + 1]) - Number(code[index]);
+
+        while (following < code.length) {
+            if (Number(code[following]) - Number(code[following - 1]) === shift) {
+                sequence += sequence === 0 ? 3 : 1;
+            } else if (code[following] === code[following - 1]) {
+                repeating++;
+            } else {
+                break;
+            }
+            following++;
+        }
+        if (sequence !== 0) {
+            sequence += repeating;
+        }
+        if (sequence >= 3) {
+            index = following + 1;
+            totalSequence += sequence;
+        } else {
+            index++;
+        }
+    }
+    if (totalSequence >= 3) {
+        return false;
+    }
+
+    // check if pin is reference as date
+    // if pin could be date with year (like 121091 that could be 12th of October or 10th of December 1991)
+    const possibleDate = moment(code, 'DDMMYY').isValid() || moment(code, 'MMDDYY').isValid();
+    return !possibleDate;
+};
+
 /* Component ==================================================================== */
 class PinInput extends Component<Props, State> {
     private readonly textInputRef: React.RefObject<TextInput>;
@@ -78,100 +172,6 @@ class PinInput extends Component<Props, State> {
         this.setState({
             code: '',
         });
-    };
-
-    isStrong = (code: string): boolean => {
-        const mostUsedPin = [
-            '123456',
-            '123123',
-            '111111',
-            '121212',
-            '123321',
-            '666666',
-            '000000',
-            '654321',
-            '696969',
-            '112233',
-            '159753',
-            '292513',
-            '131313',
-            '123654',
-            '222222',
-            '789456',
-            '999999',
-            '101010',
-            '777777',
-            '007007',
-            '65432',
-            '555555',
-            '987654',
-            '888888',
-            '456789',
-            '333333',
-            '246810',
-            '159357',
-            '232323',
-            '252525',
-            '147258',
-            '147852',
-        ];
-
-        // pin code is in frequently used codes
-        if (mostUsedPin.indexOf(code) > -1) {
-            return false;
-        }
-
-        // at least 3 unique digits.
-        let uniqueDigits = code.length;
-        for (let i = 0; i < code.length; i++) {
-            for (let j = i + 1; j < code.length; j++) {
-                if (code[i] === code[j]) {
-                    uniqueDigits -= 1;
-                }
-            }
-        }
-        if (uniqueDigits < 3) {
-            return false;
-        }
-
-        // start searching for pattern for where each digit can be start of the pattern
-        let totalSequence = 0;
-        let index = 0;
-        while (index < code.length) {
-            let following = index + 2;
-            let sequence = 0;
-            let repeating = 0;
-
-            const shift = Number(code[index + 1]) - Number(code[index]);
-
-            while (following < code.length) {
-                if (Number(code[following]) - Number(code[following - 1]) === shift) {
-                    sequence += sequence === 0 ? 3 : 1;
-                } else if (code[following] === code[following - 1]) {
-                    repeating++;
-                } else {
-                    break;
-                }
-                following++;
-            }
-            if (sequence !== 0) {
-                sequence += repeating;
-            }
-            if (sequence >= 3) {
-                index = following + 1;
-                totalSequence += sequence;
-            } else {
-                index++;
-            }
-        }
-        if (totalSequence >= 3) {
-            return false;
-        }
-
-        // check if pin is reference as date
-        // if pin could be date with year (like 121091 that could be 12th of October or 10th of December 1991)
-        const possibleDate = moment(code, 'DDMMYY').isValid() || moment(code, 'MMDDYY').isValid();
-        return !possibleDate;
     };
 
     setPinCode = (newCode: string) => {
@@ -225,7 +225,7 @@ class PinInput extends Component<Props, State> {
             }
 
             if (onFinish) {
-                onFinish(cleanCode, checkStrength ? this.isStrong(cleanCode) : undefined);
+                onFinish(cleanCode, checkStrength ? isStrong(cleanCode) : undefined);
             }
         }
     };
