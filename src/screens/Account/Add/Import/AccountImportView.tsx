@@ -373,7 +373,6 @@ class AccountImportView extends Component<Props, State> {
     importAccount = async () => {
         const { tangemCard } = this.props;
         const { account, importedAccount, passphrase, alternativeSeedAlphabet, tangemSignature } = this.state;
-
         try {
             let encryptionKey;
             let createdAccount: AccountModel;
@@ -481,15 +480,11 @@ class AccountImportView extends Component<Props, State> {
                     );
                 });
             } else {
-                // No alternative seed import
-                // First account = already at home
-                if (AccountRepository.getAccounts().length > 1) {
-                    Navigator.navigateToTab('Home');
-                } else {
-                    // Otherwise, just return
-                    // TODO: check if home (import wizard) or settings
-                    Navigator.popToRoot();
-                };
+                Navigator.popToRoot().then(() => {
+                    requestAnimationFrame(() => {
+                        Navigator.navigateToTab('Home');
+                    });
+                });
             }
 
         } catch (error) {
