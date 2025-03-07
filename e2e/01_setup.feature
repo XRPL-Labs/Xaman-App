@@ -10,9 +10,10 @@ Feature: Setup App
         Then I tap 'go-button'
         Given I should see 'pin-code-entry-view'
         Then I type my passcode
+        Then I tap 'next-button'
 #        Then I tap alert button with label 'Use anyway'
         Then I type my passcode
-#        Then I tap 'next-button'
+        Then I tap 'next-button'
 
     Scenario: Finish setup
         Given I should wait 4 sec to see 'agreement-setup-screen'
