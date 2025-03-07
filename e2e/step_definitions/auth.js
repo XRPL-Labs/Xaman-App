@@ -17,12 +17,24 @@ Then('I enter my passcode', async () => {
 });
 
 Then('I type my passcode', async () => {
-    await element(by.id('pin-input')).typeText(`${passcode}\n`);
+    // await element(by.id('pin-input')).typeText(`${passcode}\n`);
+    await element(by.id(`${passcode[0]}-key`)).tap();
+    await element(by.id(`${passcode[1]}-key`)).tap();
+    await element(by.id(`${passcode[2]}-key`)).tap();
+    await element(by.id(`${passcode[3]}-key`)).tap();
+    await element(by.id(`${passcode[4]}-key`)).tap();
+    await element(by.id(`${passcode[5]}-key`)).tap();
 });
 
 Then('I type my new passcode', async () => {
     passcode = '958347';
-    await element(by.id('pin-input')).typeText(`${passcode}\n`);
+    // await element(by.id('pin-input')).typeText(`${passcode}\n`);
+    await element(by.id(`${passcode[0]}-key`)).tap();
+    await element(by.id(`${passcode[1]}-key`)).tap();
+    await element(by.id(`${passcode[2]}-key`)).tap();
+    await element(by.id(`${passcode[3]}-key`)).tap();
+    await element(by.id(`${passcode[4]}-key`)).tap();
+    await element(by.id(`${passcode[5]}-key`)).tap();
 });
 
 Then('I enter my passphrase in {string}', async (input) => {

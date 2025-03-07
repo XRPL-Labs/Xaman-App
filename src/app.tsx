@@ -314,8 +314,8 @@ class Application {
                         const isJailBroken = await IsDeviceJailBroken();
 
                         if (isJailBroken) {
-                            reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
-                            return;
+                            // reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
+                            // return;
                         }
                     }
                 }

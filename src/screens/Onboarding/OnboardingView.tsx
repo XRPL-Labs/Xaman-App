@@ -77,7 +77,6 @@ class OnboardingView extends Component<Props, State> {
                         styles.container,
                     ]}>
                         <ImageBackground
-                            testID="onboarding-screen"
                             resizeMode="contain"
                             source={StyleService.getImageIfLightModeIfDarkMode('PhonesLight', 'PhonesDark')}
                             style={[
@@ -89,7 +88,7 @@ class OnboardingView extends Component<Props, State> {
                             AppStyles.paddingTopNone,
                         ]}>
                             <Button
-                                testID="onboarding-btn"
+                                testID="start-button"
                                 onPress={this.onFinish}
                                 label={Localize.t('global.start')}
                             />

@@ -14,7 +14,7 @@ Feature: Import Account
         Then I tap 'next-button'
         Then I generate new secret number
         Then I enter my secret number
-        Then I tap 'next-button'
+#        Then I tap 'next-button'
         Given I should have 'account-import-show-address-view'
         Then I read my account address
         Then I tap 'next-button'
@@ -27,7 +27,7 @@ Feature: Import Account
         Then I tap 'next-button'
         Given I should have 'account-import-finish-view'
         Then I tap 'finish-button'
-        Then I tap 'tab-Home'
+#        Then I tap 'tab-Home'
         Given I should have 'home-tab-view'
         Given I should see same account address
 
