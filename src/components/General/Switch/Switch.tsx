@@ -60,7 +60,7 @@ class Switch extends Component<Props> {
                             // eslint-disable-next-line react-native/no-inline-styles
                             style={[
                                 styles.switch,
-                                style,
+                                // style,
                                 opacity,
                             ]}
                             value={checked}
