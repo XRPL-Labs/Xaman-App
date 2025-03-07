@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Introduceți un nume sau o adresă.",
     "enterCurrencyCodeOrName": "Introducere cod sau nume monedă",
     "enterName": "Introduceţi un nume.",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Contactul introdus există deja.",
     "contactSuccessSaved": "Contactul a fost adăugat cu succes.",
     "contactSuccessUpdated": "Contactul a fost actualizat cu succes.",

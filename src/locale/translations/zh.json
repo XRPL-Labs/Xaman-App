@@ -773,6 +773,8 @@
     "enterNameOrAddress": "输入姓名或地址",
     "enterCurrencyCodeOrName": "Enter currency code or name",
     "enterName": "请输入一个名字",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "联系人已存在",
     "contactSuccessSaved": "已成功添加联系人",
     "contactSuccessUpdated": "联系人已成功更新",

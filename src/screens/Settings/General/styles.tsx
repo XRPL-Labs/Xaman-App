@@ -22,7 +22,7 @@ const styles = StyleService.create({
         justifyContent: 'center',
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
-        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomWidth: 0,
         borderTopWidth: StyleSheet.hairlineWidth,
         borderColor: '$tint',
     },

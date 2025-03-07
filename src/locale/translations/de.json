@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Name oder Adresse eingeben",
     "enterCurrencyCodeOrName": "Geben Sie den Währungscode oder den Namen ein",
     "enterName": "Bitte geben Sie einen Namen ein",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Der Kontakt ist bereits vorhanden",
     "contactSuccessSaved": "Kontakt wurde erfolgreich hinzugefügt",
     "contactSuccessUpdated": "Kontakt wurde erfolgreich aktualisiert",

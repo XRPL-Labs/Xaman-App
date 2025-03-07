@@ -773,6 +773,8 @@
     "enterNameOrAddress": "نالو يا پتو داخل ڪريو",
     "enterCurrencyCodeOrName": "ڪرنسي ڪوڊ يا نالو داخل ڪريو",
     "enterName": "مهرباني ڪري نالو لکو",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "رابطو اڳ ئي موجود آهي",
     "contactSuccessSaved": "رابطو ڪاميابي سان شامل ڪيو ويو",
     "contactSuccessUpdated": "سان رابطو ڪريو ڪاميابي سان اپڊيٽ",

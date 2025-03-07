@@ -773,6 +773,8 @@
     "enterNameOrAddress": "İsim veya adres girin",
     "enterCurrencyCodeOrName": "Para birimi kodunu ya da adını girin",
     "enterName": "Lütfen bir isim girin",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kişi zaten var",
     "contactSuccessSaved": "Kişi başarıyla eklendi",
     "contactSuccessUpdated": "Kişi başarıyla güncellendi",

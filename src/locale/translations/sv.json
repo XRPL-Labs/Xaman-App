@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Ange namn eller adress",
     "enterCurrencyCodeOrName": "Ange valutakod eller -namn",
     "enterName": "Ange ett namn",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontakten finns redan",
     "contactSuccessSaved": "Kontakten lades till",
     "contactSuccessUpdated": "Kontakten uppdaterades",

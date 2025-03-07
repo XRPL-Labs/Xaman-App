@@ -773,6 +773,8 @@
     "enterNameOrAddress": "பெயர் அல்லது முகவரியை உள்ளிடவும்",
     "enterCurrencyCodeOrName": "நாணயக் குறியீடு அல்லது பெயரை உள்ளிடவும்",
     "enterName": "ஒரு பெயரை உள்ளிடவும்",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "தொடர்பு ஏற்கனவே உள்ளது",
     "contactSuccessSaved": "தொடர்பு வெற்றிகரமாக சேர்க்கப்பட்டது",
     "contactSuccessUpdated": "தொடர்பு வெற்றிகரமாக புதுப்பிக்கப்பட்டது",

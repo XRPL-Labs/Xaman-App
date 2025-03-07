@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Idatzi izena edo helbidea",
     "enterCurrencyCodeOrName": "Idatzi moneta kodea edo izena",
     "enterName": "Mesedez idatzi izen bat",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontaktua dagoeneko badago",
     "contactSuccessSaved": "Kontaktua ondo gehitu da",
     "contactSuccessUpdated": "Kontaktua ondo gehitu da",

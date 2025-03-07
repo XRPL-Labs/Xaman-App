@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Sisesta nimi või aadress",
     "enterCurrencyCodeOrName": "Sisesta valuutakood või nimi",
     "enterName": "Palun sisesta nimi",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontakt on juba olemas",
     "contactSuccessSaved": "Kontakt edukalt lisatud",
     "contactSuccessUpdated": "Kontakt edukalt uuendatud",

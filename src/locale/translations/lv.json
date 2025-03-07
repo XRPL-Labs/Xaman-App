@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Ievadiet vārdu vai adresi",
     "enterCurrencyCodeOrName": "Ievadiet valūtas kodu vai nosaukumu",
     "enterName": "Lūdzu ievadiet vārdu",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontakts jau pievienots",
     "contactSuccessSaved": "Kontakts veiksmīgi pievienots",
     "contactSuccessUpdated": "Kontakts veiksmīgi atjaunināts",

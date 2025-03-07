@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Įveskite vardą arba adresą",
     "enterCurrencyCodeOrName": "Įveskite valiutos kodą arba pavadinimą",
     "enterName": "Prašome įvesti vardą",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontaktinė jau egzistuoja",
     "contactSuccessSaved": "Kontaktine sėkmingai pridėtas",
     "contactSuccessUpdated": "Kontaktinė sėkmingai atnaujintas",

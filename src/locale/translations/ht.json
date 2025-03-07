@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Mete non oswa adrès",
     "enterCurrencyCodeOrName": "Mete kòd lajan oswa non",
     "enterName": "Tanpri antre yon non",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontak deja egziste",
     "contactSuccessSaved": "Kontak te ajoute avèk siksè",
     "contactSuccessUpdated": "Kontakte avèk siksè mete ajou",

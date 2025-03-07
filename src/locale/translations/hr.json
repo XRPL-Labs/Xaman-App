@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Unesite ime ili adresu",
     "enterCurrencyCodeOrName": "Unesite šifru valute ili ime",
     "enterName": "Molimo vas unesite ime",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontakt već postoji",
     "contactSuccessSaved": "Kontakt uspješno dodan",
     "contactSuccessUpdated": "Kontakt uspješno ažuriran",

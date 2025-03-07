@@ -773,6 +773,8 @@
     "enterNameOrAddress": "নাম বা ঠিকানা লিখুন",
     "enterCurrencyCodeOrName": "মুদ্রার কোড বা নাম লিখুন",
     "enterName": "দয়া করে একটি নাম লিখুন",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "যোগাযোগ ইতিমধ্যে বিদ্যমান",
     "contactSuccessSaved": "যোগাযোগ সফলভাবে যোগ করা হয়েছে",
     "contactSuccessUpdated": "যোগাযোগ সফলভাবে আপডেট হয়েছে",

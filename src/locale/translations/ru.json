@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Введите имя или адрес",
     "enterCurrencyCodeOrName": "Введите код валюты или ее название",
     "enterName": "Пожалуйста введите имя",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Контакт уже существует",
     "contactSuccessSaved": "Контакт успешно добавлен",
     "contactSuccessUpdated": "Контакт успешно обновлен",

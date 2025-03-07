@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Ipasok ang pangalan o address",
     "enterCurrencyCodeOrName": "Ipasok ang code ng pera o pangalan",
     "enterName": "Mangyaring maglagay ng pangalan",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Mayroon nang contact",
     "contactSuccessSaved": "Matagumpay na naidagdag ang contact",
     "contactSuccessUpdated": "Matagumpay na na-update ang contact",

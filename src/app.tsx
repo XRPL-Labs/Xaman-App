@@ -4,7 +4,7 @@
 
 import moment from 'moment-timezone';
 
-import { UIManager, I18nManager, Platform, Alert, Text, TextInput } from 'react-native';
+import { UIManager, I18nManager, Platform, Alert, Text, TextInput, Appearance } from 'react-native';
 
 import messaging from '@react-native-firebase/messaging';
 import { Navigation } from 'react-native-navigation';
@@ -56,7 +56,7 @@ class Application {
         this.initialized = false;
     }
 
-    run() {
+    run() {     
         // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
@@ -167,6 +167,47 @@ class Application {
             // lock the app and the start the app
             AuthenticationService.checkLockScreen().then(() => {
                 Navigator.startDefault();
+
+                // Switch theme if back from background and changed
+                services.AppService.on('appStateChange', newState => {
+                    if (newState === 'Active') {
+                        const coreSettings = CoreRepository.getSettings();
+                        if (coreSettings.themeAutoSwitch) {
+                            if (
+                                (
+                                    Appearance.getColorScheme() === 'light' &&
+                                    services.StyleService.getCurrentTheme() !== 'light'
+                                ) || (
+                                    Appearance.getColorScheme() === 'dark' &&
+                                    services.StyleService.getCurrentTheme() === 'light'
+                                )
+                            ) {
+                                // Switch to light/dark
+                                // console.log('Foreground appstatechange theme switch')
+                                services.StyleService.initialize(coreSettings)
+                                    .then(() => {
+                                        requestAnimationFrame(() => {
+                                            Navigator.switchTheme();
+                                        });
+                                    });
+                            }
+                        }
+                    }
+                });
+
+                // Auto switch theme based on OS notification
+                Appearance.addChangeListener(() => { // { colorScheme }
+                    // console.log('Theme changed to:', colorScheme);
+                    const coreSettings = CoreRepository.getSettings();
+                    if (coreSettings.themeAutoSwitch) {
+                        services.StyleService.initialize(coreSettings)
+                            .then(() => {
+                                requestAnimationFrame(() => {
+                                    Navigator.switchTheme();
+                                });
+                            });
+                    }
+                });
             });
         } else {
             Navigator.startOnboarding();

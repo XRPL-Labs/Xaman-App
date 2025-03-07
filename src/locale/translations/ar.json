@@ -773,6 +773,8 @@
     "enterNameOrAddress": "أدخل الاسم أو العنوان",
     "enterCurrencyCodeOrName": "أدخل رمز العملة أو الاسم",
     "enterName": "الرجاء ادخال الاسم",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "جهة الاتصال موجودة بالفعل",
     "contactSuccessSaved": "تمت إضافة جهة الاتصال بنجاح",
     "contactSuccessUpdated": "تم تحديث جهة الاتصال بنجاح",

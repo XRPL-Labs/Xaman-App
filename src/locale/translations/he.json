@@ -773,6 +773,8 @@
     "enterNameOrAddress": "הזן שם או כתובת",
     "enterCurrencyCodeOrName": "הזן קוד מטבע או שם",
     "enterName": "אנא הזן שם",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "איש קשר כבר קיים",
     "contactSuccessSaved": "איש הקשר נוסף בהצלחה",
     "contactSuccessUpdated": "איש הקשר עודכן בהצלחה",

@@ -773,6 +773,8 @@
     "enterNameOrAddress": "ಹೆಸರು ಅಥವಾ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ",
     "enterCurrencyCodeOrName": "ಕರೆನ್ಸಿ ಕೋಡ್ ಅಥವಾ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
     "enterName": "ದಯವಿಟ್ಟು ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "ಸಂಪರ್ಕವು ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ",
     "contactSuccessSaved": "ಸಂಪರ್ಕವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ",
     "contactSuccessUpdated": "ಸಂಪರ್ಕವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",

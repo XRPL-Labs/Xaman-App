@@ -773,6 +773,8 @@
     "enterNameOrAddress": "పేరు లేదా చిరునామాను నమోదు చేయండి\r\n",
     "enterCurrencyCodeOrName": "కరెన్సీ కోడ్ లేదా పేరును నమోదు చేయండి",
     "enterName": "దయచేసి ఒక పేరు నమోదు చేయండి\r\n\r\n",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "కాంటాక్ట్ ఇప్పటికే వుంది",
     "contactSuccessSaved": "కాంటాక్ట్ విజయవంతంగా జోడించబడింది\r\n",
     "contactSuccessUpdated": "కాంటాక్ట్ విజయవంతంగా నవీకరించబడింది\r\n",

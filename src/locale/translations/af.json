@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Voer naam of adres in",
     "enterCurrencyCodeOrName": "Tik geldeenheid kode of naam",
     "enterName": "Voer asseblief 'n naam in",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontak bestaan reeds",
     "contactSuccessSaved": "Kontak suksesvol bygevoeg",
     "contactSuccessUpdated": "Kontak suksesvol opgedateer",

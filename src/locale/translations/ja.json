@@ -773,6 +773,8 @@
     "enterNameOrAddress": "名前またはアドレスを入力してください",
     "enterCurrencyCodeOrName": "通貨コードまたは通貨名の入力",
     "enterName": "名前を入力してください",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "連絡先はすでに存在します",
     "contactSuccessSaved": "連絡先を追加しました",
     "contactSuccessUpdated": "連絡先を更新しました",

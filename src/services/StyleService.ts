@@ -81,6 +81,18 @@ class StyleService {
                     // lowerCase the theme name is required as we stored
                     // theme name in title mode in version before v1.0.1
                     theme = (coreSettings.theme?.toLowerCase() || 'light') as Themes;
+
+                    if (coreSettings.themeAutoSwitch) {
+                        const colorScheme = Appearance.getColorScheme();
+                        if (colorScheme) {
+                            // For this session only
+                            theme = colorScheme === 'light'
+                                ? 'light'
+                                : theme === 'light' // If configured in light mode but dark requested, use default dark
+                                ? 'dark'
+                                : theme;
+                        }
+                    }
                 }
 
                 this.setTheme(theme);

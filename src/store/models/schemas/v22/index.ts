@@ -1,14 +1,14 @@
-import { schemas as v20Schemas } from '@store/models/schemas/v20';
+import { schemas as v20Schemas } from '@store/models/schemas/v21';
 
 // ~ MODIFIED
-import ProfileSchema from '@store/models/schemas/v21/profile';
+import CoreSchema from '@store/models/schemas/v22/core';
 
 // = NOT CHANGED
 const {
     CurrencySchema,
     ContactSchema,
     NodeSchema,
-    CoreSchema,
+    ProfileSchema,
     AccountSchema,
     TrustLineSchema,
     AccountDetailsSchema,
@@ -18,10 +18,10 @@ const {
 } = v20Schemas;
 
 /* Exports ==================================================================== */
-export const schemaVersion = 21;
+export const schemaVersion = 22;
 
 export const migration = (oldRealm: Realm, newRealm: Realm) => {
-    [ProfileSchema].forEach((entry) => {
+    [CoreSchema].forEach((entry) => {
         if (typeof entry.migration !== 'function') {
             throw new Error(`migration method is required for schema ${entry.schema.name}`);
         }

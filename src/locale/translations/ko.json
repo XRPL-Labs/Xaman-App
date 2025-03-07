@@ -773,6 +773,8 @@
     "enterNameOrAddress": "이름 또는 주소 입력",
     "enterCurrencyCodeOrName": "통화 코드 또는 이름을 입력하세요",
     "enterName": "이름을 입력하세요",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "연락처가 이미 있습니다.",
     "contactSuccessSaved": "연락처가 성공적으로 추가되었습니다.",
     "contactSuccessUpdated": "연락처가 성공적으로 업데이트되었습니다.",

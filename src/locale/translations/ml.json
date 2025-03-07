@@ -773,6 +773,8 @@
     "enterNameOrAddress": "പേരോ വിലാസമോ നൽകുക",
     "enterCurrencyCodeOrName": "കറൻസി കോഡോ പേരോ നൽകുക",
     "enterName": "ഒരു പേര് നൽകുക",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "കോൺ‌ടാക്റ്റ് ഇതിനകം നിലവിലുണ്ട്",
     "contactSuccessSaved": "കോൺ‌ടാക്റ്റ് വിജയകരമായി ചേർ‌ത്തു",
     "contactSuccessUpdated": "കോൺ‌ടാക്റ്റ് വിജയകരമായി അപ്‌ഡേറ്റുചെയ്‌തു",

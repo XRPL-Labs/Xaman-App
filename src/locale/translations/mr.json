@@ -773,6 +773,8 @@
     "enterNameOrAddress": "नाव किंवा पत्ता प्रविष्ट करा",
     "enterCurrencyCodeOrName": "चलन कोड किंवा नाव प्रविष्ट करा",
     "enterName": "कृपया एखादे नाव प्रविष्ट करा",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "संपर्क आधीपासून विद्यमान आहे",
     "contactSuccessSaved": "संपर्क यशस्वीरित्या जोडला",
     "contactSuccessUpdated": "संपर्क यशस्वीरित्या अद्यतनित केला",

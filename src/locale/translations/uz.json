@@ -773,6 +773,8 @@
     "enterNameOrAddress": "Ism yoki manzilni kiriting",
     "enterCurrencyCodeOrName": "Valyuta kodini yoki ismini kiriting",
     "enterName": "Iltimos, ism kiriting",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "Kontakt allaqachon mavjud",
     "contactSuccessSaved": "Kontakt muvaffaqiyatli qo'shildi",
     "contactSuccessUpdated": "Kontakt muvaffaqiyatli yangilandi",

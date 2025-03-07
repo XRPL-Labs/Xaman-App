@@ -773,6 +773,8 @@
     "enterNameOrAddress": "შეიყვანეთ სახელი ან მისამართი",
     "enterCurrencyCodeOrName": "შეიყვანეთ ვალუტის კოდი ან სახელი",
     "enterName": "გთხოვთ შეიყვანოთ სახელი",
+    "themeAutoSwitch": "Automatically switch light/dark mode",
+    "notChangingYetBecauseLightMode": "Your device is currently in light mode, and automatically switching. The selected dark mode theme will become active when your device is in dark mode.",
     "contactAlreadyExist": "კონტაქტი უკვე არსებობს",
     "contactSuccessSaved": "კონტაქტი წარმატებით დაემატა",
     "contactSuccessUpdated": "კონტაქტი წარმატებით განახლდა",
