@@ -269,6 +269,8 @@ class EventsView extends Component<Props, State> {
             status === AppStateStatus.Active &&
             [AppStateStatus.Background, AppStateStatus.Inactive].includes(prevStatus)
         ) {
+            // console.log('appstate change', status)
+            this.updateDataSource();
             this.onSignRequestReceived();
         }
     };
@@ -1106,7 +1108,7 @@ class EventsView extends Component<Props, State> {
                     isVisible={this.isScreenVisible}
                     isLoadingMore={isLoadingMore}
                     onEndReached={this.loadMore}
-                    // /Refresh={this.updateDataSource}
+                    onRefresh={this.updateDataSource}
                     timestamp={timestamp}
                 />
             </View>
