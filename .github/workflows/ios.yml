@@ -27,6 +27,7 @@ jobs:
           cocoapods: 'true'
 
       - name: Run tests
+        working-directory: ios
         run: |
           xcodebuild -quiet -workspace Xaman.xcworkspace -scheme Xaman -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=${{ matrix.ios }}' -resultBundlePath TestResults.xcresult test
           echo "Exit code: $?"
