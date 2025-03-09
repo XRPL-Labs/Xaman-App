@@ -27,10 +27,15 @@ jobs:
           cocoapods: 'true'
 
       - name: Run tests
-        working-directory: ios
         run: |
-          xcodebuild -quiet -workspace Xaman.xcworkspace -scheme Xaman -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=${{ matrix.ios }}' -resultBundlePath TestResults test
-
+          xcodebuild -quiet -workspace Xaman.xcworkspace -scheme Xaman -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15,OS=${{ matrix.ios }}' -resultBundlePath TestResults.xcresult test
+          echo "Exit code: $?"
+      
+      - name: Check for xcresult
+        run: |
+          ls -la
+          if [ -d "TestResults.xcresult" ]; then echo "Found TestResults.xcresult"; else echo "TestResults.xcresult not found"; fi
+          
       - name: Test Summary
         uses: kishikawakatsumi/xcresulttool@v1
         with:
