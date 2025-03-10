@@ -43,7 +43,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
-import { AccessLevels } from '@store/types';
+import { AccessLevels, Themes } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 import { ApiError } from '@services/ApiService';
@@ -604,6 +604,20 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    getAppStyle = () => {
+        const {coreSettings} = this.state;
+        const style: Themes = 
+            !coreSettings.themeAutoSwitch                     // If not auto switching
+                ? coreSettings.theme                          //   then return as is (from settings)
+                : StyleService.getCurrentTheme() === 'light'  //   else, if the current theme is light
+                ? 'light'                                     //   it's easy, then return light
+                : coreSettings.theme !== 'light'              //   else, settings, because we're in dark - but only
+                ? coreSettings.theme                          //   if the setting is not light (darkish)
+                : 'dark';                                     //   otherwise assume default dark
+
+        return style;
+    };
+
     launchApp = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
         const { app, appVersionCode, account, network, coreSettings, isLaunchingApp } = this.state;
@@ -653,7 +667,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 version: appVersionCode,
                 locale: Localize.getCurrentLocale(),
                 currency: coreSettings.currency,
-                style: coreSettings.theme,
+                style: this.getAppStyle(),
                 nodetype: network.key,
                 nodewss: network.defaultNode.endpoint,
             };
@@ -786,7 +800,7 @@ class XAppBrowserModal extends Component<Props, State> {
      * @property {string} headers.X-OTT - The X-OTT header for authentication.
      */
     getSource = (): { uri: string; headers?: any } => {
-        const { app, ott, coreSettings } = this.state;
+        const { app, ott } = this.state;
 
         // app is not initiated?
         if (!app) {
@@ -795,7 +809,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         return {
             uri: `https://${HOSTNAME}/detect/xapp:${app?.appid || app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
-                coreSettings.theme,
+                this.getAppStyle(),
             )}`,
             headers: {
                 'X-OTT': ott,
