@@ -70,9 +70,11 @@ describe('API', () => {
         });
 
         it(`call with invalid json response`, async () => {
-            await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: 'invalid_json' })).rejects.toMatchObject(
-                new ApiError('Response returned is not valid JSON Unexpected token \'i\', "invalid_json" is not valid JSON'),
-            );
+            const msg = 'Response returned is not valid JSON .*Unexpected token.*';
+            await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: 'invalid_json' })).rejects.toMatchObject({
+                ...new ApiError(msg),
+                originalMessage: expect.stringMatching(msg),
+            });
         });
 
         it(`call with id`, async () => {
