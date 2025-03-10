@@ -350,13 +350,18 @@ class AddTokenOverlay extends Component<Props, State> {
                 ref={this.actionPanelRef}
                 contentStyle={AppStyles.centerAligned}
             >
-                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
+                <View style={[
+                    AppStyles.row,
+                    AppStyles.paddingLeftExtraSml,
+                    AppStyles.centerAligned,
+                    AppStyles.paddingBottomSml,
+                ]}>
+                    <View style={[AppStyles.flex1]}>
                         <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                             {Localize.t('asset.addAsset')}
                         </Text>
                     </View>
-                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.paddingRightSml, AppStyles.flexEnd]}>
+                    <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
                         <Button
                             light
                             roundedSmall

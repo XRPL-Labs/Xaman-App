@@ -11,6 +11,8 @@ import { type RatesType } from '@services/BackendService';
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+
 import { Payload } from '@common/libs/payload';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
@@ -38,16 +40,19 @@ interface State {
     fiatCurrency?: string;
     fiatRate?: RatesType | undefined;
     isLoadingRate?: boolean;
+    coreSettings?: CoreModel;
 }
 
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
+    isFiltering?: boolean;
     isVisible?: boolean;
     isLoadingMore?: boolean;
     dataSource: Array<DataSourceItem>;
     headerComponent?: any;
     timestamp?: number;
+    forceFullLoader?: boolean;
     onRefresh?: () => void;
     onEndReached?: () => void;
 }
@@ -61,13 +66,17 @@ class EventsList extends PureComponent<Props, State> {
 
         this.state = {
             fiatCurrency: coreSettings.currency,
+            coreSettings,
             // fiatRate: undefined,
             // isLoadingRate: false,
         };
     }
 
     renderListEmpty = () => {
-        const { isLoading } = this.props;
+        const {
+            isLoading,
+            isFiltering,
+        } = this.props;
 
         // // This fixes the double spinner on loading @ Event list
         // if (isLoading) {
@@ -78,12 +87,20 @@ class EventsList extends PureComponent<Props, State> {
         //     );
         // }
 
+        if (isFiltering) {
+            return (
+                <View style={styles.listEmptyContainer}>
+                    <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                </View>
+            );    
+        }
+
         return (
             <View style={styles.listEmptyContainer}>
                 <Text style={AppStyles.pbold}>{
                     !isLoading
                         ? Localize.t('global.noInformationToShow')
-                        : ' ' // Localize.t('global.loading')
+                        : ' '
                 }</Text>
             </View>
         );
@@ -147,12 +164,28 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     renderRefreshControl = () => {
+        const { coreSettings } = this.state;
         const { isLoading, onRefresh, isVisible } = this.props;
+
+        const refreshNow = async () => {
+            if (coreSettings?.hapticFeedback) {
+                // VibrateHapticFeedback('notificationSuccess');
+                VibrateHapticFeedback('impactLight');
+            };
+
+            if (onRefresh) {
+                await onRefresh();
+                if (coreSettings?.hapticFeedback) {
+                    // VibrateHapticFeedback('notificationSuccess');
+                    VibrateHapticFeedback('impactLight');
+                };
+            }
+        };
 
         return (
             <RefreshControl
                 refreshing={!!isLoading && !!isVisible}
-                onRefresh={onRefresh}
+                onRefresh={refreshNow}
                 tintColor={StyleService.value('$contrast')}
             />
         );
@@ -228,20 +261,27 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     render() {
-        const { dataSource, onEndReached, headerComponent, isLoading } = this.props;
+        const {
+            dataSource,
+            onEndReached,
+            headerComponent,
+            isLoading,
+            forceFullLoader,
+        } = this.props;
         
         const renderSeparateLoadingIndicator = !!isLoading && (dataSource || []).length === 0;
 
         return (
             <>
-                { renderSeparateLoadingIndicator &&
+                { (renderSeparateLoadingIndicator || forceFullLoader) &&
                     <View style={[styles.listEmptyContainer]}>
                         <LoadingIndicator />
                         <Text>{' '}</Text>
+                        <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                         <Text>{' '}</Text>
                     </View>        
                 }
-                { !renderSeparateLoadingIndicator && 
+                { !renderSeparateLoadingIndicator && !forceFullLoader && 
                     <SectionList
                         style={styles.sectionList}
                         contentContainerStyle={styles.sectionListContainer}

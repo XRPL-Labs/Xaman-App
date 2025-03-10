@@ -715,6 +715,7 @@
     "myBalanceAndReserve": "Mi balance y reserva",
     "transactionDetailsDifferentNetworkError": "This transaction is not valid on the network you are connected with.\n\nPlease switch to %{network} and try again.",
     "fetchingTransactionFromNetwork": "Fetching transaction from network",
+    "fetchingTransactionsFromNetwork": "Fetching transactions from network...",
     "unableToLoadExplainer": "Unable to load the explainer",
     "uriTokenBurnExplain": "The transaction will burn URI token with ID %{tokenID}",
     "uriTokenBuyExplain": "%{address} paid %{amount} %{currency} in order to receive an URI token with ID %{tokenID}",

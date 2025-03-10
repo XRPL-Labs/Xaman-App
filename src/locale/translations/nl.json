@@ -715,6 +715,7 @@
     "myBalanceAndReserve": "Mijn saldo & reserve",
     "transactionDetailsDifferentNetworkError": "Deze transactie is niet geldig op het netwerk waarmee u verbonden bent.\n\nSchakel over naar %{network} en probeer het opnieuw.",
     "fetchingTransactionFromNetwork": "Transactie ophalen van netwerk",
+    "fetchingTransactionsFromNetwork": "Fetching transactions from network...",
     "unableToLoadExplainer": "Kan de uitleg niet laden",
     "uriTokenBurnExplain": "De transactie zal URI token met ID %{tokenID} verbranden",
     "uriTokenBuyExplain": "%{address} betaalde %{amount} %{currency} om een URI token met ID %{tokenID} te ontvangen",

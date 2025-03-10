@@ -2,7 +2,7 @@
  * Switch Account Overlay
  */
 import React, { Component } from 'react';
-import { View, SafeAreaView, Text, Share, Platform } from 'react-native';
+import { View, Text, Share, Platform } from 'react-native';
 
 import { AppScreens } from '@common/constants';
 
@@ -15,7 +15,7 @@ import { AccountModel } from '@store/models';
 
 import DeviceBrightness from '@adrianso/react-native-device-brightness';
 
-import { ActionPanel, Button, QRCode } from '@components/General';
+import { Footer, ActionPanel, Button, QRCode } from '@components/General';
 
 import Localize from '@locale';
 
@@ -138,13 +138,20 @@ class ShareAccountOverlay extends Component<Props, State> {
                 height={AppSizes.moderateScale(570)}
                 onSlideDown={Navigator.dismissOverlay}
                 contentStyle={[
-                    AppStyles.column,
                     styles.panelContent,
                 ]}
                 extraBottomInset
             >
-                <View style={[AppStyles.row, AppStyles.paddingBottomSml]}>
-                    <View style={[AppStyles.flex5, AppStyles.paddingHorizontalExtraSml]}>
+                <View style={[
+                    AppStyles.row,
+                    AppStyles.flex1,
+                    AppStyles.paddingBottomSml,
+                    AppStyles.centerAligned,
+                    AppStyles.paddingHorizontalSml,
+                ]}>
+                    <View style={[
+                        AppStyles.flex5,
+                    ]}>
                         <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                             {Localize.t('send.accountInfo')}
                         </Text>
@@ -152,7 +159,6 @@ class ShareAccountOverlay extends Component<Props, State> {
                     <View style={[
                         AppStyles.row,
                         AppStyles.flex3,
-                        AppStyles.paddingHorizontalExtraSml,
                         AppStyles.flexEnd,
                     ]}>
                         <Button
@@ -166,60 +172,60 @@ class ShareAccountOverlay extends Component<Props, State> {
                     </View>
                 </View>
 
-                <View style={[AppStyles.paddingBottomSml, AppStyles.paddingHorizontalExtraSml]}>
-                    <Text style={AppStyles.colorGrey}>
-                        {Localize.t('global.address')} ({Localize.t('global.holdToCopy')}):
-                    </Text>
-                    <View style={styles.addressTextContainer}>
-                        <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
-                            {account.address}
+                <View style={[AppStyles.paddingHorizontalExtraSml, AppStyles.flex8]}>
+                    <View style={[AppStyles.paddingBottomSml, AppStyles.paddingHorizontalExtraSml]}>
+                        <Text style={AppStyles.colorGrey}>
+                            {Localize.t('global.address')} ({Localize.t('global.holdToCopy')}):
                         </Text>
-                        <View style={[AppStyles.row, styles.sharebtnContainer]}>
-                            <Button
-                                light
-                                roundedMini
-                                key={`share-account-overlay-${timestamp}-btn1`}
-                                numberOfLines={1}
-                                icon="IconShare"
-                                // iconStyle={AppStyles.imgColorBlue}
-                                label={Localize.t('global.share')}
-                                onPress={this.onSharePress}
-                                style={[AppStyles.flex1, styles.sharebtn]}
-                            />
-                            <Button
-                                light
-                                roundedMini
-                                key={`share-account-overlay-${timestamp}-btn2`}
-                                numberOfLines={1}
-                                icon="IconClipboard"
-                                // iconStyle={AppStyles.imgColorBlue}
-                                label={Localize.t('global.copy')}
-                                onPress={this.onCopyAddressPress}
-                                style={[AppStyles.flex1, styles.sharebtn]}
-                            />
+                        <View style={styles.addressTextContainer}>
+                            <Text selectable adjustsFontSizeToFit numberOfLines={1} style={styles.addressText}>
+                                {account.address}
+                            </Text>
+                            <View style={[AppStyles.row, styles.sharebtnContainer]}>
+                                <Button
+                                    light
+                                    roundedMini
+                                    key={`share-account-overlay-${timestamp}-btn1`}
+                                    numberOfLines={1}
+                                    icon="IconShare"
+                                    // iconStyle={AppStyles.imgColorBlue}
+                                    label={Localize.t('global.share')}
+                                    onPress={this.onSharePress}
+                                    style={[AppStyles.flex1, styles.sharebtn]}
+                                />
+                                <Button
+                                    light
+                                    roundedMini
+                                    key={`share-account-overlay-${timestamp}-btn2`}
+                                    numberOfLines={1}
+                                    icon="IconClipboard"
+                                    // iconStyle={AppStyles.imgColorBlue}
+                                    label={Localize.t('global.copy')}
+                                    onPress={this.onCopyAddressPress}
+                                    style={[AppStyles.flex1, styles.sharebtn]}
+                                />
+                            </View>
                         </View>
+                    </View>
+
+                    <View style={[AppStyles.paddingHorizontalExtraSml]}>
+                        <Text style={AppStyles.colorGrey}>
+                            {Localize.t('global.orShareQr')}:
+                        </Text>
+                        <View style={[
+                            styles.qrCodeContainer,
+                        ]}>
+                            <View style={styles.qrCode}>
+                                <View style={styles.qrImgContainer}>
+                                    <QRCode size={150} value={`${account.address}`} />
+                                </View>
+                            </View>
+                        </View>                    
                     </View>
                 </View>
 
-                <View style={[AppStyles.paddingHorizontalExtraSml]}>
-                    <Text style={AppStyles.colorGrey}>
-                        {Localize.t('global.orShareQr')}:
-                    </Text>
-                    <View style={[
-                        styles.qrCodeContainer,
-                    ]}>
-                        <View style={styles.qrCode}>
-                            <View style={styles.qrImgContainer}>
-                                <QRCode size={150} value={`${account.address}`} />
-                            </View>
-                        </View>
-                    </View>                    
-                </View>
-
-                <SafeAreaView style={[
+                <Footer style={[
                     styles.footer,
-                    // AppStyles.borderGreen,
-                    AppStyles.centerContent,
                 ]}>
                     <Button
                         numberOfLines={1}
@@ -227,11 +233,10 @@ class ShareAccountOverlay extends Component<Props, State> {
                         label={Localize.t('global.createPaymentRequestLink')}
                         onPress={this.onPaymentRequestPress}
                         style={[
-                            // AppStyles.buttonGreen,
                             styles.requestLink,
                         ]}
                     />
-                </SafeAreaView>
+                </Footer>
             </ActionPanel>
         );
     }

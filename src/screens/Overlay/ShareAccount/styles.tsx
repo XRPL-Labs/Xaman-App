@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     panelContent: {
+        padding: 0,
     },
     requestLink: {
         position: 'absolute',
@@ -70,13 +71,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     footer: {
-        padding: 0,
-        left: 0,
-        right: 0,
-        position: 'absolute',
-        bottom: 55 + AppSizes.safeAreaBottomInset / 3,
-        //                  ^^ iOS virtual home btn
-        //      ^^ panel padding
+        marginBottom: AppSizes.padding + 20,
     },
 });
 

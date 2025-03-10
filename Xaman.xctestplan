@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "2E1A5BBE-F248-49BB-8B0E-F17B20BBA391",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Xaman.xcodeproj",
+      "identifier" : "13B07F861A680F5B00A75B9A",
+      "name" : "Xaman"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Xaman.xcodeproj",
+        "identifier" : "00E356ED1AD99517003FC87E",
+        "name" : "XamanTests"
+      }
+    }
+  ],
+  "version" : 1
+}
