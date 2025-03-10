@@ -46,11 +46,13 @@ interface State {
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
+    isFiltering?: boolean;
     isVisible?: boolean;
     isLoadingMore?: boolean;
     dataSource: Array<DataSourceItem>;
     headerComponent?: any;
     timestamp?: number;
+    forceFullLoader?: boolean;
     onRefresh?: () => void;
     onEndReached?: () => void;
 }
@@ -71,7 +73,10 @@ class EventsList extends PureComponent<Props, State> {
     }
 
     renderListEmpty = () => {
-        const { isLoading } = this.props;
+        const {
+            isLoading,
+            isFiltering,
+        } = this.props;
 
         // // This fixes the double spinner on loading @ Event list
         // if (isLoading) {
@@ -82,12 +87,20 @@ class EventsList extends PureComponent<Props, State> {
         //     );
         // }
 
+        if (isFiltering) {
+            return (
+                <View style={styles.listEmptyContainer}>
+                    <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                </View>
+            );    
+        }
+
         return (
             <View style={styles.listEmptyContainer}>
                 <Text style={AppStyles.pbold}>{
                     !isLoading
                         ? Localize.t('global.noInformationToShow')
-                        : ' ' // Localize.t('global.loading')
+                        : ' '
                 }</Text>
             </View>
         );
@@ -248,20 +261,27 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     render() {
-        const { dataSource, onEndReached, headerComponent, isLoading } = this.props;
+        const {
+            dataSource,
+            onEndReached,
+            headerComponent,
+            isLoading,
+            forceFullLoader,
+        } = this.props;
         
         const renderSeparateLoadingIndicator = !!isLoading && (dataSource || []).length === 0;
 
         return (
             <>
-                { renderSeparateLoadingIndicator &&
+                { (renderSeparateLoadingIndicator || forceFullLoader) &&
                     <View style={[styles.listEmptyContainer]}>
                         <LoadingIndicator />
                         <Text>{' '}</Text>
+                        <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                         <Text>{' '}</Text>
                     </View>        
                 }
-                { !renderSeparateLoadingIndicator && 
+                { !renderSeparateLoadingIndicator && !forceFullLoader && 
                     <SectionList
                         style={styles.sectionList}
                         contentContainerStyle={styles.sectionListContainer}

@@ -715,6 +715,7 @@
     "myBalanceAndReserve": "残高と準備金を確認",
     "transactionDetailsDifferentNetworkError": "このトランザクションは、接続中のネットワークでは有効ではありません。\n\n%{network}に切り替えてもう一度お試しください。",
     "fetchingTransactionFromNetwork": "ネットワークからトランザクションを取得しています",
+    "fetchingTransactionsFromNetwork": "Fetching transactions from network...",
     "unableToLoadExplainer": "Unable to load the explainer",
     "uriTokenBurnExplain": "トランザクションはID %{tokenID} のURIトークンをバーンします。",
     "uriTokenBuyExplain": "%{address}は%{amount} %{currency}を支払い、ID %{tokenID} のURIトークンを受け取りました。",
