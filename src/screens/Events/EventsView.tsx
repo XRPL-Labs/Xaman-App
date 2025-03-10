@@ -269,6 +269,8 @@ class EventsView extends Component<Props, State> {
             status === AppStateStatus.Active &&
             [AppStateStatus.Background, AppStateStatus.Inactive].includes(prevStatus)
         ) {
+            // console.log('appstate change', status)
+            this.updateDataSource();
             this.onSignRequestReceived();
         }
     };
