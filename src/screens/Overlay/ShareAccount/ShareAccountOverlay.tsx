@@ -146,9 +146,12 @@ class ShareAccountOverlay extends Component<Props, State> {
                     AppStyles.row,
                     AppStyles.flex1,
                     AppStyles.paddingBottomSml,
+                    AppStyles.centerAligned,
                     AppStyles.paddingHorizontalSml,
                 ]}>
-                    <View style={[AppStyles.flex5]}>
+                    <View style={[
+                        AppStyles.flex5,
+                    ]}>
                         <Text numberOfLines={1} style={[AppStyles.h5, AppStyles.strong]}>
                             {Localize.t('send.accountInfo')}
                         </Text>
@@ -156,7 +159,6 @@ class ShareAccountOverlay extends Component<Props, State> {
                     <View style={[
                         AppStyles.row,
                         AppStyles.flex3,
-                        AppStyles.paddingHorizontalExtraSml,
                         AppStyles.flexEnd,
                     ]}>
                         <Button
