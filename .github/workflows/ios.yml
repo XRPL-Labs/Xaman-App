@@ -39,7 +39,7 @@ jobs:
           if [ -d "TestResults.xcresult" ]; then echo "Found TestResults.xcresult"; else echo "TestResults.xcresult not found"; fi
           
       - name: Test Summary
-        uses: kishikawakatsumi/xcresulttool@v1
+        uses: slidoapp/xcresulttool@v3.1.0
         with:
           path: ios/TestResults.xcresult
         if: success() || failure()
