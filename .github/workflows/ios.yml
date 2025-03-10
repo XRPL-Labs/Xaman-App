@@ -33,6 +33,7 @@ jobs:
           echo "Exit code: $?"
       
       - name: Check for xcresult
+        working-directory: ios
         run: |
           ls -la
           if [ -d "TestResults.xcresult" ]; then echo "Found TestResults.xcresult"; else echo "TestResults.xcresult not found"; fi
