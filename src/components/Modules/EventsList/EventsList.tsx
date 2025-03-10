@@ -11,6 +11,8 @@ import { type RatesType } from '@services/BackendService';
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+
 import { Payload } from '@common/libs/payload';
 
 import { Transactions } from '@common/libs/ledger/transactions/types';
@@ -38,6 +40,7 @@ interface State {
     fiatCurrency?: string;
     fiatRate?: RatesType | undefined;
     isLoadingRate?: boolean;
+    coreSettings?: CoreModel;
 }
 
 interface Props {
@@ -61,6 +64,7 @@ class EventsList extends PureComponent<Props, State> {
 
         this.state = {
             fiatCurrency: coreSettings.currency,
+            coreSettings,
             // fiatRate: undefined,
             // isLoadingRate: false,
         };
@@ -147,12 +151,28 @@ class EventsList extends PureComponent<Props, State> {
     };
 
     renderRefreshControl = () => {
+        const { coreSettings } = this.state;
         const { isLoading, onRefresh, isVisible } = this.props;
+
+        const refreshNow = async () => {
+            if (coreSettings?.hapticFeedback) {
+                // VibrateHapticFeedback('notificationSuccess');
+                VibrateHapticFeedback('impactLight');
+            };
+
+            if (onRefresh) {
+                await onRefresh();
+                if (coreSettings?.hapticFeedback) {
+                    // VibrateHapticFeedback('notificationSuccess');
+                    VibrateHapticFeedback('impactLight');
+                };
+            }
+        };
 
         return (
             <RefreshControl
                 refreshing={!!isLoading && !!isVisible}
-                onRefresh={onRefresh}
+                onRefresh={refreshNow}
                 tintColor={StyleService.value('$contrast')}
             />
         );
