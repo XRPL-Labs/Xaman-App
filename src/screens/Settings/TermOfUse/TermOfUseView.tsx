@@ -10,7 +10,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import { AppScreens } from '@common/constants';
 
-import { ProfileRepository, CoreRepository } from '@store/repositories';
+import { ProfileRepository } from '@store/repositories';
+// import { ProfileRepository, CoreRepository } from '@store/repositories';
 
 import { WebViewBrowser, Header, Footer, Spacer, Button } from '@components/General';
 
@@ -23,6 +24,7 @@ import styles from './styles';
 /* types ==================================================================== */
 import { Props, State } from './types';
 import { WebLinks } from '@common/constants/endpoints';
+import StyleService from '@services/StyleService';
 
 /* Component ==================================================================== */
 class TermOfUseView extends Component<Props, State> {
@@ -43,7 +45,7 @@ class TermOfUseView extends Component<Props, State> {
             TOSVersion: 0,
             isTOSLoaded: false,
             shouldShowAgreement: false,
-            coreSettings: CoreRepository.getSettings(),
+            // coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -96,14 +98,14 @@ class TermOfUseView extends Component<Props, State> {
     };
 
     getHeaders = () => {
-        const { coreSettings } = this.state;
+        // const { coreSettings } = this.state;
 
-        if (coreSettings) {
-            return {
-                'X-Xaman-Style': coreSettings.theme,
-            };
-        }
-        return {};
+        // if (coreSettings) {
+        return {
+            'X-Xaman-Style': StyleService.getCurrentTheme(),
+        };
+        // }
+        // return {};
     };
 
     getURI = () => {

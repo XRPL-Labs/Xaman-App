@@ -106,6 +106,12 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Account.List,
                             'accounts-button',
                         )}
+                        {this.renderRow(
+                            'IconBook',
+                            Localize.t('global.addressBook'),
+                            AppScreens.Settings.AddressBook.List,
+                            'address-book-button',
+                        )}
                         <View style={styles.hr} />
                         {this.renderRow(
                             'IconSlider',
@@ -114,10 +120,10 @@ class SettingsView extends Component<Props, State> {
                             'general-button',
                         )}
                         {this.renderRow(
-                            'IconBook',
-                            Localize.t('global.addressBook'),
-                            AppScreens.Settings.AddressBook.List,
-                            'address-book-button',
+                            'IconActivity',
+                            Localize.t('global.advanced'),
+                            AppScreens.Settings.Advanced,
+                            'advanced-button',
                         )}
                         <View style={styles.hr} />
                         {this.renderRow(
@@ -132,12 +138,6 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Settings.ThirdPartyApps.List,
                             'third_party-apps-button',
                         )}
-                        {this.renderRow(
-                            'IconActivity',
-                            Localize.t('global.advanced'),
-                            AppScreens.Settings.Advanced,
-                            'advanced-button',
-                        )}
                         <View style={styles.hr} />
                         {this.renderRow(
                             'IconHelpCircle',
@@ -151,12 +151,12 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Settings.TermOfUse,
                             'tos-button',
                         )}
-                        {this.renderRow(
+                        {/* {this.renderRow(
                             'IconStar',
                             Localize.t('settings.credits'),
                             AppScreens.Settings.Credits,
                             'credits-button',
-                        )}
+                        )} */}
                     </ScrollView>
                 </View>
             </View>
