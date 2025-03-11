@@ -349,20 +349,25 @@ class ActionButtons extends PureComponent<Props, State> {
 
     renderActionButtons = () => {
         const { availableActions } = this.state;
+        const { item } = this.props;
 
         if (!availableActions) {
             return null;
         }
 
-        return availableActions.map((type) => (
-            <View style={[AppStyles.paddingBottomExtraSml]}>
-                <ActionButton
-                    key={`action-button-${type}`}
-                    actionType={type}
-                    onPress={this.onActionButtonPress}
-                />
-            </View>
-        ));
+        return availableActions.map((type) => {
+            const key = `action-button-${type}-${item.Account}-${(item as any)?.Destination}`;
+
+            return (
+                <View style={[AppStyles.paddingBottomExtraSml]}>
+                    <ActionButton
+                        key={key}
+                        actionType={type}
+                        onPress={this.onActionButtonPress}
+                    />
+                </View>
+            );
+        });
     };
 
     render() {
