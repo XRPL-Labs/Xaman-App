@@ -43,7 +43,8 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
-import { AccessLevels, Themes } from '@store/types';
+// import { AccessLevels, Themes } from '@store/types';
+import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
 import { ApiError } from '@services/ApiService';
@@ -605,17 +606,19 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     getAppStyle = () => {
-        const {coreSettings} = this.state;
-        const style: Themes = 
-            !coreSettings.themeAutoSwitch                     // If not auto switching
-                ? coreSettings.theme                          //   then return as is (from settings)
-                : StyleService.getCurrentTheme() === 'light'  //   else, if the current theme is light
-                ? 'light'                                     //   it's easy, then return light
-                : coreSettings.theme !== 'light'              //   else, settings, because we're in dark - but only
-                ? coreSettings.theme                          //   if the setting is not light (darkish)
-                : 'dark';                                     //   otherwise assume default dark
+        return StyleService.getCurrentTheme();
+        // const {coreSettings} = this.state;
 
-        return style;
+        // const style: Themes = 
+        //     !coreSettings.themeAutoSwitch                     // If not auto switching
+        //         ? coreSettings.theme                          //   then return as is (from settings)
+        //         : StyleService.getCurrentTheme() === 'light'  //   else, if the current theme is light
+        //         ? 'light'                                     //   it's easy, then return light
+        //         : coreSettings.theme !== 'light'              //   else, settings, because we're in dark - but only
+        //         ? coreSettings.theme                          //   if the setting is not light (darkish)
+        //         : 'dark';                                     //   otherwise assume default dark
+
+        // return style;
     };
 
     launchApp = async (xAppNavigateData?: any) => {

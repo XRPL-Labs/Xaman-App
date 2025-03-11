@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { View, Text, Animated } from 'react-native';
 
-import { CoreRepository } from '@store/repositories';
+// import { CoreRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -21,6 +21,7 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import StyleService from '@services/StyleService';
 
 /* Component ==================================================================== */
 class ChangeLogOverlay extends Component<Props, State> {
@@ -36,7 +37,7 @@ class ChangeLogOverlay extends Component<Props, State> {
         this.animatedOpacity = new Animated.Value(0);
 
         this.state = {
-            coreSettings: CoreRepository.getSettings(),
+            // coreSettings: CoreRepository.getSettings(),
         };
     }
 
@@ -66,10 +67,10 @@ class ChangeLogOverlay extends Component<Props, State> {
     };
 
     getHeaders = () => {
-        const { coreSettings } = this.state;
+        // const { coreSettings } = this.state;
 
         return {
-            'X-Xaman-Style': coreSettings.theme,
+            'X-Xaman-Style': StyleService.getCurrentTheme(),
         };
     };
 
