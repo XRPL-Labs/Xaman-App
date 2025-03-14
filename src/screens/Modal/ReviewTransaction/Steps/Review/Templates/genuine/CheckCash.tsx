@@ -61,6 +61,7 @@ class CheckCashTemplate extends Component<Props, State> {
 
     fetchCheckObject = () => {
         const { transaction } = this.props;
+        const { cashAmount } = this.state;
 
         // assign actual check object to the CashCheck tx
         LedgerService.getLedgerEntry({ index: transaction.CheckID })
@@ -81,6 +82,12 @@ class CheckCashTemplate extends Component<Props, State> {
                         },
                         () => {
                             transaction.Check = checkObject;
+                            if (
+                                checkObject?.SendMax?.value &&
+                                (cashAmount === '' || cashAmount === '0' || cashAmount === undefined)
+                            ) {
+                                this.onAmountChange(checkObject?.SendMax?.value);
+                            }
                         },
                     );
                 } else {
@@ -175,7 +182,7 @@ class CheckCashTemplate extends Component<Props, State> {
                                 <Button
                                     onPress={this.focusAmountInput}
                                     style={styles.editButton}
-                                    roundedSmall
+                                    roundedMini
                                     icon="IconEdit"
                                     iconSize={13}
                                     light
