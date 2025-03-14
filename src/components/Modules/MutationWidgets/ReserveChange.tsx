@@ -93,6 +93,11 @@ class ReserveChange extends PureComponent<Props, State> {
             return undefined;
         }
 
+        if (item.Type === LedgerEntryTypes.Escrow || item.Type === LedgerEntryTypes.Check) {
+            if (item.Account !== account.address) {
+                return undefined;
+            }
+        }
         // ledger objects always have reserve change increase
         return {
             address: account.address,
