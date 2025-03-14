@@ -16,6 +16,7 @@ const styles = StyleService.create({
         borderColor: 'transparent',
         borderWidth: 0,
         width: '100%',
+        color: '$contrast',
     }, 
     value: {
         fontFamily: AppFonts.base.family,
