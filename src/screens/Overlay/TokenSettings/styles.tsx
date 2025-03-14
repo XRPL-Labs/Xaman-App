@@ -5,7 +5,11 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$tint',
