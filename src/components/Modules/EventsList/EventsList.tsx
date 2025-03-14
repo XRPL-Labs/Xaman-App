@@ -277,7 +277,7 @@ class EventsList extends PureComponent<Props, State> {
                     <View style={[styles.listEmptyContainer]}>
                         <LoadingIndicator />
                         <Text>{' '}</Text>
-                        <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                        <Text style={AppStyles.baseText}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                         <Text>{' '}</Text>
                     </View>        
                 }
