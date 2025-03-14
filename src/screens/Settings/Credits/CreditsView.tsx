@@ -10,8 +10,8 @@ import { HasBottomNotch } from '@common/helpers/device';
 import { AppScreens } from '@common/constants';
 import { WebLinks } from '@common/constants/endpoints';
 
-import { CoreRepository } from '@store/repositories';
-import { CoreModel } from '@store/models';
+// import { CoreRepository } from '@store/repositories';
+// import { CoreModel } from '@store/models';
 
 import { Header, WebViewBrowser } from '@components/General';
 
@@ -19,13 +19,14 @@ import Localize from '@locale';
 
 // style
 import { AppStyles } from '@theme';
+import StyleService from '@services/StyleService';
 
 /* types ==================================================================== */
 export interface Props {}
 
 export interface State {
     paddingBottom: number;
-    coreSettings: CoreModel;
+    // coreSettings: CoreModel;
 }
 
 /* Component ==================================================================== */
@@ -43,15 +44,15 @@ class CreditsView extends Component<Props, State> {
 
         this.state = {
             paddingBottom: HasBottomNotch() ? 20 : 0,
-            coreSettings: CoreRepository.getSettings(),
+            // coreSettings: CoreRepository.getSettings(),
         };
     }
 
     getHeaders = () => {
-        const { coreSettings } = this.state;
+        // const { coreSettings } = this.state;
 
         return {
-            'X-Xaman-Style': coreSettings.theme,
+            'X-Xaman-Style': StyleService.getCurrentTheme(),
         };
     };
 

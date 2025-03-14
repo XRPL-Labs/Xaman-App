@@ -470,6 +470,7 @@ class AccountSettingsView extends Component<Props, State> {
                                         <Switch
                                             style={[
                                                 styles.switchRight,
+                                                AppStyles.rightAligned,
                                             ]}
                                             checked={pushEnabled}
                                             isDisabled={fetchingPushState || !pushAvailable}

@@ -39,7 +39,7 @@ import {
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountPicker } from '@components/Modules';
 
-import DeviceBrightness from '@adrianso/react-native-device-brightness';
+// import DeviceBrightness from '@adrianso/react-native-device-brightness';
 
 // local
 import Localize from '@locale';
@@ -47,6 +47,7 @@ import Localize from '@locale';
 // style
 import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
+// import AppService, { AppStateStatus } from '@services/AppService';
 
 /* types ==================================================================== */
 export interface Props {
@@ -96,16 +97,35 @@ class RequestView extends Component<Props, State> {
         this.amountRateInputRef = React.createRef();
     }
 
+    // appStateChange(status: AppStateStatus) {
+    //     const {ogBrightness} = this.props;
+
+    //     // console.log('x', status, ogBrightness)
+        
+    //     if (status !== AppStateStatus.Active) {
+    //         if (typeof ogBrightness === 'number') {
+    //             DeviceBrightness.setBrightnessLevel(Platform.OS === 'android' ? -1 : ogBrightness);
+    //         }
+    //     }
+    //     if (status === AppStateStatus.Active) {
+    //         DeviceBrightness.setBrightnessLevel(1);
+    //     }
+    // }
+
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
-        DeviceBrightness.setBrightnessLevel(1);
+        // DeviceBrightness.setBrightnessLevel(1);
+
+        // AppService.on('appStateChange', status => this.appStateChange(status));
     }
 
     componentWillUnmount(): void {
-        const {ogBrightness} = this.props;
-        if (typeof ogBrightness === 'number') {
-            DeviceBrightness.setBrightnessLevel(Platform.OS === 'android' ? -1 : ogBrightness);
-        }
+        // const {ogBrightness} = this.props;
+        // if (typeof ogBrightness === 'number') {
+        //     // DeviceBrightness.setBrightnessLevel(Platform.OS === 'android' ? -1 : ogBrightness);
+        // }
+
+        // AppService.off('appStateChange', status => this.appStateChange(status));
     };
 
     fetchCurrencyRate = () => {

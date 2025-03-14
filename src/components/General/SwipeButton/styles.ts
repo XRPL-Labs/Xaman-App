@@ -34,6 +34,7 @@ const Styles = StyleService.create({
         alignSelf: 'flex-start',
         marginVertical: 1,
         marginHorizontal: 5,
+        left: -AppSizes.scale(45),
     },
     iconContainer: {
         height: AppSizes.scale(44),

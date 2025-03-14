@@ -212,7 +212,7 @@ class TokensList extends Component<Props, State> {
                 { token, account },
                 {
                     overlay: {
-                        interceptTouchOutside: true,
+                        interceptTouchOutside: false,
                         //     ^^  Needed for tapping backdrop = close, uses onTouchStart={this.startTouch}
                     },
                 },
