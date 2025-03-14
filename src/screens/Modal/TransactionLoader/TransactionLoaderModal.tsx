@@ -238,7 +238,7 @@ class TransactionLoaderModal extends Component<Props, State> {
             <>
                 <LoadingIndicator size="large" />
                 <Spacer size={30} />
-                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.baseText]}>
                     {Localize.t('events.fetchingTransactionFromNetwork')}
                 </Text>
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorGrey]}>
