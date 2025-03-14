@@ -39,14 +39,14 @@ class EscrowFinishTemplate extends Component<Props, State> {
         // from transaction id
         if (isUndefined(transaction.OfferSequence) && transaction.PreviousTxnID) {
             await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
-                const { Sequence } = tx;
-                if (Sequence) {
+                const { Sequence, TicketSequence } = tx;
+                if (Sequence || TicketSequence) {
                     this.setState(
                         {
-                            offerSequence: Sequence,
+                            offerSequence: Sequence || TicketSequence,
                         },
                         () => {
-                            transaction.OfferSequence = Sequence;
+                            transaction.OfferSequence = Sequence || TicketSequence;
                         },
                     );
                 }
