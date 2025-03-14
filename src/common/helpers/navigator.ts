@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get, merge } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 
 import { Navigation, Options, LayoutTabsChildren } from 'react-native-navigation';
@@ -320,7 +320,7 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps: Object.assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options: {
+                    options: merge({
                         overlay: {
                             handleKeyboardEvents: true,
                         },
@@ -334,8 +334,7 @@ const Navigator = {
                               waitForRender: true, // Wait for the component to render before ANY transitions
                             },
                         },
-                        ...options,
-                    },
+                    }, options || {}),
                 },
             });
         }
