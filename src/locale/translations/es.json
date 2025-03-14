@@ -283,7 +283,7 @@
     "unableOpenReturnURL": "¡No se puede abrir la URL de retorno!",
     "noAccountConfigured": "Ninguna cuenta configurada",
     "pleaseAddAccountToSignTheTransaction": "Por favor, agrega una cuenta para firmar la transacción.",
-    "pleaseAddAccountToAccessXApp": "Please add an account to access xApp",
+    "pleaseAddAccountToAccessXApp": "Por favor, introduce una cuenta para acceder a la xApp",
     "noSpendableAccountIsAvailableForSendingPayment": "No hay una cuenta con fondos disponible para enviar pagos.",
     "doNotRemindMe": "No volver a recordar",
     "invalidPayload": "Payload inválida",
@@ -434,8 +434,8 @@
   "setupPermissions": {
     "enableNotifications": "¿Activar notificaciones push?",
     "permissionDescription": "Utilizamos notificaciones push para alertarte sobre solicitudes de firma.",
-    "pushRegisterError": "It seems we couldn't enable push notifications at this moment. You can activate them later in the app settings under Settings -> Advance. No worries, you can continue with the setup for now!",
-    "continueSetup": "Continue Setup"
+    "pushRegisterError": "Parece que no hemos podido activar las notificaciones push en este momento. Puedes activarlas más tarde en la configuración de la aplicación en Ajustes -> Avanzado. No te preocupes, por ahora puedes continuar con la configuración.",
+    "continueSetup": "Continuar con la configuración"
   },
   "setupTermOfService": {
     "XamanIsNonCustodial": "Xaman no es una cartera de custodia.",
@@ -741,7 +741,7 @@
     "ADashZ": "A-Z",
     "categories": "Categorías",
     "openXapp": "Abrir",
-    "aboutXapp": "Sobre",
+    "aboutXapp": "Info",
     "recentlyUsed": "Recientemente usado",
     "ourSuggestions": "Nuestras sugerencias",
     "all": "Todo",
@@ -1077,7 +1077,7 @@
     "noSearchResult": "Sin resultados de búsqueda",
     "noContact": "Sin contactos",
     "myAccount": "Mi cuenta",
-    "accountInfo": "Account info",
+    "accountInfo": "Info Cuenta",
     "sourceAndDestinationCannotBeSame": "¡La dirección de origen y de destino no puede ser la misma!",
     "enterANameOrAddress": "Introduzca un nombre o dirección",
     "transferredSuccessfully": "Tu transacción se ha registrado con éxito en el %{network}.",
