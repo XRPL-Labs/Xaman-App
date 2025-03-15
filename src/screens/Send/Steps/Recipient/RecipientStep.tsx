@@ -847,6 +847,12 @@ class RecipientStep extends Component<Props, State> {
                         <TextInput
                             placeholder={Localize.t('send.enterANameOrAddress')}
                             // containerStyle={styles.searchContainer}
+                            autoComplete="off"
+                            textContentType="none"
+                            importantForAutofill="no"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            spellCheck={false}
                             inputStyle={styles.inputText}
                             containerStyle={styles.inputContainer}
                             onChangeText={this.onSearch}

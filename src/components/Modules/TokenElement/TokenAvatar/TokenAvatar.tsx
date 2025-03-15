@@ -20,6 +20,7 @@ interface Props extends Omit<AvatarProps, 'source'> {
     token?: TrustLineModel | 'Native';
     tokenPair?: (TrustLineModel | string)[];
     saturate?: boolean;
+    networkKey?: string;
     networkService?: typeof NetworkService;
 }
 
@@ -34,6 +35,7 @@ class TokenAvatar extends PureComponent<Props, State> {
 
     getAvatar (): string {
         const {token, networkService} = this.props;
+
         if (token === 'Native') {
             return (networkService || NetworkService).getNativeAssetIcons().asset || '';
         }

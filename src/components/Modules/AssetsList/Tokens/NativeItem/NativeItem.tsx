@@ -9,7 +9,7 @@ import { CalculateAvailableBalance, CalculateTotalReserve } from '@common/utils/
 import { Toast } from '@common/helpers/interface';
 
 import { CoreRepository } from '@store/repositories';
-import { AccountModel, CoreModel } from '@store/models';
+import { AccountModel, CoreModel, NetworkModel } from '@store/models';
 
 import { AmountText, Icon, TouchableDebounce } from '@components/General';
 
@@ -27,6 +27,7 @@ interface Props {
     discreetMode: boolean;
     reorderEnabled: boolean;
     onPress?: () => void;
+    network?: NetworkModel;
 }
 
 interface State {
@@ -145,7 +146,15 @@ class NativeItem extends Component<Props, State> {
     };
 
     getTokenAvatar = () => {
-        return <TokenAvatar token="Native" networkService={NetworkService} size={35} />;
+        const { network } = this.props;
+        
+        return <TokenAvatar
+            token="Native"
+            key={`tokenavatar-${network?.key}`}
+            networkKey={network?.key}
+            networkService={NetworkService}
+            size={35}
+        />;
     };
 
     getTokenIcon = () => {

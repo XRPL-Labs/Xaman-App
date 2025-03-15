@@ -371,7 +371,7 @@ class HomeView extends Component<Props, State> {
 
     renderAssets = () => {
         const { timestamp } = this.props;
-        const { account, discreetMode, isSpendable, experimentalUI } = this.state;
+        const { account, discreetMode, isSpendable, experimentalUI, selectedNetwork } = this.state;
 
         if ((account?.details || []).length === 0 || account.getStateVersion() === 0) {
             // No account information loaded/cached yet, so not saying "not activated"
@@ -391,6 +391,7 @@ class HomeView extends Component<Props, State> {
             <AssetsList
                 experimentalUI={experimentalUI}
                 account={account}
+                network={selectedNetwork}
                 discreetMode={discreetMode}
                 spendable={isSpendable}
                 timestamp={timestamp}

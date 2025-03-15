@@ -16,7 +16,7 @@ import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
-import DropShadow from 'react-native-drop-shadow';
+// import DropShadow from 'react-native-drop-shadow';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
@@ -793,7 +793,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         <View style={[
                             styles.contentContainer,
                         ]}>
-                            <DropShadow style={[
+                            <Animated.View style={[
                                 styles.contentContainerShadow,
                             ]}>
                                 <View style={[
@@ -881,7 +881,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         )
                                     }
                                 </View>
-                            </DropShadow>
+                            </Animated.View>
 
                             { needsTlFix && (
                                 <>

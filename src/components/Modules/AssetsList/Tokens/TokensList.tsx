@@ -9,7 +9,7 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Navigator } from '@common/helpers/navigator';
 
 import { CurrencyRepository, TrustLineRepository } from '@store/repositories';
-import { AccountModel, TrustLineModel } from '@store/models';
+import { AccountModel, NetworkModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
 
@@ -32,6 +32,7 @@ interface Props {
     spendable: boolean;
     experimentalUI?: boolean;
     onChangeCategoryPress: () => void;
+    network?: NetworkModel;
 }
 
 interface State {
@@ -343,7 +344,7 @@ class TokensList extends Component<Props, State> {
     };
 
     render() {
-        const { account, style, spendable, discreetMode, experimentalUI } = this.props;
+        const { account, style, spendable, discreetMode, experimentalUI, network } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
@@ -366,7 +367,9 @@ class TokensList extends Component<Props, State> {
                     </View>
                 )}
                 <NativeItem
+                    key={`nativeasset-${network?.key}`}
                     account={account}
+                    network={network}
                     discreetMode={discreetMode}
                     reorderEnabled={reorderEnabled}
                     onPress={this.onNativeItemPress}

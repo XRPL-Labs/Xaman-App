@@ -26,8 +26,10 @@ const styles = StyleService.create({
             height: 0,
             width: 0,
         },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.08,
         shadowRadius: 10,
+        elevation: 30,
+        borderRadius: AppSizes.scale(75) / 2.5,
     },
     xamanAppBackground: {
         // resizeMode: 'cover',

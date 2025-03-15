@@ -23,6 +23,8 @@ const styles = StyleService.create({
         },
         shadowOpacity: 0.15,
         shadowRadius: 5,
+        elevation: 5,
+        borderRadius: AppSizes.scale(75) / 5,
     },
     contentContainerAmount: {
         backgroundColor: '$background',
