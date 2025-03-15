@@ -85,9 +85,12 @@ class SwipeButton extends Component<Props, State> {
             onMoveShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponderCapture: () => true,
             onShouldBlockNativeResponder: () => false,
+            onPanResponderTerminationRequest: () => false,
             onPanResponderMove: this.onPanResponderMove,
             onPanResponderRelease: this.onPanResponderRelease,
+            onPanResponderTerminate: this.onPanResponderRelease,
             onPanResponderGrant: this.onPanResponderGrant,
+            onPanResponderStart: this.onPanResponderGrant,
         });
     }
 
@@ -304,6 +307,7 @@ class SwipeButton extends Component<Props, State> {
                     ]}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...this.panResponder.panHandlers}
+                    hitSlop={{ top: 200, left: 50, right: 50, bottom: 50 }}
                 >
                     <View
                         style={[

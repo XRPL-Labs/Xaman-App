@@ -239,11 +239,11 @@ class SummaryStep extends Component<Props, State> {
     };
 
     toggleCanScroll = () => {
-        const { canScroll } = this.state;
+        this.setState({ canScroll: true });
+    };
 
-        this.setState({
-            canScroll: !canScroll,
-        });
+    toggleCannotScroll = () => {
+        this.setState({ canScroll: false });
     };
 
     renderCurrencyItem = (item: string | TrustLineModel) => {
@@ -506,7 +506,7 @@ class SummaryStep extends Component<Props, State> {
                             isLoading={isLoading}
                             isDisabled={!selectedFee}
                             shouldResetAfterSuccess
-                            onPanResponderGrant={this.toggleCanScroll}
+                            onPanResponderGrant={this.toggleCannotScroll}
                             onPanResponderRelease={this.toggleCanScroll}
                         />
                     </Footer>

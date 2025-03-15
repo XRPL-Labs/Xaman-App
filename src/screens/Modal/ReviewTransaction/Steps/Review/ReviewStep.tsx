@@ -53,13 +53,11 @@ class ReviewStep extends Component<Props, State> {
     }
 
     toggleCanScroll = () => {
-        const { canScroll } = this.state;
-        
-        // console.log('ToggleCanScroll')
-        
-        this.setState({
-            canScroll: !canScroll,
-        });
+        this.setState({ canScroll: true });
+    };
+
+    toggleCannotScroll = () => {
+        this.setState({ canScroll: false });
     };
 
     getSwipeButtonColor = (): string | undefined => {
