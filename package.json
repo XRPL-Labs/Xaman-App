@@ -30,7 +30,6 @@
     "react": "18.2.0",
     "react-native": "0.74.2",
     "react-native-camera": "4.2.1",
-    "react-native-drop-shadow": "^1.0.0",
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.40.1",
     "realm": "12.13.0",
