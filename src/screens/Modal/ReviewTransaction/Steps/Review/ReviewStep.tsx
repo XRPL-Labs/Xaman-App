@@ -16,7 +16,6 @@ import { InstanceTypes } from '@common/libs/ledger/types/enums';
 
 import { AppInfo, SignerLabel, SignForAccount } from '@components/Modules/ReviewTransaction';
 import { ReviewHeader } from '@screens/Modal/ReviewTransaction/Shared';
-import DropShadow from 'react-native-drop-shadow';
 
 import Localize from '@locale';
 
@@ -186,43 +185,46 @@ class ReviewStep extends Component<Props, State> {
                     <AppInfo source={source} transaction={transaction} payload={payload} />
 
                     {/* transaction info content */}
-                    <DropShadow style={styles.shadow}>
-                        <View style={styles.transactionContent}>
-                            <View style={AppStyles.paddingHorizontalSml}>
-                                <SignerLabel payload={payload} />
-                                <View style={styles.accountPickerPadding}>
-                                    <AccountPicker
-                                        onSelect={setSource}
-                                        accounts={accounts}
-                                        selectedItem={source}
+                    <View style={styles.shadow}>
+                        <View style={styles.shadow}>
+                            {/* Need more for Android shadow */}
+                            <View style={styles.transactionContent}>
+                                <View style={AppStyles.paddingHorizontalSml}>
+                                    <SignerLabel payload={payload} />
+                                    <View style={styles.accountPickerPadding}>
+                                        <AccountPicker
+                                            onSelect={setSource}
+                                            accounts={accounts}
+                                            selectedItem={source}
+                                        />
+                                    </View>
+                                </View>
+
+                                {/* in multi-sign transactions and in some cases in Import transaction */}
+                                {/* the Account can be different than the signing account */}
+                                <SignForAccount transaction={transaction} source={source} />
+
+                                {/* transaction details */}
+                                <View style={styles.detailsContainer}>{this.renderDetails()}</View>
+                                
+                                {/* accept button */}
+                                <View style={styles.acceptButtonContainer}>
+                                    <SwipeButton
+                                        testID="accept-button"
+                                        color={this.getSwipeButtonColor()}
+                                        isLoading={isLoading}
+                                        isDisabled={!isReady}
+                                        onSwipeSuccess={onAccept}
+                                        label={Localize.t('global.slideToAccept')}
+                                        accessibilityLabel={Localize.t('global.accept')}
+                                        onPanResponderGrant={this.toggleCannotScroll}
+                                        onPanResponderRelease={this.toggleCanScroll}
+                                        shouldResetAfterSuccess
                                     />
                                 </View>
                             </View>
-
-                            {/* in multi-sign transactions and in some cases in Import transaction */}
-                            {/* the Account can be different than the signing account */}
-                            <SignForAccount transaction={transaction} source={source} />
-
-                            {/* transaction details */}
-                            <View style={styles.detailsContainer}>{this.renderDetails()}</View>
-                            
-                            {/* accept button */}
-                            <View style={styles.acceptButtonContainer}>
-                                <SwipeButton
-                                    testID="accept-button"
-                                    color={this.getSwipeButtonColor()}
-                                    isLoading={isLoading}
-                                    isDisabled={!isReady}
-                                    onSwipeSuccess={onAccept}
-                                    label={Localize.t('global.slideToAccept')}
-                                    accessibilityLabel={Localize.t('global.accept')}
-                                    onPanResponderGrant={this.toggleCanScroll}
-                                    onPanResponderRelease={this.toggleCanScroll}
-                                    shouldResetAfterSuccess
-                                />
-                            </View>
                         </View>
-                    </DropShadow>
+                    </View>
                 </KeyboardAwareScrollView>
             </ImageBackground>
         );
