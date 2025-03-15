@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ViewStyle } from 'react-native';
 
-import { AccountModel } from '@store/models';
+import { AccountModel, NetworkModel } from '@store/models';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
@@ -20,6 +20,7 @@ interface Props {
     discreetMode: boolean;
     spendable: boolean;
     experimentalUI?: boolean;
+    network?: NetworkModel;
 }
 
 interface State {
@@ -68,7 +69,7 @@ class AssetsList extends Component<Props, State> {
     };
 
     render() {
-        const { style, timestamp, discreetMode, spendable, experimentalUI, account } = this.props;
+        const { style, timestamp, discreetMode, spendable, experimentalUI, account, network } = this.props;
         const { category } = this.state;
 
         let AssetListComponent;
@@ -88,6 +89,7 @@ class AssetsList extends Component<Props, State> {
             <AssetListComponent
                 key={`${AssetListComponent.name}_${timestamp}`}
                 account={account}
+                network={network}
                 discreetMode={discreetMode}
                 spendable={spendable}
                 onChangeCategoryPress={this.onChangeCategoryPress}
