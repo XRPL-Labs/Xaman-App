@@ -470,8 +470,11 @@ class EventsView extends Component<Props, State> {
                             if (hideAdvisoryTransactions) {
                                 if (
                                     transaction?.tx?.TransactionType === 'Payment' &&
-                                    typeof transaction?.meta?.delivered_amount === 'string' &&
-                                    Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
+                                    transaction?.tx?.Account !== account.address && // I'm not the sender
+                                    transaction?.tx?.Destination === account.address // But I am the receipient
+                                    // &&
+                                    // typeof transaction?.meta?.delivered_amount === 'string' &&
+                                    // Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
                                 ) {
                                     // Only Acount (sender) counts, only hide if <SENT> to me
                                     const resolveAccount = String(transaction?.tx?.Account || '');
