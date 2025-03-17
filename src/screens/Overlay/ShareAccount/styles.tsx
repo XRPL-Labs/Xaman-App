@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     panelContent: {
-        padding: 0,
+        paddingHorizontal: 0,
     },
     requestLink: {
         position: 'absolute',
