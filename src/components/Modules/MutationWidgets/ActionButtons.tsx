@@ -355,8 +355,8 @@ class ActionButtons extends PureComponent<Props, State> {
             return null;
         }
 
-        return availableActions.map((type) => {
-            const key = `action-button-${type}-${item.Account}-${(item as any)?.Destination}`;
+        return availableActions.map((type, index) => {
+            const key = `action-button-${type}-${item.Account}-${(item as any)?.Destination}-${index}`;
 
             return (
                 <View style={[AppStyles.paddingBottomExtraSml]}>
