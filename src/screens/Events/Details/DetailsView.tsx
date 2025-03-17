@@ -108,11 +108,17 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         const { item } = this.props;
 
         // only validated transactions have CTID
+        // Regular transactions
         if (
             item.InstanceType === InstanceTypes.GenuineTransaction ||
             item.InstanceType === InstanceTypes.FallbackTransaction
         ) {
             return GetTransactionLink(item.CTID);
+        }
+        
+        // E.g. offers, NFT offers, etc.
+        if (item?.PreviousTxnID) {
+            return GetTransactionLink(item.PreviousTxnID);
         }
 
         return undefined;
@@ -189,7 +195,11 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                 <Header
                     leftComponent={{ icon: 'IconChevronLeft', onPress: this.close }}
                     centerComponent={{ text: Localize.t('events.transactionDetails') }}
-                    rightComponent={{ icon: 'IconMoreHorizontal', onPress: this.showMenu }}
+                    rightComponent={
+                        this.getItemLink()
+                            ? { icon: 'IconMoreHorizontal', onPress: this.showMenu }
+                            : undefined
+                    }
                     // eslint-disable-next-line react-native/no-inline-styles
                     containerStyle={componentType === ComponentTypes.Modal ? { marginTop: 0 } : {}}
                 />
