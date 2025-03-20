@@ -34,7 +34,6 @@ export interface Props {}
 export interface State {
     canScroll: boolean;
     timestamp?: number;
-    serviceFee?: number;
 }
 
 /* Component ==================================================================== */
@@ -77,15 +76,8 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    setServiceFee = (serviceFee: number) => {
-        // console.log('ReviewStep set service fee', serviceFee)
-        this.setState({
-            serviceFee,
-        });
-    };
-
     renderDetails = () => {
-        const { payload, transaction, source, setLoading, setReady } = this.context;
+        const { payload, transaction, source, setLoading, setReady, setServiceFee } = this.context;
 
         if (!transaction) {
             return null;
@@ -99,7 +91,7 @@ class ReviewStep extends Component<Props, State> {
             forceRender: this.forceRender,
             setLoading,
             setReady,
-            setServiceFee: this.setServiceFee,
+            setServiceFee,
         } as any;
 
         // TODO: add logic for checking if template is exist before calling React.createElement
@@ -151,13 +143,8 @@ class ReviewStep extends Component<Props, State> {
             setSource,
             onAccept,
             onClose,
-            setServiceFee,
         } = this.context;
-        const { canScroll, serviceFee } = this.state;
-
-        if (serviceFee) {
-            setServiceFee(serviceFee);
-        }
+        const { canScroll } = this.state;
 
         // waiting for accounts / transaction to be initiated
         if (typeof accounts === 'undefined' || !source || !transaction) {
