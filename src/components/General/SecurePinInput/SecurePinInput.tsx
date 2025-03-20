@@ -189,6 +189,7 @@ class SecurePinInput extends Component<Props, State> {
                             styles.line,
                         ]}
                         key="x-key"
+                        accessible accessibilityLabel="Backspace"
                         onPress={() => {
                             this.onInput('Backspace');
                         }}
@@ -210,6 +211,7 @@ class SecurePinInput extends Component<Props, State> {
                             style={[
                                 styles.line,
                             ]}
+                            accessible accessibilityLabel="Biometrics"
                             activeOpacity={0.7}
                             key="y-key"
                             onPress={() => {
@@ -255,10 +257,11 @@ class SecurePinInput extends Component<Props, State> {
                     onPress={() => {
                         this.onInput(item);
                     }}
+                    accessible accessibilityLabel={item}
                 >
                     <>
                         <Text style={styles.numTextInt}>{item}</Text>
-                        <Text style={styles.numTextAlpha}>{alpha(item)}</Text>
+                        <Text>{alpha(item)}</Text>
                     </>
                 </TouchableHighlight>
             );
@@ -315,7 +318,10 @@ class SecurePinInput extends Component<Props, State> {
 
         return (
             <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
-                <View style={styles.container}>
+                <View
+                    style={styles.container}
+                    accessible accessibilityLabel="Pin Pad"
+                >
                     {!virtualKeyboard && (
                         <TextInput
                             ref={this.inputRef}
@@ -340,11 +346,13 @@ class SecurePinInput extends Component<Props, State> {
                     ]}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
-                        <View testID="virtual-keyboard" style={[
-                            styles.keyboardWrap,
-                            pinPadStyle,
-                            condensed && styles.keyboardWrapCondensed,
-                        ]}>
+                        <View testID="virtual-keyboard"
+                            style={[
+                                styles.keyboardWrap,
+                                pinPadStyle,
+                                condensed && styles.keyboardWrapCondensed,
+                            ]}
+                        >
                             {this.renderNum()}
                         </View>
                     )}
