@@ -65,32 +65,42 @@ class OfferCreate extends BaseGenuineTransaction {
 
     GetOfferStatus(owner?: string): OfferStatus {
         // if already calculated return the value
-        if (this._offerStatus) {
-            return this._offerStatus;
-        }
-
+        // console.log('x1')
+        /**
+         * This was unnecessary optimisation, no need to cache,
+         * we can calc this in time. The biggest problem is that
+         * if this is already static, when someone creates an offer (e.g. Exchange flow on an IOU)
+         * when during signing someone cancels and then swipes again to sign, it's already flagged
+         * as killed (virtual, cancel) and this prevents it from re-computing the outcome,
+         * causing the user not to get a trade confirmation after coming back.
+         */
+        // if (this._offerStatus) {
+        //     console.log('x2')
+        //     return this._offerStatus;
+        // }
+        
         // transaction has not been executed
         if (typeof this._meta === 'undefined' || typeof this.Sequence === 'undefined') {
             return OfferStatus.UNKNOWN;
         }
-
+        
         // offer effected by another offer we assume it's partially filledGetOfferStatus
         if (owner !== this.Account) {
             this._offerStatus = OfferStatus.PARTIALLY_FILLED;
             return this._offerStatus;
         }
-
+        
         const offerLedgerIndex = EncodeLedgerIndex(owner, this.Sequence);
-
+        
         // unable to calculate offer ledger index
         // NOTE: this should not happen
         if (!offerLedgerIndex) {
             this._offerStatus = OfferStatus.UNKNOWN;
             return this._offerStatus;
         }
-
+        
         this._offerStatus = new Meta(this._meta).parseOfferStatusChange(owner, offerLedgerIndex);
-
+        
         return this._offerStatus;
     }
 }
