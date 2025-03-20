@@ -185,7 +185,12 @@ class LockOverlay extends Component<Props, State> {
                         </Text>
                     </View>
 
-                    <View style={[AppStyles.flex5, AppStyles.flexEnd]}>
+                    <View
+                        style={[
+                            AppStyles.flex5,
+                            AppStyles.flexEnd,
+                        ]}
+                    >
                         <Text
                             style={[
                                 AppStyles.p,

@@ -21,6 +21,8 @@ import StyleService from '@services/StyleService';
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 
+import Localize from '@locale';
+
 import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
@@ -317,10 +319,11 @@ class SecurePinInput extends Component<Props, State> {
         }
 
         return (
-            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
+            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus} accessible={false}>
                 <View
-                    style={styles.container}
-                    accessible accessibilityLabel="Pin Pad"
+                    style={[
+                        styles.container,
+                    ]}
                 >
                     {!virtualKeyboard && (
                         <TextInput
@@ -328,6 +331,7 @@ class SecurePinInput extends Component<Props, State> {
                             testID="pin-input"
                             returnKeyType="done"
                             keyboardType="number-pad"
+                            accessible
                             onKeyPress={this.onKeyPress}
                             autoCorrect={false}
                             spellCheck={false}
@@ -340,10 +344,14 @@ class SecurePinInput extends Component<Props, State> {
                             {...props}
                         />
                     )}
-                    <View style={[
-                        styles.digits,
-                        condensed && styles.digitsCondensed,
-                    ]}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
+                    <View
+                        style={[
+                            styles.digits,
+                            condensed && styles.digitsCondensed,
+                        ]}
+                        accessible
+                        accessibilityHint={Localize.t('global.pleaseEnterYourPasscode')}
+                    >{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
                         <View testID="virtual-keyboard"
