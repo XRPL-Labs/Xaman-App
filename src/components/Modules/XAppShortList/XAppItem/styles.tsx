@@ -9,6 +9,8 @@ const styles = StyleService.create({
         alignItems: 'center',
         paddingHorizontal: AppSizes.paddingExtraSml,
         // position: 'relative',
+        // borderWidth: 3,
+        // borderColor: 'red',
     },
     appTitle: {
         lineHeight: AppFonts.subtext.size * 0.95,
@@ -31,7 +33,7 @@ const styles = StyleService.create({
         height: AppFonts.subtext.size * 2,
     },
     appIcon: {
-        width: '80%',
+        width: `${80 / (AppSizes.screen.uncorrectedWidth / AppSizes.screen.width)}%`,
         aspectRatio: 1,
         borderRadius: 10,
         marginBottom: AppSizes.paddingExtraSml,

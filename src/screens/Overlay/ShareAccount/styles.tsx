@@ -71,6 +71,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     footer: {
+        width: '100%',
         marginBottom: AppSizes.padding + 20,
     },
 });
