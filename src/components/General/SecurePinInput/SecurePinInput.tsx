@@ -263,7 +263,7 @@ class SecurePinInput extends Component<Props, State> {
                 >
                     <>
                         <Text style={styles.numTextInt}>{item}</Text>
-                        <Text>{alpha(item)}</Text>
+                        <Text style={styles.numTextAlpha}>{alpha(item)}</Text>
                     </>
                 </TouchableHighlight>
             );
