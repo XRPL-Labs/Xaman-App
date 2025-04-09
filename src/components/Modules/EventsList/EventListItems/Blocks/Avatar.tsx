@@ -45,7 +45,7 @@ class AvatarBlock extends PureComponent<IProps> {
 
         let isContact = false;
         if (participant?.address) {
-            isContact = !!ContactRepository.findOne({ address: participant.address });
+            isContact = !!ContactRepository.findOne({ address: participant.address, destinationTag: '' });
         }
 
         const uri = `${participant?.address}_180_50.png${isContact ? `?contact=${isContact}` : ''}`; 
