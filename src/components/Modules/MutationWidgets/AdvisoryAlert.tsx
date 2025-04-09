@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
+import ContactRepository from '@store/repositories/contact';
+
 import Localize from '@locale';
 
 import { AppStyles } from '@theme';
@@ -11,8 +13,16 @@ import { Props } from './types';
 
 /* Component ==================================================================== */
 class AdvisoryAlert extends PureComponent<Props> {
+    
     render() {
-        const { advisory } = this.props;
+        const { advisory, account, item } = this.props;
+
+        if (item && item?.Account && item.Account !== account.address) {
+            if (ContactRepository.findOne({ address: item.Account })) {
+                // No advisory if in contacts
+                return null;
+            }
+        }
 
         if (!advisory || advisory === 'UNKNOWN') {
             return null;

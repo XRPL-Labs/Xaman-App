@@ -9,6 +9,7 @@ import StyleService from '@services/StyleService';
 
 import { Avatar } from '@components/General';
 import { Props as AvatarProps } from '@components/General/Avatar/Avatar';
+import ContactRepository from '@store/repositories/contact';
 
 import styles from './styles';
 /* Types ==================================================================== */
@@ -42,11 +43,18 @@ class AvatarBlock extends PureComponent<IProps> {
         // get badge props
         const badgeProps = this.getBadgeProps();
 
+        let isContact = false;
+        if (participant?.address) {
+            isContact = !!ContactRepository.findOne({ address: participant.address });
+        }
+
+        const uri = `${participant?.address}_180_50.png${isContact ? `?contact=${isContact}` : ''}`; 
+
         return (
             <View style={styles.avatarContainer}>
                 <Avatar
                     // border
-                    source={{ uri: `${WebLinks.AvatarURL}/${participant?.address}_180_50.png` }}
+                    source={{ uri: `${WebLinks.AvatarURL}/${uri}` }}
                     isLoading={!participant}
                     badge={badgeProps?.badge}
                     badgeColor={badgeProps?.badgeColor}
