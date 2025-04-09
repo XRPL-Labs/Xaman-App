@@ -48,7 +48,8 @@ class AvatarBlock extends PureComponent<IProps> {
             isContact = !!ContactRepository.findOne({ address: participant.address, destinationTag: '' });
         }
 
-        const uri = `${participant?.address}_180_50.png${isContact ? `?contact=${isContact}` : ''}`; 
+        const uri = `${participant?.address}_180_${isContact ? 51 : 50}.png${isContact ? `?contact=${isContact}` : ''}`; 
+        // ^^ isContact different size: force bypass possible scam redirect caching after adding to contact
 
         return (
             <View style={styles.avatarContainer}>
