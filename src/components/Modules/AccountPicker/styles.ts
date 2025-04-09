@@ -21,7 +21,7 @@ export default StyleService.create({
     },
     collapseIcon: {
         alignSelf: 'center',
-        tintColor: '$fark',
+        tintColor: '$contrast',
     },
     accountItemTitle: {
         fontSize: AppStyles.baseText.fontSize,
