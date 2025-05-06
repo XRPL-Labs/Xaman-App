@@ -328,6 +328,31 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    pushTokenScreen = () => {
+        Navigator.showModal<XAppBrowserModalProps>(
+            AppScreens.Modal.XAppBrowser,
+            {
+                identifier: AppConfig.xappIdentifiers.tokens,
+                noSwitching: true,
+                altHeader: {
+                    left: {
+                        icon: 'IconChevronLeft',
+                        onPress: 'onClose',
+                    },
+                    center: {
+                        text: Localize.t('global.assets'),
+                        showNetworkLabel: true,
+                    },
+                },
+                origin: XAppOrigin.XUMM,
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+            },
+        );
+    };
+
     onAddAccountPress = () => {
         Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
@@ -395,6 +420,7 @@ class HomeView extends Component<Props, State> {
                 discreetMode={discreetMode}
                 spendable={isSpendable}
                 timestamp={timestamp}
+                addTokenPress={this.pushTokenScreen}
                 style={styles.tokenListContainer}
             />
         );

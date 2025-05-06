@@ -20,6 +20,7 @@ export default {
         activateAccount: 'xumm.activateacc',
         xappDonation: 'xumm.xapp-donation',
         swap: 'xaman.swap',
+        tokens: 'xaman.tokens',
     },
 
     // localization config
