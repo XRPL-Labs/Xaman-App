@@ -14,7 +14,7 @@ import java.util.List;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
-
+import okhttp3.Dispatcher;
 
 public class HTTPClientFactory implements OkHttpClientFactory {
     // TODO: remove "xumm-cdn.imgix.net", "cdn.xumm.pro". "xumm.app" after migration period
@@ -26,10 +26,15 @@ public class HTTPClientFactory implements OkHttpClientFactory {
 
         HostSelectionInterceptor interceptor = new HostSelectionInterceptor();
 
+        Dispatcher dispatcher = new Dispatcher();
+            dispatcher.setMaxRequestsPerHost(64);
+            dispatcher.setMaxRequests(128);
+
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .connectTimeout(0, TimeUnit.MILLISECONDS)
                 .readTimeout(0, TimeUnit.MILLISECONDS)
                 .writeTimeout(0, TimeUnit.MILLISECONDS)
+                .dispatcher(dispatcher)
                 .cookieJar(new ReactCookieJarContainer())
                 .addInterceptor(interceptor);
         return client.build();

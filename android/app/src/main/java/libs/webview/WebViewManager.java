@@ -207,10 +207,12 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
         // disable cache
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         // enable cookie for third party website
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+
+        System.setProperty("http.maxConnections", "64");
 
         webView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
         webView.setNestedScrollEnabled(false);
@@ -494,6 +496,24 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             super.onPageStarted(webView, url, favicon);
 
             mLastLoadFailed = false;
+
+            try {
+                // For older Android versions
+                Class<?> httpClass = Class.forName("android.net.http.HttpResponseCache");
+                Field defaultField = httpClass.getDeclaredField("maxConnections");
+                defaultField.setAccessible(true);
+                defaultField.setInt(null, 64); // Increase from default (typically 8)
+            } catch (Exception e1) {
+                // For newer Android versions, try the webkit approach
+                try {
+                    Class<?> networkClass = Class.forName("android.webkit.Network");
+                    Field connectionPoolField = networkClass.getDeclaredField("sMaxConnections");
+                    connectionPoolField.setAccessible(true);
+                    connectionPoolField.setInt(null, 64);
+                } catch (Exception e2) {
+                    //
+                }
+            }
 
             WebChromeClient webChromeClient = ((RNCWebView) webView).getWebChromeClient();
             if (webChromeClient instanceof RNCWebChromeClient) {
