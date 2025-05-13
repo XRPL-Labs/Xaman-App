@@ -33,6 +33,7 @@ interface Props {
 
 interface State {
     regularKeyAccounts?: AccountModel[];
+    numAccounts: number;
 }
 /* Component ==================================================================== */
 class InactiveAccount extends PureComponent<Props, State> {
@@ -41,23 +42,33 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         this.state = {
             regularKeyAccounts: undefined,
+            numAccounts: 0, 
         };
     }
 
     static getDerivedStateFromProps(nextProps: Props): Partial<State> | null {
         return {
             regularKeyAccounts: AccountRepository.getRegularKeys(nextProps.account?.address),
+            numAccounts: AccountRepository.count(),
         };
     }
 
     openActivateAccountXApp = () => {
         const { account } = this.props;
+        const { numAccounts } = this.state;
 
-        let params = {};
+        const params: {
+            numAccounts: number;
+            cid?: string;
+        } = {
+            numAccounts,
+        };
 
         // include card serial number if tangem card
         if (account.type === AccountTypes.Tangem) {
-            params = { cid: GetCardId(account.additionalInfo!) };
+            Object.assign(params, {
+                cid: GetCardId(account.additionalInfo!),
+            });
         }
 
         Navigator.showModal<XAppBrowserModalProps>(
