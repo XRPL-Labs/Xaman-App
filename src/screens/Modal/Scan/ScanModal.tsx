@@ -40,6 +40,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import { TrustSet } from '@common/libs/ledger/transactions';
+import { ReviewTransactionModalProps } from '../ReviewTransaction';
 
 /* Component ==================================================================== */
 class ScanModal extends Component<Props, State> {
@@ -230,6 +232,54 @@ class ScanModal extends Component<Props, State> {
                 isLoading: false,
             });
         }
+    };
+
+    handleTransactionTemplate = (parsed: any) => {
+        try {
+            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');   
+            const json = JSON.parse(str);
+            if (json?.TransactionType === 'TrustSet') {
+                const trustSet = new TrustSet(json);
+        
+                const payload = Payload.build(
+                    trustSet.JsonForSigning,
+                    Localize.t('asset.addingAssetReserveDescription', {
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    }),
+                );
+        
+                this.setShouldRead(false);
+
+                setTimeout(() => {
+                    Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                this.onClose();
+
+                return;
+            }
+            
+            throw new Error('Invalid transaction template');
+        } catch (e) {
+            //
+        }
+
+        Prompt(
+            Localize.t('global.error'),
+            Localize.t('global.theQRIsNotWhatWeExpect'),
+            [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+            {
+                cancelable: false,
+                type: 'default',
+            },
+        );
     };
 
     handleSignedTransaction = (txblob: string) => {
@@ -520,6 +570,9 @@ class ScanModal extends Component<Props, State> {
                 break;
             case StringType.XrplSignedTransaction:
                 this.handleSignedTransaction(parsed.txblob);
+                break;
+            case StringType.XrplTransactionTemplate:
+                this.handleTransactionTemplate(parsed);
                 break;
             case StringType.XrplDestination:
             case StringType.PayId:

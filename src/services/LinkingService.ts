@@ -18,6 +18,9 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
+import { TrustSet } from '@common/libs/ledger/transactions';
+import NetworkService from './NetworkService';
+// import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 
 /* Service  ==================================================================== */
 class LinkingService {
@@ -263,12 +266,54 @@ class LinkingService {
         }
     };
 
+    handleTransactionTemplate = (parsed: any) => {
+        try {
+            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');
+            const json = JSON.parse(str);
+            if (json?.TransactionType === 'TrustSet') {
+                const trustSet = new TrustSet(json);
+
+                const payload = Payload.build(
+                    trustSet.JsonForSigning,
+                    Localize.t('asset.addingAssetReserveDescription', {
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    }),
+                );
+
+                setTimeout(() => {
+                    Navigator.showModal(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                return;
+            }
+
+            throw new Error('Invalid transaction template');
+        } catch (e) {
+            //
+        }
+
+        Prompt(Localize.t('global.error'), Localize.t('global.theQRIsNotWhatWeExpect'), [{ text: 'OK' }], {
+            cancelable: false,
+            type: 'default',
+        });
+    };
+
     handle = (url: string) => {
         const detected = new StringTypeDetector(url);
         const parsed = new StringDecoder(detected).getAny();
 
         // the screen will handle the content
         switch (detected.getType()) {
+            case StringType.XrplTransactionTemplate:
+                this.handleTransactionTemplate(parsed);
+                break;
             case StringType.XummPayloadReference:
                 this.handlePayloadReference(parsed.uuid);
                 break;
