@@ -267,9 +267,20 @@ class LinkingService {
     };
 
     handleTransactionTemplate = (parsed: any) => {
+        let errorMsg = Localize.t('global.theQRIsNotWhatWeExpect');
+
         try {
             const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');
             const json = JSON.parse(str);
+
+            if (
+                json?.NetworkID !== NetworkService.getNetwork().networkId ||
+                (NetworkService.getNetwork().networkId > 1024 && !json?.NetworkID)
+            ) {
+                errorMsg = Localize.t('payload.payloadForceNetworkError');
+                throw new Error('Invalid network');
+            }
+
             if (json?.TransactionType === 'TrustSet') {
                 const trustSet = new TrustSet(json);
 
@@ -299,10 +310,12 @@ class LinkingService {
             //
         }
 
-        Prompt(Localize.t('global.error'), Localize.t('global.theQRIsNotWhatWeExpect'), [{ text: 'OK' }], {
-            cancelable: false,
-            type: 'default',
-        });
+        setTimeout(() => {
+            Prompt(Localize.t('global.error'), errorMsg, [{ text: 'OK' }], {
+                cancelable: false,
+                type: 'default',
+            });
+        }, 800);
     };
 
     handle = (url: string) => {

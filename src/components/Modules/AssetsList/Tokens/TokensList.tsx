@@ -203,6 +203,7 @@ class TokensList extends Component<Props, State> {
             addTokenPress();
             return;
         }
+
         Navigator.showOverlay<AddTokenOverlayProps>(AppScreens.Overlay.AddToken, { account });
     };
 
