@@ -78,6 +78,17 @@ class InactiveAccount extends PureComponent<Props, State> {
                 params,
                 account,
                 origin: XAppOrigin.XUMM,
+                noSwitching: true,
+                altHeader: {
+                    left: {
+                        icon: 'IconChevronLeft',
+                        onPress: 'onClose',
+                    },
+                    center: {
+                        text: Localize.t('global.activation'),
+                        showNetworkLabel: true,
+                    },
+                },
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
