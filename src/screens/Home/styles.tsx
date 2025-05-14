@@ -99,10 +99,11 @@ const styles = StyleService.create({
         alignItems: 'center',
         backgroundColor: '$contrast',
         borderRadius: 12,
+        marginTop: -8,
         paddingHorizontal: AppSizes.paddingExtraSml,
         paddingVertical: 5,
         marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingExtraSml,
+        marginBottom: AppSizes.paddingExtraSml + 3,
     },
     networkTextLabel: {
         color: '$silver',
