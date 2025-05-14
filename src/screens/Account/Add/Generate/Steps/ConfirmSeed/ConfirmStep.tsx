@@ -17,6 +17,7 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+import { Navigator } from '@common/helpers/navigator';
 /* types ==================================================================== */
 export interface Props {}
 
@@ -45,7 +46,7 @@ class ConfirmStep extends Component<Props, State> {
 
     goNext = () => {
         const { currentRow } = this.state;
-        const { goNext } = this.context;
+        const { goNext, degenMode } = this.context;
 
         VibrateHapticFeedback(
             currentRow < 7
@@ -59,7 +60,12 @@ class ConfirmStep extends Component<Props, State> {
             this.setState({ currentRow: currentRow + 1 });
 
             if (currentRow === 7) {
-                goNext('ViewPublicKey');
+                if (degenMode) {
+                    // We just confirmed the secret, we're done
+                    goNext();
+                } else {
+                    goNext('ViewPublicKey');
+                }
             }
         }
     };

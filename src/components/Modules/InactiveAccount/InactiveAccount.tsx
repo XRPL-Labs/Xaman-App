@@ -25,6 +25,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import StyleService from '@services/StyleService';
 
 /* Types ==================================================================== */
 interface Props {
@@ -131,17 +132,29 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         return (
             <View style={styles.messageContainer} testID="not-activated-account-container">
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorBlue]}>
+                <Text style={[
+                    AppStyles.subtext,
+                    AppStyles.bold,
+                    StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                ]}>
                     {Localize.t('account.yourAccountIsNotActivated')}
                 </Text>
-                <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorBlue]}>
+                <Text style={[
+                    AppStyles.subtext,
+                    AppStyles.textCenterAligned,
+                    StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                ]}>
                     {Localize.t('account.accountGenerateActivationExplain', {
                         baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                         nativeAsset: NetworkService.getNativeAsset(),
                     })}
                 </Text>
                 {regularKeyAccounts && regularKeyAccounts?.length > 0 && (
-                    <Text style={[AppStyles.smalltext, AppStyles.textCenterAligned, AppStyles.colorBlue]}>
+                    <Text style={[
+                        AppStyles.smalltext,
+                        AppStyles.textCenterAligned,
+                        StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                    ]}>
                         {Localize.t('account.activateRegularKeyAccountWarning')}
                     </Text>
                 )}

@@ -19,6 +19,15 @@ export default StyleService.create({
         borderWidth: 3,
         marginBottom: 20,
     },
+    lessVerticalPadding: {
+        paddingVertical: AppSizes.paddingExtraSml * 1.2,
+    },
+    danger: {
+        backgroundColor: '$red',
+    },
+    dangerSelected: {
+        borderColor: '$red',
+    },
     dot: {
         height: 26,
         width: 26,

@@ -8,6 +8,7 @@ interface ContextProps extends State {
     setLabel: (label: string, callback?: any) => void;
     setPassphrase: (passphrase: string, callback?: any) => void;
     setEncryptionLevel: (encryptionLevel: EncryptionLevels, callback?: any) => void;
+    setDegenMode: (degenMode: boolean, callback?: any) => void;
     goNext: (step?: GenerateSteps, callback?: any) => void;
     goBack: () => void;
 }
