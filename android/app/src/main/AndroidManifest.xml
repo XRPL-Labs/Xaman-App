@@ -133,6 +133,7 @@
                 <data android:scheme="xrpl" />
                 <data android:scheme="xrp" />
                 <data android:scheme="xumm" />
+                <data android:scheme="xaman" />
             </intent-filter>
 
             <intent-filter>
