@@ -153,10 +153,18 @@ class AdvancedSettingsView extends Component<Props, State> {
     };
 
     disableDeveloperMode = () => {
+        // Check if on non devmode network, then switch network if required
+        const selectedNetwork = CoreRepository.getSelectedNetwork();
+        if (selectedNetwork.type !== NetworkType.Main) {
+            const networkId = selectedNetwork.networkId > 1024 ? 21337 : NetworkConfig.defaultNetworkId;
+            const toNetwork = NetworkRepository.getNetworks({ networkId, type: NetworkType.Main});
+            if (toNetwork?.[0]) {
+                NetworkService.switchNetwork(toNetwork[0]);
+            }
+        }
+        
         // persist the settings
-        CoreRepository.saveSettings({
-            developerMode: false,
-        });
+        CoreRepository.saveSettings({ developerMode: false });
 
         // enable blocking screenshots on android
         if (Platform.OS === 'android') {
@@ -201,7 +209,10 @@ class AdvancedSettingsView extends Component<Props, State> {
         }
 
         // get default network object
-        const defaultNetwork = NetworkRepository.findOne({ networkId: NetworkConfig.defaultNetworkId });
+        const defaultNetwork = NetworkRepository.getNetworks({
+            networkId: selectedNetwork.networkId > 1024 ? 21337 : NetworkConfig.defaultNetworkId,
+            type: NetworkType.Main,
+        })?.[0];
 
         if (!defaultNetwork) {
             throw new Error('Unable to find default network from config!');
