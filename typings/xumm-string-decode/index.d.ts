@@ -11,6 +11,7 @@ declare module 'xumm-string-decode' {
         amount?: string;
         currency?: string;
         issuer?: string;
+        network?: string;
     }
     export interface XrplSecret {
         secretType: SecretType;

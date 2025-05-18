@@ -38,7 +38,7 @@
     "uuid": "10.0.0",
     "xrpl-accountlib": "^8.3.1",
     "xrpl-orderbook-reader": "^1.0.0",
-    "xumm-string-decode": "0.7.0"
+    "xumm-string-decode": "^0.7.1"
   },
   "devDependencies": {
     "@babel/core": "7.24.3",

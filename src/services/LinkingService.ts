@@ -20,6 +20,7 @@ import { StringTypeCheck } from '@common/utils/string';
 import Localize from '@locale';
 import { TrustSet } from '@common/libs/ledger/transactions';
 import NetworkService from './NetworkService';
+import { NetworkRepository } from '@store/repositories';
 // import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 
 /* Service  ==================================================================== */
@@ -143,7 +144,7 @@ class LinkingService {
         );
     };
 
-    handleXrplDestination = async (destination: XrplDestination & PayId) => {
+    handleXrplDestination = async (destination: XrplDestination & PayId): Promise<any> => {
         if (destination.payId) {
             await this.routeUser(
                 AppScreens.Transaction.Payment,
@@ -158,7 +159,7 @@ class LinkingService {
             return;
         }
 
-        let amount;
+        let amount: any;
 
         const { to, tag } = NormalizeDestination(destination);
 
@@ -171,18 +172,59 @@ class LinkingService {
             amount = destination.amount;
         }
 
-        await this.routeUser(
-            AppScreens.Transaction.Payment,
-            {
-                scanResult: {
-                    to,
-                    tag,
+        const _continue = async () => {
+            // console.log('continue');
+            await this.routeUser(
+                AppScreens.Transaction.Payment,
+                {
+                    scanResult: {
+                        to,
+                        tag,
+                    },
+                    amount,
                 },
-                amount,
-            },
-            {},
-            ComponentTypes.Screen,
-        );
+                {},
+                ComponentTypes.Screen,
+            );
+        };
+
+        if (destination?.network) {
+            const currentNetwork = NetworkService.getNetwork();
+            if (destination.network !== currentNetwork?.key) {
+                const wantsNetwork = await NetworkRepository.findBy('key', destination.network.toUpperCase());
+                if (wantsNetwork?.[0]?.key) {
+                    // eslint-disable-next-line consistent-return
+                    return Navigator.showAlertModal({
+                        type: 'warning',
+                        title: Localize.t('settings.disablingDeveloperMode'),
+                        text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
+                            currentNetwork: currentNetwork.name,
+                            defaultNetwork: wantsNetwork[0].name,
+                        }),
+                        buttons: [
+                            {
+                                text: Localize.t('global.cancel'),
+                                type: 'dismiss',
+                                light: true,
+                            },
+                            {
+                                text: Localize.t('global.continue'),
+                                onPress: async () => {
+                                    // console.log('switchnetwork, then request');
+                                    await NetworkService.switchNetwork(wantsNetwork[0]);
+                                    return _continue();
+                                },
+                                type: 'continue',
+                                light: false,
+                            },
+                        ],
+                    });
+                }
+            }
+        }
+
+        // eslint-disable-next-line consistent-return
+        return _continue();
     };
 
     handleXAPPLink = async (url: string, parsed: { xapp: string; params: any }) => {

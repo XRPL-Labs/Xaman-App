@@ -212,13 +212,19 @@ class RequestView extends Component<Props, State> {
     getLink = () => {
         const { source, amount, withAmount } = this.state;
 
-        let content = `https://${HOSTNAME}/detect/request:${source.address}`;
+        const params = [];
 
         if (amount && withAmount) {
-            content += `?amount=${amount}`;
+            params.push(`amount=${amount}`);
         }
 
-        return content;
+        const currentNetwork = NetworkService.getNetwork();
+
+        if (currentNetwork.key !== 'MAINNET') {
+            params.push(`network=${currentNetwork.key}`);
+        }
+
+        return `https://${HOSTNAME}/detect/request:${source.address}${params.length > 0 ? '?' : ''}${params.join('&')}`;
     };
 
     toggleUseAmount = () => {
