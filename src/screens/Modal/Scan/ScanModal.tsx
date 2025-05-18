@@ -16,7 +16,7 @@ import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId }
 
 import { StyleService, BackendService, NetworkService } from '@services';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
 
@@ -351,7 +351,7 @@ class ScanModal extends Component<Props, State> {
                 return;
             }
 
-            let amount;
+            let amount: any;
 
             // normal address scanned
             // try to decode X Address
@@ -376,17 +376,60 @@ class ScanModal extends Component<Props, State> {
                 amount = destination.amount;
             }
 
-            await this.routeUser(
-                AppScreens.Transaction.Payment,
-                {
-                    scanResult: {
-                        to,
-                        tag,
+            const _continue = async () => {
+                await this.routeUser(
+                    AppScreens.Transaction.Payment,
+                    {
+                        scanResult: {
+                            to,
+                            tag,
+                        },
+                        amount,
                     },
-                    amount,
-                },
-                {},
-            );
+                    {},
+                );
+            };
+
+
+            if (destination?.network) {
+                const currentNetwork = NetworkService.getNetwork();
+                if (destination.network !== currentNetwork?.key) {
+                    const wantsNetwork = await NetworkRepository.findBy('key', destination.network.toUpperCase());
+                    if (wantsNetwork?.[0]?.key) {
+                        // eslint-disable-next-line consistent-return
+                        return Navigator.showAlertModal({
+                            type: 'warning',
+                            title: Localize.t('global.switchNetwork'),
+                            text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
+                                currentNetwork: currentNetwork.name,
+                                defaultNetwork: wantsNetwork[0].name,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    type: 'dismiss',
+                                    light: true,
+                                    onPress: () => this.setShouldRead(true),
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: async () => {
+                                        // console.log('switchnetwork, then request');
+                                        await NetworkService.switchNetwork(wantsNetwork[0]);
+                                        requestAnimationFrame(() => {
+                                            _continue();
+                                        });
+                                    },
+                                    type: 'continue',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }
+                }
+            }
+
+            _continue();
         } else {
             Prompt(
                 Localize.t('global.error'),

@@ -196,7 +196,7 @@ class LinkingService {
                     // eslint-disable-next-line consistent-return
                     return Navigator.showAlertModal({
                         type: 'warning',
-                        title: Localize.t('settings.disablingDeveloperMode'),
+                        title: Localize.t('global.switchNetwork'),
                         text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
                             currentNetwork: currentNetwork.name,
                             defaultNetwork: wantsNetwork[0].name,
@@ -212,7 +212,9 @@ class LinkingService {
                                 onPress: async () => {
                                     // console.log('switchnetwork, then request');
                                     await NetworkService.switchNetwork(wantsNetwork[0]);
-                                    return _continue();
+                                    requestAnimationFrame(() => {
+                                        _continue();
+                                    });
                                 },
                                 type: 'continue',
                                 light: false,
