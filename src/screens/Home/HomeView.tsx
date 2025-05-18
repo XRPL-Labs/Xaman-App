@@ -61,7 +61,6 @@ import styles from './styles';
 import onboardingStyles from '../Onboarding/styles';
 import { AccountGenerateViewProps } from '@screens/Account/Add/Generate';
 import { AccountImportViewProps } from '@screens/Account/Add/Import';
-import { ButtonItem } from '@components/General/SegmentButtons/ButtonItem';
 
 /* types ==================================================================== */
 export interface Props {
@@ -336,8 +335,8 @@ class HomeView extends Component<Props, State> {
                 identifier: AppConfig.xappIdentifiers.tokens,
                 noSwitching: true,
                 altHeader: {
-                    left: {
-                        icon: 'IconChevronLeft',
+                    right: {
+                        icon: 'IconX',
                         onPress: 'onClose',
                     },
                     center: {
