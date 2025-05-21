@@ -399,7 +399,9 @@
     "switchNetwork": "Switch network",
     "theme": "Theme",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)"
   },
   "onboarding": {
     "slideOne_title": "Platby a žiadosti o platby v účtovnej knihe XRP",

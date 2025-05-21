@@ -399,7 +399,9 @@
     "switchNetwork": "Cambiar red",
     "theme": "Tema",
     "searchTokens": "Búsqueda de tokens",
-    "closingIn": "Acercar"
+    "closingIn": "Acercar",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)"
   },
   "onboarding": {
     "slideOne_title": "Pagos y solicitudes de pago en el XRP ledger",
