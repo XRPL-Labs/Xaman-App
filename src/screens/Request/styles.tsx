@@ -11,6 +11,13 @@ const styles = StyleService.create({
         alignItems: 'center',
         backgroundColor: '$background',
     },
+    currencySymbolTextPad: {
+        marginTop: 4,
+    },
+    currencyChevronIcon: {
+        tintColor: '$grey',
+        marginTop: 2,
+    },
     qrCodeContainer: {
         width: '100%',
         borderColor: '$tint',
