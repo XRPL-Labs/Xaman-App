@@ -18,9 +18,12 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
-import { TrustSet } from '@common/libs/ledger/transactions';
+import { Payment, PaymentValidation, TrustSet } from '@common/libs/ledger/transactions';
 import NetworkService from './NetworkService';
-import { NetworkRepository } from '@store/repositories';
+import { CoreRepository, NetworkRepository } from '@store/repositories';
+import { TransactionTypes } from '@common/libs/ledger/types/enums';
+// import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
+import { AmountParser } from '@common/libs/ledger/parser/common';
 // import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 
 /* Service  ==================================================================== */
@@ -159,34 +162,125 @@ class LinkingService {
             return;
         }
 
-        let amount: any;
-
         const { to, tag } = NormalizeDestination(destination);
 
-        // if amount present as native currency and valid amount
-        if (
-            !destination.currency &&
-            typeof destination.amount !== 'undefined' &&
-            StringTypeCheck.isValidAmount(destination.amount)
-        ) {
-            amount = destination.amount;
-        }
-
         const _continue = async () => {
+            // console.log('c', to, tag);
             // console.log('continue');
-            await this.routeUser(
-                AppScreens.Transaction.Payment,
+            // Traditional regular payment
+            // await this.routeUser(
+            //     AppScreens.Transaction.Payment,
+            //     {
+            //         scanResult: {
+            //             to,
+            //             tag,
+            //         },
+            //         amount,
+            //     },
+            //     {},
+            //     ComponentTypes.Screen,
+            // );
+            // We do partial now
+            // console.log(to, tag, amount, destination.currency, destination.issuer);
+
+            const payment = new Payment({
+                TransactionType: TransactionTypes.Payment,
+                Account: CoreRepository.getDefaultAccount().address,
+                Destination: to,
+                Amount: !destination?.amount
+                    ? '1'
+                    : destination?.currency && destination?.issuer
+                      ? {
+                            currency: destination?.currency,
+                            issuer: destination?.issuer,
+                            value: String(destination?.amount),
+                        }
+                      : new AmountParser(destination.amount || 0).nativeToDrops().toString(),
+            });
+
+            // console.log('d');
+
+            if (typeof tag !== 'undefined' && tag !== 0) {
+                payment.DestinationTag = Number(destination.tag);
+            }
+
+            payment.Flags = {
+                tfPartialPayment: true,
+            };
+
+            // console.log(destination);
+            if (
+                destination?.invoiceid &&
+                String(destination?.invoiceid)
+                    .trim()
+                    .match(/^[A-F0-9]{64}$/i)
+            ) {
+                payment.InvoiceID = destination.invoiceid.trim();
+            }
+
+            // console.log('x', payment);
+
+            // // set the amount
+            // if (typeof destination.currency === 'string') {
+            //     // IOU
+            //     // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
+            // } else {
+            //     payment.DeliverMin = {
+            //         currency: NetworkService.getNativeAsset(),
+            //         value: amount,
+            //     };
+            // }
+
+            // set the calculated and selected fee
+            // payment.Fee = {
+            //     currency: NetworkService.getNativeAsset(),
+            //     value: new AmountParser(selectedFee!.value).dropsToNative().toFixed(),
+            // };
+
+            // // set memo if any
+            // if (memo) {
+            //     payment.Memos = [Memo.Encode(memo)];
+            // } else if (payment.Memos) {
+            //     payment.Memos = [];
+            // }
+
+            // console.log(payment);
+            // validate payment for all possible mistakes
+            try {
+                await PaymentValidation(payment);
+                // console.log(validation);
+            } catch (error: any) {
+                // console.log(error);
+                Alert.alert(Localize.t('global.error'), error?.message, [{ text: 'OK' }], { cancelable: false });
+                return;
+            }
+
+            // console.log('e');
+
+            // sign the transaction and then submit
+            // await payment.sign(source!).then(this.submit);
+            const payload = Payload.build(
                 {
-                    scanResult: {
-                        to,
-                        tag,
-                    },
-                    amount,
+                    ...payment.JsonForSigning,
+                    Amount: !destination?.amount ? undefined : payment.Amount,
                 },
-                {},
-                ComponentTypes.Screen,
+                undefined, // Custom instruction
+                true, // Submit
+                true, // Pathfinding
+            );
+
+            Navigator.showModal(
+                AppScreens.Modal.ReviewTransaction,
+                {
+                    payload,
+                    // onResolve: (e) => console.log('yesyes', e), // Done here
+                    // onClose: (e) => console.log('lolno', e), // Done here
+                },
+                { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
             );
         };
+
+        // console.log('a');
 
         if (destination?.network) {
             const currentNetwork = NetworkService.getNetwork();
@@ -224,7 +318,7 @@ class LinkingService {
                 }
             }
         }
-
+        // console.log('b');
         // eslint-disable-next-line consistent-return
         return _continue();
     };

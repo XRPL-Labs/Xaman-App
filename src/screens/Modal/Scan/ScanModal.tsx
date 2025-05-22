@@ -14,7 +14,7 @@ import {
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, NetworkService } from '@services';
+import { StyleService, BackendService, NetworkService, LinkingService } from '@services';
 
 import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
 
@@ -376,7 +376,20 @@ class ScanModal extends Component<Props, State> {
                 amount = destination.amount;
             }
 
+            // eslint-disable-next-line consistent-return
             const _continue = async () => {
+                if (destination.amount) {
+                    await Navigator.dismissModal();
+
+                    // got to the root, this is for fallback option
+                    try {
+                        await Navigator.popToRoot();
+                    } catch {
+                        // ignore
+                    }
+
+                    return LinkingService.handleXrplDestination(destination);
+                }
                 await this.routeUser(
                     AppScreens.Transaction.Payment,
                     {
@@ -389,7 +402,6 @@ class ScanModal extends Component<Props, State> {
                     {},
                 );
             };
-
 
             if (destination?.network) {
                 const currentNetwork = NetworkService.getNetwork();

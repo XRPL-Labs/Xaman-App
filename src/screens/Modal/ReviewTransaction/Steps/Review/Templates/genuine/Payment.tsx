@@ -319,8 +319,14 @@ class PaymentTemplate extends Component<Props, State> {
                 {/* Amount */}
                 <>
                     <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-                    <View style={styles.contentBox}>
-                        <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.onAmountEditPress}>
+                    <View style={[
+                        styles.contentBox,
+                        // AppStyles.borderGreen,
+                    ]}>
+                        <TouchableOpacity activeOpacity={1} style={[
+                            AppStyles.row,
+                            // AppStyles.borderRed,
+                        ]} onPress={this.onAmountEditPress}>
                             {editableAmount ? (
                                 <>
                                     <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -341,7 +347,9 @@ class PaymentTemplate extends Component<Props, State> {
                                     </View>
                                     <Button
                                         onPress={this.onAmountEditPress}
-                                        style={styles.editButton}
+                                        style={[
+                                            // styles.editButton,
+                                        ]}
                                         roundedMini
                                         icon="IconEdit"
                                         iconSize={13}
@@ -438,6 +446,21 @@ class PaymentTemplate extends Component<Props, State> {
                     </>
                 )}
 
+                {payload.isPathFinding() && transaction.Amount! && transaction.Amount?.value && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
+                        <PaymentOptionsPicker
+                            key={`dpick${account}${transaction.Destination}${JSON.stringify(transaction.Amount!)}`}
+                            source={account}
+                            destination={transaction.Destination}
+                            // TODO: make sure the Amount is set as it's required for payment options
+                            amount={transaction.Amount!}
+                            containerStyle={AppStyles.paddingBottomSml}
+                            onSelect={this.onPathSelect}
+                        />
+                    </>
+                )}
+
                 {transaction.InvoiceID && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
@@ -457,20 +480,6 @@ class PaymentTemplate extends Component<Props, State> {
                                 </Text>
                             ))}
                         </View>
-                    </>
-                )}
-
-                {payload.isPathFinding() && (
-                    <>
-                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
-                        <PaymentOptionsPicker
-                            source={account}
-                            destination={transaction.Destination}
-                            // TODO: make sure the Amount is set as it's required for payment options
-                            amount={transaction.Amount!}
-                            containerStyle={AppStyles.paddingBottomSml}
-                            onSelect={this.onPathSelect}
-                        />
                     </>
                 )}
             </>
