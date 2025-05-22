@@ -30,7 +30,8 @@ const styles = StyleService.create({
         backgroundColor: '$background',
         paddingTop: 5,
         paddingBottom: 5,
-        marginLeft: 7,
+        marginLeft: 0,
+        paddingLeft: 7,
         shadowColor: '$white',
     },
     listEmptyContainer: {
