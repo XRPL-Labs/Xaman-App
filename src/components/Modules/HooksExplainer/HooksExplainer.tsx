@@ -51,6 +51,7 @@ class HooksExplainer extends Component<Props, State> {
 
         const params = {
             network: NetworkService.getNetwork().key,
+            node: NetworkService.connection?.getState()?.server, 
             style: StyleService.getCurrentTheme(),
         };
 
