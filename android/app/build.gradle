@@ -7,7 +7,7 @@ apply plugin: "com.google.firebase.crashlytics"
 import com.android.build.OutputFile
 
 def canonicalVersionName = "4.0.6"
-def canonicalVersionCode = 103
+def canonicalVersionCode = 104
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
 def postFixSize = 30_000
