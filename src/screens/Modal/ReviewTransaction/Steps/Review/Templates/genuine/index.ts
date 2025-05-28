@@ -51,6 +51,7 @@ import MPTokenAuthorize from './MPTokenAuthorize';
 import CredentialCreate from './CredentialCreate';
 import CredentialAccept from './CredentialAccept';
 import CredentialDelete from './CredentialDelete';
+import SetRemarks from './SetRemarks';
 
 export {
     Global,
@@ -106,4 +107,5 @@ export {
     CredentialCreate,
     CredentialAccept,
     CredentialDelete,
+    SetRemarks,
 };

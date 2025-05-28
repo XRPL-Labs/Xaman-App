@@ -53,3 +53,4 @@ export * from './MPTokenAuthorize';
 export * from './CredentialCreate';
 export * from './CredentialAccept';
 export * from './CredentialDelete';
+export * from './SetRemarks';

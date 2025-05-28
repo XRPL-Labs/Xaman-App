@@ -14,6 +14,7 @@ import { TradingFee } from './TradingFee';
 import { AuthAccounts } from './AuthAccounts';
 import { Amounts } from './Amounts';
 import { AuthorizeCredentials } from './AuthorizeCredentials';
+import { Remarks } from './Remarks';
 
 export {
     FlagIndices,
@@ -31,4 +32,5 @@ export {
     Amounts,
     PriceDataSeries,
     AuthorizeCredentials,
+    Remarks,
 };
