@@ -43,6 +43,13 @@ class BaseGenuineTransaction extends BaseTransaction {
         return tx;
     }
 
+    get JsonRaw(): TransactionJson {
+        // shallow copy and filter the fields
+        const tx = { ...this._tx } as TransactionJson;
+
+        return tx;
+    }
+
     get MetaData() {
         return { ...this._meta };
     }

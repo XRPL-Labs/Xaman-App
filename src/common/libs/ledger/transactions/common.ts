@@ -83,6 +83,10 @@ export abstract class BaseTransaction {
         throw new Error('Method JsonForSigning not implemented.');
     }
 
+    get JsonRaw(): TransactionJson {
+        throw new Error('Method JsonRaw not implemented.');
+    }
+
     get MetaData(): TransactionMetadata | Record<string, never> {
         throw new Error('Method MetaData not implemented.');
     }
