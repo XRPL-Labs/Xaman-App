@@ -204,3 +204,12 @@ export interface HookParameter {
     HookParameterName: string;
     HookParameterValue: string;
 }
+
+/**
+ * Remark
+ */
+export interface Remark {
+    RemarkName: string;
+    RemarkValue?: string;
+    Flags?: number | { [key: string]: boolean };
+}

@@ -61,6 +61,7 @@ export enum TransactionTypes {
     CredentialCreate = 'CredentialCreate',
     CredentialAccept = 'CredentialAccept',
     CredentialDelete = 'CredentialDelete',
+    SetRemarks = 'SetRemarks',
 }
 
 /**

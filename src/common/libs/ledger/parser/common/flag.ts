@@ -6,6 +6,14 @@ import { LedgerEntryFlags } from '@common/constants/flags';
 
 import NetworkService from '@services/NetworkService';
 
+/**
+ * Inner object types
+ * @enum {string}
+ */
+export enum InnerObjectTypes {
+    Remark = 'Remark',
+}
+
 /* types ==================================================================== */
 export type ParsedFlags = {
     [key: string]: boolean;
@@ -21,13 +29,14 @@ export type TransactionFlags = {
 
 /* Class ==================================================================== */
 class FlagParser {
-    private readonly type: TransactionTypes | LedgerEntryTypes;
+    private readonly type: TransactionTypes | LedgerEntryTypes | InnerObjectTypes;
     private bitFlags?: number;
 
     private readonly _flags?: Flag;
     private readonly _indicesFlags?: Flag;
+    private readonly _objectFlags?: Flag;
 
-    constructor(type: TransactionTypes | LedgerEntryTypes, bitFlags?: number) {
+    constructor(type: TransactionTypes | LedgerEntryTypes | InnerObjectTypes, bitFlags?: number) {
         this.type = type;
         this.bitFlags = bitFlags;
 
@@ -39,6 +48,11 @@ class FlagParser {
             definitions?.transactionFlags ?? (binary.DEFAULT_DEFINITIONS as any).TRANSACTION_FLAGS ?? {};
         const indicesFlags =
             definitions?.transactionFlagsIndices ?? (binary.DEFAULT_DEFINITIONS as any).TRANSACTION_FLAGS_INDICES ?? {};
+        const objectFlags = {
+            Remark: {
+                tfImmutable: 0x00000001, // Immutable
+            },
+        };
 
         // transaction flags
         if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(transactionFlags, type)) {
@@ -54,6 +68,13 @@ class FlagParser {
         if (type in TransactionTypes && Object.prototype.hasOwnProperty.call(indicesFlags, type)) {
             this._indicesFlags = indicesFlags[type];
         }
+
+        // object flag
+        if (Object.values(InnerObjectTypes).includes(type as InnerObjectTypes) && 
+            Object.prototype.hasOwnProperty.call(objectFlags, type)) {
+            this._objectFlags = objectFlags[type as InnerObjectTypes];
+        }
+        
     }
 
     getIndices() {
@@ -118,6 +139,55 @@ class FlagParser {
         for (const flagName in flags) {
             if (flagName in this._flags && flags[flagName]) {
                 this.bitFlags |= this._flags[flagName];
+                // JavaScript converts operands to 32-bit signed Int before doing Bit-wise
+                // operations. We need to convert it back to an unsigned int.
+                this.bitFlags >>>= 0;
+            } else {
+                throw new Error(`flag ${flagName} does not exist in flags list!`);
+            }
+        }
+
+        return this.bitFlags;
+    }
+
+    getInnerFlags(): ParsedFlags {
+        // no flag for this inner object type, just return empty object
+        if (typeof this._objectFlags === 'undefined' || typeof this.bitFlags === 'undefined') {
+            return {};
+        }
+
+        const settings: ParsedFlags = {};
+
+        // parse inner object flags
+        for (const flagName in this._objectFlags) {
+            if (this.bitFlags & this._objectFlags[flagName]) {
+                settings[flagName] = true;
+            } else {
+                settings[flagName] = false;
+            }
+        }
+
+        return settings;
+    }
+
+    /**
+     * Sets the flags of the inner object.
+     *
+     * @param {ParsedFlags} flags - The flags to be set. (Object)
+     * @throws {Error} - Throws an error if the transaction type does not support setting flags.
+     * @returns {number} - The newly set flags value in UInt32.
+     */
+    setInnerFlags(flags: ParsedFlags): number {
+        if (typeof this._objectFlags === 'undefined') {
+            throw new Error(`type ${this.type} doesn't not support setting flags!`);
+        }
+
+        // reset the flags
+        this.bitFlags = 0;
+
+        for (const flagName in flags) {
+            if (flagName in this._objectFlags && flags[flagName]) {
+                this.bitFlags |= this._objectFlags[flagName];
                 // JavaScript converts operands to 32-bit signed Int before doing Bit-wise
                 // operations. We need to convert it back to an unsigned int.
                 this.bitFlags >>>= 0;

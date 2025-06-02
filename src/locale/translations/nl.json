@@ -401,7 +401,9 @@
     "searchTokens": "Zoek tokens",
     "closingIn": "Sluit in",
     "curve": "Curve",
-    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)"
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "Betalingen en\r\nbetalingsverzoeken\r\nop de %{network}",
@@ -735,7 +737,8 @@
     "theIssuerIs": "Het uitgever adres is ingesteld op %{issuer}",
     "claimRewardExplain": "Dit is een claim reward transactie",
     "claimRewardExplainOptIn": "Deze transactie meldt %{address} aan om toekomstige beloningen te claimen",
-    "claimRewardExplainOptOut": "Deze transactie meldt %{address} af om toekomstige beloningen te claimen"
+    "claimRewardExplainOptOut": "Deze transactie meldt %{address} af om toekomstige beloningen te claimen",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "Populair",
