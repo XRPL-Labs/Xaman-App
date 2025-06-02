@@ -43,7 +43,7 @@ interface State {
 
 /* Component ==================================================================== */
 class HooksExplainer extends Component<Props, State> {
-    private readonly webView: React.RefObject<typeof WebViewBrowser>;
+    private readonly webView: React.RefObject<WebView>;
 
     constructor(props: Props) {
         super(props);
@@ -203,6 +203,7 @@ class HooksExplainer extends Component<Props, State> {
 
         return (
             <WebViewBrowser
+                // @ts-ignore
                 ref={this.webView}
                 source={this.getSource()}
                 onMessage={this.onMessage}
