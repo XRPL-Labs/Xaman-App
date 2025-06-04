@@ -278,7 +278,7 @@ class GlobalTemplate extends Component<Props, State> {
         if (network?.isFeatureEnabled('Hooks') && transaction.Type !== TransactionTypes.SetHook) {
             return (
                 <>
-                    <Text style={styles.label}>{Localize.t('global.hooks')}</Text>
+                    {/* <Text style={styles.label}>{Localize.t('global.hooks')}</Text> */}
                     <View style={styles.contentBox}>
                         <HooksExplainer
                             transaction={transaction}

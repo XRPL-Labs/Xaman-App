@@ -17,7 +17,7 @@ import { AccountModel } from '@store/models';
 
 import Localize from '@locale';
 
-import { AppSizes } from '@theme';
+// import { AppSizes } from '@theme';
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
 import { Alert, Linking, Share } from 'react-native';
@@ -51,7 +51,8 @@ class HooksExplainer extends Component<Props, State> {
         this.webView = React.createRef();
 
         this.state = {
-            containerHeight: AppSizes.scale(150),
+            // containerHeight: AppSizes.scale(150),
+            containerHeight: 0,
         };
     }
 
@@ -101,7 +102,7 @@ class HooksExplainer extends Component<Props, State> {
         }
 
         return {
-            uri: `${WebLinks.HooksExplainerURL}/${Localize.getCurrentLocale()}`,
+            uri: `${WebLinks.HooksExplainerURL}/${Localize.getCurrentLocale()}?theme=${StyleService.getCurrentTheme()}`,
             // uri: `https://dev.wietse.com/app/webviews/hooks/${Localize.getCurrentLocale()}`,
             method: 'POST',
             body: JSON.stringify(params),
@@ -207,7 +208,13 @@ class HooksExplainer extends Component<Props, State> {
                 ref={this.webView}
                 source={this.getSource()}
                 onMessage={this.onMessage}
-                style={{ height: containerHeight }}
+                style={[
+                    { height: containerHeight },
+                    { backgroundColor: StyleService.value('$background') },
+                ]}
+                containerStyle={[
+                    { backgroundColor: StyleService.value('$background') },
+                ]}
                 errorMessage={Localize.t('events.unableToLoadExplainer')}
             />
         );
