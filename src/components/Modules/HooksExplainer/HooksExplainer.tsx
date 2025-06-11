@@ -79,9 +79,9 @@ class HooksExplainer extends Component<Props, State> {
             Object.assign(params, {
                 tx_hash: transaction.hash,
                 tx_data: returnParamsOnly
-                    ? transaction?.JsonRaw || transaction.JsonForSigning
-                    : JSON.stringify(transaction.JsonForSigning),
-                tx_metadata: returnParamsOnly ? transaction.MetaData : JSON.stringify(transaction.MetaData),
+                    ? transaction?.JsonRaw || transaction?.JsonForSigning || {}
+                    : JSON.stringify(transaction?.JsonForSigning || {}),
+                tx_metadata: returnParamsOnly ? transaction?.MetaData : JSON.stringify(transaction?.MetaData || {}),
             });
         }
 
@@ -141,7 +141,7 @@ class HooksExplainer extends Component<Props, State> {
             Navigator.showModal(AppScreens.Modal.TransactionLoader, {
                 hash: hash || transaction?.hash || '',
                 account,
-                network: NetworkService.getNetwork(),
+                network: NetworkService?.getNetwork(),
             });
         }, delay);
     };
