@@ -19,6 +19,7 @@ export * from './PaymentChannelCreate';
 export * from './PaymentChannelClaim';
 export * from './PaymentChannelFund';
 export * from './NFTokenMint';
+export * from './NFTokenModify';
 export * from './NFTokenBurn';
 export * from './NFTokenCreateOffer';
 export * from './NFTokenAcceptOffer';

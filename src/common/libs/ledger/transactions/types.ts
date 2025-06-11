@@ -23,6 +23,7 @@ import {
     NFTokenCancelOffer,
     NFTokenCreateOffer,
     NFTokenMint,
+    NFTokenModify,
     SetHook,
     ClaimReward,
     Invoke,
@@ -79,6 +80,7 @@ export type Transactions =
     | PaymentChannelClaim
     | PaymentChannelFund
     | NFTokenMint
+    | NFTokenModify
     | NFTokenBurn
     | NFTokenCreateOffer
     | NFTokenAcceptOffer

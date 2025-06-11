@@ -19,6 +19,7 @@ import PaymentChannelCreate from './PaymentChannelCreate';
 import PaymentChannelClaim from './PaymentChannelClaim';
 import PaymentChannelFund from './PaymentChannelFund';
 import NFTokenMint from './NFTokenMint';
+import NFTokenModify from './NFTokenModify';
 import NFTokenBurn from './NFTokenBurn';
 import NFTokenCreateOffer from './NFTokenCreateOffer';
 import NFTokenCancelOffer from './NFTokenCancelOffer';
@@ -75,6 +76,7 @@ export {
     PaymentChannelClaim,
     PaymentChannelFund,
     NFTokenMint,
+    NFTokenModify,
     NFTokenBurn,
     NFTokenCreateOffer,
     NFTokenCancelOffer,

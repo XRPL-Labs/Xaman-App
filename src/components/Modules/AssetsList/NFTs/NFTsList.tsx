@@ -100,6 +100,7 @@ class NFTsList extends Component<Props, State> {
             if (
                 [
                     TransactionTypes.NFTokenMint,
+                    TransactionTypes.NFTokenModify,
                     TransactionTypes.NFTokenBurn,
                     TransactionTypes.NFTokenCreateOffer,
                     TransactionTypes.NFTokenAcceptOffer,

@@ -831,6 +831,7 @@ class EventsView extends Component<Props, State> {
                 case 'NFT':
                     includeTypes = [
                         TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenModify,
                         TransactionTypes.NFTokenBurn,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenAcceptOffer,
@@ -873,6 +874,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenCancelOffer,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenModify,
                         LedgerEntryTypes.Ticket,
                     ];
                     break;

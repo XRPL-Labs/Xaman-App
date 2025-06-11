@@ -26,6 +26,7 @@ export enum TransactionTypes {
     PaymentChannelCreate = 'PaymentChannelCreate',
     PaymentChannelClaim = 'PaymentChannelClaim',
     PaymentChannelFund = 'PaymentChannelFund',
+    NFTokenModify = 'NFTokenModify',
     NFTokenMint = 'NFTokenMint',
     NFTokenBurn = 'NFTokenBurn',
     NFTokenCreateOffer = 'NFTokenCreateOffer',
