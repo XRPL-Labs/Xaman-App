@@ -17,6 +17,8 @@ export abstract class BaseTransaction {
     protected _tx!: TransactionJson | Record<string, never>;
     protected _meta!: TransactionMetadata | Record<string, never>;
 
+    public _txFilter?: Function;
+
     public static Fields: { [key: string]: FieldConfig } = {};
     public static CommonFields: { [key: string]: FieldConfig } = {
         hash: { required: true, type: Hash256 },
@@ -41,9 +43,10 @@ export abstract class BaseTransaction {
         PreviousTxnID: { type: Hash256 },
     };
 
-    protected constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
+    protected constructor(tx?: TransactionJson, meta?: TransactionMetadata, txFilter?: Function) {
         this._tx = tx ?? {};
         this._meta = meta ?? {};
+        this._txFilter = txFilter;
 
         const fields = {
             ...(this.constructor as typeof BaseTransaction).Fields,

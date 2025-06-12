@@ -23,7 +23,15 @@ class NFTokenModify extends BaseGenuineTransaction {
     declare URI: FieldReturnType<typeof Blob>;
 
     constructor(tx?: TransactionJson, meta?: any) {
-        super(tx, meta);
+        const txFilter = (_tx: TransactionJson): TransactionJson => {
+            if (_tx.Owner === _tx.Account) {
+                // Will throw tfMalformed if Owner is redundant vs Account
+                delete _tx.Owner;
+            }
+            return _tx;
+        };
+
+        super(tx, meta, txFilter);
 
         // set transaction type
         this.TransactionType = NFTokenModify.Type;
