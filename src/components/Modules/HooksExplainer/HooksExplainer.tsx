@@ -104,11 +104,11 @@ class HooksExplainer extends Component<Props, State> {
         return {
             uri: `${WebLinks.HooksExplainerURL}/${Localize.getCurrentLocale()}?theme=${StyleService.getCurrentTheme()}`,
             // uri: `https://dev.wietse.com/app/webviews/hooks/${Localize.getCurrentLocale()}`,
-            method: 'POST',
-            body: JSON.stringify(params),
+            // method: 'POST',
+            // body: JSON.stringify(params),
             headers: {
                 'User-Agent': 'Xaman',
-                'Content-Type': 'application/json',
+                // 'Content-Type': 'application/json',
             },
         };
     };
@@ -202,6 +202,10 @@ class HooksExplainer extends Component<Props, State> {
     render() {
         const { containerHeight } = this.state;
 
+        const height = containerHeight > 0 ? containerHeight : 1;
+        const visibility = containerHeight > 0 ? 'visible' : 'hidden';
+        const opacity = containerHeight > 0 ? 1 : 0;
+
         return (
             <WebViewBrowser
                 // @ts-ignore
@@ -209,11 +213,13 @@ class HooksExplainer extends Component<Props, State> {
                 source={this.getSource()}
                 onMessage={this.onMessage}
                 style={[
-                    { height: containerHeight },
+                    { height },
                     { backgroundColor: StyleService.value('$background') },
+                    { visibility, opacity },
                 ]}
                 containerStyle={[
                     { backgroundColor: StyleService.value('$background') },
+                    { visibility, opacity },
                 ]}
                 errorMessage={Localize.t('events.unableToLoadExplainer')}
             />
