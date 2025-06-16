@@ -1295,7 +1295,8 @@
     "unableToLoadChangeLogs": "Oeps! Kan de Wijzigingslogboeken niet ophalen",
     "tecPATH_DRY": "De transactie werkte niet omdat er geen fondsen konden worden verplaatst tussen de twee accounts, of niet tegen de gevraagde wisselkoers.\n\nDit kan komen doordat de twee betrokken accounts geen verbinding (TrustLine) hebben die hen in staat stelt geld met elkaar uit te wisselen, of de transactie werkte niet omdat er niet genoeg geld beschikbaar was om tussen de twee accounts te verplaatsen.",
     "tecPATH_PARTIAL": "De transactie is niet doorgegaan omdat er niet genoeg tokens beschikbaar waren om het volledige bedrag tegen de gevraagde wisselkoers tussen de twee accounts te versturen.",
-    "tecHOOK_REJECTED": "Afgewezen door hook op verzendend of ontvangend account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Afgewezen door hook op verzendend of ontvangend account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
   },
   "moment": {
     "calendar": {

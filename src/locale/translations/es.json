@@ -1295,7 +1295,8 @@
     "unableToLoadChangeLogs": "¡Ups! No se pueden recuperar los logs de cambios",
     "tecPATH_DRY": "La transacción no funcionó porque no se pudieron mover los fondos entre las dos cuentas, o no se pudieron mover al tipo de cambio solicitado.\n\nEsto se puede deber a que las dos cuentas implicadas no tienen conexión (Trustline) que permite intercambiar dinero entre sí, o la transación no funcionó porque no había suficiente dinero disponible para mover entre las dos cuentas.",
     "tecPATH_PARTIAL": "La transacción no se realizó porque no había suficientes tokens disponibles para enviar la cantidad completa al tipo de cambio solicitado entre las dos cuentas.",
-    "tecHOOK_REJECTED": "Rechazado por hook en cuenta emisora o receptora.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rechazado por hook en cuenta emisora o receptora.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
   },
   "moment": {
     "calendar": {
