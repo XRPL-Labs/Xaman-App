@@ -15,7 +15,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountModel, TrustLineModel } from '@store/models';
 
-import { Prompt, Toast } from '@common/helpers/interface';
+import { Prompt } from '@common/helpers/interface';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
@@ -84,7 +84,13 @@ class DetailsStep extends Component<Props, State> {
                 );
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 

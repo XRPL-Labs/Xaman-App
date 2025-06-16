@@ -10,7 +10,7 @@ import NetworkService from '@services/NetworkService';
 import BackendService, { RatesType } from '@services/BackendService';
 
 import { AppScreens } from '@common/constants';
-import { Prompt, Toast } from '@common/helpers/interface';
+import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import Preferences from '@common/libs/preferences';
@@ -86,7 +86,13 @@ class SummaryStep extends Component<Props, State> {
                 });
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 

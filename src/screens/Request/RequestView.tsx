@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import Realm from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
+import { View, Text, Keyboard, Share, InteractionManager, Platform, Alert } from 'react-native';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import BackendService, { RatesType } from '@services/BackendService';
@@ -147,7 +147,13 @@ class RequestView extends Component<Props, State> {
                 );
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
