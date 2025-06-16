@@ -25,7 +25,7 @@ import ResolverService, { AccountNameResolveType } from '@services/ResolverServi
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { TouchableDebounce, Badge, BadgeType } from '@components/General';
+import { TouchableDebounce, Badge, BadgeType, Icon } from '@components/General';
 
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
@@ -339,6 +339,8 @@ class TransactionItem extends Component<Props, State> {
         const showHalfTransparent = participant?.blocked && !isFeeTransaction;
         const opacity = { opacity: showHalfTransparent ? 0.3 : 1 };
 
+        const isRejected = item.MetaData?.TransactionResult === 'tecHOOK_REJECTED';
+
         return (
             <TouchableDebounce
                 onPress={this.onPress}
@@ -385,8 +387,11 @@ class TransactionItem extends Component<Props, State> {
                             { feeText }
                         </Text>
                     )}
-                    { !isFeeTransaction && (
+                    { !isFeeTransaction && !isRejected && (
                         <Blocks.MonetaryBlock explainer={explainer} />
+                    )}
+                    { !isFeeTransaction && isRejected && (
+                        <Icon name="IconAlertTriangle" size={20} style={styles.iconHookRejcted} />
                     )}
                 </View>
             </TouchableDebounce>

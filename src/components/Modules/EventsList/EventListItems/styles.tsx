@@ -18,6 +18,9 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
     },
+    iconHookRejcted: {
+        tintColor: '$red',
+    },
     feeTxAvatar: {
         position: 'relative',
         flex: 1,

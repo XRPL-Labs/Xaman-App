@@ -494,8 +494,10 @@ class EventsView extends Component<Props, State> {
                             }
 
                             return typeof transaction.meta === 'object' &&
-                                transaction?.meta.TransactionResult === 'tesSUCCESS' &&
-                                !blocked ? transaction : null;
+                                (
+                                    transaction?.meta.TransactionResult === 'tesSUCCESS' ||
+                                    transaction?.meta.TransactionResult === 'tecHOOK_REJECTED'
+                                ) && !blocked ? transaction : null;
                         }),
                     )).filter(t => t !== null) as AccountTxTransaction[];
                     // await Promise.all(
