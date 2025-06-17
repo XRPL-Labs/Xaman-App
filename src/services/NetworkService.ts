@@ -215,8 +215,7 @@ class NetworkService extends EventEmitter {
     };
 
     hasSwap = () => {
-        return (ProfileRepository.getProfile()?.swapNetworks.split(',') || [])
-            .indexOf(this.network?.key || '') > -1;
+        return (ProfileRepository.getProfile()?.swapNetworks.split(',') || []).indexOf(this.network?.key || '') > -1;
     };
 
     /**

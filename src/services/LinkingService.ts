@@ -198,15 +198,36 @@ class LinkingService {
                       : new AmountParser(destination.amount || 0).nativeToDrops().toString(),
             });
 
-            // console.log('d');
+            // const p = Payload.build(
+            //     {
+            //         TransactionType: TransactionTypes.Payment,
+            //         Account: CoreRepository.getDefaultAccount().address,
+            //         Destination: to,
+            //         Amount: !destination?.amount
+            //             ? '1'
+            //             : destination?.currency && destination?.issuer
+            //               ? {
+            //                     currency: destination?.currency,
+            //                     issuer: destination?.issuer,
+            //                     value: String(destination?.amount),
+            //                 }
+            //               : new AmountParser(destination.amount || 0).nativeToDrops().toString(),
+            //     },
+            //     undefined, // Custom instruction
+            //     true, // Submit
+            //     true, // Pathfinding
+            // );
+
+            // console.log(p.getTransaction().JsonForSigning);
+            // console.log(p.getTransaction().JsonRaw);
 
             if (typeof tag !== 'undefined' && tag !== 0) {
                 payment.DestinationTag = Number(destination.tag);
             }
 
-            payment.Flags = {
-                tfPartialPayment: true,
-            };
+            // payment.Flags = {
+            //     tfPartialPayment: true,
+            // };
 
             // console.log(destination);
             if (
@@ -262,7 +283,7 @@ class LinkingService {
             const payload = Payload.build(
                 {
                     ...payment.JsonForSigning,
-                    Amount: !destination?.amount ? undefined : payment.Amount,
+                    ...(!destination?.amount ? { Amount: undefined } : {}),
                 },
                 undefined, // Custom instruction
                 true, // Submit

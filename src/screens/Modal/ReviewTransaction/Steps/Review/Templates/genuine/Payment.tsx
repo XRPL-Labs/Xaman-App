@@ -223,6 +223,7 @@ class PaymentTemplate extends Component<Props, State> {
                 transaction.Amount?.currency === NetworkService.getNativeAsset()
             ) {
                 transaction.SendMax = undefined;
+                // If native asset and destination is native asset it can't be partial
             }
 
             // set the transaction path

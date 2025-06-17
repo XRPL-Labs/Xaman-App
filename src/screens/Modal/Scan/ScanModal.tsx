@@ -390,6 +390,7 @@ class ScanModal extends Component<Props, State> {
 
                     return LinkingService.handleXrplDestination(destination);
                 }
+
                 await this.routeUser(
                     AppScreens.Transaction.Payment,
                     {
