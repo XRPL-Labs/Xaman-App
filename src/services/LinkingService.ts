@@ -195,7 +195,7 @@ class LinkingService {
                             issuer: destination?.issuer,
                             value: String(destination?.amount),
                         }
-                      : new AmountParser(destination.amount || 0).nativeToDrops().toString(),
+                      : new AmountParser(destination.amount || 0, false).nativeToDrops().toString(),
             });
 
             // const p = Payload.build(
