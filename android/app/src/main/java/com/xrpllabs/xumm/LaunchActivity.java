@@ -19,6 +19,9 @@ public class LaunchActivity extends NavigationActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        System.setProperty("java.net.preferIPv6Addresses", "false");
+
         // check only one root activity is running at the time
         if (!isTaskRoot()) {
             finish();

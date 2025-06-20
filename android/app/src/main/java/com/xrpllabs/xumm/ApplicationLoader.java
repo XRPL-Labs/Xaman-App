@@ -80,6 +80,10 @@ public class ApplicationLoader extends NavigationApplication {
         // super
         super.onCreate();
 
+        // Force IPv4 for network connections to fix WebSocket issues on IPv6 networks
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        System.setProperty("java.net.preferIPv6Addresses", "false");
+
         // try again to assign applicationContext if not set yet
         if (applicationContext == null) {
             applicationContext = getApplicationContext();
@@ -107,5 +111,3 @@ public class ApplicationLoader extends NavigationApplication {
         });
     }
 }
-
-

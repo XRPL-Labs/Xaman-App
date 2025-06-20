@@ -72,6 +72,19 @@
 #------------- tangem ------------------
 -keep class com.tangem.**
 
+# #------------- rn camera ------------------
+
+# Keep ML Kit classes
+-keep class com.google.mlkit.vision.** { *; }
+-keep class com.google.mlkit.vision.common.internal.Detector { *; }
+-keep class com.google.mlkit.vision.barcode.** { *; }
+
+# Keep react-native-camera ML Kit integration
+-keep class org.reactnative.camera.** { *; }
+-keep class mo.** { *; }
+
+# Don't obfuscate anything ML Kit related
+-keepnames class com.google.mlkit.** { *; }
 
 #------------- Hermes ------------------
 -keep class com.facebook.hermes.unicode.** { *; }

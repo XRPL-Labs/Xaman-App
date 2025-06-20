@@ -147,6 +147,13 @@
         </activity>
 
         <meta-data
+            android:name="java.net.preferIPv4Stack" 
+            android:value="true" />
+        <meta-data
+            android:name="java.net.preferIPv6Addresses" 
+            android:value="false" />
+
+        <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_icon_xaman_android_notification"
             tools:replace="android:resource" />

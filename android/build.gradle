@@ -27,6 +27,8 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.13'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        // classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.1'
     }
 }
 
@@ -41,6 +43,11 @@ allprojects {
             // All of Detox' artifacts are provided via the npm module
             url "$rootDir/../node_modules/detox/Detox-android"
         }
+        // Uncomment this to use local AAR files
+        flatDir {
+            dirs "$projectDir/app/libs"
+        }
+
         google()
         maven { url 'https://jitpack.io' }
         maven { url "https://cdn.veriff.me/android/" } // veriff
