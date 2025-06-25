@@ -184,6 +184,27 @@ class ResultStep extends Component<Props, State> {
     renderFailed = () => {
         const { payment } = this.context;
 
+        const c = payment?.MetaData?.HookExecutions
+            ?.filter(h =>
+                typeof h?.HookExecution?.HookReturnCode === 'string' &&
+                typeof h?.HookExecution?.HookReturnString === 'string',
+            )
+            ?.map(h => [
+                parseInt(String(h.HookExecution.HookReturnCode), 16),
+                Buffer.from(
+                    String(h.HookExecution?.HookReturnString || '').replace(/00$/, ''),
+                    'hex',
+                ).toString('utf-8').trim(),
+            ])
+            ?.filter((h: any) =>
+                h?.[0] !== 0 &&
+                String(h?.[1] || '').trim().match(/[a-zA-Z0-9_\-+*^.()[\]:,;!?\s ]+$/msi),
+            );  
+        
+        const errorMsg = c && c.length > 0
+            ? c.map(h => `${h[1]} (#${h[0]})`).join(', ')
+            : payment.SubmitResult?.message || Localize.t('global.noInformationToShow');
+
         return (
             <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerFailed]}>
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
@@ -208,7 +229,8 @@ class ResultStep extends Component<Props, State> {
                         <Spacer />
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={AppStyles.subtext}>{payment.SubmitResult?.message || 'No Description'}</Text>
+                        <Text style={AppStyles.subtext}>{errorMsg}</Text>
+                        {/* <Text style={AppStyles.subtext}>{JSON.stringify(payment.SubmitResult, null, 2)}</Text> */}
 
                         <Spacer size={50} />
 

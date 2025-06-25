@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 
@@ -10,6 +10,7 @@ import Localize from '@locale';
 import styles from './styles';
 
 import { Props } from './types';
+import { AppStyles } from '@theme/index';
 /* Types ==================================================================== */
 interface State {}
 
@@ -19,6 +20,30 @@ class Warnings extends PureComponent<Props, State> {
         const { item, account } = this.props;
 
         const warnings = [] as Array<string>;
+        const detailWarnings = [] as Array<string>;
+
+        const c = ((item as any)?.MetaData?.HookExecutions || [])
+            ?.filter((h: any) =>
+                typeof h === 'object' && h &&
+                typeof h?.HookExecution?.HookReturnCode === 'string' &&
+                typeof h?.HookExecution?.HookReturnString === 'string',
+            )
+            ?.map((h: any) => [
+                parseInt(String(h.HookExecution.HookReturnCode), 16),
+                Buffer.from(
+                    String(h.HookExecution?.HookReturnString || '').replace(/00$/, ''),
+                    'hex',
+                ).toString('utf-8').trim(),
+            ])
+            ?.filter((h: any) =>
+                h?.[0] !== 0 &&
+                String(h?.[1] || '').trim().match(/[a-zA-Z0-9_\-+*^.()[\]:,;!?\s ]+$/msi),
+            );  
+        
+        if (c.length > 0) {
+            // warnings.push(Localize.t('errors.tecHOOK_REJECTED_Short').trim());
+            detailWarnings.push(c.map((h: string[]) => `${h[1]} (#${h[0]})`).join(', '));
+        }
 
         if (item.Type === LedgerEntryTypes.NFTokenOffer) {
             // incoming offer with destination set other than account
@@ -27,13 +52,31 @@ class Warnings extends PureComponent<Props, State> {
             }
         }
 
-        if (warnings.length > 0) {
+        if (warnings.length > 0 || detailWarnings.length > 0) {
             return (
-                <View style={styles.warningsContainer}>
-                    {warnings.map((warning, index) => {
-                        return <InfoMessage key={`warning-${index}`} type="error" label={warning} />;
-                    })}
-                </View>
+                <>
+                    { warnings.length > 0 && (
+                        <View style={styles.warningsContainer}>
+                            {warnings.map((warning, index) => {
+                                return <InfoMessage key={`warning-${index}`} type="error" label={warning} />;
+                            })}
+                        </View>
+                    )}
+                    { detailWarnings.length > 0 && (
+                        <View style={styles.detailContainer}>
+                            <Text style={[
+                                styles.detailsLabelText,
+                                AppStyles.colorRed,
+                            ]}>{Localize.t('errors.tecHOOK_REJECTED_Short')}</Text>
+                            {detailWarnings.map((warning, index) => {
+                                return <Text key={`warning-${index}`} style={[
+                                    styles.detailsValueText,
+                                    AppStyles.colorRed,
+                                ]}>{warning}</Text>;
+                            })}
+                        </View>
+                    )}
+                </>
             );
         }
 

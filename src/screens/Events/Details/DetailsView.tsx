@@ -215,7 +215,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                 <ScrollView>
                     {widgetsList.map((widget: WidgetKey, index) => {
                         return React.createElement((MutationWidgets as WidgetComponents)[widget], {
-                            key: index,
+                            key: `${index}-${widget}`,
                             item,
                             account,
                             explainer,
