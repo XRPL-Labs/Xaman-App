@@ -29,7 +29,7 @@ class Warnings extends PureComponent<Props, State> {
                 typeof h?.HookExecution?.HookReturnString === 'string',
             )
             ?.map((h: any) => [
-                parseInt(String(h.HookExecution.HookReturnCode), 16),
+                ((val) => val >> 63n ? -(val & ~(1n << 63n)) : val)(BigInt(`0x${String(h.HookExecution.HookReturnCode)}`)),
                 Buffer.from(
                     String(h.HookExecution?.HookReturnString || '').replace(/00$/, ''),
                     'hex',
