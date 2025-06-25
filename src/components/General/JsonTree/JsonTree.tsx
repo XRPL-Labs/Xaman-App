@@ -64,7 +64,7 @@ class JsonTree extends PureComponent<Props, State> {
                 </TouchableDebounce>
                 {data.map((item: any, index) => (
                     <JsonTree
-                        key={`array-${key}-${level}`}
+                        key={`array-${key}-${level}-${index}`}
                         propertyName={`${index}`}
                         data={item}
                         level={level + 1}
