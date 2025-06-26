@@ -1301,7 +1301,7 @@
   "txDelegateSet": {
     "delegateSet": "DelegateSet",
     "objectLabel": "Signing permissions",
-    "authorize": "Authorized granted to",
+    "authorize": "Authorization granted to",
     "empty": "Empty",
     "removeAuthorize": "Remove authorized permissions",
     "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
