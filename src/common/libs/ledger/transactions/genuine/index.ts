@@ -9,6 +9,7 @@ export * from './EscrowCreate';
 export * from './EscrowCancel';
 export * from './EscrowFinish';
 export * from './SetRegularKey';
+export * from './DelegateSet';
 export * from './SignerListSet';
 export * from './DepositPreauth';
 export * from './CheckCreate';

@@ -8,6 +8,7 @@ import {
     EscrowCreate,
     EscrowFinish,
     SetRegularKey,
+    DelegateSet,
     SignerListSet,
     AccountDelete,
     CheckCash,
@@ -70,6 +71,7 @@ export type Transactions =
     | EscrowCancel
     | EscrowFinish
     | SetRegularKey
+    | DelegateSet
     | SignerListSet
     | DepositPreauth
     | CheckCreate

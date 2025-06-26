@@ -378,7 +378,15 @@ class EventsView extends Component<Props, State> {
             //     });
 
             // NEW FAST parallel
-            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket', 'payment_channel'];
+            const objectTypes = [
+                'check',
+                'escrow',
+                'offer',
+                'nft_offer',
+                'ticket',
+                'payment_channel',
+                'delegate',
+            ];
 
             // Create an array of promises, one for each object type
             const fetchPromises = objectTypes.map(async (type) => {
@@ -610,6 +618,7 @@ class EventsView extends Component<Props, State> {
                         LedgerEntryTypes.Check,
                         LedgerEntryTypes.Ticket,
                         LedgerEntryTypes.PayChannel,
+                        LedgerEntryTypes.Delegate,
                     ].includes(p.Type),
                 ),
                 ['Date'],

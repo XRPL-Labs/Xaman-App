@@ -17,6 +17,7 @@ export enum TransactionTypes {
     EscrowCancel = 'EscrowCancel',
     EscrowFinish = 'EscrowFinish',
     SetRegularKey = 'SetRegularKey',
+    DelegateSet = 'DelegateSet',
     SignerListSet = 'SignerListSet',
     DepositPreauth = 'DepositPreauth',
     CheckCreate = 'CheckCreate',
@@ -107,6 +108,7 @@ export enum LedgerEntryTypes {
     SignerList = 'SignerList',
     EmittedTxn = 'EmittedTxn',
     Oracle = 'Oracle',
+    Delegate = 'Delegate',
 }
 
 /**

@@ -32,6 +32,7 @@ import { AppStyles } from '@theme/index';
 enum ActionTypes {
     NEW_PAYMENT = 'NEW_PAYMENT',
     CANCEL_OFFER = 'CANCEL_OFFER',
+    REMOVE_DELEGATION = 'REMOVE_DELEGATION',
     ACCEPT_NFTOKEN_OFFER = 'ACCEPT_NFTOKEN_OFFER',
     ACCEPT_URITOKEN_OFFER = 'ACCEPT_URITOKEN_OFFER',
     SELL_NFTOKEN = 'SELL_NFTOKEN',
@@ -58,6 +59,8 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
                 return { label: Localize.t('events.newPayment'), secondary: false };
             case ActionTypes.CANCEL_OFFER:
                 return { label: Localize.t('events.cancelOffer'), secondary: true };
+            case ActionTypes.REMOVE_DELEGATION:
+                return { label: Localize.t('txDelegateSet.removeAuthorize'), secondary: false };
             case ActionTypes.ACCEPT_NFTOKEN_OFFER:
                 return { label: Localize.t('events.acceptOffer'), secondary: true };
             case ActionTypes.SELL_NFTOKEN:
@@ -146,6 +149,9 @@ class ActionButtons extends PureComponent<Props, State> {
                 break;
             case LedgerEntryTypes.Offer:
                 availableActions.push(ActionTypes.CANCEL_OFFER);
+                break;
+            case LedgerEntryTypes.Delegate:
+                availableActions.push(ActionTypes.REMOVE_DELEGATION);
                 break;
             case LedgerEntryTypes.NFTokenOffer:
                 if (item.Owner === account.address) {
@@ -274,6 +280,16 @@ class ActionButtons extends PureComponent<Props, State> {
                         TransactionType: TransactionTypes.EscrowCancel,
                         Owner: item.Account,
                         PreviousTxnID: item.PreviousTxnID,
+                    });
+                }
+                break;
+            case ActionTypes.REMOVE_DELEGATION:
+                if (item.Type === LedgerEntryTypes.Delegate) {
+                    Object.assign(craftedTxJson, {
+                        TransactionType: TransactionTypes.DelegateSet,
+                        Account: item.Account,
+                        Authorize: item.Authorize,
+                        Permissions: [],
                     });
                 }
                 break;

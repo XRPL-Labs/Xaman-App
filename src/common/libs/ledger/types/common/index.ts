@@ -83,6 +83,13 @@ export interface SignerEntry {
     WalletLocator?: string;
 }
 
+/**
+ * The object that describes the permission in Permissions in DelegateSet.
+ */
+export interface Permission {
+    PermissionValue: number;
+}
+
 export interface Credential {
     Issuer: string;
     CredentialType: number;

@@ -304,6 +304,17 @@ class NetworkService extends EventEmitter {
     /**
      * Get current network definitions
      */
+    getRawNetworkDefinitions = () => {
+        if (this.network && this.getNetwork().definitions) {
+            return this.getNetwork().definitions;
+        }
+
+        return binary.DEFAULT_DEFINITIONS;
+    };
+
+    /**
+     * Get current network definitions
+     */
     getNetworkDefinitions = (): XrplDefinitions => {
         if (this.network && this.getNetwork().definitions) {
             return new XrplDefinitions(<DefinitionsData>this.getNetwork().definitions);

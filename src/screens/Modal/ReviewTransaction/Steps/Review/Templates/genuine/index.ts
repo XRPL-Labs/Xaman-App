@@ -14,6 +14,7 @@ import DepositPreauth from './DepositPreauth';
 import CheckCreate from './CheckCreate';
 import CheckCash from './CheckCash';
 import CheckCancel from './CheckCancel';
+import DelegateSet from './DelegateSet';
 import TicketCreate from './TicketCreate';
 import PaymentChannelCreate from './PaymentChannelCreate';
 import PaymentChannelClaim from './PaymentChannelClaim';
@@ -68,6 +69,7 @@ export {
     SetRegularKey,
     SignerListSet,
     DepositPreauth,
+    DelegateSet,
     CheckCreate,
     CheckCash,
     CheckCancel,
