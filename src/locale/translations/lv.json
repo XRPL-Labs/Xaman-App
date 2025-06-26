@@ -1298,6 +1298,20 @@
     "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
     "tecHOOK_REJECTED_Short": "Rejected by Hook"
   },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorized granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Remove authorized permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
   "moment": {
     "calendar": {
       "sameDay": "[Šodien pulksten] LT",
