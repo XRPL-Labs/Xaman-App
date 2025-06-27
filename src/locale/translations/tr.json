@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Varlık ekle",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Bir ihraççı ve eklemek istediğiniz varlığı seçin. Bu liste Xaman geliştiricileri tarafından tutulur.",
     "addAndSign": "Ekle: işlemi imzala",
     "successRemoved": "Varlık hesabınızdan başarıyla kaldırıldı",

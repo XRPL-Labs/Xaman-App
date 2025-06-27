@@ -345,7 +345,7 @@ class TokensList extends Component<Props, State> {
             return null;
         }
 
-        return <ListEmpty />;
+        return <ListEmpty onTokenAddButtonPress={this.onTokenAddButtonPress} />;
     };
 
     keyExtractor = (item: TrustLineModel) => {

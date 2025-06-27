@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "ਸੰਪਤੀ ਸ਼ਾਮਲ ਕਰੋ",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ਇਕ ਜਾਰੀਕਰਤਾ ਅਤੇ ਸੰਪਤੀ ਨੂੰ ਚੁਣੋ ਜੋ ਤੁਸੀਂ ਜੋੜਨਾ ਚਾਹੁੰਦੇ ਹੋ. ਇਹ ਸੂਚੀ Xaman ਡਿਵੈਲਪਰਾਂ ਦੁਆਰਾ ਬਣਾਈ ਰੱਖੀ ਗਈ ਹੈ.",
     "addAndSign": "ਸ਼ਾਮਲ ਕਰੋ: ਸਾਈਨ ਲੈਣ-ਦੇਣ ਦਾ ਸੰਕੇਤ",
     "successRemoved": "ਸੰਪਤੀ ਨੂੰ ਸਫਲਤਾਪੂਰਵਕ ਤੁਹਾਡੇ ਖਾਤੇ ਤੋਂ ਹਟਾ ਦਿੱਤਾ ਗਿਆ",

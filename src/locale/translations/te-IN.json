@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "ఆస్తిని జోడించండి",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "జారీచేసేవారిని ఎంచుకోండి మరియు మీరు జోడించదలిచిన ఆస్తిని ఎంచుకోండి. ఈ జాబితాను Xaman డెవలపర్లు నిర్వహిస్తున్నారు.",
     "addAndSign": "జోడించు: లావాదేవీకి సంతకం చేయండి",
     "successRemoved": "మీ ఖాతా నుండి ఆస్తి విజయవంతంగా తొలగించబడింది",

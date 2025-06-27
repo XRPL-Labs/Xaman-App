@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "সম্পদ যুক্ত করুন",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ইস্যুকারী নির্বাচন করুন এবং যে সম্পদটি আপনি যুক্ত করতে চান তা নির্বাচন করুন। এই তালিকাটি Xaman বিকাশকারীদের দ্বারা সমর্থিত।",
     "addAndSign": "যোগ করুন: সাইন লেনদেন",
     "successRemoved": "সম্পদ সফলভাবে আপনার অ্যাকাউন্ট থেকে সরানো হয়েছে",

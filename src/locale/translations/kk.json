@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Активті қосу",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Қосқыңыз келетін эмитент пен активті таңдаңыз. Бұл тізімді Xaman әзірлеушілері қолдайды.",
     "addAndSign": "Қосу: транзакцияға қол қою",
     "successRemoved": "Актив Сіздің шотыңыздан сәтті алынып тасталды",

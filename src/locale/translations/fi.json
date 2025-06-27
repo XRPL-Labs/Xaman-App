@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Lisää omaisuuserä",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Valitse liikkeeseenlaskija ja valitse haluamasi omaisuus. Xaman-kehittäjät ylläpitävät tätä luetteloa.",
     "addAndSign": "Lisää: allekirjoitustapahtuma",
     "successRemoved": "Omaisuuserä on poistettu tililtäsi",

@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Thêm mã thông báo",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Chọn một tổ chức phát hành và chọn tài sản bạn muốn thêm. Danh sách này được duy trì bởi các nhà phát triển Xaman.",
     "addAndSign": "Thêm: ký giao dịch",
     "successRemoved": "Đã xóa thành công tài sản khỏi tài khoản của bạn",

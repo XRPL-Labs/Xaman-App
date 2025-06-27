@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "הוסף אסימון",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "בחר מנפיק ובחר את האסימון שברצונך להוסיף. רשימה זו מתוחזקת על ידי צוות Xaman.",
     "addAndSign": "הוסף: חתום על עסקה",
     "successRemoved": "האסימון הוסר בהצלחה מחשבונך",

@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Lisa vara",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Valige väljastaja ja valige vara, mida soovite lisada. Seda nimekirja haldavad Xaman'i arendajad.",
     "addAndSign": "Lisa: kinnita ülekanne",
     "successRemoved": "Vara sinu kontolt edukalt eemaldatud",

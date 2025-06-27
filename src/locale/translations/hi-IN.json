@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "संपत्ति जोड़ें",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "एक जारीकर्ता का चयन करें और उस संपत्ति का चयन करें जिसे आप जोड़ना चाहते हैं। यह सूची Xaman डेवलपर्स द्वारा बनाए रखी गई है।",
     "addAndSign": "जोड़ें: लेन-देन पर हस्ताक्षर करें",
     "successRemoved": "आपके खाते से आस्ति सफलतापूर्वक हटा दिया गया",

@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Gehitu token bat",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Aukeratu bidaltzailea bat eta hautatu token gehitu nahi duzun. Zerrenda hau Xaman taldeak mantentzen du.",
     "addAndSign": "Gehitu: sinatu transakzioa",
     "successRemoved": "Token kendu egin da ongi zure kontutik",

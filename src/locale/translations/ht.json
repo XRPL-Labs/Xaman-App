@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Ajoute yon siy",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Chwazi yon konpayi epi chwazi siy la ou ta renmen ajoute. Lis sa a konsève pa ekip Xaman lan.",
     "addAndSign": "Ajoute: siyen tranzaksyon an",
     "successRemoved": "Jeton yo te retire avèk siksè nan kont ou",

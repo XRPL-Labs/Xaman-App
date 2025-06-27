@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Lägg till inventarie",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Välj en emittent och välj den inventarie som du vill lägga till. Den här listan behålls av Xaman-utvecklarna.",
     "addAndSign": "Lägg till: sign-transaktion",
     "successRemoved": "Inventarien togs bort från ditt konto",

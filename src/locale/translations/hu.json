@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Add a token",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Válasszon ki egy kibocsátót, és válassza ki a hozzáadni kívánt eszközt. Ezt a listát a Xaman fejlesztők tartják fenn.",
     "addAndSign": "Sign to add token",
     "successRemoved": "Token has been removed successfully from your account",

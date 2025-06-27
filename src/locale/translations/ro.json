@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Adăugați activ.",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Selectaţi un emitent şi activul pe care doriţi să-l adăugaţi. Această listă este menținută de dezvoltatorii Xaman. ",
     "addAndSign": "Adăugare: aprobare tranzacţie",
     "successRemoved": "Activul a fost înlăturat cu succes din contul dumneavoastră.",

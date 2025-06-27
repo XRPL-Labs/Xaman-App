@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Voeg 'n teken by",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Kies 'n uitreiker en kies die token wat u wil byvoeg. Hierdie lys word deur die Xaman-span onderhou.",
     "addAndSign": "Voeg by: teken transaksie",
     "successRemoved": "Token is suksesvol uit u rekening verwyder",

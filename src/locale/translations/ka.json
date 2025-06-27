@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "აქტივის დამატება",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "აირჩიეთ აქტივის გამომცემელი და აქტივი რომლის დამატებაც გსურთ. \r\nეს სია განახლებადია Xaman-ის დეველოპერების მიერ",
     "addAndSign": "დამატება: ტრანზაქციის დადასტურება",
     "successRemoved": "აქტივი მოიხსნა წარმატებით თქვენი ანგარიშიდან",

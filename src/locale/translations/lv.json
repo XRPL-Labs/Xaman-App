@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Pievienot aktīvu",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Izvēlieties emitentu un izvēlieties aktīvu, kuru vēlaties pievienot. Šo sarakstu uztur Xaman aplikācijas izstrādātāji.",
     "addAndSign": "Pievienot: parakstīt darījumu",
     "successRemoved": "Aktīvs veiksmīgi noņemts no jūsu konta",

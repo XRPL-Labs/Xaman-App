@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Tambahkan token",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Pilih penerbit dan pilih token yang ingin Anda tambahkan. Daftar ini dikelola oleh tim Xaman.",
     "addAndSign": "Masuk untuk menambahkan token",
     "successRemoved": "Token telah berhasil dihapus dari akun Anda",

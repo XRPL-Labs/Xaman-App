@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Vermögenswert (Asset) hinzufügen",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Wählen Sie einen Anbieter und den Vermögenswert (Asset) aus, den Sie hinzufügen möchten. Diese Liste wird von den Xaman-Entwicklern gepflegt. ",
     "addAndSign": "Hinzufügen: Transaktion bestätigen",
     "successRemoved": "Vermögenswert (Asset) erfolgreich von Ihrem Account entfernt",

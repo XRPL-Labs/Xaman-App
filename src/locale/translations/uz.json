@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Aktiv qushing",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Emitentni va qo'shmoqchi bo'lgan aktivni tanlang. Ushbu ro'yxat Xaman ishlab chiquvchilari tomonidan saqlanadi.",
     "addAndSign": "Aktiv qo'shish: bitimni imzolash",
     "successRemoved": "Aktiv sizning hisobingizdan muvaffaqiyatli olib tashlandi",

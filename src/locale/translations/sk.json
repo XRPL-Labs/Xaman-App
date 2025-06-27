@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Pridať aktívum",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Vyberte emitenta a vyberte žetón, ktorý chcete pridať. Tento zoznam je udržiavaný Xaman tímu.",
     "addAndSign": "Pridať: podpísať transakciu",
     "successRemoved": "Aktívum bol z vášho účtu úspešne odstránený",

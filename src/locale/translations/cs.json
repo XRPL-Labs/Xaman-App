@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Přidat aktivum",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Vyberte vydavatele a vyberte aktivum, které chcete přidat. Tento seznam je udržován vývojáři Xaman.",
     "addAndSign": "Přidat: podepsat transakci",
     "successRemoved": "Aktivum bylo úspěšně odebráno z vašeho účtu",

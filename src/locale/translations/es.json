@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Añadir un activo",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Seleccione un emisor y el activo que desea agregar. Esta lista es actualizada periódicamente por el equipo Xaman.",
     "addAndSign": "Añadir (Firmar transacción)",
     "successRemoved": "Activo eliminado correctamente de tu cuenta.",

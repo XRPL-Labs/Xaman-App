@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Dodaj sredstvo",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Izberite izdajatelja in sredstvo, ki ga želite dodati. Ta seznam je podprt s strani Xaman razvijalcev.",
     "addAndSign": "Dodaj in podpiši transakcijo",
     "successRemoved": "Sredstvo je bilo uspešno odstranjeno iz vašega računa",

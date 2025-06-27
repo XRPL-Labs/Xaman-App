@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Додати жетон",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Одаберите издавача и изаберите жетон које желите да додате. Ову листу одржавају програмери Xaman. ",
     "addAndSign": "Потпиши да би додао жетон",
     "successRemoved": "Ресурс је успешно уклоњен са вашег рачуна",

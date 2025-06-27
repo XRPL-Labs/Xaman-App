@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Add a token",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Select an issuer and asset you would like to add. This list is maintained by the Xaman team.",
     "addAndSign": "Add: sign transaction",
     "successRemoved": "Asset successfully removed from your account!",

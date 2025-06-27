@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "通貨を追加する",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "発行者を選択し、追加するアセットを選択します。このリストは、Xaman開発者によって管理されています。",
     "addAndSign": "追加：トランザクションに署名",
     "successRemoved": "アカウントから通貨が正常に削除されました",

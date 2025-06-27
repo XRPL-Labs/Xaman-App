@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Pridėti turtą/ lėšas",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Pasirinkite leidėją ir pažymėkite norimą pridėti prieigos raktą. Šį sąrašą tvarko Xaman komanda.",
     "addAndSign": "Pridėti: ženklas sandoris",
     "successRemoved": "Turtas sėkmingai pašalintas iš Jūsų sąskaitos",

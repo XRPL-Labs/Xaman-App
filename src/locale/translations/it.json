@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Aggiungi risorsa digitale",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Seleziona un emittente e poi la risorsa digitale che desideri aggiungere. Questo elenco è gestito dagli sviluppatori Xaman.",
     "addAndSign": "Aggiungi risorsa firmando una transazione",
     "successRemoved": "Risorsa digitale rimossa con successo dal tuo account",

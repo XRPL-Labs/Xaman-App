@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Magdagdag ng isang token",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Pumili ng isang nagbigay at piliin ang token na nais mong idagdag. Ang listahang ito ay pinapanatili ng koponan ng Xaman.",
     "addAndSign": "Magdagdag: Lagdaan ang transaksyon",
     "successRemoved": "Matagumpay na naalis ang token mula sa iyong account",

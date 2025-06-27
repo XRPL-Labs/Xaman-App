@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "إضافة أصل",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "حدد مُصدرًا وحدد الرمز المميز الذي ترغب في إضافته. يتم الاحتفاظ بهذه القائمة من قبل فريق Xaman.",
     "addAndSign": "قم بتسجيل الدخول لإضافة رمز مميز",
     "successRemoved": "تم إزالة الرمز بنجاح من حسابك",

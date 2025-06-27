@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "સંપત્તિ ઉમેરો",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ઇશ્યુઅર અને એસેટ તમે પસંદ કરવા માંગો છો તે પસંદ કરો. આ સૂચિ Xaman વિકાસકર્તાઓ દ્વારા જાળવવામાં આવે છે.",
     "addAndSign": "ઉમેરો: સાઇન ટ્રાંઝેક્શન",
     "successRemoved": "સંપત્તિ સફળતાપૂર્વક તમારા ખાતામાંથી દૂર થઈ",

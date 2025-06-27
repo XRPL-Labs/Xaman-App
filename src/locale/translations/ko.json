@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "자산 추가",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "발행자를 선택하고 추가하려는 자산을 선택하십시오. 이 목록은 Xaman 개발자가 관리합니다.",
     "addAndSign": "추가: 거래 서명",
     "successRemoved": "계정에서 자산이 제거되었습니다.",

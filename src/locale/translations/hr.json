@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Dodajte sredstva",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Odaberite izdavača i sredstvo koje želite dodati. Popis je održavan od strane Xaman razvojnih inženjera.",
     "addAndSign": "Dodati: potpis transakcije ",
     "successRemoved": "Sredstvo uspješno uklonjeno s vašeg računa",

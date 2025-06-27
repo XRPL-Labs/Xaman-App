@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "添加资产",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "选择一个发行人，然后选择要添加的资产。该列表由Xaman开发人员维护。",
     "addAndSign": "添加：签单交易",
     "successRemoved": "资产已成功从您的帐户中删除",

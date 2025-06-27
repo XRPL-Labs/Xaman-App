@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "ಸ್ವತ್ತು ಸೇರಿಸಿ",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ನೀಡುವವರನ್ನು ಆಯ್ಕೆಮಾಡಿ ಮತ್ತು ನೀವು ಸೇರಿಸಲು ಬಯಸುವ ಆಸ್ತಿಯನ್ನು ಆಯ್ಕೆ ಮಾಡಿ. ಈ ಪಟ್ಟಿಯನ್ನು Xaman ಡೆವಲಪರ್‌ಗಳು ನಿರ್ವಹಿಸುತ್ತಾರೆ.",
     "addAndSign": "ಸೇರಿಸಿ: ಸೈನ್ ವಹಿವಾಟು",
     "successRemoved": "ನಿಮ್ಮ ಖಾತೆಯಿಂದ ಆಸ್ತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ",

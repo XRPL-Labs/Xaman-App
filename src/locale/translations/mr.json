@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "मालमत्ता जोडा",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "आपण जोडू इच्छित एखादा जारीकर्ता आणि मालमत्ता निवडा. ही यादी Xaman विकसकांद्वारे राखली जाते.",
     "addAndSign": "मालमत्ता जोडा: साइन व्यवहार",
     "successRemoved": "आपल्या खात्यातून मालमत्ता यशस्वीरित्या काढली गेली",

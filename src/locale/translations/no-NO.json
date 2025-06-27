@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Legg til andre aktiva",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Velg en utsteder og aktivum du ønksr å legge til. Denne liste blir vedlikeholdt av Xaman utviklerene.",
     "addAndSign": "Legge til: signer transaksjonen",
     "successRemoved": "Aktivum ble fjernet fra kontoen din",

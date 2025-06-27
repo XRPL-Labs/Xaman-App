@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "ایک اثاثہ شامل کریں",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ایک جاری کنندہ اور اثاثہ منتخب کریں جس میں آپ شامل کرنا چاہتے ہیں۔ اس فہرست کو Xaman ڈویلپرز نے برقرار رکھا ہے۔",
     "addAndSign": "اثاثہ شامل کریں: سائن ٹرانزیکشن",
     "successRemoved": "اثاثہ کامیابی کے ساتھ آپ کے اکاؤنٹ سے ہٹا دیا گیا",

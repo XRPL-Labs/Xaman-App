@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Ajouter un actif",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Sélectionnez un émetteur et sélectionnez le jeton que vous souhaitez ajouter. Cette liste est gérée par l'équipe Xaman.",
     "addAndSign": "Ajouter: signer la transaction",
     "successRemoved": "L'actif a été supprimé de votre compte",

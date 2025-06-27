@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Afegir un actiu",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Selecciona un emissor i l'actiu que voldries afegir. Aquesta llista es manté actualitzada per part dels desenvolupadors de Xaman.",
     "addAndSign": "Afegir: signar transacció",
     "successRemoved": "L'actiu s'ha eliminat correctament del teu compte",

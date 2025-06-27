@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Tilføj aktiv",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Vælg en udsteder, og vælg det aktiv, du vil tilføje. Denne liste vedligeholdes af Xamans udviklere.",
     "addAndSign": "Tilføj (Underskriv transaktion)",
     "successRemoved": "Aktivet er fjernet fra din konto",

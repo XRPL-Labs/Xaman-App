@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Token toevoegen",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Selecteer een uitgever en selecteer het token dat u wilt toevoegen. Deze lijst wordt onderhouden door het Xaman team.",
     "addAndSign": "Onderteken om token toe te voegen",
     "successRemoved": "Token is succesvol verwijderd van uw account",

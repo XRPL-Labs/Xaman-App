@@ -1155,6 +1155,7 @@
   },
   "asset": {
     "addAsset": "Додати актив",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Виберіть емітента та актив, який Ви бажаєте додати. Цей список підтримується розробниками Xaman.",
     "addAndSign": "Додати: підписати транзакцію",
     "successRemoved": "Актив успішно вилучено з Вашого акаунта",
