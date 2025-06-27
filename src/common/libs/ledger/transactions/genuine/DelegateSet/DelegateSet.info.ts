@@ -15,10 +15,13 @@ class DelegateSetInfo extends ExplainerAbstract<DelegateSet, MutationsMixinType>
     }
 
     getEventsLabel(): string {
-        if (this.item.Authorize) {
-            return Localize.t('txDelegateSet.delegateSet');
+        if (!this.item.Permissions) {
+            return Localize.t('txDelegateSet.removeAuthorize');
         }
-        return Localize.t('txDelegateSet.removeAuthorize');
+        if (this.item.Permissions && this.item.Permissions.length > 0) {
+            return Localize.t('txDelegateSet.objectLabel');
+        }
+        return Localize.t('txDelegateSet.delegateSet');
     }
 
     generateDescription(): string {

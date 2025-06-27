@@ -1303,7 +1303,7 @@
     "objectLabel": "Signing permissions",
     "authorize": "Authorization granted to",
     "empty": "Empty",
-    "removeAuthorize": "Remove authorized permissions",
+    "removeAuthorize": "Revoke permissions",
     "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
     "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
     "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
