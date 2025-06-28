@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "アカウントのNFTを取得できません。XRP Ledgerノードに接続していることを確認してください。"
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "利用可能残高が不足しています。(利用可能残高: %{spendable})",
     "theMaxAmountYouCanSendIs": "送金可能金額は %{spendable} %{currency} です",
     "theMaxAmountYouCanSendWithFee": "%{currency}の発行者は送金手数料を設定しています。最大送金できる金額（送金手数料を考慮）は%{spendable}%{currency}です。",
@@ -1112,7 +1115,6 @@
     "submittingDone": "送信しました！",
     "addToContacts": "連絡先に登録する",
     "sendingFailed": "送信に失敗しました！",
-    "verificationFailed": "検証に失敗しました！",
     "couldNotVerifyTransaction": "トランザクションの詳細を検証できませんでした",
     "verificationFailedDescription": "あなたの取引は署名され、正常に送信されましたが、取引の最終確認ができませんでした。\r\n\r\nこれは、インターネットの接続障害、または接続しているXRP Ledgerノードの負荷が高まったことが原因です。\r\n\r\nこの取引が取引履歴（イベント）に表示されているかどうか、手動で確認してください。",
     "submitFailed": "提出に失敗しました！",

@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Tutar, harcayabileceğiniz miktardan daha büyük (%{spendable})",
     "theMaxAmountYouCanSendIs": "Gönderebileceğiniz tutar üst sınırı %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "%{currency} kurunu piyasaya sunan taraf transfer ücreti tahsil etmektedir. Gönderebileceğiniz maksimum tutar (transfer ücretine uyarak) %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Gönderme tamamlandı!",
     "addToContacts": "Kişilere ekle",
     "sendingFailed": "Gönderme başarısız oldu!",
-    "verificationFailed": "Doğrulama başarısız oldu!",
     "couldNotVerifyTransaction": "İşlem kesinliği doğrulanamadı",
     "verificationFailedDescription": "Hareketiniz başarıyla imzalandı ve gönderildi, ancak işlem kesinliğini doğrulayamadık.\n\nBu durum, bağlı olduğunuz XRP Ledger düğümünde bir Internet bağlantısı hıçkırığı ya da artırılmış yükleme nedeniyle ortaya çıkmış olabilir.\n\nLütfen bu işlemin hareket geçmişinizde (Olaylar) gösterilip gösterilmediğini el ile doğrulayın.",
     "submitFailed": "Gönderim başarısız oldu!",

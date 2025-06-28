@@ -41,6 +41,9 @@ const styles = StyleService.create({
     containerFailed: {
         backgroundColor: '$lightRed',
     },
+    containerQueued: {
+        backgroundColor: '$lightBlue',
+    },
     successImage: {
         alignSelf: 'center',
         width: AppSizes.scale(250),

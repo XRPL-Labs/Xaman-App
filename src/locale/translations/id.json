@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Jumlah ini lebih besar dari yang dapat Anda belanjakan (%{spendable})",
     "theMaxAmountYouCanSendIs": "Jumlah maksimum yang dapat Anda kirim adalah %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "Penerbit %{currency} mengenakan Biaya Transfer. Maks. jumlah yang dapat Anda kirim (sehubungan dengan Biaya Transfer) adalah            %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Selesai mengirim!",
     "addToContacts": "Tambahkan ke Kontak",
     "sendingFailed": "Pengiriman gagal!",
-    "verificationFailed": "Verifikasi gagal!",
     "couldNotVerifyTransaction": "Tidak dapat memverifikasi finalitas transaksi",
     "verificationFailedDescription": "Transaksi Anda telah ditandatangani dan diajukan dengan sukses, namun: kami tidak dapat mengkonfirmasi finalitas transaksi.\n\nHal ini dapat disebabkan oleh cegukan koneksi internet atau peningkatan beban pada node XRP Ledger Anda terhubung ke.\n\nHarap konfirmasi secara manual jika transaksi ini menunjukkan dalam riwayat transaksi Anda (Peristiwa).",
     "submitFailed": "Pengiriman gagal!",

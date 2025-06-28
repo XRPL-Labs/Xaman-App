@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "La quantitat és més gran del que pots gastar: %{spendable}",
     "theMaxAmountYouCanSendIs": "La quantitat màxima que pots enviar és %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "L'emissor de %{currency} cobra una comissió de transferència. L'import màxim que pots enviar (tenint en compte la comissió de transferència) és de %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Enviament finalitzat!",
     "addToContacts": "Afegir a contactes",
     "sendingFailed": "L'enviament ha fallat.",
-    "verificationFailed": "La verificació ha fallat!",
     "couldNotVerifyTransaction": "No s'ha pogut verificar la finalitat de la transacció",
     "verificationFailedDescription": "La transacció s'ha signat i enviat amb èxit, però no s'ha pogut confirmar finalment.\r\nAixò pot ser causat per un problema temporal en la connexió a internet o per una sobrecàrrega del node de l'XRPL al qual estàs connectat.\r\nSi us plau, verifica que la transacció es mostra a l'historial de transaccions (Activitat)\r\n",
     "submitFailed": "L'enviament ha fallat!",

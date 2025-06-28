@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Der ausgewählte Betrag ist größer als Ihr verfügbares Guthaben von (%{spendable})",
     "theMaxAmountYouCanSendIs": "Der maximale Betrag, den Sie überweisen können, ist %{spendable} %{currency}.",
     "theMaxAmountYouCanSendWithFee": "Der Aussteller der Variable%{currency} verlangt eine Überweisungsgebühr. Der maximale Betrag, den Sie senden können (unter Berücksichtigung der Überweisungsgebühr) ist Variable%{spendable} Variable%{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Fertig mit Einreichen!",
     "addToContacts": "Zu Kontakten hinzufügen",
     "sendingFailed": "Senden fehlgeschlagen!",
-    "verificationFailed": "Überprüfung fehlgeschlagen!",
     "couldNotVerifyTransaction": "Die Transaktionsfinalität konnte nicht überprüft werden",
     "verificationFailedDescription": "Ihre Transaktion wurde signiert und erfolgreich übergeben, jedoch konnten wir die Transaktionsfinalität nicht bestätigen.\n\nDies kann durch einen Internet-Verbindungshiccup oder eine erhöhte Last auf dem XRP-Ledger-Knoten verursacht werden, mit dem Sie verbunden sind.\n\nÜberprüfen Sie manuell, ob diese Transaktion in Ihrer Transaktionshistorie angezeigt wird (Ereignisse).",
     "submitFailed": "Einreichen fehlgeschlagen!",

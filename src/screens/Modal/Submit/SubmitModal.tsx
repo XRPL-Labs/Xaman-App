@@ -158,10 +158,30 @@ class SubmitModal extends Component<Props, State> {
     renderResult = () => {
         const { verifyResult, submitResult } = this.state;
 
+        const isQueued = submitResult?.engineResult === 'terQUEUED';
+
+        const containerStyle = verifyResult?.success
+            ? styles.containerSuccess
+            : isQueued
+            ? styles.containerQueued
+            : styles.containerFailed;
+        
+        const btnBgColor = verifyResult?.success
+            ? AppColors.green
+            : isQueued
+            ? AppColors.blue
+            : AppColors.red;
+
+        const txtColor = verifyResult?.success
+            ? AppStyles.colorGreen
+            : isQueued
+            ? AppStyles.colorBlue
+            : AppStyles.colorRed;
+
         return (
             <SafeAreaView
                 testID="result-view"
-                style={[AppStyles.container, verifyResult?.success ? styles.containerSuccess : styles.containerFailed]}
+                style={[AppStyles.container, containerStyle]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.centerContent]}>
                     {verifyResult?.success ? (
@@ -170,29 +190,42 @@ class SubmitModal extends Component<Props, State> {
                                 style={[
                                     AppStyles.h3,
                                     AppStyles.strong,
-                                    AppStyles.colorGreen,
+                                    txtColor,
                                     AppStyles.textCenterAligned,
                                 ]}
                             >
                                 {Localize.t('send.submittingDone')}
                             </Text>
                             <Text
-                                style={[AppStyles.p, AppStyles.bold, AppStyles.colorGreen, AppStyles.textCenterAligned]}
+                                style={[AppStyles.p, AppStyles.bold, txtColor, AppStyles.textCenterAligned]}
                             >
                                 {Localize.t('send.transactionSubmittedSuccessfully')}
                             </Text>
                         </Fragment>
                     ) : (
-                        <Fragment key="failed">
-                            <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorRed]}>
-                                {Localize.t('send.submitFailed')}
-                            </Text>
-                            <Text
-                                style={[AppStyles.p, AppStyles.bold, AppStyles.colorRed, AppStyles.textCenterAligned]}
-                            >
-                                {Localize.t('send.somethingWentWrong')}
-                            </Text>
-                        </Fragment>
+                        isQueued ? (
+                            <Fragment key="failed">
+                                <Text style={[AppStyles.h3, AppStyles.strong, txtColor]}>
+                                    {Localize.t('send.txResultQueued')}
+                                </Text>
+                                <Text
+                                    style={[AppStyles.p, AppStyles.bold, txtColor, AppStyles.textCenterAligned]}
+                                >
+                                    {Localize.t('send.txResultQueuedExplain')}
+                                </Text>
+                            </Fragment>
+                        ) : (
+                            <Fragment key="failed">
+                                <Text style={[AppStyles.h3, AppStyles.strong, txtColor]}>
+                                    {Localize.t('send.submitFailed')}
+                                </Text>
+                                <Text
+                                    style={[AppStyles.p, AppStyles.bold, txtColor, AppStyles.textCenterAligned]}
+                                >
+                                    {Localize.t('send.somethingWentWrong')}
+                                </Text>
+                            </Fragment>
+                        )
                     )}
                 </View>
 
@@ -241,7 +274,7 @@ class SubmitModal extends Component<Props, State> {
                 <Footer>
                     <Button
                         onPress={this.handleClose}
-                        style={{ backgroundColor: verifyResult?.success ? AppColors.green : AppColors.red }}
+                        style={{ backgroundColor: btnBgColor }}
                         label={Localize.t('global.close')}
                     />
                 </Footer>
@@ -251,6 +284,8 @@ class SubmitModal extends Component<Props, State> {
 
     render() {
         const { step } = this.state;
+
+        // THIS IS TX/DEEPLINK PRE-SIGNED TX SUBMISSION
 
         if (step === 'submitting' || step === 'verifying') {
             return this.renderSubmitting();

@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "No se pueden recuperar los NFT de la cuenta. Asegúrate de que estás conectado al nodo XRP Ledger."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "La cantidad es mayor de lo que puede gastar (%{spendable})",
     "theMaxAmountYouCanSendIs": "La cantidad máxima que puedes enviar es %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "El emisor de %{currency} cobra una tarifa de transferencia. La cantidad máxima que puede enviar (respetando la tarifa de transferencia) es %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "¡Envio finalizado!",
     "addToContacts": "Añadir a contactos",
     "sendingFailed": "¡Envío fallido!",
-    "verificationFailed": "La verificación falló.",
     "couldNotVerifyTransaction": "No se ha podido verificar la finalidad de transacción",
     "verificationFailedDescription": "Tu transacción se ha firmado y enviado satisfactoriamente, sin embargo, no se ha podido confirmar la finalidad de la transacción.\r\n\r\nEsto puede ser causado por un contratiempo de conexión a Internet o un aumento de la carga en el nodo del XRP Ledger al que está conectado.\r\n\r\nVerifique manualmente si esta transacción se muestra en el historial de transacciones (Sucesos).",
     "submitFailed": "¡Envío fallido!",

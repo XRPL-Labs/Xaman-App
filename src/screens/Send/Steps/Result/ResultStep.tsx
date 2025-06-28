@@ -293,8 +293,55 @@ class ResultStep extends Component<Props, State> {
         );
     };
 
+    renderQueued = () => {
+        return (
+            <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerVerificationQueued]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
+                    <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorBlue, AppStyles.textCenterAligned]}>
+                        {Localize.t('send.txResultQueued')}
+                    </Text>
+                    <Text
+                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorBlue, AppStyles.textCenterAligned]}
+                    >
+                        {Localize.t('send.txResultQueuedExplain')}
+                    </Text>
+                </View>
+
+                <View style={AppStyles.flex2}>
+                    <View style={styles.detailsCard}>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Spacer />
+                        <Text style={[AppStyles.subtext]}>{Localize.t('send.txResultQueuedLongExplain')}</Text>
+                    </View>
+                </View>
+
+                <Footer>
+                    <Button
+                        onPress={this.onClosePress}
+                        style={{ backgroundColor: AppColors.blue }}
+                        label={Localize.t('global.close')}
+                    />
+                </Footer>
+            </SafeAreaView>
+        );
+    };
+
     render() {
         const { payment } = this.context;
+
+        // THIS IS A MANUAL SEND
+
+        // console.log('resultstep payment - MetaData', payment.MetaData.TransactionResult);
+        // console.log('resultstep payment - FinalResult', payment.FinalResult.code);
+        // console.log('resultstep payment - SubmitResult', payment.SubmitResult?.engineResult);
+
+        if (
+            payment?.MetaData?.TransactionResult === 'terQUEUED' ||
+            payment?.FinalResult?.code === 'terQUEUED' ||
+            payment?.SubmitResult?.engineResult === 'terQUEUED'
+        ) {
+            return this.renderQueued();
+        }
 
         if (payment.FinalResult?.success) {
             // submitted successfully but cannot be verified

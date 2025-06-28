@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Beløbet er større end det, du kan bruge (%{spendable})",
     "theMaxAmountYouCanSendIs": "Det maksimale beløb, du kan sende, er %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "Udstederen af %{currency} opkræver et overførselsgebyr. Det maksimale beløb, du kan sende (når der er overførselsgebyr) er %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Færdig!",
     "addToContacts": "Tilføj til kontakter",
     "sendingFailed": "Afsendelsen er ikke gennemført!",
-    "verificationFailed": "Verificering mislykket!",
     "couldNotVerifyTransaction": "Kan ikke verificere transaktionen endeligt",
     "verificationFailedDescription": "Din transaktion er blevet underskrevet og sendt med succes, men vi kunne ikke bekræfte transaktionen endeligt.\r\n\r\nDette kan skyldes en internetforbindelse eller en øget belastning på den XRP Ledger-node, du har forbindelse til.\r\n\r\nKontrollér manuelt, om transaktionen vises i din transaktionshistorik (Events).",
     "submitFailed": "Afsendelse fejlede!",

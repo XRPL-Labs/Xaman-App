@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Beloppet är större än vad du kan använda (%{spendable})",
     "theMaxAmountYouCanSendIs": "Det maximala belopp som du kan skicka är %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "Emittenten av %{currency} debitera en överföringsavgift. Max. belopp som du kan skicka (med respekt för överföringsfunktionen) är %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Jag har lagt fram",
     "addToContacts": "Lägg till i kontakter",
     "sendingFailed": "Sänder misslyckades!",
-    "verificationFailed": "Verifikation misslyckades!",
     "couldNotVerifyTransaction": "Det gick inte att verifiera transaktionsörighet",
     "verificationFailedDescription": "Er transaktion har undertecknats och lämnats in med framgång: vi kunde inte bekräfta transaktionsfinalen.\n\nDetta kan orsakas av en internetanslutning hicka eller ökad belastning på XRP-kontonoden som du är ansluten till.\n\nVerifiera manuellt om den här transaktionen visar i transaktionshistoriken (händelser).",
     "submitFailed": "Inlämning misslyckades!",

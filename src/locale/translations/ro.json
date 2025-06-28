@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Suma este mai mare decât ceea ce puteți cheltui (%{spendable}).",
     "theMaxAmountYouCanSendIs": "Suma maximă pe care o puteţi trimite este %{spendable} %{currency}.",
     "theMaxAmountYouCanSendWithFee": "Emitentul %{currency} solicită o taxă de transfer. Suma maximă pe care o puteti trimite (onorând în același timp taxa de transfer) este %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Trimitere efectuată !",
     "addToContacts": "Adăugați la contacte.",
     "sendingFailed": "Trimiterea a eşuat !",
-    "verificationFailed": "Verificarea a eșuat!",
     "couldNotVerifyTransaction": "Nu a putut verifica finalitatea tranzacției",
     "verificationFailedDescription": "Tranzacția dvs. a fost semnată și depusă cu succes, cu toate acestea: nu am putut confirma finalitatea tranzacției.\r\n\r\nAcest lucru poate fi cauzat de o problemă la conexiunea de internet sau o sarcină sporită pe nodul registrului XRP la care sunteți conectat(ă).\r\n\r\nVă rugăm să verificați manual dacă această tranzacție aparen istoricul tranzacțiilor (Evenimente).",
     "submitFailed": "Trimiterea a eşuat !",

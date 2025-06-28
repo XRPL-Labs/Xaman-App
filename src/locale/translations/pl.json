@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Kwota jest większa niż ta, którą możesz wydać (%{spendable})",
     "theMaxAmountYouCanSendIs": "Maksymalna kwota, jaką możesz wysłać, to %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "Emitent %{currency} pobiera opłatę za przelew. Maksymalna kwota, którą możesz wysłać (z uwzględnieniem opłaty za przelew) to %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Wysłano!",
     "addToContacts": "Dodaj do kontaktów",
     "sendingFailed": "Błąd wysyłania!",
-    "verificationFailed": "Weryfikacja nie powiodła się!",
     "couldNotVerifyTransaction": "Nie udało się zweryfikować zakończenia transakcji",
     "verificationFailedDescription": "Twoja transakcja została podpisana i przesłana pomyślnie, jednak: nie mogliśmy potwierdzić zakończenia transakcji.\r\n\r\nMoże to być spowodowane przeszkodą w połączeniu internetowym lub zwiększonym obciążeniem węzła XRP Ledger, z którym jesteś połączony.\r\n\r\nSprawdź ręcznie, czy ta transakcja pojawia się w Twojej historii transakcji (Transakcje).",
     "submitFailed": "Błąd wysyłania!",

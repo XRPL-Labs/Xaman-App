@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "რაოდენობა აჭარბებს გახარჯვად ბალანსს (%{spendable})",
     "theMaxAmountYouCanSendIs": "მაქსიმალური რაოდენობა, რისი გაგზავნაც შეგიძლიათ არის %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "აღნიშნული აქტივის (%{currency}) გამომცემელს დაწესებული აქვს საკომისიო გზავნილებზე. მაქსიმალური რაოდენობა რისი გაგზავნაც შეგიძლიათ საკომისიოს გათვალისწინებით არის %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "დადასტურება დასრულებულია! ",
     "addToContacts": "კონტაქტებში დამატება",
     "sendingFailed": "გაგზავნა ვერ მოხერხდა! ",
-    "verificationFailed": "ვერიფიკაცია ვერ მოხერხდა!",
     "couldNotVerifyTransaction": "ტრანზაქციის საბოლოო დადასტურება ვერ მოხერხდა",
     "verificationFailedDescription": "თქვენი ტრანზაქცია ხელმოწერილია და წარდგენილია წარმატებით, თუმცა, ჩვენ ვერ დავადასტურეთ ტრანზაქციის საბოლოო დასრულება.\r\n\r\nეს შეიძლება გამოწვეული იყოს ინტერნეტ კავშირის შეფერხებით ან XRP Ledger-ის კვანძზე გაზრდილი დატვირთვით, რომელთანაც დაკავშირებული ხართ.\r\n\r\nგთხოვთ, ხელით გადაამოწმოთ, ჩანს თუ არა ეს ტრანზაქცია თქვენს ტრანზაქციის ისტორიაში (მოვლენები).",
     "submitFailed": "დადასტურება ვერ მოხერხდა! ",

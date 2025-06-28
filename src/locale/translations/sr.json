@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Овај износ је већи од онога што можете да потрошите (%{spendable})",
     "theMaxAmountYouCanSendIs": "Максималан износ који можете послати је %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "Издавалац %{currency} наплаћује накнаду за пренос. Макс. износ који можете послати (поштујући накнаду за пренос) је %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Завршено слање!",
     "addToContacts": "Додај у контакте",
     "sendingFailed": "Слање није успело!",
-    "verificationFailed": "Верификација није успела!",
     "couldNotVerifyTransaction": "Не могу да верификујем коначност трансакције",
     "verificationFailedDescription": "Ваша трансакција је потписана и успешно послата, међутим: не можемо да потврдимо коначност трансакције.\n\nОво може бити узроковано интернетским штуцањем или повећаним оптерећењем на XRP Леџер чвору са којим сте повезани.\n\nРучно проверите да ли се ова трансакција приказује у вашој историји трансакције (догађаји).",
     "submitFailed": "Слање није успело!",

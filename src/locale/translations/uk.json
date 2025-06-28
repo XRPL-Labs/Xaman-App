@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Сума більша за ту, що ви можете витратити (%{spendable})",
     "theMaxAmountYouCanSendIs": "Максимальна сума, яку ви можете надіслати, становить %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "Емітент %{currency} стягує комісію за переказ. Макс. сума, яку Ви можете надіслати (з урахуванням комісії за переказ) становить %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Зроблено!",
     "addToContacts": "Додати до контактів",
     "sendingFailed": "Не вдалося надіслати!",
-    "verificationFailed": "Помилка перевірки!",
     "couldNotVerifyTransaction": "Не вдалося перевірити фіналізацію транзакції",
     "verificationFailedDescription": "Ваша операція була підписана і представлена успішно, але ми не могли підтвердити скінченність операції.\n\nЦе може бути спричинено за допомогою Internet connection hcup або збільшення навантаження на вузол XRP Ledger, до якого ви з ' єднані.\n\nБудь ласка, перевіряйте, чи буде ця операція у вашій історії транзакцій (Події).",
     "submitFailed": "Помилка подання!",

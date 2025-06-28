@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Znesek je večji od tistega, ki ga lahko porabite (%{spendable})",
     "theMaxAmountYouCanSendIs": "Najvišji znesek, ki ga lahko pošljete, je %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "Izdajatelj %{currency} zaračuna provizijo za prenos. Največji znesek, ki ga lahko pošljete (upoštevajoč provizijo za prenos) je %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Oddano!",
     "addToContacts": "Dodaj med stike",
     "sendingFailed": "Pošiljanje ni uspelo!",
-    "verificationFailed": "Preverjanje ni uspelo!",
     "couldNotVerifyTransaction": "Ni bilo mogoče preveriti dokončnost transakcije",
     "verificationFailedDescription": "Vaša transakcija je bila podpisana in uspešno predložena, vendar ne moremo potrditi dokončnost transakcij.\r\n\r\nTo lahko povzroči nestabilna internetna povezava ali povečana obremenitev v vozlišču glavne knjige XRP, s katerim ste povezani.\r\n\r\nRočno preverite, ali je ta transakcija prikazana v vaši zgodovini transakcij (dogodki).",
     "submitFailed": "Predložitev ni uspela!",

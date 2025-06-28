@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "This amount exceeds your spendable balance (%{spendable})",
     "theMaxAmountYouCanSendIs": "The maximum amount you can send is %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "The issuer of %{currency} charges a transfer fee. The max. amount you can send (fee included) is %{spendable} %{currency}.",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Successfully submitted!",
     "addToContacts": "Add to contacts",
     "sendingFailed": "Sending failed!",
-    "verificationFailed": "Verification failed!",
     "couldNotVerifyTransaction": "Couldn't verify transaction finality",
     "verificationFailedDescription": "Your transaction has been signed and submitted successfully, however, we could not confirm transaction finality.\r\n\r\nThis can be caused by an internet connection hiccup or increased load on the XRP Ledger node you are connected to.\r\n\r\nPlease manually verify if this transaction shows in your transaction history (Events).",
     "submitFailed": "Submission failed!",

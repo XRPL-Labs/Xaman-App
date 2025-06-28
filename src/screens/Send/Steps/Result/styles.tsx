@@ -15,6 +15,9 @@ const styles = StyleService.create({
     containerVerificationFailed: {
         backgroundColor: '$lightOrange',
     },
+    containerVerificationQueued: {
+        backgroundColor: '$lightBlue',
+    },
     containerFailed: {
         backgroundColor: '$lightRed',
     },

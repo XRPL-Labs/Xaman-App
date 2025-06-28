@@ -108,6 +108,43 @@ class ResultStep extends Component<Props, State> {
         );
     };
 
+    renderQueued = () => {
+        const { onFinish } = this.context;
+        const { closeButtonLabel } = this.state;
+
+        return (
+            <SafeAreaView testID="failed-result-view" style={[styles.container, styles.containerQueued]}>
+                <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.paddingSml]}>
+                    <Text style={[AppStyles.h3, AppStyles.strong, AppStyles.colorBlue, AppStyles.textCenterAligned]}>
+                        {Localize.t('send.txResultQueued')}
+                    </Text>
+                    <Text
+                        style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorBlue, AppStyles.textCenterAligned]}
+                    >
+                        {Localize.t('send.txResultQueuedExplain')}
+                    </Text>
+                </View>
+
+                <View style={AppStyles.flex2}>
+                    <View style={styles.detailsCard}>
+                        <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
+                        <Spacer />
+                        <Text style={[AppStyles.subtext]}>{Localize.t('send.txResultQueuedLongExplain')}</Text>
+                    </View>
+                </View>
+
+                <Footer>
+                    <Button
+                        testID="close-button"
+                        style={{ backgroundColor: AppColors.blue }}
+                        onPress={onFinish}
+                        label={closeButtonLabel}
+                    />
+                </Footer>
+            </SafeAreaView>
+        );
+    };
+
     renderFailed = () => {
         const { transaction, onFinish } = this.context;
         const { closeButtonLabel } = this.state;
@@ -264,8 +301,19 @@ class ResultStep extends Component<Props, State> {
     render() {
         const { submitResult, transaction } = this.context;
 
+        // THIS IS SIGN REQUEST
+
         if (!submitResult || transaction!.InstanceType === InstanceTypes.PseudoTransaction) {
             return this.renderSigned();
+        }
+
+        // console.log('resultstep payment - MetaData', payment.MetaData.TransactionResult);
+        // console.log('resultstep payment - FinalResult', payment.FinalResult.code);
+        // console.log('resultstep payment - SubmitResult', submitResult.engineResult);
+        // console.log('resultstep payment - MetaData', transaction?.MetaData?.TransactionResult);
+
+        if (submitResult?.engineResult === 'terQUEUED' || transaction?.MetaData?.TransactionResult === 'terQUEUED') {
+            return this.renderQueued();
         }
 
         if (transaction!.FinalResult?.success) {

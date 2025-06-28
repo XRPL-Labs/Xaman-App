@@ -1087,6 +1087,9 @@
     "unableToFetchAccountNFTokens": "Kan de account NFT's niet ophalen. Zorg ervoor dat u verbonden bent met de %{network} node."
   },
   "send": {
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Dit bedrag is groter dan wat u kunt uitgeven (%{spendable})",
     "theMaxAmountYouCanSendIs": "Het maximale bedrag dat u kunt versturen is %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "De uitgever van %{currency} rekent een Transfer Fee. Het max. bedrag dat u kunt versturen (inclusief Transfer Fee) is %{spendable} %{currency}",
@@ -1112,7 +1115,6 @@
     "submittingDone": "Indienen voltooid!",
     "addToContacts": "Toevoegen aan contacten",
     "sendingFailed": "Versturen mislukt!",
-    "verificationFailed": "Verificatie mislukt!",
     "couldNotVerifyTransaction": "Kon transactie finaliteit niet bevestigen",
     "verificationFailedDescription": "Uw transactie is succesvol ondertekend en ingediend, maar we konden de transactie finaliteit niet bevestigen.\r\n\r\nDit kan worden veroorzaakt door een internetverbinding storing of verhoogde belasting op de %{network} node waarmee u verbonden bent.\r\n\r\nControleer handmatig of deze transactie in uw transactiegeschiedenis (Gebeurtenissen) verschijnt.",
     "submitFailed": "Indienen mislukt!",
