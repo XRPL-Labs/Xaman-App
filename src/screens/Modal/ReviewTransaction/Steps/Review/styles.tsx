@@ -1,6 +1,6 @@
 import StyleService from '@services/StyleService';
 
-import { AppSizes } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 import { HasBottomNotch } from '@common/helpers/device';
 
@@ -19,6 +19,12 @@ const styles = StyleService.create({
         borderTopRightRadius: 30,
         borderTopLeftRadius: 30,
         paddingVertical: AppSizes.padding,
+    },
+    label: {
+        marginBottom: 5,
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.subtext.size,
+        color: '$grey',
     },
     shadow: {
         shadowColor: '$contrast',
@@ -39,6 +45,11 @@ const styles = StyleService.create({
     detailsContainer: {
         paddingHorizontal: AppSizes.paddingSml,
         paddingVertical: AppSizes.paddingSml,
+    },
+    jsonContainer: {
+        paddingTop: AppSizes.paddingSml,
+        paddingBottom: AppSizes.paddingExtraSml,
+        paddingHorizontal: AppSizes.paddingSml + 5,
     },
     acceptButtonContainer: {
         flex: 1,

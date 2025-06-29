@@ -4,12 +4,12 @@
 
 import { get } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, View } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import { StyleService } from '@services';
 
 // components
-import { KeyboardAwareScrollView, SwipeButton } from '@components/General';
+import { JsonTree, KeyboardAwareScrollView, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
@@ -143,6 +143,7 @@ class ReviewStep extends Component<Props, State> {
             setSource,
             onAccept,
             onClose,
+            coreSettings,
         } = this.context;
         const { canScroll } = this.state;
 
@@ -189,9 +190,18 @@ class ReviewStep extends Component<Props, State> {
                                 {/* the Account can be different than the signing account */}
                                 <SignForAccount transaction={transaction} source={source} />
 
+                                {
+                                    transaction.InstanceType === InstanceTypes.GenuineTransaction &&
+                                    coreSettings?.developerMode && (
+                                    <View style={styles.jsonContainer}>
+                                        <Text style={styles.label}>Transaction JSON (Developer mode)</Text>
+                                        <JsonTree data={transaction.JsonForSigning} />
+                                    </View>
+                                )}
+
                                 {/* transaction details */}
                                 <View style={styles.detailsContainer}>{this.renderDetails()}</View>
-                                
+
                                 {/* accept button */}
                                 <View style={styles.acceptButtonContainer}>
                                     <SwipeButton
