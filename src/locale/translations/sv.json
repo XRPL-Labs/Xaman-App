@@ -1301,6 +1301,10 @@
     "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
     "tecHOOK_REJECTED_Short": "Rejected by Hook"
   },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
   "txDelegateSet": {
     "delegateSet": "DelegateSet",
     "objectLabel": "Signing permissions",
