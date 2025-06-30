@@ -32,7 +32,7 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml / 3,
     },
     memoType: {
-        color: '$blue',
+        color: StyleService.select({ light: '$blue', dark: '$tint' }),
     },
     memoFormat: {
         fontWeight: '200',
@@ -42,6 +42,7 @@ const styles = StyleService.create({
     memoData: {
         paddingTop: AppSizes.paddingExtraSml / 2,
         fontWeight: '200',
+        color: '$contrast',
     },
     addressContainer: {
         borderRadius: 15,

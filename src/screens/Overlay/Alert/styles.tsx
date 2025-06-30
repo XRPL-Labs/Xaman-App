@@ -49,6 +49,7 @@ const styles = StyleService.create({
     subTitle: {
         ...AppStyles.p,
         textAlign: 'center',
+        color: '$contrast',
     },
     titleError: {
         color: '$red',
