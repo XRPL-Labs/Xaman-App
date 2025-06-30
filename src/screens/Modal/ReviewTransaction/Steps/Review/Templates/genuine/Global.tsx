@@ -18,8 +18,11 @@ import Localize from '@locale';
 
 import styles from '../styles';
 
+import { Clipboard } from '@common/helpers/clipboard';
+
 import { TemplateProps } from '../types';
 import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
+import { Toast } from '@common/helpers/interface';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
@@ -255,11 +258,25 @@ class GlobalTemplate extends Component<Props, State> {
                 <View style={styles.contentBox}>
                     {
                         transaction.Memos.map((m) => {
-                            return <View style={styles.memoContainer}>
-                                <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
-                                {m.MemoFormat && <Text style={[styles.value, styles.memoFormat]}>{m.MemoFormat}</Text>}
-                                <Text style={[styles.value, styles.memoData]}>{m.MemoData}</Text>
-                            </View>;
+                            return (
+                                <View
+                                    style={styles.memoContainer}
+                                >
+                                    <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
+                                    {m.MemoFormat && (
+                                        <Text style={[styles.value, styles.memoFormat]}>{m.MemoFormat}</Text>
+                                    )}
+                                    <Text
+                                        style={[styles.value, styles.memoData]}
+                                        onPress={() => {
+                                            if (String(m.MemoData) !== '') {
+                                                Clipboard.setString(String(m.MemoData));
+                                                Toast(Localize.t('payload.dataCopiedToClipboard'));
+                                            }
+                                        }}
+                                    >{m.MemoData}</Text>
+                                </View>
+                            );
                         })
                     }
                     {/* <ReadMore numberOfLines={3} textStyle={styles.value}>

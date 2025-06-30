@@ -32,7 +32,7 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml / 3,
     },
     memoType: {
-        color: StyleService.select({ light: '$blue', dark: '$tint' }),
+        color: StyleService.select({ light: '$blue', dark: '$textSecondary' }),
     },
     memoFormat: {
         fontWeight: '200',
