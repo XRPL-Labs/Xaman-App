@@ -57,10 +57,33 @@ class MemoParser {
             };
         }
 
+        let _MemoData = MemoData;
+        switch (decodedFormat) {
+            case 'hex':
+                // Do nothing
+                break;
+            case 'utf8':
+                // Do nothing
+                _MemoData = HexEncoding.toUTF8(String(_MemoData || ''));
+                break;
+            case 'hexasint':
+                if (typeof MemoData === 'string' && MemoData.match(/^[0-9]+$/)) {
+                    _MemoData = String(parseInt(MemoData, 16));
+                }
+                break;
+            case 'int':
+                if (typeof MemoData === 'string' && MemoData.match(/^[0-9]+$/)) {
+                    _MemoData = String(parseInt(MemoData, 10));
+                }
+                break;
+            default:
+                _MemoData = _MemoData ? HexEncoding.toUTF8(String(_MemoData || '')) : undefined;
+        }
+
         return {
-            MemoData: MemoData ? HexEncoding.toUTF8(MemoData) : undefined,
-            MemoFormat: decodedFormat,
             MemoType: decodedType,
+            MemoFormat: _MemoData !== MemoData && decodedFormat !== 'utf8' ? decodedFormat : undefined,
+            MemoData: _MemoData,
         };
     }
 }

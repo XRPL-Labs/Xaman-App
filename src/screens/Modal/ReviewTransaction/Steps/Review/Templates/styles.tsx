@@ -22,6 +22,27 @@ const styles = StyleService.create({
     nfTokenContainer: {
         paddingHorizontal: 0,
     },
+    memoContainer: {
+        marginHorizontal: -8,
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderColor: '$lightGrey', 
+        borderWidth: 2,
+        borderRadius: 6,
+        marginBottom: AppSizes.paddingSml / 3,
+    },
+    memoType: {
+        color: '$blue',
+    },
+    memoFormat: {
+        fontWeight: '200',
+        color: '$grey',
+        fontSize: AppFonts.base.size / 1.3,
+    },
+    memoData: {
+        paddingTop: AppSizes.paddingExtraSml / 2,
+        fontWeight: '200',
+    },
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
