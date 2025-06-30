@@ -39,7 +39,7 @@ class JsonTree extends PureComponent<Props, State> {
 
         // automatically collapse if items are too long to show
         let collapsed = false;
-        if (typeof props.data === 'object' && Object.keys(props.data).length > 2) {
+        if (typeof props.data === 'object' && Object.keys(props.data).length > 1) {
             collapsed = props.level > (typeof noDefaultCollapse === 'number' ? noDefaultCollapse : 2)
                 ? true
                 : !noDefaultCollapse; 
