@@ -195,7 +195,7 @@ class ReviewStep extends Component<Props, State> {
                                     coreSettings?.developerMode && (
                                     <View style={styles.jsonContainer}>
                                         <Text style={styles.label}>Transaction JSON (Developer mode)</Text>
-                                        <JsonTree data={transaction.JsonForSigning} />
+                                        <JsonTree noDefaultCollapse={2} data={transaction.JsonForSigning} />
                                     </View>
                                 )}
 

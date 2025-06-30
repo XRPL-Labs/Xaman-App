@@ -19,6 +19,7 @@ export interface Props {
     data: Record<string, any> | any[];
     level: number;
     comma?: boolean;
+    noDefaultCollapse?: boolean | number;
     containerStyle?: ViewStyle | ViewStyle[];
 }
 
@@ -34,11 +35,14 @@ class JsonTree extends PureComponent<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        const {noDefaultCollapse} = props;
 
         // automatically collapse if items are too long to show
         let collapsed = false;
-        if (props.level > 0 && typeof props.data === 'object' && Object.keys(props.data).length > 2) {
-            collapsed = true;
+        if (typeof props.data === 'object' && Object.keys(props.data).length > 2) {
+            collapsed = props.level > (typeof noDefaultCollapse === 'number' ? noDefaultCollapse : 2)
+                ? true
+                : !noDefaultCollapse; 
         }
 
         this.state = {
@@ -53,7 +57,7 @@ class JsonTree extends PureComponent<Props, State> {
     };
 
     renderArrayContent = (data: any[], key: string, level: number) => {
-        const { comma } = this.props;
+        const { comma, noDefaultCollapse } = this.props;
 
         return (
             <>
@@ -69,6 +73,7 @@ class JsonTree extends PureComponent<Props, State> {
                         data={item}
                         level={level + 1}
                         comma={data.length - 1 !== index}
+                        noDefaultCollapse={noDefaultCollapse}
                     />
                 ))}
                 <Text style={styles.symbolTextStyle}>&#93;{comma && <Text style={styles.propertyText}>,</Text>}</Text>
@@ -77,7 +82,7 @@ class JsonTree extends PureComponent<Props, State> {
     };
 
     renderObjectContent = (data: Record<string, any>, key: string, level: number) => {
-        const { comma } = this.props;
+        const { comma, noDefaultCollapse } = this.props;
         return (
             <>
                 <TouchableDebounce activeOpacity={1} onPress={this.toggleCollapse} style={styles.rowContainer}>
@@ -92,6 +97,7 @@ class JsonTree extends PureComponent<Props, State> {
                         data={data[k]}
                         level={level + 1}
                         comma={Object.keys(data).length - 1 !== index}
+                        noDefaultCollapse={noDefaultCollapse}
                     />
                 ))}
                 <Text style={styles.symbolTextStyle}>&#125;{comma && <Text style={styles.propertyText}>,</Text>}</Text>
