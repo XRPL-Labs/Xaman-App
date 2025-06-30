@@ -25,7 +25,13 @@ const RippleStateToTrustLine = (ledgerEntry: RippleState, account: string): Acco
             ? ledgerEntry.Balance.value.slice(1)
             : ledgerEntry.Balance.value;
 
-    const locked_balance = ledgerEntry.LockedBalance?.value;
+    const locked_balance =
+        ledgerEntry.HighLimit.issuer === account &&
+        ledgerEntry?.LockedBalance &&
+        ledgerEntry.LockedBalance.value.startsWith('-')
+            ? ledgerEntry.LockedBalance.value.slice(1)
+            : ledgerEntry?.LockedBalance?.value;
+
     const lock_count = ledgerEntry.LockCount;
 
     return {
