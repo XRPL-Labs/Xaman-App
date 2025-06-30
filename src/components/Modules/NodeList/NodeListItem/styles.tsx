@@ -40,6 +40,14 @@ const styles = StyleService.create({
         borderColor: '$blue',
         borderWidth: 3,
     },
+    innerDot: {
+        position: 'absolute',
+        borderColor: '$blue',
+        borderWidth: 0,
+        backgroundColor: '$blue',
+        width: 10,
+        height: 10,
+    },
 });
 
 export default styles;
