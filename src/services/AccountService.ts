@@ -10,7 +10,7 @@ import EventEmitter from 'events';
 import { get, keys, map } from 'lodash';
 
 import { CurrencyModel, TrustLineModel } from '@store/models';
-import { AccountRepository, AmmPairRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, AmmPairRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
 
 import { RewardInformation } from '@store/models/objects/accountDetails';
 
@@ -63,6 +63,9 @@ class AccountService extends EventEmitter {
                 // add listeners for account changes
                 AccountRepository.on('accountCreate', this.onAccountsChange);
                 AccountRepository.on('accountRemove', this.onAccountsChange);
+
+                // Account switched, selectively update account details & TrustLines
+                CoreRepository.on('switchAccount', (accountAddress) => this.updateAccountsDetails([accountAddress]));
 
                 // on network service connect
                 NetworkService.on('connect', this.onNetworkConnect);
@@ -216,8 +219,11 @@ class AccountService extends EventEmitter {
         }
 
         const { account_data, account_flags } = accountInfo;
-        // fetch the normalized account lines
-        const normalizedAccountLines = await this.getNormalizedAccountLines(account);
+        // Now fetch the Account Lines (TrustLines), but only for the currently selected accounts
+        const updateAccountLinesIf = CoreRepository?.getDefaultAccount()?.address === account;
+        const lines = updateAccountLinesIf
+            ? ((await this.getNormalizedAccountLines(account)) as unknown as Realm.Results<TrustLineModel>)
+            : undefined;
 
         // update account info
         await AccountRepository.updateDetails(account, {
@@ -231,7 +237,7 @@ class AccountService extends EventEmitter {
             domain: account_data?.Domain ?? '',
             emailHash: account_data?.EmailHash ?? '',
             messageKey: account_data?.MessageKey ?? '',
-            lines: normalizedAccountLines as unknown as Realm.Results<TrustLineModel>,
+            lines,
             accountIndex: account_data?.AccountIndex,
             reward: {
                 rewardAccumulator: account_data?.RewardAccumulator,
@@ -250,6 +256,8 @@ class AccountService extends EventEmitter {
             LedgerService.getFilteredAccountLines(account),
             LedgerService.getAccountObligations(account),
         ]);
+
+        this.logger.debug('Getting Normalised Account Lines for ', account);
 
         const combinedLines = [...accountLines, ...accountObligations];
 
