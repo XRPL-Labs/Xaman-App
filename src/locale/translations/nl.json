@@ -511,6 +511,8 @@
     "paymentReceived": "Betaling ontvangen",
     "paymentSent": "Betaling verstuurd",
     "exchangedAssets": "Tokens gewisseld",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Token toegevoegd (TrustLine)",
     "removedATrustLine": "Token verwijderd (TrustLine)",
     "updatedATrustLine": "Token Bijgewerkt (TrustLine)",

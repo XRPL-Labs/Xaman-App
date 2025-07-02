@@ -511,6 +511,8 @@
     "paymentReceived": "შემომავალი გზავნილი",
     "paymentSent": "გამავალი გზავნილი",
     "exchangedAssets": "გავლილი აქტივები",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "აქტივი დამატებულია (TrustLine) ",
     "removedATrustLine": "აქტივის მოხსნა (TrustLine)",
     "updatedATrustLine": "ტოკენი განახლებულია (TrustLine)",

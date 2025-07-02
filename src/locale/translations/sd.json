@@ -511,6 +511,8 @@
     "paymentReceived": "ادائيگي ملي",
     "paymentSent": "ادائيگي موڪلي وئي",
     "exchangedAssets": "مٽا سٽا ڪئي اثاثن",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "هڪ اثاثو شامل ڪيو ويو (ٽرسٽ لائن)",
     "removedATrustLine": "هڪ اثاثو ختم ڪيو ويو (ٽرسٽ لائن)",
     "updatedATrustLine": "Token Updated (TrustLine)",

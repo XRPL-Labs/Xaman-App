@@ -511,6 +511,8 @@
     "paymentReceived": "ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ",
     "paymentSent": "ಪಾವತಿ ಕಳುಹಿಸಲಾಗಿದೆ",
     "exchangedAssets": "ವಿನಿಮಯವಾದ ಸ್ವತ್ತುಗಳು",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ಆಸ್ತಿಯನ್ನು ಸೇರಿಸಲಾಗಿದೆ (ಟ್ರಸ್ಟ್‌ಲೈನ್)",
     "removedATrustLine": "ಆಸ್ತಿಯನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ (ಟ್ರಸ್ಟ್‌ಲೈನ್)",
     "updatedATrustLine": "Token Updated (TrustLine)",

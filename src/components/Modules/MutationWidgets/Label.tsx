@@ -10,7 +10,10 @@ import { Badge, BadgeType } from '@components/General';
 import { AppStyles } from '@theme';
 import styles from './styles';
 
+import Localize from '@locale';
+
 import { Props } from './types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* Types ==================================================================== */
 interface State {
@@ -41,6 +44,20 @@ class Label extends PureComponent<Props, State> {
 
     renderItemLabel = () => {
         const { label } = this.state;
+        const { account, item, explainer } = this.props; 
+        // const { item } = this.props;
+
+        const noMutation = 
+            !explainer?.getMonetaryDetails()?.mutate?.[OperationActions.INC]?.[0] &&
+            !explainer?.getMonetaryDetails()?.mutate?.[OperationActions.DEC]?.[0] &&
+            account.address !== item.Account; 
+        
+        if (noMutation) {
+            return <Text style={[
+                AppStyles.h4,
+                styles.noBold,
+                ]}>{Localize.t('events.thirdPartyTx')}</Text>;
+        }
 
         return <Text style={[
             AppStyles.h4,

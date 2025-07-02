@@ -511,6 +511,8 @@
     "paymentReceived": "ادائیگی موصول",
     "paymentSent": "ادائیگی بھیجی گئی",
     "exchangedAssets": "بدلے ہوئے اثاثے",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ایک اثاثہ شامل کر دیا گیا (TrustLine)",
     "removedATrustLine": "ایک اثاثہ ہٹا دیا (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

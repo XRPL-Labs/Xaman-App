@@ -511,6 +511,8 @@
     "paymentReceived": "지불 수신",
     "paymentSent": "송금 완료",
     "exchangedAssets": "교환된 자산",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "추가된 자산(TrustLine)",
     "removedATrustLine": "제거된 자산(TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

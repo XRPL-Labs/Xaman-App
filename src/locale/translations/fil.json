@@ -511,6 +511,8 @@
     "paymentReceived": "Natanggap ang bayad",
     "paymentSent": "napadala Pagbabayad",
     "exchangedAssets": "Ipinagpalit ang ari-arian",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Nagdagdag ng isang pag-aari (PagtitiwaLalinya )",
     "removedATrustLine": "Inalis ang isang pag-aari (PagtitiwaLalinya  )",
     "updatedATrustLine": "Na-update ang token (Trustline)",

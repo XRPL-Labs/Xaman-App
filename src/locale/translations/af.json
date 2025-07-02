@@ -511,6 +511,8 @@
     "paymentReceived": "Betaling ontvang",
     "paymentSent": "Betaling gestuur",
     "exchangedAssets": "Verruilde Bates",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Bate bygevoeg (Trustline)",
     "removedATrustLine": "Bates verwuider ",
     "updatedATrustLine": "Token Updated (TrustLine)",

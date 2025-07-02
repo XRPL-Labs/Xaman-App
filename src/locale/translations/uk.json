@@ -511,6 +511,8 @@
     "paymentReceived": "Платіж отримано",
     "paymentSent": "Платіж надіслано",
     "exchangedAssets": "Обмінені активи",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Додано актив (Лінію довіри)",
     "removedATrustLine": "Вилучено актив (Лінію довіри)",
     "updatedATrustLine": "Token Updated (TrustLine)",

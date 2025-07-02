@@ -511,6 +511,8 @@
     "paymentReceived": "תשלום התקבל",
     "paymentSent": "תשלום נשלח",
     "exchangedAssets": "אסימונים שהוחלפו",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "הוסף מטבע (TrustLine)",
     "removedATrustLine": "הוסר אסימון (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

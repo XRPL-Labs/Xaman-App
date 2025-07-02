@@ -511,6 +511,8 @@
     "paymentReceived": "Betaling modtaget",
     "paymentSent": "Betaling sendt",
     "exchangedAssets": "Vekslede aktiver",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Tilføjede et aktiv (TrustLine)",
     "removedATrustLine": "Fjernede et aktiv (TrustLine)",
     "updatedATrustLine": " Token opdateret (TrustLine)",

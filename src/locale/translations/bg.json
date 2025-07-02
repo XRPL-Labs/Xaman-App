@@ -511,6 +511,8 @@
     "paymentReceived": "Получено плащане",
     "paymentSent": "Плащането е изпратено",
     "exchangedAssets": "Разменени активи",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Добавен актив (TrustLine)",
     "removedATrustLine": "Премахнат актив (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

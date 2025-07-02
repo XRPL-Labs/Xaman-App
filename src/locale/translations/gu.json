@@ -511,6 +511,8 @@
     "paymentReceived": "ચૂકવણી મળી",
     "paymentSent": "ચુકવણી મોકલી",
     "exchangedAssets": "વિનિમયિત સંપત્તિ",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "સંપત્તિ ઉમેરવામાં (ટ્રસ્ટલાઈન)",
     "removedATrustLine": "સંપત્તિ દૂર કરી (ટ્રસ્ટલાઈન)",
     "updatedATrustLine": "Token Updated (TrustLine)",

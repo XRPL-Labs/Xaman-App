@@ -58,7 +58,16 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size * 0.9,
         color: '$textPrimary',
     },
-
+    thirdPartyTxContainer: {
+        flexDirection: 'column',
+        paddingHorizontal: 20,
+    },
+    thirdPartyTx: {
+        fontFamily: AppFonts.base.family,
+        lineHeight: 25,
+        fontSize: AppFonts.base.size * 1.2,
+        color: '$textPrimary',
+    },
     itemContainerGap: {
         gap: AppSizes.paddingExtraSml,
     },
@@ -115,7 +124,6 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size * 0.9,
         color: '$textPrimary',
     },
-
     outgoingColor: {
         color: '$red',
         tintColor: '$red',

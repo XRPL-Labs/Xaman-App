@@ -511,6 +511,8 @@
     "paymentReceived": "Maksājums saņemts",
     "paymentSent": "Maksājums nosūtīts",
     "exchangedAssets": "Samainītie aktīvi",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Pievienots aktīvam (TrustLine)",
     "removedATrustLine": "Izņemt aktīvu (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

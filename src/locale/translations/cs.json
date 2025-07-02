@@ -511,6 +511,8 @@
     "paymentReceived": "Platba přijata",
     "paymentSent": "Platba odeslána",
     "exchangedAssets": "Směněná aktiva",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Přidáno aktivum (TrustLine)",
     "removedATrustLine": "Odebráno aktivum (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

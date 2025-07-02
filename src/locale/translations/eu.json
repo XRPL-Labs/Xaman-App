@@ -511,6 +511,8 @@
     "paymentReceived": "Jasotako ordainketa",
     "paymentSent": "Ordainketa bidali da",
     "exchangedAssets": "Trukatutako tokenak",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Token bat gehitu da (KonfiantzaLerroa)",
     "removedATrustLine": "Token bat kendu da (KonfiantzaLerroa)",
     "updatedATrustLine": "Token Updated (TrustLine)",

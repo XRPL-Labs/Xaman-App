@@ -511,6 +511,8 @@
     "paymentReceived": "পেমেন্ট পেয়েছি",
     "paymentSent": "পেমেন্ট পাঠানো",
     "exchangedAssets": "বিনিময় সম্পদ",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "একটি সম্পদ যুক্ত করা হয়েছে (ট্রাস্টলাইন)",
     "removedATrustLine": "একটি সম্পদ সরানো হয়েছে (ট্রাস্টলাইন)",
     "updatedATrustLine": "Token Updated (TrustLine)",

@@ -511,6 +511,8 @@
     "paymentReceived": "Платеж получен",
     "paymentSent": "Платеж отправлен",
     "exchangedAssets": "Обменные активы",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Добавлен актив (Линия доверия)",
     "removedATrustLine": "Удален актив (Линия доверия)",
     "updatedATrustLine": "Обновлен маркер (TrustLine)",

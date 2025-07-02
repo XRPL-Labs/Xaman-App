@@ -511,6 +511,8 @@
     "paymentReceived": "Pembayaran diterima",
     "paymentSent": "Pembayaran terkirim",
     "exchangedAssets": "Token yang dipertukarkan",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Menambahkan token (TrustLine)",
     "removedATrustLine": "Menghapus token (TrustLine)",
     "updatedATrustLine": "Memperbarui token (TrustLine)",

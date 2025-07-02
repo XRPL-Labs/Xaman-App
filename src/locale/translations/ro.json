@@ -511,6 +511,8 @@
     "paymentReceived": "Plată primită",
     "paymentSent": "Plată trimisă",
     "exchangedAssets": "Active schimbate",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "A fost adăugat un activ (TrustLine).",
     "removedATrustLine": "Înlăturați un activ (TrustLine).",
     "updatedATrustLine": "Token Updated (TrustLine)",

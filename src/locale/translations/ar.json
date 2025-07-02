@@ -511,6 +511,8 @@
     "paymentReceived": "تم استلام الدفعة",
     "paymentSent": "تم إرسال الدفعة",
     "exchangedAssets": "الأصول التي تم تغييرها",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "تمت إضافة رمز مميز (TrustLine)",
     "removedATrustLine": "تمت إزالة رمز مميز (خطالثقة)",
     "updatedATrustLine": "Token Updated (TrustLine)",

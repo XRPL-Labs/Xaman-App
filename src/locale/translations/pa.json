@@ -511,6 +511,8 @@
     "paymentReceived": "ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਹੋਇਆ",
     "paymentSent": "ਭੁਗਤਾਨ ਭੇਜਿਆ ਗਿਆ",
     "exchangedAssets": "ਵਟਾਂਦਰੇ ਵਾਲੀਆਂ ਸੰਪਤੀਆਂ",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ਇੱਕ ਸੰਪਤੀ ਨੂੰ ਜੋੜਿਆ (ਟਰੱਸਟਲਾਈਨ)",
     "removedATrustLine": "ਇੱਕ ਸੰਪਤੀ ਨੂੰ ਹਟਾ ਦਿੱਤਾ ਗਿਆ (ਟਰੱਸਟਲਾਈਨ)",
     "updatedATrustLine": "Token Updated (TrustLine)",

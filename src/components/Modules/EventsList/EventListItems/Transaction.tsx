@@ -35,6 +35,7 @@ import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 import lpStyles from '@components/Modules/AssetsList/Tokens/TokenItem/styles';
 import trustLine from '@store/repositories/trustLine';
+import { OperationActions } from '@common/libs/ledger/parser/types';
 
 /* types ==================================================================== */
 export interface cachedTokenDetailsState {
@@ -341,10 +342,18 @@ class TransactionItem extends Component<Props, State> {
 
         const isRejected = item.MetaData?.TransactionResult === 'tecHOOK_REJECTED';
 
+        let hasBalanceChanges = true;
+        const mutations = item.BalanceChange(account.address);
+        if (!mutations?.[OperationActions.INC]?.[0] && !mutations?.[OperationActions.DEC]?.[0]) {
+            if (item.Account !== account.address) {
+                hasBalanceChanges = false;
+            }
+        }
+
         return (
             <TouchableDebounce
                 onPress={this.onPress}
-                activeOpacity={Math.min(0.2, 0.6 * opacity.opacity)}
+                activeOpacity={Math.min(0.6, 0.6 * opacity.opacity)}
                 style={[
                     styles.container,
                     {
@@ -365,15 +374,29 @@ class TransactionItem extends Component<Props, State> {
                     )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent, opacity]}>
-                    { !isFeeTransaction && (
+                    { !isFeeTransaction && hasBalanceChanges && (
                         cachedTokenDetails?.title
+                    )}
+                    { !isFeeTransaction && !hasBalanceChanges && (
+                        <Text style={[
+                            styles.feeTxText,
+                            styles.actionText,
+                            styles.label,
+                        ]}>{item.TransactionType}</Text>
                     )}
                     { isFeeTransaction && (
                         <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
                     )}
                     { !isFeeTransaction && !participant?.blocked && (
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            {hasBalanceChanges && (
+                                <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            )}
+                            {!hasBalanceChanges && (
+                                <Text style={[
+                                    styles.actionText,
+                                ]}>{Localize.t('events.thirdPartyTx')}</Text>
+                            )}
                             <Blocks.IndicatorIconBlock item={item} account={account} />
                         </View>
                     )}
@@ -387,7 +410,7 @@ class TransactionItem extends Component<Props, State> {
                             { feeText }
                         </Text>
                     )}
-                    { !isFeeTransaction && !isRejected && (
+                    { !isFeeTransaction && !isRejected && hasBalanceChanges && (
                         <Blocks.MonetaryBlock explainer={explainer} />
                     )}
                     { !isFeeTransaction && isRejected && (

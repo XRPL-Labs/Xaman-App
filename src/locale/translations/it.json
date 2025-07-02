@@ -511,6 +511,8 @@
     "paymentReceived": "Pagamento ricevuto",
     "paymentSent": "Pagamento inviato",
     "exchangedAssets": "Risorse digitali scambiate",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Aggiunta risorsa digitale (TrustLine)",
     "removedATrustLine": "Rimossa una risorsa digitale (TrustLine)",
     "updatedATrustLine": "Token Aggiornato (TrustLine)",

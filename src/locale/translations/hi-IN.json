@@ -511,6 +511,8 @@
     "paymentReceived": "भुगतान प्राप्त",
     "paymentSent": "भुगतान भेजा",
     "exchangedAssets": "मुग्ध संपत्ति",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "एक संपत्ति (ट्रस्टलाइन) जोड़ा गया",
     "removedATrustLine": "एक परिसंपत्ति (ट्रस्टेलाइन) को हटा दिया गया",
     "updatedATrustLine": "Token Updated (TrustLine)",

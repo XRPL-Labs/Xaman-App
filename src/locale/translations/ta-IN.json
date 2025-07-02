@@ -511,6 +511,8 @@
     "paymentReceived": "கட்டணம் பெற்றுக்கொள்ளப்பட்டது",
     "paymentSent": "கட்டணம் அனுப்பப்பட்டது",
     "exchangedAssets": "விரிவாக்கப்பட்ட குணங்கள்",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ஒரு சொத்தைச் சேர்த்தது (டிரஸ்ட்லைன்)",
     "removedATrustLine": "ஒரு சொத்து அகற்றப்பட்டது (டிரஸ்ட்லைன்)",
     "updatedATrustLine": "Token Updated (TrustLine)",

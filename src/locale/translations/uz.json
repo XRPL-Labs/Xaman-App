@@ -511,6 +511,8 @@
     "paymentReceived": "To'lov qabul qilindi",
     "paymentSent": "To'lov yuborildi",
     "exchangedAssets": "Almashtirilgan aktivlar",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Aktiv qo'shildi (Ishonch Yuli)",
     "removedATrustLine": "Aktiv olib tashlandi (Ishonch Yuli)",
     "updatedATrustLine": "Token Updated (TrustLine)",

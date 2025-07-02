@@ -511,6 +511,8 @@
     "paymentReceived": "Apmokėjimas gautas",
     "paymentSent": "Mokėjimas išsiųstas",
     "exchangedAssets": "Keistis lėšomis",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Pridėta žetoną (PasitikėjimoLinija)",
     "removedATrustLine": "Pašalinote žetoną (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

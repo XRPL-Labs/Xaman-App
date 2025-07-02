@@ -511,6 +511,8 @@
     "paymentReceived": "已收到付款",
     "paymentSent": "付款已发送",
     "exchangedAssets": "交换资产",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "添加了资产（信任线）",
     "removedATrustLine": "删除了一种货币（信任线）",
     "updatedATrustLine": "Token Updated (TrustLine)",

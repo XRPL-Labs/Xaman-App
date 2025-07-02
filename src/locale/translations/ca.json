@@ -511,6 +511,8 @@
     "paymentReceived": "Pagament rebut",
     "paymentSent": "Pagament enviat",
     "exchangedAssets": "Actius intercanviats",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "S'ha afegit un actiu (Línia de Confiança)",
     "removedATrustLine": "S'ha eliminat un actiu (Línia de Confiança)",
     "updatedATrustLine": "Token actualitzat (Trustline)",

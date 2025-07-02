@@ -511,6 +511,8 @@
     "paymentReceived": "Peman ou resevwa",
     "paymentSent": "Peman voye",
     "exchangedAssets": "Echanj marqueur",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Te ajoute yon siy (KonfyansLiy)",
     "removedATrustLine": "Retire yon siy (KonfyansLiy)",
     "updatedATrustLine": "Token Updated (TrustLine)",

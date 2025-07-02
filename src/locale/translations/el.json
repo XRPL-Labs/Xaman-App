@@ -511,6 +511,8 @@
     "paymentReceived": "Συναλλαγή ελήφθη",
     "paymentSent": "Συναλλαγή εστάλη",
     "exchangedAssets": "Ανταλλαγμένα νομίσματα",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Προστέθηκε ένα νόμισμα (TrustLine)",
     "removedATrustLine": "Αφαιρέθηκε ένα νόμισμα (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

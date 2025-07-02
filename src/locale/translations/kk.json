@@ -511,6 +511,8 @@
     "paymentReceived": "Алынған төлем",
     "paymentSent": "Төлемді жіберу",
     "exchangedAssets": "Активтермен алмасу",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Қосылған актив (TrustLine)",
     "removedATrustLine": "Жойылған актив (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

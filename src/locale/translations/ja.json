@@ -511,6 +511,8 @@
     "paymentReceived": "受取済み",
     "paymentSent": "送金済み",
     "exchangedAssets": "資産の両替",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "トークンの追加(トラストライン)",
     "removedATrustLine": "資産の削除(トラストライン)\r\n",
     "updatedATrustLine": "トークンの更新(トラストライン)",

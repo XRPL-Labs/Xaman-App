@@ -511,6 +511,8 @@
     "paymentReceived": "Mottagen betalning",
     "paymentSent": "Skickad betalning",
     "exchangedAssets": "Utväxlade tillgångar",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Lade till en tillgång (TrustLine)",
     "removedATrustLine": "Tog bort en tillgång (TrustLine)",
     "updatedATrustLine": "Uppdaterat ett token (TrustLine)",

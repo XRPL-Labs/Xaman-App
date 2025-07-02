@@ -511,6 +511,8 @@
     "paymentReceived": "చెల్లింపు అందినది\r\n",
     "paymentSent": "చెల్లింపు పంపబడింది\r\n",
     "exchangedAssets": "మార్పిడి ఆస్తులు",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ఆస్తిని జోడించారు (ట్రస్ట్‌లైన్)\r\n",
     "removedATrustLine": "ఆస్తిని తొలగించారు (ట్రస్ట్‌లైన్)\r\n",
     "updatedATrustLine": "టోకెన్ నవీకరించబడింది (ట్రస్ట్‌లైన్)",

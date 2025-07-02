@@ -511,6 +511,8 @@
     "paymentReceived": "Saadud makse",
     "paymentSent": "Saadetud makse",
     "exchangedAssets": "Vahetatud varad",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Lisa vara (TrustLine)",
     "removedATrustLine": "Eemaldatud vara (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

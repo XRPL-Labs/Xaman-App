@@ -511,6 +511,8 @@
     "paymentReceived": "പേയ്മെന്റ് ലഭിച്ചു",
     "paymentSent": "പേയ്‌മെന്റ് അയച്ചു",
     "exchangedAssets": "കൈമാറ്റം ചെയ്ത ആസ്തികൾ",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ഒരു അസറ്റ് ചേർത്തു (ട്രസ്റ്റ്ലൈൻ)",
     "removedATrustLine": "ഒരു അസറ്റ് നീക്കംചെയ്‌തു (ട്രസ്റ്റ്‌ലൈൻ)",
     "updatedATrustLine": "Token Updated (TrustLine)",

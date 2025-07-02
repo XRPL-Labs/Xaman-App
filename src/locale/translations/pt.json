@@ -511,6 +511,8 @@
     "paymentReceived": "Pagamento recebido",
     "paymentSent": "Pagamento enviado",
     "exchangedAssets": "Ativos trocados",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Moeda adicionada (Trust Line)",
     "removedATrustLine": "Ativo removido (TrustLine)",
     "updatedATrustLine": "Token atualizado (TrustLine)",

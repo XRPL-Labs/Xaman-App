@@ -511,6 +511,8 @@
     "paymentReceived": "पैसे मिळाले",
     "paymentSent": "देयक पाठविले",
     "exchangedAssets": "अदलाबदल मालमत्ता",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "एक मालमत्ता जोडली (ट्रस्टलाइन)",
     "removedATrustLine": "मालमत्ता काढली (ट्रस्टलाइन)",
     "updatedATrustLine": "Token Updated (TrustLine)",

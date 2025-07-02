@@ -511,6 +511,8 @@
     "paymentReceived": "Thanh toán nhận được",
     "paymentSent": "Thanh toán đã được gửi",
     "exchangedAssets": "Các mã thông báo được trao đổi",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Đã thêm tài sản (TrustLine)",
     "removedATrustLine": "Đã xóa mã thông báo (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

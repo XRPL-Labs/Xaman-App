@@ -511,6 +511,8 @@
     "paymentReceived": "Ödeme alındı",
     "paymentSent": "Ödeme gönderildi",
     "exchangedAssets": "Takas edilen varlıklar",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Varlık eklendi (Güven ilişkili)",
     "removedATrustLine": "Bir varlık kaldırıldı (TrustLine)",
     "updatedATrustLine": "Token güncellendi (Güven hattı)",

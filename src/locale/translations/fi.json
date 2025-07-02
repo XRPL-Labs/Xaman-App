@@ -511,6 +511,8 @@
     "paymentReceived": "Maksu vastaanotettu",
     "paymentSent": "Maksu lähetetty",
     "exchangedAssets": "Muutetut varat",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Lisätty omaisuueräs (TrustLine)",
     "removedATrustLine": "Omaisuuserä poistettu (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",

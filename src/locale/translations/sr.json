@@ -511,6 +511,8 @@
     "paymentReceived": "Уплата примљена",
     "paymentSent": "Уплата послата",
     "exchangedAssets": "Размењена средства",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Додао је средство (TrustLine)",
     "removedATrustLine": "Уклоњен жетон (TrustLine)",
     "updatedATrustLine": "Ажуриран токен (TrustLine)",
