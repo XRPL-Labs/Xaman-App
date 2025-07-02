@@ -92,14 +92,12 @@ const Sizes = {
 
     extraKeyBoardPadding: 20,
 
-    scale: (size: number) => (width / guidelineBaseWidth) * size / altScreenDimensionsCorrectionFactor,
+    scale: (size: number) => ((width / guidelineBaseWidth) * size) / altScreenDimensionsCorrectionFactor,
     verticalScale: (size: number) => (height / guidelineBaseHeight) * size,
     moderateScale: (size: number, factor = 0.5) => size + (Sizes.scale(size) - size) * factor,
 
-    widthPercentageToDP: (widthPercent: number) =>
-        PixelRatio.roundToNearestPixel((width * widthPercent) / 100),
-    heightPercentageToDP: (heightPercent: number) =>
-        PixelRatio.roundToNearestPixel((height * heightPercent) / 100),
+    widthPercentageToDP: (widthPercent: number) => PixelRatio.roundToNearestPixel((width * widthPercent) / 100),
+    heightPercentageToDP: (heightPercent: number) => PixelRatio.roundToNearestPixel((height * heightPercent) / 100),
 };
 
 export default Sizes;

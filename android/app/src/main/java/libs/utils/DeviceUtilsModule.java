@@ -26,6 +26,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.xrpllabs.xumm.SafeAreaInsets;
+
 @ReactModule(name = DeviceUtilsModule.NAME)
 public class DeviceUtilsModule extends ReactContextBaseJavaModule {
 
@@ -112,13 +114,15 @@ public class DeviceUtilsModule extends ReactContextBaseJavaModule {
         layoutInsets.put("bottom", 0);
 
         if (activity != null) {
-            final View decorView = activity.getWindow().getDecorView();
+            // final View decorView = activity.getWindow().getDecorView();
             // if view is not isAttachedToWindow getSystemWindowInsetTop can return null
-            if (decorView != null &&  decorView.isAttachedToWindow()) {
-                final WindowInsets insets = decorView.getRootWindowInsets();
-                layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetTop())));
-                layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetBottom())));
-            }
+            // if (decorView != null &&  decorView.isAttachedToWindow()) {
+            //     final WindowInsets insets = decorView.getRootWindowInsets();
+            //     layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetTop())));
+            //     layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetBottom())));
+            // }
+            layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaTop())));
+            layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaBottom())));
         }
 
         constants.put("osVersion", Build.VERSION.RELEASE);
