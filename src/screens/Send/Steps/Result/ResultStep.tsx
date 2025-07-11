@@ -203,7 +203,10 @@ class ResultStep extends Component<Props, State> {
         
         const errorMsg = c && c.length > 0
             ? c.map(h => `${h[1]} (#${h[0]})`).join(', ')
-            : payment.SubmitResult?.message || Localize.t('global.noInformationToShow');
+            : payment?.FinalResult?.message ||
+            payment?.SubmitResult?.message ||
+            payment.SubmitResult?.message ||
+            Localize.t('global.noInformationToShow');
 
         return (
             <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerFailed]}>
@@ -221,7 +224,13 @@ class ResultStep extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>
-                            {payment.SubmitResult?.engineResult || 'Error'}
+                            {/* {payment.SubmitResult?.engineResult || 'Error'} */}
+                            {
+                                payment?.MetaData?.TransactionResult ||
+                                payment?.FinalResult?.code ||
+                                payment?.SubmitResult?.engineResult ||
+                                'Error'
+                            }
                         </Text>
 
                         <Spacer />
@@ -337,8 +346,12 @@ class ResultStep extends Component<Props, State> {
 
         if (
             payment?.MetaData?.TransactionResult === 'terQUEUED' ||
-            payment?.FinalResult?.code === 'terQUEUED' ||
-            payment?.SubmitResult?.engineResult === 'terQUEUED'
+            payment?.FinalResult?.code === 'terQUEUED'
+            // LOG  resultstep payment - MetaData tecNO_PERMISSION
+            // LOG  resultstep payment - FinalResult tecNO_PERMISSION
+            // LOG  resultstep payment - SubmitResult telCAN_NOT_QUEUE_FEE
+            // ||
+            // payment?.SubmitResult?.engineResult === 'terQUEUED'
         ) {
             return this.renderQueued();
         }
