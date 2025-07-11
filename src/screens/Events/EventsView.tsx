@@ -476,10 +476,25 @@ class EventsView extends Component<Props, State> {
                             let blocked = false;
 
                             if (hideAdvisoryTransactions) {
+                                const finalFields = transaction.meta?.AffectedNodes
+                                    ?.filter(m => m?.ModifiedNode)
+                                    ?.map(m => m?.ModifiedNode)?.[0]
+                                    ?.FinalFields;
+                                
+                                const isMyAccountThroughRegularKey =
+                                    transaction?.tx?.Destination &&
+                                    finalFields?.RegularKey &&
+                                    finalFields?.Account &&
+                                    finalFields.RegularKey === account.address &&
+                                    finalFields.Account === transaction.tx.Destination;
+
                                 if (
                                     transaction?.tx?.TransactionType === 'Payment' &&
                                     transaction?.tx?.Account !== account.address && // I'm not the sender
-                                    transaction?.tx?.Destination === account.address // But I am the receipient
+                                    (
+                                        transaction?.tx?.Destination === account.address || // But I am the receipient
+                                        isMyAccountThroughRegularKey // Or the Regular Key is me so I'm the receipient
+                                    )
                                     // &&
                                     // typeof transaction?.meta?.delivered_amount === 'string' &&
                                     // Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
