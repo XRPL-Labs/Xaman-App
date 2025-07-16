@@ -1053,7 +1053,7 @@
     "destinationAccountIsNotActivated": "Bestemmingsaccount is niet geactiveerd, moet een gefinancierd account zijn in de %{network}.",
     "destinationAddressRequiredDestinationTag": "Bestemmingsadres vereist een Destination Tag",
     "destinationAccountAndSourceCannotBeSame": "Bestemmingsaccount en bron kunnen niet hetzelfde zijn.",
-    "accountGenerateActivationExplain": "Account activatie is een vereiste op de %{network}. Voor activatie moet u een eerste storting doen van ten minste %{baseReserve} %{nativeAsset}.",
+    "accountGenerateActivationExplain": "Account-activatie is een vereiste op de %{network}. Voor activatie moet u een eerste storting doen van ten minste %{baseReserve} %{nativeAsset}.",
     "accountImportActivationExplain": "U heeft een nieuw account geïmporteerd op de %{network}. Het account is niet geactiveerd. Account activatie is een vereiste op de %{network}. Voor activatie moet u een eerste storting doen van ten minste %{baseReserve} %{nativeAsset}.",
     "accountActivateReserveExplain": "De eerste %{baseReserve} %{nativeAsset} die op uw account wordt gestort kan niet worden uitgegeven, maar wordt gereserveerd om uw account actief te houden en te betalen voor ledger kosten.",
     "accountReserveNotShownExplain": "Uw gereserveerde %{nativeAsset} wordt niet als saldo getoond in Xaman, maar u kunt uw reserve bekijken met de knop \"Leg mijn saldo uit\" in het startscherm, boven uw %{nativeAsset} saldo.",
