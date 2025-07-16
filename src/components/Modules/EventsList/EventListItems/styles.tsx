@@ -10,6 +10,8 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: AppSizes.borderRadius,
+        marginHorizontal: AppSizes.scale(-10),
+        paddingHorizontal: AppSizes.scale(10), 
     },
     ammIcon: {
         marginLeft: 8,
