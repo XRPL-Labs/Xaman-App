@@ -110,6 +110,15 @@ class AMMDepositTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+
+                {!isUndefined(transaction.TradingFee) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('events.tradingFee')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.TradingFee / 1000}%</Text>
+                        </View>
+                    </>
+                )}
             </>
         );
     }
