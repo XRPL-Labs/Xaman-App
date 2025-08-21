@@ -66,6 +66,19 @@
 -keep class com.google.firebase.** { *; }
 -keepclassmembers  class com.google.firebase.** { *; }
 
+#------------- firebase KTX specific ------------------
+-keep class com.google.firebase.ktx.** { *; }
+-keepclassmembers class com.google.firebase.ktx.** { *; }
+-keep class com.google.firebase.analytics.ktx.** { *; }
+-keepclassmembers class com.google.firebase.analytics.ktx.** { *; }
+
+# Keep the specific classes mentioned in the error
+-keep class com.google.firebase.ktx.Firebase { *; }
+-keep class com.google.firebase.ktx.FirebaseKt { *; }
+
+-dontwarn com.google.firebase.ktx.Firebase
+-dontwarn com.google.firebase.ktx.FirebaseKt
+
 #------------- realm ------------------
 -keep class io.realm.react.**
 

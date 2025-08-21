@@ -279,6 +279,9 @@ dependencies {
     
     // Your existing app-specific dependencies
     implementation 'com.google.firebase:firebase-messaging:+'
+    implementation 'com.google.firebase:firebase-common-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     implementation "androidx.biometric:biometric:1.1.0"
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
     implementation 'com.github.Dimezis:BlurView:version-2.0.6'
