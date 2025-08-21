@@ -36,6 +36,7 @@ import styles from './styles';
 import lpStyles from '@components/Modules/AssetsList/Tokens/TokenItem/styles';
 import trustLine from '@store/repositories/trustLine';
 import { OperationActions } from '@common/libs/ledger/parser/types';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 /* types ==================================================================== */
 export interface cachedTokenDetailsState {
@@ -300,7 +301,24 @@ class TransactionItem extends Component<Props, State> {
                 return typeof token?.currency?.currencyCode === 'string'
                     ? token.getFormattedCurrency()
                     : typeof token === 'string'
-                    ? token
+                        ? ((t: string) => {
+                            const tokenSplit = t.trim().split(' ');
+                            if (
+                                tokenSplit.length === 2 &&
+                                (
+                                    tokenSplit[0].match(/^[A-F0-9]{40}$/) || 
+                                    tokenSplit[0].match(/^[a-zA-Z0-9]{3,}$/)
+                                ) &&
+                                tokenSplit[1].match(/^r/)
+                            ) {
+                                const normalized = NormalizeCurrencyCode(tokenSplit[0]);
+                                if (normalized.length < 40) {
+                                    return `${normalized} (${tokenSplit[1].slice(0, 8)}...)`;
+                                }
+                                return `${tokenSplit[0].slice(0, 8)}... ${tokenSplit[1].slice(0, 8)}...`;
+                            }
+                            return NormalizeCurrencyCode(t);
+                    })(token)
                     : '?';
             }).join(' / ');
 
