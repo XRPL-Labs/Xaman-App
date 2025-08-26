@@ -83,7 +83,10 @@
 -keep class io.realm.react.**
 
 #------------- tangem ------------------
--keep class com.tangem.**
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class com.tangem.** { *; }
+-keepclassmembers class com.tangem.** { *; }
 
 # #------------- rn camera ------------------
 

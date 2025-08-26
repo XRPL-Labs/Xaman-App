@@ -8,7 +8,7 @@ apply plugin: "com.google.firebase.crashlytics"
 import com.android.build.OutputFile
 
 def canonicalVersionName = "4.2.0"
-def canonicalVersionCode = 119
+def canonicalVersionCode = 120
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
 def postFixSize = 30_000
@@ -317,6 +317,10 @@ dependencies {
 
     implementation 'com.google.mlkit:barcode-scanning:17.2.0'
     // implementation 'com.google.mlkit:image-labeling:17.0.7'
+
+    // Older coroutines so Tangem SDK works
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
 
     // Test dependencies
     androidTestImplementation 'com.wix:detox:+'

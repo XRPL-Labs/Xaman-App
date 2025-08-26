@@ -33,6 +33,16 @@ buildscript {
 }
 
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2'  // THIS IS THE MISSING PIECE
+            
+            // Also force the BOM to match
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.5.2'
+        }
+    }
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:deprecation"
