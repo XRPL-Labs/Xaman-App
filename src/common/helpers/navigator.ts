@@ -335,6 +335,15 @@ const Navigator = {
                                     waitForRender: true, // Wait for the component to render before ANY transitions
                                 },
                             },
+                            statusBar: {
+                                visible: true,
+                                style: 'light', // or 'dark'
+                                backgroundColor: 'transparent',
+                                drawBehind: true, // This is key
+                            },
+                            navigationBar: {
+                                backgroundColor: 'transparent',
+                            },
                         },
                         options || {},
                     ),
