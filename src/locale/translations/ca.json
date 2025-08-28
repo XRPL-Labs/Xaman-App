@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "Idioma",
     "ok": "D'acord",
     "start": "Començar",
@@ -496,6 +497,8 @@
     "eventTypeAll": "Tot",
     "eventTypePlanned": "Programat",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "Sol·licituds",
     "noTransaction": "Sense transaccions",
     "shareAccount": "Comparteix l'adreça del compte",
@@ -523,6 +526,8 @@
     "createOffer": "Crear una oferta",
     "cancelOffer": "Cancel·la l'oferta",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "Crea un fideïcomís",
     "finishEscrow": "Finalitzar el fideïcomís",
     "cancelEscrow": "Cancel·lar un fideïcomís",
@@ -590,6 +595,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -1320,6 +1327,13 @@
     "permissionsGranted": "Signing permissions to grant",
     "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
     "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}."
   },
   "moment": {
     "calendar": {

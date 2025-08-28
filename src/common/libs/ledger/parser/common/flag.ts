@@ -12,6 +12,7 @@ import NetworkService from '@services/NetworkService';
  */
 export enum InnerObjectTypes {
     Remark = 'Remark',
+    Credential = 'Credential',
 }
 
 /* types ==================================================================== */
@@ -52,6 +53,9 @@ class FlagParser {
             Remark: {
                 tfImmutable: 0x00000001, // Immutable
             },
+            Credential: {
+                lsfAccepted: 0x00010000, // Accepted
+            },
         };
 
         // transaction flags
@@ -70,11 +74,12 @@ class FlagParser {
         }
 
         // object flag
-        if (Object.values(InnerObjectTypes).includes(type as InnerObjectTypes) && 
-            Object.prototype.hasOwnProperty.call(objectFlags, type)) {
+        if (
+            Object.values(InnerObjectTypes).includes(type as InnerObjectTypes) &&
+            Object.prototype.hasOwnProperty.call(objectFlags, type)
+        ) {
             this._objectFlags = objectFlags[type as InnerObjectTypes];
         }
-        
     }
 
     getIndices() {
@@ -103,15 +108,16 @@ class FlagParser {
 
     get(): ParsedFlags {
         // no flag for this transaction type, just return empty object
-        if (typeof this._flags === 'undefined' || typeof this.bitFlags === 'undefined') {
+        const _flags = this?._flags || this?._objectFlags;
+        if (typeof _flags === 'undefined' || typeof this.bitFlags === 'undefined') {
             return {};
         }
 
         const settings: ParsedFlags = {};
 
         // parse transaction flags
-        for (const flagName in this._flags) {
-            if (this.bitFlags & this._flags[flagName]) {
+        for (const flagName in _flags) {
+            if (this.bitFlags & _flags[flagName]) {
                 settings[flagName] = true;
             } else {
                 settings[flagName] = false;

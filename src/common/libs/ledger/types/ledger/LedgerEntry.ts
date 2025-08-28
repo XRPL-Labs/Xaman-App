@@ -16,6 +16,7 @@ import Ticket from './Ticket';
 import NFTokenOffer from './NFTokenOffer';
 import URIToken from './URIToken';
 import Delegate from './Delegate';
+import Credential from './Credential';
 
 type LedgerEntry =
     | AccountRoot
@@ -35,7 +36,8 @@ type LedgerEntry =
     | Ticket
     | NFTokenOffer
     | URIToken
-    | Delegate;
+    | Delegate
+    | Credential;
 
 type LedgerEntryFilter =
     | 'account'
@@ -56,6 +58,7 @@ type LedgerEntryFilter =
     | 'state'
     | 'ticket'
     | 'uri_token'
-    | 'delegate';
+    | 'delegate'
+    | 'credential';
 
 export type { LedgerEntry, LedgerEntryFilter };

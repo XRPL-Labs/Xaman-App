@@ -158,7 +158,9 @@ class AssetsMutations extends PureComponent<Props, State> {
         const hasEitherFactors = !!factorInc?.length || !!factorDec?.length;
         const hasBothFactors = factorInc?.length > 0 && factorDec?.length > 0;
 
-        const noMutation = hasNoMutations && account.address !== item.Account;
+        const noMutation = hasNoMutations &&
+            account.address !== ((item as any)?.Account || (item as any)?.Subject || (item as any)?.Issuer) &&
+            !item.Type.match(/Credential/);
 
         return (
             <View style={[styles.itemContainer, styles.itemContainerGap]}>

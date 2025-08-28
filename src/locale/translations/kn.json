@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "ಭಾಷೆ",
     "ok": "ಸರಿ",
     "start": "ಪ್ರಾರಂಭಿಸಿ",
@@ -496,6 +497,8 @@
     "eventTypeAll": "ಎಲ್ಲಾ",
     "eventTypePlanned": "ಯೋಜಿಸಲಾಗಿದೆ",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "ವಿನಂತಿಗಳು",
     "noTransaction": "ಯಾವುದೇ ವಹಿವಾಟು ಇಲ್ಲ",
     "shareAccount": "ಖಾತೆ ವಿಳಾಸವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ",
@@ -523,6 +526,8 @@
     "createOffer": "ಕೊಡುಗೆಯನ್ನು ರಚಿಸಿ",
     "cancelOffer": "ಪ್ರಸ್ತಾಪವನ್ನು ರದ್ದುಗೊಳಿಸಿ",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "ಎಸ್ಕ್ರೊ ರಚಿಸಿ",
     "finishEscrow": "ಎಸ್ಕ್ರೊ ಮುಗಿಸಿ",
     "cancelEscrow": "ಎಸ್ಕ್ರೊ ರದ್ದುಮಾಡಿ",
@@ -590,6 +595,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -1320,6 +1327,13 @@
     "permissionsGranted": "Signing permissions to grant",
     "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
     "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}."
   },
   "moment": {
     "calendar": {

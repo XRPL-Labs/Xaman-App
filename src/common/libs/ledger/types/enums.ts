@@ -109,6 +109,8 @@ export enum LedgerEntryTypes {
     EmittedTxn = 'EmittedTxn',
     Oracle = 'Oracle',
     Delegate = 'Delegate',
+    Credential = 'Credential',
+    DID = 'DID',
 }
 
 /**

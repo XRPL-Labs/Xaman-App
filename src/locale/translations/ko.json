@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "언어",
     "ok": "확인",
     "start": "시작",
@@ -496,6 +497,8 @@
     "eventTypeAll": "모든",
     "eventTypePlanned": "계획된 계좌 거래",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "계좌 인증 요청",
     "noTransaction": "거래 없음",
     "shareAccount": "계정 주소 공유",
@@ -523,6 +526,8 @@
     "createOffer": "제안 만들기",
     "cancelOffer": "제안 취소",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "에스크로 생성",
     "finishEscrow": "에스크로 완료",
     "cancelEscrow": "에스크로 취소",
@@ -590,6 +595,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -1320,6 +1327,13 @@
     "permissionsGranted": "Signing permissions to grant",
     "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
     "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}."
   },
   "moment": {
     "calendar": {

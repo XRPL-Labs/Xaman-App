@@ -86,12 +86,14 @@ enum EventSections {
     ALL = 'ALL',
     PLANNED = 'PLANNED',
     REQUESTS = 'REQUESTS',
+    OWNED = 'OWNED',
 }
 
 enum DataSourceType {
     PLANNED_TRANSACTIONS = 'PLANNED_TRANSACTIONS',
     TRANSACTIONS = 'TRANSACTIONS',
     PENDING_REQUESTS = 'PENDING_REQUESTS',
+    OWNED_OBJECTS = 'OWNED_OBJECTS',
 }
 
 /* Component ==================================================================== */
@@ -320,7 +322,7 @@ class EventsView extends Component<Props, State> {
         marker?: string,
         combined = [] as LedgerEntry[],
     ): Promise<LedgerEntry[]> => {
-        return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
+        return LedgerService.getAccountObjects(account, { type, marker }).then(async (resp) => {
             // account is not found
             if ('error' in resp) {
                 return [];
@@ -331,7 +333,25 @@ class EventsView extends Component<Props, State> {
             if (_marker && _marker !== marker) {
                 return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
             }
+
             return account_objects.concat(combined);
+        }).then(async r => {
+            if (r?.[0]) {
+                if (r[0]?.LedgerEntryType === 'Credential') {
+                    if (r[0]?.PreviousTxnLgrSeq) {
+                        const o = await LedgerService.getLedgerEntry({
+                            command: 'ledger',
+                            ledger_index: r[0].PreviousTxnLgrSeq,
+                        });
+                        const { close_time_iso } = (o as any)?.ledger || {};
+                        Object.assign(r[0], {
+                            Date: close_time_iso,
+                        });
+                    }
+                }
+            }
+
+            return r;
         });
     };
 
@@ -386,6 +406,7 @@ class EventsView extends Component<Props, State> {
                 'ticket',
                 'payment_channel',
                 'delegate',
+                'credential',
             ];
 
             // Create an array of promises, one for each object type
@@ -426,6 +447,8 @@ class EventsView extends Component<Props, State> {
             if (activeSection === EventSections.REQUESTS) {
                 promises.push(BackendService.getNFTOffered(account.address));
             }
+            
+            // TODO: also load credential requests to me, not accepted yet (flags)
 
             Promise.all(promises).then((result) => {
                 const combined = [].concat(...result);
@@ -616,7 +639,7 @@ class EventsView extends Component<Props, State> {
     };
 
     buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any): Array<DataSourceItem> => {
-        const { activeSection } = this.state;
+        const { activeSection, account } = this.state;
 
         if (isEmpty(pendingRequests) && isEmpty(transactions) && isEmpty(plannedTransactions)) {
             return [];
@@ -626,16 +649,43 @@ class EventsView extends Component<Props, State> {
 
         if (activeSection === EventSections.PLANNED) {
             const openItems = orderBy(
-                filter(plannedTransactions, (p) =>
-                    [
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
                         LedgerEntryTypes.Offer,
                         LedgerEntryTypes.NFTokenOffer,
                         LedgerEntryTypes.Check,
                         LedgerEntryTypes.Ticket,
                         LedgerEntryTypes.PayChannel,
                         LedgerEntryTypes.Delegate,
-                    ].includes(p.Type),
-                ),
+                        // TODO: if not accepted yet
+                        LedgerEntryTypes.Credential,
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            if (p.Flags.lsfAccepted) {
+                                // Issued to someone else, and accepted - so counting to their reserve
+                                // No longer planned - this is one for owned objects
+                                return false;
+                            }
+                        }
+                        if (p.Subject === account.address) {
+                            // If I am the subject, then it's not planned: it's either a request,
+                            // // or it's an owned object
+                            return false;
+                            // --
+                            // if (p.Flags.lsfAccepted) {
+                            //     // I already accepted, so it isn't planned open
+                            //     return false;
+                            // }
+                        }
+                    }
+
+                    return isValidType;
+                }),
                 ['Date'],
             );
 
@@ -669,14 +719,75 @@ class EventsView extends Component<Props, State> {
 
             return dataSource;
         }
+
         if (activeSection === EventSections.REQUESTS) {
-            items = [...pendingRequests];
+            const openRequestObjects = orderBy(
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
+                        LedgerEntryTypes.Credential,
+                        // ...TODO?
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            return false;
+                        }
+                        if (p.Subject === account.address) {
+                            if (p.Flags.lsfAccepted) {
+                                // I already accepted, so it isn't planned open
+                                return false;
+                            }
+                        }
+                    }
+
+                    return isValidType;
+                }),
+                ['Date'],
+            );
+            items = [...pendingRequests, ...openRequestObjects];
+        } else if (activeSection === EventSections.OWNED) {
+            const ownedObjects = orderBy(
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
+                        LedgerEntryTypes.Credential,
+                        // ...TODO?
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            return false;
+                        }
+                        if (p.Subject === account.address) {
+                            if (!p.Flags.lsfAccepted) {
+                                // Not yet accepted, not owned
+                                return false;
+                            }
+                        }
+                    }
+
+                    return isValidType;
+                }),
+                ['Date'],
+            );
+            items = [...ownedObjects];
         } else {
             items = [...pendingRequests, ...transactions];
         }
 
         // group items by month name and then get the name for each month
-        const grouped = groupBy(items, (item) => (item.Date ? moment(item.Date).format('YYYY-MM-DD') : ''));
+        const grouped = groupBy(items, (item) => {
+            return item.Date
+                ? moment(item.Date).format('YYYY-MM-DD')
+                : (item as any)?._object?.Date
+                    ? moment((item as any)?._object?.Date).format('YYYY-MM-DD')
+                    : '';
+        });
 
         const dataSource: DataSourceItem[] = [];
 
@@ -714,6 +825,9 @@ class EventsView extends Component<Props, State> {
             case EventSections.REQUESTS:
                 sourceTypes = [DataSourceType.PENDING_REQUESTS];
                 break;
+            case EventSections.OWNED:
+                sourceTypes = [DataSourceType.PLANNED_TRANSACTIONS];
+                break;
             default:
                 break;
         }
@@ -727,13 +841,27 @@ class EventsView extends Component<Props, State> {
         for (const source of sourceTypes) {
             if (source === DataSourceType.PENDING_REQUESTS) {
                 // console.log('loadpending')
-                await this.loadPendingRequests();
+                // await this.loadPendingRequests();
+                await Promise.all([
+                    this.loadPendingRequests(),
+                    this.loadPlannedTransactions(),
+                ]);
             } else if (source === DataSourceType.TRANSACTIONS) {
                 // console.log('load--transactions---', this.isScreenVisible)
                 await this.loadTransactions();
             } else if (source === DataSourceType.PLANNED_TRANSACTIONS) {
                 // console.log('loadplan')
-                await this.loadPlannedTransactions();
+                // await this.loadPlannedTransactions();
+                await Promise.all([
+                    this.loadPlannedTransactions(),
+                    this.loadPendingRequests(),
+                ]);
+            } else if (source === DataSourceType.OWNED_OBJECTS) {
+                // console.log('loadplan')
+                await Promise.all([
+                    this.loadPlannedTransactions(),
+                    this.loadPendingRequests(),
+                ]);
             }
         }
 
@@ -1088,7 +1216,7 @@ class EventsView extends Component<Props, State> {
 
     onSectionChange = ({ value }: { value: EventSections }) => {
         const { activeSection } = this.state;
-
+        
         if (value === activeSection) {
             return;
         }
@@ -1168,6 +1296,10 @@ class EventsView extends Component<Props, State> {
             return null;
         }
 
+        if (activeSection === EventSections.OWNED) {
+            return null;
+        }
+
         return <EventsFilterChip filters={filters} onRemovePress={this.onFilterRemove} />;
     };
 
@@ -1212,6 +1344,7 @@ class EventsView extends Component<Props, State> {
                     onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
+                {/* <Text>{ activeSection}</Text> */}
                 <SegmentButtons
                     activeButton={activeSection}
                     key={`eventsview-segmentbuttons-${timestamp}`}
@@ -1232,6 +1365,10 @@ class EventsView extends Component<Props, State> {
                         {
                             label: Localize.t('events.eventTypeRequests'),
                             value: EventSections.REQUESTS,
+                        },
+                        {
+                            label: Localize.t('events.eventTypeOwned'),
+                            value: EventSections.OWNED,
                         },
                     ]}
                     onItemPress={this.onSectionChange}

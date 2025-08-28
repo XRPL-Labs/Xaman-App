@@ -7,6 +7,7 @@ import CredentialDelete from './CredentialDelete.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { HexEncoding } from '@common/utils/string';
 
 /* Descriptor ==================================================================== */
 class CredentialDeleteInfo extends ExplainerAbstract<CredentialDelete, MutationsMixinType> {
@@ -19,7 +20,28 @@ class CredentialDeleteInfo extends ExplainerAbstract<CredentialDelete, Mutations
     }
 
     generateDescription(): string {
-        return `This is an ${this.item.Type} transaction`;
+        let msg = Localize.t('txCredentialSet.thisIsA', {
+            type: this.item.Type,
+        });
+
+        msg += Localize.t('txCredentialSet.itInvolvesIssuesACredentialFrom', {
+            from: this.item.Issuer,
+        });
+
+        msg += '\n\n';
+
+        const decodedType = HexEncoding.displayHex(this.item?.CredentialType);
+
+        let type = this.item?.CredentialType || 'N/A';
+        if (this.item?.CredentialType && decodedType !== this.item?.CredentialType && decodedType.length < 15) {
+            type = decodedType;
+        }
+
+        msg += Localize.t('txCredentialSet.theCredentialTypeIs', {
+            type,
+        });
+
+        return msg;
     }
 
     getParticipants() {

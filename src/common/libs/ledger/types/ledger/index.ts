@@ -19,6 +19,7 @@ import SignerList from './SignerList';
 import Ticket from './Ticket';
 import URIToken from './URIToken';
 import Delegate from './Delegate';
+import Credential from './Credential';
 
 export type {
     AccountRoot,
@@ -49,4 +50,5 @@ export type {
     VoteSlot,
     URIToken,
     Delegate,
+    Credential,
 };

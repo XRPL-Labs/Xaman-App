@@ -2,30 +2,41 @@ import Localize from '@locale';
 
 import { AccountModel } from '@store/models';
 
-import CredentialCreate from './CredentialCreate.class';
+import Credential from './Credential.class';
 
 /* Types ==================================================================== */
-import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
+// import NetworkService from '@services/NetworkService';
 import { HexEncoding } from '@common/utils/string';
 
 /* Descriptor ==================================================================== */
-class CredentialCreateInfo extends ExplainerAbstract<CredentialCreate, MutationsMixinType> {
-    constructor(item: CredentialCreate & MutationsMixinType, account: AccountModel) {
+class CredentialInfo extends ExplainerAbstract<Credential> {
+    constructor(item: Credential, account: AccountModel) {
         super(item, account);
     }
 
     getEventsLabel(): string {
-        return Localize.t('events.credentialCreate');
+        const decodedType = HexEncoding.displayHex(this.item?.CredentialType);
+
+        let type = '';
+        if (this.item?.CredentialType && decodedType !== this.item?.CredentialType && decodedType.length < 15) {
+            type = ` (${decodedType})`;
+        }
+        // return Localize.t('txCredentialSet.objectLabel');
+        // console.log(this.item.Flags, this.item.Issuer, this.item.Subject, this.account.address);
+        if (!this.item.Flags?.lsfAccepted) {
+            return `${Localize.t('events.credentialOffered')}${type}`;
+        }
+
+        return `${Localize.t('events.credential')}${type}`;
     }
 
     generateDescription(): string {
-        let msg = Localize.t('txCredentialSet.thisIsA', {
-            type: this.item.Type,
-        });
+        // const transactionDefinitions = NetworkService.getRawNetworkDefinitions()?.TRANSACTION_TYPES || {};
 
-        msg += Localize.t('txCredentialSet.itInvolvesIssuesACredentialTo', {
-            from: this.item.Account,
+        let msg = Localize.t('txCredentialSet.itInvolvesIssuesACredentialTo', {
+            from: this.item.Issuer,
             to: this.item.Subject,
         });
 
@@ -58,18 +69,27 @@ class CredentialCreateInfo extends ExplainerAbstract<CredentialCreate, Mutations
 
     getParticipants() {
         return {
-            start: { address: this.item.Account, tag: this.item.SourceTag },
-            end: { address: this.item.Subject, tag: undefined },
+            start: {
+                address: this.item.Issuer,
+                tag: undefined,
+            },
+            end: {
+                address: this.item.Subject,
+                tag: undefined,
+            },
         };
     }
 
     getMonetaryDetails() {
         return {
-            mutate: this.item.BalanceChange(this.account.address),
+            mutate: {
+                [OperationActions.INC]: [],
+                [OperationActions.DEC]: [],
+            },
             factor: undefined,
         };
     }
 }
 
 /* Export ==================================================================== */
-export default CredentialCreateInfo;
+export default CredentialInfo;

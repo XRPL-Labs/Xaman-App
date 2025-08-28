@@ -40,6 +40,8 @@ class Warnings extends PureComponent<Props, State> {
                 String(h?.[1] || '').trim().match(/[a-zA-Z0-9_\-+*^.()[\]:,;!?\s ]+$/msi),
             );  
         
+        const tesSUCCESS = (item as any)?.TransactionResult?.code === 'tesSUCCESS'; 
+
         if (c.length > 0) {
             // warnings.push(Localize.t('errors.tecHOOK_REJECTED_Short').trim());
             detailWarnings.push(c.map((h: string[]) => `${h[1]} (#${h[0]})`).join(', '));
@@ -66,12 +68,16 @@ class Warnings extends PureComponent<Props, State> {
                         <View style={styles.detailContainer}>
                             <Text style={[
                                 styles.detailsLabelText,
-                                AppStyles.colorRed,
-                            ]}>{Localize.t('errors.tecHOOK_REJECTED_Short')}</Text>
+                                tesSUCCESS ? AppStyles.colorGreen : AppStyles.colorRed,
+                            ]}>{
+                                    tesSUCCESS
+                                        ? Localize.t('global.hookExecuted')
+                                        : Localize.t('errors.tecHOOK_REJECTED_Short').trim()
+                            }</Text>
                             {detailWarnings.map((warning, index) => {
                                 return <Text key={`warning-${index}`} style={[
                                     styles.detailsValueText,
-                                    AppStyles.colorRed,
+                                    tesSUCCESS ? AppStyles.colorGreen : AppStyles.colorRed,
                                 ]}>{warning}</Text>;
                             })}
                         </View>

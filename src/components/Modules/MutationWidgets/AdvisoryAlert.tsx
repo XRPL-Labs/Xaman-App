@@ -17,8 +17,8 @@ class AdvisoryAlert extends PureComponent<Props> {
     render() {
         const { advisory, account, item } = this.props;
 
-        if (item && item?.Account && item.Account !== account.address) {
-            if (ContactRepository.findOne({ address: item.Account, destinationTag: '' })) {
+        if (item && (item as any)?.Account && (item as any).Account !== account.address) {
+            if (ContactRepository.findOne({ address: (item as any).Account, destinationTag: '' })) {
                 // No advisory if in contacts
                 return null;
             }

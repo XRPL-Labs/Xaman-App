@@ -42,6 +42,8 @@ enum ActionTypes {
     CANCEL_CHECK = 'CANCEL_CHECK',
     CASH_CHECK = 'CASH_CHECK',
     CANCEL_TICKET = 'CANCEL_TICKET',
+    DELETE_CREDENTIAL = 'DELETE_CREDENTIAL',
+    ACCEPT_CREDENTIAL = 'ACCEPT_CREDENTIAL',
 }
 
 interface State {
@@ -79,6 +81,10 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
                 return { label: Localize.t('events.cashCheck'), secondary: false };
             case ActionTypes.CANCEL_TICKET:
                 return { label: Localize.t('events.cancelTicket'), secondary: false };
+            case ActionTypes.DELETE_CREDENTIAL:
+                return { label: Localize.t('events.deleteCredential'), secondary: true };
+            case ActionTypes.ACCEPT_CREDENTIAL:
+                return { label: Localize.t('events.acceptCredential'), secondary: false };
             default:
                 return null;
         }
@@ -149,6 +155,14 @@ class ActionButtons extends PureComponent<Props, State> {
                 break;
             case LedgerEntryTypes.Offer:
                 availableActions.push(ActionTypes.CANCEL_OFFER);
+                break;
+            case LedgerEntryTypes.Credential:
+                if (item.Issuer === account.address || item.Subject === account.address) {
+                    availableActions.push(ActionTypes.DELETE_CREDENTIAL);
+                    if (item.Subject === account.address && !item.Flags?.lsfAccepted) {
+                        availableActions.push(ActionTypes.ACCEPT_CREDENTIAL);
+                    }
+                }
                 break;
             case LedgerEntryTypes.Delegate:
                 availableActions.push(ActionTypes.REMOVE_DELEGATION);
@@ -263,6 +277,20 @@ class ActionButtons extends PureComponent<Props, State> {
                         URITokenID: item.URITokenID,
                     });
                 }
+                break;
+            case ActionTypes.ACCEPT_CREDENTIAL:
+                Object.assign(craftedTxJson, {
+                    TransactionType: TransactionTypes.CredentialAccept,
+                    Issuer: (item as any)?.Issuer,
+                    CredentialType: (item as any)?.CredentialType,
+                });
+                break;
+            case ActionTypes.DELETE_CREDENTIAL:
+                Object.assign(craftedTxJson, {
+                    TransactionType: TransactionTypes.CredentialDelete,
+                    Issuer: (item as any)?.Issuer,
+                    CredentialType: (item as any)?.CredentialType,
+                });
                 break;
             case ActionTypes.ACCEPT_NFTOKEN_OFFER:
             case ActionTypes.SELL_NFTOKEN:

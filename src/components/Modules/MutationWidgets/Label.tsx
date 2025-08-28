@@ -50,9 +50,9 @@ class Label extends PureComponent<Props, State> {
         const noMutation = 
             !explainer?.getMonetaryDetails()?.mutate?.[OperationActions.INC]?.[0] &&
             !explainer?.getMonetaryDetails()?.mutate?.[OperationActions.DEC]?.[0] &&
-            account.address !== item.Account; 
+            account.address !== ((item as any)?.Account || (item as any)?.Issuer);
         
-        if (noMutation) {
+        if (noMutation && !item.Type.match(/Credential/)) {
             return <Text style={[
                 AppStyles.h4,
                 styles.noBold,
@@ -74,6 +74,11 @@ class Label extends PureComponent<Props, State> {
             // ledger object
             if ([LedgerEntryTypes.Escrow].includes(item.Type)) {
                 badgeType = BadgeType.Planned;
+            } else if ([LedgerEntryTypes.Credential].includes(item.Type)) {
+                badgeType = BadgeType.Pending;
+                if (item?.Flags?.lsfAccepted) {
+                    badgeType = BadgeType.Owned;
+                }
             } else {
                 badgeType = BadgeType.Open;
             }

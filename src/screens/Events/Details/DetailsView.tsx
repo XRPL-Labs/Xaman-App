@@ -29,6 +29,7 @@ import { AppStyles } from '@theme';
 /* types ==================================================================== */
 import { Props, State, WidgetComponents, WidgetKey } from './types';
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
+// import { Credential } from '@common/libs/ledger/objects';
 
 /* Component ==================================================================== */
 class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {
@@ -86,12 +87,14 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     checkAdvisory = async () => {
         const { item, account } = this.props;
 
+        const acc = (item?.Type === 'Credential' ? item.Issuer : item.Account);
+    
         // no need to check as the account is the initiator of the transaction
-        if (item.Account === account.address) {
+        if (acc === account.address) {
             return;
         }
 
-        BackendService.getAccountAdvisory(item.Account)
+        BackendService.getAccountAdvisory(acc)
             .then((resp) => {
                 if (resp?.danger && this.mounted) {
                     this.setState({

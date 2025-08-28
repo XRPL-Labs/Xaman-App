@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "ٻولي",
     "ok": "ٺيڪ آهي",
     "start": "شروع",
@@ -496,6 +497,8 @@
     "eventTypeAll": "سڀ ڪجھ",
     "eventTypePlanned": "منصوبا ٿيل",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "عرض ڪيو",
     "noTransaction": "ڪابه ٽرانزيڪشن ناهي",
     "shareAccount": "اڪائونٽ ايڊريس شيئر ڪريو",
@@ -523,6 +526,8 @@
     "createOffer": "آڇ ٺاھيو",
     "cancelOffer": "آڇ رد ڪريو",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "ايسڪرو ٺاهي",
     "finishEscrow": "ختم ايسڪرو",
     "cancelEscrow": " ڪريو منسوخ",
@@ -590,6 +595,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -1320,6 +1327,13 @@
     "permissionsGranted": "Signing permissions to grant",
     "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
     "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}."
   },
   "moment": {
     "calendar": {
