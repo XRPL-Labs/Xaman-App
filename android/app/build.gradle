@@ -7,7 +7,7 @@ apply plugin: "com.google.firebase.crashlytics"
 
 import com.android.build.OutputFile
 
-def canonicalVersionName = "4.2.0"
+def canonicalVersionName = "4.2.1"
 def canonicalVersionCode = 122
 
 // NOTE: DO NOT change postFixSize value, this is for handling legacy method for handling the versioning in android
@@ -301,8 +301,6 @@ dependencies {
 
     // Face features
     // implementation 'com.google.mlkit:face-detection:16.1.7'
-
-
 
     implementation 'com.google.mlkit:common:18.7.0'
     implementation 'com.google.mlkit:barcode-scanning:17.1.0'
