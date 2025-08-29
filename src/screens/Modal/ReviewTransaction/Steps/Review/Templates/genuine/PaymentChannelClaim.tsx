@@ -79,6 +79,19 @@ class PaymentChannelClaimTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+
+                {transaction?.CredentialIDs && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.credentialIDs')}</Text>
+                        <View style={styles.contentBox}>
+                            {transaction.CredentialIDs.map((id, index) => (
+                                <Text key={`credential-${index}`} style={styles.value}>
+                                    {id}
+                                </Text>
+                            ))}
+                        </View>
+                    </>
+                )}
             </>
         );
     }
