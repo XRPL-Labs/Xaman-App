@@ -2,7 +2,7 @@ import { EscrowCreate } from '@common/libs/ledger/transactions/genuine/EscrowCre
 
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { AccountID, UInt32, Blob, Hash256 } from '@common/libs/ledger/parser/fields';
+import { AccountID, UInt32, Blob, Hash256, STArray } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -22,6 +22,7 @@ class EscrowFinish extends BaseGenuineTransaction {
         Condition: { type: Blob },
         Fulfillment: { type: Blob },
         EscrowID: { type: Hash256 },
+        CredentialIDs: { type: STArray },
     };
 
     declare Owner: FieldReturnType<typeof AccountID>;
@@ -29,6 +30,7 @@ class EscrowFinish extends BaseGenuineTransaction {
     declare Condition: FieldReturnType<typeof Blob>;
     declare Fulfillment: FieldReturnType<typeof Blob>;
     declare EscrowID: FieldReturnType<typeof Hash256>;
+    declare CredentialIDs: FieldReturnType<typeof STArray, string[]>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
