@@ -61,6 +61,7 @@ enum PassableChecks {
     PROBABLE_SCAM = 'PROBABLE_SCAM',
     CONFIRMED_SCAM = 'CONFIRMED_SCAM',
     DISALLOWED_XRP_FLAG = 'DISALLOWED_XRP_FLAG',
+    SEND_AS_ALT_TX = 'SEND_AS_ALT_TX',
 }
 
 /* Component ==================================================================== */
@@ -387,8 +388,15 @@ class RecipientStep extends Component<Props, State> {
     };
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
-        const { setDestinationInfo, amount, token, destination, source } = this.context;
-        const { setCredentials } = this.context;
+        const {
+            setDestinationInfo,
+            amount,
+            token,
+            destination,
+            source,
+            submitAsAltTxTypeTo,
+            setCredentials,
+        } = this.context;
         let { destinationInfo } = this.context;
 
         // double check, this should not be happening
@@ -543,19 +551,75 @@ class RecipientStep extends Component<Props, State> {
             }
 
             // check if recipient have proper trustline for receiving this IOU
-            // ignore if the recipient is the issuer
-            // IMMEDIATE REJECT
-            if (typeof token !== 'string' && token.currency.issuer !== destination.address) {
+            // ignore if the recipient is the issuer, or if approved to send alt tx
+            if (
+                typeof token !== 'string' &&
+                token.currency.issuer !== destination.address &&
+                passedChecks.indexOf(PassableChecks.SEND_AS_ALT_TX) === -1
+            ) {
                 const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
                     currency: token.currency.currencyCode,
                     issuer: token.currency.issuer,
                 });
 
                 // recipient does not have the proper trustline
-                if (
-                    !destinationLine ||
-                    (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0)
-                ) {
+                const noTL = !destinationLine ||
+                    (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0);
+                const exceedsTL = destinationLine &&
+                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit);
+
+                if (noTL || exceedsTL) {
+                    if (
+                        (destination.tag === undefined || destination.tag === null) &&
+                        !destinationInfo.requireDestinationTag
+                        // ^^ we're not making checks to those with destination tags
+                    ) {
+                        const nid = NetworkService.getNetworkId();
+                        const type = nid === 21337 || nid === 21338
+                            ? 'Remit'
+                            : 'Check';
+
+                        const altTlInstruction = nid === 21337 || nid === 21338 // Xahau / Xahau Testnet
+                            ? Localize.t('send.altSendPaymentRecipientDoesNotHaveTrustLineXahau', {
+                                asset: NetworkService.getNativeAsset(),
+                                reserve: NetworkService.getNetworkReserve().OwnerReserve,
+                            })
+                            : Localize.t('send.altSendPaymentRecipientDoesNotHaveTrustLineXRPL', {
+                                asset: NetworkService.getNativeAsset(),
+                                reserve: NetworkService.getNetworkReserve().OwnerReserve,
+                            });
+                        
+                        submitAsAltTxTypeTo(`${type}:${destination.address}`);
+
+                        setTimeout(() => {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                text: exceedsTL
+                                    ? `${Localize.t('send.unableToSendPaymentRecipientExceedTrustline')}\n\n${altTlInstruction}`
+                                    : `${Localize.t('send.altSendPaymentRecipientDoesNotHaveTrustLine')}\n\n${altTlInstruction}`,
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.cancel'),
+                                        onPress: this.clearDestination,
+                                        light: true,
+                                    },
+                                    {
+                                        text: Localize.t('send.altSendAs', {
+                                            type,
+                                        }),
+                                        onPress: this.checkAndNext.bind(null, [
+                                            ...passedChecks,
+                                            PassableChecks.SEND_AS_ALT_TX,
+                                        ]),
+                                        light: false,
+                                    },
+                                ],
+                            });
+                        }, 50);
+                        return;
+                    }
+
+                    // Destination tag, default msg
                     setTimeout(() => {
                         Navigator.showAlertModal({
                             type: 'error',
@@ -575,7 +639,9 @@ class RecipientStep extends Component<Props, State> {
                 // check if sending this payment will exceed the limit
                 if (
                     destinationLine &&
-                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit)
+                    Number(amount) + Number(destinationLine.balance) > Number(destinationLine.limit) &&
+                    passedChecks.indexOf(PassableChecks.SEND_AS_ALT_TX) === -1
+                    // ^^ if we're already sending alt, the limit doesn't matter.
                 ) {
                     setTimeout(() => {
                         Navigator.showAlertModal({

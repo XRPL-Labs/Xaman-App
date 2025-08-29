@@ -684,6 +684,13 @@ class EventsView extends Component<Props, State> {
                         }
                     }
 
+                    if (p.Type === LedgerEntryTypes.Check) {
+                        // Incoming check, this belongs in Requests
+                        if (p.Destination === account.address) {
+                            return false;
+                        }
+                    }
+
                     return isValidType;
                 }),
                 ['Date'],
@@ -725,6 +732,7 @@ class EventsView extends Component<Props, State> {
                 filter(plannedTransactions, (p) => {
                     const isValidType = [
                         LedgerEntryTypes.Credential,
+                        LedgerEntryTypes.Check,
                         // ...TODO?
                         // LedgerEntryTypes.SignerList,
                         // LedgerEntryTypes.DepositPreauth,
@@ -741,13 +749,38 @@ class EventsView extends Component<Props, State> {
                                 return false;
                             }
                         }
+                        if (p?._object) {
+                            Object.assign(p, {
+                                _object: {
+                                    ...p?._object || {},
+                                    Date: new Date().toISOString(),
+                                },
+                            });
+                        }
+                    }
+
+                    if (p.Type === LedgerEntryTypes.Check) {
+                        // Incoming check, this belongs in Requests
+                        if (p.Destination === account.address) {
+                            if (p?._object) {
+                                Object.assign(p, {
+                                    _object: {
+                                        ...p?._object || {},
+                                        Date: new Date().toISOString(),
+                                    },
+                                });
+                            }
+                            return true;
+                        }
+
+                        return false;
                     }
 
                     return isValidType;
                 }),
                 ['Date'],
             );
-            items = [...pendingRequests, ...openRequestObjects];
+            items = [...openRequestObjects , ...pendingRequests];
         } else if (activeSection === EventSections.OWNED) {
             const ownedObjects = orderBy(
                 filter(plannedTransactions, (p) => {

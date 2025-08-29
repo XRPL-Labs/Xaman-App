@@ -1,6 +1,6 @@
 import { XrplDestination } from 'xumm-string-decode';
 
-import { Payment } from '@common/libs/ledger/transactions';
+import { CheckCreate, Payment, Remit } from '@common/libs/ledger/transactions';
 
 import { AccountAdvisoryResolveType } from '@services/ResolverService';
 
@@ -45,9 +45,12 @@ export interface State {
     issuerFee?: number;
     serviceFeeAmount?: FeeItem;
     payment: Payment & SignMixinType;
+    remit: Remit & SignMixinType;
+    check: CheckCreate & SignMixinType;
     scanResult?: XrplDestination;
     coreSettings: CoreModel;
     isLoading: boolean;
+    altTxTypeTo?: string;
 }
 
 export interface ContextProps extends State {
@@ -57,6 +60,7 @@ export interface ContextProps extends State {
     setAmount: (amount: string) => void;
     setDestination: (destination: Destination | undefined) => void;
     setCredentials: (credentials: string[]) => void;
+    submitAsAltTxTypeTo: (destination: string) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;

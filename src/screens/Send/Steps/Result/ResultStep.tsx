@@ -47,9 +47,14 @@ class ResultStep extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const { payment } = this.context;
+        const { payment, remit, check, altTxTypeTo } = this.context;
 
-        if (payment.VerifyResult?.success) {
+        const txType = (altTxTypeTo && altTxTypeTo !== '' ? altTxTypeTo.split(':')[0] : 'payment')
+            .toLocaleLowerCase();
+
+        const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
+
+        if (_tx.VerifyResult?.success) {
             this.showDetailsTimeout = setTimeout(this.showDetailsCard, 4500);
         }
     }
@@ -141,11 +146,11 @@ class ResultStep extends Component<Props, State> {
 
     renderSuccess = () => {
         const { showDetailsCard } = this.state;
-        // const { serviceFeeAmount, payment } = this.context;
+        // const { serviceFeeAmount, _tx } = this.context;
         // console.log('[ResultStep] context serviceFeeAmount', serviceFeeAmount);
         // console.log('[ResultStep] context serviceFeeTx', serviceFeeTx);
-        // console.log('[ResultStep] Payment Service Fee', payment.ServiceFee);
-        // console.log('[ResultStep] Payment Service TX', payment.ServiceFeeTx);
+        // console.log('[ResultStep] _tx Service Fee', _tx.ServiceFee);
+        // console.log('[ResultStep] _tx Service TX', _tx.ServiceFeeTx);
 
         return (
             <SafeAreaView testID="send-result-view" style={[styles.container, styles.containerSuccess]}>
@@ -182,9 +187,15 @@ class ResultStep extends Component<Props, State> {
     };
 
     renderFailed = () => {
-        const { payment } = this.context;
+        const { payment, check, remit, altTxTypeTo } = this.context;
 
-        const c = payment?.MetaData?.HookExecutions
+        const txType = (altTxTypeTo && altTxTypeTo !== '' ? altTxTypeTo.split(':')[0] : 'payment')
+            .toLocaleLowerCase();
+
+        const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
+
+
+        const c = _tx?.MetaData?.HookExecutions
             ?.filter(h =>
                 typeof h?.HookExecution?.HookReturnCode === 'string' &&
                 typeof h?.HookExecution?.HookReturnString === 'string',
@@ -203,9 +214,9 @@ class ResultStep extends Component<Props, State> {
         
         const errorMsg = c && c.length > 0
             ? c.map(h => `${h[1]} (#${h[0]})`).join(', ')
-            : payment?.FinalResult?.message ||
-            payment?.SubmitResult?.message ||
-            payment.SubmitResult?.message ||
+            : _tx?.FinalResult?.message ||
+            _tx?.SubmitResult?.message ||
+            _tx.SubmitResult?.message ||
             Localize.t('global.noInformationToShow');
 
         return (
@@ -224,11 +235,11 @@ class ResultStep extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>
-                            {/* {payment.SubmitResult?.engineResult || 'Error'} */}
+                            {/* {_tx.SubmitResult?.engineResult || 'Error'} */}
                             {
-                                payment?.MetaData?.TransactionResult ||
-                                payment?.FinalResult?.code ||
-                                payment?.SubmitResult?.engineResult ||
+                                _tx?.MetaData?.TransactionResult ||
+                                _tx?.FinalResult?.code ||
+                                _tx?.SubmitResult?.engineResult ||
                                 'Error'
                             }
                         </Text>
@@ -239,7 +250,7 @@ class ResultStep extends Component<Props, State> {
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
                         <Text style={AppStyles.subtext}>{errorMsg}</Text>
-                        {/* <Text style={AppStyles.subtext}>{JSON.stringify(payment.SubmitResult, null, 2)}</Text> */}
+                        {/* <Text style={AppStyles.subtext}>{JSON.stringify(_tx.SubmitResult, null, 2)}</Text> */}
 
                         <Spacer size={50} />
 
@@ -250,7 +261,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    payment.FinalResult?.message || payment.FinalResult?.code || 'Unexpected Error',
+                                    _tx.FinalResult?.message || _tx.FinalResult?.code || 'Unexpected Error',
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}
@@ -336,29 +347,34 @@ class ResultStep extends Component<Props, State> {
     };
 
     render() {
-        const { payment } = this.context;
+        const { payment, check, remit, altTxTypeTo } = this.context;
+
+        const txType = (altTxTypeTo && altTxTypeTo !== '' ? altTxTypeTo.split(':')[0] : 'payment')
+            .toLocaleLowerCase();
+
+        const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
 
         // THIS IS A MANUAL SEND
 
-        // console.log('resultstep payment - MetaData', payment.MetaData.TransactionResult);
-        // console.log('resultstep payment - FinalResult', payment.FinalResult.code);
-        // console.log('resultstep payment - SubmitResult', payment.SubmitResult?.engineResult);
+        // console.log('resultstep _tx - MetaData', _tx.MetaData.TransactionResult);
+        // console.log('resultstep _tx - FinalResult', _tx.FinalResult.code);
+        // console.log('resultstep _tx - SubmitResult', _tx.SubmitResult?.engineResult);
 
         if (
-            payment?.MetaData?.TransactionResult === 'terQUEUED' ||
-            payment?.FinalResult?.code === 'terQUEUED'
-            // LOG  resultstep payment - MetaData tecNO_PERMISSION
-            // LOG  resultstep payment - FinalResult tecNO_PERMISSION
-            // LOG  resultstep payment - SubmitResult telCAN_NOT_QUEUE_FEE
+            _tx?.MetaData?.TransactionResult === 'terQUEUED' ||
+            _tx?.FinalResult?.code === 'terQUEUED'
+            // LOG  resultstep _tx - MetaData tecNO_PERMISSION
+            // LOG  resultstep _tx - FinalResult tecNO_PERMISSION
+            // LOG  resultstep _tx - SubmitResult telCAN_NOT_QUEUE_FEE
             // ||
-            // payment?.SubmitResult?.engineResult === 'terQUEUED'
+            // _tx?.SubmitResult?.engineResult === 'terQUEUED'
         ) {
             return this.renderQueued();
         }
 
-        if (payment.FinalResult?.success) {
+        if (_tx.FinalResult?.success) {
             // submitted successfully but cannot be verified
-            if (payment.VerifyResult?.success === false) {
+            if (_tx.VerifyResult?.success === false) {
                 return this.renderVerificationFailed();
             }
 

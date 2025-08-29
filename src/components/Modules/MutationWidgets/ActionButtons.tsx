@@ -76,7 +76,7 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
             case ActionTypes.FINISH_ESCROW:
                 return { label: Localize.t('events.finishEscrow'), secondary: false };
             case ActionTypes.CANCEL_CHECK:
-                return { label: Localize.t('events.cancelCheck'), secondary: false };
+                return { label: Localize.t('events.cancelCheck'), secondary: true };
             case ActionTypes.CASH_CHECK:
                 return { label: Localize.t('events.cashCheck'), secondary: false };
             case ActionTypes.CANCEL_TICKET:
