@@ -307,7 +307,7 @@ class SwipeButton extends Component<Props, State> {
                     ]}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...this.panResponder.panHandlers}
-                    hitSlop={{ top: 200, left: 50, right: 50, bottom: 50 }}
+                    hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                 >
                     <View
                         style={[
