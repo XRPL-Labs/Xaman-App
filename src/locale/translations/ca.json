@@ -249,6 +249,8 @@
     "empty": "Buit",
     "update": "Actualització",
     "notNow": "Ara no",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "Nova versió",
     "versionNumberIsAvailableOnTheAppStore": "La versió %{versionCode} està disponible a AppStore.",
     "danger": "Perill!",
@@ -1334,7 +1336,8 @@
     "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
     "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
     "theCredentialTypeIs": "The credential type is %{type}. ",
-    "theCredentialUriIs": "The credential URI is %{uri}."
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

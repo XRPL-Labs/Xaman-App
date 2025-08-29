@@ -249,6 +249,8 @@
     "empty": "காலியாக",
     "update": "புதுப்பிப்பு",
     "notNow": "இப்போது இல்லை",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "புதிய பதிப்பு",
     "versionNumberIsAvailableOnTheAppStore": "பதிப்பு %{versionCode} ஆப்ஸ்டோரில் கிடைக்கிறது.",
     "danger": "ஆபத்து!",
@@ -1334,7 +1336,8 @@
     "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
     "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
     "theCredentialTypeIs": "The credential type is %{type}. ",
-    "theCredentialUriIs": "The credential URI is %{uri}."
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

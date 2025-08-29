@@ -249,6 +249,8 @@
     "empty": "ശൂന്യമാണ്",
     "update": "അപ്ഡേറ്റ്",
     "notNow": "ഇപ്പോൾ വേണ്ട",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "പുതിയ പതിപ്പ്",
     "versionNumberIsAvailableOnTheAppStore": "പതിപ്പ് %{versionCode} അപ്ലിക്കേഷൻസ്റ്റോർ ലഭ്യമാണ്.",
     "danger": "അപായം!",
@@ -1334,7 +1336,8 @@
     "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
     "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
     "theCredentialTypeIs": "The credential type is %{type}. ",
-    "theCredentialUriIs": "The credential URI is %{uri}."
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

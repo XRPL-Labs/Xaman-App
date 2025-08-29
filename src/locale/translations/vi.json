@@ -249,6 +249,8 @@
     "empty": "Trống",
     "update": "Cập nhật",
     "notNow": "Không phải lúc này",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "Phiên bản mới",
     "versionNumberIsAvailableOnTheAppStore": "Phiên bản %{versionCode} có trên AppStore.",
     "danger": "Nguy hiểm",
@@ -1334,7 +1336,8 @@
     "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
     "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
     "theCredentialTypeIs": "The credential type is %{type}. ",
-    "theCredentialUriIs": "The credential URI is %{uri}."
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

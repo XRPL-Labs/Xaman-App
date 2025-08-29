@@ -40,8 +40,8 @@ import {
     AccountObjectsResponse,
     DepositAuthorizedRequest,
     DepositAuthorizedResponse,
-    // LedgerEntryRequest,
-    // LedgerEntryResponse,
+    LedgerEntryRequest,
+    LedgerEntryResponse,
 } from '@common/libs/ledger/types/methods';
 
 /* types ==================================================================== */
@@ -388,6 +388,7 @@ class RecipientStep extends Component<Props, State> {
 
     checkAndNext = async (passedChecks = [] as Array<PassableChecks>) => {
         const { setDestinationInfo, amount, token, destination, source } = this.context;
+        const { setCredentials } = this.context;
         let { destinationInfo } = this.context;
 
         // double check, this should not be happening
@@ -661,6 +662,9 @@ class RecipientStep extends Component<Props, State> {
                 // don't move to next step
                 return;
             }
+
+            let notAuthorized = false;
+            
             if (source?.address && destination?.address) {
                 const isAuthorized = await NetworkService.send<DepositAuthorizedRequest, DepositAuthorizedResponse>({
                     command: 'deposit_authorized',
@@ -668,16 +672,70 @@ class RecipientStep extends Component<Props, State> {
                     destination_account: destination.address,
                 });
 
+
                 if (!((isAuthorized as any) || {})?.deposit_authorized) {
                     // Not authorised, let's check if it's a credential thing
                     const ownedCredentials = (await NetworkService.send<AccountObjectsRequest, AccountObjectsResponse>({
                         command: 'account_objects',
                         type: 'credential',
                         account: source.address,
-                    }) as any)?.account_objects;
+                    }) as any)?.account_objects.filter((o: { Flags: number }) => o.Flags > 0); // Must be accepted
 
-                    if (ownedCredentials.length < 100) {
+                    if (ownedCredentials.length < 1) {
                         // We can't satisfy this anyway, so let's just inform the user
+                        notAuthorized = true;
+                    }
+
+                    // So this account has credentials, let's see if there's one that would satisfy the
+                    // destination's PreAuth
+                    const credentialMatch = (await Promise.all(ownedCredentials.map((credential: {
+                        Issuer: string;
+                        CredentialType: string;
+                    }) => {
+                        return NetworkService.send<LedgerEntryRequest, LedgerEntryResponse>({
+                            command: 'ledger_entry',
+                            deposit_preauth: {
+                                owner: destination.address,
+                                authorized_credentials: [{
+                                    issuer: credential.Issuer,
+                                    credential_type: credential.CredentialType,
+                                }],
+                            },
+                        });
+                    })) as any)
+                        .filter((authorisation: {
+                            node: {
+                                AuthorizeCredentials: { Credential: { Issuer: string; CredentialType: string } }[];
+                            };
+                        }) => authorisation?.node?.AuthorizeCredentials?.length > 0)
+                        .map((authorisation: {
+                            node: {
+                                AuthorizeCredentials: { Credential: { Issuer: string; CredentialType: string } }[];
+                            };
+                        }) => authorisation?.node?.AuthorizeCredentials?.[0]?.Credential)
+                        ?.[0];
+
+                    if (credentialMatch) {
+                        const useCredential = ownedCredentials.filter((credential: {
+                            Issuer: string;
+                            CredentialType: string;
+                        }) => {
+                            return credential.Issuer === credentialMatch.Issuer &&
+                                credential.CredentialType === credentialMatch.CredentialType;
+                        })?.[0];
+
+                        if (useCredential && useCredential?.index) {
+                            // We're good
+                            setCredentials([useCredential.index]);
+                        } else {
+                            notAuthorized = true;
+                        }
+                    } else {
+                        // No match, let's just inform the user, we cannot satisfy this
+                        notAuthorized = true;
+                    }
+
+                    if (notAuthorized) {
                         setTimeout(() => {
                             Navigator.showAlertModal({
                                 type: 'warning',
@@ -694,9 +752,11 @@ class RecipientStep extends Component<Props, State> {
                         }, 50);
                         return;
                     }
-
-        } catch {
+                }
+            };
+        } catch (e) {
             Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+            // console.log(e);
             return;
         } finally {
             this.setState({ isLoading: false });

@@ -75,6 +75,7 @@ class SendView extends Component<Props, State> {
             memo: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
+            credentials: [],
             serviceFeeAmount: undefined,
             destination: undefined,
             destinationInfo: undefined,
@@ -153,12 +154,16 @@ class SendView extends Component<Props, State> {
         this.setState({ memo });
     };
 
+    setCredentials = (credentials: string[]) => {
+        this.setState({ credentials });
+    };
+
     setScanResult = (result: any) => {
         this.setState({ scanResult: result });
     };
 
     getPaymentJsonForFee = () => {
-        const { token, amount, destination, source, memo } = this.state;
+        const { token, amount, destination, source, memo, credentials } = this.state;
 
         const txJson = {
             TransactionType: 'Payment',
@@ -195,6 +200,12 @@ class SendView extends Component<Props, State> {
                         Memo: Memo.Encode(memo),
                     },
                 ],
+            });
+        }
+
+        if (credentials && credentials.length > 0) {
+            Object.assign(txJson, {
+                CredentialIDs: credentials,
             });
         }
 
@@ -253,7 +264,17 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { token, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
+        const {
+            token,
+            amount,
+            selectedFee,
+            issuerFee,
+            destination,
+            source,
+            payment,
+            memo,
+            credentials,
+        } = this.state;
 
         this.setState({
             isLoading: true,
@@ -311,6 +332,10 @@ class SendView extends Component<Props, State> {
                 payment.Memos = [Memo.Encode(memo)];
             } else if (payment.Memos) {
                 payment.Memos = [];
+            }
+
+            if (credentials && credentials.length > 0) {
+                payment.CredentialIDs = credentials;
             }
 
             // validate payment for all possible mistakes
@@ -417,6 +442,7 @@ class SendView extends Component<Props, State> {
                     setToken: this.setToken,
                     setFee: this.setFee,
                     setMemo: this.setMemo,
+                    setCredentials: this.setCredentials,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,

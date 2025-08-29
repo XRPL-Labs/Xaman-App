@@ -40,6 +40,7 @@ export interface State {
     token: TrustLineModel | string;
     amount: string;
     memo?: string;
+    credentials?: string[];
     selectedFee?: FeeItem;
     issuerFee?: number;
     serviceFeeAmount?: FeeItem;
@@ -55,6 +56,7 @@ export interface ContextProps extends State {
     setToken: (token: TrustLineModel | string) => void;
     setAmount: (amount: string) => void;
     setDestination: (destination: Destination | undefined) => void;
+    setCredentials: (credentials: string[]) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;

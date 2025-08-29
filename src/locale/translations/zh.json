@@ -249,6 +249,8 @@
     "empty": "空的",
     "update": "更新资料",
     "notNow": "现在不要",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "新版本",
     "versionNumberIsAvailableOnTheAppStore": "版本%{versionCode}在AppStore上可供下载。",
     "danger": "危险",
@@ -1334,7 +1336,8 @@
     "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
     "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
     "theCredentialTypeIs": "The credential type is %{type}. ",
-    "theCredentialUriIs": "The credential URI is %{uri}."
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

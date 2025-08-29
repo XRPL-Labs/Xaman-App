@@ -332,6 +332,7 @@ class SummaryStep extends Component<Props, State> {
             selectedFee,
             setFee,
             getPaymentJsonForFee,
+            credentials,
         } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
@@ -453,6 +454,26 @@ class SummaryStep extends Component<Props, State> {
 
                         {this.renderAmountRate()}
                     </View>
+
+                    {/* Credentials */}
+                    {credentials && (
+                        <View style={styles.rowItem}>
+                            <View style={[
+                                styles.rowTitle,
+                                AppStyles.marginBottomSml,
+                            ]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                    {Localize.t('global.credential')}
+                                </Text>
+                            </View>
+
+                            <Text style={[
+                                AppStyles.subtext,
+                                AppStyles.colorGreen,
+                                AppStyles.marginTopNegativeSml,
+                            ]}>{Localize.t('txCredentialSet.paymentBeingUsed')}</Text>
+                        </View>
+                    )}
 
                     {issuerFee && (
                         <View style={styles.rowItem}>
