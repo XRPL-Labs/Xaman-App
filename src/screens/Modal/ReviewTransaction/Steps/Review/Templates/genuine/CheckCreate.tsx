@@ -116,7 +116,7 @@ class CheckCreateTemplate extends Component<Props, State> {
                                 onPress={this.focusAmountInput}
                                 style={styles.editButton}
                                 light
-                                roundedSmall
+                                roundedMini
                                 icon="IconEdit"
                                 iconSize={13}
                             />

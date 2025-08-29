@@ -117,7 +117,7 @@ const styles = StyleService.create({
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginRight: 15,
+        marginRight: 0,
     },
     amountInput: {
         fontSize: AppFonts.h3.size,
