@@ -28,7 +28,7 @@ const styles = StyleService.create({
         paddingVertical: 6,
         borderColor: '$lightGrey', 
         borderWidth: 2,
-        borderRadius: 6,
+        borderRadius: 6, 
         marginBottom: AppSizes.paddingSml / 3,
     },
     memoType: {
@@ -173,13 +173,19 @@ const styles = StyleService.create({
     authorizeCredentialsContainer: {
         paddingVertical: 10,
         paddingHorizontal: 8,
-        marginBottom: 10,
         backgroundColor: '$tint',
         borderWidth: 2,
         borderColor: '$tint',
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
         borderTopColor: '$lightGrey',
+    },
+    credentialContainer: {
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderRadius: 12,
+        borderColor: '$tint',
+        marginBottom: 10,
     },
     attachedAccountElement: {
         borderBottomLeftRadius: 0,
