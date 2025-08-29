@@ -49,4 +49,5 @@ export interface DepositAuthorizedResponse extends BaseResponse {
     source_account: string;
     /** If true, the information comes from a validated ledger version. */
     validated?: boolean;
+    credentials?: { Credential: { Issuer: string; CredentialType: string } }[];
 }
