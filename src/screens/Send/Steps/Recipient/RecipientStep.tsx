@@ -35,6 +35,14 @@ import { AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
+import {
+    AccountObjectsRequest,
+    AccountObjectsResponse,
+    DepositAuthorizedRequest,
+    DepositAuthorizedResponse,
+    // LedgerEntryRequest,
+    // LedgerEntryResponse,
+} from '@common/libs/ledger/types/methods';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -653,6 +661,40 @@ class RecipientStep extends Component<Props, State> {
                 // don't move to next step
                 return;
             }
+            if (source?.address && destination?.address) {
+                const isAuthorized = await NetworkService.send<DepositAuthorizedRequest, DepositAuthorizedResponse>({
+                    command: 'deposit_authorized',
+                    source_account: source.address,
+                    destination_account: destination.address,
+                });
+
+                if (!((isAuthorized as any) || {})?.deposit_authorized) {
+                    // Not authorised, let's check if it's a credential thing
+                    const ownedCredentials = (await NetworkService.send<AccountObjectsRequest, AccountObjectsResponse>({
+                        command: 'account_objects',
+                        type: 'credential',
+                        account: source.address,
+                    }) as any)?.account_objects;
+
+                    if (ownedCredentials.length < 100) {
+                        // We can't satisfy this anyway, so let's just inform the user
+                        setTimeout(() => {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                text: Localize.t('send.theDestinationAccountDidNotAuthorize'),
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.back'),
+                                        onPress: this.clearDestination,
+                                        type: 'dismiss',
+                                        light: false,
+                                    },
+                                ],
+                            });
+                        }, 50);
+                        return;
+                    }
+
         } catch {
             Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
             return;
