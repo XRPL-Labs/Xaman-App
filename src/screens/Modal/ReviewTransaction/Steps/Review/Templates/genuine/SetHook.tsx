@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+// import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { Payload } from '@common/libs/payload';
 import { SetHook } from '@common/libs/ledger/transactions';
 
 import { AccountModel } from '@store/models';
 
-import { HooksExplainer } from '@components/Modules';
+import HooksExplainer, { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 
-import Localize from '@locale';
+// import Localize from '@locale';
 
-import { AppStyles } from '@theme';
+// import { AppStyles } from '@theme';
 import styles from '../styles';
 
 import { TemplateProps } from '../types';
@@ -49,13 +50,18 @@ class SetHookTemplate extends Component<Props, State> {
 
         return (
             <>
-                <View style={styles.label}>
+                {/* <View style={styles.label}>
                     <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorGrey]}>
                         {Localize.t('global.hooks')}
                     </Text>
-                </View>
+                </View> */}
                 <View style={styles.contentBox}>
-                    <HooksExplainer account={source} payload={payload} transaction={transaction} />
+                    <HooksExplainer
+                        account={source}
+                        payload={payload}
+                        transaction={transaction}
+                        origin={HookExplainerOrigin.ReviewPayload}
+                    />
                 </View>
             </>
         );

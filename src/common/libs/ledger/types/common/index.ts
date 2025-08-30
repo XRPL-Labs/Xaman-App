@@ -83,6 +83,18 @@ export interface SignerEntry {
     WalletLocator?: string;
 }
 
+/**
+ * The object that describes the permission in Permissions in DelegateSet.
+ */
+export interface Permission {
+    PermissionValue: number;
+}
+
+export interface Credential {
+    Issuer: string;
+    CredentialType: number;
+}
+
 export interface PriceData {
     /**
      * The primary asset in a trading pair. Any valid identifier, such as a stock symbol,
@@ -198,4 +210,13 @@ export interface HookEmission {
 export interface HookParameter {
     HookParameterName: string;
     HookParameterValue: string;
+}
+
+/**
+ * Remark
+ */
+export interface Remark {
+    RemarkName: string;
+    RemarkValue?: string;
+    Flags?: number | { [key: string]: boolean };
 }

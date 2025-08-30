@@ -38,7 +38,9 @@ export type SectionData = {
     data: XamanBackend.AppCategory[];
 };
 
-export interface Props {}
+export interface Props {
+    timestamp?: number;
+}
 
 export interface State {
     message?: MessageType;
@@ -104,7 +106,7 @@ class XAppsView extends Component<Props, State> {
     }
 
     fetchStoreListings = () => {
-        BackendService.getXAppStoreListings('message,featured,popular,recent,all')
+        return BackendService.getXAppStoreListings('message,featured,popular,recent,all')
             .then((resp) => {
                 const { message, categories } = resp;
 
@@ -114,11 +116,15 @@ class XAppsView extends Component<Props, State> {
                     dataSource: this.buildDataSource(categories),
                     isLoading: false,
                 });
+                
+                return Promise.resolve();
             })
             .catch(() => {
                 this.setState({
                     isLoading: false,
                 });
+
+                return Promise.resolve();
             });
     };
 
@@ -215,7 +221,9 @@ class XAppsView extends Component<Props, State> {
             },
             () => {
                 if (!searchEnabled) {
-                    this.searchBarRef?.current?.focus();
+                    requestAnimationFrame(() => {
+                        this.searchBarRef?.current?.focus();
+                    });
                 }
             },
         );
@@ -407,6 +415,8 @@ class XAppsView extends Component<Props, State> {
     };
 
     render() {
+        const { timestamp } = this.props;
+
         return (
             <View testID="xapp-store-tab-view" style={AppStyles.tabContainer}>
                 <Header
@@ -421,7 +431,7 @@ class XAppsView extends Component<Props, State> {
                     }}
                 />
 
-                <View style={styles.contentContainer}>{this.renderContent()}</View>
+                <View key={`xappsview-${timestamp}`} style={styles.contentContainer}>{this.renderContent()}</View>
             </View>
         );
     }

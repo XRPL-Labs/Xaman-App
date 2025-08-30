@@ -9,7 +9,7 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { Navigator } from '@common/helpers/navigator';
 
 import { CurrencyRepository, TrustLineRepository } from '@store/repositories';
-import { AccountModel, TrustLineModel } from '@store/models';
+import { AccountModel, NetworkModel, TrustLineModel } from '@store/models';
 
 import { SortableFlatList } from '@components/General';
 
@@ -22,6 +22,8 @@ import { NativeItem } from '@components/Modules/AssetsList/Tokens/NativeItem';
 import { ListHeader } from '@components/Modules/AssetsList/Tokens/ListHeader';
 import { ListEmpty } from '@components/Modules/AssetsList/Tokens/ListEmpty';
 import { ListFilter, FiltersType } from '@components/Modules/AssetsList/Tokens/ListFilter';
+import { AppSizes } from '@theme/index';
+import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
 interface Props {
@@ -31,6 +33,8 @@ interface Props {
     spendable: boolean;
     experimentalUI?: boolean;
     onChangeCategoryPress: () => void;
+    network?: NetworkModel;
+    addTokenPress?: () => void;
 }
 
 interface State {
@@ -193,6 +197,13 @@ class TokensList extends Component<Props, State> {
 
     onTokenAddButtonPress = () => {
         const { account } = this.state;
+        const { addTokenPress } = this.props;
+
+        if (NetworkService.hasSwap() && addTokenPress) {
+            addTokenPress();
+            return;
+        }
+
         Navigator.showOverlay<AddTokenOverlayProps>(AppScreens.Overlay.AddToken, { account });
     };
 
@@ -212,6 +223,7 @@ class TokensList extends Component<Props, State> {
                 {
                     overlay: {
                         interceptTouchOutside: false,
+                        //     ^^  Needed for tapping backdrop = close, uses onTouchStart={this.startTouch}
                     },
                 },
             );
@@ -333,7 +345,7 @@ class TokensList extends Component<Props, State> {
             return null;
         }
 
-        return <ListEmpty />;
+        return <ListEmpty onTokenAddButtonPress={this.onTokenAddButtonPress} />;
     };
 
     keyExtractor = (item: TrustLineModel) => {
@@ -341,7 +353,7 @@ class TokensList extends Component<Props, State> {
     };
 
     render() {
-        const { account, style, spendable, discreetMode, experimentalUI } = this.props;
+        const { account, style, spendable, discreetMode, experimentalUI, network } = this.props;
         const { dataSource, reorderEnabled, filters } = this.state;
 
         return (
@@ -353,14 +365,20 @@ class TokensList extends Component<Props, State> {
                     onTokenAddPress={this.onTokenAddButtonPress}
                     onTitlePress={this.onCategoryChangePress}
                 />
-                <ListFilter
-                    filters={filters}
-                    visible={!reorderEnabled && typeof experimentalUI !== 'undefined' && !experimentalUI}
-                    onFilterChange={this.onFilterChange}
-                    onReorderPress={this.toggleReordering}
-                />
+                { !reorderEnabled && (
+                    <View style={{height: AppSizes.scale(41)}}>
+                        <ListFilter
+                            filters={filters}
+                            visible={typeof experimentalUI !== 'undefined' && !experimentalUI}
+                            onFilterChange={this.onFilterChange}
+                            onReorderPress={this.toggleReordering}
+                        />
+                    </View>
+                )}
                 <NativeItem
+                    key={`nativeasset-${network?.key}`}
                     account={account}
+                    network={network}
                     discreetMode={discreetMode}
                     reorderEnabled={reorderEnabled}
                     onPress={this.onNativeItemPress}

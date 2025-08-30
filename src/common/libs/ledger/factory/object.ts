@@ -22,6 +22,8 @@ const LedgerObjectFactory = {
         // @ts-expect-error
         const LedgerObject = LedgerObjects[type];
 
+        // console.log(type, LedgerObject);
+
         if (typeof LedgerObject !== 'undefined') {
             return new LedgerObject(object);
         }

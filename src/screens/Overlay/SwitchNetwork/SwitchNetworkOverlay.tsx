@@ -159,7 +159,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
                             {network.name}
                         </Text>
                         <Text style={[styles.networkNodeText, selected && styles.networkNodeTextSelected]}>
-                            {network.defaultNode.endpoint}
+                            {network.defaultNode.endpoint.replace(/^wss?:\/\//, '')}
                         </Text>
                     </View>
                 </View>

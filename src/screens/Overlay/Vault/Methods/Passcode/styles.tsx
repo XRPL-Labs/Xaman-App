@@ -23,6 +23,13 @@ const styles = StyleService.create({
     loadingIndicator: {
         paddingVertical: AppSizes.padding,
     },
+    pinInputPadding: {
+        // borderColor: 'purple',
+        // borderWidth: 3,
+        paddingHorizontal: 15,
+        marginTop: 15,
+        // width: '100%',
+    },
 });
 
 export default styles;

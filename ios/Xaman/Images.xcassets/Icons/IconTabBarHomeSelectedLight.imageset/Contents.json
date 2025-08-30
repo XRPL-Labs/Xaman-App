@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "IconTabBarHomeSelectedLight.png",
+      "filename" : "icon home light.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "IconTabBarHomeSelectedLight@2x.png",
+      "filename" : "icon home light@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "IconTabBarHomeSelectedLight@3x.png",
+      "filename" : "icon home light@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

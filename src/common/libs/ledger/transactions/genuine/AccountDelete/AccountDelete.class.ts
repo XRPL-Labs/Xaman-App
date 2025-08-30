@@ -1,6 +1,6 @@
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { AccountID, UInt32 } from '@common/libs/ledger/parser/fields';
+import { AccountID, STArray, UInt32 } from '@common/libs/ledger/parser/fields';
 
 import NetworkService from '@services/NetworkService';
 
@@ -19,10 +19,12 @@ class AccountDelete extends BaseGenuineTransaction {
     public static Fields: { [key: string]: FieldConfig } = {
         Destination: { required: true, type: AccountID },
         DestinationTag: { type: UInt32 },
+        CredentialIDs: { type: STArray },
     };
 
     declare Destination: FieldReturnType<typeof AccountID>;
     declare DestinationTag: FieldReturnType<typeof UInt32>;
+    declare CredentialIDs: FieldReturnType<typeof STArray, string[]>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

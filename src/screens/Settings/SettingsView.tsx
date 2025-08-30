@@ -11,7 +11,7 @@ import { XAppOrigin } from '@common/libs/payload';
 import { AppScreenKeys, Navigator } from '@common/helpers/navigator';
 import { AppConfig, AppScreens } from '@common/constants';
 
-import { TouchableDebounce, Header, Icon, HorizontalLine } from '@components/General';
+import { TouchableDebounce, Header, Icon } from '@components/General';
 import { MonetizationElement } from '@components/Modules';
 
 import Localize from '@locale';
@@ -98,7 +98,7 @@ class SettingsView extends Component<Props, State> {
                 <View style={AppStyles.contentContainer}>
                     <ScrollView
                         style={AppStyles.flex1}
-                        contentContainerStyle={[AppStyles.paddingRight, AppStyles.paddingLeft]}
+                        contentContainerStyle={[AppStyles.paddingRightSml, AppStyles.paddingLeft]}
                     >
                         {this.renderRow(
                             'IconAccount',
@@ -106,7 +106,13 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Account.List,
                             'accounts-button',
                         )}
-                        <HorizontalLine />
+                        {this.renderRow(
+                            'IconBook',
+                            Localize.t('global.addressBook'),
+                            AppScreens.Settings.AddressBook.List,
+                            'address-book-button',
+                        )}
+                        <View style={styles.hr} />
                         {this.renderRow(
                             'IconSlider',
                             Localize.t('global.general'),
@@ -114,10 +120,10 @@ class SettingsView extends Component<Props, State> {
                             'general-button',
                         )}
                         {this.renderRow(
-                            'IconBook',
-                            Localize.t('global.addressBook'),
-                            AppScreens.Settings.AddressBook.List,
-                            'address-book-button',
+                            'IconActivity',
+                            Localize.t('global.advanced'),
+                            AppScreens.Settings.Advanced,
+                            'advanced-button',
                         )}
                         <View style={styles.hr} />
                         {this.renderRow(
@@ -132,12 +138,6 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Settings.ThirdPartyApps.List,
                             'third_party-apps-button',
                         )}
-                        {this.renderRow(
-                            'IconActivity',
-                            Localize.t('global.advanced'),
-                            AppScreens.Settings.Advanced,
-                            'advanced-button',
-                        )}
                         <View style={styles.hr} />
                         {this.renderRow(
                             'IconHelpCircle',
@@ -151,12 +151,12 @@ class SettingsView extends Component<Props, State> {
                             AppScreens.Settings.TermOfUse,
                             'tos-button',
                         )}
-                        {this.renderRow(
+                        {/* {this.renderRow(
                             'IconStar',
                             Localize.t('settings.credits'),
                             AppScreens.Settings.Credits,
                             'credits-button',
-                        )}
+                        )} */}
                     </ScrollView>
                 </View>
             </View>

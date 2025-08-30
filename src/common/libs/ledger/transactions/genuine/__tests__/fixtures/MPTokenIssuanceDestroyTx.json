@@ -1,0 +1,10 @@
+{
+  "tx": {
+    "Account": "rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo",
+    "TransactionType": "MPTokenIssuanceDestroy",
+    "MPTokenIssuanceID": "004FD5D21BFB1ECDCD89560CBB2BB21F94559F32820FAD04",
+    "Flags": 1
+  },
+  "meta": {}
+
+}

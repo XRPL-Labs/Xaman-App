@@ -14,25 +14,31 @@ import {
     Platform,
     NativeSyntheticEvent,
     TextInputKeyPressEventData,
+    ViewStyle,
 } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 
+import Localize from '@locale';
+
 import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
 import styles from './styles';
+import { AppStyles } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props {
     virtualKeyboard: boolean;
     supportBiometric: boolean;
+    condensed?: boolean;
     length: number;
     clearOnFinish: boolean;
     enableHapticFeedback?: boolean;
     isLoading?: boolean;
+    pinPadStyle?: ViewStyle | ViewStyle[];
     onInputFinish: (pin: string) => void;
     onBiometryPress: () => void;
 }
@@ -179,15 +185,22 @@ class SecurePinInput extends Component<Props, State> {
                 return (
                     <TouchableHighlight
                         testID="x-key"
-                        underlayColor={StyleService.value('$tint')}
-                        style={styles.line}
+                        underlayColor={StyleService.value('$transparentContrast')}
+                        activeOpacity={0.7}
+                        style={[
+                            styles.line,
+                        ]}
                         key="x-key"
+                        accessible accessibilityLabel="Backspace"
                         onPress={() => {
                             this.onInput('Backspace');
                         }}
                         onLongPress={this.clearInput}
                     >
-                        <Icon name="IconChevronLeft" style={styles.iconStyle} size={35} />
+                        <Icon name="IconChevronLeft" style={[
+                            styles.iconStyle,
+                            AppStyles.marginTopNegativeSml,
+                        ]} size={35} />
                     </TouchableHighlight>
                 );
             }
@@ -196,8 +209,12 @@ class SecurePinInput extends Component<Props, State> {
                     return (
                         <TouchableHighlight
                             testID="y-key"
-                            underlayColor={StyleService.value('$tint')}
-                            style={styles.line}
+                            underlayColor={StyleService.value('$transparentContrast')}
+                            style={[
+                                styles.line,
+                            ]}
+                            accessible accessibilityLabel="Biometrics"
+                            activeOpacity={0.7}
                             key="y-key"
                             onPress={() => {
                                 if (onBiometryPress) {
@@ -233,13 +250,16 @@ class SecurePinInput extends Component<Props, State> {
             return (
                 <TouchableHighlight
                     testID={`${item}-key`}
-                    underlayColor={StyleService.value('$tint')}
-                    style={styles.line}
+                    underlayColor={StyleService.value('$transparentContrast')}
+                    style={[
+                        styles.line,
+                    ]}
                     activeOpacity={0.7}
                     key={`${item}-key`}
                     onPress={() => {
                         this.onInput(item);
                     }}
+                    accessible accessibilityLabel={item}
                 >
                     <>
                         <Text style={styles.numTextInt}>{item}</Text>
@@ -285,7 +305,7 @@ class SecurePinInput extends Component<Props, State> {
     };
 
     render() {
-        const { virtualKeyboard, length, isLoading } = this.props;
+        const { condensed, virtualKeyboard, length, isLoading, pinPadStyle } = this.props;
         const { digits } = this.state;
 
         let props: {};
@@ -299,14 +319,19 @@ class SecurePinInput extends Component<Props, State> {
         }
 
         return (
-            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
-                <View style={styles.container}>
+            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus} accessible={false}>
+                <View
+                    style={[
+                        styles.container,
+                    ]}
+                >
                     {!virtualKeyboard && (
                         <TextInput
                             ref={this.inputRef}
                             testID="pin-input"
                             returnKeyType="done"
                             keyboardType="number-pad"
+                            accessible
                             onKeyPress={this.onKeyPress}
                             autoCorrect={false}
                             spellCheck={false}
@@ -319,10 +344,23 @@ class SecurePinInput extends Component<Props, State> {
                             {...props}
                         />
                     )}
-                    <View style={styles.digits}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
+                    <View
+                        style={[
+                            styles.digits,
+                            condensed && styles.digitsCondensed,
+                        ]}
+                        accessible
+                        accessibilityHint={Localize.t('global.pleaseEnterYourPasscode')}
+                    >{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
-                        <View testID="virtual-keyboard" style={styles.keyboardWrap}>
+                        <View testID="virtual-keyboard"
+                            style={[
+                                styles.keyboardWrap,
+                                pinPadStyle,
+                                condensed && styles.keyboardWrapCondensed,
+                            ]}
+                        >
                             {this.renderNum()}
                         </View>
                     )}

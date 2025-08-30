@@ -1,9 +1,17 @@
 import React, { PureComponent } from 'react';
+// import { View, Text, RefreshControl, SectionList, InteractionManager } from 'react-native';
 import { View, Text, RefreshControl, SectionList } from 'react-native';
 
-import { AccountModel } from '@store/models';
+import has from 'lodash/has';
 
 import StyleService from '@services/StyleService';
+// import BackendService, { RatesType } from '@services/BackendService';
+import { type RatesType } from '@services/BackendService';
+
+import { CoreRepository } from '@store/repositories';
+import { AccountModel, CoreModel } from '@store/models';
+
+import { VibrateHapticFeedback } from '@common/helpers/interface';
 
 import { Payload } from '@common/libs/payload';
 
@@ -28,33 +36,74 @@ export type DataSourceItem = {
     header: string;
 };
 
+interface State {
+    fiatCurrency?: string;
+    fiatRate?: RatesType | undefined;
+    isLoadingRate?: boolean;
+    coreSettings?: CoreModel;
+}
+
 interface Props {
     account: AccountModel;
     isLoading?: boolean;
+    isFiltering?: boolean;
+    isVisible?: boolean;
     isLoadingMore?: boolean;
     dataSource: Array<DataSourceItem>;
     headerComponent?: any;
     timestamp?: number;
+    forceFullLoader?: boolean;
     onRefresh?: () => void;
     onEndReached?: () => void;
 }
 
 /* Component ==================================================================== */
-class EventsList extends PureComponent<Props> {
-    renderListEmpty = () => {
-        const { isLoading } = this.props;
+class EventsList extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
 
-        if (isLoading) {
+        const coreSettings = CoreRepository.getSettings();
+
+        this.state = {
+            fiatCurrency: coreSettings.currency,
+            coreSettings,
+            // fiatRate: undefined,
+            // isLoadingRate: false,
+        };
+    }
+
+    renderListEmpty = () => {
+        const {
+            isLoading,
+            isFiltering,
+        } = this.props;
+
+        // // This fixes the double spinner on loading @ Event list
+        // if (isLoading) {
+        //     return (
+        //         <View style={[styles.listEmptyContainer]}>
+        //             <LoadingIndicator />
+        //         </View>
+        //     );
+        // }
+
+        if (isFiltering) {
             return (
                 <View style={styles.listEmptyContainer}>
-                    <LoadingIndicator />
+                    <Text style={[
+                        AppStyles.colorPrimary,
+                    ]}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                 </View>
-            );
+            );    
         }
 
         return (
             <View style={styles.listEmptyContainer}>
-                <Text style={AppStyles.pbold}>{Localize.t('global.noInformationToShow')}</Text>
+                <Text style={AppStyles.pbold}>{
+                    !isLoading
+                        ? Localize.t('global.noInformationToShow')
+                        : ' '
+                }</Text>
             </View>
         );
     };
@@ -69,6 +118,9 @@ class EventsList extends PureComponent<Props> {
 
     renderItem = ({ item }: { item: RowItemType }): React.ReactElement | null => {
         const { account, timestamp } = this.props;
+        // const { fiatCurrency, fiatRate, isLoadingRate } = this.state;
+
+        // console.log('renderItem')
 
         if (item instanceof Payload) {
             return React.createElement(EventListItems.Request, {
@@ -82,6 +134,7 @@ class EventsList extends PureComponent<Props> {
                 item,
                 account,
                 timestamp,
+                // rates: { fiatCurrency, fiatRate, isLoadingRate },
             } as {
                 item: Transactions & MutationsMixinType;
                 account: AccountModel;
@@ -108,20 +161,93 @@ class EventsList extends PureComponent<Props> {
         if (isLoadingMore) {
             return <LoadingIndicator />;
         }
+
         return null;
     };
 
     renderRefreshControl = () => {
-        const { isLoading, onRefresh } = this.props;
+        const { coreSettings } = this.state;
+        const { isLoading, onRefresh, isVisible } = this.props;
+
+        const refreshNow = async () => {
+            if (coreSettings?.hapticFeedback) {
+                // VibrateHapticFeedback('notificationSuccess');
+                VibrateHapticFeedback('impactLight');
+            };
+
+            if (onRefresh) {
+                await onRefresh();
+                if (coreSettings?.hapticFeedback) {
+                    // VibrateHapticFeedback('notificationSuccess');
+                    VibrateHapticFeedback('impactLight');
+                };
+            }
+        };
 
         return (
             <RefreshControl
-                refreshing={!!isLoading}
-                onRefresh={onRefresh}
+                refreshing={!!isLoading && !!isVisible}
+                onRefresh={refreshNow}
                 tintColor={StyleService.value('$contrast')}
             />
         );
     };
+
+    componentDidMount() {
+        // add listener for changes on currency and showReservePanel setting
+        CoreRepository.on('updateSettings', this.onCoreSettingsUpdate);
+        // this.fetchCurrencyRate();
+    }
+    
+    componentWillUnmount() {
+        CoreRepository.off('updateSettings', this.onCoreSettingsUpdate);
+    }
+
+    onCoreSettingsUpdate = (coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        const { fiatCurrency } = this.state;
+
+        // currency changed
+        if (has(changes, 'currency') && fiatCurrency !== changes.currency) {
+            this.setState({
+                // fiatRate: undefined,
+                fiatCurrency: coreSettings.currency,
+            });
+        }
+
+        // default network changed
+        // if (has(changes, 'network')) {
+        //     // clean up rate
+        //     this.setState({
+        //         fiatRate: undefined,
+        //     });
+
+        //     InteractionManager.runAfterInteractions(this.fetchCurrencyRate);
+        // }
+    };
+
+    // fetchCurrencyRate = () => {
+    //     const { fiatCurrency, isLoadingRate } = this.state;
+
+    //     if (!isLoadingRate) {
+    //         this.setState({
+    //             isLoadingRate: true,
+    //         });
+    //     }
+
+    //     BackendService.getCurrencyRate(fiatCurrency)
+    //         .then((rate: any) => {
+    //             this.setState({
+    //                 fiatRate: rate,
+    //                 isLoadingRate: false,
+    //             });
+    //         })
+    //         .catch(() => {
+    //             // Toast(Localize.t('global.unableToFetchCurrencyRate'));
+    //             this.setState({
+    //                 isLoadingRate: false,
+    //             });
+    //         });
+    // };
 
     keyExtractor = (item: any, index: number): string => {
         let key = '';
@@ -137,28 +263,51 @@ class EventsList extends PureComponent<Props> {
     };
 
     render() {
-        const { dataSource, onEndReached, headerComponent } = this.props;
+        const {
+            dataSource,
+            onEndReached,
+            headerComponent,
+            isLoading,
+            forceFullLoader,
+        } = this.props;
+        
+        const renderSeparateLoadingIndicator = !!isLoading && (dataSource || []).length === 0;
 
         return (
-            <SectionList
-                style={styles.sectionList}
-                contentContainerStyle={styles.sectionListContainer}
-                sections={dataSource}
-                renderItem={this.renderItem}
-                renderSectionHeader={this.renderSectionHeader}
-                keyExtractor={this.keyExtractor}
-                ListEmptyComponent={this.renderListEmpty}
-                ListHeaderComponent={headerComponent}
-                onEndReached={onEndReached}
-                onEndReachedThreshold={0.2}
-                ListFooterComponent={this.renderFooter}
-                windowSize={10}
-                maxToRenderPerBatch={10}
-                initialNumToRender={20}
-                refreshControl={this.renderRefreshControl()}
-                indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
-                stickySectionHeadersEnabled={false}
-            />
+            <>
+                { (renderSeparateLoadingIndicator || forceFullLoader) &&
+                    <View style={[styles.listEmptyContainer]}>
+                        <LoadingIndicator />
+                        <Text>{' '}</Text>
+                        <Text style={[
+                            AppStyles.baseText,
+                            AppStyles.colorPrimary,
+                        ]}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                        <Text>{' '}</Text>
+                    </View>        
+                }
+                { !renderSeparateLoadingIndicator && !forceFullLoader && 
+                    <SectionList
+                        style={styles.sectionList}
+                        contentContainerStyle={styles.sectionListContainer}
+                        sections={dataSource}
+                        renderItem={this.renderItem}
+                        renderSectionHeader={this.renderSectionHeader}
+                        keyExtractor={this.keyExtractor}
+                        ListEmptyComponent={this.renderListEmpty}
+                        ListHeaderComponent={headerComponent}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.2}
+                        ListFooterComponent={this.renderFooter}
+                        windowSize={10}
+                        maxToRenderPerBatch={10}
+                        initialNumToRender={20}
+                        refreshControl={this.renderRefreshControl()}
+                        indicatorStyle={StyleService.isDarkMode() ? 'white' : 'default'}
+                        stickySectionHeadersEnabled={false}
+                    />
+                }
+            </>
         );
     }
 }

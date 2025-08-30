@@ -1,4 +1,4 @@
-Contact: https://support.xumm.app/hc/en-us/requests/new
-Expires: 2025-01-26T21:00:00.000Z
+Contact: mailto:support@xaman.app
+Expires: 2027-12-31T23:59:59.000Z
 Preferred-Languages: en
-Policy: https://github.com/XRPL-Labs/XUMM-Issue-Tracker/blob/master/RESPONSIBLE-DISCLOSURE.md
+Policy: https://github.com/XRPL-Labs/Xaman-Issue-Tracker/blob/master/RESPONSIBLE-DISCLOSURE.md

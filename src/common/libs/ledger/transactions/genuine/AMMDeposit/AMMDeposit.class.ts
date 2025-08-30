@@ -1,6 +1,6 @@
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { Amount, Issue } from '@common/libs/ledger/parser/fields';
+import { Amount, Issue, UInt16 } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -19,6 +19,7 @@ class AMMDeposit extends BaseGenuineTransaction {
         Amount2: { type: Amount },
         EPrice: { type: Amount },
         LPTokenOut: { type: Amount },
+        TradingFee: { type: UInt16 },
     };
 
     declare Asset: FieldReturnType<typeof Issue>;
@@ -27,6 +28,7 @@ class AMMDeposit extends BaseGenuineTransaction {
     declare Amount2: FieldReturnType<typeof Amount>;
     declare EPrice: FieldReturnType<typeof Amount>;
     declare LPTokenOut: FieldReturnType<typeof Amount>;
+    declare TradingFee: FieldReturnType<typeof UInt16>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

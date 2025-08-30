@@ -41,14 +41,14 @@ class EscrowCancelTemplate extends Component<Props, State> {
         // from transaction id
         if (isUndefined(transaction.OfferSequence) && (transaction.AccountTxnID ?? transaction.PreviousTxnID)) {
             LedgerService.getTransaction(transaction.AccountTxnID! ?? transaction.PreviousTxnID!).then((tx: any) => {
-                const { Sequence } = tx;
-                if (Sequence) {
+                const { Sequence, TicketSequence } = tx;
+                if (Sequence || TicketSequence) {
                     this.setState(
                         {
-                            offerSequence: Sequence,
+                            offerSequence: Sequence || TicketSequence,
                         },
                         () => {
-                            transaction.OfferSequence = Sequence;
+                            transaction.OfferSequence = Sequence || TicketSequence;
                         },
                     );
                 }

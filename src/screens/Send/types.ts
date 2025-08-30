@@ -1,6 +1,6 @@
 import { XrplDestination } from 'xumm-string-decode';
 
-import { Payment } from '@common/libs/ledger/transactions';
+import { CheckCreate, Payment, Remit } from '@common/libs/ledger/transactions';
 
 import { AccountAdvisoryResolveType } from '@services/ResolverService';
 
@@ -25,6 +25,7 @@ export interface FeeItem {
 }
 
 export interface Props {
+    timestamp?: number;
     token?: TrustLineModel;
     scanResult?: XrplDestination;
     amount?: string;
@@ -39,23 +40,32 @@ export interface State {
     token: TrustLineModel | string;
     amount: string;
     memo?: string;
+    credentials?: string[];
     selectedFee?: FeeItem;
     issuerFee?: number;
+    serviceFeeAmount?: FeeItem;
     payment: Payment & SignMixinType;
+    remit: Remit & SignMixinType;
+    check: CheckCreate & SignMixinType;
     scanResult?: XrplDestination;
     coreSettings: CoreModel;
     isLoading: boolean;
+    altTxTypeTo?: string;
 }
 
 export interface ContextProps extends State {
+    timestamp?: number;
     setSource: (source: AccountModel) => void;
     setToken: (token: TrustLineModel | string) => void;
     setAmount: (amount: string) => void;
     setDestination: (destination: Destination | undefined) => void;
+    setCredentials: (credentials: string[]) => void;
+    submitAsAltTxTypeTo: (destination: string) => void;
     setDestinationInfo: (info: any) => void;
     setScanResult: (result: XrplDestination) => void;
     setIssuerFee: (issuerFee: number) => void;
-    setFee: (fee: FeeItem) => void;
+    // setServiceFeeAmount: (amount: FeeItem) => void;
+    setFee: (txFee: FeeItem, serviceFee: FeeItem) => void;
     setMemo: (memo: string) => void;
     getPaymentJsonForFee: () => any;
     goNext: () => void;

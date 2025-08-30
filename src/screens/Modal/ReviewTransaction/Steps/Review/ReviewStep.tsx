@@ -4,12 +4,12 @@
 
 import { get } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, View } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import { StyleService } from '@services';
 
 // components
-import { KeyboardAwareScrollView, SwipeButton } from '@components/General';
+import { JsonTree, KeyboardAwareScrollView, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
@@ -44,17 +44,19 @@ class ReviewStep extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // console.log('Reviewstep')
+
         this.state = {
             canScroll: true,
         };
     }
 
     toggleCanScroll = () => {
-        const { canScroll } = this.state;
+        this.setState({ canScroll: true });
+    };
 
-        this.setState({
-            canScroll: !canScroll,
-        });
+    toggleCannotScroll = () => {
+        this.setState({ canScroll: false });
     };
 
     getSwipeButtonColor = (): string | undefined => {
@@ -75,7 +77,7 @@ class ReviewStep extends Component<Props, State> {
     };
 
     renderDetails = () => {
-        const { payload, transaction, source, setLoading, setReady } = this.context;
+        const { payload, transaction, source, setLoading, setReady, setServiceFee } = this.context;
 
         if (!transaction) {
             return null;
@@ -89,6 +91,7 @@ class ReviewStep extends Component<Props, State> {
             forceRender: this.forceRender,
             setLoading,
             setReady,
+            setServiceFee,
         } as any;
 
         // TODO: add logic for checking if template is exist before calling React.createElement
@@ -130,8 +133,18 @@ class ReviewStep extends Component<Props, State> {
     };
 
     render() {
-        const { accounts, payload, transaction, source, isReady, isLoading, setSource, onAccept, onClose } =
-            this.context;
+        const {
+            accounts,
+            payload,
+            transaction,
+            source,
+            isReady,
+            isLoading,
+            setSource,
+            onAccept,
+            onClose,
+            coreSettings,
+        } = this.context;
         const { canScroll } = this.state;
 
         // waiting for accounts / transaction to be initiated
@@ -142,8 +155,9 @@ class ReviewStep extends Component<Props, State> {
         return (
             <ImageBackground
                 testID="review-transaction-modal"
-                source={StyleService.getImage('BackgroundPattern')}
+                source={StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')}
                 imageStyle={styles.xamanAppBackground}
+                resizeMode="cover"
                 style={styles.container}
             >
                 <ReviewHeader transaction={transaction} onClose={onClose} />
@@ -157,33 +171,53 @@ class ReviewStep extends Component<Props, State> {
                     <AppInfo source={source} transaction={transaction} payload={payload} />
 
                     {/* transaction info content */}
-                    <View style={styles.transactionContent}>
-                        <View style={AppStyles.paddingHorizontalSml}>
-                            <SignerLabel payload={payload} />
-                            <AccountPicker onSelect={setSource} accounts={accounts} selectedItem={source} />
-                        </View>
+                    <View style={styles.shadow}>
+                        <View style={styles.shadow}>
+                            {/* Need more for Android shadow */}
+                            <View style={styles.transactionContent}>
+                                <View style={AppStyles.paddingHorizontalSml}>
+                                    <SignerLabel payload={payload} />
+                                    <View style={styles.accountPickerPadding}>
+                                        <AccountPicker
+                                            onSelect={setSource}
+                                            accounts={accounts}
+                                            selectedItem={source}
+                                        />
+                                    </View>
+                                </View>
 
-                        {/* in multi-sign transactions and in some cases in Import transaction */}
-                        {/* the Account can be different than the signing account */}
-                        <SignForAccount transaction={transaction} source={source} />
+                                {/* in multi-sign transactions and in some cases in Import transaction */}
+                                {/* the Account can be different than the signing account */}
+                                <SignForAccount transaction={transaction} source={source} />
 
-                        {/* transaction details */}
-                        <View style={styles.detailsContainer}>{this.renderDetails()}</View>
+                                {
+                                    transaction.InstanceType === InstanceTypes.GenuineTransaction &&
+                                    coreSettings?.developerMode && (
+                                    <View style={styles.jsonContainer}>
+                                        <Text style={styles.label}>Transaction JSON (Developer mode)</Text>
+                                        <JsonTree noDefaultCollapse={2} data={transaction.JsonForSigning} />
+                                    </View>
+                                )}
 
-                        {/* accept button */}
-                        <View style={styles.acceptButtonContainer}>
-                            <SwipeButton
-                                testID="accept-button"
-                                color={this.getSwipeButtonColor()}
-                                isLoading={isLoading}
-                                isDisabled={!isReady}
-                                onSwipeSuccess={onAccept}
-                                label={Localize.t('global.slideToAccept')}
-                                accessibilityLabel={Localize.t('global.accept')}
-                                onPanResponderGrant={this.toggleCanScroll}
-                                onPanResponderRelease={this.toggleCanScroll}
-                                shouldResetAfterSuccess
-                            />
+                                {/* transaction details */}
+                                <View style={styles.detailsContainer}>{this.renderDetails()}</View>
+
+                                {/* accept button */}
+                                <View style={styles.acceptButtonContainer}>
+                                    <SwipeButton
+                                        testID="accept-button"
+                                        color={this.getSwipeButtonColor()}
+                                        isLoading={isLoading}
+                                        isDisabled={!isReady}
+                                        onSwipeSuccess={onAccept}
+                                        label={Localize.t('global.slideToAccept')}
+                                        accessibilityLabel={Localize.t('global.accept')}
+                                        onPanResponderGrant={this.toggleCannotScroll}
+                                        onPanResponderRelease={this.toggleCanScroll}
+                                        shouldResetAfterSuccess
+                                    />
+                                </View>
+                            </View>
                         </View>
                     </View>
                 </KeyboardAwareScrollView>

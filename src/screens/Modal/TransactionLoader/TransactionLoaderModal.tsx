@@ -238,7 +238,12 @@ class TransactionLoaderModal extends Component<Props, State> {
             <>
                 <LoadingIndicator size="large" />
                 <Spacer size={30} />
-                <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
+                <Text style={[
+                    AppStyles.p,
+                    AppStyles.textCenterAligned,
+                    AppStyles.baseText,
+                    AppStyles.colorPrimary,
+                ]}>
                     {Localize.t('events.fetchingTransactionFromNetwork')}
                 </Text>
                 <Text style={[AppStyles.subtext, AppStyles.textCenterAligned, AppStyles.colorGrey]}>
@@ -285,8 +290,10 @@ class TransactionLoaderModal extends Component<Props, State> {
 
         return (
             <ImageBackground
-                source={StyleService.getImage('BackgroundShapes')}
-                imageStyle={styles.backgroundShapes}
+                resizeMode="cover"
+                source={
+                    StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                }
                 style={styles.container}
             >
                 <View style={styles.contentContainer}>{this.renderContent()}</View>

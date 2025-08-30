@@ -1,8 +1,8 @@
 Feature: Setup App
     Scenario: Show onboarding
         Given I should have 'onboarding-screen'
-        Given I should see 'slider-start-button'
-        Then I tap 'slider-start-button'
+        Given I should see 'start-button'
+        Then I tap 'start-button'
 
     Scenario: Setup passcode
         Given I should have 'setup-passcode-screen'
@@ -11,12 +11,13 @@ Feature: Setup App
         Given I should see 'pin-code-entry-view'
         Then I type my passcode
         Then I tap 'next-button'
+#        Then I tap alert button with label 'Use anyway'
         Then I type my passcode
         Then I tap 'next-button'
 
     Scenario: Finish setup
-        Given I should wait 5 sec to see 'agreement-setup-screen'
-        Then I wait 5 sec for button 'confirm-button' to be enabled
+        Given I should wait 4 sec to see 'agreement-setup-screen'
+        Then I wait 4 sec for button 'confirm-button' to be enabled
         Then I tap 'confirm-button'
 
     Scenario: After setup

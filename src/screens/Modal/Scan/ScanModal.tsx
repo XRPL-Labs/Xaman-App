@@ -2,8 +2,6 @@
  * Scan Modal
  */
 
-import { first } from 'lodash';
-
 import React, { Component } from 'react';
 import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
@@ -16,9 +14,9 @@ import {
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, NetworkService } from '@services';
+import { StyleService, BackendService, NetworkService, LinkingService } from '@services';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
 
@@ -42,6 +40,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import { TrustSet } from '@common/libs/ledger/transactions';
+import { ReviewTransactionModalProps } from '../ReviewTransaction';
 
 /* Component ==================================================================== */
 class ScanModal extends Component<Props, State> {
@@ -234,6 +234,64 @@ class ScanModal extends Component<Props, State> {
         }
     };
 
+    handleTransactionTemplate = (parsed: any) => {
+        let errorMsg = Localize.t('global.theQRIsNotWhatWeExpect');
+
+        try {
+            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');   
+            const json = JSON.parse(str);
+           
+            if (
+                json?.NetworkID !== NetworkService.getNetwork().networkId ||
+                NetworkService.getNetwork().networkId > 1024 && !json?.NetworkID
+            ) {
+                errorMsg = Localize.t('payload.payloadForceNetworkError');
+                throw new Error('Invalid network');
+            }
+            if (json?.TransactionType === 'TrustSet') {
+                const trustSet = new TrustSet(json);
+        
+                const payload = Payload.build(
+                    trustSet.JsonForSigning,
+                    Localize.t('asset.addingAssetReserveDescription', {
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    }),
+                );
+        
+                this.setShouldRead(false);
+
+                setTimeout(() => {
+                    Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                this.onClose();
+
+                return;
+            }
+            
+            throw new Error('Invalid transaction template');
+        } catch (e) {
+            //
+        }
+
+        Prompt(
+            Localize.t('global.error'),
+            errorMsg,
+            [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+            {
+                cancelable: false,
+                type: 'default',
+            },
+        );
+    };
+
     handleSignedTransaction = (txblob: string) => {
         // normalize input
         let cleanBlob = txblob;
@@ -293,7 +351,7 @@ class ScanModal extends Component<Props, State> {
                 return;
             }
 
-            let amount;
+            let amount: any;
 
             // normal address scanned
             // try to decode X Address
@@ -318,17 +376,73 @@ class ScanModal extends Component<Props, State> {
                 amount = destination.amount;
             }
 
-            await this.routeUser(
-                AppScreens.Transaction.Payment,
-                {
-                    scanResult: {
-                        to,
-                        tag,
+            // eslint-disable-next-line consistent-return
+            const _continue = async () => {
+                if (destination.amount) {
+                    await Navigator.dismissModal();
+
+                    // got to the root, this is for fallback option
+                    try {
+                        await Navigator.popToRoot();
+                    } catch {
+                        // ignore
+                    }
+
+                    return LinkingService.handleXrplDestination(destination);
+                }
+
+                await this.routeUser(
+                    AppScreens.Transaction.Payment,
+                    {
+                        scanResult: {
+                            to,
+                            tag,
+                        },
+                        amount,
                     },
-                    amount,
-                },
-                {},
-            );
+                    {},
+                );
+            };
+
+            if (destination?.network) {
+                const currentNetwork = NetworkService.getNetwork();
+                if (destination.network !== currentNetwork?.key) {
+                    const wantsNetwork = await NetworkRepository.findBy('key', destination.network.toUpperCase());
+                    if (wantsNetwork?.[0]?.key) {
+                        // eslint-disable-next-line consistent-return
+                        return Navigator.showAlertModal({
+                            type: 'warning',
+                            title: Localize.t('global.switchNetwork'),
+                            text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
+                                currentNetwork: currentNetwork.name,
+                                defaultNetwork: wantsNetwork[0].name,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    type: 'dismiss',
+                                    light: true,
+                                    onPress: () => this.setShouldRead(true),
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: async () => {
+                                        // console.log('switchnetwork, then request');
+                                        await NetworkService.switchNetwork(wantsNetwork[0]);
+                                        requestAnimationFrame(() => {
+                                            _continue();
+                                        });
+                                    },
+                                    type: 'continue',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }
+                }
+            }
+
+            _continue();
         } else {
             Prompt(
                 Localize.t('global.error'),
@@ -523,6 +637,9 @@ class ScanModal extends Component<Props, State> {
             case StringType.XrplSignedTransaction:
                 this.handleSignedTransaction(parsed.txblob);
                 break;
+            case StringType.XrplTransactionTemplate:
+                this.handleTransactionTemplate(parsed);
+                break;
             case StringType.XrplDestination:
             case StringType.PayId:
                 this.handleXrplDestination(parsed);
@@ -546,14 +663,16 @@ class ScanModal extends Component<Props, State> {
     };
 
     onGoogleVisionBarcodesDetected = ({ barcodes }: GoogleVisionBarcodesDetectedEvent) => {
+        // should ba array and not empty
         if (!Array.isArray(barcodes) || barcodes.length === 0) {
             return;
         }
         // get first barcode that exist
-        const { data } = first(barcodes)!;
+        const barcode = barcodes[0];
 
-        if (data) {
-            this.onReadCode(data);
+        // type check
+        if (typeof barcode === 'object' && barcode?.data) {
+            this.onReadCode(barcode?.data);
         }
     };
 
@@ -620,7 +739,10 @@ class ScanModal extends Component<Props, State> {
     renderNotAuthorizedView = () => {
         return (
             <ImageBackground
-                source={StyleService.getImage('BackgroundShapes')}
+                resizeMode="cover"
+                source={
+                    StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                }
                 style={[AppStyles.container, AppStyles.paddingSml]}
             >
                 <View style={[AppStyles.flex1, AppStyles.centerContent]}>
@@ -636,12 +758,20 @@ class ScanModal extends Component<Props, State> {
                     </Text>
                     <Spacer size={50} />
                     <Button
+                        secondary
+                        label={Localize.t('global.close')}
+                        onPress={this.onClose}
+                        style={{ backgroundColor: AppColors.silver }}
+                        icon="IconX"
+                    />
+                    <Spacer size={15} />
+                    <Button
                         style={{ backgroundColor: AppColors.green }}
                         label={Localize.t('global.approvePermissions')}
+                        // nonBlock
                         onPress={this.requestPermissions}
+                        icon="IconCheck"
                     />
-                    <Spacer size={20} />
-                    <Button light label={Localize.t('global.close')} onPress={this.onClose} />
                 </View>
             </ImageBackground>
         );
@@ -660,15 +790,17 @@ class ScanModal extends Component<Props, State> {
                 });
                 break;
             default:
-                description = Localize.t('scan.aimAtTheCode');
+                description = '';
                 break;
         }
 
         if (isLoading) {
             return (
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
+                    resizeMode="cover"
+                    source={
+                        StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                    }
                     style={[AppStyles.container, AppStyles.paddingSml]}
                 >
                     <View style={[AppStyles.flex1, AppStyles.centerContent]}>
@@ -708,28 +840,39 @@ class ScanModal extends Component<Props, State> {
                         <View style={styles.bottomLeft} />
                         <View style={styles.bottomRight} />
                     </View>
-                    <View style={[AppStyles.centerSelf, styles.tip]}>
-                        <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
-                            {description}
-                        </Text>
-                    </View>
+                    {
+                        description && description !== '' && (
+                            <View style={[AppStyles.centerSelf, styles.tip]}>
+                                <Text numberOfLines={1} style={[AppStyles.p, AppStyles.colorWhite]}>
+                                    {description}
+                                </Text>
+                            </View>
+                        )
+                    }
+                    <Spacer size={20} />
                     <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
                             onPress={this.checkClipboardContent}
                             label={Localize.t('scan.importFromClipboard')}
-                            icon="IconClipboard"
+                            // icon="IconClipboard"
                             secondary
-                            roundedSmall
+                            roundedMini
+                            style={[
+                                AppStyles.paddingHorizontal,
+                            ]}
                         />
-                        <Spacer size={20} />
+                        <Spacer size={15} />
                         <Button
                             numberOfLines={1}
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
-                            rounded
                             onPress={this.onClose}
-                            style={styles.close}
+                            icon="IconX"
+                            style={[
+                                styles.close,
+                                AppStyles.paddingHorizontal,
+                            ]}
                         />
                     </View>
                 </RNCamera>

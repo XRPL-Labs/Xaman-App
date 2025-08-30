@@ -5,7 +5,7 @@ import { get, has } from 'lodash';
 import BigNumber from 'bignumber.js';
 
 import React, { Component } from 'react';
-import { Alert, Animated, InteractionManager, Text, View } from 'react-native';
+import { Platform, Alert, Animated, InteractionManager, Text, View, GestureResponderEvent } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { TrustLineRepository } from '@store/repositories';
@@ -16,15 +16,18 @@ import { Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
+// import DropShadow from 'react-native-drop-shadow';
+
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { Prompt, Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { AppScreens } from '@common/constants';
+import { AppScreens, AppConfig } from '@common/constants';
 
 import LedgerService from '@services/LedgerService';
+import NetworkService from '@services/NetworkService';
 
 // components
 import { AmountText, Button, Icon, InfoMessage, RaisedButton, Spacer, TouchableDebounce } from '@components/General';
@@ -218,23 +221,23 @@ class TokenSettingsOverlay extends Component<Props, State> {
             // TODO: test me
             const payload = Payload.build(paymentJson);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<Payment>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -244,9 +247,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e) {
             Alert.alert(Localize.t('global.error'), Localize.t('asset.failedRemove'));
         }
@@ -334,23 +337,23 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
             const payload = Payload.build(trustSet.JsonForSigning);
 
-            Animated.parallel([
-                Animated.timing(this.animatedColor, {
-                    toValue: 0,
-                    duration: 350,
-                    useNativeDriver: false,
-                }),
-                Animated.timing(this.animatedOpacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => {
-                this.setState(
-                    {
-                        isReviewScreenVisible: true,
-                    },
-                    () => {
+            this.setState(
+                {
+                    isReviewScreenVisible: true,
+                },
+                () => {
+                    Animated.parallel([
+                        Animated.timing(this.animatedColor, {
+                            toValue: 0,
+                            duration: 350,
+                            useNativeDriver: false,
+                        }),
+                        Animated.timing(this.animatedOpacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: false,
+                        }),
+                    ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
                             AppScreens.Modal.ReviewTransaction,
                             {
@@ -360,9 +363,9 @@ class TokenSettingsOverlay extends Component<Props, State> {
                             },
                             { modalPresentationStyle: OptionsModalPresentationStyle.overCurrentContext },
                         );
-                    },
-                );
-            });
+                    });
+                },
+            );
         } catch (e: any) {
             if (e) {
                 InteractionManager.runAfterInteractions(() => {
@@ -399,7 +402,6 @@ class TokenSettingsOverlay extends Component<Props, State> {
         this.setState(
             {
                 isRemoving: false,
-                isReviewScreenVisible: false,
             },
             () => {
                 Animated.parallel([
@@ -428,7 +430,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
             Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
         });
 
-        this.dismiss();
+        this.setState({
+            isReviewScreenVisible: false,
+        }, () => {
+            this.dismiss();
+        });
     };
 
     onRemovePress = async () => {
@@ -452,6 +458,53 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         this.dismiss().then(() => {
             Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, { token });
+        });
+    };
+
+    onSwapPress = () => {
+        const { token } = this.props;
+
+        this.dismiss().then(() => {
+            if (NetworkService.hasSwap()) {
+                Navigator.showModal<XAppBrowserModalProps>(
+                    AppScreens.Modal.XAppBrowser,
+                    {
+                        identifier: AppConfig.xappIdentifiers.swap,
+                        noSwitching: true,
+                        altHeader: {
+                            left: {
+                                icon: 'IconChevronLeft',
+                                onPress: 'onClose',
+                            },
+                            center: {
+                                text: Localize.t('global.swap'),
+                                showNetworkLabel: true,
+                            },
+                            right: {
+                                icon: 'IconTabBarSettingsSelected',
+                                iconSize: 25,
+                                onPress: 'navigateTo',
+                                onPressOptions: {
+                                    xApp: AppConfig.xappIdentifiers.swap,
+                                    pickSwapper: true,
+                                },
+                            },
+                        },
+                        origin: XAppOrigin.XUMM,
+                        params: {
+                            issuer: token.currency.issuer,
+                            asset: token.currency.currencyCode,
+                            action: 'SWAP',
+                        },    
+                    },
+                    {
+                        modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                        modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    },
+                );
+            } else {
+                this.onExchangePress();
+            }
         });
     };
 
@@ -644,77 +697,193 @@ class TokenSettingsOverlay extends Component<Props, State> {
         return !token.obligation && !token.isLiquidityPoolToken();
     };
 
+    startTouch = (event: GestureResponderEvent) => {
+        const targetInstance = event && typeof event === 'object'
+            ? (event as any)?._targetInst
+            : {};
+        
+        if (
+            targetInstance &&
+            typeof targetInstance === 'object' &&
+            targetInstance?.pendingProps
+        ) {
+            if (
+                targetInstance.pendingProps?.testID &&
+                targetInstance.pendingProps?.testID === 'currency-settings-overlay' &&
+                targetInstance.pendingProps?.style &&
+                typeof targetInstance.pendingProps?.style === 'object' &&
+                targetInstance.pendingProps?.style?.opacity === 0
+            ) {
+                event?.preventDefault();
+                event?.stopPropagation();
+                this.dismiss();
+            }
+        }
+    };
+
     render() {
         const { token } = this.props;
         const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
 
-        if (isReviewScreenVisible) {
+        if (Platform.OS === 'ios' && isReviewScreenVisible) {
+            // IOS will be at the back
             return null;
         }
+
+        // Android is screwed and needs fixes
+        const visibilityAndPointer: {
+            pointerEvents: 'auto' | 'none';
+            display?: 'flex' | 'none';
+            position: 'absolute';
+            left: number;
+            top: number;
+            right: number;
+            bottom: number;
+        } =
+            {
+                position: 'absolute', left: 0, top: 0, right: 0, bottom: 0,
+                ...isReviewScreenVisible && Platform.OS === 'android'
+                    ? { pointerEvents: 'none', display: 'none' }
+                    : { pointerEvents: 'auto' },
+            };
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
             outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
         });
 
-        return (
-            <Animated.View
-                needsOffscreenAlphaCompositing
-                testID="currency-settings-overlay"
-                style={[styles.container, { opacity: this.animatedOpacity, backgroundColor: interpolateColor }]}
-            >
-                <Animated.View style={styles.visibleContent}>
-                    <View style={styles.headerContainer}>
-                        <TouchableDebounce style={styles.favoriteContainer} onPress={this.onFavoritePress}>
-                            <Icon
-                                size={20}
-                                name="IconStarFull"
-                                style={[styles.favoriteIcon, isFavorite && styles.favoriteIconActive]}
-                            />
-                            <Text style={[styles.favoriteText, isFavorite && styles.favoriteTextActive]}>
-                                {isFavorite ? Localize.t('global.favorite') : Localize.t('global.addToFavorites')}
-                            </Text>
-                        </TouchableDebounce>
-                        <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button label={Localize.t('global.close')} roundedSmall light onPress={this.dismiss} />
-                        </View>
-                    </View>
-                    <View style={styles.contentContainer}>
-                        <View style={styles.tokenElement}>
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <View style={styles.brandAvatarContainer}>
-                                    <TokenAvatar token={token} border size={35} />
-                                </View>
-                                <View style={[AppStyles.column, AppStyles.centerContent]}>
-                                    <Text
-                                        numberOfLines={1}
-                                        style={styles.currencyItemLabelSmall}
-                                        ellipsizeMode="middle"
-                                    >
-                                        {token.getFormattedCurrency()}
-                                    </Text>
-                                    <TouchableDebounce
-                                        onPress={this.onCopyIssuerAddressPress}
-                                        style={AppStyles.row}
-                                        activeOpacity={1}
-                                    >
-                                        <Text style={styles.issuerLabel}>{token.getFormattedIssuer()}</Text>
-                                        <Icon style={styles.copyIcon} name="IconCopy" size={15} />
-                                    </TouchableDebounce>
-                                </View>
-                            </View>
-                            <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                                <AmountText
-                                    value={token.balance}
-                                    style={[AppStyles.pbold, AppStyles.monoBold]}
-                                    prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
-                                />
-                            </View>
-                        </View>
+        const needsTlFix = (!token.no_ripple || Number(token.limit) === 0) &&
+            !token.obligation &&
+            !token.isLiquidityPoolToken();
 
-                        {(!token.no_ripple || Number(token.limit) === 0) &&
-                            !token.obligation &&
-                            !token.isLiquidityPoolToken() && (
+        return (
+            <View
+                onTouchStart={this.startTouch}
+                style={visibilityAndPointer}
+            >
+                <Animated.View
+                    needsOffscreenAlphaCompositing
+                    testID="currency-settings-overlay"
+                    style={[
+                        styles.container,
+                        {
+                            opacity: this.animatedOpacity,
+                            backgroundColor: interpolateColor,
+                        },
+                    ]}
+                >
+                    <Animated.View style={[
+                        styles.visibleContent,
+                    ]}>
+                        <View style={styles.headerContainer}>
+                            <TouchableDebounce style={styles.favoriteContainer} onPress={this.onFavoritePress}>
+                                <Icon
+                                    size={20}
+                                    name="IconStarFull"
+                                    style={[styles.favoriteIcon, isFavorite && styles.favoriteIconActive]}
+                                />
+                                <Text style={[styles.favoriteText, isFavorite && styles.favoriteTextActive]}>
+                                    {isFavorite ? Localize.t('global.favorite') : Localize.t('global.addToFavorites')}
+                                </Text>
+                            </TouchableDebounce>
+                            <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
+                                <Button label={Localize.t('global.close')} roundedSmall light onPress={this.dismiss} />
+                            </View>
+                        </View>
+                        <View style={[
+                            styles.contentContainer,
+                        ]}>
+                            <Animated.View style={[
+                                styles.contentContainerShadow,
+                            ]}>
+                                <View style={[
+                                    styles.contentContainerAmount,
+                                    !this.canSend() && styles.contentContainerAmountNoSend,
+                                    this.canSend() && styles.contentContainerAmountSend,
+                                ]}>
+                                    <View style={[
+                                        // AppStyles.flex4,
+                                        // AppStyles.row,
+                                        AppStyles.column,
+                                        // AppStyles.centerAligned,
+                                        // AppStyles.flexEnd,
+                                        // AppStyles.borderGreen,
+                                        AppStyles.centerAligned,
+                                    ]}>
+                                        <AmountText
+                                            value={token.balance}
+                                            valueContainerStyle={[
+                                                // AppStyles.borderRed,
+                                                AppStyles.centerAligned,
+                                                AppStyles.centerContent,
+                                                AppStyles.centerSelf,
+                                            ]}
+                                            style={[
+                                                AppStyles.pbold,
+                                                AppStyles.h3,
+                                                AppStyles.textCenterAligned,
+                                                AppStyles.monoBold,
+                                            ]}
+                                            prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
+                                        />
+                                    </View>
+                                    <View style={[
+                                        styles.tokenElement,
+                                        // AppStyles.borderGreen,
+                                        AppStyles.column,
+                                        AppStyles.centerAligned,
+                                    ]}>
+                                        <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                            <View style={styles.brandAvatarContainer}>
+                                                <TokenAvatar token={token} size={35} />
+                                            </View>
+                                            <View style={[AppStyles.column, AppStyles.centerContent]}>
+                                                <Text
+                                                    numberOfLines={1}
+                                                    style={styles.currencyItemLabelSmall}
+                                                    ellipsizeMode="middle"
+                                                >
+                                                    {token.getFormattedCurrency()}
+                                                </Text>
+                                                <TouchableDebounce
+                                                    onPress={this.onCopyIssuerAddressPress}
+                                                    style={AppStyles.row}
+                                                    activeOpacity={1}
+                                                >
+                                                    <Text style={styles.issuerLabel}>{
+                                                        token.getFormattedIssuer(undefined, 19)
+                                                    }</Text>
+                                                    <Icon style={styles.copyIcon} name="IconCopy" size={15} />
+                                                </TouchableDebounce>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    {
+                                        this.canSend() && (
+                                            <View style={[
+                                                styles.buttonRow,
+                                                styles.embeddedSendButtonContainer,
+                                            ]}>
+                                                <RaisedButton
+                                                    // small
+                                                    containerStyle={[
+                                                        styles.sendButton,
+                                                        styles.embeddedSendButton,
+                                                    ]}
+                                                    icon="IconV2Send"
+                                                    iconSize={18}
+                                                    iconStyle={styles.sendButtonIcon}
+                                                    label={Localize.t('global.send')}
+                                                    textStyle={styles.sendButtonText}
+                                                    onPress={this.onSendPress}
+                                                />
+                                            </View>
+                                        )
+                                    }
+                                </View>
+                            </Animated.View>
+
+                            { needsTlFix && (
                                 <>
                                     <Spacer />
                                     <InfoMessage
@@ -734,81 +903,104 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                 </>
                             )}
 
-                        <View style={styles.buttonRow}>
-                            <RaisedButton
-                                small
-                                isDisabled={!this.canSend()}
-                                containerStyle={styles.sendButton}
-                                icon="IconCornerLeftUp"
-                                iconSize={18}
-                                iconStyle={styles.sendButtonIcon}
-                                label={Localize.t('global.send')}
-                                textStyle={styles.sendButtonText}
-                                onPress={this.onSendPress}
-                            />
-                            <RaisedButton
-                                small
-                                isDisabled={!this.canExchange()}
-                                containerStyle={styles.exchangeButton}
-                                icon="IconSwitchAccount"
-                                iconSize={17}
-                                iconPosition="left"
-                                iconStyle={styles.exchangeButtonIcon}
-                                label={Localize.t('global.exchange')}
-                                textStyle={styles.exchangeButtonText}
-                                onPress={this.onExchangePress}
-                            />
-                        </View>
+                            <Spacer size={15} />
 
-                        {hasXAppIdentifier && (
-                            <>
-                                <View style={AppStyles.row}>
-                                    <RaisedButton
-                                        small
-                                        containerStyle={styles.depositButton}
-                                        icon="IconCoins"
-                                        iconSize={22}
-                                        iconStyle={styles.depositButtonIcon}
-                                        label={`${Localize.t('global.add')} ${token.getFormattedCurrency()}`}
-                                        textStyle={styles.depositButtonText}
-                                        onPress={this.onDepositPress}
-                                    />
-                                </View>
-                                <View style={AppStyles.row}>
-                                    <RaisedButton
-                                        small
-                                        containerStyle={styles.withdrawButton}
-                                        icon="IconWallet"
-                                        iconPosition="left"
-                                        iconSize={22}
-                                        iconStyle={styles.withdrawButtonIcon}
-                                        label={`${Localize.t('global.withdraw')} ${token.getFormattedCurrency()}`}
-                                        textStyle={styles.withdrawButtonText}
-                                        onPress={this.onWithdrawPress}
-                                    />
-                                </View>
-                            </>
-                        )}
+                            <View style={[
+                                styles.buttonRow,
+                                styles.secondButtonRow,
+                            ]}>
+                                <RaisedButton
+                                    small
+                                    isDisabled={!this.canExchange()}
+                                    containerStyle={[
+                                        styles.exchangeButton,
+                                    ]}
+                                    icon="IconSwitchAccount"
+                                    iconSize={17}
+                                    iconPosition="left"
+                                    iconStyle={styles.exchangeButtonIcon}
+                                    label={Localize.t('global.exchange')}
+                                    textStyle={styles.exchangeButtonText}
+                                    onPress={this.onExchangePress}
+                                />
+                            </View>
+                            {
+                                NetworkService.hasSwap() && (
+                                    <View style={[
+                                        styles.buttonRow,
+                                        styles.secondButtonRow,
+                                    ]}>
+                                        <RaisedButton
+                                            small
+                                            isDisabled={!this.canExchange()}
+                                            containerStyle={[
+                                                styles.exchangeButton,
+                                            ]}
+                                            icon="IconV2Swap"
+                                            iconSize={17}
+                                            iconPosition="left"
+                                            iconStyle={styles.exchangeButtonIcon}
+                                            label={Localize.t('global.swap3p')}
+                                            textStyle={styles.exchangeButtonText}
+                                            onPress={this.onSwapPress}
+                                        />
+                                    </View>
+                                )
+                            }
+                            
+                            {/* <Spacer size={20} /> */}
 
-                        <View style={styles.removeButtonContainer}>
-                            <Button
-                                roundedMini
-                                testID="line-remove-button"
-                                loadingIndicatorStyle="dark"
-                                style={styles.removeButton}
-                                isLoading={isRemoving}
-                                isDisabled={!canRemove}
-                                icon="IconTrash"
-                                iconSize={18}
-                                iconStyle={styles.removeButtonIcon}
-                                label={Localize.t('asset.removeAsset')}
-                                textStyle={styles.removeButtonText}
-                                onPress={this.onRemovePress}
-                            />
+                            {hasXAppIdentifier && !needsTlFix && (
+                                <>
+                                    <Spacer size={10} />
+                                    <View style={AppStyles.row}>
+                                        <RaisedButton
+                                            small
+                                            containerStyle={styles.depositButton}
+                                            icon="IconCoins"
+                                            iconSize={22}
+                                            iconStyle={styles.depositButtonIcon}
+                                            label={`${Localize.t('global.add')} ${token.getFormattedCurrency()}`}
+                                            textStyle={styles.depositButtonText}
+                                            onPress={this.onDepositPress}
+                                        />
+                                    </View>
+                                    <View style={AppStyles.row}>
+                                        <RaisedButton
+                                            small
+                                            containerStyle={styles.withdrawButton}
+                                            icon="IconWallet"
+                                            iconPosition="left"
+                                            iconSize={22}
+                                            iconStyle={styles.withdrawButtonIcon}
+                                            label={`${Localize.t('global.withdraw')} ${token.getFormattedCurrency()}`}
+                                            textStyle={styles.withdrawButtonText}
+                                            onPress={this.onWithdrawPress}
+                                        />
+                                    </View>
+                                </>
+                            )}
+
+                            <View style={styles.removeButtonContainer}>
+                                <Button
+                                    roundedMini
+                                    testID="line-remove-button"
+                                    loadingIndicatorStyle="dark"
+                                    style={styles.removeButton}
+                                    isLoading={isRemoving}
+                                    isDisabled={!canRemove}
+                                    icon="IconTrash"
+                                    iconSize={18}
+                                    iconStyle={styles.removeButtonIcon}
+                                    label={Localize.t('asset.removeAsset')}
+                                    textStyle={styles.removeButtonText}
+                                    onPress={this.onRemovePress}
+                                />
+                            </View>
                         </View>
-                    </View>
+                    </Animated.View>
                 </Animated.View>
-            </Animated.View>
+            </View>
         );
     }
 }

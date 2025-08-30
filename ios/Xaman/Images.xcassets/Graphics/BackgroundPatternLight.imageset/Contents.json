@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "background_pattern_light.png",
+      "filename" : "onboarding-bg-lightmode@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "background_pattern_light@2x.png",
+      "filename" : "onboarding-bg-lightmode@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "background_pattern_light@3x.png",
+      "filename" : "onboarding-bg-lightmode@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

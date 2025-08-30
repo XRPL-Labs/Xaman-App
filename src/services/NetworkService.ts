@@ -2,14 +2,14 @@
  * Network service
  */
 
-import { isPlainObject, isArray, isString, find } from 'lodash';
+import { find, isArray, isPlainObject, isString } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import EventEmitter from 'events';
 import Realm from 'realm';
 
 import { Platform } from 'react-native';
 
-import { XrplDefinitions, DefinitionsData, binary } from 'xrpl-accountlib';
+import { binary, DefinitionsData, XrplDefinitions } from 'xrpl-accountlib';
 
 import { XrplClient } from 'xrpl-client';
 
@@ -60,6 +60,7 @@ export type NetworkServiceEvent = {
     connect: (network: NetworkModel) => void;
     stateChange: (networkStatus: NetworkStateStatus) => void;
     networkChange: (network: NetworkModel) => void;
+    preSubmitTxEvent: (txhash: string, txblob: string, feehash: string, feeblob: string, network: string) => void;
 };
 
 declare interface NetworkService {
@@ -213,6 +214,10 @@ class NetworkService extends EventEmitter {
         }
     };
 
+    hasSwap = () => {
+        return (ProfileRepository.getProfile()?.swapNetworks.split(',') || []).indexOf(this.network?.key || '') > -1;
+    };
+
     /**
      * on AppState change
      */
@@ -273,6 +278,10 @@ class NetworkService extends EventEmitter {
         };
     };
 
+    preSubmitTx = (txhash: string, txblob: string, feehash: string, feeblob: string, network: string) => {
+        this.emit('preSubmitTxEvent', txhash, txblob, feehash, feeblob, network);
+    };
+
     /**
      * Get connected network id
      * @returns {number}
@@ -290,6 +299,17 @@ class NetworkService extends EventEmitter {
             throw new Error('Network instance is not initiated in the NetworkService class!');
         }
         return this.network;
+    };
+
+    /**
+     * Get current network definitions
+     */
+    getRawNetworkDefinitions = () => {
+        if (this.network && this.getNetwork().definitions) {
+            return this.getNetwork().definitions;
+        }
+
+        return binary.DEFAULT_DEFINITIONS;
     };
 
     /**
@@ -316,11 +336,11 @@ class NetworkService extends EventEmitter {
     };
 
     /**
-     * Get available fees on network base on the load
+     * Get available fees on network
      * NOTE: values are in drop
      */
     getAvailableNetworkFee = (
-        txJson: any,
+        txJson?: any | undefined,
     ): Promise<{
         availableFees: { type: string; value: string }[];
         feeHooks: number;
@@ -329,19 +349,27 @@ class NetworkService extends EventEmitter {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
-                const resp = await this.send<FeeRequest, FeeResponse>({
+                const request = {
                     command: 'fee',
-                    tx_blob: PrepareTxForHookFee(txJson, this.getNetwork().definitions, this.getNetworkId()),
-                });
+                } as FeeRequest;
+
+                if (typeof txJson === 'object') {
+                    Object.assign(request, {
+                        tx_blob: PrepareTxForHookFee(txJson, this.getNetworkDefinitions(), this.getNetworkId()),
+                    });
+                }
+                const resp = await this.send<FeeRequest, FeeResponse>(request);
 
                 if ('error' in resp) {
-                    throw new Error(`got error from network ${resp.error}`);
+                    throw new Error(
+                        `Could not reliably detect fees (${resp.error || 'unknown error type'}), message: ${resp.error_exception || 'unknown error message'}`,
+                    );
                 }
 
                 resolve(NormalizeFeeDataSet(resp));
             } catch (error) {
-                this.logger.warn('Unable to calculate available network fees:', error);
-                reject(new Error('Unable to calculate available network fees!'));
+                this.logger.error('getAvailableNetworkFee', error);
+                reject(error);
             }
         });
     };
@@ -510,13 +538,13 @@ class NetworkService extends EventEmitter {
      */
     updateNetworkDefinitions = async () => {
         try {
-            // include definitions hash if exist in the request
             const request: ServerDefinitionsRequest = {
                 command: 'server_definitions',
             };
 
             let definitionsHash = '';
 
+            // include definitions hash if exist in the request
             if (this.getNetwork().definitions) {
                 definitionsHash = this.getNetwork().definitions?.hash as string;
                 Object.assign(request, { hash: definitionsHash });
@@ -541,29 +569,47 @@ class NetworkService extends EventEmitter {
             }
 
             // validate the response
-            const respValidation = {
+            const requiredValidation = {
                 TYPES: isPlainObject,
                 TRANSACTION_RESULTS: isPlainObject,
                 TRANSACTION_TYPES: isPlainObject,
                 LEDGER_ENTRY_TYPES: isPlainObject,
-                TRANSACTION_FLAGS: isPlainObject,
-                TRANSACTION_FLAGS_INDICES: isPlainObject,
                 FIELDS: isArray,
                 hash: isString,
             } as { [key: string]: (value?: any) => boolean };
 
+            const optionalValidation = {
+                TRANSACTION_FLAGS: isPlainObject,
+                TRANSACTION_FLAGS_INDICES: isPlainObject,
+            } as { [key: string]: (value?: any) => boolean };
+
             const definitions = {};
 
-            for (const key in respValidation) {
-                if (Object.prototype.hasOwnProperty.call(respValidation, key)) {
+            for (const key in requiredValidation) {
+                if (Object.prototype.hasOwnProperty.call(requiredValidation, key)) {
                     // validate
-                    if (respValidation[key](definitionsResp[key]) === false) {
-                        this.logger.warn(
+                    if (!requiredValidation[key](definitionsResp[key])) {
+                        this.logger.error(
                             `server_definitions invalid format for key ${key}, got ${typeof definitionsResp[key]}`,
                         );
+                        // do not continue and return
                         return;
                     }
                     // set the key
+                    Object.assign(definitions, { [key]: definitionsResp[key] });
+                }
+            }
+
+            for (const key in optionalValidation) {
+                if (Object.prototype.hasOwnProperty.call(optionalValidation, key)) {
+                    // validate optional
+                    if (!optionalValidation[key](definitionsResp[key])) {
+                        this.logger.warn(
+                            `server_definitions invalid format for optional key ${key}, got ${typeof definitionsResp[key]}`,
+                        );
+                        continue;
+                    }
+
                     Object.assign(definitions, { [key]: definitionsResp[key] });
                 }
             }

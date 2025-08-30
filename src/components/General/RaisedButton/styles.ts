@@ -1,13 +1,13 @@
 import StyleService from '@services/StyleService';
 
-import { AppFonts } from '@theme';
+import { AppFonts, AppSizes } from '@theme';
 
 export const styles = StyleService.create({
     container: {
         flex: 1,
         width: '100%',
         backgroundColor: '$white',
-        borderRadius: 13,
+        borderRadius: AppSizes.scale(75) / 6,
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '$grey',

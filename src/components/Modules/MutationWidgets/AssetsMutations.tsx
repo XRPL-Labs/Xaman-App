@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AmountText, Icon } from '@components/General';
 import { NFTokenElement } from '@components/Modules/NFTokenElement';
@@ -7,6 +7,8 @@ import { URITokenElement } from '@components/Modules/URITokenElement';
 
 import { AssetDetails, AssetTypes, MonetaryFactorType, MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { BalanceChangeType, OperationActions } from '@common/libs/ledger/parser/types';
+
+import Localize from '@locale';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
@@ -107,6 +109,7 @@ class AssetsMutations extends PureComponent<Props, State> {
                     value={change.value}
                     currency={change.currency}
                     prefix={change.action === OperationActions.DEC && '-'}
+                    truncateLp
                     style={[
                         styles.amountText,
                         {
@@ -133,6 +136,13 @@ class AssetsMutations extends PureComponent<Props, State> {
 
     render() {
         const { mutatedDec, mutatedInc, factor, assets } = this.state;
+        const { account, item } = this.props;
+
+        // let hasBalanceChanges = true;
+        // const mutations = item.BalanceChange(account.address);
+        // if (!mutations?.[OperationActions.INC]?.[0] && !mutations?.[OperationActions.DEC]?.[0]) {
+        //     hasBalanceChanges = false;
+        // }
 
         // Extract complex conditions to variables
         const hasMutatedDec = mutatedDec?.length > 0;
@@ -148,6 +158,11 @@ class AssetsMutations extends PureComponent<Props, State> {
         const hasEitherFactors = !!factorInc?.length || !!factorDec?.length;
         const hasBothFactors = factorInc?.length > 0 && factorDec?.length > 0;
 
+        const noMutation = hasNoMutations &&
+            account.address !== ((item as any)?.Account || (item as any)?.Subject || (item as any)?.Issuer) &&
+            !item.Type.match(/Credential/) &&
+            !item.Type.match(/Check/);
+
         return (
             <View style={[styles.itemContainer, styles.itemContainerGap]}>
                 {assets?.map(this.renderAssetElement)}
@@ -157,7 +172,26 @@ class AssetsMutations extends PureComponent<Props, State> {
                 {mutatedDec?.map((m) => this.renderMonetaryElement(m, MonetaryStatus.IMMEDIATE_EFFECT))}
                 {hasBothMutation && this.renderSwitchIcon()}
                 {mutatedInc?.map((m) => this.renderMonetaryElement(m, MonetaryStatus.IMMEDIATE_EFFECT))}
-                {hasNoMutations && hasEitherFactors && (
+                {noMutation && (
+                    // #45 - https://github.com/WietseWind/Xaman-App/issues/45
+                    <View key='monetary-hasNoMutations' style={[
+                        styles.amountContainer,
+                        styles.thirdPartyTxContainer,
+                    ]}>
+                        <Text style={[
+                            styles.thirdPartyTx,
+                            AppStyles.bold,
+                        ]}>{item.Type}</Text>
+                        <Text style={[
+                            styles.detailsValueText,
+                            AppStyles.marginTopNegativeSml,
+                            AppStyles.paddingTopSml,
+                            AppStyles.textCenterAligned,
+                            AppStyles.colorOrange,
+                        ]}>{Localize.t('events.thirdPartyTxExplain')}</Text>
+                    </View>
+                )}
+                {hasNoMutations && !noMutation && hasEitherFactors && (
                     <>
                         {factorDec?.map((f) => this.renderMonetaryElement(f, f?.effect))}
                         {hasBothFactors && this.renderSwitchIcon()}

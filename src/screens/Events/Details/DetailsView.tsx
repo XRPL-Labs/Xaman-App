@@ -29,6 +29,7 @@ import { AppStyles } from '@theme';
 /* types ==================================================================== */
 import { Props, State, WidgetComponents, WidgetKey } from './types';
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
+// import { Credential } from '@common/libs/ledger/objects';
 
 /* Component ==================================================================== */
 class TransactionDetailsView extends Component<Props & { componentType: ComponentTypes }, State> {
@@ -86,12 +87,14 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     checkAdvisory = async () => {
         const { item, account } = this.props;
 
+        const acc = (item?.Type === 'Credential' ? item.Issuer : item.Account);
+    
         // no need to check as the account is the initiator of the transaction
-        if (item.Account === account.address) {
+        if (acc === account.address) {
             return;
         }
 
-        BackendService.getAccountAdvisory(item.Account)
+        BackendService.getAccountAdvisory(acc)
             .then((resp) => {
                 if (resp?.danger && this.mounted) {
                     this.setState({
@@ -108,11 +111,17 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         const { item } = this.props;
 
         // only validated transactions have CTID
+        // Regular transactions
         if (
             item.InstanceType === InstanceTypes.GenuineTransaction ||
             item.InstanceType === InstanceTypes.FallbackTransaction
         ) {
             return GetTransactionLink(item.CTID);
+        }
+        
+        // E.g. offers, NFT offers, etc.
+        if (item?.PreviousTxnID) {
+            return GetTransactionLink(item.PreviousTxnID);
         }
 
         return undefined;
@@ -163,7 +172,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     };
 
     render() {
-        const { account, item, componentType } = this.props;
+        const { account, item, componentType, cachedTokenDetails, timestamp } = this.props;
         const { advisory, explainer } = this.state;
 
         const widgetsList: WidgetKey[] = [
@@ -185,11 +194,15 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         ];
 
         return (
-            <View style={AppStyles.container}>
+            <View key={`txdetailsview-${timestamp}`} style={AppStyles.container}>
                 <Header
                     leftComponent={{ icon: 'IconChevronLeft', onPress: this.close }}
                     centerComponent={{ text: Localize.t('events.transactionDetails') }}
-                    rightComponent={{ icon: 'IconMoreHorizontal', onPress: this.showMenu }}
+                    rightComponent={
+                        this.getItemLink()
+                            ? { icon: 'IconMoreHorizontal', onPress: this.showMenu }
+                            : undefined
+                    }
                     // eslint-disable-next-line react-native/no-inline-styles
                     containerStyle={componentType === ComponentTypes.Modal ? { marginTop: 0 } : {}}
                 />
@@ -205,12 +218,13 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                 <ScrollView>
                     {widgetsList.map((widget: WidgetKey, index) => {
                         return React.createElement((MutationWidgets as WidgetComponents)[widget], {
-                            key: index,
+                            key: `${index}-${widget}`,
                             item,
                             account,
                             explainer,
                             advisory,
                             componentType,
+                            cachedTokenDetails,
                         });
                     })}
                 </ScrollView>

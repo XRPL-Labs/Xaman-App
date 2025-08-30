@@ -14,6 +14,8 @@ import {
     LayoutAnimation,
     InteractionManager,
     NativeEventSubscription,
+    SafeAreaView,
+    Platform,
 } from 'react-native';
 
 import { CoreRepository } from '@store/repositories';
@@ -23,13 +25,15 @@ import { Prompt, VibrateHapticFeedback } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 import Keyboard from '@common/helpers/keyboard';
 
+import StyleService from '@services/StyleService';
+
 import { AppScreens } from '@common/constants';
 
 import { AuthenticationService } from '@services';
 
 import { BiometricErrors } from '@common/libs/biometric';
 // components
-import { Button, SecurePinInput } from '@components/General';
+import { Button, SecurePinInput, BlurView } from '@components/General';
 
 import Localize from '@locale';
 
@@ -47,7 +51,7 @@ export interface Props {
 export interface State {
     coreSettings: CoreModel;
     isBiometricAvailable: boolean;
-    offsetBottom: number;
+    // offsetBottom: number;
 }
 /* Component ==================================================================== */
 class AuthenticateOverlay extends Component<Props, State> {
@@ -56,6 +60,9 @@ class AuthenticateOverlay extends Component<Props, State> {
     private securePinInputRef: React.RefObject<SecurePinInput>;
 
     private animatedColor: Animated.Value;
+    private animateScale: Animated.Value;
+    private animatedOpacity: Animated.Value;
+
     private backHandler: NativeEventSubscription | undefined;
     private mounted = false;
 
@@ -73,18 +80,37 @@ class AuthenticateOverlay extends Component<Props, State> {
         this.state = {
             coreSettings: CoreRepository.getSettings(),
             isBiometricAvailable: false,
-            offsetBottom: 0,
+            // offsetBottom: 0,
         };
 
         this.contentViewRef = React.createRef();
         this.securePinInputRef = React.createRef();
 
         this.animatedColor = new Animated.Value(0);
+        this.animateScale = new Animated.Value(0);
+        this.animatedOpacity = new Animated.Value(0);
     }
 
     componentDidMount() {
         // track component mount status
         this.mounted = true;
+
+        Animated.parallel([
+            Animated.spring(this.animateScale, {
+                toValue: 1,
+                velocity: 0,
+                tension: 65,
+                friction: 7,
+                useNativeDriver: true,
+            }),
+
+            Animated.timing(this.animatedOpacity, {
+                toValue: 1,
+                duration: 250,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
 
         // listen on keyboard events
         Keyboard.addListener('keyboardWillShow', this.onKeyboardShow);
@@ -146,7 +172,7 @@ class AuthenticateOverlay extends Component<Props, State> {
 
                 if (bottomView < KeyboardHeight) {
                     LayoutAnimation.easeInEaseOut();
-                    this.setState({ offsetBottom: KeyboardHeight - bottomView });
+                    // this.setState({ offsetBottom: KeyboardHeight - bottomView });
                 }
             });
         }
@@ -155,7 +181,7 @@ class AuthenticateOverlay extends Component<Props, State> {
     onKeyboardHide = () => {
         if (this.mounted) {
             LayoutAnimation.easeInEaseOut();
-            this.setState({ offsetBottom: 0 });
+            // this.setState({ offsetBottom: 0 });
         }
     };
 
@@ -234,22 +260,22 @@ class AuthenticateOverlay extends Component<Props, State> {
         const { coreSettings, isBiometricAvailable } = this.state;
         const { canAuthorizeBiometrics } = this.props;
 
-        const { biometricMethod } = coreSettings;
+        // const { biometricMethod } = coreSettings;
 
         return (
-            <View style={[AppStyles.container, AppStyles.centerContent]}>
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.textCenterAligned, AppStyles.paddingTopSml]}>
-                    {Localize.t('global.pleaseEnterYourPasscode')}
-                </Text>
-
+            <View style={[AppStyles.centerContent]}>
                 <SecurePinInput
                     ref={this.securePinInputRef}
                     onInputFinish={this.onPasscodeEntered}
                     length={6}
                     enableHapticFeedback={coreSettings.hapticFeedback}
+                    supportBiometric={isBiometricAvailable && canAuthorizeBiometrics}
+                    onBiometryPress={this.requestBiometricAuthenticate}
+                    pinPadStyle={styles.pinInputPadding}
+                    virtualKeyboard
                 />
 
-                {isBiometricAvailable && canAuthorizeBiometrics && (
+                {/* {isBiometricAvailable && canAuthorizeBiometrics && (
                     <View style={AppStyles.paddingTopSml}>
                         <Button
                             label={`${biometricMethod}`}
@@ -260,33 +286,52 @@ class AuthenticateOverlay extends Component<Props, State> {
                             onPress={this.requestBiometricAuthenticate}
                         />
                     </View>
-                )}
+                )} */}
             </View>
         );
     };
 
     render() {
-        const { offsetBottom } = this.state;
-
-        const interpolateColor = this.animatedColor.interpolate({
-            inputRange: [0, 150],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
-        });
+        // const { offsetBottom } = this.state;
+        const transform = [
+            {
+                scale: this.animateScale.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                }),
+            },
+        ];
 
         return (
-            <Animated.View style={[styles.container, { backgroundColor: interpolateColor }]}>
-                <View ref={this.contentViewRef} style={[styles.visibleContent, { marginBottom: offsetBottom }]}>
-                    <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                        <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                            <Text style={[AppStyles.p, AppStyles.bold]}>{Localize.t('global.authenticate')}</Text>
+            <BlurView
+                style={styles.blurView}
+                blurAmount={Platform.OS === 'ios' ? 15 : 20}
+                blurType={StyleService.isDarkMode() ? 'dark' : 'light'}
+            >
+                <SafeAreaView testID="lock-overlay" style={styles.safeAreaContainer}>
+                    <Animated.View style={[{ transform, opacity: this.animatedOpacity }]}>
+                        <View style={[
+                            AppStyles.flex1,
+                            AppStyles.paddingHorizontal,
+                            AppStyles.marginTop,
+                        ]}>
+                            <Text style={[
+                                AppStyles.h4,
+                                AppStyles.marginTop,
+                                AppStyles.bold,
+                                AppStyles.textCenterAligned,
+                            ]}>{Localize.t('global.authenticate')}</Text>
+                            <Text style={[AppStyles.subtext, AppStyles.textCenterAligned]}>
+                                {Localize.t('global.pleaseEnterYourPasscode')}
+                            </Text>
                         </View>
-                        <View style={[AppStyles.row, AppStyles.flex1, AppStyles.flexEnd]}>
-                            <Button label={Localize.t('global.cancel')} roundedSmall light onPress={this.dismiss} />
+                        <View style={[AppStyles.row, AppStyles.paddingTopSml]}>{this.renderPasscode()}</View>
+                        <View style={[AppStyles.row, AppStyles.flex1, AppStyles.centerContent]}>
+                            <Button label={Localize.t('global.cancel')} roundedSmall contrast onPress={this.dismiss} />
                         </View>
-                    </View>
-                    <View style={[AppStyles.row, AppStyles.paddingTopSml]}>{this.renderPasscode()}</View>
-                </View>
-            </Animated.View>
+                    </Animated.View>
+                </SafeAreaView>
+            </BlurView>
         );
     }
 }

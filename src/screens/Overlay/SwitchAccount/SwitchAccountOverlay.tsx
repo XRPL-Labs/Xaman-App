@@ -192,7 +192,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             </View>
                         </View>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={AppStyles.flex1} shouldRasterizeIOS renderToHardwareTextureAndroid>
                         <View style={[styles.radioCircleSelected, AppStyles.rightSelf]} />
                     </View>
                 </View>
@@ -224,7 +224,7 @@ class SwitchAccountOverlay extends Component<Props, State> {
                             <Text style={styles.accessLevelLabel}>{accessLevelLabel}</Text>
                         </View>
                     </View>
-                    <View style={AppStyles.flex1}>
+                    <View style={AppStyles.flex1} shouldRasterizeIOS renderToHardwareTextureAndroid>
                         <View style={[styles.radioCircle, AppStyles.rightSelf]} />
                     </View>
                 </View>
@@ -256,10 +256,15 @@ class SwitchAccountOverlay extends Component<Props, State> {
 
         return (
             <ActionPanel height={contentHeight} onSlideDown={this.onPanelSlideDown} ref={this.actionPanelRef}>
-                <View style={[AppStyles.row, AppStyles.centerAligned, AppStyles.paddingBottomSml]}>
-                    <View style={[AppStyles.flex1, AppStyles.paddingLeftSml]}>
-                        <Text numberOfLines={1} style={AppStyles.h5}>
-                            {Localize.t('account.myAccounts')}
+                <View style={[
+                    AppStyles.row,
+                    AppStyles.centerAligned,
+                    AppStyles.paddingBottomSml,
+                    AppStyles.paddingLeftExtraSml,
+                ]}>
+                    <View style={[AppStyles.flex1]}>
+                        <Text numberOfLines={1} style={[ AppStyles.h5, AppStyles.textLeftAligned ]}>
+                            {Localize.t('global.accounts')}
                         </Text>
                     </View>
                     {showAddAccountButton && (

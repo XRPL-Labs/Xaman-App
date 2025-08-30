@@ -15,6 +15,16 @@ export default StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    digitsCondensed: {
+        height: AppSizes.screen.height < 800
+            ? AppSizes.verticalScale(50)
+            : AppSizes.verticalScale(65),
+    },
+    keyboardWrapCondensed: {
+        marginTop: AppSizes.screen.height < 800
+            ? AppSizes.verticalScale(20)
+            : AppSizes.verticalScale(50),
+    },
     hiddenInput: {
         width: 1,
         height: 1,

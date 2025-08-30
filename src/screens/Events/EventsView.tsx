@@ -13,11 +13,13 @@ import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
+import AppConfig from '@common/constants/config';
 import { AppScreens } from '@common/constants';
 import { Toast } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 // Parses
+import type { AccountTxTransaction } from '@common/libs/ledger/types/methods/accountTx';
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
 import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
@@ -31,6 +33,8 @@ import { LedgerEntry } from '@common/libs/ledger/types/ledger';
 import { MixingTypes } from '@common/libs/ledger/mixin/types';
 import { FilterProps } from '@screens/Modal/FilterEvents/EventsFilterModal';
 
+import ResolverService from '@services/ResolverService';
+
 import {
     AccountService,
     AppService,
@@ -41,7 +45,7 @@ import {
 } from '@services';
 import { AppStateStatus } from '@services/AppService';
 
-import { Button, Header, SearchBar, SegmentButtons } from '@components/General';
+import { Spacer, Button, Header, SearchBar, SegmentButtons } from '@components/General';
 import { EventsFilterChip, EventsList } from '@components/Modules';
 
 import Localize from '@locale';
@@ -62,6 +66,7 @@ export interface Props {
 export interface State {
     isLoading: boolean;
     isLoadingMore: boolean;
+    isLoadingMoreDebounced: boolean;
     canLoadMore: boolean;
     searchText?: string;
     filters?: FilterProps;
@@ -69,21 +74,26 @@ export interface State {
     lastMarker?: LedgerMarker;
     account: AccountModel;
     transactions: Array<Transactions>;
+    hideAdvisoryTransactions: boolean;
+    hideServiceFeeTransactions: boolean;
     plannedTransactions: Array<LedgerObjects>;
     pendingRequests: Array<Payload | NFTokenOffer>;
     dataSource: Array<DataSourceItem>;
+    isFiltering: boolean;
 }
 
 enum EventSections {
     ALL = 'ALL',
     PLANNED = 'PLANNED',
     REQUESTS = 'REQUESTS',
+    OWNED = 'OWNED',
 }
 
 enum DataSourceType {
     PLANNED_TRANSACTIONS = 'PLANNED_TRANSACTIONS',
     TRANSACTIONS = 'TRANSACTIONS',
     PENDING_REQUESTS = 'PENDING_REQUESTS',
+    OWNED_OBJECTS = 'OWNED_OBJECTS',
 }
 
 /* Component ==================================================================== */
@@ -93,6 +103,7 @@ class EventsView extends Component<Props, State> {
     private forceReload: boolean;
     private isScreenVisible: boolean;
     private navigationListener: EventSubscription | undefined;
+    private isLoadingMoreDebouncedTimer?: ReturnType<typeof setTimeout>;
 
     static options() {
         return {
@@ -105,15 +116,24 @@ class EventsView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const {
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
+        } = CoreRepository.getSettings();
+
         this.state = {
-            isLoading: true,
+            isFiltering: false,
+            isLoading: false,
             isLoadingMore: false,
+            isLoadingMoreDebounced: false,
             canLoadMore: true,
             searchText: undefined,
             filters: undefined,
             activeSection: EventSections.ALL,
             lastMarker: undefined,
             account: CoreRepository.getDefaultAccount(),
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
             transactions: [],
             pendingRequests: [],
             plannedTransactions: [],
@@ -125,13 +145,22 @@ class EventsView extends Component<Props, State> {
     }
 
     shouldComponentUpdate(nextProps: Props, nextState: State) {
-        const { dataSource, account, isLoading, canLoadMore, isLoadingMore, filters } = this.state;
+        const {
+            dataSource,
+            account,
+            isLoading,
+            canLoadMore,
+            isLoadingMore,
+            isLoadingMoreDebounced,
+            filters,
+        } = this.state;
         const { timestamp } = this.props;
 
         return (
             !isEqual(nextState.dataSource, dataSource) ||
             !isEqual(nextState.isLoading, isLoading) ||
             !isEqual(nextState.isLoadingMore, isLoadingMore) ||
+            !isEqual(nextState.isLoadingMoreDebounced, isLoadingMoreDebounced) ||
             !isEqual(nextState.canLoadMore, canLoadMore) ||
             !isEqual(nextState.account, account) ||
             !isEqual(nextState.filters, filters) ||
@@ -141,10 +170,13 @@ class EventsView extends Component<Props, State> {
 
     componentDidAppear() {
         // keep track of screen visibility
-        this.isScreenVisible = true;
 
+        // console.log('appeared')
+        this.isScreenVisible = true;
+        
         // check if we need to reload the screen
         if (this.forceReload) {
+            // console.log('reloading')
             // set the flag to false
             this.forceReload = false;
 
@@ -156,6 +188,9 @@ class EventsView extends Component<Props, State> {
     componentDidDisappear() {
         // keep track of screen visibility
         this.isScreenVisible = false;
+        this.setState({
+            isLoading: false,
+        });
     }
 
     componentDidMount() {
@@ -197,12 +232,24 @@ class EventsView extends Component<Props, State> {
                 plannedTransactions: [],
                 lastMarker: undefined,
                 canLoadMore: true,
+                isLoading: true,
             },
             this.updateDataSource,
         );
     };
 
     onCoreSettingsUpdate = (_coreSettings: CoreModel, changes: Partial<CoreModel>) => {
+        // force reload existing list if show/hide spam tx
+        if (has(changes, 'hideAdvisoryTransactions')) {
+            this.setState({ hideAdvisoryTransactions: !!changes.hideAdvisoryTransactions }, () => {
+                this.forceReload = true;
+            });
+        }
+        if (has(changes, 'hideServiceFeeTransactions')) {
+            this.setState({ hideServiceFeeTransactions: !!changes.hideServiceFeeTransactions }, () => {
+                this.forceReload = true;
+            });
+        }
         // force reload if network or default account changed
         if (has(changes, 'network') || has(changes, 'account')) {
             this.forceReload = true;
@@ -228,7 +275,9 @@ class EventsView extends Component<Props, State> {
 
         if (account?.isValid()) {
             if (effectedAccounts.includes(account.address)) {
-                this.updateDataSource([DataSourceType.TRANSACTIONS, DataSourceType.PLANNED_TRANSACTIONS]);
+                setTimeout(() => {
+                    this.updateDataSource([DataSourceType.TRANSACTIONS, DataSourceType.PLANNED_TRANSACTIONS]);
+                }, 500); // Wait for node to have it
             }
         }
     };
@@ -238,6 +287,8 @@ class EventsView extends Component<Props, State> {
             status === AppStateStatus.Active &&
             [AppStateStatus.Background, AppStateStatus.Inactive].includes(prevStatus)
         ) {
+            // console.log('appstate change', status)
+            this.updateDataSource();
             this.onSignRequestReceived();
         }
     };
@@ -271,7 +322,7 @@ class EventsView extends Component<Props, State> {
         marker?: string,
         combined = [] as LedgerEntry[],
     ): Promise<LedgerEntry[]> => {
-        return LedgerService.getAccountObjects(account, { type, marker }).then((resp) => {
+        return LedgerService.getAccountObjects(account, { type, marker }).then(async (resp) => {
             // account is not found
             if ('error' in resp) {
                 return [];
@@ -282,7 +333,25 @@ class EventsView extends Component<Props, State> {
             if (_marker && _marker !== marker) {
                 return this.fetchPlannedObjects(account, type, _marker, account_objects.concat(combined));
             }
+
             return account_objects.concat(combined);
+        }).then(async r => {
+            if (r?.[0]) {
+                if (r[0]?.LedgerEntryType === 'Credential') {
+                    if (r[0]?.PreviousTxnLgrSeq) {
+                        const o = await LedgerService.getLedgerEntry({
+                            command: 'ledger',
+                            ledger_index: r[0].PreviousTxnLgrSeq,
+                        });
+                        const { close_time_iso } = (o as any)?.ledger || {};
+                        Object.assign(r[0], {
+                            Date: close_time_iso,
+                        });
+                    }
+                }
+            }
+
+            return r;
         });
     };
 
@@ -297,28 +366,66 @@ class EventsView extends Component<Props, State> {
                 return;
             }
 
+            // OLD SLOW!!
             // account objects we are interested in
-            const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket', 'payment_channel'];
-            let objects = [] as LedgerEntry[];
+            // const objectTypes = ['check', 'escrow', 'offer', 'nft_offer', 'ticket', 'payment_channel'];
+            // let objects = [] as LedgerEntry[];
+            // objectTypes
+            //     .reduce(async (accumulator, type) => {
+            //         return accumulator.then(async () => {
+            //             return this.fetchPlannedObjects(account.address, type).then((res) => {
+            //                 if (res) {
+            //                     objects = [...objects, ...res];
+            //                 } else {
+            //                     objects = [...objects];
+            //                 }
+            //             });
+            //         });
+            //     }, Promise.resolve())
+            //     .then(() => {
+            //         const parsedList = objects
+            //             .map(LedgerObjectFactory.fromLedger)
+            //             .flat()
+            //             .filter((item): item is LedgerObjects => item !== undefined);
 
-            objectTypes
-                .reduce(async (accumulator, type) => {
-                    return accumulator.then(async () => {
-                        return this.fetchPlannedObjects(account.address, type).then((res) => {
-                            if (res) {
-                                objects = [...objects, ...res];
-                            } else {
-                                objects = [...objects];
-                            }
-                        });
-                    });
-                }, Promise.resolve())
-                .then(() => {
+            //         this.setState({ plannedTransactions: parsedList }, () => {
+            //             resolve(parsedList);
+            //         });
+            //     })
+            //     .catch(() => {
+            //         Toast(Localize.t('events.canNotFetchTransactions'));
+            //         resolve([]);
+            //     });
+
+            // NEW FAST parallel
+            const objectTypes = [
+                'check',
+                'escrow',
+                'offer',
+                'nft_offer',
+                'ticket',
+                'payment_channel',
+                'delegate',
+                'credential',
+            ];
+
+            // Create an array of promises, one for each object type
+            const fetchPromises = objectTypes.map(async (type) => {
+                const res = await this.fetchPlannedObjects(account.address, type);
+                return res || [];
+            });
+            
+            // Execute all promises in parallel
+            Promise.all(fetchPromises)
+                .then((results) => {
+                    // Flatten the results array and remove any undefined entries
+                    const objects = results.flat();
+                    
                     const parsedList = objects
                         .map(LedgerObjectFactory.fromLedger)
                         .flat()
                         .filter((item): item is LedgerObjects => item !== undefined);
-
+            
                     this.setState({ plannedTransactions: parsedList }, () => {
                         resolve(parsedList);
                     });
@@ -340,6 +447,8 @@ class EventsView extends Component<Props, State> {
             if (activeSection === EventSections.REQUESTS) {
                 promises.push(BackendService.getNFTOffered(account.address));
             }
+            
+            // TODO: also load credential requests to me, not accepted yet (flags)
 
             Promise.all(promises).then((result) => {
                 const combined = [].concat(...result);
@@ -351,7 +460,13 @@ class EventsView extends Component<Props, State> {
     };
 
     loadTransactions = (loadMore?: boolean): Promise<Transactions[]> => {
-        const { transactions, account, lastMarker } = this.state;
+        const {
+            transactions,
+            account,
+            lastMarker,
+            hideAdvisoryTransactions,
+            hideServiceFeeTransactions,
+         } = this.state;
 
         return new Promise((resolve) => {
             // return if no account exist
@@ -359,9 +474,11 @@ class EventsView extends Component<Props, State> {
                 resolve([]);
                 return;
             }
+            
+            const fetchAmount = 15;
 
-            LedgerService.getTransactions(account.address, loadMore && lastMarker, 50)
-                .then((resp) => {
+            LedgerService.getTransactions(account.address, loadMore && lastMarker, fetchAmount)
+                .then(async (resp) => {
                     if ('error' in resp) {
                         resolve([]);
                         return;
@@ -372,28 +489,101 @@ class EventsView extends Component<Props, State> {
 
                     // if we got less than 50 transaction, means there is no transaction
                     // also only handle recent 1000 transactions
-                    if (txResp.length < 50 || transactions.length >= 1000) {
+                    if (txResp.length < fetchAmount || transactions.length >= 1000) {
                         canLoadMore = false;
                     }
 
                     // only success transactions
-                    const tesSuccessTransactions = filter(txResp, (transaction) => {
-                        return (
-                            typeof transaction.meta === 'object' && transaction?.meta.TransactionResult === 'tesSUCCESS'
-                        );
-                    });
+                    const tesSuccessTransactions: AccountTxTransaction[] = (await Promise.all(
+                        txResp.map(async transaction => {
+                            let blocked = false;
+
+                            if (hideAdvisoryTransactions) {
+                                const finalFields = transaction.meta?.AffectedNodes
+                                    ?.filter(m => m?.ModifiedNode)
+                                    ?.map(m => m?.ModifiedNode)?.[0]
+                                    ?.FinalFields;
+                                
+                                const isMyAccountThroughRegularKey =
+                                    transaction?.tx?.Destination &&
+                                    finalFields?.RegularKey &&
+                                    finalFields?.Account &&
+                                    finalFields.RegularKey === account.address &&
+                                    finalFields.Account === transaction.tx.Destination;
+
+                                if (
+                                    transaction?.tx?.TransactionType === 'Payment' &&
+                                    transaction?.tx?.Account !== account.address && // I'm not the sender
+                                    (
+                                        transaction?.tx?.Destination === account.address || // But I am the receipient
+                                        isMyAccountThroughRegularKey // Or the Regular Key is me so I'm the receipient
+                                    )
+                                    // &&
+                                    // typeof transaction?.meta?.delivered_amount === 'string' &&
+                                    // Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
+                                ) {
+                                    // Only Acount (sender) counts, only hide if <SENT> to me
+                                    const resolveAccount = String(transaction?.tx?.Account || '');
+                                    const accountResolver = await ResolverService.getAccountName(resolveAccount);
+
+                                    blocked = !!accountResolver?.blocked;
+                                }
+                            }
+
+                            if (hideServiceFeeTransactions) {
+                                if (
+                                    transaction?.tx?.TransactionType === 'Payment' &&
+                                    transaction?.tx?.Destination === AppConfig?.feeAccount
+                                ) {
+                                    blocked = true;
+                                }
+                            }
+
+                            return typeof transaction.meta === 'object' &&
+                                (
+                                    transaction?.meta.TransactionResult === 'tesSUCCESS' ||
+                                    transaction?.meta.TransactionResult === 'tecHOOK_REJECTED'
+                                ) && !blocked ? transaction : null;
+                        }),
+                    )).filter(t => t !== null) as AccountTxTransaction[];
+                    // await Promise.all(
+                    //     filter(txResp, async (transaction) => {
+
+                    //     }) as AccountTxTransaction[],
+                    // );
 
                     let parsedList = flatMap(tesSuccessTransactions, (item) =>
                         TransactionFactory.fromLedger(item, [MixingTypes.Mutation]),
                     );
 
+                    // console.log('x1')
+
                     if (loadMore) {
                         parsedList = uniqBy([...transactions, ...parsedList], 'hash');
                     }
 
+                    // console.log('x2')
+
                     this.setState({ transactions: parsedList, lastMarker: marker, canLoadMore }, () => {
                         resolve(parsedList);
+                        // console.log('x4')
                     });
+
+                    // console.log('x3')
+
+                    // console.log('txResp.length', txResp.length)
+                    // console.log('transactions.length', transactions.length)
+                    // console.log('parsedList.length', parsedList.length)
+                    if (parsedList.length < fetchAmount) {
+                        // Initial query didn't result in full lengt list
+                        if (canLoadMore && marker) {
+                            // Can load more, there's a marker
+                            // Immediately load one more
+                            this.loadMore(true);
+                        }
+                    }
+
+                    // console.log('x5')
                 })
                 .catch(() => {
                     // TODO: BETTER ERROR HANDLING AND ONLY SHOW WHEN SCREEN IS VISIBLE
@@ -403,29 +593,53 @@ class EventsView extends Component<Props, State> {
         });
     };
 
-    loadMore = async () => {
+    loadMore = async (forced = false) => {
+        //            ^^ danger: called elsewhere natively by RN adds {distanceFromEnd: float} so must be
+        //               not only truthy but also boolean
         const { canLoadMore, filters, searchText, isLoadingMore, isLoading, activeSection } = this.state;
 
-        if (isLoading || isLoadingMore || !canLoadMore || activeSection !== EventSections.ALL) return;
+        // console.log('-- load more',  new Date(), {
+        //     canLoadMore,
+        //     isLoadingMore,
+        //     forced,
+        // });
 
-        this.setState({ isLoadingMore: true });
+        if (!canLoadMore) {
+            this.setState({ isLoadingMoreDebounced: false });
+        }
+
+        // console.log('loadingmore', canLoadMore, isLoadingMore)
+        if (!forced || typeof forced !== 'boolean') {
+            // only force return if NOT forced (if forced continue)
+            // or if FORCED but forced isn't bool (see fn enter comment)
+            if (isLoading || isLoadingMore || !canLoadMore || activeSection !== EventSections.ALL) return;
+        }
+        // console.log('loadingmoremore', forced)
+        
+        this.setState({ isLoadingMore: true, isLoadingMoreDebounced: true });
+        clearTimeout(this.isLoadingMoreDebouncedTimer);
 
         await this.loadTransactions(true);
 
         this.setState({ isLoadingMore: false });
+        this.isLoadingMoreDebouncedTimer = setTimeout(() => {
+            this.setState({ isLoadingMoreDebounced: false });
+        }, 250);
 
         // apply any new search ad filter to the new sources
         if (searchText) {
             this.applySearch(searchText);
+            // console.log('applysearch')
         } else if (filters) {
-            this.applyFilters(filters);
+            this.applyFilters(true);
+            // console.log('applyfilters', canLoadMore, isLoadingMore)
         } else {
             this.applyDefaults();
         }
     };
 
     buildDataSource = (transactions: any, pendingRequests: any, plannedTransactions?: any): Array<DataSourceItem> => {
-        const { activeSection } = this.state;
+        const { activeSection, account } = this.state;
 
         if (isEmpty(pendingRequests) && isEmpty(transactions) && isEmpty(plannedTransactions)) {
             return [];
@@ -435,15 +649,50 @@ class EventsView extends Component<Props, State> {
 
         if (activeSection === EventSections.PLANNED) {
             const openItems = orderBy(
-                filter(plannedTransactions, (p) =>
-                    [
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
                         LedgerEntryTypes.Offer,
                         LedgerEntryTypes.NFTokenOffer,
                         LedgerEntryTypes.Check,
                         LedgerEntryTypes.Ticket,
                         LedgerEntryTypes.PayChannel,
-                    ].includes(p.Type),
-                ),
+                        LedgerEntryTypes.Delegate,
+                        // TODO: if not accepted yet
+                        LedgerEntryTypes.Credential,
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            if (p.Flags.lsfAccepted) {
+                                // Issued to someone else, and accepted - so counting to their reserve
+                                // No longer planned - this is one for owned objects
+                                return false;
+                            }
+                        }
+                        if (p.Subject === account.address) {
+                            // If I am the subject, then it's not planned: it's either a request,
+                            // // or it's an owned object
+                            return false;
+                            // --
+                            // if (p.Flags.lsfAccepted) {
+                            //     // I already accepted, so it isn't planned open
+                            //     return false;
+                            // }
+                        }
+                    }
+
+                    if (p.Type === LedgerEntryTypes.Check) {
+                        // Incoming check, this belongs in Requests
+                        if (p.Destination === account.address) {
+                            return false;
+                        }
+                    }
+
+                    return isValidType;
+                }),
                 ['Date'],
             );
 
@@ -477,14 +726,101 @@ class EventsView extends Component<Props, State> {
 
             return dataSource;
         }
+
         if (activeSection === EventSections.REQUESTS) {
-            items = [...pendingRequests];
+            const openRequestObjects = orderBy(
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
+                        LedgerEntryTypes.Credential,
+                        LedgerEntryTypes.Check,
+                        // ...TODO?
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            return false;
+                        }
+                        if (p.Subject === account.address) {
+                            if (p.Flags.lsfAccepted) {
+                                // I already accepted, so it isn't planned open
+                                return false;
+                            }
+                        }
+                        if (p?._object) {
+                            Object.assign(p, {
+                                _object: {
+                                    ...p?._object || {},
+                                    Date: new Date().toISOString(),
+                                },
+                            });
+                        }
+                    }
+
+                    if (p.Type === LedgerEntryTypes.Check) {
+                        // Incoming check, this belongs in Requests
+                        if (p.Destination === account.address) {
+                            if (p?._object) {
+                                Object.assign(p, {
+                                    _object: {
+                                        ...p?._object || {},
+                                        Date: new Date().toISOString(),
+                                    },
+                                });
+                            }
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    return isValidType;
+                }),
+                ['Date'],
+            );
+            items = [...openRequestObjects , ...pendingRequests];
+        } else if (activeSection === EventSections.OWNED) {
+            const ownedObjects = orderBy(
+                filter(plannedTransactions, (p) => {
+                    const isValidType = [
+                        LedgerEntryTypes.Credential,
+                        // ...TODO?
+                        // LedgerEntryTypes.SignerList,
+                        // LedgerEntryTypes.DepositPreauth,
+                        // LedgerEntryTypes.DID,
+                    ].includes(p.Type);
+
+                    if (p.Type === LedgerEntryTypes.Credential) {
+                        if (p.Subject !== account.address) {
+                            return false;
+                        }
+                        if (p.Subject === account.address) {
+                            if (!p.Flags.lsfAccepted) {
+                                // Not yet accepted, not owned
+                                return false;
+                            }
+                        }
+                    }
+
+                    return isValidType;
+                }),
+                ['Date'],
+            );
+            items = [...ownedObjects];
         } else {
             items = [...pendingRequests, ...transactions];
         }
 
         // group items by month name and then get the name for each month
-        const grouped = groupBy(items, (item) => (item.Date ? moment(item.Date).format('YYYY-MM-DD') : ''));
+        const grouped = groupBy(items, (item) => {
+            return item.Date
+                ? moment(item.Date).format('YYYY-MM-DD')
+                : (item as any)?._object?.Date
+                    ? moment((item as any)?._object?.Date).format('YYYY-MM-DD')
+                    : '';
+        });
 
         const dataSource: DataSourceItem[] = [];
 
@@ -503,7 +839,14 @@ class EventsView extends Component<Props, State> {
 
         this.setState({ isLoading: true });
 
+        // console.log('updatedatasource')
+
+        // Ping to update red pending icon count
+        // in case push notifications are disabled
+
         let sourceTypes = [] as DataSourceType[];
+
+        BackendService.ping();
 
         switch (activeSection) {
             case EventSections.ALL:
@@ -514,6 +857,9 @@ class EventsView extends Component<Props, State> {
                 break;
             case EventSections.REQUESTS:
                 sourceTypes = [DataSourceType.PENDING_REQUESTS];
+                break;
+            case EventSections.OWNED:
+                sourceTypes = [DataSourceType.PLANNED_TRANSACTIONS];
                 break;
             default:
                 break;
@@ -527,11 +873,28 @@ class EventsView extends Component<Props, State> {
         // update data sources
         for (const source of sourceTypes) {
             if (source === DataSourceType.PENDING_REQUESTS) {
-                await this.loadPendingRequests();
+                // console.log('loadpending')
+                // await this.loadPendingRequests();
+                await Promise.all([
+                    this.loadPendingRequests(),
+                    this.loadPlannedTransactions(),
+                ]);
             } else if (source === DataSourceType.TRANSACTIONS) {
+                // console.log('load--transactions---', this.isScreenVisible)
                 await this.loadTransactions();
             } else if (source === DataSourceType.PLANNED_TRANSACTIONS) {
-                await this.loadPlannedTransactions();
+                // console.log('loadplan')
+                // await this.loadPlannedTransactions();
+                await Promise.all([
+                    this.loadPlannedTransactions(),
+                    this.loadPendingRequests(),
+                ]);
+            } else if (source === DataSourceType.OWNED_OBJECTS) {
+                // console.log('loadplan')
+                await Promise.all([
+                    this.loadPlannedTransactions(),
+                    this.loadPendingRequests(),
+                ]);
             }
         }
 
@@ -555,8 +918,22 @@ class EventsView extends Component<Props, State> {
         });
     };
 
-    applyFilters = (filters: FilterProps) => {
-        const { activeSection, account, transactions, pendingRequests, plannedTransactions, canLoadMore } = this.state;
+    applyFilters = (paramFilters?: FilterProps | boolean) => {
+        const {
+            activeSection,
+            account,
+            filters: stateFilters,
+            transactions,
+            pendingRequests,
+            plannedTransactions,
+            canLoadMore,
+        } = this.state;
+
+        const filters = typeof paramFilters === 'boolean' && paramFilters
+            ? stateFilters
+            : paramFilters;
+
+        // console.log('ap1')
 
         if (activeSection === EventSections.REQUESTS) {
             this.setState({
@@ -564,6 +941,8 @@ class EventsView extends Component<Props, State> {
             });
             return;
         }
+
+        // console.log('ap2')
 
         // check if filters are empty
         let isEmptyFilters = true;
@@ -578,13 +957,22 @@ class EventsView extends Component<Props, State> {
             });
         }
 
-        if (isEmptyFilters) {
+        // console.log('ap3', {isEmptyFilters})
+
+        if (isEmptyFilters || !filters) {
             this.setState({
                 dataSource: this.buildDataSource(transactions, pendingRequests, plannedTransactions),
                 filters: undefined,
+                isFiltering: false,
             });
             return;
         }
+
+        // console.log('ap4')
+
+        this.setState({
+            isFiltering: true,
+        });
 
         let newDataSource: Array<Transactions | LedgerObjects>;
 
@@ -630,6 +1018,7 @@ class EventsView extends Component<Props, State> {
                 case 'NFT':
                     includeTypes = [
                         TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenModify,
                         TransactionTypes.NFTokenBurn,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenAcceptOffer,
@@ -672,6 +1061,7 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenCancelOffer,
                         TransactionTypes.NFTokenCreateOffer,
                         TransactionTypes.NFTokenMint,
+                        TransactionTypes.NFTokenModify,
                         LedgerEntryTypes.Ticket,
                     ];
                     break;
@@ -718,22 +1108,43 @@ class EventsView extends Component<Props, State> {
         }
 
         if (activeSection === EventSections.ALL) {
+            // console.log('FILTERS READY', canLoadMore)
             if (isEmpty(newDataSource) && canLoadMore) {
+                // console.log('      FILTERS READY --- 1', newDataSource)
+                // console.log('------thisloadmore2')
                 this.setState(
                     {
                         filters,
+                        // isLoading: true,
+                        isFiltering: true,
                     },
                     this.loadMore,
                 );
+                requestAnimationFrame(() => {
+                    // Rerender async
+                    this.setState({
+                        dataSource: this.buildDataSource(newDataSource, [], plannedTransactions),
+                        // isLoading: false,
+                        // isFiltering: false,
+                        // filters,
+                    });  
+                });
             } else {
+                // console.log('      FILTERS READY --- 2')
+                // console.log('------thisloadmore3')
                 this.setState({
                     dataSource: this.buildDataSource(newDataSource, [], plannedTransactions),
+                    // isLoading: false,
+                    isFiltering: false,
                     filters,
-                });
+                }, canLoadMore ? this.loadMore : undefined);
             }
         } else {
+            // console.log('FILTERS READY --- 3')
             this.setState({
                 dataSource: this.buildDataSource(transactions, [], newDataSource),
+                // isLoadingMoreDebounced: false,
+                isFiltering: false,
                 filters,
             });
         }
@@ -830,12 +1241,15 @@ class EventsView extends Component<Props, State> {
         keys.forEach((k) => {
             newFilters[k] = undefined;
         });
+
+        // console.log('filterremove', filters, newFilters)
+
         this.applyFilters(newFilters);
     };
 
     onSectionChange = ({ value }: { value: EventSections }) => {
         const { activeSection } = this.state;
-
+        
         if (value === activeSection) {
             return;
         }
@@ -858,7 +1272,11 @@ class EventsView extends Component<Props, State> {
 
         Navigator.showModal<EventsFilterModalProps>(AppScreens.Modal.FilterEvents, {
             currentFilters: filters ?? {},
-            onApply: this.applyFilters,
+            onApply: filterProps => {
+                // First make sure everything becomes invisible
+                // console.log('apply filters', filterProps);
+                return this.applyFilters(filterProps);
+            },
         });
     };
 
@@ -875,18 +1293,27 @@ class EventsView extends Component<Props, State> {
                     }}
                 />
                 <ImageBackground
-                    source={StyleService.getImage('BackgroundShapes')}
-                    imageStyle={AppStyles.BackgroundShapes}
+                    resizeMode="cover"
+                    source={
+                        StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                    }
                     style={[AppStyles.contentContainer, AppStyles.padding]}
                 >
                     <Image style={AppStyles.emptyIcon} source={StyleService.getImage('ImageNoEvents')} />
-                    <Text style={AppStyles.emptyText}>{Localize.t('events.emptyEventsNoAccount')}</Text>
+                    <Spacer size={10} />
+                    <Text style={[
+                        AppStyles.emptyText,
+                        AppStyles.p,
+                    ]}>{Localize.t('events.emptyEventsNoAccount')}</Text>
                     <Button
                         testID="add-account-button"
                         label={Localize.t('home.addAccount')}
                         icon="IconPlus"
                         iconStyle={AppStyles.imgColorWhite}
-                        rounded
+                        nonBlock
+                        style={[
+                            AppStyles.marginBottom,
+                        ]}
                         onPress={this.onAddAccountPress}
                     />
                 </ImageBackground>
@@ -902,11 +1329,25 @@ class EventsView extends Component<Props, State> {
             return null;
         }
 
+        if (activeSection === EventSections.OWNED) {
+            return null;
+        }
+
         return <EventsFilterChip filters={filters} onRemovePress={this.onFilterRemove} />;
     };
 
     render() {
-        const { dataSource, isLoading, isLoadingMore, account, activeSection } = this.state;
+        const {
+            dataSource,
+            isLoading,
+            isLoadingMore,
+            account,
+            activeSection,
+            isLoadingMoreDebounced,
+            canLoadMore,
+            isFiltering,
+            // filters,
+        } = this.state;
         const { timestamp } = this.props;
 
         if (!account) {
@@ -936,9 +1377,15 @@ class EventsView extends Component<Props, State> {
                     onChangeText={this.applySearch}
                     placeholder={Localize.t('global.search')}
                 />
+                {/* <Text>{ activeSection}</Text> */}
                 <SegmentButtons
                     activeButton={activeSection}
-                    containerStyle={[AppStyles.paddingHorizontalSml, AppStyles.leftSelf]}
+                    key={`eventsview-segmentbuttons-${timestamp}`}
+                    containerStyle={[
+                        AppStyles.paddingHorizontalSml,
+                        AppStyles.marginTopNegativeSml,
+                        AppStyles.leftSelf,
+                    ]}
                     buttons={[
                         {
                             label: Localize.t('events.eventTypeAll'),
@@ -952,15 +1399,32 @@ class EventsView extends Component<Props, State> {
                             label: Localize.t('events.eventTypeRequests'),
                             value: EventSections.REQUESTS,
                         },
+                        {
+                            label: Localize.t('events.eventTypeOwned'),
+                            value: EventSections.OWNED,
+                        },
                     ]}
                     onItemPress={this.onSectionChange}
                 />
+                {/* <Text>{isLoadingMore && 'isloadingmore'}</Text> */}
+                {/* <Text>{isLoadingMoreDebounced && 'isloadingmoredebounced'}</Text> */}
+                {/* <Text>{JSON.stringify(filters)}</Text> */}
+                <View style={[
+                    AppStyles.leftSelf,
+                    AppStyles.paddingHorizontalSml,
+                ]}>
+                    {this.renderListHeader()}
+                </View>
                 <EventsList
                     account={account}
-                    headerComponent={this.renderListHeader}
+                    key={`eventsview-eventslist-${timestamp}`}
+                    // headerComponent={this.renderListHeader}
                     dataSource={dataSource}
                     isLoading={isLoading}
-                    isLoadingMore={isLoadingMore}
+                    isFiltering={isFiltering}
+                    // forceFullLoader={isFiltering && dataSource.length === 0}
+                    isVisible={this.isScreenVisible}
+                    isLoadingMore={isLoadingMore || (isLoadingMoreDebounced && canLoadMore)}
                     onEndReached={this.loadMore}
                     onRefresh={this.updateDataSource}
                     timestamp={timestamp}

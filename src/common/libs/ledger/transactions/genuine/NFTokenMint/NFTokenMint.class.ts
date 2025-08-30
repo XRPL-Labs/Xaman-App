@@ -2,8 +2,8 @@ import { EncodeNFTokenID } from '@common/utils/codec';
 
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { AccountID, Blob, UInt32, UInt16 } from '@common/libs/ledger/parser/fields';
-import { TransferFee } from '@common/libs/ledger/parser/fields/codec';
+import { AccountID, Blob, UInt32, UInt16, Amount } from '@common/libs/ledger/parser/fields';
+import { RippleTime, TransferFee } from '@common/libs/ledger/parser/fields/codec';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -20,12 +20,18 @@ class NFTokenMint extends BaseGenuineTransaction {
         Issuer: { type: AccountID },
         TransferFee: { type: UInt16, codec: TransferFee },
         URI: { type: Blob },
+        Amount: { type: Amount },
+        Destination: { type: AccountID },
+        Expiration: { type: UInt32, codec: RippleTime },
     };
 
     declare NFTokenTaxon: FieldReturnType<typeof UInt32>;
     declare Issuer: FieldReturnType<typeof AccountID>;
     declare TransferFee: FieldReturnType<typeof UInt16, typeof TransferFee>;
     declare URI: FieldReturnType<typeof Blob>;
+    declare Amount: FieldReturnType<typeof Amount>;
+    declare Destination: FieldReturnType<typeof AccountID>;
+    declare Expiration: FieldReturnType<typeof UInt32, typeof RippleTime>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

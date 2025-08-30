@@ -131,8 +131,10 @@ class ThirdPartyAppsView extends Component<Props, State> {
 
         return (
             <ImageBackground
-                source={StyleService.getImage('BackgroundShapes')}
-                imageStyle={AppStyles.BackgroundShapes}
+                resizeMode="cover"
+                source={
+                    StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
+                }
                 style={[AppStyles.flex1, AppStyles.centerContent]}
             >
                 <View style={[AppStyles.centerAligned, AppStyles.paddingSml]}>
@@ -164,7 +166,10 @@ class ThirdPartyAppsView extends Component<Props, State> {
                 />
                 <FlatList
                     style={[AppStyles.flex1, AppStyles.stretchSelf]}
-                    contentContainerStyle={styles.scrollContainer}
+                    contentContainerStyle={[
+                        styles.scrollContainer,
+                        !isLoading && thirdPartyApps.length > 0 && AppStyles.paddingBottom,
+                    ]}
                     data={thirdPartyApps}
                     refreshing={isLoading}
                     renderItem={this.renderItem}

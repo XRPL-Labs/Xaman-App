@@ -17,6 +17,12 @@ const guidelineBaseHeight = 680;
 
 const isSmallDevice = width <= 375;
 
+const xyFactor = width / height;
+const isSquareScreen = xyFactor > 0.85; // Fixes fold devices
+const altScreenDimensionsCorrectionFactor = isSquareScreen // Fixes fold devices
+    ? 2
+    : 1;
+
 // bottomTabs height
 const tabbarHeight = Platform.select({
     ios: bottomInset + 50,
@@ -48,7 +54,10 @@ const Sizes = {
     // Screen Dimensions
     screen: {
         height,
-        width,
+        width: width / altScreenDimensionsCorrectionFactor, // Fixes fold devices
+        uncorrectedWidth: width,
+
+        screenHeight,
 
         heightHalf: height * 0.5,
         heightThird: height * 0.333,
@@ -77,13 +86,13 @@ const Sizes = {
     paddingMid: 15,
     paddingExtraSml: 10,
 
-    paddingList: 25,
+    paddingList: 20,
 
     borderRadius: 8,
 
     extraKeyBoardPadding: 20,
 
-    scale: (size: number) => (width / guidelineBaseWidth) * size,
+    scale: (size: number) => ((width / guidelineBaseWidth) * size) / altScreenDimensionsCorrectionFactor,
     verticalScale: (size: number) => (height / guidelineBaseHeight) * size,
     moderateScale: (size: number, factor = 0.5) => size + (Sizes.scale(size) - size) * factor,
 

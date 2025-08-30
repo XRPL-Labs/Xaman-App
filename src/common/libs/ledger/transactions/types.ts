@@ -8,6 +8,7 @@ import {
     EscrowCreate,
     EscrowFinish,
     SetRegularKey,
+    DelegateSet,
     SignerListSet,
     AccountDelete,
     CheckCash,
@@ -23,6 +24,7 @@ import {
     NFTokenCancelOffer,
     NFTokenCreateOffer,
     NFTokenMint,
+    NFTokenModify,
     SetHook,
     ClaimReward,
     Invoke,
@@ -69,6 +71,7 @@ export type Transactions =
     | EscrowCancel
     | EscrowFinish
     | SetRegularKey
+    | DelegateSet
     | SignerListSet
     | DepositPreauth
     | CheckCreate
@@ -79,6 +82,7 @@ export type Transactions =
     | PaymentChannelClaim
     | PaymentChannelFund
     | NFTokenMint
+    | NFTokenModify
     | NFTokenBurn
     | NFTokenCreateOffer
     | NFTokenAcceptOffer

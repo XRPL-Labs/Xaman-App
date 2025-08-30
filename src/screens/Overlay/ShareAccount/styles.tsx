@@ -1,40 +1,78 @@
 import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
+import { Platform } from 'react-native';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    panelContent: {
+        paddingHorizontal: 0,
+    },
+    requestLink: {
+        position: 'absolute',
+        bottom: 10,
+        // left: 0,
+        // right: 0,
+    },
     qrCodeContainer: {
-        width: '90%',
-        backgroundColor: '$tint',
+        width: '100%',
+        borderColor: '$tint',
+        borderWidth: 3,
+        backgroundColor: '$white',
         alignSelf: 'center',
-        borderRadius: 20,
+        borderRadius: 10,
         marginBottom: 25,
+        marginTop: 10,
+    },
+    qrImgContainer: {
+        // borderWidth: 1,
+        // borderColor: 'red',
+        position: 'absolute',
+        top: 75,
+        transform: [ { translateY: -75 } ],
     },
     qrCode: {
-        borderRadius: 14,
-        borderWidth: 5,
-        alignSelf: 'center',
+        // alignSelf: 'center',
         alignItems: 'center',
         borderColor: '$silver',
-        padding: 5,
-        margin: 30,
+        // padding: 10,
+        margin: Platform.select({
+            ios: 15,
+            android: 0,
+        }),
+        height: 150,
+        overflow: 'hidden',
+    },
+    sharebtnContainer: {
+        marginHorizontal: -14,
+        marginBottom: -20,
+        marginTop: 20,
+    },
+    sharebtn: {
+        borderRadius: 0,
+        margin: 0,
+        height: 35,
     },
     addressTextContainer: {
         width: '100%',
-        backgroundColor: '$tint',
-        marginTop: 15,
-        paddingHorizontal: 15,
-        paddingVertical: 8,
-        borderRadius: 8,
+        // backgroundColor: '$tint',
+        borderColor: '$tint',
+        borderWidth: 3,
+        marginTop: 10,
+        paddingHorizontal: 12,
+        paddingVertical: 18,
+        borderRadius: 10,
+        overflow: 'hidden',
     },
     addressText: {
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.base.size,
+        textAlign: 'center',
         color: '$textPrimary',
     },
     footer: {
-        paddingBottom: AppSizes.safeAreaBottomInset,
+        width: '100%',
+        marginBottom: AppSizes.padding + 20,
     },
 });
 

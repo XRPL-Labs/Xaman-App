@@ -31,7 +31,7 @@ class ValidatedLedger extends PureComponent<Props> {
                     {Localize.t('events.thisTransactionWasSuccessful')} {Localize.t('events.andValidatedInLedger')}
                     <Text style={AppStyles.monoBold}> {item.LedgerIndex} </Text>
                     {Localize.t('events.onDate')}
-                    <Text style={AppStyles.monoBold}> {moment(item.Date).format('LLLL')}</Text>
+                    <Text style={AppStyles.bold}> {moment(item.Date).format('LLLL')}</Text>
                 </Text>
             </View>
         );

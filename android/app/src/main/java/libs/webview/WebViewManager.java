@@ -9,6 +9,15 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.widget.EdgeEffect;
+import android.graphics.LinearGradient;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
+
 import android.net.http.SslError;
 import android.net.Uri;
 import android.os.Message;
@@ -47,6 +56,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 
 import com.facebook.common.logging.FLog;
+
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -207,10 +219,12 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
         // disable cache
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
         // enable cookie for third party website
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+
+        System.setProperty("http.maxConnections", "64");
 
         webView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
         webView.setNestedScrollEnabled(false);
@@ -494,6 +508,24 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             super.onPageStarted(webView, url, favicon);
 
             mLastLoadFailed = false;
+
+            try {
+                // For older Android versions
+                Class<?> httpClass = Class.forName("android.net.http.HttpResponseCache");
+                Field defaultField = httpClass.getDeclaredField("maxConnections");
+                defaultField.setAccessible(true);
+                defaultField.setInt(null, 64); // Increase from default (typically 8)
+            } catch (Exception e1) {
+                // For newer Android versions, try the webkit approach
+                try {
+                    Class<?> networkClass = Class.forName("android.webkit.Network");
+                    Field connectionPoolField = networkClass.getDeclaredField("sMaxConnections");
+                    connectionPoolField.setAccessible(true);
+                    connectionPoolField.setInt(null, 64);
+                } catch (Exception e2) {
+                    //
+                }
+            }
 
             WebChromeClient webChromeClient = ((RNCWebView) webView).getWebChromeClient();
             if (webChromeClient instanceof RNCWebChromeClient) {
@@ -1081,6 +1113,30 @@ public class WebViewManager extends SimpleViewManager<WebView> {
         protected boolean nestedScrollEnabled = false;
         protected ProgressChangedFilter progressChangedFilter;
 
+        // Inside your RNCWebView class, add these variables
+        protected GestureDetector gestureDetector;
+        protected float swipeSensitivity = 100; // Adjust sensitivity as needed (higher = less sensitive)
+        protected boolean swipeNavigationEnabled = true;
+
+        private Paint edgePaint;
+        private Path edgePath;
+        private float currentSwipeDistance = 0;
+        private boolean isSwipingBack = false;
+        private boolean isSwipingForward = false;
+        private static final int EDGE_COLOR = Color.parseColor("#3F51B5"); // Primary color
+        private static final int EDGE_COLOR_SECONDARY = Color.parseColor("#7986CB"); // Lighter shade
+        private static final int EDGE_COLOR_TRANSPARENT = Color.argb(0, 
+                                                                Color.red(EDGE_COLOR), 
+                                                                Color.green(EDGE_COLOR), 
+                                                                Color.blue(EDGE_COLOR));
+        private static final float MAX_EDGE_WIDTH_PIXELS = 150; // Max width in pixels
+        private static final float MAX_EDGE_WIDTH_PERCENT = 0.3f; // Max width as percentage of screen (20%)
+        private static final float EDGE_SENSITIVE_AREA = 50; // Area in pixels from edge that starts swipe navigation
+
+        private float touchStartX;
+        private float currentTouchX;
+
+
         /**
          * WebView must be created with an context of the current activity
          * <p>
@@ -1093,6 +1149,659 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             // enable messaging
             this.addJavascriptInterface(createRNCWebViewBridge(this), JAVASCRIPT_INTERFACE);
             progressChangedFilter = new ProgressChangedFilter();
+
+            // Setup swipe navigation
+            setupSwipeNavigation(reactContext);
+        }
+
+        private void setupSwipeNavigation(ThemedReactContext reactContext) {
+            try {
+                // Initialize paint for drawing
+                edgePaint = new Paint();
+                edgePaint.setStyle(Paint.Style.FILL);
+                edgePaint.setAntiAlias(true);
+                
+                // Initialize path for shape
+                edgePath = new Path();
+                
+                // Setup gesture detector for fling detection
+                gestureDetector = new GestureDetector(reactContext, new SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDown(MotionEvent e) {
+                        try {
+                            // Store touch start position
+                            if (e != null) {
+                                touchStartX = e.getX();
+                                currentTouchX = touchStartX;
+                            }
+                        } catch (Exception ex) {
+                            // Ignore errors
+                        }
+                        return false;
+                    }
+                    
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                        try {
+                            // Validate inputs
+                            if (e1 == null || e2 == null || !swipeNavigationEnabled) {
+                                return false;
+                            }
+                            
+                            // Calculate measurements
+                            float diffX = e2.getX() - e1.getX();
+                            float diffY = e2.getY() - e1.getY();
+                            float width = getWidth();
+                            float threshold = getNavigationThreshold();
+                            
+                            // Check edge starts
+                            boolean startedFromLeftEdge = touchStartX < EDGE_SENSITIVE_AREA;
+                            boolean startedFromRightEdge = touchStartX > (width - EDGE_SENSITIVE_AREA);
+                            
+                            // Check for horizontal swipe with sufficient distance
+                            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) >= threshold) {
+                                if (diffX < 0 && canGoForward() && startedFromRightEdge) {
+                                    // Right-to-left fling from right edge (forward)
+                                    safeFadeOutAndNavigate(false);
+                                    return true;
+                                } else if (diffX > 0 && canGoBack() && startedFromLeftEdge) {
+                                    // Left-to-right fling from left edge (back)
+                                    safeFadeOutAndNavigate(true);
+                                    return true;
+                                }
+                            }
+                        } catch (Exception e) {
+                            // Ignore fling errors
+                        }
+                        return false;
+                    }
+                });
+            } catch (Exception e) {
+                // Create fallbacks for critical components
+                if (edgePaint == null) {
+                    edgePaint = new Paint();
+                }
+                if (edgePath == null) {
+                    edgePath = new Path();
+                }
+            }
+        }
+
+        private void animateAndGoBack() {
+            startSwipeAnimation(true, new Runnable() {
+                @Override
+                public void run() {
+                    goBack();
+                }
+            });
+        }
+
+        private float calculateMaxGlowWidth() {
+            try {
+                // Get the current width, default to MAX_EDGE_WIDTH_PIXELS if getWidth() is zero
+                int screenWidth = getWidth();
+                if (screenWidth <= 0) {
+                    return MAX_EDGE_WIDTH_PIXELS;
+                }
+                
+                // Return the smaller of absolute max or percentage of screen width
+                return Math.min(MAX_EDGE_WIDTH_PIXELS, screenWidth * MAX_EDGE_WIDTH_PERCENT);
+            } catch (Exception e) {
+                // Fallback to static value if calculation fails
+                return MAX_EDGE_WIDTH_PIXELS;
+            }
+        }
+
+        private float getNavigationThreshold() {
+            // Use the same max width as the threshold
+            return calculateMaxGlowWidth();
+        }
+
+        private void animateAndGoForward() {
+            startSwipeAnimation(false, new Runnable() {
+                @Override
+                public void run() {
+                    goForward();
+                }
+            });
+        }
+
+        private void startSwipeAnimation(final boolean isBack, final Runnable navigationAction) {
+            // Set maximum width for transition effect
+            currentSwipeDistance = calculateMaxGlowWidth();
+            isSwipingBack = isBack;
+            isSwipingForward = !isBack;
+            
+            // Force redraw with full effect
+            invalidate();
+            
+            // Post navigation with a short delay to show the animation
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // Execute the navigation
+                    navigationAction.run();
+                    
+                    // Reset after navigation
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            isSwipingBack = false;
+                            isSwipingForward = false;
+                            currentSwipeDistance = 0;
+                            invalidate();
+                        }
+                    }, 50); // Brief delay after navigation
+                }
+            }, 100); // Animation before navigation
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            try {
+                // Call super implementation first
+                super.onDraw(canvas);
+                
+                // Validate canvas and state
+                if (canvas == null || (edgePaint == null || edgePath == null)) {
+                    return;
+                }
+                
+                // Draw edge effects if active
+                if ((isSwipingBack && canGoBack()) || (isSwipingForward && canGoForward())) {
+                    try {
+                        // Get dimensions
+                        int height = getHeight();
+                        int width = getWidth();
+                        
+                        // Skip drawing if dimensions are invalid
+                        if (height <= 0 || width <= 0 || currentSwipeDistance <= 0) {
+                            return;
+                        }
+                        
+                        // Calculate alpha based on distance
+                        float progressRatio = Math.min(1.0f, currentSwipeDistance / calculateMaxGlowWidth());
+                        int baseAlpha = (int)(180 * progressRatio);
+                        
+                        // Ensure alpha is in valid range
+                        baseAlpha = Math.max(0, Math.min(255, baseAlpha));
+                        
+                        // Draw the appropriate effect
+                        if (isSwipingBack && canGoBack()) {
+                            drawBackGlowEffectSafely(canvas, width, height, baseAlpha);
+                        } else if (isSwipingForward && canGoForward()) {
+                            drawForwardGlowEffectSafely(canvas, width, height, baseAlpha);
+                        }
+                    } catch (Exception e) {
+                        // Ignore drawing errors
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore any drawing errors to prevent crashes
+            }
+        }
+
+        private void drawBackGlowEffectSafely(Canvas canvas, int width, int height, int baseAlpha) {
+            try {
+                // Calculate safe glow width
+                float maxGlowWidth = calculateMaxGlowWidth();
+                float glowWidth = Math.min(currentSwipeDistance, maxGlowWidth);
+                
+                // Reset path
+                edgePath.reset();
+                
+                // Create flowing path
+                edgePath.moveTo(0, 0);
+                edgePath.lineTo(glowWidth, 0);
+                
+                // Number of segments for smooth curve
+                int segments = 10;
+                
+                // Create a flowing curve with consistent width
+                for (int i = 1; i <= segments; i++) {
+                    float yPos = height * (float)i / segments;
+                    
+                    // Gentle sine wave for natural flow
+                    float xOffset = (float)(Math.sin(Math.PI * i / segments) * (glowWidth * 0.05f));
+                    float xPos = glowWidth - xOffset;
+                    
+                    edgePath.lineTo(xPos, yPos);
+                }
+                
+                // Complete the path
+                edgePath.lineTo(0, height);
+                edgePath.close();
+                
+                // Create gradient
+                try {
+                    LinearGradient shader = new LinearGradient(
+                        0, 0,
+                        glowWidth, 0,
+                        new int[] { 
+                            Color.argb(baseAlpha, Color.red(EDGE_COLOR), Color.green(EDGE_COLOR), Color.blue(EDGE_COLOR)),
+                            Color.argb(baseAlpha/2, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                            Color.argb(baseAlpha/4, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                            EDGE_COLOR_TRANSPARENT
+                        },
+                        new float[] {0.0f, 0.4f, 0.7f, 1.0f},
+                        Shader.TileMode.CLAMP
+                    );
+                    
+                    edgePaint.setShader(shader);
+                } catch (Exception e) {
+                    // Fallback to solid color if gradient fails
+                    edgePaint.setShader(null);
+                    edgePaint.setColor(Color.argb(baseAlpha, Color.red(EDGE_COLOR), Color.green(EDGE_COLOR), Color.blue(EDGE_COLOR)));
+                }
+                
+                // Draw the path
+                canvas.drawPath(edgePath, edgePaint);
+            } catch (Exception e) {
+                // Ignore drawing errors to prevent crashes
+            }
+        }
+
+        // Safe implementation of forward glow effect drawing
+        private void drawForwardGlowEffectSafely(Canvas canvas, int width, int height, int baseAlpha) {
+            try {
+                // Calculate safe glow width
+                float maxGlowWidth = calculateMaxGlowWidth();
+                float glowWidth = Math.min(currentSwipeDistance, maxGlowWidth);
+                
+                // Reset path
+                edgePath.reset();
+                
+                // Create flowing path for right edge
+                edgePath.moveTo(width, 0);
+                edgePath.lineTo(width - glowWidth, 0);
+                
+                // Number of segments for smooth curve
+                int segments = 10;
+                
+                // Create a flowing curve with consistent width
+                for (int i = 1; i <= segments; i++) {
+                    float yPos = height * (float)i / segments;
+                    
+                    // Gentle sine wave for natural flow
+                    float xOffset = (float)(Math.sin(Math.PI * i / segments) * (glowWidth * 0.05f));
+                    float xPos = width - glowWidth + xOffset;
+                    
+                    edgePath.lineTo(xPos, yPos);
+                }
+                
+                // Complete the path
+                edgePath.lineTo(width, height);
+                edgePath.close();
+                
+                // Create gradient
+                try {
+                    LinearGradient shader = new LinearGradient(
+                        width, 0,
+                        width - glowWidth, 0,
+                        new int[] { 
+                            Color.argb(baseAlpha, Color.red(EDGE_COLOR), Color.green(EDGE_COLOR), Color.blue(EDGE_COLOR)),
+                            Color.argb(baseAlpha/2, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                            Color.argb(baseAlpha/4, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                            EDGE_COLOR_TRANSPARENT
+                        },
+                        new float[] {0.0f, 0.4f, 0.7f, 1.0f},
+                        Shader.TileMode.CLAMP
+                    );
+                    
+                    edgePaint.setShader(shader);
+                } catch (Exception e) {
+                    // Fallback to solid color if gradient fails
+                    edgePaint.setShader(null);
+                    edgePaint.setColor(Color.argb(baseAlpha, Color.red(EDGE_COLOR), Color.green(EDGE_COLOR), Color.blue(EDGE_COLOR)));
+                }
+                
+                // Draw the path
+                canvas.drawPath(edgePath, edgePaint);
+            } catch (Exception e) {
+                // Ignore drawing errors to prevent crashes
+            }
+        }
+
+        // OPTION 1: Column-like effect with very minimal curve (most iOS-like)
+        private void drawForwardGlowEffect(Canvas canvas, int width, int height, int baseAlpha) {
+            // Calculate parameters for the glow - now using the % of screen width cap
+            float maxGlowWidth = calculateMaxGlowWidth();
+            float glowWidth = Math.min(currentSwipeDistance, maxGlowWidth);
+
+            // Calculate parameters for the glow
+            // float glowWidth = currentSwipeDistance;
+            
+            // Clear previous path
+            edgePath.reset();
+            
+            // Start at top-right corner
+            edgePath.moveTo(width, 0);
+            
+            // Draw top edge
+            edgePath.lineTo(width - glowWidth, 0);
+            
+            // Maintain almost full width throughout with minimal curve
+            float endWidth = glowWidth * 0.85f; // Maintain 85% of width at bottom
+            
+            // Create subtle curve
+            edgePath.quadTo(
+                width - glowWidth,      height * 0.5f,  // Control point - very gentle curve
+                width - endWidth,       height         // End point - maintain most of width at bottom
+            );
+            
+            // Draw bottom edge
+            edgePath.lineTo(width, height);
+            
+            // Close the path
+            edgePath.close();
+            
+            // Create a horizontal gradient with more stops for smoother transition
+            LinearGradient shader = new LinearGradient(
+                width, 0,
+                width - glowWidth, 0,
+                new int[] { 
+                    Color.argb(baseAlpha, Color.red(EDGE_COLOR), Color.green(EDGE_COLOR), Color.blue(EDGE_COLOR)),
+                    Color.argb(baseAlpha/2, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                    Color.argb(baseAlpha/4, Color.red(EDGE_COLOR_SECONDARY), Color.green(EDGE_COLOR_SECONDARY), Color.blue(EDGE_COLOR_SECONDARY)),
+                    EDGE_COLOR_TRANSPARENT
+                },
+                new float[] {0.0f, 0.4f, 0.7f, 1.0f},
+                Shader.TileMode.CLAMP
+            );
+            
+            edgePaint.setShader(shader);
+            
+            // Draw the glow effect
+            canvas.drawPath(edgePath, edgePaint);
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent event) {
+            // First call super to maintain default behavior
+            boolean result = super.onTouchEvent(event);
+            
+            try {
+                // Check if the event is null or swipe navigation is disabled
+                if (event == null || !swipeNavigationEnabled) {
+                    return result;
+                }
+                
+                int action = event.getAction();
+                float screenWidth = getWidth();
+                
+                // Ensure positive screen width to avoid division by zero
+                if (screenWidth <= 0) {
+                    return result;
+                }
+                
+                // Calculate the maximum width for the glow effect 
+                float maxGlowWidth = calculateMaxGlowWidth();
+                
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Store the touch starting position
+                        touchStartX = event.getX();
+                        currentTouchX = touchStartX;
+                        
+                        // Reset state
+                        isSwipingBack = false;
+                        isSwipingForward = false;
+                        currentSwipeDistance = 0;
+                        break;
+                        
+                    case MotionEvent.ACTION_MOVE:
+                        // Update the current touch position
+                        currentTouchX = event.getX();
+                        
+                        // Check if touch started near the edges
+                        boolean startedFromLeftEdge = touchStartX < EDGE_SENSITIVE_AREA;
+                        boolean startedFromRightEdge = touchStartX > (screenWidth - EDGE_SENSITIVE_AREA);
+                        
+                        // Calculate horizontal distance from starting point
+                        float deltaX = currentTouchX - touchStartX;
+                        
+                        // Handle left edge (back navigation)
+                        if (startedFromLeftEdge && canGoBack()) {
+                            if (deltaX > 0) {
+                                // Moving right from left edge (back navigation)
+                                isSwipingBack = true;
+                                isSwipingForward = false;
+                                // Cap the distance at maxGlowWidth
+                                currentSwipeDistance = Math.min(deltaX, maxGlowWidth);
+                                invalidate(); // Request redraw
+                            } else {
+                                // Moving back to or past the start - hide effect
+                                if (isSwipingBack) {
+                                    isSwipingBack = false;
+                                    currentSwipeDistance = 0;
+                                    invalidate(); // Request redraw
+                                }
+                            }
+                        } 
+                        // Handle right edge (forward navigation)
+                        else if (startedFromRightEdge && canGoForward()) {
+                            if (deltaX < 0) {
+                                // Moving left from right edge (forward navigation)
+                                isSwipingForward = true;
+                                isSwipingBack = false;
+                                // Cap the distance at maxGlowWidth
+                                currentSwipeDistance = Math.min(Math.abs(deltaX), maxGlowWidth);
+                                invalidate(); // Request redraw
+                            } else {
+                                // Moving back to or past the start - hide effect
+                                if (isSwipingForward) {
+                                    isSwipingForward = false;
+                                    currentSwipeDistance = 0;
+                                    invalidate(); // Request redraw
+                                }
+                            }
+                        }
+                        break;
+                        
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        // Get the threshold for navigation
+                        float threshold = getNavigationThreshold();
+                        
+                        // Handle gesture completion
+                        try {
+                            // Calculate final distance
+                            float finalDeltaX = currentTouchX - touchStartX;
+                            
+                            // Check if the distance is sufficient for navigation
+                            if (isSwipingBack && finalDeltaX >= threshold && canGoBack()) {
+                                // Start back navigation with animation
+                                safeFadeOutAndNavigate(true);
+                            } 
+                            else if (isSwipingForward && Math.abs(finalDeltaX) >= threshold && canGoForward()) {
+                                // Start forward navigation with animation
+                                safeFadeOutAndNavigate(false);
+                            } 
+                            else {
+                                // Not enough distance - just fade out
+                                safeFadeOut();
+                            }
+                        } catch (Exception e) {
+                            // Reset state if there's any error
+                            resetSwipeState();
+                        }
+                        break;
+                }
+                
+                // Let the gesture detector handle the event too (for fling detection)
+                if (gestureDetector != null) {
+                    gestureDetector.onTouchEvent(event);
+                }
+            } catch (Exception e) {
+                // Reset state and return if there's any error in processing
+                resetSwipeState();
+            }
+            
+            return result;
+        }
+
+        private void safeFadeOutAndNavigate(final boolean isBack) {
+            try {
+                // Enhance the effect to full width for a brief moment
+                currentSwipeDistance = calculateMaxGlowWidth();
+                invalidate();
+                
+                // Short delay before navigation
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // Perform navigation
+                            if (isBack && canGoBack()) {
+                                goBack();
+                            } else if (!isBack && canGoForward()) {
+                                goForward();
+                            }
+                            
+                            // Reset state after a short delay
+                            postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    resetSwipeState();
+                                }
+                            }, 100);
+                        } catch (Exception e) {
+                            // Reset on error
+                            resetSwipeState();
+                        }
+                    }
+                }, 50);
+            } catch (Exception e) {
+                // Reset on error and attempt navigation directly
+                resetSwipeState();
+                try {
+                    if (isBack && canGoBack()) {
+                        goBack();
+                    } else if (!isBack && canGoForward()) {
+                        goForward();
+                    }
+                } catch (Exception ne) {
+                    // Ignore navigation errors
+                }
+            }
+        }
+
+
+        private void safeFadeOut() {
+            try {
+                // If already reset, don't animate
+                if (!isSwipingBack && !isSwipingForward && currentSwipeDistance == 0) {
+                    return;
+                }
+                
+                // Save current state
+                final float startDistance = currentSwipeDistance;
+                final boolean wasSwipingBack = isSwipingBack;
+                final boolean wasSwipingForward = isSwipingForward;
+                
+                // Start a fade-out animation
+                final long startTime = System.currentTimeMillis();
+                final long duration = 150; // 150ms fade-out
+                
+                // Create a safe animation runnable
+                final Runnable fadeOutRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            long elapsed = System.currentTimeMillis() - startTime;
+                            
+                            if (elapsed >= duration) {
+                                // Animation complete
+                                resetSwipeState();
+                            } else {
+                                // Animation in progress
+                                float progress = 1f - (elapsed / (float)duration);
+                                currentSwipeDistance = startDistance * progress;
+                                
+                                // Maintain direction
+                                isSwipingBack = wasSwipingBack;
+                                isSwipingForward = wasSwipingForward;
+                                
+                                // Request redraw
+                                invalidate();
+                                
+                                // Continue animation
+                                postDelayed(this, 16);
+                            }
+                        } catch (Exception e) {
+                            // Reset on error
+                            resetSwipeState();
+                        }
+                    }
+                };
+                
+                // Start animation
+                post(fadeOutRunnable);
+            } catch (Exception e) {
+                // Just reset if animation fails
+                resetSwipeState();
+            }
+        }
+
+
+        private void resetSwipeState() {
+            isSwipingBack = false;
+            isSwipingForward = false;
+            currentSwipeDistance = 0;
+            try {
+                invalidate();
+            } catch (Exception e) {
+                // Ignore invalidate failures
+            }
+        }
+
+        private void animateFadeOut() {
+            // If there's nothing to fade out, just return
+            if (!isSwipingBack && !isSwipingForward) {
+                return;
+            }
+            
+            // Save the current state for the animation
+            final float startDistance = currentSwipeDistance;
+            final boolean wasSwipingBack = isSwipingBack;
+            final boolean wasSwipingForward = isSwipingForward;
+            
+            // Start a simple fade-out animation
+            final long startTime = System.currentTimeMillis();
+            final long duration = 150; // 150ms fade-out
+            
+            // Create an animation runnable
+            final Runnable fadeOutRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = System.currentTimeMillis() - startTime;
+                    
+                    if (elapsed >= duration) {
+                        // Animation complete - reset state
+                        isSwipingBack = false;
+                        isSwipingForward = false;
+                        currentSwipeDistance = 0;
+                        invalidate();
+                    } else {
+                        // Animation in progress - calculate current value
+                        float progress = 1f - (elapsed / (float)duration); // 1 to 0
+                        currentSwipeDistance = startDistance * progress;
+                        
+                        // Maintain the correct direction
+                        isSwipingBack = wasSwipingBack;
+                        isSwipingForward = wasSwipingForward;
+                        
+                        // Force redraw
+                        invalidate();
+                        
+                        // Continue animation
+                        postDelayed(this, 16); // ~60fps
+                    }
+                }
+            };
+            
+            // Start the animation
+            post(fadeOutRunnable);
         }
 
         public void setHasScrollEvent(boolean hasScrollEvent) {
@@ -1150,13 +1859,18 @@ public class WebViewManager extends SimpleViewManager<WebView> {
             cleanupAndDestroy();
         }
 
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-            if (this.nestedScrollEnabled) {
-                requestDisallowInterceptTouchEvent(true);
-            }
-            return super.onTouchEvent(event);
-        }
+        // @Override
+        // public boolean onTouchEvent(MotionEvent event) {
+        //     if (this.swipeNavigationEnabled) {
+        //         gestureDetector.onTouchEvent(event);
+        //     }
+
+        //     if (this.nestedScrollEnabled) {
+        //         requestDisallowInterceptTouchEvent(true);
+        //     }
+
+        //     return super.onTouchEvent(event);
+        // }
 
         @Override
         protected void onSizeChanged(int w, int h, int ow, int oh) {

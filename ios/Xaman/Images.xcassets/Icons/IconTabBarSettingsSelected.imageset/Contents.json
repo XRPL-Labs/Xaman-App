@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "IconTabBarSettingsSelected.png",
+      "filename" : "sdark.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "IconTabBarSettingsSelected@2x.png",
+      "filename" : "sdark@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "IconTabBarSettingsSelected@3x.png",
+      "filename" : "sdark@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

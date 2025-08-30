@@ -20,10 +20,9 @@ exports[`[TextInput] renders correctly 1`] = `
           "alignSelf": "stretch",
           "backgroundColor": "#F3F6FA",
           "borderColor": "#F3F6FA",
-          "borderRadius": 14,
+          "borderRadius": 29.22077922077922,
           "borderWidth": 2,
           "flexDirection": "row",
-          "height": 93.5,
           "justifyContent": "center",
           "minHeight": 55,
           "paddingHorizontal": 15,
@@ -31,6 +30,9 @@ exports[`[TextInput] renders correctly 1`] = `
         },
         undefined,
         false,
+        {
+          "height": 93.5,
+        },
       ]
     }
   >
@@ -46,15 +48,15 @@ exports[`[TextInput] renders correctly 1`] = `
           {
             "color": "#0030CF",
             "flex": 1,
-            "fontFamily": "UbuntuMono-Bold",
+            "fontFamily": "ProximaNova-Regular",
             "fontSize": 32.14285714285714,
-            "fontWeight": "600",
           },
           {
             "paddingRight": 0,
           },
           undefined,
           false,
+          undefined,
         ]
       }
     />

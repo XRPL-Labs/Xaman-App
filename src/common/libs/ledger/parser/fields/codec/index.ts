@@ -6,6 +6,7 @@ import { Memos } from './Memos';
 import { RippleTime } from './RippleTime';
 import { Signers } from './Signers';
 import { SignerEntries } from './SignerEntries';
+import { PermissionEntries } from './PermissionEntries';
 import { PriceDataSeries } from './PriceDataSeries';
 
 import { TransferRate } from './TransferRate';
@@ -13,6 +14,8 @@ import { TransferFee } from './TransferFee';
 import { TradingFee } from './TradingFee';
 import { AuthAccounts } from './AuthAccounts';
 import { Amounts } from './Amounts';
+import { AuthorizeCredentials } from './AuthorizeCredentials';
+import { Remarks } from './Remarks';
 
 export {
     FlagIndices,
@@ -23,10 +26,13 @@ export {
     Memos,
     Signers,
     SignerEntries,
+    PermissionEntries,
     TransferRate,
     TransferFee,
     TradingFee,
     AuthAccounts,
     Amounts,
     PriceDataSeries,
+    AuthorizeCredentials,
+    Remarks,
 };

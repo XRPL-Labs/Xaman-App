@@ -92,7 +92,7 @@ export default class RaisedButton extends Component<Props, State> {
         const { small } = this.props;
 
         if (small) {
-            return AppSizes.scale(40);
+            return AppSizes.scale(35);
         }
 
         return AppSizes.scale(50);

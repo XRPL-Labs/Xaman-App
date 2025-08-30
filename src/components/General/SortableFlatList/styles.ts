@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { AppSizes } from '@theme';
+// import { AppSizes } from '@theme';
 
 const styles = StyleSheet.create({
     container: {
-        width: AppSizes.screen.width,
+        // width: AppSizes.screen.width, // Will auto width - this fixes Fold devices
     },
     contentContainerStyle: {
         flexGrow: 0,

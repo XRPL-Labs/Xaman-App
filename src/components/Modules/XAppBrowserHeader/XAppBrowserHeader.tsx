@@ -3,6 +3,7 @@ import { View, Text, Animated } from 'react-native';
 
 import { AccountModel, NetworkModel } from '@store/models';
 
+// components
 import { AccountSwitchElement } from '@components/Modules/AccountSwitchElement';
 import { NetworkLabel } from '@components/Modules/NetworkLabel';
 import { NetworkSwitchButton } from '@components/Modules/NetworkSwitchButton';
@@ -20,6 +21,8 @@ interface Props {
     icon?: string;
     account: AccountModel;
     network: NetworkModel;
+    noSwitching?: boolean;
+    nativeTitle?: string;
     onAccountChange?: (account: AccountModel) => void;
     onNetworkChange?: (network: any) => void;
     onClosePress?: () => void;
@@ -111,12 +114,15 @@ class XAppBrowserHeader extends Component<Props, State> {
     };
 
     render() {
-        const { title, icon, account } = this.props;
+        const { title, icon, account, noSwitching } = this.props;
         const { isPanelExpanding, panelExpanded } = this.state;
 
         return (
             <>
-                <View style={[styles.headerContainer, { borderBottomWidth: +!isPanelExpanding && +!panelExpanded }]}>
+                <View style={[
+                    styles.headerContainer,
+                    { borderBottomWidth: +!isPanelExpanding && +!panelExpanded },
+                ]}>
                     <View style={styles.headerLeftContainer}>
                         <Avatar isLoading={!icon} source={{ uri: icon }} size={30} />
                         <TextPlaceholder isLoading={!title} style={styles.titleText} length={24}>
@@ -124,19 +130,21 @@ class XAppBrowserHeader extends Component<Props, State> {
                         </TextPlaceholder>
                     </View>
                     <View style={styles.headerRightContainer}>
-                        <Button
-                            testID="expand-button"
-                            numberOfLines={1}
-                            roundedMini
-                            light
-                            style={styles.headerButton}
-                            onPress={this.toggleExpandedBar}
-                        >
-                            <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                <NetworkLabel size={13} type="circle" onPress={this.toggleExpandedBar} />
-                                <Text style={styles.headerButtonText}>•••</Text>
-                            </View>
-                        </Button>
+                        { !noSwitching &&
+                            <Button
+                                testID="expand-button"
+                                numberOfLines={1}
+                                roundedMini
+                                light
+                                style={styles.headerButton}
+                                onPress={this.toggleExpandedBar}
+                            >
+                                <View style={[AppStyles.row, AppStyles.centerAligned]}>
+                                    <NetworkLabel size={13} type="circle" onPress={this.toggleExpandedBar} />
+                                    <Text style={styles.headerButtonText}>•••</Text>
+                                </View>
+                            </Button>
+                        }
                         <Button
                             contrast
                             testID="close-button"
@@ -174,6 +182,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                     <View style={styles.accountSwitchContainer}>
                         <AccountSwitchElement
                             account={account}
+                            noPadding
                             onAccountSwitch={this.onDefaultAccountChange}
                             onSwitcherClose={this.toggleExpandedBar}
                         />
@@ -187,10 +196,14 @@ class XAppBrowserHeader extends Component<Props, State> {
                             label={Localize.t('xapp.aboutThisXApp')}
                             onPress={this.showXAppInfo}
                             activeOpacity={0.8}
-                            style={[AppStyles.flex1, styles.headerButton]}
+                            style={[AppStyles.flex3, styles.headerButton]}
                         />
                         <NetworkSwitchButton
-                            containerStyle={[AppStyles.flex1, { marginLeft: AppSizes.paddingSml }]}
+                            containerStyle={[
+                                AppStyles.flex4,
+                                { marginLeft: AppSizes.paddingSml },
+                                styles.networkSwitchBtn,
+                            ]}
                             loadingAnimation={false}
                             showChevronIcon
                             height="100%"

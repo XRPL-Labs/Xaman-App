@@ -130,6 +130,21 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
                 }
             }
 
+            if (typeof balanceChanges === 'object' && balanceChanges.length === 1) {
+                if (balanceChanges[0].action === OperationActions.DEC) {
+                    if (typeof balanceChanges[0].value === 'string' && balanceChanges[0].value.slice(0, 1) === '-') {
+                        // Double negative, by own account, in native asset (so: fee exceeded yield)
+                        if (owner === this?.Account && balanceChanges[0].currency === NetworkService.getNativeAsset()) {
+                            // Strip double negative.
+                            // This happens when it's native asset to self, and the yield of the transaction outcome
+                            // is a net negative because the yield - netwok fee results in a positive effect
+                            // turning out to be net negative.
+                            balanceChanges[0].value = balanceChanges[0].value.slice(1);
+                        }
+                    }
+                }
+            }
+
             // memorize the changes for this owner
             return this._BalanceChanges
                 .set(owner, {

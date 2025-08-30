@@ -5,7 +5,7 @@ import { AppFonts, AppSizes } from '@theme';
 const Styles = StyleService.create({
     container: {
         height: AppSizes.scale(55),
-        borderRadius: AppSizes.scale(55) * 0.3,
+        borderRadius: AppSizes.scale(55) * 0.25,
         alignSelf: 'stretch',
         borderWidth: 1,
         justifyContent: 'center',
@@ -34,10 +34,11 @@ const Styles = StyleService.create({
         alignSelf: 'flex-start',
         marginVertical: 1,
         marginHorizontal: 5,
+        left: -AppSizes.scale(45),
     },
     iconContainer: {
-        height: AppSizes.scale(45),
-        borderRadius: AppSizes.scale(45) * 0.3,
+        height: AppSizes.scale(44),
+        borderRadius: AppSizes.scale(45) * 0.21,
         backgroundColor: '$transparentWhite',
         width: AppSizes.scale(45),
         justifyContent: 'center',

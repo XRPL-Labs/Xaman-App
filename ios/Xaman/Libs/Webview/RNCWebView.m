@@ -320,7 +320,7 @@ RCTAutoInsetsProtocol>
     _webView.allowsLinkPreview = NO;
     
     [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew context:nil];
-    _webView.allowsBackForwardNavigationGestures = FALSE;
+    _webView.allowsBackForwardNavigationGestures = TRUE;
     
     _webView.customUserAgent = _userAgent;
     

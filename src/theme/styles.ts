@@ -36,7 +36,9 @@ export default StyleService.create({
         height: Sizes.moderateScale(60),
         marginTop: 0,
         paddingTop: 0,
-        paddingHorizontal: Sizes.padding,
+        paddingHorizontal: Sizes.paddingSml,
+        // borderWidth: 3,
+        // borderColor: 'red',
     },
     headerBorder: {
         borderBottomWidth: 1,
@@ -51,7 +53,6 @@ export default StyleService.create({
         height: Sizes.screen.height,
         width: Sizes.screen.width,
     },
-
     borderGrey: {
         borderWidth: 1,
         borderColor: '$grey',
@@ -318,6 +319,9 @@ export default StyleService.create({
     paddingTop: {
         paddingTop: Sizes.padding,
     },
+    paddingTopNone: {
+        paddingTop: 0,
+    },
     paddingBottom: {
         paddingBottom: Sizes.padding,
     },
@@ -331,6 +335,12 @@ export default StyleService.create({
     },
     paddingHorizontalSml: {
         paddingHorizontal: Sizes.paddingSml,
+    },
+    paddingLeftExtraSml: {
+        paddingLeft: Sizes.paddingExtraSml,
+    },
+    paddingRightExtraSml: {
+        paddingRight: Sizes.paddingExtraSml,
     },
     paddingHorizontalExtraSml: {
         paddingHorizontal: Sizes.paddingExtraSml,
@@ -349,6 +359,9 @@ export default StyleService.create({
     },
     paddingBottomSml: {
         paddingBottom: Sizes.paddingSml,
+    },
+    paddingBottomExtraSml: {
+        paddingBottom: Sizes.paddingExtraSml,
     },
     gap: {
         gap: Sizes.padding,
@@ -379,6 +392,12 @@ export default StyleService.create({
     },
     marginTop: {
         marginTop: Sizes.padding,
+    },
+    marginTopNone: {
+        marginTop: 0,
+    },
+    marginTopNegativeSml: {
+        marginTop: -(Sizes.padding / 2),
     },
     marginBottom: {
         marginBottom: Sizes.padding,
@@ -488,8 +507,6 @@ export default StyleService.create({
         height: 80,
         marginBottom: 30,
     },
-
-    // Empty view
     emptyIcon: {
         resizeMode: 'contain',
         width: Sizes.scale(140),
@@ -497,6 +514,10 @@ export default StyleService.create({
         alignSelf: 'center',
         marginBottom: 20,
         overflow: 'visible',
+    },
+    emptyIconSm: {
+        width: Sizes.scale(110),
+        height: Sizes.scale(110),
     },
     emptyText: {
         width: '90%',
@@ -507,10 +528,6 @@ export default StyleService.create({
         paddingHorizontal: Sizes.padding,
         alignSelf: 'center',
         color: '$textPrimary',
-    },
-    BackgroundShapes: {
-        resizeMode: 'contain',
-        opacity: 0.4,
     },
     BackgroundShapesWH: {
         width: '100%',

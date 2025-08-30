@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual';
 import React, { PureComponent } from 'react';
 import { View, Text } from 'react-native';
 
-import { Button, AmountText, Icon } from '@components/General';
+import { Button, AmountText, Icon, Badge, BadgeType } from '@components/General';
 
 import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
 
@@ -160,7 +160,7 @@ class TokenItem extends PureComponent<Props, State> {
                     <View style={styles.tokenAvatarContainer}>
                         <TokenAvatar
                             token={token}
-                            border
+                            // border
                             size={35}
                             badge={this.getTokenAvatarBadge}
                             saturate={saturate}
@@ -169,6 +169,17 @@ class TokenItem extends PureComponent<Props, State> {
                     <View style={[AppStyles.column, AppStyles.centerContent]}>
                         <Text numberOfLines={1} style={styles.currencyLabel} ellipsizeMode="middle">
                             {token.getFormattedCurrency()}
+                            {
+                                token.isLiquidityPoolToken() && (
+                                    <View style={styles.lpBadgeContainer}>
+                                        <Badge
+                                            label="LP"
+                                            type={BadgeType.Planned}
+                                            containerStyle={styles.lpBadge}
+                                        />
+                                    </View>
+                                )
+                            }
                         </Text>
                         <Text numberOfLines={1} style={styles.issuerLabel}>
                             {token.getFormattedIssuer()}

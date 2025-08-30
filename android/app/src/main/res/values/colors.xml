@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="splash_screen_background" type="color">#FFFFFF</item>
+    <item name="splash_screen_background" type="color">#1129C1</item>
     <item name="push_notification" type="color">#4494D3</item>
 </resources>

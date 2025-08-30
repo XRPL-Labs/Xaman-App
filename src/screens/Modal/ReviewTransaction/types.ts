@@ -15,6 +15,7 @@ export enum Steps {
 
 export interface Props<T = CombinedTransactions> {
     payload: Payload;
+    timestamp?: number;
     onResolve?: (transaction: T & SignMixinType & MutationsMixinType, payload: Payload) => void;
     onDecline?: (payload: Payload) => void;
     onClose?: () => void;
@@ -29,6 +30,7 @@ export interface State {
     source?: AccountModel;
     submitResult?: SubmitResultType;
     hasError: boolean;
+    serviceFee?: number;
     errorMessage?: string;
     isLoading: boolean;
     isReady: boolean;
@@ -36,11 +38,13 @@ export interface State {
 }
 
 export interface ContextProps extends State {
+    timestamp?: number;
     setTransaction: (tx: SignableMutatedTransaction) => void;
     setAccounts: (accounts: AccountModel[]) => void;
     setSource: (source: AccountModel) => void;
     setLoading: (loading: boolean) => void;
     setReady: (ready: boolean) => void;
+    setServiceFee: (serviceFee: number) => void;
     setError: (error: Error) => void;
     onPreflightPass: () => void;
     onClose: () => void;

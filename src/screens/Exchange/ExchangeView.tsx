@@ -484,7 +484,7 @@ class ExchangeView extends Component<Props, State> {
             return this.renderErrors();
         }
 
-        const { maxSlippagePercentage } = this.ledgerExchange.boundaryOptions;
+        // const { maxSlippagePercentage } = this.ledgerExchange.boundaryOptions;
 
         return (
             <>
@@ -512,27 +512,31 @@ class ExchangeView extends Component<Props, State> {
                                         ? token.currency.currencyCode
                                         : NetworkService.getNativeAsset()
                                 }
-                                style={[styles.detailsValue, AppStyles.textRightAligned, AppStyles.colorRed]}
+                                style={[
+                                    styles.detailsValue,
+                                    AppStyles.textRightAligned,
+                                ]}
                                 immutable
                             />
                         </View>
                     </View>
-                    <View style={styles.detailsRow}>
+                    {/* <View style={styles.detailsRow}>
                         <Text style={styles.detailsLabel}>{Localize.t('exchange.slippageTolerance')}</Text>
                         <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
                             <Text style={[styles.detailsValue, AppStyles.textCenterAligned]}>
                                 {`${maxSlippagePercentage}%`}
                             </Text>
                         </View>
-                    </View>
+                    </View> */}
                 </View>
-                <Spacer size={40} />
+                <Spacer size={20} />
                 <Button
                     onPress={this.onExchangePress}
                     isLoading={isExchanging}
                     isDisabled={!amount || amount === '0' || !liquidity || isLoading}
                     label={Localize.t('global.exchange')}
                 />
+                <Spacer size={5} />
             </>
         );
     };

@@ -109,6 +109,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     o.LedgerEntryType !== LedgerEntryTypes.RippleState &&
                     o.LedgerEntryType !== LedgerEntryTypes.NFTokenPage &&
                     (('Account' in o && o.Account === account) ||
+                        // Credential still to be accepted (reserve for issuer)
+                        // eslint-disable-next-line max-len
+                        ('Issuer' in o && o.Issuer === account && o.LedgerEntryType === LedgerEntryTypes.Credential && o.Flags === 0) ||
+                        // Credential accepted, reserve for owner
+                        // eslint-disable-next-line max-len
+                        ('Subject' in o && o.Subject === account && o.LedgerEntryType === LedgerEntryTypes.Credential && o.Flags > 0) ||
                         ('Owner' in o && o.Owner === account) ||
                         [LedgerEntryTypes.SignerList, LedgerEntryTypes.PayChannel].includes(o.LedgerEntryType))
                 );
@@ -213,7 +219,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={styles.reserveAmount}>
-                            {totalReserve} {NetworkService.getNativeAsset()}
+                            {Localize.formatNumber(totalReserve, 2, true)}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>
@@ -225,7 +233,7 @@ class ExplainBalanceOverlay extends Component<Props, State> {
         const { account } = this.props;
         const { networkReserve } = this.state;
 
-        if (account.lines?.length === 0) return null;
+        if (!account.lines?.isValid() || account.lines?.length === 0) return null;
 
         return account.lines?.map((line: TrustLineModel, index: number) => {
             // don't render obligation TrustLines
@@ -244,7 +252,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={styles.reserveAmount}>
-                            {networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                            {Localize.formatNumber(networkReserve.OwnerReserve, 2, true)}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>
@@ -268,7 +278,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={styles.reserveAmount}>
-                            {nfTokenPageCount * networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                            {Localize.formatNumber(nfTokenPageCount * networkReserve.OwnerReserve, 2, true)}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>
@@ -295,7 +307,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={styles.reserveAmount}>
-                            {remainingOwner * networkReserve.OwnerReserve} {NetworkService.getNativeAsset()}
+                            {Localize.formatNumber(remainingOwner * networkReserve.OwnerReserve, 2, true)}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>
@@ -320,8 +334,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         <Text style={[AppStyles.h5, AppStyles.monoBold]}>
                             {Localize.formatNumber(
                                 account.ownerCount * networkReserve.OwnerReserve + networkReserve.BaseReserve,
-                            )}{' '}
-                            {NetworkService.getNativeAsset()}
+                            )}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>
@@ -343,7 +358,9 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex4, AppStyles.row, AppStyles.centerAligned, AppStyles.flexEnd]}>
                         <Text style={styles.reserveAmount}>
-                            {networkReserve.BaseReserve} {NetworkService.getNativeAsset()}
+                            {Localize.formatNumber(networkReserve.BaseReserve, 2, true)}
+                            {/* {' '} */}
+                            {/* {NetworkService.getNativeAsset()} */}
                         </Text>
                     </View>
                 </View>

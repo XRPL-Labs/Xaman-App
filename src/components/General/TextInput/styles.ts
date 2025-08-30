@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import StyleService from '@services/StyleService';
 
 import { AppFonts, AppSizes } from '@theme';
@@ -12,25 +14,37 @@ export default StyleService.create({
         alignSelf: 'stretch',
         paddingHorizontal: 15,
         borderColor: '$tint',
-        height: AppSizes.heightPercentageToDP(7),
         minHeight: 55,
         width: '100%',
         borderWidth: 2,
-        borderRadius: 14,
+        borderRadius: AppSizes.scale(75) / 5.5,
+    },
+    nonMultilineContainer: {
+        height: AppSizes.heightPercentageToDP(7),
+    },
+    nonMultilineSecureInput: { // family seed entry
+        height: AppSizes.heightPercentageToDP(7),
+        // lineHeight: AppSizes.heightPercentageToDP(7) / 2,
+        marginVertical: Platform.OS === 'ios' ? 2 : 0,
+        borderColor: '$transparent',
+        borderWidth: 1,
+    },
+    multiline: {
+        paddingVertical: Platform.OS === 'ios' ? 10 : 0,
     },
     input: {
         flex: 1,
         fontSize: AppFonts.base.size,
         color: '$blue',
-        fontFamily: AppFonts.base.familyMonoBold,
-        fontWeight: '600',
+        fontFamily: AppFonts.base.family,
     },
     scanIcon: {
         tintColor: '$white',
     },
     scanButton: {
         position: 'absolute',
-        right: 4,
+        right: 5,
+        // top: Platform.OS === 'ios' ? 10 : 9,
         height: AppSizes.heightPercentageToDP(6),
         width: AppSizes.heightPercentageToDP(6),
         minHeight: 45,

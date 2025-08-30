@@ -32,32 +32,10 @@ Then('I generate new secret number', async () => {
 
 Then('I enter my secret number', { timeout: 5 * 60 * 1000 }, async () => {
     for (let r = 0; r < 8; r++) {
-        // get values for any column
         for (let c = 0; c < 6; c++) {
-            const attributes = await element(by.id(`${r}.${c}`)).getAttributes();
-            const value = attributes.text;
-
-            let diff = Number(value) - Number(this.numbers[r][c]);
-
-            let pos = true;
-
-            if (diff < 0) {
-                pos = false;
-            }
-
-            diff = Math.abs(diff);
-
-            for (let t = 0; t < diff; t++) {
-                if (pos) {
-                    await element(by.id('minus-btn')).tap();
-                } else {
-                    await element(by.id('plus-btn')).tap();
-                }
-            }
-
-            await element(by.id('right-btn')).tap();
-        }
-    }
+            await element(by.id(`${this.numbers[r][c]}-key`)).tap();
+        };
+    };
 });
 
 Then('I read my account address', async () => {
@@ -82,7 +60,7 @@ Then('I generate testnet account', async () => {
 });
 
 Then('I enter the address in the input', async () => {
-    await element(by.id('address-input')).typeText(this.address);
+    await element(by.id('address-input')).typeText(`${this.address}\n`);
 });
 
 Then('I generate new family seed', async () => {
@@ -90,7 +68,7 @@ Then('I generate new family seed', async () => {
 });
 
 Then('I enter my seed in the input', async () => {
-    await element(by.id('seed-input')).typeText(this.seed);
+    await element(by.id('seed-input')).typeText(`${this.seed}\n`);
 });
 
 Then('I generate new mnemonic', async () => {

@@ -26,6 +26,7 @@ const styles = StyleService.create({
     textStyle: {
         ...AppStyles.h5,
         textAlign: 'center',
+        color: '$contrast',
     },
     textStyleSmall: {
         ...AppStyles.pbold,

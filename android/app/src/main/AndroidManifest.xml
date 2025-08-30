@@ -133,6 +133,7 @@
                 <data android:scheme="xrpl" />
                 <data android:scheme="xrp" />
                 <data android:scheme="xumm" />
+                <data android:scheme="xaman" />
             </intent-filter>
 
             <intent-filter>
@@ -144,6 +145,13 @@
                 android:resource="@xml/nfc_tech_filter" />
 
         </activity>
+
+        <meta-data
+            android:name="java.net.preferIPv4Stack" 
+            android:value="true" />
+        <meta-data
+            android:name="java.net.preferIPv6Addresses" 
+            android:value="false" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"

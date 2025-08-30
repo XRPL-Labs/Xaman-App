@@ -44,13 +44,16 @@ exports[`[SecurePinInput] renders correctly 1`] = `
   />
   <View
     style={
-      {
-        "alignItems": "center",
-        "display": "flex",
-        "flexDirection": "row",
-        "height": 156.94117647058823,
-        "justifyContent": "center",
-      }
+      [
+        {
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "height": 156.94117647058823,
+          "justifyContent": "center",
+        },
+        undefined,
+      ]
     }
   >
     <View
@@ -183,13 +186,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
 >
   <View
     style={
-      {
-        "alignItems": "center",
-        "display": "flex",
-        "flexDirection": "row",
-        "height": 156.94117647058823,
-        "justifyContent": "center",
-      }
+      [
+        {
+          "alignItems": "center",
+          "display": "flex",
+          "flexDirection": "row",
+          "height": 156.94117647058823,
+          "justifyContent": "center",
+        },
+        undefined,
+      ]
     }
   >
     <View
@@ -291,10 +297,14 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
   </View>
   <View
     style={
-      {
-        "marginTop": 98.08823529411764,
-        "width": 750,
-      }
+      [
+        {
+          "marginTop": 98.08823529411764,
+          "width": 750,
+        },
+        undefined,
+        undefined,
+      ]
     }
     testID="virtual-keyboard"
   >
@@ -325,14 +335,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="1-key"
       >
@@ -378,14 +390,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="2-key"
       >
@@ -433,14 +447,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="3-key"
       >
@@ -497,14 +513,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="4-key"
       >
@@ -552,14 +570,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="5-key"
       >
@@ -607,14 +627,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="6-key"
       >
@@ -671,14 +693,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="7-key"
       >
@@ -726,14 +750,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="8-key"
       >
@@ -781,14 +807,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="9-key"
       >
@@ -845,14 +873,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="y-key"
       >
@@ -895,14 +925,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="0-key"
       >
@@ -948,14 +980,16 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
         onResponderTerminationRequest={[Function]}
         onStartShouldSetResponder={[Function]}
         style={
-          {
-            "alignItems": "center",
-            "borderRadius": 45,
-            "height": 127.51470588235294,
-            "justifyContent": "center",
-            "margin": 5,
-            "width": 141.42857142857144,
-          }
+          [
+            {
+              "alignItems": "center",
+              "borderRadius": 45,
+              "height": 127.51470588235294,
+              "justifyContent": "center",
+              "margin": 5,
+              "width": 141.42857142857144,
+            },
+          ]
         }
         testID="x-key"
       >
@@ -972,9 +1006,14 @@ exports[`[SecurePinInput] renders correctly with virtualKeyboard 1`] = `
                 "height": 55,
                 "width": 55,
               },
-              {
-                "tintColor": "#000000",
-              },
+              [
+                {
+                  "tintColor": "#000000",
+                },
+                {
+                  "marginTop": -15,
+                },
+              ],
             ]
           }
         />

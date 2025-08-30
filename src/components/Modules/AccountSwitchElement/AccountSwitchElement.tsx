@@ -24,6 +24,7 @@ interface Props {
     onSwitcherClose?: () => void;
     showAddAccountButton?: boolean;
     containerStyle?: ViewStyle | ViewStyle[];
+    noPadding?: boolean;
 }
 
 interface State {
@@ -81,10 +82,11 @@ class AccountSwitchElement extends Component<Props, State> {
     };
 
     render() {
-        const { account, discreet, containerStyle } = this.props;
+        const { account, discreet, noPadding, containerStyle } = this.props;
+        // const { account, discreet, containerStyle } = this.props;
         const { isSwitcherOpen } = this.state;
 
-        if (!account) {
+        if (!account?.isValid()) {
             return (
                 <View style={styles.container}>
                     <Text style={styles.accountLabelText} numberOfLines={1}>
@@ -95,7 +97,11 @@ class AccountSwitchElement extends Component<Props, State> {
         }
 
         return (
-            <TouchableDebounce activeOpacity={0.7} onPress={this.onPress} style={[styles.container, containerStyle]}>
+            <TouchableDebounce activeOpacity={0.7} onPress={this.onPress} style={[
+                styles.container,
+                containerStyle,
+                noPadding && styles.containerNoPadding,
+            ]}>
                 <View style={AppStyles.flex1}>
                     <Text style={styles.accountLabelText} numberOfLines={1}>
                         {account.label}

@@ -11,7 +11,7 @@ import { Toast } from '@common/helpers/interface';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
-import { AccountModel } from '@store/models';
+import { AccountModel, NetworkModel } from '@store/models';
 
 import BackendService from '@services/BackendService';
 import AccountService from '@services/AccountService';
@@ -40,6 +40,7 @@ interface Props {
     account: AccountModel;
     discreetMode: boolean;
     spendable: boolean;
+    network?: NetworkModel;
     onChangeCategoryPress: () => void;
 }
 
@@ -99,6 +100,7 @@ class NFTsList extends Component<Props, State> {
             if (
                 [
                     TransactionTypes.NFTokenMint,
+                    TransactionTypes.NFTokenModify,
                     TransactionTypes.NFTokenBurn,
                     TransactionTypes.NFTokenCreateOffer,
                     TransactionTypes.NFTokenAcceptOffer,

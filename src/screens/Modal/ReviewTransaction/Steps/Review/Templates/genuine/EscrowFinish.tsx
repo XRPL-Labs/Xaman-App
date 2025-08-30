@@ -39,14 +39,14 @@ class EscrowFinishTemplate extends Component<Props, State> {
         // from transaction id
         if (isUndefined(transaction.OfferSequence) && transaction.PreviousTxnID) {
             await LedgerService.getTransaction(transaction.PreviousTxnID).then((tx: any) => {
-                const { Sequence } = tx;
-                if (Sequence) {
+                const { Sequence, TicketSequence } = tx;
+                if (Sequence || TicketSequence) {
                     this.setState(
                         {
-                            offerSequence: Sequence,
+                            offerSequence: Sequence || TicketSequence,
                         },
                         () => {
-                            transaction.OfferSequence = Sequence;
+                            transaction.OfferSequence = Sequence || TicketSequence;
                         },
                     );
                 }
@@ -84,6 +84,19 @@ class EscrowFinishTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.escrowID')}</Text>
                         <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.EscrowID}</Text>
+                        </View>
+                    </>
+                )}
+
+                {transaction?.CredentialIDs && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.credentialIDs')}</Text>
+                        <View style={styles.contentBox}>
+                            {transaction.CredentialIDs.map((id, index) => (
+                                <Text key={`credential-${index}`} style={styles.value}>
+                                    {id}
+                                </Text>
+                            ))}
                         </View>
                     </>
                 )}

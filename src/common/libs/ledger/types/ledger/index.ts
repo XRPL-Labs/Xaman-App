@@ -18,6 +18,8 @@ import RippleState, { RippleStateFlags } from './RippleState';
 import SignerList from './SignerList';
 import Ticket from './Ticket';
 import URIToken from './URIToken';
+import Delegate from './Delegate';
+import Credential from './Credential';
 
 export type {
     AccountRoot,
@@ -47,4 +49,6 @@ export type {
     Ticket,
     VoteSlot,
     URIToken,
+    Delegate,
+    Credential,
 };

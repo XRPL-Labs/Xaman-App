@@ -30,12 +30,16 @@ export enum Endpoints {
     AuditTrail = '/v1/app/audit-trail/{destination}',
     AddAccount = '/v1/app/add-account',
     AddTransaction = '/v1/app/add-tx',
+    AddSignedTxBlob = '/v1/app/signed-tx-blob',
     ThirdPartyApps = '/v1/app/third-party-permissions',
     ThirdPartyApp = '/v1/app/third-party-permissions/{appId}',
     NftDetails = '/v1/app/nft-details',
     NftOffered = '/v1/app/nft-offered/{account}',
     NetworkRails = '/v1/app/rails',
     VerifyPurchase = '/v1/app/verify-purchase',
+    ServiceFee = '/v1/app/get-service-fee',
+    PrivateAccountInfo = '/v1/app/private-account-info',
+    MultiAccountNativeInfo = '/v1/app/multi-account-info',
 }
 
 export enum WebLinks {

@@ -38,6 +38,14 @@ class EscrowFinishInfo extends ExplainerAbstract<EscrowFinish, MutationsMixinTyp
 
         content.push(Localize.t('events.theEscrowWasCreatedBy', { owner: this.item.Owner }));
 
+        if (typeof this.item.CredentialIDs !== 'undefined') {
+            content.push(
+                Localize.t('events.thePaymentIncludesCredentialIds', {
+                    credentialIDs: this.item.CredentialIDs.join(', '),
+                }),
+            );
+        }
+
         return content.join('\n');
     }
 

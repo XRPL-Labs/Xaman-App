@@ -165,10 +165,17 @@ class CriticalProcessingOverlay extends Component<Props, State> {
 
         return (
             <BlurView blurAmount={Platform.OS === 'ios' ? 5 : 10} blurType="dark">
-                <View style={styles.blurView}>
+                <View style={[
+                    styles.blurView,
+                ]}>
                     <Animated.View
                         testID={testID}
-                        style={[styles.visibleContent, { transform, opacity: this.animatedOpacity }]}
+                        style={[
+                            AppStyles.container,
+                            AppStyles.column,
+                            { transform, opacity: this.animatedOpacity },
+                            styles.visibleContent,
+                        ]}
                     >
                         <View style={[AppStyles.centerAligned]}>
                             <Icon style={styles.icon} name="IconAlertTriangle" size={60} />
@@ -184,6 +191,7 @@ class CriticalProcessingOverlay extends Component<Props, State> {
                         <Spacer size={30} />
                         <LoadingIndicator size="large" color={StyleService.isDarkMode() ? 'dark' : 'light'} />
                         <Spacer size={30} />
+
                         <View style={AppStyles.centerAligned}>
                             <Text style={styles.subTitle}>{Locale.t('global.doNotCloseTheApp')}</Text>
                         </View>

@@ -11,18 +11,23 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository } from '@store/repositories';
 
-import { InfoMessage, ReadMore } from '@components/General';
-import { FeePicker, AccountElement } from '@components/Modules';
+import { InfoMessage } from '@components/General'; // ReadMore
+import { FeePicker, ServiceFee, AccountElement, HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
 import styles from '../styles';
 
+import { Clipboard } from '@common/helpers/clipboard';
+
 import { TemplateProps } from '../types';
+import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
+import { Toast } from '@common/helpers/interface';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: Transactions;
+    setServiceFee: (serviceFee: number) => void;
 }
 export interface State {
     warnings?: Array<string>;
@@ -33,6 +38,8 @@ export interface State {
 class GlobalTemplate extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
+
+        // console.log('ReviewTx Global')
 
         this.state = {
             warnings: undefined,
@@ -72,6 +79,16 @@ class GlobalTemplate extends Component<Props, State> {
             currency: NetworkService.getNativeAsset(),
             value: new AmountParser(fee.value).dropsToNative().toString(),
         };
+    };
+
+    setServiceFeeAmount = (fee: any) => {
+        const { setServiceFee } = this.props;
+        setServiceFee(Number(fee?.value || 0));
+    };
+
+    setFees = (txFee: any, serviceFee: any) => {
+        this.setTransactionFee(txFee);
+        this.setServiceFeeAmount(serviceFee);
     };
 
     renderWarnings = () => {
@@ -239,37 +256,101 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 <Text style={styles.label}>{Localize.t('global.memo')}</Text>
                 <View style={styles.contentBox}>
-                    <ReadMore numberOfLines={3} textStyle={styles.value}>
+                    {
+                        transaction.Memos.map((m) => {
+                            return (
+                                <View
+                                    style={styles.memoContainer}
+                                >
+                                    <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
+                                    {m.MemoFormat && (
+                                        <Text style={[styles.value, styles.memoFormat]}>{m.MemoFormat}</Text>
+                                    )}
+                                    <Text
+                                        style={[styles.value, styles.memoData]}
+                                        onPress={() => {
+                                            if (String(m.MemoData) !== '') {
+                                                Clipboard.setString(String(m.MemoData));
+                                                Toast(Localize.t('payload.dataCopiedToClipboard'));
+                                            }
+                                        }}
+                                    >{m.MemoData}</Text>
+                                </View>
+                            );
+                        })
+                    }
+                    {/* <ReadMore numberOfLines={3} textStyle={styles.value}>
                         {transaction.Memos.map((m) => {
                             let memo = '';
                             memo += m.MemoType ? `${m.MemoType}\n` : '';
                             memo += m.MemoFormat ? `${m.MemoFormat}\n` : '';
-                            memo += m.MemoData ? `${m.MemoData}` : '';
+                            memo += m.MemoData ? `${m.MemoData}\n` : '';
                             return memo;
                         })}
-                    </ReadMore>
+                    </ReadMore> */}
                 </View>
             </>
         );
     };
 
+    renderHookExplainer = () => {
+        const { transaction, source } = this.props;
+
+        // check if hooks is enabled in the current network
+        const network = NetworkService.getNetwork();
+
+        // only show if Hooks amendment is active on the network
+        // hide for SetHook transactions as we show the explainer in the beginning of the screen on top, no duplicate!!!
+        if (network?.isFeatureEnabled('Hooks') && transaction.Type !== TransactionTypes.SetHook) {
+            return (
+                <>
+                    {/* <Text style={styles.label}>{Localize.t('global.hooks')}</Text> */}
+                    <View style={styles.contentBox}>
+                        <HooksExplainer
+                            transaction={transaction}
+                            account={source}
+                            origin={HookExplainerOrigin.ReviewPayload}
+                        />
+                    </View>
+                </>
+            );
+        }
+
+        return null;
+    };
+
     renderFee = () => {
-        const { transaction } = this.props;
+        const { transaction, source, payload } = this.props;
         const { showFeePicker } = this.state;
 
         // we should not override the fee
         // either transaction fee has already been set in payload
         // or transaction is a multi sign tx
         if (!showFeePicker) {
+            // TODO: SET SERVICE FEE
+
             if (typeof transaction.Fee !== 'undefined') {
                 return (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.fee')}</Text>
-                        <View style={styles.contentBox}>
-                            <Text style={styles.feeText}>
-                                {transaction.Fee.value} {NetworkService.getNativeAsset()}
-                            </Text>
-                        </View>
+                        <>
+                            <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                            <View style={styles.contentBox}>
+                                <Text style={styles.feeText}>
+                                    {transaction.Fee.value} {NetworkService.getNativeAsset()}
+                                </Text>
+                            </View>
+                        </>
+                        <>
+                            <Text style={styles.label}>{Localize.t('events.serviceFee')}</Text>
+                            <View style={styles.contentBox}>
+                                <ServiceFee
+                                    txJson={transaction.JsonForSigning}
+                                    textStyle={styles.feeText}
+                                    payload={payload}
+                                    onSelect={this.setServiceFeeAmount}
+                                />
+                            </View>
+                        </>
                     </>
                 );
             }
@@ -279,10 +360,12 @@ class GlobalTemplate extends Component<Props, State> {
 
         return (
             <>
-                <Text style={styles.label}>{Localize.t('global.fee')}</Text>
+                <Text style={styles.label}>{Localize.t('events.txServiceFees')}</Text>
                 <FeePicker
                     txJson={transaction.JsonForSigning}
-                    onSelect={this.setTransactionFee}
+                    onSelect={this.setFees}
+                    source={source}
+                    payload={payload}
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}
                 />
@@ -303,6 +386,7 @@ class GlobalTemplate extends Component<Props, State> {
                 {this.renderFlags()}
                 {this.renderFee()}
                 {this.renderWarnings()}
+                {this.renderHookExplainer()}
             </>
         );
     }

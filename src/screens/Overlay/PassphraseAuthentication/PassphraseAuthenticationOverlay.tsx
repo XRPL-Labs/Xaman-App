@@ -21,6 +21,8 @@ import {
 import { AppScreens } from '@common/constants';
 import { WebLinks } from '@common/constants/endpoints';
 
+import StyleService from '@services/StyleService';
+
 import { CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
@@ -245,7 +247,7 @@ class PassphraseAuthenticationOverlay extends Component<Props, State> {
 
         const interpolateColor = this.animatedColor.interpolate({
             inputRange: [0, 150],
-            outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)'],
+            outputRange: StyleService.getBackdropInterpolateColor(),
         });
 
         return (

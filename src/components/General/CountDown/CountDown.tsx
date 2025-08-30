@@ -64,16 +64,22 @@ class CountDown extends PureComponent<Props, State> {
         }
     };
 
-    startCountDown = () => {
-        const { onFinish, seconds } = this.props;
+    onFinish = () => {
+        const { onFinish } = this.props;
 
-        Animated.timing(this.countDownAnimated, { toValue: 0, duration: seconds * 1000, useNativeDriver: true }).start(
-            () => {
-                if (typeof onFinish === 'function') {
-                    onFinish();
-                }
-            },
-        );
+        if (typeof onFinish === 'function' && this._isMounted) {
+            onFinish();
+        }
+    };
+
+    startCountDown = () => {
+        const { seconds } = this.props;
+
+        Animated.timing(this.countDownAnimated, {
+            toValue: 0,
+            duration: seconds * 1000,
+            useNativeDriver: true,
+        }).start(this.onFinish);
     };
 
     render() {

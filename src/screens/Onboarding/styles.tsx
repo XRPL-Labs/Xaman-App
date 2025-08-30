@@ -4,14 +4,24 @@ import { AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1, justifyContent: 'center', backgroundColor: '$background' },
+    container: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        // backgroundColor: '$background',
+        top: 0,
+        bottom: 0,
+    },
     backgroundImageStyle: {
-        height: AppSizes.screen.height,
-        opacity: StyleService.isDarkMode() ? 0.04 : 0.02,
+        position: 'absolute', // this + 0000 needed for fold / square screen
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
     },
     logo: {
-        width: AppSizes.screen.width * 0.4,
-        height: AppSizes.screen.height * 0.1,
+        // marginTop: AppSizes.screen.height * 0.05,
+        width: AppSizes.screen.width * 0.5,
+        height: AppSizes.screen.height * 0.2,
         resizeMode: 'contain',
     },
 });

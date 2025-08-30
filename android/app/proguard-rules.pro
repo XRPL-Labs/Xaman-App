@@ -66,12 +66,41 @@
 -keep class com.google.firebase.** { *; }
 -keepclassmembers  class com.google.firebase.** { *; }
 
+#------------- firebase KTX specific ------------------
+-keep class com.google.firebase.ktx.** { *; }
+-keepclassmembers class com.google.firebase.ktx.** { *; }
+-keep class com.google.firebase.analytics.ktx.** { *; }
+-keepclassmembers class com.google.firebase.analytics.ktx.** { *; }
+
+# Keep the specific classes mentioned in the error
+-keep class com.google.firebase.ktx.Firebase { *; }
+-keep class com.google.firebase.ktx.FirebaseKt { *; }
+
+-dontwarn com.google.firebase.ktx.Firebase
+-dontwarn com.google.firebase.ktx.FirebaseKt
+
 #------------- realm ------------------
 -keep class io.realm.react.**
 
 #------------- tangem ------------------
--keep class com.tangem.**
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class com.tangem.** { *; }
+-keepclassmembers class com.tangem.** { *; }
 
+# #------------- rn camera ------------------
+
+# Keep ML Kit classes
+-keep class com.google.mlkit.vision.** { *; }
+-keep class com.google.mlkit.vision.common.internal.Detector { *; }
+-keep class com.google.mlkit.vision.barcode.** { *; }
+
+# Keep react-native-camera ML Kit integration
+-keep class org.reactnative.camera.** { *; }
+-keep class mo.** { *; }
+
+# Don't obfuscate anything ML Kit related
+-keepnames class com.google.mlkit.** { *; }
 
 #------------- Hermes ------------------
 -keep class com.facebook.hermes.unicode.** { *; }

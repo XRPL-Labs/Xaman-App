@@ -37,6 +37,7 @@ interface Props extends TextInputProps {
     onScannerClose?: () => void;
     scannerFallback?: boolean;
     isLoading?: boolean;
+    multiline?: boolean;
 }
 
 interface State {
@@ -111,6 +112,8 @@ class Input extends Component<Props, State> {
             showScanner,
             keyboardType,
             autoCapitalize,
+            multiline,
+            secureTextEntry,
         } = this.props;
 
         const filteredProps = { ...this.props };
@@ -135,7 +138,12 @@ class Input extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.wrapper, containerStyle, focused && activeContainerStyle]}>
+            <View style={[
+                styles.wrapper,
+                containerStyle,
+                focused && activeContainerStyle,
+                multiline ? styles.multiline : styles.nonMultilineContainer,
+            ]}>
                 <TextInput
                     ref={this.instanceRef}
                     onFocus={this.onFocus}
@@ -143,8 +151,14 @@ class Input extends Component<Props, State> {
                     placeholderTextColor={StyleService.value('$textSecondary')}
                     autoCapitalize={autoCapitalize || 'none'}
                     autoCorrect={false}
-                    multiline={false}
-                    style={[styles.input, { paddingRight: scannerPadding }, inputStyle, focused && activeInputStyle]}
+                    multiline={!!multiline}
+                    style={[
+                        styles.input,
+                        { paddingRight: scannerPadding },
+                        inputStyle,
+                        focused && activeInputStyle,
+                        !multiline && secureTextEntry ? styles.nonMultilineSecureInput : undefined,
+                    ]}
                     {...filteredProps}
                 />
             </View>

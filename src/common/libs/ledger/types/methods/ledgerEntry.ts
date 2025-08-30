@@ -69,7 +69,12 @@ export interface LedgerEntryRequest extends BaseRequest, LookupByLedgerRequest {
               /** The account that provided the preauthorization. */
               owner: string;
               /** The account that received the preauthorization. */
-              authorized: string;
+              authorized?: string;
+              /** The credential(s) that received the preauthorization. */
+              authorized_credentials?: {
+                  issuer: string;
+                  credential_type: string;
+              }[];
           }
         | string;
 

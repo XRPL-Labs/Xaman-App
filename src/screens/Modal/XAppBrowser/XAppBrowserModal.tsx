@@ -17,6 +17,9 @@ import {
     Text,
     View,
 } from 'react-native';
+
+import { NetworkLabel } from '@components/Modules/NetworkLabel';
+
 import VeriffSdk from '@veriff/react-native-sdk';
 import { StringType } from 'xumm-string-decode';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
@@ -40,6 +43,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository, CoreRepository, NetworkRepository, ProfileRepository } from '@store/repositories';
 import { AccountModel, NetworkModel } from '@store/models';
+// import { AccessLevels, Themes } from '@store/types';
 import { AccessLevels } from '@store/types';
 
 import { BackendService, NavigationService, PushNotificationsService, StyleService } from '@services';
@@ -55,6 +59,7 @@ import {
     RaisedButton,
     Spacer,
     WebView,
+    Header,
 } from '@components/General';
 import { XAppBrowserHeader } from '@components/Modules';
 
@@ -67,6 +72,8 @@ import { ScanModalProps } from '@screens/Modal/Scan';
 import { DestinationPickerModalProps } from '@screens/Modal/DestinationPicker';
 import { ReviewTransactionModalProps } from '@screens/Modal/ReviewTransaction';
 import { PurchaseProductModalProps } from '@screens/Modal/PurchaseProduct';
+
+import LoggerService from '@services/LoggerService';
 
 import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
@@ -101,6 +108,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 icon: props.icon,
                 identifier: props.identifier,
                 supportUrl: undefined,
+                appid: undefined,
                 permissions: undefined,
                 networks: undefined,
                 __ott: undefined,
@@ -119,6 +127,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
         this.webView = React.createRef();
 
+        // last message received from webview, preventing spamming
         this.lastMessageReceived = 0;
     }
 
@@ -127,7 +136,7 @@ class XAppBrowserModal extends Component<Props, State> {
         this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
 
         // fetch OTT on browser start
-        InteractionManager.runAfterInteractions(this.lunchApp);
+        InteractionManager.runAfterInteractions(this.launchApp);
 
         // listen for authentication lock state changes
         AuthenticationService.on('lockStateChange', this.onLockStateChange);
@@ -237,6 +246,13 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
+    onInAppPurchaseResolve = (successPurchase: boolean) => {
+        this.sendEvent({
+            method: XAppMethods.RequestInAppPurchase,
+            successPurchase,
+        });
+    };
+
     showScanner = () => {
         Navigator.showModal<ScanModalProps>(
             AppScreens.Modal.Scan,
@@ -291,6 +307,20 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
+    requestInAppPurchase = async ({
+        productId,
+        productDescription,
+    }: {
+        productId: string;
+        productDescription: string;
+    }) => {
+        Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
+            productId,
+            productDescription,
+            onClose: this.onInAppPurchaseResolve,
+        });
+    };
+
     navigateTo = (data: { xApp: string; title?: string; [key: string]: any }) => {
         const identifier = get(data, 'xApp', undefined);
         const title = get(data, 'title', undefined);
@@ -325,9 +355,33 @@ class XAppBrowserModal extends Component<Props, State> {
                 isRequiredNetworkSwitch: false,
             },
             () => {
-                this.lunchApp(data);
+                this.launchApp(data);
             },
         );
+    };
+
+    getLogs = () => {
+        Navigator.showAlertModal({
+            type: 'warning',
+            title: Localize.t('global.notice'),
+            text: Localize.t('global.xAppWantsToSendSessionLogs'),
+            buttons: [
+                {
+                    text: Localize.t('global.cancel'),
+                    onPress: () => {},
+                    type: 'dismiss',
+                    light: true,
+                },
+                {
+                    text: Localize.t('global.continue'),
+                    onPress: () => {
+                        const result = LoggerService.getLogs();
+                        this.sendEvent({ method: XAppMethods.GetLogs, result });                
+                    },
+                    light: false,
+                },
+            ],
+        });
     };
 
     openBrowserLink = (data: { url: string }, launchDirectly: boolean) => {
@@ -445,9 +499,10 @@ class XAppBrowserModal extends Component<Props, State> {
         const { commands: AllowedCommands, special: SpecialPermissions } = app.permissions;
 
         // xApp doesn't have the permission to run this command
+        // ignore ready command
         if (!AllowedCommands.includes(command.toUpperCase())) {
             // show alert about command
-            if (coreSettings.developerMode) {
+            if (coreSettings.developerMode && command !== XAppMethods.Ready) {
                 Alert.alert(
                     Localize.t('global.error'),
                     Localize.t('xapp.xAppDoesNotHavePermissionToRunThisCommand', { command }),
@@ -485,6 +540,9 @@ class XAppBrowserModal extends Component<Props, State> {
             case XAppMethods.Close:
                 this.onClose(parsedData);
                 break;
+            case XAppMethods.GetLogs:
+                this.getLogs();
+                break;
             case XAppMethods.OpenBrowser:
                 this.openBrowserLink(
                     parsedData,
@@ -499,6 +557,9 @@ class XAppBrowserModal extends Component<Props, State> {
                 break;
             case XAppMethods.Ready:
                 this.setAppReady();
+                break;
+            case XAppMethods.RequestInAppPurchase:
+                this.requestInAppPurchase(parsedData);
                 break;
             default:
                 break;
@@ -544,13 +605,29 @@ class XAppBrowserModal extends Component<Props, State> {
         }
     };
 
-    lunchApp = async (xAppNavigateData?: any) => {
+    getAppStyle = () => {
+        return StyleService.getCurrentTheme();
+        // const {coreSettings} = this.state;
+
+        // const style: Themes = 
+        //     !coreSettings.themeAutoSwitch                     // If not auto switching
+        //         ? coreSettings.theme                          //   then return as is (from settings)
+        //         : StyleService.getCurrentTheme() === 'light'  //   else, if the current theme is light
+        //         ? 'light'                                     //   it's easy, then return light
+        //         : coreSettings.theme !== 'light'              //   else, settings, because we're in dark - but only
+        //         ? coreSettings.theme                          //   if the setting is not light (darkish)
+        //         : 'dark';                                     //   otherwise assume default dark
+
+        // return style;
+    };
+
+    launchApp = async (xAppNavigateData?: any) => {
         const { origin, originData, params } = this.props;
         const { app, appVersionCode, account, network, coreSettings, isLaunchingApp } = this.state;
 
         // double check
         if (!app) {
-            throw new Error('lunchApp, app is required!');
+            throw new Error('launchApp, app is required!');
         }
 
         try {
@@ -593,7 +670,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 version: appVersionCode,
                 locale: Localize.getCurrentLocale(),
                 currency: coreSettings.currency,
-                style: coreSettings.theme,
+                style: this.getAppStyle(),
                 nodetype: network.key,
                 nodewss: network.defaultNode.endpoint,
             };
@@ -638,7 +715,7 @@ class XAppBrowserModal extends Component<Props, State> {
             }
 
             const response = await BackendService.getXAppLaunchToken(app.identifier, data);
-            const { error, ott, xappTitle, xappSupportUrl, icon, permissions } = response;
+            const { error, ott, xappTitle, xappSupportUrl, icon, permissions, appid } = response;
 
             // an error reported from backend
             if (error) {
@@ -656,6 +733,7 @@ class XAppBrowserModal extends Component<Props, State> {
                 app: {
                     identifier: app.identifier,
                     title: xappTitle || app?.title,
+                    appid: appid || app?.appid,
                     supportUrl: xappSupportUrl,
                     icon,
                     permissions,
@@ -680,7 +758,7 @@ class XAppBrowserModal extends Component<Props, State> {
             {
                 account,
             },
-            this.lunchApp,
+            this.launchApp,
         );
     };
 
@@ -710,7 +788,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     // send the network switch event
                     this.onNetworkSwitch(network);
                 } else {
-                    InteractionManager.runAfterInteractions(this.lunchApp);
+                    InteractionManager.runAfterInteractions(this.launchApp);
                 }
             }
         });
@@ -725,7 +803,7 @@ class XAppBrowserModal extends Component<Props, State> {
      * @property {string} headers.X-OTT - The X-OTT header for authentication.
      */
     getSource = (): { uri: string; headers?: any } => {
-        const { app, ott, coreSettings } = this.state;
+        const { app, ott } = this.state;
 
         // app is not initiated?
         if (!app) {
@@ -733,8 +811,8 @@ class XAppBrowserModal extends Component<Props, State> {
         }
 
         return {
-            uri: `https://${HOSTNAME}/detect/xapp:${app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
-                coreSettings.theme,
+            uri: `https://${HOSTNAME}/detect/xapp:${app?.appid || app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+                this.getAppStyle(),
             )}`,
             headers: {
                 'X-OTT': ott,
@@ -845,7 +923,11 @@ class XAppBrowserModal extends Component<Props, State> {
         Navigator.showModal<PurchaseProductModalProps>(AppScreens.Modal.PurchaseProduct, {
             productId: monetization.productForPurchase!,
             productDescription: monetization.monetizationType!,
-            onSuccessPurchase: this.lunchApp,
+            onClose: (successPayment: boolean) => {
+                if (successPayment) {
+                    this.launchApp();
+                }
+            },
         });
     };
 
@@ -961,7 +1043,7 @@ class XAppBrowserModal extends Component<Props, State> {
                     roundedSmall
                     icon="IconRefresh"
                     iconSize={14}
-                    onPress={this.lunchApp}
+                    onPress={this.launchApp}
                     label={Localize.t('global.tryAgain')}
                 />
             </View>
@@ -1122,12 +1204,45 @@ class XAppBrowserModal extends Component<Props, State> {
 
     renderHeader = () => {
         const { app, network, account } = this.state;
+        const { noSwitching, altHeader } = this.props;
+
+        if (altHeader) {
+            return (
+                <Header
+                    leftComponent={{
+                        icon: altHeader?.left?.icon,
+                        iconSize: altHeader?.left?.iconSize,
+                        onPress: () => {
+                            const fn = this?.[(altHeader?.left?.onPress || '_') as keyof this];
+                            if (typeof fn === 'function') fn(altHeader?.left?.onPressOptions);
+                        },
+                    }}
+                    centerComponent={{
+                        text: altHeader?.center?.text,
+                        extraComponent: altHeader?.center?.showNetworkLabel && <NetworkLabel type="both" />,
+                    }}
+                    rightComponent={
+                        Object.values(AppConfig.xappIdentifiers).indexOf(String(app?.identifier || '')) > -1
+                            ? { 
+                                icon: altHeader?.right?.icon,
+                                iconSize: altHeader?.right?.iconSize,
+                                onPress: () => {
+                                    const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
+                                    if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
+                                },
+                            }
+                            : undefined
+                    }
+                />
+            );
+        }
 
         return (
             <XAppBrowserHeader
                 identifier={app?.identifier}
                 title={app?.title}
                 icon={app?.icon}
+                noSwitching={!!noSwitching}
                 account={account}
                 network={network}
                 onAccountChange={this.onAccountChange}

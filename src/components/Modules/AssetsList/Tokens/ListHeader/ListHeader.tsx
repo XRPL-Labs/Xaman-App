@@ -68,7 +68,7 @@ class ListHeader extends PureComponent<Props> {
         if (showTokenAddButton) {
             return (
                 <Button
-                    secondary
+                    light
                     roundedMini
                     numberOfLines={1}
                     testID="add-token-button"

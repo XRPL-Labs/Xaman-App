@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, Alert, ImageBackground, Linking, Image } from 'react-native';
+import { View, Text, Alert, ImageBackground, Linking, Image, Platform } from 'react-native';
 
 import BackendService from '@services/BackendService';
 import LoggerService from '@services/LoggerService';
@@ -19,6 +19,9 @@ import { ComplianceLinks } from '@common/constants/endpoints';
 import { Spacer, CountDown, Button, Icon, Footer } from '@components/General';
 import { ProductDetailsElement } from '@components/Modules/ProductDetailsElement';
 
+import { ProfileRepository } from '@store/repositories';
+import { MonetizationStatus } from '@store/types';
+
 import { Images } from '@common/helpers/images';
 
 import Localize from '@locale';
@@ -32,8 +35,7 @@ import styles from './styles';
 export interface Props {
     productId: string;
     productDescription: string;
-    onSuccessPurchase?: () => void;
-    onClose?: () => void;
+    onClose?: (successPayment: boolean) => void;
 }
 
 export interface State {
@@ -72,9 +74,10 @@ class PurchaseProductModal extends Component<Props, State> {
 
     onClose = async () => {
         const { onClose } = this.props;
+        const { purchaseSuccess } = this.state;
 
         if (typeof onClose === 'function') {
-            onClose();
+            onClose(purchaseSuccess);
         }
 
         // close modal
@@ -88,12 +91,16 @@ class PurchaseProductModal extends Component<Props, State> {
     };
 
     onSuccessPurchase = async () => {
-        const { onSuccessPurchase } = this.props;
+        // purchase was successful clear the monetization status
+        ProfileRepository.saveProfile({
+            monetization: {
+                monetizationStatus: MonetizationStatus.NONE,
+                productForPurchase: '',
+                monetizationType: '',
+            },
+        });
 
-        if (typeof onSuccessPurchase === 'function') {
-            onSuccessPurchase();
-        }
-
+        // set the state
         this.setState({
             purchaseSuccess: true,
         });
@@ -242,7 +249,12 @@ class PurchaseProductModal extends Component<Props, State> {
                     </View>
                     <View style={[AppStyles.flex1, AppStyles.stretchSelf, AppStyles.centerContent]}>
                         <View style={[AppStyles.flex1, AppStyles.centerContent, AppStyles.gapExtraSml]}>
-                            <Text style={styles.notesText}>{Localize.t('monetization.prePurchaseTip')}</Text>
+                            <Text style={styles.notesText}>
+                                {Platform.select({
+                                    ios: Localize.t('monetization.prePurchaseTipIos'),
+                                    android: Localize.t('monetization.prePurchaseTipAndroid'),
+                                })}
+                            </Text>
                             <Text style={styles.notesText}>
                                 Read our{' '}
                                 <Text
@@ -269,7 +281,7 @@ class PurchaseProductModal extends Component<Props, State> {
                                 onPress={this.lunchPurchaseFlow}
                                 isLoading={isPurchasing}
                                 isDisabled={!isDetailsResolved}
-                                loadingIndicatorStyle={StyleService.select({ dark: 'dark', light: 'light' })}
+                                loadingIndicatorStyle={StyleService.isDarkMode() ? 'dark' : 'light'}
                             />
                             <View style={styles.separatorContainer}>
                                 <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
@@ -277,7 +289,7 @@ class PurchaseProductModal extends Component<Props, State> {
                             <Button
                                 textStyle={styles.restorePurchase}
                                 isLoading={isRestoring}
-                                loadingIndicatorStyle={StyleService.select({ dark: 'light', light: 'dark' })}
+                                loadingIndicatorStyle={StyleService.isDarkMode() ? 'light' : 'dark'}
                                 onPress={this.restorePurchase}
                                 label={Localize.t('monetization.restorePurchase')}
                                 roundedMini

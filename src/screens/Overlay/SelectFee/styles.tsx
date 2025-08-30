@@ -1,9 +1,15 @@
 import StyleService from '@services/StyleService';
 
+import Sizes from '@theme/sizes';
+
 import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    serviceFeeItem: {
+        paddingRight: Sizes.padding + 12,
+        paddingLeft: Sizes.padding + 12,
+    },
     feeItem: {
         width: '100%',
         borderRadius: 20,

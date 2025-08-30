@@ -5,7 +5,7 @@
  *
  */
 import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TextStyle } from 'react-native';
 
 import { TouchableDebounce } from '@components/General/TouchableDebounce';
 import { Icon } from '@components/General/Icon';
@@ -19,6 +19,7 @@ interface Props {
     checked: boolean;
     label?: string;
     labelSmall?: string;
+    style?: TextStyle | TextStyle[];
     description?: string;
     testID?: string;
 }
@@ -33,15 +34,19 @@ class CheckBox extends PureComponent<Props> {
     };
 
     render() {
-        const { checked, label, labelSmall, description, testID } = this.props;
+        const { checked, label, labelSmall, description, testID, style } = this.props;
         return (
             <TouchableDebounce
                 testID={testID}
                 activeOpacity={0.8}
                 onPress={this.onPress}
-                style={[styles.content, checked && styles.selected]}
+                style={[
+                    styles.content,
+                    checked && styles.selected,
+                    style,
+                ]}
             >
-                <View style={AppStyles.flex1}>
+                <View style={[ AppStyles.flex1 ]}>
                     <View style={[styles.box, checked ? styles.boxSelected : null]}>
                         {checked && <Icon name="IconCheckXaman" style={AppStyles.imgColorWhite} size={12} />}
                     </View>

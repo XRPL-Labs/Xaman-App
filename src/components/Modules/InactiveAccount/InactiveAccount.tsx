@@ -21,9 +21,11 @@ import Localize from '@locale';
 import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types';
 
 import RegularKeyItem from '@components/Modules/InactiveAccount/RegularKeyItem';
+import NetworkService from '@services/NetworkService';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import StyleService from '@services/StyleService';
 
 /* Types ==================================================================== */
 interface Props {
@@ -32,6 +34,7 @@ interface Props {
 
 interface State {
     regularKeyAccounts?: AccountModel[];
+    numAccounts: number;
 }
 /* Component ==================================================================== */
 class InactiveAccount extends PureComponent<Props, State> {
@@ -40,23 +43,33 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         this.state = {
             regularKeyAccounts: undefined,
+            numAccounts: 0, 
         };
     }
 
     static getDerivedStateFromProps(nextProps: Props): Partial<State> | null {
         return {
             regularKeyAccounts: AccountRepository.getRegularKeys(nextProps.account?.address),
+            numAccounts: AccountRepository.count(),
         };
     }
 
     openActivateAccountXApp = () => {
         const { account } = this.props;
+        const { numAccounts } = this.state;
 
-        let params = {};
+        const params: {
+            numAccounts: number;
+            cid?: string;
+        } = {
+            numAccounts,
+        };
 
         // include card serial number if tangem card
         if (account.type === AccountTypes.Tangem) {
-            params = { cid: GetCardId(account.additionalInfo!) };
+            Object.assign(params, {
+                cid: GetCardId(account.additionalInfo!),
+            });
         }
 
         Navigator.showModal<XAppBrowserModalProps>(
@@ -66,6 +79,17 @@ class InactiveAccount extends PureComponent<Props, State> {
                 params,
                 account,
                 origin: XAppOrigin.XUMM,
+                noSwitching: true,
+                altHeader: {
+                    left: {
+                        icon: 'IconChevronLeft',
+                        onPress: 'onClose',
+                    },
+                    center: {
+                        text: Localize.t('global.activation'),
+                        showNetworkLabel: true,
+                    },
+                },
             },
             {
                 modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
@@ -108,18 +132,37 @@ class InactiveAccount extends PureComponent<Props, State> {
 
         return (
             <View style={styles.messageContainer} testID="not-activated-account-container">
-                <Text style={[AppStyles.subtext, AppStyles.bold, AppStyles.colorRed]}>
+                <Text style={[
+                    AppStyles.subtext,
+                    AppStyles.bold,
+                    StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                ]}>
                     {Localize.t('account.yourAccountIsNotActivated')}
                 </Text>
+                <Text style={[
+                    AppStyles.subtext,
+                    AppStyles.textCenterAligned,
+                    StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                ]}>
+                    {Localize.t('account.accountGenerateActivationExplain', {
+                        baseReserve: NetworkService.getNetworkReserve().BaseReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    })}
+                </Text>
                 {regularKeyAccounts && regularKeyAccounts?.length > 0 && (
-                    <Text style={[AppStyles.smalltext, AppStyles.textCenterAligned, AppStyles.colorRed]}>
+                    <Text style={[
+                        AppStyles.smalltext,
+                        AppStyles.textCenterAligned,
+                        StyleService.isDarkMode() ? AppStyles.colorWhite : AppStyles.colorBlue,
+                    ]}>
                         {Localize.t('account.activateRegularKeyAccountWarning')}
                     </Text>
                 )}
 
                 <Button
-                    roundedSmall
+                    nonBlock
                     style={AppStyles.marginTopSml}
+                    icon="IconWallet"
                     label={Localize.t('home.activateYourAccount')}
                     onPress={this.openActivateAccountXApp}
                 />
@@ -129,7 +172,11 @@ class InactiveAccount extends PureComponent<Props, State> {
 
     render() {
         return (
-            <View style={AppStyles.flex1}>
+            <View
+                style={[
+                    AppStyles.flex1,
+                ]}
+            >
                 {this.renderRegularKeys()}
                 {this.renderActivateAccount()}
             </View>

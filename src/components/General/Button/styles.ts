@@ -8,11 +8,11 @@ const styles = StyleService.create({
         alignItems: 'center',
     },
     button: {
-        height: AppSizes.scale(55),
+        height: AppSizes.scale(45),
         flexDirection: 'row',
         borderWidth: 1,
-        borderRadius: AppSizes.scale(75) / 4,
-        paddingHorizontal: 15,
+        borderRadius: AppSizes.scale(75) / 5,
+        paddingHorizontal: 25,
         alignSelf: 'stretch',
         justifyContent: 'center',
         borderColor: '$transparent',
@@ -88,7 +88,7 @@ const styles = StyleService.create({
         height: AppSizes.scale(25),
         paddingHorizontal: 12,
         alignSelf: 'center',
-        borderRadius: AppSizes.scale(25) / 2,
+        borderRadius: AppSizes.scale(25) / 3,
     },
     textButtonRoundedMini: {
         fontSize: AppFonts.base.size * 0.8,
@@ -117,6 +117,15 @@ const styles = StyleService.create({
         borderRadius: AppSizes.scale(42) / 2,
     },
     textButtonRounded: {
+        fontSize: AppFonts.base.size,
+    },
+    buttonNonBlock: {
+        height: AppSizes.scale(42),
+        paddingHorizontal: 30,
+        alignSelf: 'center',
+        borderRadius: AppSizes.scale(75) / 5,
+    },
+    textButtonNonBlock: {
         fontSize: AppFonts.base.size,
     },
     iconLeft: {

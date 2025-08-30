@@ -1,12 +1,12 @@
 import { isEqual } from 'lodash';
 import React, { Component } from 'react';
-import { Animated, View } from 'react-native';
+import { View } from 'react-native';
 
 import { TouchableDebounce, Icon, SearchBar } from '@components/General';
 
 import Localize from '@locale';
 
-import { AppSizes } from '@theme';
+// import { AppSizes } from '@theme';
 import styles from './styles';
 
 /* Types ==================================================================== */
@@ -32,7 +32,6 @@ interface State {
 
 /* Component ==================================================================== */
 class ListFilter extends Component<Props, State> {
-    private animatedContainer: Animated.Value;
     private readonly searchInputRef: React.RefObject<SearchBar>;
 
     constructor(props: Props) {
@@ -46,7 +45,6 @@ class ListFilter extends Component<Props, State> {
         };
 
         this.searchInputRef = React.createRef();
-        this.animatedContainer = new Animated.Value(1);
     }
 
     shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
@@ -124,51 +122,43 @@ class ListFilter extends Component<Props, State> {
     onFavoritePress = () => {
         const { favoritesEnabled } = this.state;
 
-        this.setState(
-            {
+        this.setState({
+            filterText: undefined,
+        }, () => {
+            this.setState({
                 ownUpdate: true,
+                filterText: undefined,
                 favoritesEnabled: !favoritesEnabled,
-            },
-            this.onFilterChange,
-        );
+            }, this.onFilterChange);
+        });
     };
 
     onHideZeroPress = () => {
         const { hideZeroEnabled } = this.state;
 
-        this.setState(
-            {
+        this.setState({
+            filterText: undefined,
+        }, () => {
+            this.setState({
                 ownUpdate: true,
                 hideZeroEnabled: !hideZeroEnabled,
-            },
-            this.onFilterChange,
-        );
+            }, this.onFilterChange);    
+        });
     };
 
     onFilterTextChange = (filterText: string) => {
-        this.setState(
-            {
-                ownUpdate: true,
-                filterText,
-            },
-            this.onFilterChange,
-        );
+        this.setState({
+            ownUpdate: true,
+            hideZeroEnabled: false,
+            favoritesEnabled: false,
+            filterText,
+        }, this.onFilterChange);
     };
 
     onSearchInputFocus = () => {
-        Animated.timing(this.animatedContainer, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: false,
-        }).start();
     };
 
     onSearchInputBlur = () => {
-        Animated.timing(this.animatedContainer, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: false,
-        }).start();
     };
 
     onSearchClearButtonPress = () => {
@@ -186,21 +176,11 @@ class ListFilter extends Component<Props, State> {
             return null;
         }
 
-        const maxWidthInterpolate = this.animatedContainer.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1000],
-        });
-
-        const opacityInterpolate = this.animatedContainer.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-        });
-
         return (
             <View style={styles.container}>
                 <SearchBar
                     ref={this.searchInputRef}
-                    height={AppSizes.heightPercentageToDP(4.5)}
+                    height={styles.filterButton.height}
                     onChangeText={this.onFilterTextChange}
                     onFocus={this.onSearchInputFocus}
                     onBlur={this.onSearchInputBlur}
@@ -211,12 +191,10 @@ class ListFilter extends Component<Props, State> {
                     iconStyle={styles.searchBarIcon}
                     clearButtonVisibility="focus"
                     iconSize={15}
-                    border
                 />
-                <Animated.View
+                <View
                     style={[
                         styles.filterButtonsContainer,
-                        { maxWidth: maxWidthInterpolate, opacity: opacityInterpolate },
                     ]}
                 >
                     <TouchableDebounce onPress={this.onReorderPress} style={[styles.filterButton]}>
@@ -242,7 +220,7 @@ class ListFilter extends Component<Props, State> {
                             style={[styles.filterButtonIcon, hideZeroEnabled && styles.hideZeroIconActive]}
                         />
                     </TouchableDebounce>
-                </Animated.View>
+                </View>
             </View>
         );
     }

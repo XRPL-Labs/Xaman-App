@@ -104,7 +104,7 @@ class VerifySignatureStep extends Component<Props, State> {
         // verify signature
         const verified = AccountLib.utils.verifySignature(
             AccountLib.binary.encodeForSigning(txJson),
-            txJson.TxnSignature,
+            txJson.TxnSignature as string,
             publicKey,
         );
 

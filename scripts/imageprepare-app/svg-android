@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Create directories if they don't exist
+mkdir -p drawable-mdpi drawable-hdpi drawable-xhdpi drawable-xxhdpi drawable-xxxhdpi
+
+# Base size (mdpi size - change 24 to your base icon size)
+BASE_SIZE=48
+
+for svg in *.svg; do
+    # Get filename without extension
+    filename="${svg%.svg}"
+    
+    # Generate for each density
+    # mdpi (1x)
+    svgexport "$svg" "drawable-mdpi/${filename}.png" "${BASE_SIZE}:${BASE_SIZE}"
+    
+    # hdpi (1.5x)
+    size=$((BASE_SIZE * 3/2))
+    svgexport "$svg" "drawable-hdpi/${filename}.png" "${size}:${size}"
+    
+    # xhdpi (2x)
+    size=$((BASE_SIZE * 2))
+    svgexport "$svg" "drawable-xhdpi/${filename}.png" "${size}:${size}"
+    
+    # xxhdpi (3x)
+    size=$((BASE_SIZE * 3))
+    svgexport "$svg" "drawable-xxhdpi/${filename}.png" "${size}:${size}"
+    
+    # xxxhdpi (4x)
+    size=$((BASE_SIZE * 4))
+    svgexport "$svg" "drawable-xxxhdpi/${filename}.png" "${size}:${size}"
+    
+    echo "Processed $svg"
+done
+
+echo "All done! Generated PNGs for all densities"

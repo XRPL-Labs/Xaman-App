@@ -21,7 +21,7 @@ const styles = StyleService.create({
     dot: {
         height: 26,
         width: 26,
-        borderRadius: 12,
+        borderRadius: 20,
         borderWidth: 2,
         borderColor: '$grey',
         marginTop: 4,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, TouchableOpacity, InteractionManager, Alert } from 'react-native';
 
+import SummaryStepStyle from '@screens/Send/Steps/Summary/styles';
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
 import { RatesType } from '@services/BackendService';
 
@@ -9,13 +10,15 @@ import { CoreRepository } from '@store/repositories';
 import { Payment } from '@common/libs/ledger/transactions';
 import { PathFindPathOption } from '@common/libs/ledger/types/methods';
 
+import { CalculateAvailableBalance } from '@common/utils/balance';
+
+import { TrustLineModel } from '@store/models';
+
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountElement, PaymentOptionsPicker } from '@components/Modules';
-
-import { Toast } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -46,10 +49,24 @@ export interface State {
 class PaymentTemplate extends Component<Props, State> {
     amountInput: React.RefObject<typeof AmountInput | null>;
 
+    private currentCurrency: TrustLineModel | undefined;
+
     constructor(props: Props) {
         super(props);
+        const { source } = this.props;
 
         const { transaction } = props;
+
+        if (transaction.Amount?.currency && transaction.Amount?.issuer) {
+            this.currentCurrency = (source?.lines || [])
+                .filter(l => {
+                    return l.currency.currencyCode === transaction.Amount?.currency &&
+                        l.currency.issuer === transaction.Amount?.issuer;
+                })?.[0];
+
+            // console.log(this.currentCurrency?.balance);
+            // console.log(this.currentCurrency?.getFormattedCurrency());
+        };
 
         this.state = {
             account: undefined,
@@ -157,7 +174,13 @@ class PaymentTemplate extends Component<Props, State> {
                 this.setState({
                     isLoadingRate: false,
                 });
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
@@ -200,11 +223,12 @@ class PaymentTemplate extends Component<Props, State> {
                 transaction.Amount?.currency === NetworkService.getNativeAsset()
             ) {
                 transaction.SendMax = undefined;
+                // If native asset and destination is native asset it can't be partial
             }
 
             // set the transaction path
             if (path.paths_computed.length === 0) {
-                transaction.Paths = undefined;
+                transaction.Paths = undefined!;
             } else {
                 transaction.Paths = path.paths_computed;
             }
@@ -214,7 +238,7 @@ class PaymentTemplate extends Component<Props, State> {
         } else {
             // clear any set value
             transaction.SendMax = undefined;
-            transaction.Paths = undefined;
+            transaction.Paths = undefined!;
 
             // user cannot continue
             setReady(false);
@@ -232,6 +256,7 @@ class PaymentTemplate extends Component<Props, State> {
             this.amountInput?.current?.focus();
         }
     };
+
 
     renderAmountRate = () => {
         const { amount, isLoadingRate, currencyRate } = this.state;
@@ -251,7 +276,7 @@ class PaymentTemplate extends Component<Props, State> {
                 return (
                     <View style={styles.rateContainer}>
                         <Text style={styles.rateText}>
-                            ~{currencyRate.code} {Localize.formatNumber(rate)}
+                            ~{currencyRate.code} {Localize.formatNumber(rate, 2)}
                         </Text>
                     </View>
                 );
@@ -262,7 +287,7 @@ class PaymentTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { transaction, payload } = this.props;
+        const { transaction, payload, source } = this.props;
         const {
             account,
             editableAmount,
@@ -272,7 +297,10 @@ class PaymentTemplate extends Component<Props, State> {
             isLoadingIssuerFee,
             issuerFee,
             selectedPath,
+            currencyRate,
         } = this.state;
+
+        const isNativeAsset = currencyRate && amount;
 
         // TODO: better handling this part
         if (!account) {
@@ -296,8 +324,14 @@ class PaymentTemplate extends Component<Props, State> {
                 {/* Amount */}
                 <>
                     <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-                    <View style={styles.contentBox}>
-                        <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.onAmountEditPress}>
+                    <View style={[
+                        styles.contentBox,
+                        // AppStyles.borderGreen,
+                    ]}>
+                        <TouchableOpacity activeOpacity={1} style={[
+                            AppStyles.row,
+                            // AppStyles.borderRed,
+                        ]} onPress={this.onAmountEditPress}>
                             {editableAmount ? (
                                 <>
                                     <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -318,23 +352,65 @@ class PaymentTemplate extends Component<Props, State> {
                                     </View>
                                     <Button
                                         onPress={this.onAmountEditPress}
-                                        style={styles.editButton}
-                                        roundedSmall
+                                        style={[
+                                            // styles.editButton,
+                                        ]}
+                                        roundedMini
                                         icon="IconEdit"
                                         iconSize={13}
                                         light
                                     />
                                 </>
                             ) : (
-                                <AmountText
-                                    value={amount!}
-                                    currency={transaction.Amount?.currency}
-                                    style={styles.amountInput}
-                                    immutable
-                                />
+                                <View>
+                                    <AmountText
+                                        value={amount!}
+                                        currency={transaction.Amount?.currency}
+                                        style={styles.amountInput}
+                                        immutable
+                                    />
+                                </View>
                             )}
                         </TouchableOpacity>
-                        {this.renderAmountRate()}
+                        {/* <!-- 
+                            Todo: native shows equivalent = right
+                            non native = show below
+                        --> */}
+                        <View style={[
+                            !isNativeAsset
+                                ? AppStyles.column
+                                : AppStyles.row,
+                            AppStyles.stretchSelf,
+                        ]}>
+                            <View style={[AppStyles.flex1, AppStyles.flexStart]}>{this.renderAmountRate()}</View>
+                            <View style={[AppStyles.flex2, AppStyles.flexEnd]}>
+                                <Text style={[
+                                    !isNativeAsset
+                                        ? AppStyles.textLeftAligned
+                                        : AppStyles.textRightAligned,
+                                    SummaryStepStyle.currencyBalance,
+                                ]}>
+                                    {Localize.t('global.available')}{': '}
+                                    {
+                                        !isNativeAsset
+                                            ? <AmountText
+                                                value={
+                                                    Math.floor(
+                                                        Number(this.currentCurrency?.balance || 0) * 100_000_000,
+                                                    ) / 100_000_000
+                                                }
+                                                style={[AppStyles.monoBold]}
+                                                currency={this.currentCurrency?.getFormattedCurrency()}
+                                                immutable
+                                            />    
+                                            : <Text style={[AppStyles.monoBold]}>
+                                                {Localize.formatNumber(CalculateAvailableBalance(source!))}{' '}
+                                                {NetworkService.getNativeAsset()}
+                                            </Text>
+                                    }
+                                </Text>
+                            </View>
+                        </View>
                     </View>
                 </>
 
@@ -375,6 +451,21 @@ class PaymentTemplate extends Component<Props, State> {
                     </>
                 )}
 
+                {payload.isPathFinding() && transaction.Amount! && transaction.Amount?.value && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
+                        <PaymentOptionsPicker
+                            key={`dpick${account}${transaction.Destination}${JSON.stringify(transaction.Amount!)}`}
+                            source={account}
+                            destination={transaction.Destination}
+                            // TODO: make sure the Amount is set as it's required for payment options
+                            amount={transaction.Amount!}
+                            containerStyle={AppStyles.paddingBottomSml}
+                            onSelect={this.onPathSelect}
+                        />
+                    </>
+                )}
+
                 {transaction.InvoiceID && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
@@ -384,17 +475,16 @@ class PaymentTemplate extends Component<Props, State> {
                     </>
                 )}
 
-                {payload.isPathFinding() && (
+                {transaction.CredentialIDs && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
-                        <PaymentOptionsPicker
-                            source={account}
-                            destination={transaction.Destination}
-                            // TODO: make sure the Amount is set as it's required for payment options
-                            amount={transaction.Amount!}
-                            containerStyle={AppStyles.paddingBottomSml}
-                            onSelect={this.onPathSelect}
-                        />
+                        <Text style={styles.label}>{Localize.t('global.credentialIDs')}</Text>
+                        <View style={styles.contentBox}>
+                            {transaction.CredentialIDs.map((id, index) => (
+                                <Text key={`credential-${index}`} style={styles.value}>
+                                    {id}
+                                </Text>
+                            ))}
+                        </View>
                     </>
                 )}
             </>

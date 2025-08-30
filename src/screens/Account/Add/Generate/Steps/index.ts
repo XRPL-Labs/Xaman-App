@@ -1,3 +1,4 @@
+import DegenMode from './DegenMode';
 import SeedExplanation from './SeedExplanation';
 import ViewPrivateKey from './ViewAccount/PrivateKey';
 import ViewPublicKey from './ViewAccount/PublicKey';
@@ -9,6 +10,7 @@ import LabelStep from './Label';
 import FinishStep from './Finish';
 
 export default {
+    DegenMode,
     ViewPublicKey,
     ExplainActivation,
     SeedExplanation,

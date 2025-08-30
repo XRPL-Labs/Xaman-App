@@ -4,10 +4,11 @@
 
 import React, { Component } from 'react';
 
-import { View, Text, Image, SafeAreaView, Alert } from 'react-native';
+import { View, Text, Image, SafeAreaView, Alert, ImageBackground } from 'react-native';
 
 import { Navigator } from '@common/helpers/navigator';
 import { AppScreens } from '@common/constants';
+import { Images } from '@common/helpers/images';
 
 import { PushNotificationsService, StyleService } from '@services';
 
@@ -19,6 +20,7 @@ import { FinishSetupViewProps } from '@screens/Setup/Finish';
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import onboardingStyles from '../../Onboarding/styles';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -34,17 +36,11 @@ class PushNotificationSetupView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {
-            isLoading: false,
-        };
+        this.state = { isLoading: false };
     }
 
     static options() {
-        return {
-            topBar: {
-                visible: false,
-            },
-        };
+        return { topBar: { visible: false } };
     }
 
     requestPermission = () => {
@@ -88,38 +84,64 @@ class PushNotificationSetupView extends Component<Props, State> {
         const { isLoading } = this.state;
 
         return (
-            <SafeAreaView testID="permission-setup-view" style={AppStyles.container}>
-                <View style={[AppStyles.flex2, AppStyles.centerContent]}>
-                    <Image style={styles.logo} source={StyleService.getImage('XamanLogo')} />
-                </View>
-
-                <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
-                    <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
-                        <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageNotifications')} />
-                    </View>
-
-                    <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>
-                        <Text style={[AppStyles.h5, AppStyles.strong, AppStyles.textCenterAligned]}>
-                            {Localize.t('setupPermissions.enableNotifications')}
-                        </Text>
-                        <Spacer size={20} />
-                        <Text style={[AppStyles.p, AppStyles.textCenterAligned]}>
-                            {Localize.t('setupPermissions.permissionDescription')}
-                        </Text>
-                    </View>
-                </View>
-
-                <Footer style={AppStyles.paddingBottom}>
-                    <Button numberOfLines={1} light label={Localize.t('global.maybeLater')} onPress={this.nextStep} />
-                    <Spacer />
-                    <Button
-                        isLoading={isLoading}
-                        numberOfLines={1}
-                        label={Localize.t('global.yes')}
-                        onPress={this.requestPermission}
+            <ImageBackground
+                testID="permission-setup-view"
+                resizeMode="cover"
+                source={StyleService.getImageIfLightModeIfDarkMode('BackgroundPatternLight', 'BackgroundPattern')}
+                style={onboardingStyles.backgroundImageStyle}
+                imageStyle={onboardingStyles.backgroundImageStyle}
+            >
+                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                    <Image
+                        style={onboardingStyles.logo}
+                        source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
                     />
-                </Footer>
-            </SafeAreaView>
+                </SafeAreaView>
+                <View style={[
+                    AppStyles.flex4,
+                ]}>
+                    <View style={[AppStyles.flex8, AppStyles.paddingSml]}>
+                        <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.flexEnd]}>
+                            <Text style={[AppStyles.h5, AppStyles.strong]}>
+                                {Localize.t('setupPermissions.enableNotifications')}
+                            </Text>
+                            <Spacer size={10} />
+                            <Text style={[AppStyles.p, AppStyles.textCenterAligned, AppStyles.colorSilver]}>
+                                {Localize.t('setupPermissions.permissionDescription')}
+                            </Text>
+                            <View style={[AppStyles.flex3, AppStyles.centerAligned, AppStyles.centerContent]}>
+                                <Image style={[styles.notificationImage]} source={Images.Notification} />
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                <SafeAreaView style={[
+                    AppStyles.flex2,
+                    AppStyles.marginTop,
+                ]}>
+                    <SafeAreaView style={[
+                        onboardingStyles.container,
+                    ]}>
+                        <Footer style={[
+                            AppStyles.paddingBottom,
+                            AppStyles.paddingTopNone,
+                        ]}>
+                            <Button numberOfLines={1}
+                                light
+                                label={Localize.t('global.maybeLater')}
+                                onPress={this.nextStep}
+                            />
+                            <Spacer />
+                            <Button
+                                isLoading={isLoading}
+                                numberOfLines={1}
+                                label={Localize.t('global.yes')}
+                                onPress={this.requestPermission}
+                            />
+                        </Footer>
+                    </SafeAreaView>
+                </SafeAreaView>
+            </ImageBackground>
         );
     }
 }

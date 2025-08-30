@@ -13,12 +13,43 @@ const styles = StyleService.create({
         paddingRight: AppSizes.paddingSml,
         paddingLeft: AppSizes.paddingSml,
     },
+    degenWarning: {
+        paddingVertical: 7,
+        paddingHorizontal: 10, 
+        paddingLeft: 13,
+        marginBottom: 6,
+        borderRadius: 11,
+        marginTop: -8,
+        backgroundColor: '$lightRed',
+        borderColor: '$red',
+        // borderWidth: 2,
+    },
+    backUpButton: {
+        borderRadius: 7,
+        paddingHorizontal: 12,
+        marginLeft: 10,
+        // borderColor: '$white',
+        height: '100%',
+    },
+    degenWarningText: {
+        color: '$red',
+        fontWeight: 'bold',
+        fontSize: 13,
+        paddingVertical: 2,
+        lineHeight: 15,
+    },
     monetizationContainer: {
         marginHorizontal: AppSizes.paddingSml,
         marginBottom: AppSizes.paddingExtraSml,
     },
     tokenListContainer: {
         flex: 6,
+    },
+    iconRotateX: {
+        transform: [{ rotateX: '180deg' }],
+    },
+    iconRotateY: {
+        transform: [{ rotateY: '180deg' }],
     },
     logo: {
         width: AppSizes.scale(120),
@@ -27,24 +58,30 @@ const styles = StyleService.create({
     },
     buttonRow: {
         flexDirection: 'row',
-        marginBottom: 20,
+        marginBottom: 15,
         marginTop: 15,
-        marginHorizontal: AppSizes.paddingSml,
+        marginHorizontal: AppSizes.paddingSml - 4,
     },
     // SEND BUTTON
     sendButtonContainer: {
         backgroundColor: '$blue',
+        marginHorizontal: 4,
     },
-    sendButtonIcon: { tintColor: '$white' },
+    // SEND BUTTON
+    swapButtonContainer: {
+        backgroundColor: '$darkBlue',
+        marginHorizontal: 4,
+    },
+    sendButtonIcon: { tintColor: '$white', marginRight: -3 },
     sendButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     // REQUEST BUTTON
     requestButtonContainer: {
-        marginLeft: 15,
+        marginHorizontal: 4,
         backgroundColor: '$green',
     },
 
-    requestButtonIcon: { tintColor: '$white' },
+    requestButtonIcon: { tintColor: '$white', marginRight: -3 },
     requestButtonText: { fontSize: AppFonts.base.size, color: '$white' },
 
     requestButtonContainerClean: {
@@ -62,10 +99,11 @@ const styles = StyleService.create({
         alignItems: 'center',
         backgroundColor: '$contrast',
         borderRadius: 12,
+        marginTop: -8,
         paddingHorizontal: AppSizes.paddingExtraSml,
         paddingVertical: 5,
         marginHorizontal: AppSizes.paddingSml,
-        marginBottom: AppSizes.paddingExtraSml,
+        marginBottom: AppSizes.paddingExtraSml + 3,
     },
     networkTextLabel: {
         color: '$silver',
@@ -77,8 +115,17 @@ const styles = StyleService.create({
         fontFamily: AppFonts.base.familyMonoBold,
         fontSize: AppFonts.subtext.size * 0.8,
     },
-    accountSwitchElement: {
+    accountSwitchConainer: {
+        backgroundColor: '$tint',
         marginHorizontal: AppSizes.paddingSml,
+        paddingTop: 7,
+        paddingBottom: 4,
+        paddingLeft: 10,
+        paddingRight: 6,
+        borderRadius: 11,
+    },
+    accountSwitchElement: {
+        marginHorizontal: 0,
     },
 });
 

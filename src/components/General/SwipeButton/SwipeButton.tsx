@@ -59,6 +59,7 @@ class SwipeButton extends Component<Props, State> {
     };
 
     private animatedWidth: Animated.Value;
+    // private animatedWidth: number;
     private defaultContainerWidth: number;
     private maxWidth: number;
     private panResponder: any;
@@ -76,6 +77,7 @@ class SwipeButton extends Component<Props, State> {
         this.defaultContainerWidth = AppSizes.scale(45);
         this.maxWidth = 0;
         this.animatedWidth = new Animated.Value(this.defaultContainerWidth);
+        // this.animatedWidth = this.defaultContainerWidth;
 
         this.panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -83,9 +85,12 @@ class SwipeButton extends Component<Props, State> {
             onMoveShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponderCapture: () => true,
             onShouldBlockNativeResponder: () => false,
+            onPanResponderTerminationRequest: () => false,
             onPanResponderMove: this.onPanResponderMove,
             onPanResponderRelease: this.onPanResponderRelease,
+            onPanResponderTerminate: this.onPanResponderRelease,
             onPanResponderGrant: this.onPanResponderGrant,
+            onPanResponderStart: this.onPanResponderGrant,
         });
     }
 
@@ -138,10 +143,11 @@ class SwipeButton extends Component<Props, State> {
     };
 
     changePosition = (width: number) => {
+        // this.animatedWidth = width;
         Animated.timing(this.animatedWidth, {
             toValue: width,
             duration: 400,
-            useNativeDriver: false,
+            useNativeDriver: true,
         }).start();
     };
 
@@ -194,11 +200,8 @@ class SwipeButton extends Component<Props, State> {
             // Reached end position
             this.changePosition(this.maxWidth);
         } else {
-            Animated.timing(this.animatedWidth, {
-                toValue: newWidth,
-                duration: 0,
-                useNativeDriver: false,
-            }).start();
+            // this.animatedWidth = newWidth;
+            this.animatedWidth.setValue(newWidth);
         }
     };
 
@@ -298,9 +301,13 @@ class SwipeButton extends Component<Props, State> {
                 <Text style={[styles.label, labelColor ? { color: labelColor } : {}]}>{label}</Text>
                 <Animated.View
                     testID={testID}
-                    style={[styles.thumpContainer, { width: this.animatedWidth }]}
+                    style={[
+                        styles.thumpContainer,
+                        { transform: [ { translateX: this.animatedWidth } ] },
+                    ]}
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...this.panResponder.panHandlers}
+                    hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                 >
                     <View
                         style={[

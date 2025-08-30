@@ -15,7 +15,7 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountModel, TrustLineModel } from '@store/models';
 
-import { Prompt, Toast } from '@common/helpers/interface';
+import { Prompt } from '@common/helpers/interface';
 
 import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { CalculateAvailableBalance } from '@common/utils/balance';
@@ -33,7 +33,8 @@ import styles from './styles';
 
 import { StepsContext } from '../../Context';
 /* Types  ==================================================================== */
-interface Props {}
+interface Props {
+}
 
 interface State {
     isLoadingAvailableBalance: boolean;
@@ -83,7 +84,13 @@ class DetailsStep extends Component<Props, State> {
                 );
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
@@ -303,7 +310,7 @@ class DetailsStep extends Component<Props, State> {
 
     render() {
         const { amountRate, currencyRate, isLoadingAvailableBalance, isCheckingBalance } = this.state;
-        const { goBack, accounts, source, token, amount, coreSettings } = this.context;
+        const { goBack, accounts, source, token, amount, coreSettings, timestamp } = this.context;
 
         return (
             <View testID="send-details-view" style={styles.container}>
@@ -328,6 +335,7 @@ class DetailsStep extends Component<Props, State> {
                             </Text>
                         </View>
                         <CurrencyPicker
+                            timestamp={timestamp}
                             account={source!}
                             onSelect={this.onCurrencyChange}
                             currencies={
@@ -357,7 +365,7 @@ class DetailsStep extends Component<Props, State> {
                             <View>
                                 <Button
                                     light
-                                    roundedSmall
+                                    roundedMini
                                     isLoading={isLoadingAvailableBalance}
                                     onPress={this.applyAllBalance}
                                     label={Localize.t('global.all')}
@@ -384,8 +392,8 @@ class DetailsStep extends Component<Props, State> {
                                 onPress={() => {
                                     this.amountInput.current?.focus();
                                 }}
-                                style={styles.editButton}
-                                roundedSmall
+                                style={[styles.editButton, AppStyles.marginRightSml ]}
+                                roundedMini
                                 iconSize={15}
                                 iconStyle={AppStyles.imgColorGrey}
                                 light

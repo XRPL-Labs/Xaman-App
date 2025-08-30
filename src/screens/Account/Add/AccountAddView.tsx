@@ -4,7 +4,15 @@
 import { get, set, isEmpty } from 'lodash';
 
 import React, { Component } from 'react';
-import { View, Text, Image, ImageBackground, Alert, InteractionManager, EventSubscription } from 'react-native';
+import {
+    View,
+    Text,
+    ImageBackground,
+    Alert,
+    InteractionManager,
+    EventSubscription,
+    SafeAreaView,
+} from 'react-native';
 
 import RNTangemSdk, { Card, EventCallback } from 'tangem-sdk-react-native';
 
@@ -23,7 +31,7 @@ import { GetPreferCurve, GetWalletDerivedPublicKey, DefaultDerivationPaths } fro
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Header, Spacer } from '@components/General';
+import { Button, Header, Spacer, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -31,14 +39,18 @@ import { Props as AccountGenerateViewProps } from '@screens/Account/Add/Generate
 import { Props as AccountImportViewProps } from '@screens/Account/Add/Import/types';
 
 import { AppStyles } from '@theme';
-import styles from './styles';
+// import styles from './styles';
 
 /* types ==================================================================== */
-export interface Props {}
+export interface Props {
+    DefaultTangem?: boolean;
+    NavigationReadyPromise?: PromiseLike<void>;
+}
 
 export interface State {
     NFCSupported: boolean;
     NFCEnabled: boolean;
+    HasLaunchedTangem: boolean;
 }
 
 /* Component ==================================================================== */
@@ -46,6 +58,7 @@ class AccountAddView extends Component<Props, State> {
     static screenName = AppScreens.Account.Add;
 
     private nfcChangeListener?: EventSubscription;
+    private hasRendered = false;
 
     static options() {
         return {
@@ -59,13 +72,14 @@ class AccountAddView extends Component<Props, State> {
         this.state = {
             NFCSupported: false,
             NFCEnabled: false,
+            HasLaunchedTangem: false,
         };
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            // on NFC state change (Android)
             this.nfcChangeListener = RNTangemSdk.addListener('NFCStateChange', this.onNFCStateChange);
+            // on NFC state change (Android)
 
             // get current NFC status
             RNTangemSdk.getNFCStatus().then((status) => {
@@ -76,6 +90,21 @@ class AccountAddView extends Component<Props, State> {
                     NFCEnabled: enabled,
                 });
             });
+        });
+    }
+
+    componentDidUpdate() {
+        const {DefaultTangem, NavigationReadyPromise} = this.props;
+        const {NFCEnabled, HasLaunchedTangem} = this.state;
+
+        InteractionManager.runAfterInteractions(() => {
+            // componentDidAppear?
+            if (!HasLaunchedTangem && NFCEnabled && !this.hasRendered) {
+                this.hasRendered = true;
+                if (DefaultTangem && NavigationReadyPromise) {
+                    NavigationReadyPromise.then(this.onAddTangemCardPress);
+                }
+            }
         });
     }
 
@@ -216,6 +245,7 @@ class AccountAddView extends Component<Props, State> {
 
         if (!NFCSupported) {
             Alert.alert(Localize.t('global.error'), Localize.t('account.tangemNFCNotSupportedDeviceAlert'));
+            this.setState({ HasLaunchedTangem: true });
             return;
         }
 
@@ -230,9 +260,24 @@ class AccountAddView extends Component<Props, State> {
         if (NFCEnabled) {
             await this.scanTangemCard();
         }
+
+        this.setState({ HasLaunchedTangem: true });
     };
 
     render() {
+        const {DefaultTangem} = this.props;
+        const {HasLaunchedTangem, NFCSupported, NFCEnabled} = this.state;
+
+        if (DefaultTangem && !HasLaunchedTangem) {
+            return (
+                <View style={AppStyles.container}>
+                    <LoadingIndicator
+                        size="large"
+                    />
+                </View>
+            );
+        }
+
         return (
             <View testID="account-add-screen" style={AppStyles.container}>
                 <Header
@@ -242,53 +287,86 @@ class AccountAddView extends Component<Props, State> {
                     }}
                     centerComponent={{ text: Localize.t('account.addAccount') }}
                 />
-                <View style={[AppStyles.contentContainer, AppStyles.paddingHorizontal, AppStyles.paddingBottom]}>
+                <View style={[AppStyles.contentContainer]}>
                     <ImageBackground
-                        source={StyleService.getImage('BackgroundShapes')}
-                        imageStyle={AppStyles.BackgroundShapes}
-                        style={[AppStyles.BackgroundShapesWH, AppStyles.column]}
+                        resizeMode="cover"
+                        source={StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')}
+                        style={[
+                            AppStyles.BackgroundShapesWH,
+                            AppStyles.column,
+                        ]}
                     >
-                        <View style={[AppStyles.flex1, AppStyles.centerContent]}>
-                            <Image
-                                style={[AppStyles.emptyIcon, AppStyles.centerSelf]}
-                                source={StyleService.getImage('ImageAddAccount')}
-                            />
-                        </View>
-                        <View style={AppStyles.flexEnd}>
-                            <Text style={[AppStyles.emptyText, AppStyles.baseText]}>
-                                {Localize.t('account.addAccountDescription')}
-                            </Text>
-                            <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
-                                <Button
-                                    numberOfLines={1}
-                                    testID="account-generate-button"
-                                    label={Localize.t('account.generateNewAccount')}
-                                    onPress={this.goToGenerate}
-                                />
-
-                                <Spacer />
-
-                                <Button
-                                    secondary
-                                    numberOfLines={1}
-                                    testID="account-import-button"
-                                    label={Localize.t('account.importExisting')}
-                                    onPress={this.goToImport}
-                                />
-
-                                <View style={styles.separatorContainer}>
-                                    <Text style={styles.separatorText}>{Localize.t('global.or')}</Text>
-                                </View>
-
-                                <Button
-                                    contrast
-                                    testID="tangem-import-button"
-                                    label={Localize.t('account.addTangemCard')}
-                                    onPress={this.onAddTangemCardPress}
-                                    style={{ backgroundColor: StyleService.value('$contrast') }}
-                                />
+                        <SafeAreaView style={[AppStyles.flex1]}>
+                            <View style={[AppStyles.flex1, AppStyles.centerContent]}>
+                                <Text style={[
+                                    AppStyles.emptyText,
+                                    AppStyles.baseText,
+                                    AppStyles.p,
+                                ]}>
+                                    {Localize.t('account.addAccountDescription')}
+                                </Text>
                             </View>
-                        </View>
+                            <View style={AppStyles.flexEnd}>
+                                <View style={[AppStyles.centerAligned, AppStyles.centerContent]}>
+                                    <Button
+                                        // numberOfLines={1}
+                                        testID="account-generate-button"
+                                        label={Localize.t('account.generateNewAccount')}
+                                        icon="IconCreate"
+                                        iconStyle={AppStyles.imgColorWhite}
+                                        nonBlock
+                                        onPress={this.goToGenerate}
+                                    />
+
+                                    <Spacer />
+
+                                    <Button
+                                        secondary
+                                        // numberOfLines={1}
+                                        testID="account-import-button"
+                                        label={Localize.t('account.importExisting')}
+                                        icon="IconImport"
+                                        iconStyle={AppStyles.imgColorWhite}
+                                        nonBlock
+                                        onPress={this.goToImport}
+                                    />
+
+                                    <Spacer size={
+                                        NFCSupported && NFCEnabled
+                                            ? 12
+                                            : AppStyles.marginBottom.marginBottom
+                                    }/>
+
+                                    { 
+                                        NFCSupported && NFCEnabled && (
+                                            <View>
+                                                <Text style={[
+                                                    AppStyles.textCenterAligned,
+                                                    AppStyles.smalltext,
+                                                    AppStyles.bold,
+                                                    AppStyles.colorGrey,
+                                                ]}>{Localize.t('global.or').toUpperCase()}</Text>
+                                                <Spacer size={12} />
+
+                                                <Button
+                                                    icon="IconTangem"
+                                                    iconStyle={AppStyles.imgColorContrast}
+                                                    nonBlock
+                                                    contrast
+                                                    testID="tangem-import-button"
+                                                    label={Localize.t('account.addTangemCard')}
+                                                    onPress={this.onAddTangemCardPress}
+                                                    style={[
+                                                        {backgroundColor: StyleService.value('$contrast') },
+                                                        AppStyles.marginBottom,
+                                                    ]}
+                                                />
+                                            </View>
+                                        )
+                                    }
+                                </View>
+                            </View>
+                        </SafeAreaView>
                     </ImageBackground>
                 </View>
             </View>

@@ -35,15 +35,20 @@ class SeedExplanationStep extends Component<Props, State> {
         return (
             <SafeAreaView testID="account-generate-explanation-private-view" style={AppStyles.container}>
                 <View style={[AppStyles.centerAligned, AppStyles.marginBottomSml]}>
-                    <Image style={[AppStyles.emptyIcon]} source={StyleService.getImage('ImageSecretWarning')} />
+                    <Image style={[
+                        AppStyles.emptyIcon,
+                        AppStyles.emptyIconSm,
+                        AppStyles.marginTopSml,
+                        AppStyles.marginBottomSml,
+                    ]} source={StyleService.getImage('ImageTriangle')} />
                 </View>
 
-                <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingSml]}>
+                <View style={[AppStyles.contentContainer, AppStyles.centerAligned, AppStyles.paddingHorizontalSml]}>
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {Localize.t('account.privateKeyRowsDesc')}
                     </Text>
 
-                    <Spacer size={30} />
+                    <Spacer size={20} />
 
                     <Text style={[AppStyles.baseText, AppStyles.textCenterAligned]}>
                         {Localize.t('account.writeDownPrivateKey')}
@@ -51,7 +56,11 @@ class SeedExplanationStep extends Component<Props, State> {
 
                     <Spacer size={20} />
 
-                    <InfoMessage type="error" label={Localize.t('account.neverSharePrivateKey')} />
+                    <InfoMessage
+                        type="error"
+                        label={Localize.t('account.neverSharePrivateKey')}
+                        labelStyle={[AppStyles.p, AppStyles.bold, AppStyles.colorRed]}
+                    />
                     <Spacer size={20} />
                 </View>
 
@@ -59,7 +68,7 @@ class SeedExplanationStep extends Component<Props, State> {
                     <View style={AppStyles.flex5}>
                         <Button
                             testID="next-button"
-                            textStyle={AppStyles.strong}
+                            // textStyle={AppStyles.strong}
                             label={Localize.t('global.nextIUnderstand')}
                             onPress={this.goNext}
                         />

@@ -6,6 +6,8 @@ import { first, filter } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
+import PushNotificationsService from '@services/PushNotificationsService';
+
 import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
@@ -16,7 +18,7 @@ import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 import { AccessLevels, AccountTypes, EncryptionLevels } from '@store/types';
 
-import { Button, Header, Icon, Spacer, Switch, TouchableDebounce } from '@components/General';
+import { Button, Header, Icon, Spacer, Switch, TouchableDebounce, LoadingIndicator } from '@components/General';
 
 import Localize from '@locale';
 
@@ -29,14 +31,20 @@ import { PassphraseAuthenticationOverlayProps } from '@screens/Overlay/Passphras
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import BackendService from '@services/BackendService';
 
 /* types ==================================================================== */
 export interface Props {
     account: AccountModel;
+    nativeAccountInfo?: XamanBackend.MultiAddressNativeInfoItem;
 }
 
 export interface State {
     account: AccountModel;
+    fetchingPushState: boolean;
+    pushAvailable: boolean;
+    pushEnabled: boolean;
+    accountCanSign: boolean;
 }
 
 /* Component ==================================================================== */
@@ -51,14 +59,37 @@ class AccountSettingsView extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+        const { nativeAccountInfo } = props;
 
         this.state = {
             account: props.account,
+            fetchingPushState: true,
+            pushAvailable: false,
+            pushEnabled: !!nativeAccountInfo?.hasPush,
+            accountCanSign: false,
         };
     }
 
     componentDidMount() {
+        const { account } = this.state;
+
         AccountRepository.on('accountUpdate', this.onAccountUpdate);
+
+        const accountCanSign = this.canAccountSign(account);
+        this.setState({ accountCanSign });
+
+        if (accountCanSign) {
+            Promise.all([
+                PushNotificationsService.checkPermission(),
+                BackendService.privateAccountInfo(account.address, account.label),
+            ]).then(pushState => {
+                this.setState({
+                    fetchingPushState: false,
+                    pushAvailable: pushState[0],
+                    pushEnabled: !!pushState[1]?.push,
+                });
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -68,8 +99,10 @@ class AccountSettingsView extends Component<Props, State> {
     onAccountUpdate = (updateAccount: AccountModel) => {
         const { account } = this.state;
 
-        if (account?.isValid() && updateAccount.address === account.address) {
-            this.setState({ account: updateAccount });
+        if (account?.isValid() && updateAccount?.address === account.address) {           
+            this.setState({
+                account: updateAccount,
+            });
         }
     };
 
@@ -106,6 +139,9 @@ class AccountSettingsView extends Component<Props, State> {
             address: account.address,
             label: labelClean,
         });
+
+        // Update name.
+        BackendService.privateAccountInfo(account.address, labelClean);
     };
 
     showAccessLevelPicker = () => {
@@ -206,21 +242,32 @@ class AccountSettingsView extends Component<Props, State> {
         Navigator.push<ChangeTangemSecurityViewProps>(AppScreens.Account.Edit.ChangeTangemSecurityEnforce, { account });
     };
 
+    selectNextAccount = (skipAddress?: string) => {
+        // check if we are removing default account, then we need to select another account as default
+        const accounts = AccountRepository.getAccounts();
+        const newAccount = first(filter(accounts, (a: any) => a.address !== skipAddress && !a?.hidden));
+        CoreRepository.saveSettings({ account: newAccount });
+
+        setTimeout(() => {
+            this.reEnableFirstAccountIfNeeded(skipAddress);
+        }, 100);
+    };
+
     removeAccount = () => {
         const { account } = this.state;
 
-        // get current core settings
-        const coreSettings = CoreRepository.getSettings();
+        // Disable push
+        BackendService.privateAccountInfo(account.address, '[REMOVED]', false);
 
+        // get current core settings
+        // const coreSettings = CoreRepository.getSettings();
         // check if we are removing default account, then we need to select another account as default
-        if (account.address === coreSettings.account?.address) {
-            const accounts = AccountRepository.getAccounts();
-            CoreRepository.saveSettings({
-                account: first(filter(accounts, (a: any) => a.address !== account.address)),
-            });
-        }
+        // if (account.address === coreSettings.account?.address) {
+        // }
 
         // remove account
+        const skipAddress = account?.address;
+        this.selectNextAccount(skipAddress);
         AccountRepository.purge(account);
 
         // pop the screen
@@ -259,26 +306,66 @@ class AccountSettingsView extends Component<Props, State> {
         );
     };
 
+    onTxPushChange = (value: boolean) => {
+        const { account } = this.props;
+
+        this.setState({
+            pushEnabled: value,
+            fetchingPushState: true,
+        });
+
+        BackendService.privateAccountInfo(account.address, account.label, value).then(() => {
+            this.setState({
+                fetchingPushState: false,
+            });    
+        });
+    };
+
+    reEnableFirstAccountIfNeeded = (skipAddress?: string) => {
+        // If everything is hidden now, then re-enable the first one.
+        setTimeout(() => {
+            const visibleAccounts = AccountRepository
+                .getAccounts({ hidden: false })
+                .filter(a => a.address !== skipAddress);
+
+            if (visibleAccounts.length === 0) {
+                const allAccounts = AccountRepository
+                    .getAccounts()
+                    .filter(a => a.address !== skipAddress);
+
+                if (allAccounts.length > 0) {
+                    const firstAccount = first(allAccounts);
+                    if (firstAccount) {
+                        AccountRepository.update({ address: firstAccount.address, hidden: false });
+                        CoreRepository.saveSettings({ account: firstAccount });
+                    }
+                }
+            }
+        }, 100);
+    };
+
     onHiddenChange = (value: boolean) => {
         const { account } = this.props;
 
-        const coreSettings = CoreRepository.getSettings();
+        // const coreSettings = CoreRepository.getSettings();
 
         if (value) {
-            const allAccounts = AccountRepository.getAccounts();
-            const hiddenAccounts = AccountRepository.getAccounts({ hidden: true });
+            // const allAccounts = AccountRepository.getAccounts();
+            // const hiddenAccounts = AccountRepository.getAccounts({ hidden: true });
+            const visibleAccounts = AccountRepository.getAccounts({ hidden: false });
 
             // check if we are hiding all accounts
-            if (allAccounts.length - hiddenAccounts.length === 1) {
+            if (visibleAccounts.filter(a => a.address !== account.address).length === 0) {
                 Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideAllAccountsError'));
                 return;
             }
 
-            // check if we are hiding the default account
-            if (coreSettings.account?.address === account.address) {
-                Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideDefaultAccountError'));
-                return;
-            }
+            // // check if we are hiding the default account
+            // if (coreSettings.account?.address === account.address) {
+            //     // Alert.alert(Localize.t('global.error'), Localize.t('account.unableToHideDefaultAccountError'));
+            //     // return;
+            //     this.selectNextAccount(account);
+            // }
         }
 
         // update account hidden value
@@ -286,10 +373,29 @@ class AccountSettingsView extends Component<Props, State> {
             address: account.address,
             hidden: value,
         });
+
+        this.reEnableFirstAccountIfNeeded();
+    };
+
+    canAccountSign = (account: AccountModel) => {
+        if (account.accessLevel === AccessLevels.Full) {
+            return true;
+        };
+        
+        if (account.accessLevel === AccessLevels.Readonly && account.regularKey) {
+            const regularKeyAccount = AccountRepository.findOne({ address: account.regularKey });
+            if (regularKeyAccount && regularKeyAccount.accessLevel === AccessLevels.Full) {
+                return true;
+            }
+        };
+
+        return false;
     };
 
     render() {
-        const { account } = this.state;
+        const { account, fetchingPushState, pushAvailable, pushEnabled, accountCanSign } = this.state;
+
+        if (!account?.isValid()) return null;
 
         return (
             <View testID="account-settings-screen" style={styles.container}>
@@ -345,6 +451,35 @@ class AccountSettingsView extends Component<Props, State> {
                             </Text>
                             <Icon size={25} style={styles.rowIcon} name="IconChevronRight" />
                         </TouchableDebounce>
+
+                        {/* Push notifications */}
+                        { accountCanSign && 
+                            (
+                                <View style={styles.row}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('global.accounttxpush')}
+                                    </Text>
+                                    <View style={[
+                                        AppStyles.flex1,
+                                        styles.loaderInline,
+                                    ]}>
+                                        { fetchingPushState && (
+                                            <LoadingIndicator style={styles.inlineLoader} />
+                                            )
+                                        }
+                                        <Switch
+                                            style={[
+                                                styles.switchRight,
+                                                AppStyles.rightAligned,
+                                            ]}
+                                            checked={pushEnabled}
+                                            isDisabled={fetchingPushState || !pushAvailable}
+                                            onChange={this.onTxPushChange}
+                                        /> 
+                                    </View>
+                                </View>
+                            )
+                        }
 
                         {/* Account Access Level */}
                         {account.type === AccountTypes.Regular && (

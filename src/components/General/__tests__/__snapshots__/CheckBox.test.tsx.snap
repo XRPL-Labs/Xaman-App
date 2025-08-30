@@ -49,9 +49,11 @@ exports[`[CheckBox] renders correctly when checked 1`] = `
 >
   <View
     style={
-      {
-        "flex": 1,
-      }
+      [
+        {
+          "flex": 1,
+        },
+      ]
     }
   >
     <View
@@ -201,9 +203,11 @@ exports[`[CheckBox] renders correctly when unchecked 1`] = `
 >
   <View
     style={
-      {
-        "flex": 1,
-      }
+      [
+        {
+          "flex": 1,
+        },
+      ]
     }
   >
     <View

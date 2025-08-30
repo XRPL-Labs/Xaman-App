@@ -9,7 +9,7 @@ import { AppScreens } from '@common/constants';
 
 import { NetworkService, PushNotificationsService, ResolverService } from '@services';
 
-import { AccountRepository, CoreRepository, CurrencyRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel } from '@store/models';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
@@ -31,6 +31,8 @@ import ErrorView from './Shared/ErrorView';
 
 import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
+import LedgerService from '@services/LedgerService';
+import BackendService from '@services/BackendService';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -50,6 +52,8 @@ class ReviewTransactionModal extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        // console.log('Review TX Modal')
+
         this.state = {
             payload: props.payload,
             transaction: undefined,
@@ -58,6 +62,7 @@ class ReviewTransactionModal extends Component<Props, State> {
             currentStep: Steps.Preflight,
             submitResult: undefined,
             isLoading: false,
+            serviceFee: undefined,
             isReady: true,
             isValidPayload: true,
             hasError: false,
@@ -111,7 +116,7 @@ class ReviewTransactionModal extends Component<Props, State> {
     };
 
     prepareAndSignTransaction = async () => {
-        const { source, transaction } = this.state;
+        const { source, transaction, serviceFee } = this.state;
         const { payload } = this.props;
 
         // if not mounted return
@@ -123,6 +128,11 @@ class ReviewTransactionModal extends Component<Props, State> {
             isLoading: true,
         });
 
+        // console.log({serviceFee}, transaction?.ServiceFee, transaction?.ServiceFeeTx);
+        if (serviceFee) {
+            transaction?.setServiceFee(serviceFee);
+        }
+
         // TODO: transaction!
         await transaction!
             // TODO: source!
@@ -130,10 +140,12 @@ class ReviewTransactionModal extends Component<Props, State> {
             .then(this.submit)
             .catch((error: Error) => {
                 if (this.mounted) {
-                    if (error?.message) {
-                        Alert.alert(Localize.t('global.error'), error.message);
-                    } else {
-                        Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                    if (error) {
+                        if (error?.message) {
+                            Alert.alert(Localize.t('global.error'), error.message);
+                        } else {
+                            Alert.alert(Localize.t('global.error'), Localize.t('global.unexpectedErrorOccurred'));
+                        }
                     }
 
                     this.setState({
@@ -204,6 +216,9 @@ class ReviewTransactionModal extends Component<Props, State> {
     onAccept = async () => {
         const { payload } = this.props;
         const { source, transaction } = this.state;
+        // console.log('REVIEW TX MODAL ACCEPT SERVICE FEE', serviceFee);
+        // console.log('state', this.props)
+        // return
 
         if (!transaction || !source) {
             throw new Error('Transaction and Source instance is required!');
@@ -236,7 +251,55 @@ class ReviewTransactionModal extends Component<Props, State> {
                     });
                 }
 
+                // do not continue
                 return;
+            }
+
+            // user may close the page at this point while we have been waiting for transaction validation
+            // we need to return if component is not mounted
+            if (!this.mounted) {
+                return;
+            }
+
+            // Live check if account is activated before continue for signing regular transaction
+            // ignore pseudo and multi-sign transactions
+            // ignore for "Import" transaction as it can be submitted even if account is not activated
+            try {
+                if (
+                    !payload.isPseudoTransaction() &&
+                    !payload.isMultiSign() &&
+                    transaction.Type !== TransactionTypes.Import
+                ) {
+                    const sourceAccountInfo = await LedgerService.getAccountInfo(source.address).catch(() => {
+                        // do not catch
+                    });
+
+                    if (!this.mounted) {
+                        return;
+                    }
+
+                    // if we couldn't get the account info then fallback to cached method
+                    if (
+                        (!sourceAccountInfo && source.balance === 0) ||
+                        (sourceAccountInfo && 'error' in sourceAccountInfo && sourceAccountInfo.error === 'actNotFound')
+                    ) {
+                        Navigator.showAlertModal({
+                            type: 'error',
+                            text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.ok'),
+                                    light: false,
+                                },
+                            ],
+                        });
+
+                        // do not continue
+                        return;
+                    }
+                }
+            } catch {
+                // ignore
             }
 
             try {
@@ -259,33 +322,14 @@ class ReviewTransactionModal extends Component<Props, State> {
                         ],
                     });
                 }
+
+                // do not continue
                 return;
             }
 
-            // user may close the page at this point
+            // user may close the page at this point while we have been waiting for transaction validation
             // we need to return if component is not mounted
             if (!this.mounted) {
-                return;
-            }
-
-            // account is not activated and want to sign a tx
-            // ignore for "Import" transaction as it can be submitted even if account is not activated
-            if (
-                !payload.isPseudoTransaction() &&
-                transaction.Type !== TransactionTypes.Import &&
-                !payload.isMultiSign() &&
-                source!.balance === 0
-            ) {
-                Navigator.showAlertModal({
-                    type: 'error',
-                    text: Localize.t('account.selectedAccountIsNotActivatedPleaseChooseAnotherOne'),
-                    buttons: [
-                        {
-                            text: Localize.t('global.ok'),
-                            light: false,
-                        },
-                    ],
-                });
                 return;
             }
 
@@ -311,6 +355,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                         },
                     ],
                 });
+
+                // do not continue
                 return;
             }
 
@@ -318,76 +364,102 @@ class ReviewTransactionModal extends Component<Props, State> {
             if (transaction.Type === TransactionTypes.TrustSet) {
                 // if the token is not in the vetted list and user is creating new trust line
                 // show the warning
-                if (
-                    !CurrencyRepository.isVettedCurrency({
-                        issuer: transaction.Issuer,
-                        currency: transaction.Currency,
-                    }) &&
-                    !AccountRepository.hasCurrency(source, {
-                        issuer: transaction.Issuer,
-                        currency: transaction.Currency,
-                    })
-                ) {
-                    Navigator.showAlertModal({
-                        testID: 'new-trust-line-alert-overlay',
-                        type: 'warning',
-                        title: Localize.t('global.warning'),
-                        text: Localize.t('asset.addingTrustLineWarning'),
-                        buttons: [
-                            {
-                                testID: 'back-button',
-                                text: Localize.t('global.back'),
-                                light: false,
-                            },
-                            {
-                                testID: 'continue-button',
-                                text: Localize.t('global.continue'),
-                                onPress: this.prepareAndSignTransaction,
-                                type: 'dismiss',
-                                light: true,
-                            },
-                        ],
-                    });
-                    return;
+                try {
+                    const vettedCurrency = await BackendService.isVettedCurrency(
+                        transaction.Issuer,
+                        transaction.Currency,
+                    );
+
+                    // user may close the page at this point while we have been waiting
+                    // we need to return if component is not mounted
+                    if (!this.mounted) {
+                        return;
+                    }
+
+                    if (
+                        !vettedCurrency &&
+                        !AccountRepository.hasCurrency(source, {
+                            issuer: transaction.Issuer,
+                            currency: transaction.Currency,
+                        })
+                    ) {
+                        Navigator.showAlertModal({
+                            testID: 'new-trust-line-alert-overlay',
+                            type: 'warning',
+                            title: Localize.t('global.warning'),
+                            text: Localize.t('asset.addingTrustLineWarning'),
+                            buttons: [
+                                {
+                                    testID: 'back-button',
+                                    text: Localize.t('global.back'),
+                                    light: false,
+                                },
+                                {
+                                    testID: 'continue-button',
+                                    text: Localize.t('global.continue'),
+                                    onPress: this.prepareAndSignTransaction,
+                                    type: 'dismiss',
+                                    light: true,
+                                },
+                            ],
+                        });
+
+                        // do not continue
+                        return;
+                    }
+                } catch (error) {
+                    // ignore on error
                 }
             }
 
             // show alert if user trading not vetted tokens
             if (transaction.Type === TransactionTypes.OfferCreate) {
-                let shouldShowAlert = false;
+                // if the token is not in the vetted list and user is trading the token
+                try {
+                    const takerPays = transaction.TakerPays;
 
-                const takerPays = transaction.TakerPays;
+                    if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
+                        /**
+                         * WARNING! THERE IS A BAD TIMING ISSUE HERE: WITHOUT THE AWAIT
+                         * FOR THE VETTED CURRENCY, THE SIGN MODAL CAN OVERLAY ITSELF
+                         * AND NOT BE CLOSED ANYMORE CAUSING TX RESULTS TO GET STUCK, ETC.
+                         */
+                        const vettedCurrency = await BackendService.isVettedCurrency(
+                            takerPays.issuer!,
+                            takerPays.currency,
+                        );
 
-                if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
-                    if (
-                        !CurrencyRepository.isVettedCurrency({
-                            issuer: takerPays.issuer!,
-                            currency: takerPays.currency,
-                        })
-                    ) {
-                        shouldShowAlert = true;
+                        // user may close the page at this point while we have been waiting
+                        // we need to return if component is not mounted
+                        if (!this.mounted) {
+                            return;
+                        }
+
+                        if (!vettedCurrency) {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                title: Localize.t('global.warning'),
+                                text: Localize.t('payload.notVettedTokenTradeWarning'),
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.back'),
+                                        light: false,
+                                    },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: this.prepareAndSignTransaction,
+                                        type: 'dismiss',
+                                        light: true,
+                                    },
+                                ],
+                            });
+
+                            // do not continue
+                            return;
+                        }
                     }
-                }
-
-                if (shouldShowAlert) {
-                    Navigator.showAlertModal({
-                        type: 'warning',
-                        title: Localize.t('global.warning'),
-                        text: Localize.t('payload.notVettedTokenTradeWarning'),
-                        buttons: [
-                            {
-                                text: Localize.t('global.back'),
-                                light: false,
-                            },
-                            {
-                                text: Localize.t('global.continue'),
-                                onPress: this.prepareAndSignTransaction,
-                                type: 'dismiss',
-                                light: true,
-                            },
-                        ],
-                    });
-                    return;
+                } catch (error) {
+                    // ignore on error
                 }
             }
 
@@ -409,12 +481,18 @@ class ReviewTransactionModal extends Component<Props, State> {
                         },
                     ],
                 });
+
+                // do not continue
                 return;
             }
 
             if (transaction.Type === TransactionTypes.Payment) {
                 try {
                     const destinationInfo = await ResolverService.getAccountAdvisoryInfo(transaction.Destination);
+
+                    if (!this.mounted) {
+                        return;
+                    }
 
                     // if sending to a blackHoled account
                     if (destinationInfo.blackHole) {
@@ -434,6 +512,8 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 },
                             ],
                         });
+
+                        // do not continue
                         return;
                     }
 
@@ -461,10 +541,13 @@ class ReviewTransactionModal extends Component<Props, State> {
                                 },
                             ],
                         });
+
+                        // do not continue
                         return;
                     }
                 } catch {
                     Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
+                    // do not continue
                     return;
                 }
             }
@@ -492,7 +575,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         // we shouldn't override already set transaction
         if (transaction) {
-            throw new Error('Transaction is already set and cannot be overwrite!');
+            throw new Error('Transaction is already set and cannot be overwritten!');
         }
 
         this.setState({
@@ -546,6 +629,17 @@ class ReviewTransactionModal extends Component<Props, State> {
         this.setState({
             isReady: ready,
         });
+    };
+
+    setServiceFee = (newServiceFee: number) => {
+        const { serviceFee } = this.state;
+        // console.log('ReviewTransactionModal servicefee', { serviceFee, newServiceFee });
+        if (serviceFee !== newServiceFee) {
+            // console.log('ReviewTransactionModal new Service Fee', { serviceFee, newServiceFee });
+            this.setState({
+                serviceFee: newServiceFee,
+            });
+        }
     };
 
     submit = async () => {
@@ -612,6 +706,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                         } else {
                             VibrateHapticFeedback('notificationError');
                         }
+                    }
+
+                    if (submitResult.success) {
+                        // All set
+                        // console.log(
+                        //     'TX Submit success, now service fee.',
+                        //     transaction.ServiceFee,
+                        //     transaction.ServiceFeeTx
+                        // );
                     }
                 } else if (coreSettings.hapticFeedback) {
                     VibrateHapticFeedback('notificationError');
@@ -680,6 +783,7 @@ class ReviewTransactionModal extends Component<Props, State> {
 
     render() {
         const { currentStep, hasError, errorMessage } = this.state;
+        const { timestamp } = this.props;
 
         // don't render if any error happened
         // this can happen if there is a missing field in the payload or any unexpected error
@@ -713,11 +817,14 @@ class ReviewTransactionModal extends Component<Props, State> {
 
         return (
             <StepsContext.Provider
+                key={`reviewtxmodal-${timestamp}`}
                 value={{
                     ...this.state,
+                    timestamp,
                     setTransaction: this.setTransaction,
                     setAccounts: this.setAccounts,
                     setSource: this.setSource,
+                    setServiceFee: this.setServiceFee,
                     setError: this.setError,
                     setLoading: this.setLoading,
                     setReady: this.setReady,

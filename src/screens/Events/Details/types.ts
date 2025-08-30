@@ -7,10 +7,13 @@ import { AccountModel } from '@store/models';
 
 import * as MutationWidgets from '@components/Modules/MutationWidgets';
 import { Props as MutationWidgetProps } from '@components/Modules/MutationWidgets/types';
+import { type cachedTokenDetailsState } from '@components/Modules/EventsList/EventListItems/Transaction';
 
 export interface Props {
     item: ((Transactions | FallbackTransaction) & MutationsMixinType) | LedgerObjects;
     account: AccountModel;
+    cachedTokenDetails?: cachedTokenDetailsState;
+    timestamp?: number;
 }
 
 export interface State {

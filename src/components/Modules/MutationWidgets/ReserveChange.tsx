@@ -93,6 +93,20 @@ class ReserveChange extends PureComponent<Props, State> {
             return undefined;
         }
 
+        // ignore for incoming Credentials not yet accepted
+        if (
+            (item.Type === LedgerEntryTypes.Credential) &&
+            item.Subject === account.address &&
+            !item.Flags?.lsfAccepted
+        ) {
+            return undefined;
+        }
+
+        if (item.Type === LedgerEntryTypes.Escrow || item.Type === LedgerEntryTypes.Check) {
+            if (item.Account !== account.address) {
+                return undefined;
+            }
+        }
         // ledger objects always have reserve change increase
         return {
             address: account.address,
@@ -140,7 +154,7 @@ class ReserveChange extends PureComponent<Props, State> {
                 </View>
                 <Button
                     roundedMini
-                    light
+                    // light
                     label={Localize.t('events.myBalanceAndReserve')}
                     onPress={this.showBalanceExplain}
                 />

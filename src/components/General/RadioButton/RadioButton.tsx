@@ -17,10 +17,12 @@ interface Props {
     onPress: (value: any) => void;
     checked: boolean;
     label: string;
+    danger?: boolean;
     value: any;
     labelSmall?: string;
     description?: string;
     disabled?: boolean;
+    lessVerticalPadding?: boolean;
     testID?: string;
     style?: ViewStyle | ViewStyle[];
 }
@@ -36,7 +38,18 @@ class RadioButton extends PureComponent<Props> {
     };
 
     render() {
-        const { checked, label, labelSmall, description, disabled, testID, style } = this.props;
+        const {
+            checked,
+            label,
+            danger,
+            labelSmall,
+            description,
+            disabled,
+            testID,
+            style,
+            lessVerticalPadding,
+        } = this.props;
+
         return (
             <TouchableDebounce
                 testID={testID}
@@ -49,16 +62,27 @@ class RadioButton extends PureComponent<Props> {
                     checked && disabled && styles.selectedDisabled,
                     !checked && disabled && styles.disabled,
                     style,
+                    danger && checked && styles.dangerSelected,
+                    lessVerticalPadding && styles.lessVerticalPadding,
                 ]}
             >
                 <View style={AppStyles.flex1}>
-                    <View style={[styles.dot, checked && styles.dotSelected]}>
-                        {checked && <View style={styles.filled} />}
+                    <View style={[
+                        styles.dot,
+                        checked && styles.dotSelected,
+                        danger && checked && styles.dangerSelected,
+                    ]}>
+                        {checked && <View style={[ styles.filled, danger && styles.danger ]} />}
                     </View>
                 </View>
                 <View style={AppStyles.flex6}>
                     <Text
-                        style={[AppStyles.p, AppStyles.strong, checked ? styles.textColorSelected : styles.textColor]}
+                        style={[
+                            AppStyles.p,
+                            AppStyles.strong,
+                            checked ? styles.textColorSelected : styles.textColor,
+                            checked && danger && AppStyles.colorRed,
+                    ]}
                     >
                         {label}
                     </Text>
@@ -73,6 +97,7 @@ class RadioButton extends PureComponent<Props> {
                                 AppStyles.subtext,
                                 styles.descriptionText,
                                 checked ? styles.textColorSelected : styles.textColor,
+                                checked && danger && AppStyles.colorRed,
                             ]}
                         >
                             {description}

@@ -34,6 +34,7 @@ describe('Payment tx', () => {
 
             expect(instance.Destination).toEqual('rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh');
             expect(instance.DestinationTag).toEqual(123);
+            expect(instance.CredentialIDs).toStrictEqual(['DD40031C6C21164E767317D467CEEE9']);
         });
 
         it('Should return right parsed values for tx to self with path sets', () => {
@@ -140,7 +141,7 @@ describe('Payment tx', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `The payment source tag is: 1337 ${'\n'}The payment destination tag is: 1338 ${'\n'}It was instructed to deliver 1 XRP ${'\n'}by spending up to 1.239054364262807 USD`;
+                const expectedDescription = `The payment source tag is: 1337 ${'\n'}The payment destination tag is: 1338 ${'\n'}It was instructed to deliver 1 XRP ${'\n'}by spending up to 1.239054364262807 USD ${'\n'}The payment includes credential IDs: DD40031C6C21164E767317D467CEEE9, 5319AEF0C6A19872E7BC983545FEE123`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });

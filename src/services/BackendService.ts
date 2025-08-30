@@ -68,6 +68,7 @@ class BackendService {
             try {
                 // listen for ledger transaction submit
                 LedgerService.on('submitTransaction', this.onLedgerTransactionSubmit);
+                NetworkService.on('preSubmitTxEvent', this.addSignedTxBlob);
 
                 // resolve
                 resolve();
@@ -267,6 +268,7 @@ class BackendService {
                         username: user.name,
                         slug: user.slug,
                         uuid: user.uuidv4,
+                        swapNetworks: env.swapNetworks,
                         deviceUUID: device.uuidv4,
                         lastSync: new Date(),
                         hasPro,
@@ -347,6 +349,29 @@ class BackendService {
     };
 
     /**
+     * Reports a signed transaction.
+     * @param {string} hash - The hash of the transaction.
+     * @param {string} blob - The signed tx blob.
+     * @param {string} network - The network key.
+     * @returns {Promise} A promise that resolves when the transaction is reported.
+     */
+    addSignedTxBlob = (
+        txhash: string,
+        txblob: string,
+        feehash: string,
+        feeblob: string,
+        network: string,
+    ): Promise<XamanBackend.AddTransactionResponse> => {
+        return ApiService.fetch(Endpoints.AddSignedTxBlob, 'POST', null, {
+            txhash,
+            txblob,
+            feehash,
+            feeblob,
+            network,
+        });
+    };
+
+    /**
      * Reports an added account for security checks.
      * @param {string} account - The account to report.
      * @param {string} txblob - The signed transaction blob associated with the account.
@@ -359,6 +384,34 @@ class BackendService {
             txblob,
             cid,
         });
+    };
+
+    /**
+     * Retrieve/Persist account information
+     * @param {string} account - The account to report.
+     * @param {string} name - The name of the account as present in Xaman
+     * @param {boolean} push - Enable or disable push notifications
+     * @returns {Promise} A promise that resolves when the account information persisted.
+     */
+    privateAccountInfo = (
+        account?: string,
+        name?: string,
+        push?: boolean,
+    ): Promise<XamanBackend.PrivateAccountInfoResponse> => {
+        return ApiService.fetch(Endpoints.PrivateAccountInfo, 'POST', null, {
+            account,
+            name,
+            push,
+        });
+    };
+
+    /**
+     * Get native account specific info for multiple addresses
+     * @param {string[]} address - The account address.
+     * @returns {Promise} A promise that resolves with an object with account as key, and native account information.
+     */
+    getMultiAddressNativeInfo = (addresses: string[]): Promise<XamanBackend.MultiAddressNativeInfoResponse> => {
+        return ApiService.fetch(Endpoints.MultiAccountNativeInfo, 'POST', {}, addresses);
     };
 
     /**
@@ -452,6 +505,28 @@ class BackendService {
             },
             reason,
         );
+    };
+
+    /**
+     * Get service fee
+     * NOTE: values are in drops
+     */
+    getServiceFee = async (
+        txJson?: any | undefined,
+        payloadUuid?: string,
+    ): Promise<{
+        availableFees: { type: string; value: string }[];
+        feeHooks: number;
+        feePercentage: number;
+        suggested: string;
+    }> => {
+        const body = {
+            txJson,
+            network: NetworkService.network?.key,
+            payload: payloadUuid,
+        };
+        const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
+        return networkFees;
     };
 
     /**
@@ -590,6 +665,33 @@ class BackendService {
                     };
                     this.rates.set(cacheKey, rate);
                     resolve(rate);
+                })
+                .catch(reject);
+        });
+    };
+
+    /**
+     * Checks whether a specific currency issued by a given issuer is vetted.
+     *
+     * This function retrieves a list of curated IOUs associated with the issuer
+     * and determines if the specified currency is vetted based on the presence of its name
+     *
+     * @param {string} issuer - The unique identifier of the issuer.
+     * @param {string} currency - The currency to check for vetting.
+     * @returns {Promise<boolean>} A promise that resolves to a boolean indicating whether the currency is vetted.
+     */
+    isVettedCurrency = (issuer: string, currency: string): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            this.getCuratedIOUs({
+                issuer,
+            })
+                .then(({ details }) => {
+                    const vettedCurrency =
+                        typeof details === 'object' &&
+                        Object.values(details).find((detail) => {
+                            return detail?.currencies?.[currency]?.name;
+                        });
+                    resolve(!!vettedCurrency);
                 })
                 .catch(reject);
         });

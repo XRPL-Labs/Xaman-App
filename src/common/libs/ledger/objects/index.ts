@@ -7,3 +7,5 @@ export * from './Offer';
 export * from './PayChannel';
 export * from './Ticket';
 export * from './URIToken';
+export * from './Delegate';
+export * from './Credential';

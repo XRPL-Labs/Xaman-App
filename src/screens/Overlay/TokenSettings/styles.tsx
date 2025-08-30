@@ -5,11 +5,54 @@ import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$tint',
         borderRadius: 20,
+    },
+    contentContainerShadow: {
+        shadowColor: '$black',
+        shadowOffset: {
+            height: 3,
+            width: 0,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+        elevation: 5,
+        borderRadius: AppSizes.scale(75) / 5,
+    },
+    contentContainerAmount: {
+        backgroundColor: '$background',
+        borderRadius: 15,
+        borderWidth: 0,
+        borderColor: '$black',
+        paddingTop: 15,
+        paddingBottom: 8,
+        overflow: 'hidden',
+        // height: 170,
+    },
+    contentContainerAmountSend: {
+        height: 170,
+    },
+    contentContainerAmountNoSend: {
+        height: 170 - 45,
+    },
+    embeddedSendButton: {
+        borderRadius: 0,
+        borderTopEndRadius: 0,
+        borderTopStartRadius: 0,
+        height: 45,
+    },
+    embeddedSendButtonContainer: {
+        // marginBottom: -9,
+        position: 'absolute',
+        bottom: -15,
+        paddingHorizontal: 0,
     },
     headerContainer: {
         backgroundColor: '$background',
@@ -30,10 +73,17 @@ const styles = StyleService.create({
     contentContainer: {
         padding: AppSizes.paddingSml,
     },
+    spaceRight: {
+        marginRight: 8,
+    },
+    secondButtonRow: {
+        marginTop: -5,
+    },
     tokenElement: {
         paddingTop: 10,
         paddingBottom: 10,
         paddingRight: 5,
+        marginTop: 0,
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
@@ -69,16 +119,16 @@ const styles = StyleService.create({
 
     // send Button
     sendButton: {
-        marginRight: 5,
+        // marginRight: 5,
         backgroundColor: '$blue',
     },
-    sendButtonIcon: { tintColor: '$white' },
+    sendButtonIcon: { tintColor: '$white', transform: [{ rotateY: '180deg' }] },
     sendButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },
 
     // exchange Button
     exchangeButton: {
-        marginLeft: 5,
-        backgroundColor: StyleService.isDarkMode() ? '$grey' : '$black',
+        // marginLeft: 5,
+        backgroundColor: StyleService.select({ dark: '$grey', light: '$darkBlue' }),
     },
     exchangeButtonIcon: { tintColor: '$white' },
     exchangeButtonText: { fontSize: AppFonts.subtext.size, color: '$white' },
@@ -109,10 +159,10 @@ const styles = StyleService.create({
     removeButtonText: { color: '$red' },
 
     infoContainer: {
-        backgroundColor: '$blue',
+        backgroundColor: '$orange',
     },
     infoText: {
-        color: '$white',
+        color: '$dark',
     },
     removeButtonContainer: {
         flexDirection: 'row',
@@ -149,7 +199,9 @@ const styles = StyleService.create({
     },
 
     tokenIconContainer: {
-        marginRight: 5,
+        marginRight: 8,
+        marginTop: -4,
+        borderRadius: 3,
     },
 });
 

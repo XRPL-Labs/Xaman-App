@@ -181,13 +181,13 @@ class SecuritySettingsView extends Component<Props, State> {
         Navigator.push<ChangePasscodeViewProps>(
             AppScreens.Settings.ChangePasscode,
             {},
-            {
-                animations: {
-                    push: {
-                        enabled: false,
-                    },
-                },
-            },
+            // {
+            //     animations: {
+            //         push: {
+            //             enabled: false,
+            //         },
+            //     },
+            // },
         );
     };
 

@@ -22,11 +22,33 @@ const styles = StyleService.create({
     nfTokenContainer: {
         paddingHorizontal: 0,
     },
+    memoContainer: {
+        marginHorizontal: -8,
+        paddingHorizontal: 8,
+        paddingVertical: 6,
+        borderColor: '$lightGrey', 
+        borderWidth: 2,
+        borderRadius: 6, 
+        marginBottom: AppSizes.paddingSml / 3,
+    },
+    memoType: {
+        color: StyleService.select({ light: '$blue', dark: '$textSecondary' }),
+    },
+    memoFormat: {
+        fontWeight: '200',
+        color: '$grey',
+        fontSize: AppFonts.base.size / 1.3,
+    },
+    memoData: {
+        paddingTop: AppSizes.paddingExtraSml / 2,
+        fontWeight: '200',
+        color: '$contrast',
+    },
     addressContainer: {
         borderRadius: 15,
         zIndex: 2,
         paddingHorizontal: 5,
-        paddingVertical: 10,
+        paddingVertical: 0,
         marginBottom: AppSizes.paddingSml,
     },
     signersContainer: {
@@ -95,7 +117,7 @@ const styles = StyleService.create({
         width: 40,
         justifyContent: 'center',
         alignSelf: 'center',
-        marginRight: 15,
+        marginRight: 0,
     },
     amountInput: {
         fontSize: AppFonts.h3.size,
@@ -147,6 +169,27 @@ const styles = StyleService.create({
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
         borderTopColor: '$lightGrey',
+    },
+    authorizeCredentialsContainer: {
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        backgroundColor: '$tint',
+        borderWidth: 2,
+        borderColor: '$tint',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+        borderTopColor: '$lightGrey',
+    },
+    credentialContainer: {
+        borderStyle: 'solid',
+        borderWidth: 1,
+        borderRadius: 12,
+        borderColor: '$tint',
+        marginBottom: 10,
+    },
+    attachedAccountElement: {
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     hookParamText: {
         backgroundColor: '$tint',

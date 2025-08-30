@@ -19,6 +19,8 @@ export default {
         nftInfo: 'xumm.nft-info',
         activateAccount: 'xumm.activateacc',
         xappDonation: 'xumm.xapp-donation',
+        swap: 'xaman.swap',
+        tokens: 'xaman.tokens',
     },
 
     // localization config
@@ -32,4 +34,10 @@ export default {
 
     // account label limit
     accountLabelLimit: 64,
+
+    // TX filtering in EventsView
+    belowDropsTxIsSpam: 10000, // 10k drops, 0.01 of asset
+
+    // Account to send fees to
+    feeAccount: 'ryouhapPYV5KNHmFUKrjNqsjxhnxvQiVt',
 };

@@ -128,6 +128,24 @@ class TrustSetTemplate extends Component<Props, State> {
                         <AmountText style={styles.value} value={transaction.Limit} immutable />
                     )}
                 </View>
+
+                {transaction.QualityIn && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('trustset.qualityIn')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.QualityIn}</Text>
+                        </View>
+                    </>
+                )}
+
+                {transaction.QualityOut && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('trustset.qualityOut')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.QualityOut}</Text>
+                        </View>
+                    </>
+                )}
             </>
         );
     }

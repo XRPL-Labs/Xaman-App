@@ -37,7 +37,7 @@ class CheckCreateTemplate extends Component<Props, State> {
         super(props);
 
         this.state = {
-            editableAmount: !props.transaction.SendMax?.value,
+            editableAmount: !props.transaction.SendMax?.value || props.transaction.SendMax?.value === '0',
             amount: props.transaction.SendMax?.value,
             currencyName: props.transaction.SendMax?.currency
                 ? NormalizeCurrencyCode(props.transaction.SendMax.currency)
@@ -116,7 +116,7 @@ class CheckCreateTemplate extends Component<Props, State> {
                                 onPress={this.focusAmountInput}
                                 style={styles.editButton}
                                 light
-                                roundedSmall
+                                roundedMini
                                 icon="IconEdit"
                                 iconSize={13}
                             />

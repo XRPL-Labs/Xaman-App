@@ -28,6 +28,8 @@ class Profile extends Realm.Object<Profile> {
     /** Unique identifier representing this specific user profile. */
     public declare uuid: string;
     /** Unique identifier for the user's device. */
+    public declare swapNetworks: string;
+    /** Unique identifier for the user's device. */
     public declare deviceUUID: string;
     /** Version number of the Terms of Service the user agreed to. */
     public declare signedTOSVersion: number;

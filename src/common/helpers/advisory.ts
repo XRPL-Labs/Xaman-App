@@ -9,19 +9,19 @@ import LedgerService from '@services/LedgerService';
 import { AccountRoot } from '@common/libs/ledger/types/ledger';
 import { AccountInfoAccountFlags } from '@common/libs/ledger/types/methods/accountInfo';
 
-/* Constants ==================================================================== */
-const BLACK_HOLE_KEYS = ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'];
-const EXCHANGE_BALANCE_THRESHOLD = 1000000000000;
-const MIN_TRANSACTION_TAG = 9999;
-const HIGH_SENDER_COUNT = 10;
-const HIGH_PERCENTAGE_TAGGED_TX = 50;
-
 /* Helper Functions ==================================================================== */
 /**
  * The Advisory object provides methods to fetch account advisory information, account details,
  * and perform various checks on accounts based on their data and flags.
  */
 const Advisory = {
+    /* Constants ==================================================================== */
+    BLACK_HOLE_KEYS: ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'],
+    EXCHANGE_BALANCE_THRESHOLD: 1000000000000,
+    MIN_TRANSACTION_TAG: 9999,
+    HIGH_SENDER_COUNT: 10,
+    HIGH_PERCENTAGE_TAGGED_TX: 50,
+
     /**
      * Determines whether a possible exchange can take place based on the account balance.
      *
@@ -31,7 +31,10 @@ const Advisory = {
      * @returns {boolean} - Returns true if the account balance exceeds the exchange threshold; otherwise, false.
      */
     checkPossibleExchange: (accountData?: AccountRoot): boolean => {
-        return !!accountData?.Balance && new BigNumber(accountData.Balance).isGreaterThan(EXCHANGE_BALANCE_THRESHOLD);
+        return (
+            !!accountData?.Balance &&
+            new BigNumber(accountData.Balance).isGreaterThan(Advisory.EXCHANGE_BALANCE_THRESHOLD)
+        );
     },
 
     /**
@@ -50,7 +53,7 @@ const Advisory = {
         return (
             !!accountData?.RegularKey &&
             !!accountFlags?.disableMasterKey &&
-            BLACK_HOLE_KEYS.includes(accountData.RegularKey)
+            Advisory.BLACK_HOLE_KEYS.includes(accountData.RegularKey)
         );
     },
 
@@ -92,14 +95,20 @@ const Advisory = {
         const transactionsResp = await LedgerService.getTransactions(address, undefined, 200);
 
         if (!('error' in transactionsResp) && transactionsResp.transactions?.length > 0) {
-            const incomingTXS = transactionsResp.transactions.filter((tx) => tx.tx.Destination === address);
+            const incomingTXS = transactionsResp.transactions.filter(
+                (tx) =>
+                    tx.tx.Destination === address &&
+                    typeof tx.tx.Amount === 'string' && // ensure only native asset
+                    new BigNumber(tx.tx.Amount).isGreaterThan(1000), // only more than 1000 drop
+            );
+
             const incomingTxCountWithTag = incomingTXS.filter(
-                (tx) => Number(tx.tx.DestinationTag) > MIN_TRANSACTION_TAG,
+                (tx) => Number(tx.tx.DestinationTag) > Advisory.MIN_TRANSACTION_TAG,
             ).length;
-            const uniqueSenders = new Set(transactionsResp.transactions.map((tx) => tx.tx.Account || '')).size;
+            const uniqueSenders = new Set(incomingTXS.map((tx) => tx.tx.Account || '')).size;
             const percentageTag = (incomingTxCountWithTag / incomingTXS.length) * 100;
 
-            return uniqueSenders >= HIGH_SENDER_COUNT && percentageTag > HIGH_PERCENTAGE_TAGGED_TX;
+            return uniqueSenders >= Advisory.HIGH_SENDER_COUNT && percentageTag > Advisory.HIGH_PERCENTAGE_TAGGED_TX;
         }
 
         return false;

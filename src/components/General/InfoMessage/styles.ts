@@ -30,7 +30,7 @@ export default StyleService.create({
     },
     labelContainer: {
         flex: 1,
-        paddingVertical: 10,
+        paddingVertical: 5,
     },
     label: {
         fontSize: AppFonts.subtext.size,

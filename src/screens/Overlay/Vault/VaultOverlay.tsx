@@ -32,6 +32,8 @@ import { WebLinks } from '@common/constants/endpoints';
 
 import Localize from '@locale';
 
+import { getServiceFeeTx } from './ServiceFee';
+
 // context
 import { MethodsContext } from './Context';
 
@@ -60,11 +62,11 @@ class VaultOverlay extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
+        // console.log('Vault overlay constructor')
         this.state = {
             step: undefined,
-            signers: undefined,
-            preferredSigner: undefined,
+            signer: undefined,
+            signerDelegate: undefined,
             coreSettings: CoreRepository.getSettings(),
             isSigning: false,
         };
@@ -86,7 +88,8 @@ class VaultOverlay extends Component<Props, State> {
         const { account } = this.props;
 
         try {
-            const signers: AccountModel[] = [];
+            let signer;
+            let signerDelegate;
             let preferredSigner;
 
             // check if we can sign the transaction
@@ -98,21 +101,18 @@ class VaultOverlay extends Component<Props, State> {
                 );
             }
 
-            // by default include the provided account if full access
+            // we can sign with the account itself
             if (account.accessLevel === AccessLevels.Full) {
-                signers.push(account);
+                // set the signer
+                signer = account;
+                // let set our preferred signer to this account
                 preferredSigner = account;
             }
 
-            // if regular key is set to the account then we check if we should include it in the list of signers
+            // if regular key is set the let's see if it already imported by user and can be used in signing
             if (account.regularKey) {
                 // check if regular key account is imported in the app
                 const regularKeyAccount = AccountRepository.findOne({ address: account.regularKey });
-
-                // Master key is disabled and the regular key is not present is the app
-                if (account.flags?.disableMasterKey && !regularKeyAccount) {
-                    throw new Error(Localize.t('account.masterKeyForThisAccountDisableRegularKeyNotFound'));
-                }
 
                 if (regularKeyAccount) {
                     // Regular key exist, but it's not imported as full access and account is not full access
@@ -125,26 +125,33 @@ class VaultOverlay extends Component<Props, State> {
                         );
                     }
 
+                    // regular key exist with full access level
                     if (regularKeyAccount.accessLevel === AccessLevels.Full) {
-                        // everything is find we can sign with the regular also
-                        signers.push(regularKeyAccount);
+                        // everything is find we can sign with the regular key also
+                        signerDelegate = regularKeyAccount;
 
-                        // if Master key is disabled on the main account set the preferred Signer to regular key
+                        // if Master key is disabled on the main account set the preferred signer to regular key
                         if (account.flags?.disableMasterKey || account.accessLevel === AccessLevels.Readonly) {
                             preferredSigner = regularKeyAccount;
                         }
                     }
+                } else if (account.accessLevel !== AccessLevels.Full) {
+                    // Regular key doesn't exist and account is not full access
+                    throw new Error(
+                        'Unable to sign the transaction with provided account, readonly and no regular key available',
+                    );
                 }
             }
 
             // decide which step we are taking after setting signers
-            // if signers more than one then let user to select which account they want to sign the transaction with
-            const step = signers.length > 1 ? Steps.SelectSigner : Steps.Authentication;
+            // if signers more than one then let the users choose which account they want to sign the transaction with
+            const step = signer && signerDelegate ? Steps.SelectSigner : Steps.Authentication;
 
             // set the state
             this.setState({
                 step,
-                signers,
+                signer,
+                signerDelegate,
                 preferredSigner,
             });
         } catch (error: any) {
@@ -175,7 +182,7 @@ class VaultOverlay extends Component<Props, State> {
         return true;
     };
 
-    onInvalidAuth = (method: AuthMethods) => {
+    onInvalidAuth = (method: AuthMethods, reFocusInput?: () => void) => {
         const { coreSettings } = this.state;
 
         // wrong passcode entered
@@ -208,7 +215,16 @@ class VaultOverlay extends Component<Props, State> {
                     text: Localize.t('global.troubleshoot'),
                     onPress: this.openTroubleshootLink,
                 },
-                { text: Localize.t('global.tryAgain') },
+                {
+                    text: Localize.t('global.tryAgain'),
+                    onPress: () => {
+                        if (typeof reFocusInput === 'function') {
+                            requestAnimationFrame(() => {
+                                reFocusInput();
+                            });
+                        }
+                    },
+                },
             ],
             { type: 'default' },
         );
@@ -246,6 +262,7 @@ class VaultOverlay extends Component<Props, State> {
     };
 
     sign = (method: AuthMethods, options: SignOptions) => {
+        // console.log('Vault overlay SIGN')
         switch (method) {
             case AuthMethods.BIOMETRIC:
             case AuthMethods.PIN:
@@ -267,16 +284,19 @@ class VaultOverlay extends Component<Props, State> {
     };
 
     private signWithPrivateKey = async (method: AuthMethods, options: SignOptions) => {
-        const { preferredSigner } = this.state;
-        const { transaction, multiSign } = this.props;
+        const { preferredSigner, signerDelegate } = this.state;
+        const { account, transaction, multiSign } = this.props;
         const { encryptionKey } = options;
+        
+        // console.log('Vault overlay SIGN With private Key')
 
         try {
             if (!encryptionKey) {
                 throw new Error('Encryption key is required for signing with private key!');
             }
 
-            if (!preferredSigner) {
+            // can happen :/
+            if (!preferredSigner || preferredSigner.accessLevel !== AccessLevels.Full || !preferredSigner.publicKey) {
                 throw new Error('Preferred signer is required!');
             }
 
@@ -293,7 +313,13 @@ class VaultOverlay extends Component<Props, State> {
             let signerInstance = AccountLib.derive.privatekey(privateKey);
             // check if multi sign then add sign as
             if (multiSign) {
-                signerInstance = signerInstance.signAs(preferredSigner.address);
+                // if we are signing with signerDelegate
+                if (preferredSigner.publicKey === signerDelegate?.publicKey) {
+                    signerInstance = signerInstance.signAs(account.address);
+                } else {
+                    // else sign as signer
+                    signerInstance = signerInstance.signAs(preferredSigner.address);
+                }
             }
 
             // get current network definitions
@@ -316,7 +342,27 @@ class VaultOverlay extends Component<Props, State> {
                 signMethod: method,
             };
 
-            this.onSign(signedObject);
+            // console.log(transaction?.ServiceFee);
+
+            const signedServiceFeeObject = await getServiceFeeTx(
+                transaction, // The original TX, for Account, Fee, Sequence, NetworkID
+                signedObject, // The signed TX, for the TX ID
+                signerInstance, // The instance so we can immediately sign again
+                definitions, // The definitions so we can deal with the network
+                method, // The signing method, so we can replicate that on the output
+            );
+
+            if (signedServiceFeeObject) {
+                NetworkService.preSubmitTx(
+                    String(signedObject?.id || ''),
+                    signedObject.signedTransaction,
+                    String(signedServiceFeeObject?.id || ''),
+                    signedServiceFeeObject.signedTransaction,
+                    String(NetworkService.network?.key || ''),    
+                );
+            };
+
+            this.onSign(signedObject, signedServiceFeeObject);
         } catch (e: any) {
             this.onSignError(method, e);
         } finally {
@@ -409,12 +455,14 @@ class VaultOverlay extends Component<Props, State> {
         }
     };
 
-    onSign = (signedObject: SignedObjectType) => {
+    onSign = (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => {
         const { onSign } = this.props;
+
+        // console.log('Vault overlay ONSIGN')
 
         // callback
         if (typeof onSign === 'function') {
-            onSign(signedObject);
+            onSign(signedObject, signedServiceFeeObject);
         }
 
         // close the overlay

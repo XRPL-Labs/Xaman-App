@@ -26,6 +26,7 @@ interface Props {
     value: number | string;
     currency?: string;
     truncateCurrency?: boolean;
+    truncateLp?: boolean;
     style?: TextStyle | TextStyle[];
     valueContainerStyle?: ViewStyle | ViewStyle[];
     currencyStyle?: TextStyle | TextStyle[];
@@ -268,10 +269,16 @@ class AmountText extends Component<Props, State> {
         }
 
         return (
-            <View style={[styles.container, valueContainerStyle]}>
+            <View style={[
+                styles.container,
+                valueContainerStyle,
+            ]}>
                 {typeof prefix === 'function' && prefix()}
                 {typeof prefix === 'object' && prefix}
-                <Text testID={testID} numberOfLines={numberOfLines || 1} style={[style, discreet && discreetStyle]}>
+                <Text testID={testID} numberOfLines={numberOfLines || 1} style={[
+                    style,
+                    discreet && discreetStyle,
+                ]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}
                 </Text>
@@ -280,25 +287,34 @@ class AmountText extends Component<Props, State> {
     };
 
     renderCurrency = () => {
-        const { style, currencyStyle, truncateCurrency, numberOfLines } = this.props;
+        const { style, currencyStyle, truncateCurrency, truncateLp, numberOfLines } = this.props;
         let { currency } = this.state;
 
         if (typeof currency !== 'string' || !currency) {
             return null;
         }
 
-        if (currency.length > 4 && truncateCurrency) {
+        let isLp = false;
+        if (currency.length > 4 && (truncateCurrency || truncateLp)) {
             if (currency.startsWith('LP')) {
                 currency = `LP ${currency.slice(3, 7)}`;
-            } else {
+                if (truncateLp) {
+                    currency = 'LP';
+                }
+                isLp = true;
+            } else if (truncateCurrency) {
                 currency = `${currency.slice(0, 4)}…`;
             }
         }
 
         return (
             <Text numberOfLines={numberOfLines || 1} style={[style, currencyStyle]}>
-                {' '}
-                {currency}
+                {
+                    !isLp && <>
+                        {' '}
+                        {currency}
+                    </>
+                }
             </Text>
         );
     };

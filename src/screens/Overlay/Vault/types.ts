@@ -28,12 +28,13 @@ export interface Props {
     transaction: SignableTransaction;
     multiSign?: boolean;
     onDismissed: () => void;
-    onSign: (signedObject: SignedObjectType) => void;
+    onSign: (signedObject: SignedObjectType, signedServiceFeeObject?: SignedObjectType) => void;
 }
 
 export interface State {
     step?: Steps;
-    signers?: AccountModel[];
+    signer?: AccountModel;
+    signerDelegate?: AccountModel;
     preferredSigner?: AccountModel;
     coreSettings: CoreModel;
     isSigning: boolean;
@@ -42,6 +43,6 @@ export interface State {
 export interface ContextProps extends State {
     sign: (method: AuthMethods, options: SignOptions) => void;
     onPreferredSignerSelect: (signer: AccountModel) => void;
-    onInvalidAuth: (method: AuthMethods) => void;
+    onInvalidAuth: (method: AuthMethods, reFocusInput?: () => void) => void;
     dismiss: () => void;
 }
