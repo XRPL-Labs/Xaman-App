@@ -6,7 +6,7 @@ buildscript {
         buildToolsVersion = "34.0.0"
         minSdkVersion = 26
         compileSdkVersion = 34
-        targetSdkVersion = 34
+        targetSdkVersion = 35
         kotlinVersion = "1.9.24"
         RNNKotlinVersion = ext.kotlinVersion
         detoxKotlinVersion = ext.kotlinVersion
@@ -17,7 +17,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.3.1")
+        // classpath("com.android.tools.build:gradle:7.3.1")
+        classpath("com.android.tools.build:gradle:7.4.0")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
@@ -26,10 +27,22 @@ buildscript {
         classpath 'com.google.gms:google-services:4.3.13'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        // classpath 'com.google.android.gms:strict-version-matcher-plugin:1.2.1'
     }
 }
 
 allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2'  // THIS IS THE MISSING PIECE
+            
+            // Also force the BOM to match
+            force 'org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.5.2'
+        }
+    }
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xlint:deprecation"
@@ -40,6 +53,11 @@ allprojects {
             // All of Detox' artifacts are provided via the npm module
             url "$rootDir/../node_modules/detox/Detox-android"
         }
+        // Uncomment this to use local AAR files
+        flatDir {
+            dirs "$projectDir/app/libs"
+        }
+
         google()
         maven { url 'https://jitpack.io' }
         maven { url "https://cdn.veriff.me/android/" } // veriff

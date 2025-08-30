@@ -176,8 +176,8 @@ class EnterSeedStep extends Component<Props, State> {
         // normalizedLocales = sortBy(uniqBy(normalizedLocales, 'title'), 'title');
 
         Navigator.push<PickerModalProps>(AppScreens.Global.Picker, {
-            title: Localize.t('global.language'),
-            description: Localize.t('settings.selectLanguage'),
+            title: Localize.t('global.curve'),
+            description: Localize.t('global.selectCurve'),
             items: [
                 { value: 'secp256k1', title: `secp256k1 (${Localize.t('global.default')})` },
                 { value: 'ed25519', title: 'ed25519' },

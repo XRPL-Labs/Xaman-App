@@ -6,7 +6,7 @@ import { Platform } from 'react-native';
 /* Styles ==================================================================== */
 const styles = StyleService.create({
     panelContent: {
-        padding: 0,
+        paddingHorizontal: 0,
     },
     requestLink: {
         position: 'absolute',
@@ -71,6 +71,7 @@ const styles = StyleService.create({
         color: '$textPrimary',
     },
     footer: {
+        width: '100%',
         marginBottom: AppSizes.padding + 20,
     },
 });

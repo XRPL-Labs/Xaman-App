@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "Jezik",
     "ok": "Ok",
     "start": "Započni",
@@ -248,6 +249,8 @@
     "empty": "Prazno",
     "update": "Ažuriraj",
     "notNow": "Ne sada",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "Nova verzija",
     "versionNumberIsAvailableOnTheAppStore": "Verzija %{versionCode} je dostupna na AppStore.",
     "danger": "Opasnost",
@@ -399,7 +402,11 @@
     "switchNetwork": "Switch network",
     "theme": "Theme",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "Plaćanja i zahtjevi za plaćanjem na XRPL",
@@ -492,6 +499,8 @@
     "eventTypeAll": "Svi",
     "eventTypePlanned": "Planirano",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "Zahtjevi",
     "noTransaction": "Nema transakcija",
     "shareAccount": "Podijeli adresu računa",
@@ -507,6 +516,8 @@
     "paymentReceived": "Uplata primljena",
     "paymentSent": "Uplata poslana",
     "exchangedAssets": "Zamijenjena sredstva",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "Dodano sredstvo (Linija povjerenja)",
     "removedATrustLine": "Uklonjeno sredstvo (Linija povjerenja)",
     "updatedATrustLine": "Ažurirana oznaka (TrustLine)",
@@ -517,6 +528,8 @@
     "createOffer": "Izradi ponudu",
     "cancelOffer": "Poništi ponude",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "Kreiraj skladište",
     "finishEscrow": "Završi skladište",
     "cancelEscrow": "Poništi escrow",
@@ -544,6 +557,7 @@
     "mintNFT": "Mint NFT",
     "mintURIToken": "Mint URI Token",
     "burnNFT": "Spali NFT",
+    "modifyNFT": "Modify NFT",
     "burnURIToken": "Burn URI Token",
     "buyURIToken": "Buy URI Token",
     "createNFTOffer": "Kreirajte NFT ponudu",
@@ -583,6 +597,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -680,6 +696,8 @@
     "thisTransactionIncreaseAccountReserve": "Ova transakcija je povećala rezervu računa za %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Ova transakcija je smanjila rezervaciju računa za %{ownerReserve} %{nativeAsset}",
     "nfTokenBurnExplain": "Transakcija će spaliti NFT token s ID-om %{tokenID}",
+    "nfTokenModifyExplain": "The transaction will modify NFT token with ID %{tokenID}, and the URI value will be %{uri}",
+    "nfTokenModifyExplainUnchangedURI": "unchanged",
     "theTokenIdIs": "ID tokena je %{tokenID}",
     "theTokenHasATransferFee": "Token ima naknadu za prijenos: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Taxon za ovaj token je %{taxon}",
@@ -733,7 +751,8 @@
     "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "Popular",
@@ -879,6 +898,18 @@
   "account": {
     "addAccount": "Dodavanje računa",
     "hideSecret": "Hide secret",
+    "newAccountSafeOrDegenTitle": "Onboarding",
+    "degenModeExplanation1": "To make sure you can recover your account in case of a lost, stolen or damaged device, we ask you to write & re-enter your account secret.",
+    "degenModeExplanation2": "You may choose to defer writing down & re-entering your account secret. Having it written down & stored in a safe place is critical to keeping your account safe.",
+    "safeMode": "Write your account secret down now (safer)",
+    "imSmartPerson": "Immediately write down & re-enter your account secret for account recovery.",
+    "degenMode": "Fast onboarding (risky)",
+    "degenBackUpHomeWrn": "You are unprotected in case of lost, stolen or damaged phone!",
+    "imRetard": "Write down & re-enter later: all your funds are at risk until you do so!",
+    "degenModeExplanationConfirm": "Are you sure you want to proceed? Until you write down your account secret, you will NOT be able to recover your account if your phone gets lost, stolen or damaged.",
+    "degenModeNowDone": "Wonderful! You're all set! Whenever you have to recover your account, you can do so by importing the account secret you just wrote down.",
+    "degenModeProceedBtn": "I accept the risk",
+    "degenBackUpNowBtn": "Back up",
     "showSecret": "Show secret",
     "addAccountDescription": "Uvezite svoj postojeći račun ili izradite novi.",
     "importExisting": "Uvoz postojećeg računa",
@@ -1067,6 +1098,10 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "theDestinationAccountDidNotAuthorize": "The destination account did not authorize this transaction. Check your selected sending account, or contact the destination account owner.",
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "Iznos je veći od raspoloživog iznosa (%{spendable})",
     "theMaxAmountYouCanSendIs": "Maksimalni iznos rasploživ za slanje je %{spendable} %{currency} ",
     "theMaxAmountYouCanSendWithFee": "Izdavatelj %{currency} naplaćuje troškove naknade za prijenos. Maksimalni iznos koji možete poslati (s troškovima prijenosa) je %{spendable} %{currency}",
@@ -1092,7 +1127,6 @@
     "submittingDone": "Podnošenje završeno!",
     "addToContacts": "Dodaj u kontakte",
     "sendingFailed": "Slanje neuspješno!",
-    "verificationFailed": "Provjera nije uspjela!",
     "couldNotVerifyTransaction": "Potvrđivanje transakcije nije uspjelo",
     "verificationFailedDescription": "Vaša je transakcija uspješno potpisana i poslana: nismo mogli potvrditi konačnost transakcije.\r\n\r\nTo može biti uzrokovano štucanjem internetske veze ili povećanim opterećenjem čvora XRP knjige na koji ste povezani.\r\n\r\nRučno provjerite prikazuje li se ova transakcija u vašoj povijesti transakcija (Događaji).\r\n\r\n",
     "submitFailed": "Podnošenje nesupjelo!",
@@ -1123,6 +1157,11 @@
     "pleaseEnterAmount": "Molimo vas unesite iznos transakcije",
     "trustLineLimitExceeded": "Premašeno je ograničenje broja Linija povjeranje ('TrustLine'), trenutno stanje: %{balance}, maksimalno: %{peer_limit}, dostupno za izdavanje: %{available}. Primatelj može povećati broj maksimalnih Linija povjerenja.",
     "unableToSendPaymentRecipientDoesNotHaveTrustLine": "Ne može se poslati token primatelju.\nPrimatelj nema TrustLine za ovu postavu tokena na izdavaču ovog tokena.",
+    "unableToSendPaymentRecipientExceedTrustline": "Unable to send the token to the recipient.\r\nThe recipient does exceeds the TrustLine limit for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLine": "The recipient does not have a TrustLine for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXRPL": "Do you want to send a 'Check' instead, so the recipient can opt in to accept the Check which will create the TrustLine?\n\nThe recipient will not see an immediate deposit, but will have to accept your Check in their Requests-tab.\n\nOn your end, the Check will temporarily increase your reserve with %{reserve} %{asset}, until either the Check is cashed by the recipient, or cancelled by you.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXahau": "Do you want to send your payment as A 'Remit' transaction instead?\n\nThis will automatically create the Trustline in the recipient's account, but you will pay an extra %{reserve} %{asset} to satisfy their TrustLine reserve.",
+    "altSendAs": "Send as '%{type}'",
     "unableToSendPaymentTrustLineLimitIsExceeded": "Ne može se poslati token primatelju.\r\nPremašeno je ograničenje za količinu tokena koje primatelj želi zadržati. Primatelj će morati ažurirati svoj TrustLine za token koji šaljete s višom ograničenjem kako bi mogli dobiti ovaj token.",
     "destinationTagWarningConfirm": "Šaljete na račun s odredišnom oznakom. Molimo provjerite odredišnu oznaku: ako pošaljete na pogrešnu oznaku, trebat će vam podrška odredišta da biste preuzeli sredstva.",
     "doubleCheckDestinationTag": "Još jednom provjerite odredišnu oznaku",
@@ -1135,6 +1174,7 @@
   },
   "asset": {
     "addAsset": "Dodajte sredstva",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Odaberite izdavača i sredstvo koje želite dodati. Popis je održavan od strane Xaman razvojnih inženjera.",
     "addAndSign": "Dodati: potpis transakcije ",
     "successRemoved": "Sredstvo uspješno uklonjeno s vašeg računa",
@@ -1275,7 +1315,34 @@
     "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
     "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
     "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
-    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
+  },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorization granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Revoke permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

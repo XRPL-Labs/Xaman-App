@@ -1,6 +1,6 @@
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { Blob, Amount, Hash256 } from '@common/libs/ledger/parser/fields';
+import { Blob, Amount, Hash256, STArray } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -18,6 +18,7 @@ class PaymentChannelClaim extends BaseGenuineTransaction {
         Amount: { type: Amount },
         Signature: { type: Blob },
         PublicKey: { type: Blob },
+        CredentialIDs: { type: STArray },
     };
 
     declare Channel: FieldReturnType<typeof Hash256>;
@@ -25,6 +26,7 @@ class PaymentChannelClaim extends BaseGenuineTransaction {
     declare Amount: FieldReturnType<typeof Amount>;
     declare Signature: FieldReturnType<typeof Blob>;
     declare PublicKey: FieldReturnType<typeof Blob>;
+    declare CredentialIDs: FieldReturnType<typeof STArray, string[]>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

@@ -10,13 +10,26 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderRadius: AppSizes.borderRadius,
+        marginHorizontal: AppSizes.scale(-10),
+        paddingHorizontal: AppSizes.scale(10), 
     },
     ammIcon: {
         marginLeft: 8,
     },
+    actionText: {
+        flexWrap: 'wrap',
+        flexShrink: 1,
+        fontFamily: AppFonts.base.family,
+        fontSize: AppFonts.subtext.size * 0.9,
+        opacity: 0.8,
+        color: '$grey',
+    },
     boldTitle: {
         fontFamily: AppFonts.base.familyBold,
         color: '$textPrimary',
+    },
+    iconHookRejcted: {
+        tintColor: '$red',
     },
     feeTxAvatar: {
         position: 'relative',

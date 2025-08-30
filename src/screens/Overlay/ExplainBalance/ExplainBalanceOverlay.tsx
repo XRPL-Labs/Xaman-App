@@ -109,6 +109,12 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                     o.LedgerEntryType !== LedgerEntryTypes.RippleState &&
                     o.LedgerEntryType !== LedgerEntryTypes.NFTokenPage &&
                     (('Account' in o && o.Account === account) ||
+                        // Credential still to be accepted (reserve for issuer)
+                        // eslint-disable-next-line max-len
+                        ('Issuer' in o && o.Issuer === account && o.LedgerEntryType === LedgerEntryTypes.Credential && o.Flags === 0) ||
+                        // Credential accepted, reserve for owner
+                        // eslint-disable-next-line max-len
+                        ('Subject' in o && o.Subject === account && o.LedgerEntryType === LedgerEntryTypes.Credential && o.Flags > 0) ||
                         ('Owner' in o && o.Owner === account) ||
                         [LedgerEntryTypes.SignerList, LedgerEntryTypes.PayChannel].includes(o.LedgerEntryType))
                 );

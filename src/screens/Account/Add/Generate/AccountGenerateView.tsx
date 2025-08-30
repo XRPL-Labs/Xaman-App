@@ -59,20 +59,55 @@ class AccountGenerateView extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const numAccounts = AccountRepository.count();
+        const currentStep = props?.initial?.step
+            ? props?.initial?.step
+            : numAccounts === 0
+            ? 'DegenMode'           // Only if new
+            : 'SeedExplanation';    // Already has accounts, regular flow
+        
+        const existing = props?.initial?.secretNumbers
+            ? this.existingAccount()
+            : undefined;
+
+        const generatedAccount = existing ? existing.generatedAccount : undefined;
+        const account = existing ? existing.account : {};
+
         this.state = {
-            currentStep: 'SeedExplanation',
+            currentStep,
             prevSteps: [],
-            account: {},
-            generatedAccount: undefined,
+            degenMode: !!props?.initial?.secretNumbers,
+            account,
+            generatedAccount,
             passphrase: undefined,
         };
     }
 
     componentDidMount() {
+        const { initial } = this.props;
         InteractionManager.runAfterInteractions(() => {
-            requestAnimationFrame(this.generateAccount);
+            if (!initial?.secretNumbers) {
+                requestAnimationFrame(this.generateAccount);
+            }
         });
     }
+
+    existingAccount = () => {
+        const { initial } = this.props;
+
+        // generate new account base on secret numbers
+        const generatedAccount = AccountLib.derive.secretNumbers(initial?.secretNumbers!);
+
+        // assign generated account to the store object
+        const account = {
+            publicKey: generatedAccount.keypair.publicKey,
+            accessLevel: AccessLevels.Full,
+            encryptionVersion: Vault.getLatestCipherVersion(),
+            address: generatedAccount.address,
+        } as Partial<AccountModel>;
+
+        return { generatedAccount, account };
+    };
 
     generateAccount = () => {
         // generate new account base on secret numbers
@@ -117,7 +152,7 @@ class AccountGenerateView extends Component<Props, State> {
     };
 
     saveAccount = async () => {
-        const { generatedAccount, account, passphrase } = this.state;
+        const { generatedAccount, account, passphrase, degenMode } = this.state;
 
         try {
             // include user & device UUID is signed transaction
@@ -148,6 +183,14 @@ class AccountGenerateView extends Component<Props, State> {
                 throw new Error('Account encryption level is not defined');
             }
 
+            if (degenMode) {
+                Object.assign(account, {
+                    additionalInfoString: JSON.stringify({
+                        degenMode: generatedAccount?.secret?.secretNumbers?.join('.'),
+                    }),
+                });
+            }
+
             // add account to store
             const createdAccount = await AccountRepository.add(
                 account,
@@ -168,11 +211,39 @@ class AccountGenerateView extends Component<Props, State> {
         }
     };
 
+
     goNext = async (nextStep?: GenerateSteps) => {
-        const { currentStep, prevSteps } = this.state;
+        const { currentStep, prevSteps, degenMode, account } = this.state;
 
         if (currentStep === 'FinishStep') {
             await this.saveAccount();
+            return;
+        }
+
+        if (currentStep === 'DegenMode' && degenMode) {
+            // Done degen 
+            await this.saveAccount();
+            return;
+        }
+
+        if (currentStep === 'ConfirmSeed' && degenMode) {
+            // Done confirming
+            Object.assign(account, {
+                additionalInfoString: JSON.stringify({}),
+            });
+            Navigator.showAlertModal({
+                type: 'success',
+                text: Localize.t('account.degenModeNowDone'),
+                buttons: [
+                    {
+                        text: Localize.t('global.ok'),
+                        type: 'dismiss',
+                        light: false,
+                    },
+                ],
+            });
+            await AccountRepository.update(account);
+            await Navigator.popToRoot();
             return;
         }
 
@@ -201,6 +272,14 @@ class AccountGenerateView extends Component<Props, State> {
         Navigator.pop();
     };
 
+    setDegenMode = (degenMode: boolean, callback?: any) => {
+        this.setState({ degenMode }, () => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    };
+
     renderStep = () => {
         const { currentStep } = this.state;
 
@@ -214,6 +293,7 @@ class AccountGenerateView extends Component<Props, State> {
                     goBack: this.goBack,
                     setEncryptionLevel: this.setEncryptionLevel,
                     setLabel: this.setLabel,
+                    setDegenMode: this.setDegenMode,
                     setPassphrase: this.setPassphrase,
                 }}
             >
@@ -230,6 +310,9 @@ class AccountGenerateView extends Component<Props, State> {
         let title = 'Header';
 
         switch (currentStep) {
+            case 'DegenMode':
+                title = Localize.t('account.newAccountSafeOrDegenTitle');
+                break;
             case 'SeedExplanation':
                 title = Localize.t('global.important');
                 break;
@@ -261,7 +344,7 @@ class AccountGenerateView extends Component<Props, State> {
         return (
             <Header
                 leftComponent={
-                    currentStep === 'SeedExplanation'
+                    currentStep === 'SeedExplanation' || currentStep === 'DegenMode'
                         ? {
                               icon: 'IconChevronLeft',
                               onPress: this.onHeaderBackPress,

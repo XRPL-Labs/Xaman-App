@@ -17,7 +17,8 @@ const styles = StyleService.create({
         fontSize: AppStyles.p.fontSize,
         fontFamily: AppStyles.baseText.fontFamily,
         // fontWeight: 400,
-        color: '$blue',
+        // color: '$blue',
+        color: StyleService.select({ dark: '$white', light: '$blue' }), // #95037
         paddingLeft: 5,
     },
     inputContainer: {
@@ -29,7 +30,8 @@ const styles = StyleService.create({
         backgroundColor: '$background',
         paddingTop: 5,
         paddingBottom: 5,
-        marginLeft: 7,
+        marginLeft: 0,
+        paddingLeft: 7,
         shadowColor: '$white',
     },
     listEmptyContainer: {

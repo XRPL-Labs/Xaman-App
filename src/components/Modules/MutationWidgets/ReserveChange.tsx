@@ -93,6 +93,15 @@ class ReserveChange extends PureComponent<Props, State> {
             return undefined;
         }
 
+        // ignore for incoming Credentials not yet accepted
+        if (
+            (item.Type === LedgerEntryTypes.Credential) &&
+            item.Subject === account.address &&
+            !item.Flags?.lsfAccepted
+        ) {
+            return undefined;
+        }
+
         if (item.Type === LedgerEntryTypes.Escrow || item.Type === LedgerEntryTypes.Check) {
             if (item.Account !== account.address) {
                 return undefined;

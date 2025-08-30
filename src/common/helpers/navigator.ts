@@ -46,7 +46,7 @@ const getDefaultOptions = (): Options => {
                 // @ts-ignore
                 ios: StyleService.value(StyleService.select({ light: 'dark', dark: 'light' })),
             }),
-            drawBehind: false,
+            drawBehind: true,
         },
         bottomTabs: {
             backgroundColor: StyleService.value('$background'),
@@ -198,9 +198,9 @@ const Navigator = {
      * @param {string} tabName - The name of the tab to navigate to (e.g., 'Home', 'Events', 'XApps', 'Settings').
      * @return {void}
      */
-    navigateToTab(tabName: string): void {   
+    navigateToTab(tabName: string): void {
         const tabId = `bottomTab-${tabName}`;
-      
+
         // Switch to the specified tab
         Navigation.mergeOptions(RootType.DefaultRoot, {
             bottomTabs: {
@@ -320,21 +320,33 @@ const Navigator = {
                     name: overlay,
                     id: overlay,
                     passProps: Object.assign(passProps, { componentType: ComponentTypes.Overlay }),
-                    options: merge({
-                        overlay: {
-                            handleKeyboardEvents: true,
-                        },
-                        layout: {
-                            backgroundColor: 'transparent',
-                            componentBackgroundColor: 'transparent',
-                        },
-                        // Disable automatic splash screen dismissal
-                        animations: {
-                            setRoot: {
-                              waitForRender: true, // Wait for the component to render before ANY transitions
+                    options: merge(
+                        {
+                            overlay: {
+                                handleKeyboardEvents: true,
+                            },
+                            layout: {
+                                backgroundColor: 'transparent',
+                                componentBackgroundColor: 'transparent',
+                            },
+                            // Disable automatic splash screen dismissal
+                            animations: {
+                                setRoot: {
+                                    waitForRender: true, // Wait for the component to render before ANY transitions
+                                },
+                            },
+                            statusBar: {
+                                visible: true,
+                                style: 'light', // or 'dark'
+                                backgroundColor: 'transparent',
+                                drawBehind: true, // This is key
+                            },
+                            navigationBar: {
+                                backgroundColor: 'transparent',
                             },
                         },
-                    }, options || {}),
+                        options || {},
+                    ),
                 },
             });
         }
@@ -462,62 +474,57 @@ const Navigator = {
     },
 
     isInstantThemeSwitchPage(screenId: string): string | false {
-        return ([ 'app.Settings.General', ...Object.values(AppScreens.TabBar) ] as string[])
-            .indexOf(screenId) > -1
-                ? screenId
-                : false;
+        return (['app.Settings.General', ...Object.values(AppScreens.TabBar)] as string[]).indexOf(screenId) > -1
+            ? screenId
+            : false;
     },
 
     awaitSafeThemeSwitch(): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             if (!Navigator.isInstantThemeSwitchPage(NavigationService.getCurrentScreen() || '')) {
                 // console.log('Wait till back at main pages, now at', NavigationService.getCurrentScreen());
-                const pageListener = Navigation
-                    .events()
-                    .registerComponentDidAppearListener(({ componentId }) => {
-                        // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
-                        if (Navigator.isInstantThemeSwitchPage(componentId)) {
-                            // console.log('Awaited page to one of main tab pages so going now')
-                            pageListener.remove();
-                            resolve();
-                        }
-                    });
-    
+                const pageListener = Navigation.events().registerComponentDidAppearListener(({ componentId }) => {
+                    // console.log('componentId', componentId, 'appeared', Object.values(AppScreens.TabBar))
+                    if (Navigator.isInstantThemeSwitchPage(componentId)) {
+                        // console.log('Awaited page to one of main tab pages so going now')
+                        pageListener.remove();
+                        resolve();
+                    }
+                });
+
                 return;
             }
-    
+
             const modalOpen = NavigationService.getCurrentModal();
             if (modalOpen) {
                 // We wait with all the updates till it closes
                 // console.log('Wait cause modal open', modalOpen)
-                const modalDismissListener = Navigation
-                    .events()
-                    .registerModalDismissedListener(({ componentId }) => {
-                        if (componentId === modalOpen) {
-                            // console.log('Awaited modal close so going now', modalOpen)
-                            modalDismissListener.remove();
-                            resolve();
-                        }
-                    });
+                const modalDismissListener = Navigation.events().registerModalDismissedListener(({ componentId }) => {
+                    if (componentId === modalOpen) {
+                        // console.log('Awaited modal close so going now', modalOpen)
+                        modalDismissListener.remove();
+                        resolve();
+                    }
+                });
                 return;
             }
-    
+
             const overlayOpen = NavigationService.getCurrentOverlay();
             if (overlayOpen) {
                 // We wait with all the updates till it closes
                 // console.log('Wait cause overlay open', overlayOpen)
-                const overlayDismissListener = Navigation
-                    .events()
-                    .registerComponentDidDisappearListener(({ componentId }) => {
+                const overlayDismissListener = Navigation.events().registerComponentDidDisappearListener(
+                    ({ componentId }) => {
                         if (componentId === overlayOpen) {
                             // console.log('Awaited overlay close so going now', overlayOpen)
                             overlayDismissListener.remove();
                             resolve();
                         }
-                    });
+                    },
+                );
                 return;
             }
-    
+
             resolve();
         });
     },
@@ -547,7 +554,7 @@ const Navigator = {
         });
 
         // Update ALL active screens/stacks
-        ;(allScreens as unknown as string[]).forEach(allScreenIterator => {
+        (allScreens as unknown as string[]).forEach((allScreenIterator) => {
             Navigation.mergeOptions(allScreenIterator, { ...defaultOptions });
             Navigation.updateProps(allScreenIterator, { timestamp: +new Date() });
         });
@@ -557,15 +564,16 @@ const Navigator = {
         const updateTab = (tab: string) => {
             const tabId = `bottomTab-${tab}`;
             bottomTabsChildren
-                .filter(b => b.stack?.id === tabId)?.[0].stack?.children?.forEach(child => {
+                .filter((b) => b.stack?.id === tabId)?.[0]
+                .stack?.children?.forEach((child) => {
                     if (child.component?.id) {
                         Navigation.mergeOptions(child.component.id, { ...defaultOptions });
                         Navigation.updateProps(child.component.id, { timestamp: +new Date() });
                     }
                 });
 
-            const currentBottomTab = bottomTabsChildren
-                .filter(b => b.stack?.id === tabId)?.[0].stack?.options?.bottomTab;
+            const currentBottomTab = bottomTabsChildren.filter((b) => b.stack?.id === tabId)?.[0].stack?.options
+                ?.bottomTab;
 
             if (currentBottomTab) {
                 const getTab = get(AppScreens.TabBar, tab);
@@ -589,7 +597,7 @@ const Navigator = {
                 Navigation.updateProps(getTab, { timestamp: +new Date() });
             }
         };
-    
+
         let navSections = (NavigationService.getCurrentScreen() || '').split('.');
         let isAtMainTab = false;
 
@@ -617,8 +625,8 @@ const Navigator = {
             Navigation.updateProps(RootType.DefaultRoot, { timestamp: +new Date() });
 
             Object.keys(AppScreens.TabBar)
-                .filter(tab => !isAtMainTab || (navSections?.[2] && tab !== navSections?.[2]) || !navSections?.[2])
-                .forEach(tab => updateTab(tab));
+                .filter((tab) => !isAtMainTab || (navSections?.[2] && tab !== navSections?.[2]) || !navSections?.[2])
+                .forEach((tab) => updateTab(tab));
         });
 
         requestAnimationFrame(() => {

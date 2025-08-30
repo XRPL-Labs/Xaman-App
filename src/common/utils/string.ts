@@ -53,6 +53,26 @@ const HexEncoding = {
         }
         return hex;
     },
+
+    isRegularString: (hexDecodedStr: string) => {
+        return /^[\x20-\x7E]+$/.test(hexDecodedStr);
+    },
+
+    hasOddCharacters: (hexDecodedStr: string) => {
+        return /[^\x20-\x7E]/.test(hexDecodedStr);
+    },
+
+    displayHex(value: string) {
+        try {
+            const v = HexEncoding.toString(value);
+            if (v && typeof v === 'string') {
+                return HexEncoding.isRegularString(v) && !HexEncoding.hasOddCharacters(v) ? v : value;
+            }
+        } catch (e) {
+            //
+        }
+        return value;
+    },
 };
 
 /**

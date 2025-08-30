@@ -14,9 +14,9 @@ import {
 import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
-import { StyleService, BackendService, NetworkService } from '@services';
+import { StyleService, BackendService, NetworkService, LinkingService } from '@services';
 
-import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository, NetworkRepository } from '@store/repositories';
 
 import { AppScreens } from '@common/constants';
 
@@ -40,6 +40,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import { TrustSet } from '@common/libs/ledger/transactions';
+import { ReviewTransactionModalProps } from '../ReviewTransaction';
 
 /* Component ==================================================================== */
 class ScanModal extends Component<Props, State> {
@@ -232,6 +234,64 @@ class ScanModal extends Component<Props, State> {
         }
     };
 
+    handleTransactionTemplate = (parsed: any) => {
+        let errorMsg = Localize.t('global.theQRIsNotWhatWeExpect');
+
+        try {
+            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');   
+            const json = JSON.parse(str);
+           
+            if (
+                json?.NetworkID !== NetworkService.getNetwork().networkId ||
+                NetworkService.getNetwork().networkId > 1024 && !json?.NetworkID
+            ) {
+                errorMsg = Localize.t('payload.payloadForceNetworkError');
+                throw new Error('Invalid network');
+            }
+            if (json?.TransactionType === 'TrustSet') {
+                const trustSet = new TrustSet(json);
+        
+                const payload = Payload.build(
+                    trustSet.JsonForSigning,
+                    Localize.t('asset.addingAssetReserveDescription', {
+                        ownerReserve: NetworkService.getNetworkReserve().OwnerReserve,
+                        nativeAsset: NetworkService.getNativeAsset(),
+                    }),
+                );
+        
+                this.setShouldRead(false);
+
+                setTimeout(() => {
+                    Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                this.onClose();
+
+                return;
+            }
+            
+            throw new Error('Invalid transaction template');
+        } catch (e) {
+            //
+        }
+
+        Prompt(
+            Localize.t('global.error'),
+            errorMsg,
+            [{ text: 'OK', onPress: () => this.setShouldRead(true) }],
+            {
+                cancelable: false,
+                type: 'default',
+            },
+        );
+    };
+
     handleSignedTransaction = (txblob: string) => {
         // normalize input
         let cleanBlob = txblob;
@@ -291,7 +351,7 @@ class ScanModal extends Component<Props, State> {
                 return;
             }
 
-            let amount;
+            let amount: any;
 
             // normal address scanned
             // try to decode X Address
@@ -316,17 +376,73 @@ class ScanModal extends Component<Props, State> {
                 amount = destination.amount;
             }
 
-            await this.routeUser(
-                AppScreens.Transaction.Payment,
-                {
-                    scanResult: {
-                        to,
-                        tag,
+            // eslint-disable-next-line consistent-return
+            const _continue = async () => {
+                if (destination.amount) {
+                    await Navigator.dismissModal();
+
+                    // got to the root, this is for fallback option
+                    try {
+                        await Navigator.popToRoot();
+                    } catch {
+                        // ignore
+                    }
+
+                    return LinkingService.handleXrplDestination(destination);
+                }
+
+                await this.routeUser(
+                    AppScreens.Transaction.Payment,
+                    {
+                        scanResult: {
+                            to,
+                            tag,
+                        },
+                        amount,
                     },
-                    amount,
-                },
-                {},
-            );
+                    {},
+                );
+            };
+
+            if (destination?.network) {
+                const currentNetwork = NetworkService.getNetwork();
+                if (destination.network !== currentNetwork?.key) {
+                    const wantsNetwork = await NetworkRepository.findBy('key', destination.network.toUpperCase());
+                    if (wantsNetwork?.[0]?.key) {
+                        // eslint-disable-next-line consistent-return
+                        return Navigator.showAlertModal({
+                            type: 'warning',
+                            title: Localize.t('global.switchNetwork'),
+                            text: Localize.t('settings.disableDeveloperModeRevertNetworkWarning', {
+                                currentNetwork: currentNetwork.name,
+                                defaultNetwork: wantsNetwork[0].name,
+                            }),
+                            buttons: [
+                                {
+                                    text: Localize.t('global.cancel'),
+                                    type: 'dismiss',
+                                    light: true,
+                                    onPress: () => this.setShouldRead(true),
+                                },
+                                {
+                                    text: Localize.t('global.continue'),
+                                    onPress: async () => {
+                                        // console.log('switchnetwork, then request');
+                                        await NetworkService.switchNetwork(wantsNetwork[0]);
+                                        requestAnimationFrame(() => {
+                                            _continue();
+                                        });
+                                    },
+                                    type: 'continue',
+                                    light: false,
+                                },
+                            ],
+                        });
+                    }
+                }
+            }
+
+            _continue();
         } else {
             Prompt(
                 Localize.t('global.error'),
@@ -520,6 +636,9 @@ class ScanModal extends Component<Props, State> {
                 break;
             case StringType.XrplSignedTransaction:
                 this.handleSignedTransaction(parsed.txblob);
+                break;
+            case StringType.XrplTransactionTemplate:
+                this.handleTransactionTemplate(parsed);
                 break;
             case StringType.XrplDestination:
             case StringType.PayId:

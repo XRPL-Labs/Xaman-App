@@ -21,6 +21,8 @@ export enum BadgeType {
     Accounts = 'accounts',
     Success = 'success',
     Planned = 'planned',
+    Pending = 'pending', 
+    Owned = 'owned', 
     Open = 'open',
     Count = 'count',
 }
@@ -46,6 +48,8 @@ const COLORS = {
     [BadgeType.Contacts]: AppColors.blue,
     [BadgeType.Success]: AppColors.green,
     [BadgeType.Planned]: AppColors.blue,
+    [BadgeType.Pending]: AppColors.blue,
+    [BadgeType.Owned]: AppColors.green,
     [BadgeType.Open]: AppColors.grey,
     [BadgeType.Count]: AppColors.grey,
 };
@@ -114,6 +118,12 @@ export default class Badge extends PureComponent<Props> {
                 break;
             case BadgeType.Open:
                 content = Localize.t('events.eventTypeOpen');
+                break;
+            case BadgeType.Pending:
+                content = Localize.t('events.eventTypePending');
+                break;
+            case BadgeType.Owned:
+                content = Localize.t('events.eventTypeOwned');
                 break;
             case BadgeType.Planned:
                 content = Localize.t('events.eventTypePlanned');

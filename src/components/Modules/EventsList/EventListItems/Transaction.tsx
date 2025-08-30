@@ -25,7 +25,7 @@ import ResolverService, { AccountNameResolveType } from '@services/ResolverServi
 
 import { Navigator } from '@common/helpers/navigator';
 
-import { TouchableDebounce, Badge, BadgeType } from '@components/General';
+import { TouchableDebounce, Badge, BadgeType, Icon } from '@components/General';
 
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
@@ -35,6 +35,8 @@ import { AppSizes, AppStyles } from '@theme';
 import styles from './styles';
 import lpStyles from '@components/Modules/AssetsList/Tokens/TokenItem/styles';
 import trustLine from '@store/repositories/trustLine';
+import { OperationActions } from '@common/libs/ledger/parser/types';
+import { NormalizeCurrencyCode } from '@common/utils/monetary';
 
 /* types ==================================================================== */
 export interface cachedTokenDetailsState {
@@ -299,7 +301,24 @@ class TransactionItem extends Component<Props, State> {
                 return typeof token?.currency?.currencyCode === 'string'
                     ? token.getFormattedCurrency()
                     : typeof token === 'string'
-                    ? token
+                        ? ((t: string) => {
+                            const tokenSplit = t.trim().split(' ');
+                            if (
+                                tokenSplit.length === 2 &&
+                                (
+                                    tokenSplit[0].match(/^[A-F0-9]{40}$/) || 
+                                    tokenSplit[0].match(/^[a-zA-Z0-9]{3,}$/)
+                                ) &&
+                                tokenSplit[1].match(/^r/)
+                            ) {
+                                const normalized = NormalizeCurrencyCode(tokenSplit[0]);
+                                if (normalized.length < 40) {
+                                    return `${normalized} (${tokenSplit[1].slice(0, 8)}...)`;
+                                }
+                                return `${tokenSplit[0].slice(0, 8)}... ${tokenSplit[1].slice(0, 8)}...`;
+                            }
+                            return NormalizeCurrencyCode(t);
+                    })(token)
                     : '?';
             }).join(' / ');
 
@@ -339,10 +358,21 @@ class TransactionItem extends Component<Props, State> {
         const showHalfTransparent = participant?.blocked && !isFeeTransaction;
         const opacity = { opacity: showHalfTransparent ? 0.3 : 1 };
 
+        const isRejected = item.MetaData?.TransactionResult === 'tecHOOK_REJECTED';
+
+        let hasBalanceChanges = true;
+        const mutations = item.BalanceChange(account.address);
+        if (!mutations?.[OperationActions.INC]?.[0] && !mutations?.[OperationActions.DEC]?.[0]) {
+            if (item?.Account !== account.address && (item as any)?.Issuer !== account.address) {
+                                                            // ^^ Credential
+                hasBalanceChanges = false;
+            }
+        }
+
         return (
             <TouchableDebounce
                 onPress={this.onPress}
-                activeOpacity={Math.min(0.2, 0.6 * opacity.opacity)}
+                activeOpacity={Math.min(0.6, 0.6 * opacity.opacity)}
                 style={[
                     styles.container,
                     {
@@ -363,15 +393,29 @@ class TransactionItem extends Component<Props, State> {
                     )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent, opacity]}>
-                    { !isFeeTransaction && (
+                    { !isFeeTransaction && hasBalanceChanges && (
                         cachedTokenDetails?.title
+                    )}
+                    { !isFeeTransaction && !hasBalanceChanges && (
+                        <Text style={[
+                            styles.feeTxText,
+                            styles.actionText,
+                            styles.label,
+                        ]}>{item.TransactionType}</Text>
                     )}
                     { isFeeTransaction && (
                         <Text style={styles.feeTxText}>{Localize.t('events.serviceFee')}</Text>
                     )}
                     { !isFeeTransaction && !participant?.blocked && (
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            {hasBalanceChanges && (
+                                <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
+                            )}
+                            {!hasBalanceChanges && (
+                                <Text style={[
+                                    styles.actionText,
+                                ]}>{Localize.t('events.thirdPartyTx')}</Text>
+                            )}
                             <Blocks.IndicatorIconBlock item={item} account={account} />
                         </View>
                     )}
@@ -385,8 +429,11 @@ class TransactionItem extends Component<Props, State> {
                             { feeText }
                         </Text>
                     )}
-                    { !isFeeTransaction && (
+                    { !isFeeTransaction && !isRejected && hasBalanceChanges && (
                         <Blocks.MonetaryBlock explainer={explainer} />
+                    )}
+                    { !isFeeTransaction && isRejected && (
+                        <Icon name="IconAlertTriangle" size={20} style={styles.iconHookRejcted} />
                     )}
                 </View>
             </TouchableDebounce>

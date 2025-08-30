@@ -6,6 +6,8 @@ import { CredentialCreate } from '@common/libs/ledger/transactions';
 import { ReadMore } from '@components/General';
 import { AccountElement } from '@components/Modules';
 
+import { HexEncoding } from '@common/utils/string';
+
 import { FormatDate } from '@common/utils/date';
 
 import Localize from '@locale';
@@ -32,6 +34,7 @@ class CredentialCreateTemplate extends Component<Props, State> {
 
     render() {
         const { transaction } = this.props;
+        const { displayHex } = HexEncoding;
 
         return (
             <>
@@ -53,7 +56,7 @@ class CredentialCreateTemplate extends Component<Props, State> {
                     <>
                         <Text style={styles.label}>{Localize.t('global.credentialType')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.CredentialType}</Text>
+                            <Text style={styles.value}>{displayHex(transaction.CredentialType)}</Text>
                         </View>
                     </>
                 )}
@@ -63,7 +66,7 @@ class CredentialCreateTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.uri')}</Text>
                         <View style={styles.contentBox}>
                             <ReadMore numberOfLines={3} textStyle={styles.value}>
-                                {transaction.URI}
+                                {displayHex(transaction.URI)}
                             </ReadMore>
                         </View>
                     </>

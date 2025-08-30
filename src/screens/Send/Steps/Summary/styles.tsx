@@ -13,6 +13,8 @@ const styles = StyleService.create({
     },
     swipeFooterSize: {
         width: '100%',
+        // borderWidth: 1,
+        // borderColor: '$red',
     },
     rowItemGrey: {
         backgroundColor: '$background',

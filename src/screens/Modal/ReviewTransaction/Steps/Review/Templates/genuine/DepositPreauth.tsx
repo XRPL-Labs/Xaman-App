@@ -13,6 +13,7 @@ import { AppStyles } from '@theme';
 import styles from '../styles';
 
 import { TemplateProps } from '../types';
+import { HexEncoding } from '@common/utils/string';
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
     transaction: DepositPreauth;
@@ -41,12 +42,16 @@ class DepositPreauthTemplate extends Component<Props, State> {
 
         return transaction.AuthorizeCredentials.map((credential) => {
             return (
-                <View key={credential.Issuer}>
+                <View style={[
+                    styles.credentialContainer,
+                ]} key={credential.Issuer}>
                     <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
                     <View style={styles.authorizeCredentialsContainer}>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                             {Localize.t('global.credentialType')}:{' '}
-                            <Text style={AppStyles.colorBlue}>{credential.CredentialType}</Text>
+                            <Text style={AppStyles.colorBlue}>{
+                                HexEncoding.displayHex(String(credential.CredentialType))
+                            }</Text>
                         </Text>
                     </View>
                 </View>
@@ -67,12 +72,16 @@ class DepositPreauthTemplate extends Component<Props, State> {
 
         return transaction.UnauthorizeCredentials.map((credential) => {
             return (
-                <View key={credential.Issuer}>
+                <View style={[
+                    styles.credentialContainer,
+                ]} key={credential.Issuer}>
                     <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
                     <View style={styles.authorizeCredentialsContainer}>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
                             {Localize.t('global.credentialType')}:{' '}
-                            <Text style={AppStyles.colorBlue}>{credential.CredentialType}</Text>
+                            <Text style={AppStyles.colorBlue}>{
+                                HexEncoding.displayHex(String(credential.CredentialType))
+                            }</Text>
                         </Text>
                     </View>
                 </View>

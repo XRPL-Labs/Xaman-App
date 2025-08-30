@@ -106,7 +106,7 @@ class XAppsView extends Component<Props, State> {
     }
 
     fetchStoreListings = () => {
-        BackendService.getXAppStoreListings('message,featured,popular,recent,all')
+        return BackendService.getXAppStoreListings('message,featured,popular,recent,all')
             .then((resp) => {
                 const { message, categories } = resp;
 
@@ -116,11 +116,15 @@ class XAppsView extends Component<Props, State> {
                     dataSource: this.buildDataSource(categories),
                     isLoading: false,
                 });
+                
+                return Promise.resolve();
             })
             .catch(() => {
                 this.setState({
                     isLoading: false,
                 });
+
+                return Promise.resolve();
             });
     };
 

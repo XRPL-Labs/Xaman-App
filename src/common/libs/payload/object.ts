@@ -76,7 +76,7 @@ export class Payload {
      * @param custom_instruction
      * @param submit
      */
-    static build(TxJson: TransactionJson, custom_instruction?: string, submit = true): Payload {
+    static build(TxJson: TransactionJson, custom_instruction?: string, submit = true, pathfinding = false): Payload {
         const instance = new Payload();
 
         // force the signer accounts if account is set in transaction
@@ -85,6 +85,7 @@ export class Payload {
         instance.meta = {
             uuid: uuidv4(),
             submit, // submit by default
+            pathfinding,
             signers, // only can be signed by tx Account or any
             custom_instruction,
         };

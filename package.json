@@ -1,6 +1,6 @@
 {
   "name": "xaman",
-  "version": "4.0.1",
+  "version": "4.1.3",
   "license": "SEE LICENSE IN <LICENSE>",
   "scripts": {
     "start": "node node_modules/react-native/cli.js start",
@@ -29,15 +29,16 @@
     "node-libs-browser": "2.2.1",
     "react": "18.2.0",
     "react-native": "0.74.2",
-    "react-native-camera": "4.2.1",
+    "react-native-camera": "^4.2.1",
     "react-native-interactable": "2.0.1",
     "react-native-navigation": "7.40.1",
     "realm": "12.13.0",
+    "ripple-lib-transactionparser": "^0.8.2",
     "tangem-sdk-react-native": "2.3.1",
     "uuid": "10.0.0",
-    "xrpl-accountlib": "^8.3.0",
+    "xrpl-accountlib": "^9.0.1",
     "xrpl-orderbook-reader": "^1.0.0",
-    "xumm-string-decode": "0.7.0"
+    "xumm-string-decode": "^0.7.1"
   },
   "devDependencies": {
     "@babel/core": "7.24.3",

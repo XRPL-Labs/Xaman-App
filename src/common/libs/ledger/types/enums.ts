@@ -17,6 +17,7 @@ export enum TransactionTypes {
     EscrowCancel = 'EscrowCancel',
     EscrowFinish = 'EscrowFinish',
     SetRegularKey = 'SetRegularKey',
+    DelegateSet = 'DelegateSet',
     SignerListSet = 'SignerListSet',
     DepositPreauth = 'DepositPreauth',
     CheckCreate = 'CheckCreate',
@@ -26,6 +27,7 @@ export enum TransactionTypes {
     PaymentChannelCreate = 'PaymentChannelCreate',
     PaymentChannelClaim = 'PaymentChannelClaim',
     PaymentChannelFund = 'PaymentChannelFund',
+    NFTokenModify = 'NFTokenModify',
     NFTokenMint = 'NFTokenMint',
     NFTokenBurn = 'NFTokenBurn',
     NFTokenCreateOffer = 'NFTokenCreateOffer',
@@ -61,6 +63,7 @@ export enum TransactionTypes {
     CredentialCreate = 'CredentialCreate',
     CredentialAccept = 'CredentialAccept',
     CredentialDelete = 'CredentialDelete',
+    SetRemarks = 'SetRemarks',
 }
 
 /**
@@ -105,6 +108,9 @@ export enum LedgerEntryTypes {
     SignerList = 'SignerList',
     EmittedTxn = 'EmittedTxn',
     Oracle = 'Oracle',
+    Delegate = 'Delegate',
+    Credential = 'Credential',
+    DID = 'DID',
 }
 
 /**

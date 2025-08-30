@@ -4,12 +4,12 @@
 
 import { get } from 'lodash';
 import React, { Component } from 'react';
-import { ImageBackground, View } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 
 import { StyleService } from '@services';
 
 // components
-import { KeyboardAwareScrollView, SwipeButton } from '@components/General';
+import { JsonTree, KeyboardAwareScrollView, SwipeButton } from '@components/General';
 import { AccountPicker } from '@components/Modules';
 
 import { InstanceTypes } from '@common/libs/ledger/types/enums';
@@ -34,7 +34,6 @@ export interface Props {}
 export interface State {
     canScroll: boolean;
     timestamp?: number;
-    serviceFee?: number;
 }
 
 /* Component ==================================================================== */
@@ -77,15 +76,8 @@ class ReviewStep extends Component<Props, State> {
         });
     };
 
-    setServiceFee = (serviceFee: number) => {
-        // console.log('ReviewStep set service fee', serviceFee)
-        this.setState({
-            serviceFee,
-        });
-    };
-
     renderDetails = () => {
-        const { payload, transaction, source, setLoading, setReady } = this.context;
+        const { payload, transaction, source, setLoading, setReady, setServiceFee } = this.context;
 
         if (!transaction) {
             return null;
@@ -99,7 +91,7 @@ class ReviewStep extends Component<Props, State> {
             forceRender: this.forceRender,
             setLoading,
             setReady,
-            setServiceFee: this.setServiceFee,
+            setServiceFee,
         } as any;
 
         // TODO: add logic for checking if template is exist before calling React.createElement
@@ -151,13 +143,9 @@ class ReviewStep extends Component<Props, State> {
             setSource,
             onAccept,
             onClose,
-            setServiceFee,
+            coreSettings,
         } = this.context;
-        const { canScroll, serviceFee } = this.state;
-
-        if (serviceFee) {
-            setServiceFee(serviceFee);
-        }
+        const { canScroll } = this.state;
 
         // waiting for accounts / transaction to be initiated
         if (typeof accounts === 'undefined' || !source || !transaction) {
@@ -202,9 +190,18 @@ class ReviewStep extends Component<Props, State> {
                                 {/* the Account can be different than the signing account */}
                                 <SignForAccount transaction={transaction} source={source} />
 
+                                {
+                                    transaction.InstanceType === InstanceTypes.GenuineTransaction &&
+                                    coreSettings?.developerMode && (
+                                    <View style={styles.jsonContainer}>
+                                        <Text style={styles.label}>Transaction JSON (Developer mode)</Text>
+                                        <JsonTree noDefaultCollapse={2} data={transaction.JsonForSigning} />
+                                    </View>
+                                )}
+
                                 {/* transaction details */}
                                 <View style={styles.detailsContainer}>{this.renderDetails()}</View>
-                                
+
                                 {/* accept button */}
                                 <View style={styles.acceptButtonContainer}>
                                     <SwipeButton

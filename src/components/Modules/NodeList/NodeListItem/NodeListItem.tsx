@@ -45,7 +45,11 @@ class NodeListItem extends PureComponent<Props, State> {
 
                 {selectable && (
                     <View style={[AppStyles.flex1, AppStyles.rightAligned]}>
-                        <View style={[styles.dot, isDefault && styles.dotSelected]} />
+                        <View style={[styles.dot, isDefault && styles.dotSelected]}>
+                            {isDefault && (
+                                <View style={[styles.dot, styles.dotSelected, styles.innerDot]} />
+                            )}
+                        </View>
                     </View>
                 )}
             </TouchableDebounce>

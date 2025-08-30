@@ -21,6 +21,8 @@ import StyleService from '@services/StyleService';
 
 import { VibrateHapticFeedback } from '@common/helpers/interface';
 
+import Localize from '@locale';
+
 import { Icon } from '@components/General/Icon';
 import { LoadingIndicator } from '@components/General/LoadingIndicator';
 
@@ -189,6 +191,7 @@ class SecurePinInput extends Component<Props, State> {
                             styles.line,
                         ]}
                         key="x-key"
+                        accessible accessibilityLabel="Backspace"
                         onPress={() => {
                             this.onInput('Backspace');
                         }}
@@ -210,6 +213,7 @@ class SecurePinInput extends Component<Props, State> {
                             style={[
                                 styles.line,
                             ]}
+                            accessible accessibilityLabel="Biometrics"
                             activeOpacity={0.7}
                             key="y-key"
                             onPress={() => {
@@ -255,6 +259,7 @@ class SecurePinInput extends Component<Props, State> {
                     onPress={() => {
                         this.onInput(item);
                     }}
+                    accessible accessibilityLabel={item}
                 >
                     <>
                         <Text style={styles.numTextInt}>{item}</Text>
@@ -314,14 +319,19 @@ class SecurePinInput extends Component<Props, State> {
         }
 
         return (
-            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus}>
-                <View style={styles.container}>
+            <TouchableWithoutFeedback testID="pin-input-container" onPress={this.focus} accessible={false}>
+                <View
+                    style={[
+                        styles.container,
+                    ]}
+                >
                     {!virtualKeyboard && (
                         <TextInput
                             ref={this.inputRef}
                             testID="pin-input"
                             returnKeyType="done"
                             keyboardType="number-pad"
+                            accessible
                             onKeyPress={this.onKeyPress}
                             autoCorrect={false}
                             spellCheck={false}
@@ -334,17 +344,23 @@ class SecurePinInput extends Component<Props, State> {
                             {...props}
                         />
                     )}
-                    <View style={[
-                        styles.digits,
-                        condensed && styles.digitsCondensed,
-                    ]}>{isLoading ? this.renderLoading() : this.renderDots()}</View>
+                    <View
+                        style={[
+                            styles.digits,
+                            condensed && styles.digitsCondensed,
+                        ]}
+                        accessible
+                        accessibilityHint={Localize.t('global.pleaseEnterYourPasscode')}
+                    >{isLoading ? this.renderLoading() : this.renderDots()}</View>
 
                     {virtualKeyboard && (
-                        <View testID="virtual-keyboard" style={[
-                            styles.keyboardWrap,
-                            pinPadStyle,
-                            condensed && styles.keyboardWrapCondensed,
-                        ]}>
+                        <View testID="virtual-keyboard"
+                            style={[
+                                styles.keyboardWrap,
+                                pinPadStyle,
+                                condensed && styles.keyboardWrapCondensed,
+                            ]}
+                        >
                             {this.renderNum()}
                         </View>
                     )}

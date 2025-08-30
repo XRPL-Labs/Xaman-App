@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 
 import { TextPlaceholder } from '@components/General';
 
+import Localize from '@locale';
+
 import styles from './styles';
 
 import { Props } from './types';
+import { AppStyles } from '@theme/index';
 /* Types ==================================================================== */
 interface State {
     actionLabel?: string;
@@ -32,12 +35,17 @@ class ActionBlock extends Component<IProps, State> {
     }
 
     render() {
-        const { participant } = this.props;
+        const { participant, item } = this.props;
         const { actionLabel } = this.state;
 
+        const rejected = (item as any)?.MetaData?.TransactionResult === 'tecHOOK_REJECTED';
+
         return (
-            <TextPlaceholder style={styles.actionText} numberOfLines={1} isLoading={!participant || !actionLabel}>
-                {actionLabel}
+            <TextPlaceholder style={[
+                styles.actionText,
+                rejected ? AppStyles.colorRed : {},
+            ]} numberOfLines={1} isLoading={!participant || !actionLabel}>
+                {rejected ? Localize.t('errors.tecHOOK_REJECTED_Short') : actionLabel }  
             </TextPlaceholder>
         );
     }

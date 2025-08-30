@@ -10,7 +10,7 @@ import NetworkService from '@services/NetworkService';
 import BackendService, { RatesType } from '@services/BackendService';
 
 import { AppScreens } from '@common/constants';
-import { Prompt, Toast } from '@common/helpers/interface';
+import { Prompt } from '@common/helpers/interface';
 import { Navigator } from '@common/helpers/navigator';
 
 import Preferences from '@common/libs/preferences';
@@ -86,7 +86,13 @@ class SummaryStep extends Component<Props, State> {
                 });
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
@@ -326,6 +332,7 @@ class SummaryStep extends Component<Props, State> {
             selectedFee,
             setFee,
             getPaymentJsonForFee,
+            credentials,
         } = this.context;
         const { destinationTagInputVisible, canScroll } = this.state;
 
@@ -447,6 +454,26 @@ class SummaryStep extends Component<Props, State> {
 
                         {this.renderAmountRate()}
                     </View>
+
+                    {/* Credentials */}
+                    {credentials && (
+                        <View style={styles.rowItem}>
+                            <View style={[
+                                styles.rowTitle,
+                                AppStyles.marginBottomSml,
+                            ]}>
+                                <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                    {Localize.t('global.credential')}
+                                </Text>
+                            </View>
+
+                            <Text style={[
+                                AppStyles.subtext,
+                                AppStyles.colorGreen,
+                                AppStyles.marginTopNegativeSml,
+                            ]}>{Localize.t('txCredentialSet.paymentBeingUsed')}</Text>
+                        </View>
+                    )}
 
                     {issuerFee && (
                         <View style={styles.rowItem}>

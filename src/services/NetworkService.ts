@@ -215,8 +215,7 @@ class NetworkService extends EventEmitter {
     };
 
     hasSwap = () => {
-        return (ProfileRepository.getProfile()?.swapNetworks.split(',') || [])
-            .indexOf(this.network?.key || '') > -1;
+        return (ProfileRepository.getProfile()?.swapNetworks.split(',') || []).indexOf(this.network?.key || '') > -1;
     };
 
     /**
@@ -300,6 +299,17 @@ class NetworkService extends EventEmitter {
             throw new Error('Network instance is not initiated in the NetworkService class!');
         }
         return this.network;
+    };
+
+    /**
+     * Get current network definitions
+     */
+    getRawNetworkDefinitions = () => {
+        if (this.network && this.getNetwork().definitions) {
+            return this.getNetwork().definitions;
+        }
+
+        return binary.DEFAULT_DEFINITIONS;
     };
 
     /**

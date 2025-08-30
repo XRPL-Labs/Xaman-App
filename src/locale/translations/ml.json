@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "ഭാഷ",
     "ok": "ശരി",
     "start": "ആരംഭിക്കുക",
@@ -248,6 +249,8 @@
     "empty": "ശൂന്യമാണ്",
     "update": "അപ്ഡേറ്റ്",
     "notNow": "ഇപ്പോൾ വേണ്ട",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "പുതിയ പതിപ്പ്",
     "versionNumberIsAvailableOnTheAppStore": "പതിപ്പ് %{versionCode} അപ്ലിക്കേഷൻസ്റ്റോർ ലഭ്യമാണ്.",
     "danger": "അപായം!",
@@ -399,7 +402,11 @@
     "switchNetwork": "Switch network",
     "theme": "Theme",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "പേയ്‌മെന്റുകളും\r\nപേയ്‌മെന്റ് അഭ്യർത്ഥനകൾ\r\nഎക്സ്ആർപി ലെഡ്ജറിൽ",
@@ -492,6 +499,8 @@
     "eventTypeAll": "എല്ലാം",
     "eventTypePlanned": "ആസൂത്രിതമായ",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "അഭ്യർത്ഥനകൾ",
     "noTransaction": "ഇടപാടുകളൊന്നുമില്ല",
     "shareAccount": "അക്കൗണ്ട് വിലാസം പങ്കിടുക",
@@ -507,6 +516,8 @@
     "paymentReceived": "പേയ്മെന്റ് ലഭിച്ചു",
     "paymentSent": "പേയ്‌മെന്റ് അയച്ചു",
     "exchangedAssets": "കൈമാറ്റം ചെയ്ത ആസ്തികൾ",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ഒരു അസറ്റ് ചേർത്തു (ട്രസ്റ്റ്ലൈൻ)",
     "removedATrustLine": "ഒരു അസറ്റ് നീക്കംചെയ്‌തു (ട്രസ്റ്റ്‌ലൈൻ)",
     "updatedATrustLine": "Token Updated (TrustLine)",
@@ -517,6 +528,8 @@
     "createOffer": "ഓഫർ സൃഷ്ടിക്കുക",
     "cancelOffer": "ഓഫർ റദ്ദാക്കുക",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "സ്ക്രീന് എസ്ക്രോ സൃഷ്ടിക്കുക",
     "finishEscrow": "എസ്ക്രോ പൂര്ത്തിയാക്കുക",
     "cancelEscrow": "എസ്ക്രോ റദ്ദാക്കുക",
@@ -544,6 +557,7 @@
     "mintNFT": "Mint NFT",
     "mintURIToken": "Mint URI Token",
     "burnNFT": "Burn NFT",
+    "modifyNFT": "Modify NFT",
     "burnURIToken": "Burn URI Token",
     "buyURIToken": "Buy URI Token",
     "createNFTOffer": "Create NFT offer",
@@ -583,6 +597,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -680,6 +696,8 @@
     "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} %{nativeAsset}",
     "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenModifyExplain": "The transaction will modify NFT token with ID %{tokenID}, and the URI value will be %{uri}",
+    "nfTokenModifyExplainUnchangedURI": "unchanged",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",
@@ -733,7 +751,8 @@
     "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "Popular",
@@ -879,6 +898,18 @@
   "account": {
     "addAccount": "ഒരു അക്കൗണ്ട് ചേർക്കുക",
     "hideSecret": "Hide secret",
+    "newAccountSafeOrDegenTitle": "Onboarding",
+    "degenModeExplanation1": "To make sure you can recover your account in case of a lost, stolen or damaged device, we ask you to write & re-enter your account secret.",
+    "degenModeExplanation2": "You may choose to defer writing down & re-entering your account secret. Having it written down & stored in a safe place is critical to keeping your account safe.",
+    "safeMode": "Write your account secret down now (safer)",
+    "imSmartPerson": "Immediately write down & re-enter your account secret for account recovery.",
+    "degenMode": "Fast onboarding (risky)",
+    "degenBackUpHomeWrn": "You are unprotected in case of lost, stolen or damaged phone!",
+    "imRetard": "Write down & re-enter later: all your funds are at risk until you do so!",
+    "degenModeExplanationConfirm": "Are you sure you want to proceed? Until you write down your account secret, you will NOT be able to recover your account if your phone gets lost, stolen or damaged.",
+    "degenModeNowDone": "Wonderful! You're all set! Whenever you have to recover your account, you can do so by importing the account secret you just wrote down.",
+    "degenModeProceedBtn": "I accept the risk",
+    "degenBackUpNowBtn": "Back up",
     "showSecret": "Show secret",
     "addAccountDescription": "നിങ്ങളുടെ നിലവിലുള്ള അക്കൌണ്ട് അകത്തെടുക്കുക, അല്ലെങ്കില് ഒരു പുതിയ അക്കൌണ്ട് ഉണ്ടാക്കുക.",
     "importExisting": "നിലവിലുള്ള അക്കൗണ്ട് ഇറക്കുമതി ചെയ്യുക",
@@ -1067,6 +1098,10 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "theDestinationAccountDidNotAuthorize": "The destination account did not authorize this transaction. Check your selected sending account, or contact the destination account owner.",
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "ഈ തുക നിങ്ങൾക്ക് ചെലവഴിക്കാൻ കഴിയുന്നതിനേക്കാൾ വലുതാണ് (%{spendable})\r\n",
     "theMaxAmountYouCanSendIs": "നിങ്ങൾക്ക് അയയ്‌ക്കാൻ കഴിയുന്ന പരമാവധി തുക %{spendable} %{currency}\r\n",
     "theMaxAmountYouCanSendWithFee": "നൽകിയയാൾ %{currency} ഒരു ട്രാൻസ്ഫർ ഫീസ് ഈടാക്കുന്നു. പരമാവധി. നിങ്ങൾക്ക് അയയ്ക്കാൻ കഴിയുന്ന തുക (ട്രാൻസ്ഫർ ഫീസിനെ മാനിക്കുന്നു) %{spendable} %{currency}\r\n",
@@ -1092,7 +1127,6 @@
     "submittingDone": "സമർപ്പിച്ചു!",
     "addToContacts": "കോൺ‌ടാക്റ്റുകളിലേക്ക് ചേർക്കുക",
     "sendingFailed": "അയയ്‌ക്കുന്നത് പരാജയപ്പെട്ടു!",
-    "verificationFailed": "Verification failed!",
     "couldNotVerifyTransaction": "Couldn't verify transaction finality",
     "verificationFailedDescription": "Your transaction has been signed and submitted successfully, however, we could not confirm transaction finality.\r\n\r\nThis can be caused by an internet connection hiccup or increased load on the XRP Ledger node you are connected to.\r\n\r\nPlease manually verify if this transaction shows in your transaction history (Events).",
     "submitFailed": "സമർപ്പിക്കൽ പരാജയപ്പെട്ടു!",
@@ -1123,6 +1157,11 @@
     "pleaseEnterAmount": "ഈ ഇടപാടിനായി തുക നൽകുക.",
     "trustLineLimitExceeded": "ട്രസ്റ്റ്‌ലൈൻ പരിധി കവിഞ്ഞു.\r\nഇപ്പോൾ: %{balance} \r\nപരമാവധി: %{peer_limit}\r\nനൽകുന്നതിന് ലഭ്യമാണ്: %{available}\r\nസ്വീകർത്താവിന് ട്രസ്റ്റ്‌ലൈൻ പരിധി അപ്‌ഡേറ്റുചെയ്യാനാകും.",
     "unableToSendPaymentRecipientDoesNotHaveTrustLine": "സ്വീകർത്താവിന് ടോക്കൺ അയയ്‌ക്കാനായില്ല.\r\nഈ ടോക്കൺ ഇഷ്യു ചെയ്യുന്നയാൾക്ക് ഈ ടോക്കൺ സജ്ജീകരണത്തിനായി സ്വീകർത്താവിന് ഒരു ട്രസ്റ്റ്ലൈൻ ഇല്ല.",
+    "unableToSendPaymentRecipientExceedTrustline": "Unable to send the token to the recipient.\r\nThe recipient does exceeds the TrustLine limit for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLine": "The recipient does not have a TrustLine for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXRPL": "Do you want to send a 'Check' instead, so the recipient can opt in to accept the Check which will create the TrustLine?\n\nThe recipient will not see an immediate deposit, but will have to accept your Check in their Requests-tab.\n\nOn your end, the Check will temporarily increase your reserve with %{reserve} %{asset}, until either the Check is cashed by the recipient, or cancelled by you.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXahau": "Do you want to send your payment as A 'Remit' transaction instead?\n\nThis will automatically create the Trustline in the recipient's account, but you will pay an extra %{reserve} %{asset} to satisfy their TrustLine reserve.",
+    "altSendAs": "Send as '%{type}'",
     "unableToSendPaymentTrustLineLimitIsExceeded": "Unable to send the token to the recipient.\r\nThe 'Limit' for the amount of tokens the recipient wants to hold is exceeded. The recipient will have to update their TrustLine for the token you're sending with a higher 'Limit' to be able to receive this token.",
     "destinationTagWarningConfirm": "ലക്ഷ്യസ്ഥാന ടാഗ് ഉള്ള ഒരു അക്കൗണ്ടിലേക്ക് നിങ്ങൾ അയയ്ക്കുന്നു. ഉദ്ദിഷ്ടസ്ഥാന ടാഗ് രണ്ടുതവണ പരിശോധിക്കുക: നിങ്ങൾ തെറ്റായ ടാഗിലേക്ക് അയയ്ക്കുകയാണെങ്കിൽ, നിങ്ങളുടെ ഫണ്ടുകൾ വീണ്ടെടുക്കുന്നതിന് ലക്ഷ്യസ്ഥാനത്തിന്റെ പിന്തുണ ആവശ്യമാണ്.",
     "doubleCheckDestinationTag": "ലക്ഷ്യസ്ഥാന ടാഗ് രണ്ടുതവണ പരിശോധിക്കുക",
@@ -1135,6 +1174,7 @@
   },
   "asset": {
     "addAsset": "അസറ്റ് ചേർക്കുക",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ഒരു ഇഷ്യൂവറും നിങ്ങൾ ചേർക്കാൻ ആഗ്രഹിക്കുന്ന അസറ്റും തിരഞ്ഞെടുക്കുക. ഈ പട്ടിക Xaman ഡവലപ്പർമാർ പരിപാലിക്കുന്നു.",
     "addAndSign": "ചേർക്കുക: ഇടപാട് ഒപ്പിടുക",
     "successRemoved": "നിങ്ങളുടെ അക്കൗണ്ടിൽ നിന്ന് അസറ്റ് വിജയകരമായി നീക്കംചെയ്‌തു",
@@ -1275,7 +1315,34 @@
     "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
     "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
     "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
-    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
+  },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorization granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Revoke permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

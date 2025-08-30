@@ -47,11 +47,24 @@ class IndicatorIconBlock extends PureComponent<IProps> {
         ) {
             ownerCountChanges = item.OwnerCountChange(account.address);
         } else if (item.InstanceType === InstanceTypes.LedgerObject) {
-            ownerCountChanges = {
-                address: item.Account,
-                value: NetworkService.getNetworkReserve().OwnerReserve,
-                action: OperationActions.INC,
-            };
+            if (item.Type === 'Credential') {
+                const claimsReserve = (account.address === item.Issuer && !item.Flags?.lsfAccepted) ||
+                    (account.address === item.Subject && item.Flags?.lsfAccepted);
+
+                if (claimsReserve) {
+                    ownerCountChanges = {
+                        address: account.address,
+                        value: NetworkService.getNetworkReserve().OwnerReserve,
+                        action: OperationActions.INC,
+                    };
+                }
+            } else {
+                ownerCountChanges = {
+                    address: item.Account,
+                    value: NetworkService.getNetworkReserve().OwnerReserve,
+                    action: OperationActions.INC,
+                };
+            }
         }
 
         if (ownerCountChanges) {

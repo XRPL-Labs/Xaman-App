@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+// import { View, Text } from 'react-native';
 
 import { BaseLedgerObject } from '@common/libs/ledger/objects';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 
 import HooksExplainer, { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 
-import Localize from '@locale';
+// import Localize from '@locale';
 
 import styles from './styles';
 
@@ -31,7 +32,7 @@ class HookDetails extends PureComponent<Props> {
         ) {
             return (
                 <View style={styles.detailContainer}>
-                    <Text style={styles.detailsLabelText}>{Localize.t('global.hooks')}</Text>
+                    {/* <Text style={styles.detailsLabelText}>{Localize.t('global.hooks')}</Text> */}
                     <HooksExplainer
                         transaction={item}
                         account={account}

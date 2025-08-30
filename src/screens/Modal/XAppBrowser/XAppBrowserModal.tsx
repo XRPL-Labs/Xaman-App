@@ -1221,15 +1221,18 @@ class XAppBrowserModal extends Component<Props, State> {
                         text: altHeader?.center?.text,
                         extraComponent: altHeader?.center?.showNetworkLabel && <NetworkLabel type="both" />,
                     }}
-                    rightComponent={ String(app?.identifier || '') === 'xaman.swap' ? {
-                        icon: altHeader?.right?.icon,
-                        iconSize: altHeader?.right?.iconSize,
-                        onPress: () => {
-                            const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
-                            if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
-                        },
-
-                    } : undefined }
+                    rightComponent={
+                        Object.values(AppConfig.xappIdentifiers).indexOf(String(app?.identifier || '')) > -1
+                            ? { 
+                                icon: altHeader?.right?.icon,
+                                iconSize: altHeader?.right?.iconSize,
+                                onPress: () => {
+                                    const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
+                                    if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
+                                },
+                            }
+                            : undefined
+                    }
                 />
             );
         }

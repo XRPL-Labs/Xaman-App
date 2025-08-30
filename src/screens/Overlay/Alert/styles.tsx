@@ -45,10 +45,12 @@ const styles = StyleService.create({
     },
     title: {
         ...AppStyles.h5,
+        color: '$contrast',
     },
     subTitle: {
         ...AppStyles.p,
         textAlign: 'center',
+        color: '$contrast',
     },
     titleError: {
         color: '$red',

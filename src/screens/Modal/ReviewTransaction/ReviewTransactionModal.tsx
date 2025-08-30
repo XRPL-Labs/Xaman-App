@@ -419,10 +419,15 @@ class ReviewTransactionModal extends Component<Props, State> {
                     const takerPays = transaction.TakerPays;
 
                     if (takerPays && takerPays.currency !== NetworkService.getNativeAsset()) {
-                        // const vettedCurrency = await BackendService.isVettedCurrency(
-                        //     takerPays.issuer!,
-                        //     takerPays.currency,
-                        // );
+                        /**
+                         * WARNING! THERE IS A BAD TIMING ISSUE HERE: WITHOUT THE AWAIT
+                         * FOR THE VETTED CURRENCY, THE SIGN MODAL CAN OVERLAY ITSELF
+                         * AND NOT BE CLOSED ANYMORE CAUSING TX RESULTS TO GET STUCK, ETC.
+                         */
+                        const vettedCurrency = await BackendService.isVettedCurrency(
+                            takerPays.issuer!,
+                            takerPays.currency,
+                        );
 
                         // user may close the page at this point while we have been waiting
                         // we need to return if component is not mounted
@@ -430,30 +435,28 @@ class ReviewTransactionModal extends Component<Props, State> {
                             return;
                         }
 
-                        this.prepareAndSignTransaction();
+                        if (!vettedCurrency) {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                title: Localize.t('global.warning'),
+                                text: Localize.t('payload.notVettedTokenTradeWarning'),
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.back'),
+                                        light: false,
+                                    },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: this.prepareAndSignTransaction,
+                                        type: 'dismiss',
+                                        light: true,
+                                    },
+                                ],
+                            });
 
-                        // if (!vettedCurrency) {
-                        //     Navigator.showAlertModal({
-                        //         type: 'warning',
-                        //         title: Localize.t('global.warning'),
-                        //         text: Localize.t('payload.notVettedTokenTradeWarning'),
-                        //         buttons: [
-                        //             {
-                        //                 text: Localize.t('global.back'),
-                        //                 light: false,
-                        //             },
-                        //             {
-                        //                 text: Localize.t('global.continue'),
-                        //                 onPress: this.prepareAndSignTransaction,
-                        //                 type: 'dismiss',
-                        //                 light: true,
-                        //             },
-                        //         ],
-                        //     });
-
-                        //     // do not continue
-                        //     return;
-                        // }
+                            // do not continue
+                            return;
+                        }
                     }
                 } catch (error) {
                     // ignore on error

@@ -328,6 +328,31 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    pushTokenScreen = () => {
+        Navigator.showModal<XAppBrowserModalProps>(
+            AppScreens.Modal.XAppBrowser,
+            {
+                identifier: AppConfig.xappIdentifiers.tokens,
+                noSwitching: true,
+                altHeader: {
+                    right: {
+                        icon: 'IconX',
+                        onPress: 'onClose',
+                    },
+                    center: {
+                        text: Localize.t('global.assets'),
+                        showNetworkLabel: true,
+                    },
+                },
+                origin: XAppOrigin.XUMM,
+            },
+            {
+                modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+            },
+        );
+    };
+
     onAddAccountPress = () => {
         Navigator.push<AccountAddViewProps>(AppScreens.Account.Add, {});
     };
@@ -395,6 +420,7 @@ class HomeView extends Component<Props, State> {
                 discreetMode={discreetMode}
                 spendable={isSpendable}
                 timestamp={timestamp}
+                addTokenPress={this.pushTokenScreen}
                 style={styles.tokenListContainer}
             />
         );
@@ -593,6 +619,55 @@ class HomeView extends Component<Props, State> {
         );
     };
 
+    renderDegenWarning = () => {
+        const { account } = this.state;
+
+        if (typeof account?.additionalInfoString === 'string') {
+            if (account?.additionalInfoString.startsWith('{"degenMode":')) {
+                return (
+                    <View style={[
+                        AppStyles.buttonRed,
+                        AppStyles.borderRadius,
+                        AppStyles.marginHorizontalSml,
+                        styles.degenWarning,
+                        AppStyles.row,
+                    ]}>
+                        <Text style={[
+                            // AppStyles.p,
+                            // AppStyles.strong,
+                            // AppStyles.textCenterAligned,
+                            styles.degenWarningText,
+                            AppStyles.flex6,
+                        ]}>
+                            {Localize.t('account.degenBackUpHomeWrn')}
+                        </Text>
+                        <Button
+                            roundedSmall
+                            onPress={() => {
+                                const secret = (JSON.parse(account?.additionalInfoString || '{}')?.degenMode || '')
+                                    .split('.');
+
+                                Navigator.push<AccountGenerateViewProps>(AppScreens.Account.Generate, {
+                                    initial: {
+                                        step: 'ViewPrivateKey',
+                                        secretNumbers: secret,
+                                    },
+                                });
+                            }} 
+                            label={Localize.t('account.degenBackUpNowBtn')}
+                            style={[
+                                AppStyles.buttonRed,
+                                styles.backUpButton,
+                            ]}
+                        />
+                    </View>
+                );
+            }
+        }
+
+        return null;
+    };
+
     render() {
         const { account } = this.state;
 
@@ -627,6 +702,7 @@ class HomeView extends Component<Props, State> {
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Container style={AppStyles.contentContainer} {...containerProps}>
                     {this.renderNetworkDetails()}
+                    {this.renderDegenWarning()}
                     {this.renderAccountAddress()}
                     {this.renderButtons()}
                     {this.renderAssets()}

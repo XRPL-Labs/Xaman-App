@@ -11,15 +11,18 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository } from '@store/repositories';
 
-import { InfoMessage, ReadMore } from '@components/General';
+import { InfoMessage } from '@components/General'; // ReadMore
 import { FeePicker, ServiceFee, AccountElement, HooksExplainer } from '@components/Modules';
 
 import Localize from '@locale';
 
 import styles from '../styles';
 
+import { Clipboard } from '@common/helpers/clipboard';
+
 import { TemplateProps } from '../types';
 import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
+import { Toast } from '@common/helpers/interface';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
@@ -253,15 +256,38 @@ class GlobalTemplate extends Component<Props, State> {
             <>
                 <Text style={styles.label}>{Localize.t('global.memo')}</Text>
                 <View style={styles.contentBox}>
-                    <ReadMore numberOfLines={3} textStyle={styles.value}>
+                    {
+                        transaction.Memos.map((m) => {
+                            return (
+                                <View
+                                    style={styles.memoContainer}
+                                >
+                                    <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
+                                    {m.MemoFormat && (
+                                        <Text style={[styles.value, styles.memoFormat]}>{m.MemoFormat}</Text>
+                                    )}
+                                    <Text
+                                        style={[styles.value, styles.memoData]}
+                                        onPress={() => {
+                                            if (String(m.MemoData) !== '') {
+                                                Clipboard.setString(String(m.MemoData));
+                                                Toast(Localize.t('payload.dataCopiedToClipboard'));
+                                            }
+                                        }}
+                                    >{m.MemoData}</Text>
+                                </View>
+                            );
+                        })
+                    }
+                    {/* <ReadMore numberOfLines={3} textStyle={styles.value}>
                         {transaction.Memos.map((m) => {
                             let memo = '';
                             memo += m.MemoType ? `${m.MemoType}\n` : '';
                             memo += m.MemoFormat ? `${m.MemoFormat}\n` : '';
-                            memo += m.MemoData ? `${m.MemoData}` : '';
+                            memo += m.MemoData ? `${m.MemoData}\n` : '';
                             return memo;
                         })}
-                    </ReadMore>
+                    </ReadMore> */}
                 </View>
             </>
         );
@@ -278,7 +304,7 @@ class GlobalTemplate extends Component<Props, State> {
         if (network?.isFeatureEnabled('Hooks') && transaction.Type !== TransactionTypes.SetHook) {
             return (
                 <>
-                    <Text style={styles.label}>{Localize.t('global.hooks')}</Text>
+                    {/* <Text style={styles.label}>{Localize.t('global.hooks')}</Text> */}
                     <View style={styles.contentBox}>
                         <HooksExplainer
                             transaction={transaction}

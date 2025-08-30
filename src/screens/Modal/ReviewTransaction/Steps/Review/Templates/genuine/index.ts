@@ -14,11 +14,13 @@ import DepositPreauth from './DepositPreauth';
 import CheckCreate from './CheckCreate';
 import CheckCash from './CheckCash';
 import CheckCancel from './CheckCancel';
+import DelegateSet from './DelegateSet';
 import TicketCreate from './TicketCreate';
 import PaymentChannelCreate from './PaymentChannelCreate';
 import PaymentChannelClaim from './PaymentChannelClaim';
 import PaymentChannelFund from './PaymentChannelFund';
 import NFTokenMint from './NFTokenMint';
+import NFTokenModify from './NFTokenModify';
 import NFTokenBurn from './NFTokenBurn';
 import NFTokenCreateOffer from './NFTokenCreateOffer';
 import NFTokenCancelOffer from './NFTokenCancelOffer';
@@ -51,6 +53,7 @@ import MPTokenAuthorize from './MPTokenAuthorize';
 import CredentialCreate from './CredentialCreate';
 import CredentialAccept from './CredentialAccept';
 import CredentialDelete from './CredentialDelete';
+import SetRemarks from './SetRemarks';
 
 export {
     Global,
@@ -66,6 +69,7 @@ export {
     SetRegularKey,
     SignerListSet,
     DepositPreauth,
+    DelegateSet,
     CheckCreate,
     CheckCash,
     CheckCancel,
@@ -74,6 +78,7 @@ export {
     PaymentChannelClaim,
     PaymentChannelFund,
     NFTokenMint,
+    NFTokenModify,
     NFTokenBurn,
     NFTokenCreateOffer,
     NFTokenCancelOffer,
@@ -106,4 +111,5 @@ export {
     CredentialCreate,
     CredentialAccept,
     CredentialDelete,
+    SetRemarks,
 };

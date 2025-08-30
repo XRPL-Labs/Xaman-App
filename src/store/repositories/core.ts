@@ -16,6 +16,7 @@ import BaseRepository from './base';
 /* Events  ==================================================================== */
 export type CoreRepositoryEvent = {
     updateSettings: (settings: CoreModel, changes: Partial<CoreModel>) => void;
+    switchAccount: (switchedToAccountAddress: string) => void;
 };
 
 declare interface CoreRepository {
@@ -94,9 +95,11 @@ class CoreRepository extends BaseRepository<CoreModel> {
      * @param account - The default account to set.
      */
     setDefaultAccount = (account: any) => {
-        this.saveSettings({
-            account,
-        });
+        this.saveSettings({ account });
+
+        // Allow for updating the account details, TrustLines,
+        // etc. for the account changed to (used in AccountService)
+        this.emit('switchAccount', account.address);
     };
 
     /**

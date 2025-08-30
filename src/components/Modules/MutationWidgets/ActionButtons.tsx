@@ -32,6 +32,7 @@ import { AppStyles } from '@theme/index';
 enum ActionTypes {
     NEW_PAYMENT = 'NEW_PAYMENT',
     CANCEL_OFFER = 'CANCEL_OFFER',
+    REMOVE_DELEGATION = 'REMOVE_DELEGATION',
     ACCEPT_NFTOKEN_OFFER = 'ACCEPT_NFTOKEN_OFFER',
     ACCEPT_URITOKEN_OFFER = 'ACCEPT_URITOKEN_OFFER',
     SELL_NFTOKEN = 'SELL_NFTOKEN',
@@ -41,6 +42,8 @@ enum ActionTypes {
     CANCEL_CHECK = 'CANCEL_CHECK',
     CASH_CHECK = 'CASH_CHECK',
     CANCEL_TICKET = 'CANCEL_TICKET',
+    DELETE_CREDENTIAL = 'DELETE_CREDENTIAL',
+    ACCEPT_CREDENTIAL = 'ACCEPT_CREDENTIAL',
 }
 
 interface State {
@@ -58,6 +61,8 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
                 return { label: Localize.t('events.newPayment'), secondary: false };
             case ActionTypes.CANCEL_OFFER:
                 return { label: Localize.t('events.cancelOffer'), secondary: true };
+            case ActionTypes.REMOVE_DELEGATION:
+                return { label: Localize.t('txDelegateSet.removeAuthorize'), secondary: false };
             case ActionTypes.ACCEPT_NFTOKEN_OFFER:
                 return { label: Localize.t('events.acceptOffer'), secondary: true };
             case ActionTypes.SELL_NFTOKEN:
@@ -71,11 +76,15 @@ const ActionButton: React.FC<{ actionType: ActionTypes; onPress: (actionType: Ac
             case ActionTypes.FINISH_ESCROW:
                 return { label: Localize.t('events.finishEscrow'), secondary: false };
             case ActionTypes.CANCEL_CHECK:
-                return { label: Localize.t('events.cancelCheck'), secondary: false };
+                return { label: Localize.t('events.cancelCheck'), secondary: true };
             case ActionTypes.CASH_CHECK:
                 return { label: Localize.t('events.cashCheck'), secondary: false };
             case ActionTypes.CANCEL_TICKET:
                 return { label: Localize.t('events.cancelTicket'), secondary: false };
+            case ActionTypes.DELETE_CREDENTIAL:
+                return { label: Localize.t('events.deleteCredential'), secondary: true };
+            case ActionTypes.ACCEPT_CREDENTIAL:
+                return { label: Localize.t('events.acceptCredential'), secondary: false };
             default:
                 return null;
         }
@@ -146,6 +155,17 @@ class ActionButtons extends PureComponent<Props, State> {
                 break;
             case LedgerEntryTypes.Offer:
                 availableActions.push(ActionTypes.CANCEL_OFFER);
+                break;
+            case LedgerEntryTypes.Credential:
+                if (item.Issuer === account.address || item.Subject === account.address) {
+                    availableActions.push(ActionTypes.DELETE_CREDENTIAL);
+                    if (item.Subject === account.address && !item.Flags?.lsfAccepted) {
+                        availableActions.push(ActionTypes.ACCEPT_CREDENTIAL);
+                    }
+                }
+                break;
+            case LedgerEntryTypes.Delegate:
+                availableActions.push(ActionTypes.REMOVE_DELEGATION);
                 break;
             case LedgerEntryTypes.NFTokenOffer:
                 if (item.Owner === account.address) {
@@ -258,6 +278,20 @@ class ActionButtons extends PureComponent<Props, State> {
                     });
                 }
                 break;
+            case ActionTypes.ACCEPT_CREDENTIAL:
+                Object.assign(craftedTxJson, {
+                    TransactionType: TransactionTypes.CredentialAccept,
+                    Issuer: (item as any)?.Issuer,
+                    CredentialType: (item as any)?.CredentialType,
+                });
+                break;
+            case ActionTypes.DELETE_CREDENTIAL:
+                Object.assign(craftedTxJson, {
+                    TransactionType: TransactionTypes.CredentialDelete,
+                    Issuer: (item as any)?.Issuer,
+                    CredentialType: (item as any)?.CredentialType,
+                });
+                break;
             case ActionTypes.ACCEPT_NFTOKEN_OFFER:
             case ActionTypes.SELL_NFTOKEN:
                 if (item.Type === LedgerEntryTypes.NFTokenOffer) {
@@ -274,6 +308,16 @@ class ActionButtons extends PureComponent<Props, State> {
                         TransactionType: TransactionTypes.EscrowCancel,
                         Owner: item.Account,
                         PreviousTxnID: item.PreviousTxnID,
+                    });
+                }
+                break;
+            case ActionTypes.REMOVE_DELEGATION:
+                if (item.Type === LedgerEntryTypes.Delegate) {
+                    Object.assign(craftedTxJson, {
+                        TransactionType: TransactionTypes.DelegateSet,
+                        Account: item.Account,
+                        Authorize: item.Authorize,
+                        Permissions: [],
                     });
                 }
                 break;
@@ -355,11 +399,11 @@ class ActionButtons extends PureComponent<Props, State> {
             return null;
         }
 
-        return availableActions.map((type) => {
-            const key = `action-button-${type}-${item.Account}-${(item as any)?.Destination}`;
+        return availableActions.map((type, index) => {
+            const key = `action-button-${index}-${(item as any)?.hash}`;
 
             return (
-                <View style={[AppStyles.paddingBottomExtraSml]}>
+                <View key={`${key}-c`} style={[AppStyles.paddingBottomExtraSml]}>
                     <ActionButton
                         key={key}
                         actionType={type}

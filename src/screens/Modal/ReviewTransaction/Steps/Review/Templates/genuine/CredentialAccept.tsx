@@ -11,6 +11,7 @@ import { AppStyles } from '@theme';
 import styles from '../styles';
 
 import { TemplateProps } from '../types';
+import { HexEncoding } from '@common/utils/string';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
@@ -50,7 +51,7 @@ class CredentialAcceptTemplate extends Component<Props, State> {
                     <>
                         <Text style={styles.label}>{Localize.t('global.credentialType')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.CredentialType}</Text>
+                            <Text style={styles.value}>{HexEncoding.displayHex(transaction.CredentialType)}</Text>
                         </View>
                     </>
                 )}

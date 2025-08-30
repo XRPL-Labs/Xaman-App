@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "زبان",
     "ok": "ٹھیک ہے",
     "start": "آغاز",
@@ -248,6 +249,8 @@
     "empty": "خالی",
     "update": "اپ ڈیٹ",
     "notNow": "ابھی نہیں",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "نیا ورژن",
     "versionNumberIsAvailableOnTheAppStore": "ورژن %{versionCode} ایپ اسٹور میں دستیاب ہے.\r\n",
     "danger": "خطرہ!",
@@ -399,7 +402,11 @@
     "switchNetwork": "Switch network",
     "theme": "Theme",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "ادائیگی اور\r\nادائیگی کی درخواستیں\r\nXRP لیجر پر",
@@ -492,6 +499,8 @@
     "eventTypeAll": "سب",
     "eventTypePlanned": "منصوبہ بند",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "درخواستیں",
     "noTransaction": "کوئی لین دین نہیں ہے",
     "shareAccount": "اکاؤنٹ کا پتہ بانٹیں",
@@ -507,6 +516,8 @@
     "paymentReceived": "ادائیگی موصول",
     "paymentSent": "ادائیگی بھیجی گئی",
     "exchangedAssets": "بدلے ہوئے اثاثے",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "ایک اثاثہ شامل کر دیا گیا (TrustLine)",
     "removedATrustLine": "ایک اثاثہ ہٹا دیا (TrustLine)",
     "updatedATrustLine": "Token Updated (TrustLine)",
@@ -517,6 +528,8 @@
     "createOffer": "پیش کش بنائیں",
     "cancelOffer": "پیش کش منسوخ کریں",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "یسکرو بنائیں",
     "finishEscrow": "یسکرو ختم",
     "cancelEscrow": "منسوخ کریں",
@@ -544,6 +557,7 @@
     "mintNFT": "Mint NFT",
     "mintURIToken": "Mint URI Token",
     "burnNFT": "Burn NFT",
+    "modifyNFT": "Modify NFT",
     "burnURIToken": "Burn URI Token",
     "buyURIToken": "Buy URI Token",
     "createNFTOffer": "Create NFT offer",
@@ -583,6 +597,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -680,6 +696,8 @@
     "thisTransactionIncreaseAccountReserve": "This transaction increased the account reserve by %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "This transaction decreased the account reserve by %{ownerReserve} %{nativeAsset}",
     "nfTokenBurnExplain": "The transaction will burn NFT token with ID %{tokenID}",
+    "nfTokenModifyExplain": "The transaction will modify NFT token with ID %{tokenID}, and the URI value will be %{uri}",
+    "nfTokenModifyExplainUnchangedURI": "unchanged",
     "theTokenIdIs": "Token ID: %{tokenID}",
     "theTokenHasATransferFee": "Token transfer fee: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Token Taxon: %{taxon}",
@@ -733,7 +751,8 @@
     "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "Popular",
@@ -879,6 +898,18 @@
   "account": {
     "addAccount": "ایک اکاؤنٹ شامل کریں",
     "hideSecret": "Hide secret",
+    "newAccountSafeOrDegenTitle": "Onboarding",
+    "degenModeExplanation1": "To make sure you can recover your account in case of a lost, stolen or damaged device, we ask you to write & re-enter your account secret.",
+    "degenModeExplanation2": "You may choose to defer writing down & re-entering your account secret. Having it written down & stored in a safe place is critical to keeping your account safe.",
+    "safeMode": "Write your account secret down now (safer)",
+    "imSmartPerson": "Immediately write down & re-enter your account secret for account recovery.",
+    "degenMode": "Fast onboarding (risky)",
+    "degenBackUpHomeWrn": "You are unprotected in case of lost, stolen or damaged phone!",
+    "imRetard": "Write down & re-enter later: all your funds are at risk until you do so!",
+    "degenModeExplanationConfirm": "Are you sure you want to proceed? Until you write down your account secret, you will NOT be able to recover your account if your phone gets lost, stolen or damaged.",
+    "degenModeNowDone": "Wonderful! You're all set! Whenever you have to recover your account, you can do so by importing the account secret you just wrote down.",
+    "degenModeProceedBtn": "I accept the risk",
+    "degenBackUpNowBtn": "Back up",
     "showSecret": "Show secret",
     "addAccountDescription": "اپنا موجودہ اکاؤنٹ درآمد کریں ، یا نیا اکاؤنٹ بنائیں۔",
     "importExisting": "ایک موجودہ اکاؤنٹ درآمد کریں",
@@ -1067,6 +1098,10 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "theDestinationAccountDidNotAuthorize": "The destination account did not authorize this transaction. Check your selected sending account, or contact the destination account owner.",
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": " یہ رقم اس سے بھی زیادہ ہے جو آپ خرچ کرسکتے ہیں (%{spendable})\r\n",
     "theMaxAmountYouCanSendIs": "   زیادہ سے زیادہ رقم آپ بھیج سکتے ہیں %{spendable} %{currency}\r\n",
     "theMaxAmountYouCanSendWithFee": "%{currency} جاری کرنے والا ایک ٹرانسفر فیس وصول کرتا ہے۔\r\nزیادہ سے زیادہ آپ جو رقم بھیج سکتے ہو (ٹرانسفر فیس کا احترام کرتے ہو) وہ %{spendable} %{currency} ہے",
@@ -1092,7 +1127,6 @@
     "submittingDone": "جمع کروانے کا کام!",
     "addToContacts": "رابطوں میں شامل کریں",
     "sendingFailed": "بھیجنا ناکام!",
-    "verificationFailed": "Verification failed!",
     "couldNotVerifyTransaction": "Couldn't verify transaction finality",
     "verificationFailedDescription": "Your transaction has been signed and submitted successfully, however, we could not confirm transaction finality.\r\n\r\nThis can be caused by an internet connection hiccup or increased load on the XRP Ledger node you are connected to.\r\n\r\nPlease manually verify if this transaction shows in your transaction history (Events).",
     "submitFailed": "عرض کرنے میں ناکام!",
@@ -1123,6 +1157,11 @@
     "pleaseEnterAmount": "براہ کرم لین دین کی رقم درج کریں",
     "trustLineLimitExceeded": "ٹرسٹ لائن کی حد سے تجاوز کرگیا۔\r\n\r\nاب: %{balance}\r\nزیادہ سے زیادہ: %{peer_limit}\r\nجاری کرنے کے لئے دستیاب: %{available}\r\n\r\nوصول کنندہ ٹرسٹ لائن کی حد کو اپ ڈیٹ کرسکتا ہے۔",
     "unableToSendPaymentRecipientDoesNotHaveTrustLine": "وصول کنندہ کو ٹوکن بھیجنے سے قاصر۔\r\nوصول کنندہ اس ٹوکن کے فراہم کرنے والے کے لیے اس کا ٹوکن سیٹ اپ کے لئے ایک TrustLine نہیں ہوئے",
+    "unableToSendPaymentRecipientExceedTrustline": "Unable to send the token to the recipient.\r\nThe recipient does exceeds the TrustLine limit for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLine": "The recipient does not have a TrustLine for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXRPL": "Do you want to send a 'Check' instead, so the recipient can opt in to accept the Check which will create the TrustLine?\n\nThe recipient will not see an immediate deposit, but will have to accept your Check in their Requests-tab.\n\nOn your end, the Check will temporarily increase your reserve with %{reserve} %{asset}, until either the Check is cashed by the recipient, or cancelled by you.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXahau": "Do you want to send your payment as A 'Remit' transaction instead?\n\nThis will automatically create the Trustline in the recipient's account, but you will pay an extra %{reserve} %{asset} to satisfy their TrustLine reserve.",
+    "altSendAs": "Send as '%{type}'",
     "unableToSendPaymentTrustLineLimitIsExceeded": "Unable to send the token to the recipient.\r\nThe 'Limit' for the amount of tokens the recipient wants to hold is exceeded. The recipient will have to update their TrustLine for the token you're sending with a higher 'Limit' to be able to receive this token.",
     "destinationTagWarningConfirm": "آپ منزل ٹیگ والے اکاؤنٹ میں بھیج رہے ہیں۔ براہ کرم منزل ٹیگ کو دو بار چیک کریں: اگر آپ غلط ٹیگ پر بھیج دیتے ہیں تو آپ کو اپنے فنڈز کی بازیافت کے لئے منزل مقصود کی مدد کی ضرورت ہوگی۔",
     "doubleCheckDestinationTag": "ڈبل چیک منزل مقصود",
@@ -1135,6 +1174,7 @@
   },
   "asset": {
     "addAsset": "ایک اثاثہ شامل کریں",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "ایک جاری کنندہ اور اثاثہ منتخب کریں جس میں آپ شامل کرنا چاہتے ہیں۔ اس فہرست کو Xaman ڈویلپرز نے برقرار رکھا ہے۔",
     "addAndSign": "اثاثہ شامل کریں: سائن ٹرانزیکشن",
     "successRemoved": "اثاثہ کامیابی کے ساتھ آپ کے اکاؤنٹ سے ہٹا دیا گیا",
@@ -1275,7 +1315,34 @@
     "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
     "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
     "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
-    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
+  },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorization granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Revoke permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

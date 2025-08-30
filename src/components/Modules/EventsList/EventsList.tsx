@@ -90,7 +90,9 @@ class EventsList extends PureComponent<Props, State> {
         if (isFiltering) {
             return (
                 <View style={styles.listEmptyContainer}>
-                    <Text>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                    <Text style={[
+                        AppStyles.colorPrimary,
+                    ]}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                 </View>
             );    
         }
@@ -277,7 +279,10 @@ class EventsList extends PureComponent<Props, State> {
                     <View style={[styles.listEmptyContainer]}>
                         <LoadingIndicator />
                         <Text>{' '}</Text>
-                        <Text style={AppStyles.baseText}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
+                        <Text style={[
+                            AppStyles.baseText,
+                            AppStyles.colorPrimary,
+                        ]}>{Localize.t('events.fetchingTransactionsFromNetwork')}</Text>
                         <Text>{' '}</Text>
                     </View>        
                 }

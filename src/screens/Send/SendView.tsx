@@ -20,7 +20,14 @@ import { Navigator } from '@common/helpers/navigator';
 import Memo from '@common/libs/ledger/parser/common/memo';
 
 import { AmountParser } from '@common/libs/ledger/parser/common';
-import { Payment, PaymentValidation } from '@common/libs/ledger/transactions';
+import {
+    CheckCreate,
+    CheckCreateValidation,
+    Payment,
+    PaymentValidation,
+    Remit,
+    RemitValidation,
+} from '@common/libs/ledger/transactions';
 import { Destination } from '@common/libs/ledger/parser/types';
 import { SignMixin } from '@common/libs/ledger/mixin';
 
@@ -62,6 +69,8 @@ class SendView extends Component<Props, State> {
         const coreSettings = CoreRepository.getSettings();
         const spendableAccounts = AccountRepository.getSpendableAccounts();
         const PaymentWithSigMixin = SignMixin(Payment);
+        const CheckWithSigMixin = SignMixin(CheckCreate);
+        const RemitWithSigMixin = SignMixin(Remit);
 
         // console.log('SendView constructor')
 
@@ -69,12 +78,16 @@ class SendView extends Component<Props, State> {
             currentStep: Steps.Details,
             accounts: spendableAccounts,
             payment: new PaymentWithSigMixin(),
+            check: new CheckWithSigMixin(),
+            remit: new RemitWithSigMixin(),
             source: find(spendableAccounts, { address: coreSettings.account.address }) ?? first(spendableAccounts),
             token: props.token ?? NetworkService.getNativeAsset(),
             amount: props.amount ?? '',
             memo: undefined,
             selectedFee: undefined,
             issuerFee: undefined,
+            credentials: [],
+            altTxTypeTo: '',
             serviceFeeAmount: undefined,
             destination: undefined,
             destinationInfo: undefined,
@@ -97,13 +110,15 @@ class SendView extends Component<Props, State> {
     }
 
     componentWillUnmount() {
-        const { isLoading, payment } = this.state;
+        const { isLoading, payment, check, remit } = this.state;
 
         if (this.closeTimeout) clearTimeout(this.closeTimeout);
 
         // abort the transaction if already running
         if (isLoading && payment) {
             payment.abort();
+            check.abort();
+            remit.abort();
         }
     }
 
@@ -153,14 +168,29 @@ class SendView extends Component<Props, State> {
         this.setState({ memo });
     };
 
+    setCredentials = (credentials: string[]) => {
+        this.setState({ credentials });
+    };
+
+    submitAsAltTxTypeTo = (destination: string) => {
+        this.setState({ altTxTypeTo: destination });
+    };
+
     setScanResult = (result: any) => {
         this.setState({ scanResult: result });
     };
 
     getPaymentJsonForFee = () => {
-        const { token, amount, destination, source, memo } = this.state;
+        const { token, amount, destination, source, memo, credentials, altTxTypeTo } = this.state;
 
-        const txJson = {
+        const txJson: {
+            TransactionType: string;
+            Account: string;
+            Destination: string;
+            Sequence: number;
+            Amount?: string | { currency: string; issuer: string; value: string };
+            Amounts?: { AmountEntry: { Amount: string | { currency: string; issuer: string; value: string } } }[];
+        } = {
             TransactionType: 'Payment',
             Account: source!.address,
             Destination: destination!.address,
@@ -198,6 +228,33 @@ class SendView extends Component<Props, State> {
             });
         }
 
+        if (credentials && credentials.length > 0) {
+            Object.assign(txJson, {
+                CredentialIDs: credentials,
+            });
+        }
+
+        if (altTxTypeTo && altTxTypeTo !== '') {
+            const [type, address] = altTxTypeTo.split(':');
+            if (address === txJson.Destination) {
+                if (type === 'Check') {
+                    txJson.TransactionType = 'CheckCreate';
+                } else if (type === 'Remit' && (txJson as any)?.Amount) {
+                    txJson.TransactionType = 'Remit';
+                    Object.assign(txJson, {
+                        Amounts: [
+                            {
+                                AmountEntry: {
+                                    Amount: txJson.Amount,
+                                },
+                            },
+                        ],
+                    });
+                    delete txJson.Amount;
+                }
+            }
+        }
+
         return txJson;
     };
 
@@ -218,19 +275,24 @@ class SendView extends Component<Props, State> {
     };
 
     submit = () => {
-        const { payment, coreSettings } = this.state;
+        const { payment, check, remit, coreSettings, altTxTypeTo } = this.state;
 
         this.changeStep(Steps.Submitting);
 
+        const txType = (altTxTypeTo && altTxTypeTo !== '' ? altTxTypeTo.split(':')[0] : 'payment')
+            .toLocaleLowerCase();
+
+        const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
+
         // submit payment to the ledger
-        payment.submit().then((submitResult) => {
+        _tx.submit().then((submitResult) => {
             if (submitResult.success) {
                 this.setState(
                     {
                         currentStep: Steps.Verifying,
                     },
                     () => {
-                        payment.verify().then((result) => {
+                        _tx.verify().then((result) => {
                             if (coreSettings.hapticFeedback) {
                                 if (result.success) {
                                     VibrateHapticFeedback('notificationSuccess');
@@ -253,32 +315,58 @@ class SendView extends Component<Props, State> {
     };
 
     send = async () => {
-        const { token, amount, selectedFee, issuerFee, destination, source, payment, memo } = this.state;
+        const {
+            token,
+            amount,
+            selectedFee,
+            issuerFee,
+            destination,
+            source,
+            altTxTypeTo,
+            payment,
+            check,
+            remit,
+            memo,
+            credentials,
+        } = this.state;
 
         this.setState({
             isLoading: true,
         });
 
         try {
-            // set values tho the payment transaction
+            const txType = (altTxTypeTo && altTxTypeTo !== '' ? altTxTypeTo.split(':')[0] : 'payment')
+                .toLocaleLowerCase();
+            const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
+
+            // set values to the payment transaction
 
             // set source account
-            payment.Account = source!.address;
+            _tx.Account = source!.address;
 
             // set the destination
-            payment.Destination = destination!.address;
+            _tx.Destination = destination!.address;
 
             if (typeof destination?.tag !== 'undefined') {
-                payment.DestinationTag = Number(destination.tag);
+                _tx.DestinationTag = Number(destination.tag);
             }
 
             // set the amount
             if (typeof token === 'string') {
                 // native token
-                payment.Amount = {
+                const am = {
                     currency: NetworkService.getNativeAsset(),
                     value: amount,
                 };
+                if (_tx instanceof Payment) {
+                    _tx.Amount = am;
+                }
+                if (_tx instanceof CheckCreate) {
+                    _tx.SendMax = am;
+                }
+                if (_tx instanceof Remit) {
+                    _tx.Amounts = [ am ];
+                }
             } else {
                 // IOU
                 // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
@@ -287,37 +375,63 @@ class SendView extends Component<Props, State> {
                     source!.address !== token.currency.issuer &&
                     destination!.address !== token.currency.issuer
                 ) {
-                    payment.Flags = {
+                    _tx.Flags = {
                         tfPartialPayment: true,
                     };
                 }
 
                 // set the amount
-                payment.Amount = {
+                const am = {
                     currency: token.currency.currencyCode,
                     issuer: token.currency.issuer,
                     value: amount,
                 };
+
+                if (_tx instanceof Payment) {
+                    _tx.Amount = am;
+                }
+                if (_tx instanceof CheckCreate) {
+                    _tx.SendMax = am;
+                }
+                if (_tx instanceof Remit) {
+                    _tx.Amounts = [ am ];
+                }
             }
 
             // set the calculated and selected fee
-            payment.Fee = {
+            _tx.Fee = {
                 currency: NetworkService.getNativeAsset(),
                 value: new AmountParser(selectedFee!.value).dropsToNative().toFixed(),
             };
 
             // set memo if any
             if (memo) {
-                payment.Memos = [Memo.Encode(memo)];
-            } else if (payment.Memos) {
-                payment.Memos = [];
+                _tx.Memos = [Memo.Encode(memo)];
+            } else if (_tx.Memos) {
+                _tx.Memos = [];
+            }
+
+            if (credentials && credentials.length > 0) {
+                if (_tx instanceof Payment) {
+                    _tx.CredentialIDs = credentials;
+                }
             }
 
             // validate payment for all possible mistakes
-            await PaymentValidation(payment);
+            // console.log(txType, payment, check, remit)
+
+            if (txType === 'payment') {
+                await PaymentValidation(payment);
+            }
+            if (txType === 'check') {
+                await CheckCreateValidation(check);
+            }
+            if (txType === 'remit') {
+                await RemitValidation(remit);
+            }
 
             // sign the transaction and then submit
-            await payment.sign(source!).then(this.submit);
+            await _tx.sign(source!).then(this.submit);
         } catch (error: any) {
             if (error) {
                 Navigator.showAlertModal({
@@ -417,6 +531,8 @@ class SendView extends Component<Props, State> {
                     setToken: this.setToken,
                     setFee: this.setFee,
                     setMemo: this.setMemo,
+                    setCredentials: this.setCredentials,
+                    submitAsAltTxTypeTo: this.submitAsAltTxTypeTo,
                     setIssuerFee: this.setIssuerFee,
                     setSource: this.setSource,
                     setDestination: this.setDestination,

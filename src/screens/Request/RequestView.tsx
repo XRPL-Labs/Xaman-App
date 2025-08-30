@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import Realm from 'realm';
 
 import React, { Component } from 'react';
-import { View, Text, Keyboard, Share, InteractionManager, Platform } from 'react-native';
+import { View, Text, Keyboard, Share, InteractionManager, Platform, Alert } from 'react-native';
 import { Clipboard } from '@common/helpers/clipboard';
 
 import BackendService, { RatesType } from '@services/BackendService';
@@ -21,7 +21,7 @@ import { AppScreens } from '@common/constants';
 import { HOSTNAME } from '@common/constants/endpoints';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
-import { AccountModel, CoreModel } from '@store/models';
+import { AccountModel, CoreModel, TrustLineModel } from '@store/models';
 
 // components
 import {
@@ -34,6 +34,7 @@ import {
     KeyboardAwareScrollView,
     Spacer,
     Button,
+    Icon,
 } from '@components/General';
 
 import { AmountValueType } from '@components/General/AmountInput';
@@ -47,6 +48,7 @@ import Localize from '@locale';
 // style
 import { AppStyles, AppColors, AppSizes } from '@theme';
 import styles from './styles';
+import { SelectCurrencyOverlayProps } from '@screens/Overlay/SelectCurrency';
 // import AppService, { AppStateStatus } from '@services/AppService';
 
 /* types ==================================================================== */
@@ -62,6 +64,7 @@ export interface State {
     amountRate?: string;
     currencyRate?: RatesType;
     withAmount: boolean;
+    asset?: TrustLineModel;
 }
 
 /* Component ==================================================================== */
@@ -91,6 +94,7 @@ class RequestView extends Component<Props, State> {
             currencyRate: undefined,
             amountRate: undefined,
             withAmount: true,
+            asset: undefined,
         };
 
         this.amountInputRef = React.createRef();
@@ -143,7 +147,13 @@ class RequestView extends Component<Props, State> {
                 );
             })
             .catch(() => {
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
@@ -210,15 +220,26 @@ class RequestView extends Component<Props, State> {
     };
 
     getLink = () => {
-        const { source, amount, withAmount } = this.state;
+        const { source, amount, withAmount, asset } = this.state;
 
-        let content = `https://${HOSTNAME}/detect/request:${source.address}`;
+        const params = [];
 
         if (amount && withAmount) {
-            content += `?amount=${amount}`;
+            params.push(`amount=${amount}`);
         }
 
-        return content;
+        const currentNetwork = NetworkService.getNetwork();
+
+        if (currentNetwork.key !== 'MAINNET' || amount && withAmount) {
+            params.push(`network=${currentNetwork.key}`);
+        }
+
+        if (asset) {
+            params.push(`issuer=${asset.currency.issuer}`);
+            params.push(`currency=${asset.currency.currencyCode}`);
+        }
+
+        return `https://${HOSTNAME}/detect/request:${source.address}${params.length > 0 ? '?' : ''}${params.join('&')}`;
     };
 
     toggleUseAmount = () => {
@@ -256,8 +277,55 @@ class RequestView extends Component<Props, State> {
         return 0;
     };
 
+    onSelect = (item: any) => {
+        // const { onSelect } = this.props;
+
+        // if (typeof onSelect === 'function') {
+        //     onSelect(item);
+        // }
+        this.setState({
+            asset: typeof item === 'string' ? undefined : item,
+        });
+    };
+
+    onPickerClose = () => {
+        // this.setState({
+        //     expanded: false,
+        // });
+        // console.log('close')
+    };
+
+    showPicker = () => {
+        // const { account, selectedItem, currencies } = this.props;
+        const { source, asset } = this.state;
+
+        const account = source;
+        const selectedItem = asset || NetworkService.getNativeAsset();
+        const currencies = [
+            NetworkService.getNativeAsset(),
+            ...(source.lines ? source.lines.sorted([['order', false]]) : [])
+                .filter((line) => {
+                    if (line.isLiquidityPoolToken()) {
+                        return false;
+                    }
+                    if (Number(line.balance) >= 0 || line.obligation === true) {
+                        return true;
+                    }
+                    return false;
+                }),
+        ];
+
+        Navigator.showOverlay<SelectCurrencyOverlayProps>(AppScreens.Overlay.SelectCurrency, {
+            account,
+            currencies,
+            selectedItem,
+            onSelect: this.onSelect,
+            onClose: this.onPickerClose,
+        });
+    };
+
     renderAmountInput = () => {
-        const { coreSettings, withAmount, amount, amountRate, currencyRate } = this.state;
+        const { coreSettings, withAmount, amount, amountRate, currencyRate, asset } = this.state;
 
         if (!withAmount) return null;
 
@@ -276,38 +344,52 @@ class RequestView extends Component<Props, State> {
                             returnKeyType="done"
                         />
                     </View>
-                    <View style={styles.currencySymbolTextContainer}>
-                        <Text style={styles.currencySymbolText}>{NetworkService.getNativeAsset()}</Text>
-                    </View>
+                    <TouchableDebounce onPress={this.showPicker} style={[
+                        styles.currencySymbolTextContainer,
+                        AppStyles.row,
+                    ]}>
+                        <Text style={[
+                            styles.currencySymbolText,
+                            styles.currencySymbolTextPad,
+                        ]}>{asset?.getFormattedCurrency() || NetworkService.getNativeAsset()}</Text>
+                        <Icon size={25} style={styles.currencyChevronIcon} name="IconChevronDown" />
+                    </TouchableDebounce>
                 </View>
 
-                <View style={styles.amountRateContainer}>
-                    <View style={AppStyles.centerContent}>
-                        <Text style={styles.amountRateInput}>~ </Text>
+                {
+                    !asset &&
+                    <View style={styles.amountRateContainer}>
+                        <View style={AppStyles.centerContent}>
+                            <Text style={styles.amountRateInput}>~ </Text>
+                        </View>
+                        <View style={AppStyles.flex1}>
+                            <AmountInput
+                                ref={this.amountRateInputRef}
+                                testID="amount-rate-input"
+                                value={amountRate}
+                                valueType={AmountValueType.IOU}
+                                editable={!!currencyRate}
+                                onChange={this.onRateAmountChange}
+                                style={[styles.amountRateInput]}
+                                placeholderTextColor={AppColors.grey}
+                                returnKeyType="done"
+                            />
+                        </View>
+                        <View style={styles.currencySymbolTextContainer}>
+                            <Text style={styles.currencySymbolText}>{coreSettings.currency}</Text>
+                        </View>
                     </View>
-                    <View style={AppStyles.flex1}>
-                        <AmountInput
-                            ref={this.amountRateInputRef}
-                            testID="amount-rate-input"
-                            value={amountRate}
-                            valueType={AmountValueType.IOU}
-                            editable={!!currencyRate}
-                            onChange={this.onRateAmountChange}
-                            style={[styles.amountRateInput]}
-                            placeholderTextColor={AppColors.grey}
-                            returnKeyType="done"
-                        />
-                    </View>
-                    <View style={styles.currencySymbolTextContainer}>
-                        <Text style={styles.currencySymbolText}>{coreSettings.currency}</Text>
-                    </View>
-                </View>
+                }
+
+                {
+                    asset && <Spacer size={15} />
+                }
             </>
         );
     };
 
     render() {
-        const { accounts, source, withAmount } = this.state;
+        const { accounts, source, withAmount, asset } = this.state;
 
         return (
             <View testID="request-screen" style={styles.container}>
@@ -374,7 +456,9 @@ class RequestView extends Component<Props, State> {
                         {this.renderAmountInput()}
                     </View>
 
-                    <HorizontalLine />
+                    {
+                        !asset && <HorizontalLine />
+                    }
 
                     <Spacer size={12} />
 

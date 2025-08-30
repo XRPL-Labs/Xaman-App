@@ -75,7 +75,9 @@ class Localize {
                 const generateLocals = require('./translations').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
                 this.instance.locale = resolvedLocale;
-                this.moment.locale(resolvedLocale, generateLocals[resolvedLocale].moment);
+                if (generateLocals[resolvedLocale]?.moment) {
+                    this.moment.locale(resolvedLocale, generateLocals[resolvedLocale].moment);
+                }
                 return resolvedLocale;
             }
 

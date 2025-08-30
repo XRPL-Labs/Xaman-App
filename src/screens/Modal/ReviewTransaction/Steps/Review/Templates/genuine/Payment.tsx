@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, InteractionManager } from 'react-native';
+import { View, Text, TouchableOpacity, InteractionManager, Alert } from 'react-native';
 
 import SummaryStepStyle from '@screens/Send/Steps/Summary/styles';
 import { BackendService, LedgerService, NetworkService, StyleService } from '@services';
@@ -19,8 +19,6 @@ import { NormalizeCurrencyCode } from '@common/utils/monetary';
 import { AmountInput, AmountText, Button } from '@components/General';
 import { AmountValueType } from '@components/General/AmountInput';
 import { AccountElement, PaymentOptionsPicker } from '@components/Modules';
-
-import { Toast } from '@common/helpers/interface';
 
 import Localize from '@locale';
 
@@ -176,7 +174,13 @@ class PaymentTemplate extends Component<Props, State> {
                 this.setState({
                     isLoadingRate: false,
                 });
-                Toast(Localize.t('global.unableToFetchCurrencyRate'));
+                Alert.alert(
+                    Localize.t('global.warning'),
+                    Localize.t('global.unableToFetchCurrencyRate'),
+                    [
+                        { text: Localize.t('global.ok') },
+                    ],
+                );
             });
     };
 
@@ -219,6 +223,7 @@ class PaymentTemplate extends Component<Props, State> {
                 transaction.Amount?.currency === NetworkService.getNativeAsset()
             ) {
                 transaction.SendMax = undefined;
+                // If native asset and destination is native asset it can't be partial
             }
 
             // set the transaction path
@@ -319,8 +324,14 @@ class PaymentTemplate extends Component<Props, State> {
                 {/* Amount */}
                 <>
                     <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-                    <View style={styles.contentBox}>
-                        <TouchableOpacity activeOpacity={1} style={AppStyles.row} onPress={this.onAmountEditPress}>
+                    <View style={[
+                        styles.contentBox,
+                        // AppStyles.borderGreen,
+                    ]}>
+                        <TouchableOpacity activeOpacity={1} style={[
+                            AppStyles.row,
+                            // AppStyles.borderRed,
+                        ]} onPress={this.onAmountEditPress}>
                             {editableAmount ? (
                                 <>
                                     <View style={[AppStyles.row, AppStyles.flex1]}>
@@ -341,7 +352,9 @@ class PaymentTemplate extends Component<Props, State> {
                                     </View>
                                     <Button
                                         onPress={this.onAmountEditPress}
-                                        style={styles.editButton}
+                                        style={[
+                                            // styles.editButton,
+                                        ]}
                                         roundedMini
                                         icon="IconEdit"
                                         iconSize={13}
@@ -438,6 +451,21 @@ class PaymentTemplate extends Component<Props, State> {
                     </>
                 )}
 
+                {payload.isPathFinding() && transaction.Amount! && transaction.Amount?.value && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
+                        <PaymentOptionsPicker
+                            key={`dpick${account}${transaction.Destination}${JSON.stringify(transaction.Amount!)}`}
+                            source={account}
+                            destination={transaction.Destination}
+                            // TODO: make sure the Amount is set as it's required for payment options
+                            amount={transaction.Amount!}
+                            containerStyle={AppStyles.paddingBottomSml}
+                            onSelect={this.onPathSelect}
+                        />
+                    </>
+                )}
+
                 {transaction.InvoiceID && (
                     <>
                         <Text style={styles.label}>{Localize.t('global.invoiceID')}</Text>
@@ -457,20 +485,6 @@ class PaymentTemplate extends Component<Props, State> {
                                 </Text>
                             ))}
                         </View>
-                    </>
-                )}
-
-                {payload.isPathFinding() && (
-                    <>
-                        <Text style={styles.label}>{Localize.t('global.payWith')}</Text>
-                        <PaymentOptionsPicker
-                            source={account}
-                            destination={transaction.Destination}
-                            // TODO: make sure the Amount is set as it's required for payment options
-                            amount={transaction.Amount!}
-                            containerStyle={AppStyles.paddingBottomSml}
-                            onSelect={this.onPathSelect}
-                        />
                     </>
                 )}
             </>

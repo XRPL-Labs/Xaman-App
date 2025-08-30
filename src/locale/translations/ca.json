@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "Idioma",
     "ok": "D'acord",
     "start": "Començar",
@@ -248,6 +249,8 @@
     "empty": "Buit",
     "update": "Actualització",
     "notNow": "Ara no",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "Nova versió",
     "versionNumberIsAvailableOnTheAppStore": "La versió %{versionCode} està disponible a AppStore.",
     "danger": "Perill!",
@@ -399,7 +402,11 @@
     "switchNetwork": "Switch network",
     "theme": "Theme",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "Pagaments i sol·licituds de pagament a l'XRPL",
@@ -492,6 +499,8 @@
     "eventTypeAll": "Tot",
     "eventTypePlanned": "Programat",
     "eventTypeOpen": "Open",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "Sol·licituds",
     "noTransaction": "Sense transaccions",
     "shareAccount": "Comparteix l'adreça del compte",
@@ -507,6 +516,8 @@
     "paymentReceived": "Pagament rebut",
     "paymentSent": "Pagament enviat",
     "exchangedAssets": "Actius intercanviats",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "S'ha afegit un actiu (Línia de Confiança)",
     "removedATrustLine": "S'ha eliminat un actiu (Línia de Confiança)",
     "updatedATrustLine": "Token actualitzat (Trustline)",
@@ -517,6 +528,8 @@
     "createOffer": "Crear una oferta",
     "cancelOffer": "Cancel·la l'oferta",
     "acceptOffer": "Accept offer",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "Crea un fideïcomís",
     "finishEscrow": "Finalitzar el fideïcomís",
     "cancelEscrow": "Cancel·lar un fideïcomís",
@@ -544,6 +557,7 @@
     "mintNFT": "Encunyar NFT",
     "mintURIToken": "Mint URI Token",
     "burnNFT": "Cremar NFT",
+    "modifyNFT": "Modify NFT",
     "burnURIToken": "Burn URI Token",
     "buyURIToken": "Buy URI Token",
     "createNFTOffer": "Crear oferta de NFT",
@@ -583,6 +597,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -680,6 +696,8 @@
     "thisTransactionIncreaseAccountReserve": "Aquesta transacció ha augmentat la reserva del compte en %{ownerReserve} %{nativeAsset}",
     "thisTransactionDecreaseAccountReserve": "Aquesta transacció ha disminuït la reserva del compte en %{ownerReserve} %{nativeAsset}",
     "nfTokenBurnExplain": "La transacció cremarà el token NFT amb l'ID %{tokenID}",
+    "nfTokenModifyExplain": "The transaction will modify NFT token with ID %{tokenID}, and the URI value will be %{uri}",
+    "nfTokenModifyExplainUnchangedURI": "unchanged",
     "theTokenIdIs": "ID del Token: %{tokenID}",
     "theTokenHasATransferFee": "Comissió de transferència del Token: %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "Tàxon Token: %{taxon}",
@@ -733,7 +751,8 @@
     "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "Popular",
@@ -879,6 +898,18 @@
   "account": {
     "addAccount": "Afegeix un compte",
     "hideSecret": "Hide secret",
+    "newAccountSafeOrDegenTitle": "Onboarding",
+    "degenModeExplanation1": "To make sure you can recover your account in case of a lost, stolen or damaged device, we ask you to write & re-enter your account secret.",
+    "degenModeExplanation2": "You may choose to defer writing down & re-entering your account secret. Having it written down & stored in a safe place is critical to keeping your account safe.",
+    "safeMode": "Write your account secret down now (safer)",
+    "imSmartPerson": "Immediately write down & re-enter your account secret for account recovery.",
+    "degenMode": "Fast onboarding (risky)",
+    "degenBackUpHomeWrn": "You are unprotected in case of lost, stolen or damaged phone!",
+    "imRetard": "Write down & re-enter later: all your funds are at risk until you do so!",
+    "degenModeExplanationConfirm": "Are you sure you want to proceed? Until you write down your account secret, you will NOT be able to recover your account if your phone gets lost, stolen or damaged.",
+    "degenModeNowDone": "Wonderful! You're all set! Whenever you have to recover your account, you can do so by importing the account secret you just wrote down.",
+    "degenModeProceedBtn": "I accept the risk",
+    "degenBackUpNowBtn": "Back up",
     "showSecret": "Show secret",
     "addAccountDescription": "Importa el teu compte existent o crea'n un de nou.",
     "importExisting": "Importa un compte existent",
@@ -1067,6 +1098,10 @@
     "unableToFetchAccountNFTokens": "Unable to fetch the account NFT's. Please make sure you are connected to the XRP Ledger node."
   },
   "send": {
+    "theDestinationAccountDidNotAuthorize": "The destination account did not authorize this transaction. Check your selected sending account, or contact the destination account owner.",
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "La quantitat és més gran del que pots gastar: %{spendable}",
     "theMaxAmountYouCanSendIs": "La quantitat màxima que pots enviar és %{spendable} %{currency}",
     "theMaxAmountYouCanSendWithFee": "L'emissor de %{currency} cobra una comissió de transferència. L'import màxim que pots enviar (tenint en compte la comissió de transferència) és de %{spendable} %{currency}",
@@ -1092,7 +1127,6 @@
     "submittingDone": "Enviament finalitzat!",
     "addToContacts": "Afegir a contactes",
     "sendingFailed": "L'enviament ha fallat.",
-    "verificationFailed": "La verificació ha fallat!",
     "couldNotVerifyTransaction": "No s'ha pogut verificar la finalitat de la transacció",
     "verificationFailedDescription": "La transacció s'ha signat i enviat amb èxit, però no s'ha pogut confirmar finalment.\r\nAixò pot ser causat per un problema temporal en la connexió a internet o per una sobrecàrrega del node de l'XRPL al qual estàs connectat.\r\nSi us plau, verifica que la transacció es mostra a l'historial de transaccions (Activitat)\r\n",
     "submitFailed": "L'enviament ha fallat!",
@@ -1123,6 +1157,11 @@
     "pleaseEnterAmount": "Si us plau, introdueix l'import de la transacció",
     "trustLineLimitExceeded": "S'ha superat el límit de la línia de confiança (TrustLine), ara: %{balance}, màxim: %{peer_limit}, disponible per emetre: %{available}. El destinatari pot actualitzar el límit de la línia de confiança.",
     "unableToSendPaymentRecipientDoesNotHaveTrustLine": "No s'ha pogut enviar el token al destinatari. El destinatari no ha establert per a aquest token una Línia de Confiança amb l'emissor.",
+    "unableToSendPaymentRecipientExceedTrustline": "Unable to send the token to the recipient.\r\nThe recipient does exceeds the TrustLine limit for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLine": "The recipient does not have a TrustLine for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXRPL": "Do you want to send a 'Check' instead, so the recipient can opt in to accept the Check which will create the TrustLine?\n\nThe recipient will not see an immediate deposit, but will have to accept your Check in their Requests-tab.\n\nOn your end, the Check will temporarily increase your reserve with %{reserve} %{asset}, until either the Check is cashed by the recipient, or cancelled by you.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXahau": "Do you want to send your payment as A 'Remit' transaction instead?\n\nThis will automatically create the Trustline in the recipient's account, but you will pay an extra %{reserve} %{asset} to satisfy their TrustLine reserve.",
+    "altSendAs": "Send as '%{type}'",
     "unableToSendPaymentTrustLineLimitIsExceeded": "No es pot enviar el token al receptor.\r\nEl límit d'aquest token que el receptor està disposat a tenir s'excedeix. El receptor haurà d'actualitzar la seva Trustline per aquest token amb un limit més alt per poder-lo rebre.",
     "destinationTagWarningConfirm": "Estàs realitzant un enviament a un compte amb Etiqueta de Destinació. Si us plau, comprova l'Etiqueta de Destinació: si envies fons a una Etiqueta equivocada, hauràs de contactar amb l'equip de suport del compte de destinació per recuperar-los!",
     "doubleCheckDestinationTag": "Comprova que l'Etiqueta de Destinació és correcta",
@@ -1135,6 +1174,7 @@
   },
   "asset": {
     "addAsset": "Afegir un actiu",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "Selecciona un emissor i l'actiu que voldries afegir. Aquesta llista es manté actualitzada per part dels desenvolupadors de Xaman.",
     "addAndSign": "Afegir: signar transacció",
     "successRemoved": "L'actiu s'ha eliminat correctament del teu compte",
@@ -1275,7 +1315,34 @@
     "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
     "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
     "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
-    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
+  },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorization granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Revoke permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

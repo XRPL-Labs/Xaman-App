@@ -18,8 +18,8 @@ class BaseGenuineTransaction extends BaseTransaction {
 
     declare TransactionType: FieldReturnType<typeof TransactionType>;
 
-    constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
-        super(tx, meta);
+    constructor(tx?: TransactionJson, meta?: TransactionMetadata, txFilter?: Function) {
+        super(tx, meta, txFilter);
     }
 
     /**
@@ -39,6 +39,23 @@ class BaseGenuineTransaction extends BaseTransaction {
                 delete tx[key];
             }
         });
+
+        if (this?._txFilter && typeof this._txFilter === 'function') {
+            try {
+                // This has the ability to modify the cloned tx object
+                // E.g. used in NFTokenModify to remove Owner field if it's the same as Account
+                this._txFilter(tx);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        return tx;
+    }
+
+    get JsonRaw(): TransactionJson {
+        // shallow copy and filter the fields
+        const tx = { ...this._tx } as TransactionJson;
 
         return tx;
     }

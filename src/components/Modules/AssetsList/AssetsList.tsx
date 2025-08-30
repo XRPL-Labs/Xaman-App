@@ -21,6 +21,7 @@ interface Props {
     spendable: boolean;
     experimentalUI?: boolean;
     network?: NetworkModel;
+    addTokenPress?: () => void;
 }
 
 interface State {
@@ -69,7 +70,16 @@ class AssetsList extends Component<Props, State> {
     };
 
     render() {
-        const { style, timestamp, discreetMode, spendable, experimentalUI, account, network } = this.props;
+        const {
+            style,
+            timestamp,
+            discreetMode,
+            spendable,
+            experimentalUI,
+            account,
+            network,
+            addTokenPress,
+        } = this.props;
         const { category } = this.state;
 
         let AssetListComponent;
@@ -93,6 +103,7 @@ class AssetsList extends Component<Props, State> {
                 discreetMode={discreetMode}
                 spendable={spendable}
                 onChangeCategoryPress={this.onChangeCategoryPress}
+                addTokenPress={addTokenPress}
                 style={style}
                 experimentalUI={experimentalUI}
             />

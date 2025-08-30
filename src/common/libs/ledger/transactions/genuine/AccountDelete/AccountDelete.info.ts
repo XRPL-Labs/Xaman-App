@@ -44,6 +44,14 @@ export class AccountDeleteInfo extends ExplainerAbstract<AccountDelete, Mutation
             content.push(Localize.t('events.theTransactionHasADestinationTag', { tag: DestinationTag }));
         }
 
+        if (typeof this.item.CredentialIDs !== 'undefined') {
+            content.push(
+                Localize.t('events.thePaymentIncludesCredentialIds', {
+                    credentialIDs: this.item.CredentialIDs.join(', '),
+                }),
+            );
+        }
+
         return content.join('\n');
     }
 

@@ -11,6 +11,9 @@ import Localize from '@locale';
 import { AppStyles } from '@theme';
 import styles from './styles';
 import { XAppOrigin } from '@common/libs/payload';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+import { CoreModel } from '@store/models';
+import { CoreRepository } from '@store/repositories';
 
 /* Types ==================================================================== */
 interface Props {
@@ -22,20 +25,27 @@ interface Props {
     containerStyle: ViewStyle | ViewStyle[];
 }
 
-interface State {}
+interface State {
+    coreSettings?: CoreModel;
+}
+
 /* Component ==================================================================== */
 class AppsList extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.state = {};
+        const coreSettings = CoreRepository.getSettings();
+
+        this.state = {
+            coreSettings,
+        };
     }
 
-    onRefresh = () => {
+    onRefresh = async () => {
         const { onRefresh } = this.props;
 
         if (typeof onRefresh === 'function') {
-            onRefresh();
+            await onRefresh();
         }
     };
 
@@ -77,12 +87,26 @@ class AppsList extends Component<Props, State> {
     };
 
     renderRefreshControl = () => {
+        const { coreSettings } = this.state;
         const { refreshing } = this.props;
+
+        const refreshNow = async () => {
+            if (coreSettings?.hapticFeedback) {
+                // VibrateHapticFeedback('notificationSuccess');
+                VibrateHapticFeedback('impactLight');
+            };
+
+            await this.onRefresh();
+            if (coreSettings?.hapticFeedback) {
+                // VibrateHapticFeedback('notificationSuccess');
+                VibrateHapticFeedback('impactLight');
+            };
+        };
 
         return (
             <RefreshControl
                 refreshing={!!refreshing}
-                onRefresh={this.onRefresh}
+                onRefresh={refreshNow}
                 tintColor={StyleService.value('$contrast')}
             />
         );

@@ -1,5 +1,6 @@
 {
   "global": {
+    "hookExecuted": "Hook executed",
     "language": "言語",
     "ok": "OK",
     "start": "開始",
@@ -248,6 +249,8 @@
     "empty": "まだ中身がありません",
     "update": "更新",
     "notNow": "今はやめる",
+    "credentials": "Credentials",
+    "credential": "Credential",
     "newVersion": "新しいバージョン",
     "versionNumberIsAvailableOnTheAppStore": "バージョン%{versionCode}がAppStoreで入手できます。",
     "danger": "危険！",
@@ -399,7 +402,11 @@
     "switchNetwork": "ネットワークの切り替え",
     "theme": "テーマ",
     "searchTokens": "Search tokens",
-    "closingIn": "Closing in"
+    "closingIn": "Closing in",
+    "curve": "Curve",
+    "selectCurve": "Please select the curve to use for your keypair (if you select the wrong one, you will get the wrong r-address & may be unable to sign)",
+    "objectID": "Object ID",
+    "remarks": "Remarks"
   },
   "onboarding": {
     "slideOne_title": "XRPレジャーでの\r\n支払いと\r\n支払いリクエスト",
@@ -492,6 +499,8 @@
     "eventTypeAll": "全て",
     "eventTypePlanned": "計画済み",
     "eventTypeOpen": "開く",
+    "eventTypeOwned": "Owned",
+    "eventTypePending": "Pending",
     "eventTypeRequests": "リクエスト",
     "noTransaction": "取引は存在しません",
     "shareAccount": "アカウントアドレスを共有する",
@@ -507,6 +516,8 @@
     "paymentReceived": "受取済み",
     "paymentSent": "送金済み",
     "exchangedAssets": "資産の両替",
+    "thirdPartyTx": "Third party transaction",
+    "thirdPartyTxExplain": "This transaction did not affect your account balance.",
     "addedATrustLine": "トークンの追加(トラストライン)",
     "removedATrustLine": "資産の削除(トラストライン)\r\n",
     "updatedATrustLine": "トークンの更新(トラストライン)",
@@ -517,6 +528,8 @@
     "createOffer": "オファーの作成",
     "cancelOffer": "オファーのキャンセル",
     "acceptOffer": "オファーの受け入れ",
+    "deleteCredential": "Delete credential",
+    "acceptCredential": "Accept credential",
     "createEscrow": "エスクローの作成",
     "finishEscrow": "エスクローの終了",
     "cancelEscrow": "エスクローのキャンセル",
@@ -544,6 +557,7 @@
     "mintNFT": "NFTのミント",
     "mintURIToken": "URI Tokenのミント",
     "burnNFT": "NFTのバーン",
+    "modifyNFT": "Modify NFT",
     "burnURIToken": "URI Tokenのバーン",
     "buyURIToken": "URI Tokenの購入",
     "createNFTOffer": "NFTオファーの作成",
@@ -583,6 +597,8 @@
     "clawback": "Clawback",
     "didSet": "DID Set",
     "didDelete": "DID Delete",
+    "credential": "Credential",
+    "credentialOffered": "Credential offer",
     "credentialCreate": "Credential Create",
     "credentialAccept": "Credential Accept",
     "credentialDelete": "Credential Delete",
@@ -680,6 +696,8 @@
     "thisTransactionIncreaseAccountReserve": "この取引により、アカウントの準備金が %{ownerReserve} %{nativeAsset}分増加しました。",
     "thisTransactionDecreaseAccountReserve": "この取引により、アカウントの準備金が %{ownerReserve} %{nativeAsset}分減少しました。",
     "nfTokenBurnExplain": "トランザクションは、NFT(ID:%{tokenID})をバーンします。",
+    "nfTokenModifyExplain": "The transaction will modify NFT token with ID %{tokenID}, and the URI value will be %{uri}",
+    "nfTokenModifyExplainUnchangedURI": "unchanged",
     "theTokenIdIs": "トークンIDは %{tokenID} です。",
     "theTokenHasATransferFee": "トークン転送料金 : %{transferFee}%",
     "theTokenTaxonForThisTokenIs": "トークンの分類： %{taxon}",
@@ -733,7 +751,8 @@
     "theIssuerIs": "The issuer address set to %{issuer}",
     "claimRewardExplain": "This is a claim reward transaction",
     "claimRewardExplainOptIn": "This transaction opts in %{address} to claim rewards in future",
-    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future"
+    "claimRewardExplainOptOut": "This transaction opts out %{address} to claim rewards in future",
+    "setRemarks": "Set Remarks"
   },
   "xapp": {
     "popular": "人気",
@@ -879,6 +898,18 @@
   "account": {
     "addAccount": "アカウントを追加",
     "hideSecret": "シークレットキーを隠す",
+    "newAccountSafeOrDegenTitle": "Onboarding",
+    "degenModeExplanation1": "To make sure you can recover your account in case of a lost, stolen or damaged device, we ask you to write & re-enter your account secret.",
+    "degenModeExplanation2": "You may choose to defer writing down & re-entering your account secret. Having it written down & stored in a safe place is critical to keeping your account safe.",
+    "safeMode": "Write your account secret down now (safer)",
+    "imSmartPerson": "Immediately write down & re-enter your account secret for account recovery.",
+    "degenMode": "Fast onboarding (risky)",
+    "degenBackUpHomeWrn": "You are unprotected in case of lost, stolen or damaged phone!",
+    "imRetard": "Write down & re-enter later: all your funds are at risk until you do so!",
+    "degenModeExplanationConfirm": "Are you sure you want to proceed? Until you write down your account secret, you will NOT be able to recover your account if your phone gets lost, stolen or damaged.",
+    "degenModeNowDone": "Wonderful! You're all set! Whenever you have to recover your account, you can do so by importing the account secret you just wrote down.",
+    "degenModeProceedBtn": "I accept the risk",
+    "degenBackUpNowBtn": "Back up",
     "showSecret": "シークレットキーを表示",
     "addAccountDescription": "既存のアカウントをインポートするか、新しいアカウントを作成します。",
     "importExisting": "既存のアカウントをインポート",
@@ -1067,6 +1098,10 @@
     "unableToFetchAccountNFTokens": "アカウントのNFTを取得できません。XRP Ledgerノードに接続していることを確認してください。"
   },
   "send": {
+    "theDestinationAccountDidNotAuthorize": "The destination account did not authorize this transaction. Check your selected sending account, or contact the destination account owner.",
+    "txResultQueued": "Transaction queued!",
+    "txResultQueuedExplain": "Transaction added to the queue",
+    "txResultQueuedLongExplain": "Your transaction has been submitted, however, it is currently queued for processing.\n\nPlease wait a few minutes and check your transaction history (Events) to see if it has made it through to a final ledger.\n\nQueueing transactions is normal behavior and does not indicate a problem with your transaction: individual nodes can queue transactions if the node or the network is busy.",
     "amountIsBiggerThanYourSpend": "利用可能残高が不足しています。(利用可能残高: %{spendable})",
     "theMaxAmountYouCanSendIs": "送金可能金額は %{spendable} %{currency} です",
     "theMaxAmountYouCanSendWithFee": "%{currency}の発行者は送金手数料を設定しています。最大送金できる金額（送金手数料を考慮）は%{spendable}%{currency}です。",
@@ -1092,7 +1127,6 @@
     "submittingDone": "送信しました！",
     "addToContacts": "連絡先に登録する",
     "sendingFailed": "送信に失敗しました！",
-    "verificationFailed": "検証に失敗しました！",
     "couldNotVerifyTransaction": "トランザクションの詳細を検証できませんでした",
     "verificationFailedDescription": "あなたの取引は署名され、正常に送信されましたが、取引の最終確認ができませんでした。\r\n\r\nこれは、インターネットの接続障害、または接続しているXRP Ledgerノードの負荷が高まったことが原因です。\r\n\r\nこの取引が取引履歴（イベント）に表示されているかどうか、手動で確認してください。",
     "submitFailed": "提出に失敗しました！",
@@ -1123,6 +1157,11 @@
     "pleaseEnterAmount": "取引金額を入力してください",
     "trustLineLimitExceeded": "トラストラインの制限を超えました。\r\n現在：%{balance}\r\n最大：%{peer_limit} \r\n発行可能：%{available} \r\n受取人はトラストラインの制限を更新することができます。",
     "unableToSendPaymentRecipientDoesNotHaveTrustLine": "\r\n受取人へトークンの送信ができません。\r\n受取人が、このトークンの発行者に対するトラストラインの設定をしていません。",
+    "unableToSendPaymentRecipientExceedTrustline": "Unable to send the token to the recipient.\r\nThe recipient does exceeds the TrustLine limit for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLine": "The recipient does not have a TrustLine for this token.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXRPL": "Do you want to send a 'Check' instead, so the recipient can opt in to accept the Check which will create the TrustLine?\n\nThe recipient will not see an immediate deposit, but will have to accept your Check in their Requests-tab.\n\nOn your end, the Check will temporarily increase your reserve with %{reserve} %{asset}, until either the Check is cashed by the recipient, or cancelled by you.",
+    "altSendPaymentRecipientDoesNotHaveTrustLineXahau": "Do you want to send your payment as A 'Remit' transaction instead?\n\nThis will automatically create the Trustline in the recipient's account, but you will pay an extra %{reserve} %{asset} to satisfy their TrustLine reserve.",
+    "altSendAs": "Send as '%{type}'",
     "unableToSendPaymentTrustLineLimitIsExceeded": "トークンを受信者に送信できません。\r\n受信者が保持したいトークンの量の「制限」を超えています。受信者は、このトークンを受信できるように、送信するトークンのトラストラインをより高い「制限」で更新する必要があります。",
     "destinationTagWarningConfirm": "宛先タグを使用してアカウントに送信しています。 宛先タグを二重にチェックしてください。間違ったタグに送信する場合は、資金を取得するための宛先のサポートが必要になります。",
     "doubleCheckDestinationTag": "宛先タグの再確認",
@@ -1135,6 +1174,7 @@
   },
   "asset": {
     "addAsset": "通貨を追加する",
+    "addFirstAsset": "Add your first token",
     "selectAnExchangeAndSelectAsset": "発行者を選択し、追加するアセットを選択します。このリストは、Xaman開発者によって管理されています。",
     "addAndSign": "追加：トランザクションに署名",
     "successRemoved": "アカウントから通貨が正常に削除されました",
@@ -1275,7 +1315,34 @@
     "unableToLoadChangeLogs": "Oops! Unable to Retrieve Change Logs",
     "tecPATH_DRY": "The transaction didn't work because funds couldn't be moved between the two accounts, or could not be moved at the requested exchange rate.\n\nThis might be because the two accounts involved don't have a connection (TrustLine) that allows them to exchange money with each other, or the transaction didn't work because there wasn't enough money available to move between the two accounts.",
     "tecPATH_PARTIAL": "The transaction didn't go through because there weren't enough tokens available to send the complete amount at the requested exchange rate between the two accounts.",
-    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}"
+    "tecHOOK_REJECTED": "Rejected by hook on sending or receiving account.\n\n%{hookReturnString}",
+    "tecHOOK_REJECTED_Short": "Rejected by Hook"
+  },
+  "trustset": {
+    "qualityIn": "Quality in",
+    "qualityOut": "Quality out"
+  },
+  "txDelegateSet": {
+    "delegateSet": "DelegateSet",
+    "objectLabel": "Signing permissions",
+    "authorize": "Authorization granted to",
+    "empty": "Empty",
+    "removeAuthorize": "Revoke permissions",
+    "dangerousPerms": "Transaction types with far-reaching consequences are included:\n\n%{perms}.\n\nOnly proceed if the authorized account is your own, and you know what you are doing.",
+    "thisIsAnDelegateSetTransaction": "This is a Delegate Set transaction.",
+    "itSetsAccountAuthorizeTo": "It authorizes signing permissions to %{authorize}.",
+    "itSetsThesePermissions": "It delegates the following permission(s): %{permissions}",
+    "permissionsGranted": "Signing permissions to grant",
+    "itRemovesTheAccountAuthorize": "Fully remove (retract) all authorization(s) to the following account:",
+    "itRemoves": "It fully removes (retract(s)) all authorization(s) to the following account: %{authorize}."
+  },
+  "txCredentialSet": {
+    "thisIsA": "This is a %{type} transaction. ",
+    "itInvolvesIssuesACredentialTo": "It involves %{from} issuing a credential to %{to}.",
+    "itInvolvesIssuesACredentialFrom": "It a credential issued by %{from}.",
+    "theCredentialTypeIs": "The credential type is %{type}. ",
+    "theCredentialUriIs": "The credential URI is %{uri}.",
+    "paymentBeingUsed": "This transaction automatically uses a valid Credential you own to authorize this transaction."
   },
   "moment": {
     "calendar": {

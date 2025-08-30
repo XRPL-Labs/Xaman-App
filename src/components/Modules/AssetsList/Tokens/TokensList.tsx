@@ -23,6 +23,7 @@ import { ListHeader } from '@components/Modules/AssetsList/Tokens/ListHeader';
 import { ListEmpty } from '@components/Modules/AssetsList/Tokens/ListEmpty';
 import { ListFilter, FiltersType } from '@components/Modules/AssetsList/Tokens/ListFilter';
 import { AppSizes } from '@theme/index';
+import NetworkService from '@services/NetworkService';
 
 /* Types ==================================================================== */
 interface Props {
@@ -33,6 +34,7 @@ interface Props {
     experimentalUI?: boolean;
     onChangeCategoryPress: () => void;
     network?: NetworkModel;
+    addTokenPress?: () => void;
 }
 
 interface State {
@@ -195,6 +197,13 @@ class TokensList extends Component<Props, State> {
 
     onTokenAddButtonPress = () => {
         const { account } = this.state;
+        const { addTokenPress } = this.props;
+
+        if (NetworkService.hasSwap() && addTokenPress) {
+            addTokenPress();
+            return;
+        }
+
         Navigator.showOverlay<AddTokenOverlayProps>(AppScreens.Overlay.AddToken, { account });
     };
 
@@ -336,7 +345,7 @@ class TokensList extends Component<Props, State> {
             return null;
         }
 
-        return <ListEmpty />;
+        return <ListEmpty onTokenAddButtonPress={this.onTokenAddButtonPress} />;
     };
 
     keyExtractor = (item: TrustLineModel) => {
