@@ -7,6 +7,8 @@ import PaymentChannelClaim from './PaymentChannelClaim.class';
 /* Types ==================================================================== */
 import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
+import { OperationActions } from '@common/libs/ledger/parser/types';
+import { payChannelAmountsFromMeta, remainingPayChannelAmount } from '@common/libs/ledger/utils/payChannelAmounts';
 
 /* Descriptor ==================================================================== */
 class PaymentChannelClaimInfo extends ExplainerAbstract<PaymentChannelClaim, MutationsMixinType> {
@@ -55,15 +57,59 @@ class PaymentChannelClaimInfo extends ExplainerAbstract<PaymentChannelClaim, Mut
     }
 
     getMonetaryDetails() {
+        const channel = payChannelAmountsFromMeta(this.item.MetaData, this.item.Channel);
+        const remaining = remainingPayChannelAmount(channel.amount, channel.balance);
+        const claimedThisTx = remainingPayChannelAmount(channel.balance, channel.previousBalance);
+        const factor = [];
+
+        if (remaining) {
+            factor.push({
+                ...remaining,
+                effect: MonetaryStatus.POTENTIAL_EFFECT,
+            });
+        }
+
+        if (channel.amount) {
+            factor.push({
+                ...channel.amount,
+                effect: MonetaryStatus.NO_EFFECT,
+                label: Localize.t('events.payChannelOriginalAmount'),
+            });
+        }
+
+        if (channel.balance) {
+            factor.push({
+                ...channel.balance,
+                effect: MonetaryStatus.POTENTIAL_EFFECT,
+                action: OperationActions.DEC,
+                label: Localize.t('events.payChannelClaimedSoFar'),
+            });
+        }
+
+        if (channel.previousBalance && claimedThisTx && claimedThisTx.value !== '0') {
+            factor.push({
+                ...claimedThisTx,
+                effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                action: OperationActions.DEC,
+                label: Localize.t('events.payChannelClaimedThisTx'),
+            });
+        }
+
+        const emptyMutate = {
+            [OperationActions.INC]: [],
+            [OperationActions.DEC]: [],
+        };
+
+        let mutate = emptyMutate;
+        try {
+            mutate = this.item.BalanceChange?.(this.account?.address) ?? emptyMutate;
+        } catch {
+            mutate = emptyMutate;
+        }
+
         return {
-            mutate: this.item.BalanceChange(this.account.address),
-            factor: [
-                {
-                    currency: (this.item.Amount ?? this.item.Balance)?.currency || '', // Claim can be zero
-                    value: (this.item.Amount ?? this.item.Balance)?.value || '0', // Claim can be zero
-                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
-                },
-            ],
+            mutate,
+            factor,
         };
     }
 }

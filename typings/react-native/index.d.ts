@@ -201,6 +201,14 @@ export interface DeviceUtilsModuleInterface extends NativeModule {
     };
 
     /**
+     * Compact tab-bar item row and full bar height (item row + home indicator).
+     */
+    tabBarMetrics?: {
+        itemHeight: number;
+        height: number;
+    };
+
+    /**
      * The brand of the device (e.g., 'Apple').
      */
     brand: string;
@@ -252,6 +260,11 @@ export interface DeviceUtilsModuleInterface extends NativeModule {
         locale: string;
         separator: string;
     }>;
+
+    /**
+     * Android: hide the native boot splash after the first screen has painted.
+     */
+    hideLaunchSplash: () => void;
 }
 
 /**
@@ -264,6 +277,11 @@ export interface UniqueIdProviderModuleInterface extends NativeModule {
      * iOS: UUIDV4 & Android: Hex
      */
     getDeviceUniqueId: () => string;
+    consumeLastDeviceIdUnlockReport?: () => {
+        fallbackUsed: boolean;
+        storedDifferedFromLive: boolean;
+    };
+    backfillLastKnownFromReadableUniqueId?: () => void;
 }
 
 /**
@@ -301,6 +319,18 @@ interface VaultManagerModuleInterface extends NativeModule {
     getStorageEncryptionKey(): Promise<string>;
 
     /**
+     * Probe Keystore wrap health without the passphrase.
+     */
+    inspectVaultHealth?: () => Promise<{
+        lastKnownPresent: boolean;
+        livePresent: boolean;
+        lastKnownMatchesLive: boolean;
+        uniqueIdKeychainReadable: boolean;
+        realmKeyReadable: boolean;
+        vaultsPresent: number;
+    }>;
+
+    /**
      * Checks if the storage encryption key exists.
      * @returns A Promise resolving to true if the key exists, otherwise false.
      */
@@ -317,11 +347,19 @@ interface VaultManagerModuleInterface extends NativeModule {
 
     /**
      * Opens and decrypts a vault.
-     * @param vaultName - The name of the vault to open.
-     * @param key - The key for the vault.
-     * @returns A Promise resolving to the clear text from the vault.
+     * Android resolves a map. iOS resolves the clear-text string.
      */
-    openVault(vaultName: string, key: string): Promise<string>;
+    openVault(
+        vaultName: string,
+        key: string,
+    ): Promise<
+        | string
+        | {
+              clearText: string;
+              fallbackUsed?: boolean;
+              storedDifferedFromLive?: boolean;
+          }
+    >;
 
     /**
      * Checks if a vault exists.
@@ -360,6 +398,11 @@ interface VaultManagerModuleInterface extends NativeModule {
      * @returns A Promise resolving to true if storage is cleared successfully.
      */
     clearStorage(): Promise<boolean>;
+
+    /**
+     * User wipe: clear keychain, Android last-known ANDROID_ID, and Realm files.
+     */
+    wipeLocalDatastore(): Promise<boolean>;
 
     /**
      * Checks if migration is required for a vault.

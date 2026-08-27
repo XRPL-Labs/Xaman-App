@@ -35,6 +35,7 @@ interface Props {
     immutable?: boolean;
     toggleDisabled?: boolean;
     numberOfLines?: number;
+    hideZero?: boolean;
 }
 
 interface State {
@@ -257,7 +258,16 @@ class AmountText extends Component<Props, State> {
     };
 
     renderValue = () => {
-        const { testID, prefix, style, discreet, discreetStyle, valueContainerStyle, numberOfLines } = this.props;
+        const {
+            testID,
+            prefix,
+            style,
+            discreet,
+            discreetStyle,
+            valueContainerStyle,
+            numberOfLines,
+            hideZero,
+        } = this.props;
         const { value, originalValue, showOriginalValue } = this.state;
 
         let showValue: string;
@@ -278,6 +288,7 @@ class AmountText extends Component<Props, State> {
                 <Text testID={testID} numberOfLines={numberOfLines || 1} style={[
                     style,
                     discreet && discreetStyle,
+                    value === '0' && hideZero && styles.hideZero,
                 ]}>
                     {typeof prefix === 'string' && prefix}
                     {`${showValue}`}

@@ -23,7 +23,6 @@ import libs.security.SecurityPackage;
 import libs.notification.LocalNotificationPackage;
 import libs.common.CommonPackage;
 import libs.common.HTTPClientFactory;
-import libs.webview.WebViewPackage;
 import libs.utils.UtilsPackage;
 import libs.ui.UIPackage;
 
@@ -54,7 +53,6 @@ public class ApplicationLoader extends NavigationApplication {
                     packages.add(new LocalNotificationPackage());
                     packages.add(new CommonPackage());
                     packages.add(new SecurityPackage());
-                    packages.add(new WebViewPackage());
                     return packages;
                 }
             };

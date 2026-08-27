@@ -3,6 +3,7 @@ import { get, isObject, isString, isUndefined } from 'lodash';
 
 import { AppConfig } from '@common/constants';
 import { Endpoints } from '@common/constants/endpoints';
+import { binary } from 'xrpl-accountlib';
 
 import ApiService, { ApiError } from '@services/ApiService';
 import LoggerService from '@services/LoggerService';
@@ -31,6 +32,7 @@ import { DigestSerializeWithSHA1 } from './digest';
 
 // errors
 import { PayloadErrors } from './errors';
+import { BatchSigner } from '../ledger/types/common';
 
 // create logger
 const logger = LoggerService.createLogger('Payload');
@@ -42,6 +44,7 @@ export class Payload {
     payload!: PayloadReferenceType;
     origin!: PayloadOrigin;
     generated!: boolean;
+    risk!: { __warn_user: boolean } & { [key: string]: number | boolean };
 
     /**
      * get payload object from payload UUID or payload Json
@@ -88,6 +91,10 @@ export class Payload {
             pathfinding,
             signers, // only can be signed by tx Account or any
             custom_instruction,
+        };
+
+        instance.risk = {
+            __warn_user: false,
         };
 
         // set the payload and transaction type
@@ -162,8 +169,8 @@ export class Payload {
      * @param object
      */
     assign = (object: PayloadType) => {
-        const { payload, application, meta } = object;
-        Object.assign(this, { payload, application, meta });
+        const { payload, application, meta, risk } = object;
+        Object.assign(this, { payload, application, meta, risk: risk || { __warn_user: false } });
     };
 
     /**
@@ -194,6 +201,8 @@ export class Payload {
                         reject(new Error(Localize.t('payload.payloadExpired')));
                         return;
                     }
+
+                    // logger.debug('Payload fetched', JSON.stringify(response, null, 2));
 
                     resolve(response);
                 })
@@ -334,6 +343,30 @@ export class Payload {
             logger.warn(
                 `Requested transaction type "${request_json.TransactionType}" not found, revert to fallback transaction.`,
             );
+        }
+
+        // console.log('Building payload tx', request_json);
+        if (tx_type === 'Batch') {
+            try {
+                if (request_json?.BatchSigners && request_json.BatchSigners.length > 0) {
+                    if (typeof request_json.BatchSigners[0] === 'string') {
+                        // This is a batch with mock signers, to be merged
+                        request_json.BatchSigners = request_json.BatchSigners.filter(
+                            (pseudoSigner) => typeof pseudoSigner === 'string',
+                        )
+                            .map((pseudoSigner) => {
+                                // console.log('pseudoSigner', pseudoSigner);
+                                const batchSigners = binary.decode(pseudoSigner as unknown as string)?.BatchSigners;
+                                return batchSigners;
+                            })
+                            .filter((batchSigners) => !!batchSigners)
+                            .flat() as unknown as BatchSigner[];
+                    }
+                }
+            } catch (e: any) {
+                logger.error(`Could not merge batch signers, revert to fallback transaction: ${e?.message}`);
+                delete request_json.BatchSigners;
+            }
         }
 
         let craftedTransaction;

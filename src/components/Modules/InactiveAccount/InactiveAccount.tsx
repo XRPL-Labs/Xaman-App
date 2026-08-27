@@ -147,6 +147,7 @@ class InactiveAccount extends PureComponent<Props, State> {
                     {Localize.t('account.accountGenerateActivationExplain', {
                         baseReserve: NetworkService.getNetworkReserve().BaseReserve,
                         nativeAsset: NetworkService.getNativeAsset(),
+                        network: NetworkService.getNetwork().name,
                     })}
                 </Text>
                 {regularKeyAccounts && regularKeyAccounts?.length > 0 && (

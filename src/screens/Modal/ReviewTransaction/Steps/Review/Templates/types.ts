@@ -6,6 +6,7 @@ import { SignMixinType } from '@common/libs/ledger/mixin/types';
 export interface TemplateProps {
     source: AccountModel;
     payload: Payload;
+    innerBatch?: boolean;
     transaction: (Transactions | PseudoTransactions) & SignMixinType;
     setLoading: (loading: boolean) => void;
     setReady: (ready: boolean) => void;

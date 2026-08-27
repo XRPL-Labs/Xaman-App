@@ -592,7 +592,7 @@ class DestinationPickerModal extends Component<Props, State> {
         if (!dataSource) return null;
 
         return (
-            <View testID="destination-picker-modal" style={AppStyles.container}>
+            <View testID="destination-picker-modal" style={[AppStyles.container, AppStyles.androidSystemBarTop]}>
                 <View style={[AppStyles.centerAligned, { paddingVertical: AppSizes.padding }]}>
                     <Text style={AppStyles.h5}>{Localize.t('global.destination')}</Text>
                 </View>

@@ -49,6 +49,7 @@ ReactNative.NativeModules.Toast = {
 
 ReactNative.NativeModules.DeviceUtilsModule = {
     layoutInsets: { top: 0, bottom: 0 },
+    tabBarMetrics: { itemHeight: 49, height: 49 },
     brand: 'Apple',
     model: 'iPhone13,4',
     osVersion: '15,5',
@@ -59,6 +60,7 @@ ReactNative.NativeModules.DeviceUtilsModule = {
     getLocalSetting: jest.fn(() =>
         Promise.resolve({ delimiter: ',', languageCode: 'en', locale: 'en_US', separator: '.' }),
     ),
+    hideLaunchSplash: jest.fn(),
 };
 
 ReactNative.NativeModules.AppUtilsModule = {
@@ -74,6 +76,11 @@ ReactNative.NativeModules.AppUtilsModule = {
 
 ReactNative.NativeModules.UniqueIdProviderModule = {
     getDeviceUniqueId: jest.fn(() => 'e988b7a9-f685-4674-87bc-0ad52a52faa5'),
+    consumeLastDeviceIdUnlockReport: jest.fn(() => ({
+        fallbackUsed: false,
+        storedDifferedFromLive: false,
+    })),
+    backfillLastKnownFromReadableUniqueId: jest.fn(),
 };
 
 ReactNative.NativeModules.HapticFeedbackModule = {
@@ -88,6 +95,16 @@ ReactNative.NativeModules.VaultManagerModule = {
         ),
     ),
     isStorageEncryptionKeyExist: jest.fn(() => Promise.resolve(true)),
+    inspectVaultHealth: jest.fn(() =>
+        Promise.resolve({
+            lastKnownPresent: true,
+            livePresent: true,
+            lastKnownMatchesLive: true,
+            uniqueIdKeychainReadable: true,
+            realmKeyReadable: true,
+            vaultsPresent: 0,
+        }),
+    ),
     createVault: jest.fn((vaultName: string, entry: string, key: string) => Promise.resolve(true)),
     openVault: jest.fn((vaultName: string, key: string) => Promise.resolve('clearText')),
     vaultExist: jest.fn((vaultName: string) => Promise.resolve(true)),
@@ -95,6 +112,7 @@ ReactNative.NativeModules.VaultManagerModule = {
     reKeyVault: jest.fn((vaultName: string, oldKey: string, newKey: string) => Promise.resolve(true)),
     reKeyBatchVaults: jest.fn((vaultNames: string[], oldKey: string, newKey: string) => Promise.resolve(true)),
     clearStorage: jest.fn(() => Promise.resolve(true)),
+    wipeLocalDatastore: jest.fn(() => Promise.resolve(true)),
     isMigrationRequired: jest.fn((vaultName: string) =>
         Promise.resolve({
             vault: vaultName,

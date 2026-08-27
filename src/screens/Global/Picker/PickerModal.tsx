@@ -77,6 +77,7 @@ class PickerModal extends Component<Props, State> {
             <View testID="picker-modal" style={styles.container}>
                 <Header
                     leftComponent={{
+                        testID: 'back-button',
                         icon: 'IconChevronLeft',
                         onPress: Navigator.pop,
                     }}
@@ -87,7 +88,12 @@ class PickerModal extends Component<Props, State> {
                         <Text style={styles.descriptionText}>{description}</Text>
                     </View>
                 )}
-                <FlatList data={items} renderItem={this.renderItem} keyExtractor={(i) => `${i.value}`} />
+                <FlatList
+                    testID="picker-item-list"
+                    data={items}
+                    renderItem={this.renderItem}
+                    keyExtractor={(i) => `${i.value}`}
+                />
             </View>
         );
     }

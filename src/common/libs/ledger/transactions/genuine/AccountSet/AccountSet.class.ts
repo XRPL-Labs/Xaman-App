@@ -6,7 +6,7 @@ import { isUndefined } from 'lodash';
 
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { AccountID, Blob, Hash128, Hash256, UInt32 } from '@common/libs/ledger/parser/fields';
+import { AccountID, Blob, Hash128, Hash256, UInt16, UInt32 } from '@common/libs/ledger/parser/fields';
 import { FlagIndices, Hex, TransferRate } from '@common/libs/ledger/parser/fields/codec';
 
 /* Types ==================================================================== */
@@ -30,6 +30,7 @@ class AccountSet extends BaseGenuineTransaction {
         NFTokenMinter: { type: Blob },
         WalletLocator: { type: Hash256 },
         WalletSize: { type: UInt32 },
+        HookStateScale: { type: UInt16 },
     };
 
     declare SetFlag: FieldReturnType<typeof UInt32, typeof FlagIndices>;
@@ -42,6 +43,7 @@ class AccountSet extends BaseGenuineTransaction {
     declare NFTokenMinter: FieldReturnType<typeof AccountID>;
     declare WalletLocator: FieldReturnType<typeof Hash256>;
     declare WalletSize: FieldReturnType<typeof UInt32>;
+    declare HookStateScale: FieldReturnType<typeof UInt16>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);
@@ -61,7 +63,8 @@ class AccountSet extends BaseGenuineTransaction {
             isUndefined(this.TickSize) &&
             isUndefined(this.NFTokenMinter) &&
             isUndefined(this.WalletLocator) &&
-            isUndefined(this.WalletSize)
+            isUndefined(this.WalletSize) &&
+            isUndefined(this.HookStateScale)
         );
     }
 

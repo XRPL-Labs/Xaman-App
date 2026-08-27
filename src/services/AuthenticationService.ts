@@ -141,7 +141,12 @@ class AuthenticationService extends EventEmitter {
      */
     resetApp = async () => {
         // purge all account private keys
-        await Vault.clearStorage();
+        try {
+            await Vault.wipeLocalDatastore();
+        } catch (error) {
+            this.logger.error('resetApp wipeLocalDatastore', error);
+            await Vault.clearStorage();
+        }
 
         // wipe storage
         DataStorage.wipe();

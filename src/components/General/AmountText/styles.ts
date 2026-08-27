@@ -9,4 +9,9 @@ export default StyleService.create({
     placeholder: {
         backgroundColor: '$grey',
     },
+    hideZero: {
+        color: '$contrast',
+        opacity: 0,
+        paddingRight: 1,
+    },
 });

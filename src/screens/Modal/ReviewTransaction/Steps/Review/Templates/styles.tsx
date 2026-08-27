@@ -7,6 +7,79 @@ const styles = StyleService.create({
         marginBottom: AppSizes.paddingSml,
         paddingHorizontal: 5,
     },
+    headerCountContainer: {
+        flexDirection: 'row',
+    },
+    headerTxType: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.small.family,
+        fontWeight: 400,
+        color: '$white',
+        right: 7,
+        top: 3,
+    },
+    headerCount: {
+        fontSize: AppFonts.small.size,
+        fontFamily: AppFonts.small.family,
+        color: '$white',        
+        top: 3,
+    },
+    headerDesc: {
+        fontSize: AppFonts.base.size,
+        fontFamily: AppFonts.base.family,
+        color: '$white',
+    },
+    headerDescThirdParty: {
+        fontSize: AppFonts.p.size,
+        fontFamily: AppFonts.base.family,
+        color: '$white',
+        opacity: 0.6,
+    },
+    fromAccount: {
+        fontSize: AppFonts.subtext.size,
+        fontFamily: AppFonts.base.familyBold,
+        color: '$grey',
+    },
+    innerTransactionHeader: {
+        backgroundColor: '$blue',
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingTop: AppSizes.paddingExtraSml / 2,
+        paddingBottom: AppSizes.paddingExtraSml / 1.2,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    transactionContainer: {
+        backgroundColor: '$blue',
+        borderWidth: 3,
+        borderColor: '$blue',
+        borderRadius: 8,
+        marginBottom: AppSizes.paddingSml,
+    },
+    innerTransactionHeaderThirdParty: {
+        backgroundColor: '$grey',
+    },
+    transactionContainerThirdParty: {
+        backgroundColor: '$grey',
+        borderColor: '$grey',
+        opacity: 1,
+    },
+    innerTransactionHeaderMineOther: {
+        backgroundColor: '$green',
+    },
+    transactionContainerMineOther: {
+        backgroundColor: '$green',
+        borderColor: '$green',
+        opacity: 1,
+    },
+    innerTransactionContainerBorder: {
+        paddingHorizontal: AppSizes.paddingExtraSml,
+        paddingTop: AppSizes.paddingExtraSml,
+        borderWidth: 4,
+        opacity: 0.95,
+        borderColor: '$tint',
+        backgroundColor: '$tint',
+        borderRadius: 6,
+    },
     contentBoxSecondary: {
         paddingTop: AppSizes.paddingExtraSml,
         paddingHorizontal: AppSizes.paddingExtraSml,
@@ -25,7 +98,8 @@ const styles = StyleService.create({
     memoContainer: {
         marginHorizontal: -8,
         paddingHorizontal: 8,
-        paddingVertical: 6,
+        paddingTop: 6,
+        paddingBottom: 10,
         borderColor: '$lightGrey', 
         borderWidth: 2,
         borderRadius: 6, 
@@ -33,6 +107,9 @@ const styles = StyleService.create({
     },
     memoType: {
         color: StyleService.select({ light: '$blue', dark: '$textSecondary' }),
+    },
+    correctMptPadding: {
+        marginHorizontal: -20,
     },
     memoFormat: {
         fontWeight: '200',
@@ -62,6 +139,9 @@ const styles = StyleService.create({
         paddingLeft: 5,
         marginBottom: 10,
     },
+    labelSmall: {
+        fontSize: AppFonts.subtext.size * 0.9,
+    },
     destinationAddress: {
         marginTop: 10,
         paddingTop: 10,
@@ -86,6 +166,9 @@ const styles = StyleService.create({
         fontWeight: '600',
         fontSize: AppFonts.base.size,
         color: '$textPrimary',
+    },
+    valueSmall: {
+        fontSize: AppFonts.base.size * 0.9,
     },
     valueSubtext: {
         fontFamily: AppFonts.base.familyMonoBold,
@@ -143,7 +226,7 @@ const styles = StyleService.create({
     },
     rateText: {
         fontFamily: AppFonts.base.familyMono,
-        fontSize: AppFonts.base.size,
+        fontSize: AppFonts.base.size * 0.8,
         color: '$textSecondary',
     },
     feeText: {

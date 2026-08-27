@@ -79,7 +79,7 @@ class SelectAccountOverlay extends Component<Props, State> {
 
         if (contentHeight > AppSizes.screen.height * 0.9) {
             contentHeight = AppSizes.screen.height * 0.9;
-            paddingBottom = ROW_ITEM_HEIGHT;
+            paddingBottom = ROW_ITEM_HEIGHT + AppSizes.safeAreaBottomInset;
         }
 
         this.setState({
@@ -200,7 +200,9 @@ class SelectAccountOverlay extends Component<Props, State> {
                         />
                     </View>
                 </View>
-                <ScrollView contentContainerStyle={{ paddingBottom }}>{this.renderContent()}</ScrollView>
+                <ScrollView style={AppStyles.flex1} contentContainerStyle={{ paddingBottom }}>
+                    {this.renderContent()}
+                </ScrollView>
             </ActionPanel>
         );
     }

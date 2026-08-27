@@ -15,12 +15,11 @@ import { Images } from '@common/helpers/images';
 
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
-import { VibrateHapticFeedback, Toast, Prompt } from '@common/helpers/interface';
+import { VibrateHapticFeedback, Toast } from '@common/helpers/interface';
 
 import { PushNotificationsService, StyleService } from '@services';
 
 import { Button, Spacer, Footer, SecurePinInput } from '@components/General';
-import { isStrong } from '@components/General/PinInput/PinInput';
 
 import Localize from '@locale';
 
@@ -206,42 +205,13 @@ class PasscodeSetupView extends Component<Props, State> {
     };
 
     checkPasscode = (passcode: string) => {
-        if (isStrong(passcode)) {
-            VibrateHapticFeedback('impactLight');
-            this.setState({
+        VibrateHapticFeedback('impactLight');
+        this.setState(
+            {
                 passcode,
-            });
-        } else {
-            Prompt(
-                Localize.t('setupPasscode.weakPasscode'),
-                Localize.t('setupPasscode.weakPasscodeDescription'),
-                [
-                    {
-                        text: Localize.t('setupPasscode.useAnyway'),
-                        onPress: () => {
-                            VibrateHapticFeedback('impactLight');
-                            this.setState(
-                                {
-                                    passcode,
-                                },
-                                this.onNext,
-                            );
-                        },
-                        style: 'destructive',
-                    },
-                    {
-                        text: Localize.t('setupPasscode.changePasscode'),
-                        onPress: () => {
-                            if (this.pinInputRef?.current) {
-                                this.cleanPinInput();
-                                // this.pinInputRef?.current.focus();
-                            }
-                        },
-                    },
-                ],
-                { type: 'default' },
-            );
-        }
+            },
+            this.onNext,
+        );
     };
 
     checkPasscodeConfirm = (passcodeConfirm: string) => {
@@ -400,7 +370,7 @@ class PasscodeSetupView extends Component<Props, State> {
                 style={onboardingStyles.backgroundImageStyle}
                 imageStyle={onboardingStyles.backgroundImageStyle}
             >
-                <SafeAreaView style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.padding]}>
+                <SafeAreaView style={[AppStyles.flex2, AppStyles.centerAligned, AppStyles.padding, AppStyles.androidSystemBarTop]}>
                     <Image
                         style={onboardingStyles.logo}
                         source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
@@ -417,6 +387,7 @@ class PasscodeSetupView extends Component<Props, State> {
                         <Footer style={[
                             AppStyles.paddingBottom,
                             AppStyles.paddingTopNone,
+                            AppStyles.androidSystemBarBottom,
                         ]}>
                             {this.renderFooter()}
                         </Footer>

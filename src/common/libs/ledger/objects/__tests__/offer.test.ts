@@ -31,6 +31,7 @@ describe('Offer object', () => {
                 currency: 'XAG',
                 issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
                 value: '37',
+                mpt_issuance_id: undefined,
             });
         });
     });
@@ -76,6 +77,7 @@ describe('Offer object', () => {
                             currency: 'XAG',
                             effect: 'POTENTIAL_EFFECT',
                             issuer: 'rrrrrrrrrrrrrrrrrrrrbzbvji',
+                            mpt_issuance_id: undefined,
                             value: '37',
                         },
                     ],

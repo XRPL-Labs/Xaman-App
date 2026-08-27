@@ -27,7 +27,7 @@ import { Images } from '@common/helpers/images';
 import Localize from '@locale';
 
 // style
-import { AppStyles } from '@theme';
+import { AppStyles, AppSizes } from '@theme';
 
 import styles from './styles';
 
@@ -233,7 +233,14 @@ class PurchaseProductModal extends Component<Props, State> {
 
         return (
             <>
-                <View style={[AppStyles.paddingTopSml, AppStyles.paddingHorizontalSml, AppStyles.rightSelf]}>
+                <View
+                    style={[
+                        AppStyles.paddingTopSml,
+                        AppStyles.paddingHorizontalSml,
+                        AppStyles.rightSelf,
+                        Platform.OS === 'android' && { paddingTop: AppSizes.statusBarHeight + AppSizes.paddingSml },
+                    ]}
+                >
                     <Button label={Localize.t('global.close')} onPress={this.onClose} light roundedMini />
                 </View>
 

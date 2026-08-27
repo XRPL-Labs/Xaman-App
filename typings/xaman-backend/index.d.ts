@@ -148,6 +148,8 @@ declare namespace XamanBackend {
         force_dtag: boolean;
         kycApproved: boolean;
         proSubscription: boolean;
+        xapp_identifier: string | null;
+        no_direct_send: number;
     }
     interface HandleLookupResponse {
         input: string;

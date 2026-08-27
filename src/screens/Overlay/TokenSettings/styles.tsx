@@ -10,6 +10,24 @@ const styles = StyleService.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    tokenTransferFee: {
+        fontSize: AppFonts.subtext.size * 0.7,
+        fontFamily: AppFonts.base.family,
+        color: '$grey',
+        width: AppSizes.scale(100),
+        // borderWidth: 1,
+        // borderColor: '$green',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: AppSizes.scale(10),
+    },
+    brandAvatarContainerWithTransferFee: {
+        top: AppSizes.scale(-2),
+    },
+    currencyItemLabelSmallWithTransferFee: {
+        top: AppSizes.scale(-5),
+    },
     visibleContent: {
         width: AppSizes.screen.width * 0.9,
         backgroundColor: '$tint',
@@ -37,16 +55,16 @@ const styles = StyleService.create({
         // height: 170,
     },
     contentContainerAmountSend: {
-        height: 170,
+        height: AppSizes.scale(140),
     },
     contentContainerAmountNoSend: {
-        height: 170 - 45,
+        height: AppSizes.scale(140 - 38),
     },
     embeddedSendButton: {
         borderRadius: 0,
         borderTopEndRadius: 0,
         borderTopStartRadius: 0,
-        height: 45,
+        height: AppSizes.scale(38),
     },
     embeddedSendButtonContainer: {
         // marginBottom: -9,

@@ -10,7 +10,7 @@ import { View, Text, SectionList, Alert, RefreshControl } from 'react-native';
 
 import { StringType, XrplDestination } from 'xumm-string-decode';
 
-import { AccountRepository, ContactRepository } from '@store/repositories';
+import { AccountRepository, ContactRepository, CoreRepository } from '@store/repositories';
 import { ContactModel, AccountModel } from '@store/models';
 
 import { AppScreens } from '@common/constants';
@@ -43,6 +43,11 @@ import {
     LedgerEntryRequest,
     LedgerEntryResponse,
 } from '@common/libs/ledger/types/methods';
+import { AccountAdvisoryResolveType, AccountNameResolveType } from '@services/ResolverService';
+import { XAppBrowserModalProps } from '@screens/Modal/XAppBrowser';
+import { XAppOrigin } from '@common/libs/payload';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import Advisory from '@common/helpers/advisory';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -50,13 +55,17 @@ export interface Props {}
 export interface State {
     isSearching: boolean;
     isLoading: boolean;
+    isDevMode: boolean;
     searchText: string;
     accounts: Realm.Results<AccountModel>;
     contacts: Realm.Results<ContactModel>;
     dataSource: any[];
 }
 
+const XAMAN_BACKEND_API_TIMEOUT = 10_000;
+
 enum PassableChecks {
+    ALLOW_BLACKHOLE_DEVMODE = 'ALLOW_BLACKHOLE_DEVMODE',
     AMOUNT_CREATE_ACCOUNT = 'AMOUNT_CREATE_ACCOUNT',
     PROBABLE_SCAM = 'PROBABLE_SCAM',
     CONFIRMED_SCAM = 'CONFIRMED_SCAM',
@@ -75,10 +84,13 @@ class RecipientStep extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
+        const coreSettings = CoreRepository.getSettings();
+
         this.state = {
             isSearching: false,
             isLoading: false,
             searchText: '',
+            isDevMode: coreSettings.developerMode,
             accounts: AccountRepository.getAccounts({ hidden: false }).sorted([['order', false]]),
             contacts: ContactRepository.getContacts(),
             dataSource: [],
@@ -111,10 +123,68 @@ class RecipientStep extends Component<Props, State> {
             isSearching: true,
         });
 
+        // console.log('lookup')
+
         const { to, tag } = NormalizeDestination(result);
 
         if (to) {
-            const accountInfo = await ResolverService.getAccountName(to, tag);
+            // console.log('ifto')
+            const [accountInfo, addressInfo] = await Promise.all([
+                Promise.race([
+                    ResolverService.getAccountName(to, tag).catch(() => ({
+                        name: '',
+                        address: to,
+                        tag: toNumber(tag) || undefined,
+                        source: 'CATCH',
+                        kycApproved: false,
+                    })),
+                    new Promise((resolve: (res: AccountNameResolveType) => void) => {
+                        // console.log('resolving lookup')
+                        setTimeout(() => {
+                            // console.log('resolving lookup timeout, proceed')
+                            resolve({
+                                name: '',
+                                address: to,
+                                tag: toNumber(tag) || undefined,
+                                source: 'TIMEOUT',
+                                kycApproved: false,
+                            });
+                        }, XAMAN_BACKEND_API_TIMEOUT);
+                    }),
+                ]),
+                Promise.race([
+                    BackendService.getAddressInfo(to).catch(() => ({
+                        account: '',
+                        name: '',
+                        domain: '',
+                        blocked: false,
+                        source: 'CATCH',
+                        force_dtag: false,
+                        kycApproved: false,
+                        proSubscription: false,
+                        xapp_identifier: '',
+                        no_direct_send: 0,
+                    })),
+                    new Promise((resolve: (res: XamanBackend.AccountInfoResponse) => void) => { 
+                        // console.log('resolving lookup')
+                        setTimeout(() => {
+                            // console.log('resolving lookup timeout, proceed')\
+                            resolve({
+                                account: '',
+                                name: '',
+                                domain: '',
+                                blocked: false,
+                                source: 'TIMEOUT',
+                                force_dtag: false,
+                                kycApproved: false,
+                                proSubscription: false,
+                                xapp_identifier: '',
+                                no_direct_send: 0,
+                            });
+                        }, XAMAN_BACKEND_API_TIMEOUT);
+                    }),
+                ]),
+            ]);
 
             this.setState({
                 dataSource: this.getSearchResultSource([
@@ -124,6 +194,8 @@ class RecipientStep extends Component<Props, State> {
                         tag,
                         source: accountInfo.source,
                         kycApproved: accountInfo.kycApproved,
+                        accountInfo,
+                        addressInfo,
                     },
                 ]),
                 isSearching: false,
@@ -132,6 +204,7 @@ class RecipientStep extends Component<Props, State> {
             // select as destination
             setDestination({ name: accountInfo.name || '', address: to, tag: toNumber(tag) || undefined });
         } else {
+            // console.log('notif-to')
             this.doLookUp(result.to);
         }
     };
@@ -140,7 +213,7 @@ class RecipientStep extends Component<Props, State> {
         const { destination, setDestination } = this.context;
 
         // if search result only have one result select it
-        if (searchResult && searchResult.length === 1) {
+        if (searchResult && searchResult?.length === 1) {
             const onlyResult = searchResult[0];
             // select as destination
             if (!destination || (onlyResult.address !== destination.address && onlyResult.tag !== destination.tag)) {
@@ -210,7 +283,19 @@ class RecipientStep extends Component<Props, State> {
 
             // if text length is more than 4 do server lookup
             if (searchText?.length >= 4) {
-                BackendService.lookup(searchText)
+                // console.log('lookup')
+                const lookupResults = Promise.race([
+                    BackendService.lookup(searchText).catch(() => { }),
+                    new Promise((resolve: (res: void) => void) => {
+                        // console.log('searchtext  lookup')
+                        setTimeout(() => {
+                            // console.log('searchtext lookup timeout, proceed')
+                            resolve();
+                        }, XAMAN_BACKEND_API_TIMEOUT);
+                    }),
+                ]);
+
+                lookupResults
                     .then((res: any) => {
                         if (!isEmpty(res) && res.error !== true) {
                             if (!isEmpty(res.matches)) {
@@ -268,7 +353,9 @@ class RecipientStep extends Component<Props, State> {
             searchText,
         });
 
-        if (searchText && searchText.length > 0) {
+        // console.log('onsearch')
+
+        if (searchText && searchText?.length > 0) {
             // check if it's a valid address
             // eslint-disable-next-line prefer-regex-literals
             const possibleAccountAddress = new RegExp(
@@ -276,6 +363,7 @@ class RecipientStep extends Component<Props, State> {
             );
 
             if (possibleAccountAddress.test(searchText)) {
+                // console.log('accountlookup')
                 this.doAccountLookUp({ to: searchText });
             } else {
                 this.doLookUp(searchText);
@@ -292,7 +380,7 @@ class RecipientStep extends Component<Props, State> {
     getSearchResultSource = (searchResult: any) => {
         const dataSource = [];
 
-        if (searchResult && searchResult.length > 0) {
+        if (searchResult && searchResult?.length > 0) {
             dataSource.push({
                 title: Localize.t('send.searchResults'),
                 data: uniqBy(searchResult, 'address'),
@@ -313,7 +401,7 @@ class RecipientStep extends Component<Props, State> {
             return n.address !== source?.address;
         });
 
-        if (myAccountList && myAccountList.length !== 0) {
+        if (myAccountList && myAccountList?.length !== 0) {
             dataSource.push({
                 title: Localize.t('account.myAccounts'),
                 data: flatMap(myAccountList, (a) => {
@@ -322,7 +410,7 @@ class RecipientStep extends Component<Props, State> {
             });
         }
 
-        if (contacts && contacts.length === 0) {
+        if (contacts && contacts?.length === 0) {
             dataSource.push({
                 title: Localize.t('global.contacts'),
                 data: [{ empty: true, title: Localize.t('send.noContact') }],
@@ -398,6 +486,75 @@ class RecipientStep extends Component<Props, State> {
             setCredentials,
         } = this.context;
         let { destinationInfo } = this.context;
+        const { dataSource, isDevMode } = this.state;
+
+        try {
+            const searchItem: {
+                accountInfo: any;
+                addressInfo: XamanBackend.AccountInfoResponse;
+            } = ((dataSource as any)?.[0]?.data || []).filter(
+                (itm: { address: string }) => itm && itm?.address === destination?.address,
+            )?.[0];
+            if (searchItem && searchItem?.addressInfo) {
+                if (searchItem?.addressInfo?.no_direct_send === 1) {
+                    if (
+                        typeof searchItem?.addressInfo?.xapp_identifier === 'string' &&
+                        searchItem?.addressInfo?.xapp_identifier !== ''
+                    ) {
+                        setTimeout(() => {
+                            Navigator.showAlertModal({
+                                type: 'warning',
+                                text: Localize.t('send.mustOpenxAppInstead'),
+                                buttons: [
+                                    {
+                                        text: Localize.t('global.back'),
+                                        onPress: this.resetResult,
+                                        type: 'dismiss',
+                                        light: true,
+                                    },
+                                    {
+                                        text: Localize.t('global.continue'),
+                                        onPress: () => {
+                                            Navigator.popToRoot();
+                                            requestAnimationFrame(() => {
+                                                // dismiss the modal
+                                                Navigator.dismissModal();
+                                                requestAnimationFrame(() => {
+                                                    Navigator.dismissOverlay();
+                                                    setTimeout(() => {
+                                                        Navigator.showModal<XAppBrowserModalProps>(
+                                                            AppScreens.Modal.XAppBrowser,
+                                                            {
+                                                                identifier: searchItem?.addressInfo?.xapp_identifier!,
+                                                                origin: XAppOrigin.MANUAL_SEND,
+                                                                originData: {},
+                                                            },
+                                                            {
+                                                                modalTransitionStyle:
+                                                                    OptionsModalTransitionStyle.coverVertical,
+                                                                modalPresentationStyle:
+                                                                    OptionsModalPresentationStyle.overFullScreen,
+                                                            },
+                                                        );
+                                                    }, 50);
+                                                });
+                                            });
+                                        },
+                                        type: 'continue',
+                                    },
+                                ],
+                            });
+                        }, 50);
+                        return;
+                    }
+
+                    Alert.alert(Localize.t('global.error'), Localize.t('send.cannotOpenDirectly'));
+                    return;
+                }
+            }
+        } catch (e) {
+            //
+        }
 
         // double check, this should not be happening
         if (!destination || !source) {
@@ -418,12 +575,44 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
+            // console.log('checkandnext')
+
             if (!destinationInfo) {
                 // check for account exist and potential destination tag required
-                destinationInfo = await ResolverService.getAccountAdvisoryInfo(destination.address);
+                // console.log('advisory')
+                try {
+                    destinationInfo = await Promise.race([
+                        ResolverService.getAccountAdvisoryInfo(destination.address).catch(() => {
+                            return {
+                                exist: true,
+                                danger: 'NONE',
+                            };
+                        }),
+                        new Promise((resolve: (res: AccountAdvisoryResolveType) => void) => {
+                            // console.log('advisory lookup')
+                            setTimeout(() => {
+                                // console.log('advisory lookup timeout, proceed')
+                                resolve({
+                                    exist: true,
+                                    danger: 'NONE',
+                                });
+                            }, XAMAN_BACKEND_API_TIMEOUT);
+                        }),
+                    ]);
+
+                } catch (e) {
+                    // console.log('advisory error', e.message)
+                    destinationInfo = {
+                        exist: true,
+                        danger: 'NONE',
+                    };
+                }
+                
                 // set destination account info
                 setDestinationInfo(destinationInfo);
             }
+
+            // console.log('___1')
 
             // check for account risk and scam
             if (
@@ -453,6 +642,8 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
+            // console.log('___2')
+
             if (destinationInfo.danger === 'CONFIRMED' && passedChecks.indexOf(PassableChecks.CONFIRMED_SCAM) === -1) {
                 setTimeout(() => {
                     Navigator.showOverlay<FlaggedDestinationOverlayProps>(AppScreens.Overlay.FlaggedDestination, {
@@ -463,6 +654,8 @@ class RecipientStep extends Component<Props, State> {
                 }, 50);
                 return;
             }
+
+            // console.log('___3')
 
             // account doesn't exist no need to check account risk
             if (!destinationInfo.exist) {
@@ -550,6 +743,8 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // console.log('___4')
+
             // check if recipient have proper trustline for receiving this IOU
             // ignore if the recipient is the issuer, or if approved to send alt tx
             if (
@@ -557,11 +752,25 @@ class RecipientStep extends Component<Props, State> {
                 token.currency.issuer !== destination.address &&
                 passedChecks.indexOf(PassableChecks.SEND_AS_ALT_TX) === -1
             ) {
-                const destinationLine = await LedgerService.getFilteredAccountLine(destination.address, {
-                    currency: token.currency.currencyCode,
-                    issuer: token.currency.issuer,
-                });
-
+                const mpTokenDetails = token.isMPToken()
+                    ? (await NetworkService.send({
+                        command: 'ledger_entry',
+                        mptoken: {
+                            mpt_issuance_id: token.currency.currencyCode,
+                            account: destination.address,
+                        },                        
+                    }) as any)?.node
+                    : null;
+                const destinationLine = token.isMPToken()
+                    ? {
+                        limit: 999999999,
+                        balance: mpTokenDetails?.MPTAmount || 1,
+                    }
+                    : await LedgerService.getFilteredAccountLine(destination.address, {
+                        currency: token.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                    });
+                
                 // recipient does not have the proper trustline
                 const noTL = !destinationLine ||
                     (Number(destinationLine.limit) === 0 && Number(destinationLine.balance) === 0);
@@ -660,30 +869,76 @@ class RecipientStep extends Component<Props, State> {
                 }
             }
 
+            // console.log('___5')
             // if account is set to black hole then reject sending
             // IMMEDIATE REJECT
-            if (destinationInfo.blackHole) {
+            if (
+                destinationInfo.blackHole &&
+                passedChecks.indexOf(PassableChecks.ALLOW_BLACKHOLE_DEVMODE) === -1
+            ) {
                 setTimeout(() => {
+                    const isXahau = NetworkService.getNativeAsset() === 'XAH';
+                    const isHardBlackHole = Advisory.BLACK_HOLE_KEYS.includes(String(destination.address || '')) ||
+                        Advisory.LOST_KEYS.includes(String(destination.address || ''));
+                    
                     Navigator.showAlertModal({
-                        type: 'warning',
-                        text: Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
-                            currency:
-                                typeof token === 'string'
-                                    ? NetworkService.getNativeAsset()
-                                    : NormalizeCurrencyCode(token.currency.currencyCode),
-                        }),
+                        type: (isXahau && !isHardBlackHole) ? 'warning' : 'error',
+                        text: [
+                            Localize.t('send.theDestinationAccountIsSetAsBlackHole', {
+                                currency:
+                                    typeof token === 'string'
+                                        ? NetworkService.getNativeAsset()
+                                        : NormalizeCurrencyCode(token.currency.currencyCode),
+                            }),
+                            ...(
+                                (isXahau && !isHardBlackHole) ? [
+                                    Localize.t('send.fundsMaybePermanentlyLost', {
+                                        currency:
+                                            typeof token === 'string'
+                                                ? NetworkService.getNativeAsset()
+                                                : NormalizeCurrencyCode(token.currency.currencyCode),
+                                    }),
+                                ] : [
+                                    Localize.t('send.fundsPermanentlyLost', {
+                                        currency:
+                                            typeof token === 'string'
+                                                ? NetworkService.getNativeAsset()
+                                                : NormalizeCurrencyCode(token.currency.currencyCode),
+                                    }),
+                                ]
+                            ),
+                        ].join('\n\n'),
                         buttons: [
-                            {
-                                text: Localize.t('global.back'),
-                                onPress: this.clearDestination,
-                                type: 'dismiss',
-                                light: false,
-                            },
+                            ...(
+                                isDevMode
+                                    ? [
+                                        {
+                                            text: Localize.t('tangemImportMsgs.existingButtonContinue'),
+                                            onPress: this.checkAndNext.bind(null, [
+                                                ...passedChecks,
+                                                PassableChecks.ALLOW_BLACKHOLE_DEVMODE,
+                                            ]),
+                                            type: 'continue' as const,
+                                            light: true,
+                                        },
+                                    ]
+                                    : []
+                            ),
+                            ...[
+                                {
+                                    text: Localize.t('global.back'),
+                                    onPress: this.clearDestination,
+                                    type: 'dismiss' as const,
+                                    light: false,
+                                },
+                            ],
                         ],
                     });
                 }, 50);
                 return;
             }
+
+            // console.log('___6')
 
             // check for xrp income disallow
             if (
@@ -719,6 +974,8 @@ class RecipientStep extends Component<Props, State> {
                 return;
             }
 
+            // console.log('___7')
+
             // check for destination tag require
             if (destinationInfo.requireDestinationTag && (!destination.tag || Number(destination.tag) === 0)) {
                 setTimeout(() => {
@@ -731,58 +988,71 @@ class RecipientStep extends Component<Props, State> {
 
             let notAuthorized = false;
             
-            if (source?.address && destination?.address) {
+            if (
+                source?.address &&
+                destination?.address &&
+                passedChecks.indexOf(PassableChecks.AMOUNT_CREATE_ACCOUNT) === -1
+                // ^^ If creating account, don't check authorisation
+            ) {
                 const isAuthorized = await NetworkService.send<DepositAuthorizedRequest, DepositAuthorizedResponse>({
                     command: 'deposit_authorized',
                     source_account: source.address,
                     destination_account: destination.address,
                 });
 
+                // console.log('___7a', isAuthorized)
 
-                if (!((isAuthorized as any) || {})?.deposit_authorized) {
+                if (((isAuthorized as any) || {})?.deposit_authorized === false) {
                     // Not authorised, let's check if it's a credential thing
                     const ownedCredentials = (await NetworkService.send<AccountObjectsRequest, AccountObjectsResponse>({
                         command: 'account_objects',
                         type: 'credential',
                         account: source.address,
-                    }) as any)?.account_objects.filter((o: { Flags: number }) => o.Flags > 0); // Must be accepted
+                    }) as any)?.account_objects?.filter((o: { Flags: number }) => o.Flags > 0); // Must be accepted
 
-                    if (ownedCredentials.length < 1) {
+                    if (ownedCredentials?.length < 1) {
                         // We can't satisfy this anyway, so let's just inform the user
                         notAuthorized = true;
                     }
 
+                    // console.log('___7b', ownedCredentials)
+
                     // So this account has credentials, let's see if there's one that would satisfy the
                     // destination's PreAuth
-                    const credentialMatch = (await Promise.all(ownedCredentials.map((credential: {
-                        Issuer: string;
-                        CredentialType: string;
-                    }) => {
-                        return NetworkService.send<LedgerEntryRequest, LedgerEntryResponse>({
-                            command: 'ledger_entry',
-                            deposit_preauth: {
-                                owner: destination.address,
-                                authorized_credentials: [{
-                                    issuer: credential.Issuer,
-                                    credential_type: credential.CredentialType,
-                                }],
-                            },
-                        });
-                    })) as any)
-                        .filter((authorisation: {
+                    const credentialMatch = (ownedCredentials
+                        ? (await Promise.all(ownedCredentials?.map((credential: {
+                            Issuer: string;
+                            CredentialType: string;
+                        }) => {
+                            // console.log('___7c')
+                            return NetworkService.send<LedgerEntryRequest, LedgerEntryResponse>({
+                                command: 'ledger_entry',
+                                deposit_preauth: {
+                                    owner: destination.address,
+                                    authorized_credentials: [{
+                                        issuer: credential.Issuer,
+                                        credential_type: credential.CredentialType,
+                                    }],
+                                },
+                            });
+                        })) as any)
+                    : [])
+                        ?.filter((authorisation: {
                             node: {
                                 AuthorizeCredentials: { Credential: { Issuer: string; CredentialType: string } }[];
                             };
                         }) => authorisation?.node?.AuthorizeCredentials?.length > 0)
-                        .map((authorisation: {
+                        ?.map((authorisation: {
                             node: {
                                 AuthorizeCredentials: { Credential: { Issuer: string; CredentialType: string } }[];
                             };
                         }) => authorisation?.node?.AuthorizeCredentials?.[0]?.Credential)
                         ?.[0];
 
+                    // console.log('___7d', credentialMatch)
+
                     if (credentialMatch) {
-                        const useCredential = ownedCredentials.filter((credential: {
+                        const useCredential = ownedCredentials?.filter((credential: {
                             Issuer: string;
                             CredentialType: string;
                         }) => {
@@ -797,7 +1067,6 @@ class RecipientStep extends Component<Props, State> {
                             notAuthorized = true;
                         }
                     } else {
-                        // No match, let's just inform the user, we cannot satisfy this
                         notAuthorized = true;
                     }
 
@@ -820,9 +1089,11 @@ class RecipientStep extends Component<Props, State> {
                     }
                 }
             };
+
+            // console.log('___8')
         } catch (e) {
             Toast(Localize.t('send.unableGetRecipientAccountInfoPleaseTryAgain'));
-            // console.log(e);
+            // console.log(e.message, e.stack);
             return;
         } finally {
             this.setState({ isLoading: false });
@@ -1051,7 +1322,12 @@ class RecipientStep extends Component<Props, State> {
                 {/* Bottom Bar */}
                 <Footer style={AppStyles.row} safeArea>
                     <View style={[AppStyles.flex1, AppStyles.paddingRightSml]}>
-                        <Button light label={Localize.t('global.back')} onPress={this.goBack} />
+                        <Button
+                            light
+                            icon="IconChevronLeft"
+                            label={Localize.t('global.back')}
+                            onPress={this.goBack}
+                        />
                     </View>
                     <View style={AppStyles.flex2}>
                         <Button

@@ -11,7 +11,7 @@ import { HexEncoding } from '@common/utils/string';
 import LoggerService from '@services/LoggerService';
 
 /* Module ==================================================================== */
-const { VaultManagerModule } = NativeModules;
+const { VaultManagerModule, UniqueIdProviderModule } = NativeModules;
 
 /* Logger ==================================================================== */
 const logger = LoggerService.createLogger('Vault');
@@ -45,16 +45,43 @@ const Vault = {
     open: async (name: string, key: string): Promise<string | undefined> => {
         return new Promise((resolve, reject) => {
             VaultManagerModule.openVault(name, key)
-                .then((clearText: string) => {
+                .then((result: string | { clearText?: string; fallbackUsed?: boolean; storedDifferedFromLive?: boolean }) => {
+                    const clearText = typeof result === 'string' ? result : result?.clearText;
+                    const fallbackUsed =
+                        typeof result === 'object'
+                            ? !!result?.fallbackUsed
+                            : !!UniqueIdProviderModule?.consumeLastDeviceIdUnlockReport?.()?.fallbackUsed;
+                    const storedDifferedFromLive =
+                        typeof result === 'object' ? !!result?.storedDifferedFromLive : false;
                     // this should never happen, just double-checking
                     if (!clearText) {
                         reject(new Error('Vault open, received empty clear text!'));
                         return;
                     }
+                    if (fallbackUsed) {
+                        logger.warn(
+                            'WARNING: LIVE DEVICE ID DID NOT DECRYPT. SIGNING SUCCEEDED WITH LAST STORED DEVICE ID.',
+                            { vault: name, storedDifferedFromLive },
+                        );
+                    }
                     resolve(clearText);
                 })
                 .catch((error) => {
-                    logger.error(`open [${name}]`, error);
+                    const code = typeof error?.code === 'string' ? error.code : '-1';
+                    const message = error?.message ? String(error.message) : String(error);
+                    if (code === 'DEVICE_ID_CHANGED') {
+                        logger.error(
+                            'WARNING: PASSPHRASE INVALID BECAUSE IT WAS ORIGINALLY CONFIGURED ON ANOTHER PHONE. PLEASE REMOVE YOUR ACCOUNT AND IMPORT IT FROM SECRET AGAIN.',
+                            { code, message, vault: name, deviceIdChanged: true },
+                        );
+                    } else if (code === 'VAULT_CORRUPT' || code === 'UNIQUE_ID_MISSING') {
+                        logger.error(
+                            'WARNING: VAULT DATA IS CORRUPT OR DEVICE ID IS MISSING. PLEASE REMOVE YOUR ACCOUNT AND IMPORT IT FROM SECRET AGAIN.',
+                            { code, message, vault: name },
+                        );
+                    } else {
+                        logger.error(`open [${name}]`, { code, message, deviceIdChanged: false });
+                    }
                     resolve(undefined);
                 });
         });
@@ -112,7 +139,16 @@ const Vault = {
                     resolve(keyBytes);
                 })
                 .catch((error) => {
-                    logger.error('getStorageEncryptionKey', error);
+                    const code = typeof error?.code === 'string' ? error.code : '-1';
+                    const message = error?.message ? String(error.message) : String(error);
+                    if (code === 'KEYSTORE_UNRECOVERABLE' || code === 'KEYSTORE_DECRYPT') {
+                        logger.error(
+                            'WARNING: REALM KEYSTORE WRAP IS UNREADABLE. STORAGE CANNOT OPEN. PLEASE REMOVE YOUR ACCOUNT AND IMPORT IT FROM SECRET AGAIN.',
+                            { code, message },
+                        );
+                    } else {
+                        logger.error('getStorageEncryptionKey', { code, message });
+                    }
                     reject(error);
                 });
         });
@@ -179,6 +215,52 @@ const Vault = {
         });
     },
 
+    /**
+     * Probe Realm wrap vs account-vault wrap vs device-id cache.
+     * Android only. Does not need the passphrase.
+     */
+    inspectHealth: async (): Promise<Record<string, unknown> | undefined> => {
+        if (typeof VaultManagerModule.inspectVaultHealth !== 'function') {
+            return undefined;
+        }
+        try {
+            if (typeof UniqueIdProviderModule?.backfillLastKnownFromReadableUniqueId === 'function') {
+                UniqueIdProviderModule.backfillLastKnownFromReadableUniqueId();
+            }
+            const report = await VaultManagerModule.inspectVaultHealth();
+            logger.debug('vault health', report);
+            if (
+                report?.uniqueIdKeychainReadable === false &&
+                report?.vaultsPresent > 0 &&
+                !report?.lastKnownPresent
+            ) {
+                logger.error(
+                    'WARNING: DEVICE-UNIQUE-ID KEYCHAIN UNREADABLE AND NO LAST STORED DEVICE ID. ACCOUNT VAULTS MAY NOT DECRYPT AFTER ANDROID_ID CHANGE.',
+                    report,
+                );
+            } else if (report?.uniqueIdKeychainReadable === false && report?.lastKnownPresent) {
+                logger.warn(
+                    'WARNING: DEVICE-UNIQUE-ID KEYCHAIN UNREADABLE. USING LAST STORED DEVICE ID.',
+                    report,
+                );
+            } else if (report?.lastKnownPresent && report?.lastKnownMatchesLive === false) {
+                logger.warn('WARNING: LIVE DEVICE ID DIFFERS FROM LAST STORED DEVICE ID.', report);
+            } else if (
+                report?.uniqueIdKeychainReadable === false &&
+                report?.lastKnownPresent === false
+            ) {
+                logger.warn(
+                    'WARNING: NO STORED DEVICE ID. CANNOT DETECT ANDROID_ID CHANGE. SIGNING MAY FAIL AFTER DEVICE CHANGE.',
+                    report,
+                );
+            }
+            return report;
+        } catch (error) {
+            logger.error('inspectHealth', error);
+            return undefined;
+        }
+    },
+
     // Purge All vaults in the keychain
     clearStorage: (): Promise<boolean> => {
         return new Promise((resolve, reject) => {
@@ -186,6 +268,26 @@ const Vault = {
                 .then(resolve)
                 .catch((error) => {
                     logger.error('clearStorage', error);
+                    reject(error);
+                });
+        });
+    },
+
+    /**
+     * User wipe. Clears keychain (and on Android Realm files + last-known id)
+     * even when the Keystore wrap is unreadable.
+     */
+    wipeLocalDatastore: (): Promise<boolean> => {
+        return new Promise((resolve, reject) => {
+            const nativeWipe = VaultManagerModule.wipeLocalDatastore;
+            const run =
+                typeof nativeWipe === 'function'
+                    ? nativeWipe.call(VaultManagerModule)
+                    : VaultManagerModule.clearStorage();
+            Promise.resolve(run)
+                .then(() => resolve(true))
+                .catch((error) => {
+                    logger.error('wipeLocalDatastore', error);
                     reject(error);
                 });
         });

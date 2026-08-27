@@ -10,6 +10,8 @@ import { ASSETS_CATEGORY, Props as SwitchAssetCategoryOverlayProps } from '@scre
 
 import { TokensList } from './Tokens';
 import { NFTsList } from './NFTs';
+import { VibrateHapticFeedback } from '@common/helpers/interface';
+import BackendService from '@services/BackendService';
 
 /* Types ==================================================================== */
 
@@ -22,6 +24,8 @@ interface Props {
     experimentalUI?: boolean;
     network?: NetworkModel;
     addTokenPress?: () => void;
+    hapticFeedback: boolean;
+    hideTopElements: (toggle: boolean) => void;
 }
 
 interface State {
@@ -54,19 +58,28 @@ class AssetsList extends Component<Props, State> {
         const { category } = this.state;
 
         if (selectedCategory !== category) {
+            setTimeout(() => BackendService.action('assetcatswitch', selectedCategory), 1000);
             this.setState({
                 category: selectedCategory,
             });
         }
     };
 
-    onChangeCategoryPress = () => {
+    onChangeCategoryPress = (selectedCategory?: ASSETS_CATEGORY) => {
         const { category } = this.state;
+        const { hapticFeedback } = this.props;
 
-        Navigator.showOverlay<SwitchAssetCategoryOverlayProps>(AppScreens.Overlay.SwitchAssetCategory, {
-            selected: category,
-            onSelect: this.onAssetCategoryChange,
-        });
+        if (!selectedCategory) {
+            return Navigator.showOverlay<SwitchAssetCategoryOverlayProps>(AppScreens.Overlay.SwitchAssetCategory, {
+                selected: category,
+                onSelect: this.onAssetCategoryChange,
+            });
+        }
+
+        if (hapticFeedback) {
+            VibrateHapticFeedback('impactMedium');
+        }
+        return this.onAssetCategoryChange(selectedCategory);
     };
 
     render() {
@@ -79,6 +92,7 @@ class AssetsList extends Component<Props, State> {
             account,
             network,
             addTokenPress,
+            hideTopElements,
         } = this.props;
         const { category } = this.state;
 
@@ -102,6 +116,7 @@ class AssetsList extends Component<Props, State> {
                 network={network}
                 discreetMode={discreetMode}
                 spendable={spendable}
+                hideTopElements={hideTopElements}
                 onChangeCategoryPress={this.onChangeCategoryPress}
                 addTokenPress={addTokenPress}
                 style={style}

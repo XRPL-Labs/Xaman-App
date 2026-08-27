@@ -116,16 +116,20 @@ class RequestItem extends Component<Props, State> {
     };
 
     onPress = () => {
-        switch (this.getType()) {
-            case RequestType.OpenXApp:
-                this.openXApp();
-                break;
-            case RequestType.SignRequest:
-                this.openSignRequest();
-                break;
-            default:
-                break;
-        }
+        Navigator.pop();
+        setTimeout(() => {
+            Navigator.pop();
+            switch (this.getType()) {
+                case RequestType.OpenXApp:
+                    this.openXApp();
+                    break;
+                case RequestType.SignRequest:
+                    this.openSignRequest();
+                    break;
+                default:
+                    break;
+            }
+        }, 10);
     };
 
     setDetails = () => {

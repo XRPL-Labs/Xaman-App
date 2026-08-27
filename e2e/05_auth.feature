@@ -71,6 +71,7 @@ Feature: Lock
         Given I should see 'security-settings-screen'
         Then I tap 'auto-lock-button'
         Given I should have 'picker-modal'
+        Then I scroll up 'picker-item-list'
         Then I tap '10080-item'
         Given I should see 'security-settings-screen'
         Then I tap 'back-button'

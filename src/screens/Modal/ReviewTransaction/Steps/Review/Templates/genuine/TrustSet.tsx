@@ -129,20 +129,20 @@ class TrustSetTemplate extends Component<Props, State> {
                     )}
                 </View>
 
-                {transaction.QualityIn && (
+                {typeof transaction.QualityIn === 'number' && (
                     <>
                         <Text style={styles.label}>{Localize.t('trustset.qualityIn')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.QualityIn}</Text>
+                            <Text style={styles.value}>{String(transaction.QualityIn)}</Text>
                         </View>
                     </>
                 )}
 
-                {transaction.QualityOut && (
+                {typeof transaction.QualityOut === 'number' && (
                     <>
                         <Text style={styles.label}>{Localize.t('trustset.qualityOut')}</Text>
                         <View style={styles.contentBox}>
-                            <Text style={styles.value}>{transaction.QualityOut}</Text>
+                            <Text style={styles.value}>{String(transaction.QualityOut)}</Text>
                         </View>
                     </>
                 )}

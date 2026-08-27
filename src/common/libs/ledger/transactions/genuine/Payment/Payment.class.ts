@@ -22,6 +22,7 @@ class Payment extends BaseGenuineTransaction {
         Destination: { required: true, type: AccountID },
         DestinationTag: { type: UInt32 },
         InvoiceID: { type: Hash256 },
+        DomainID: { type: Hash256 },
         SendMax: { type: Amount },
         DeliverMin: { type: Amount },
         Paths: { type: PathSet },
@@ -32,6 +33,7 @@ class Payment extends BaseGenuineTransaction {
     declare Destination: FieldReturnType<typeof AccountID>;
     declare DestinationTag: FieldReturnType<typeof UInt32>;
     declare InvoiceID: FieldReturnType<typeof Hash256>;
+    declare DomainID: FieldReturnType<typeof Hash256>;
     declare SendMax: FieldReturnType<typeof Amount>;
     declare DeliverMin: FieldReturnType<typeof Amount>;
     declare Paths: FieldReturnType<typeof PathSet>;

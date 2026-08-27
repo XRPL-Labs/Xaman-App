@@ -87,7 +87,7 @@ class LedgerPathFinding extends EventEmitter {
 
             if (typeof source_amount === 'string') {
                 this.paymentOptions[NetworkService.getNativeAsset()] = option;
-            } else if (typeof source_amount === 'object') {
+            } else if (typeof source_amount === 'object' && 'currency' in source_amount) {
                 this.paymentOptions[`${source_amount.issuer}:${source_amount.currency}`] = option;
             }
         });

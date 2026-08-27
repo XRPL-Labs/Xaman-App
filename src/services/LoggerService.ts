@@ -10,6 +10,8 @@ import analytics from '@react-native-firebase/analytics';
 export enum LogEvents {
     EncryptionMigrationSuccess = 'encryption_migration_success',
     EncryptionMigrationException = 'encryption_migration_exception',
+    SigningRoutingInformation = 'signing_routine_information',
+    LaunchingNavigator = 'launching_navigator',
 }
 
 export type Levels = 'debug' | 'warn' | 'error';

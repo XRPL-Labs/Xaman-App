@@ -34,7 +34,7 @@ describe('CredentialDelete tx', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = 'This is an CredentialDelete transaction';
+                const expectedDescription = `This is a CredentialDelete transaction. It a credential issued by rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo.${'\n\n'}The credential type is KYC. `;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });

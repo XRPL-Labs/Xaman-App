@@ -12,17 +12,32 @@ class InvoiceId extends PureComponent<Props> {
     render() {
         const { item } = this.props;
 
-        if (!('InvoiceID' in item) || typeof item.InvoiceID === 'undefined') {
+        const noInvoiceID = !('InvoiceID' in item) || typeof item.InvoiceID === 'undefined';
+        const noDomainID = !('DomainID' in item) || typeof item.DomainID === 'undefined';
+
+        if (noInvoiceID && noDomainID) {
             return null;
         }
 
         return (
-            <View style={styles.detailContainer}>
-                <Text style={styles.detailsLabelText}>{Localize.t('global.invoiceID')}</Text>
-                <Text selectable style={styles.hashText}>
-                    {item.InvoiceID}
-                </Text>
-            </View>
+            <>
+                {!noDomainID && (
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.detailsLabelText}>{Localize.t('global.domainID')}</Text>
+                        <Text selectable style={styles.hashText}>
+                            {item.DomainID}
+                        </Text>
+                    </View>
+                )}
+                {!noInvoiceID && (
+                    <View style={styles.detailContainer}>
+                        <Text style={styles.detailsLabelText}>{Localize.t('global.invoiceID')}</Text>
+                        <Text selectable style={styles.hashText}>
+                            {item.InvoiceID}
+                        </Text>
+                    </View>
+                )}
+            </>
         );
     }
 }

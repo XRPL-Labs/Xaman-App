@@ -11,7 +11,7 @@ import { CoreRepository, NetworkRepository } from '@store/repositories';
 import { NetworkModel, CoreModel } from '@store/models';
 import { NetworkType } from '@store/types';
 
-import { NetworkService } from '@services';
+import { BackendService, NetworkService } from '@services';
 
 import { Navigator } from '@common/helpers/navigator';
 
@@ -98,7 +98,7 @@ class SwitchNetworkOverlay extends Component<Props, State> {
 
         if (contentHeight > AppSizes.screen.height * 0.9) {
             contentHeight = AppSizes.screen.height * 0.9;
-            paddingBottom = ROW_ITEM_HEIGHT;
+            paddingBottom = ROW_ITEM_HEIGHT + AppSizes.safeAreaBottomInset;
         }
 
         this.setState({
@@ -116,14 +116,19 @@ class SwitchNetworkOverlay extends Component<Props, State> {
         if (!network.id.equals(coreSettings.network.id)) {
             // switch network
             NetworkService.switchNetwork(network);
+            BackendService.action('switchnetwork', network.key);
             // callback
             if (typeof onChangeNetwork === 'function') {
                 onChangeNetwork(network);
             }
         }
 
-        // slide down the panel
+        // slideDown's onSlideDown can be dropped when switchNetwork remounts
+        // Home under this overlay — the sheet then sits on an empty root.
         this.actionPanelRef?.current?.slideDown();
+        Navigator.dismissOverlay(AppScreens.Overlay.SwitchNetwork).catch(() => {
+            // already dismissed
+        });
     };
 
     onPanelSlideDown = () => {
@@ -187,7 +192,11 @@ class SwitchNetworkOverlay extends Component<Props, State> {
                         {Localize.t('global.networks')}
                     </Text>
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom }}>
+                <ScrollView
+                    style={AppStyles.flex1}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom }}
+                >
                     {Object.keys(networks).map((type: string) => {
                         return (
                             <Fragment key={type}>

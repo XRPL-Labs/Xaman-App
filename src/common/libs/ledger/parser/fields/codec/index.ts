@@ -2,6 +2,8 @@ import { FlagIndices } from './FlagIndices';
 import { Flags } from './Flags';
 import { Hex } from './Hex';
 import { HookParameters } from './HookParameters';
+import { RawTransactions } from './RawTransactions';
+import { BatchSigners } from './BatchSigners';
 import { Memos } from './Memos';
 import { RippleTime } from './RippleTime';
 import { Signers } from './Signers';
@@ -35,4 +37,6 @@ export {
     PriceDataSeries,
     AuthorizeCredentials,
     Remarks,
+    RawTransactions,
+    BatchSigners,
 };

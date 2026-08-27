@@ -23,4 +23,5 @@ extern NSString * const RECOVERY_SUFFIX;
 + (NSString *)getStorageEncryptionKey;
 + (BOOL)isStorageEncryptionKeyExist;
 + (void)clearStorage;
++ (void)wipeLocalDatastore;
 @end

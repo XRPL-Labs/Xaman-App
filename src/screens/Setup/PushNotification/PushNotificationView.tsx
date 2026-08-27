@@ -91,7 +91,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                 style={onboardingStyles.backgroundImageStyle}
                 imageStyle={onboardingStyles.backgroundImageStyle}
             >
-                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding]}>
+                <SafeAreaView style={[AppStyles.flex1, AppStyles.centerAligned, AppStyles.padding, AppStyles.androidSystemBarTop]}>
                     <Image
                         style={onboardingStyles.logo}
                         source={StyleService.getImageIfLightModeIfDarkMode('XamanLogo', 'XamanLogoLight')}
@@ -125,9 +125,11 @@ class PushNotificationSetupView extends Component<Props, State> {
                         <Footer style={[
                             AppStyles.paddingBottom,
                             AppStyles.paddingTopNone,
+                            AppStyles.androidSystemBarBottom,
                         ]}>
                             <Button numberOfLines={1}
                                 light
+                                testID="maybe-later-button"
                                 label={Localize.t('global.maybeLater')}
                                 onPress={this.nextStep}
                             />
@@ -135,6 +137,7 @@ class PushNotificationSetupView extends Component<Props, State> {
                             <Button
                                 isLoading={isLoading}
                                 numberOfLines={1}
+                                testID="enable-notifications-button"
                                 label={Localize.t('global.yes')}
                                 onPress={this.requestPermission}
                             />

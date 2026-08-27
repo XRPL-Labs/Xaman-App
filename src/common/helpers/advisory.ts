@@ -17,6 +17,7 @@ import { AccountInfoAccountFlags } from '@common/libs/ledger/types/methods/accou
 const Advisory = {
     /* Constants ==================================================================== */
     BLACK_HOLE_KEYS: ['rrrrrrrrrrrrrrrrrrrrrhoLvTp', 'rrrrrrrrrrrrrrrrrrrrBZbvji'],
+    LOST_KEYS: ['rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', 'rrrrrrrrrrrrrrrrrNAMEtxvNvQ', 'rrrrrrrrrrrrrrrrrrrn5RM1rHd'],
     EXCHANGE_BALANCE_THRESHOLD: 1000000000000,
     MIN_TRANSACTION_TAG: 9999,
     HIGH_SENDER_COUNT: 10,
@@ -51,9 +52,11 @@ const Advisory = {
      */
     checkBlackHoleAccount: (accountData?: AccountRoot, accountFlags?: AccountInfoAccountFlags): boolean => {
         return (
-            !!accountData?.RegularKey &&
-            !!accountFlags?.disableMasterKey &&
-            Advisory.BLACK_HOLE_KEYS.includes(accountData.RegularKey)
+            (!!accountData?.RegularKey &&
+                !!accountFlags?.disableMasterKey &&
+                Advisory.BLACK_HOLE_KEYS.includes(accountData.RegularKey)) ||
+            Advisory.BLACK_HOLE_KEYS.includes(String(accountData?.Account || '')) ||
+            Advisory.LOST_KEYS.includes(String(accountData?.Account || ''))
         );
     },
 

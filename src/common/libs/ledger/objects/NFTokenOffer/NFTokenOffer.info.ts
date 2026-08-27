@@ -55,13 +55,19 @@ class NFTokenOfferInfo extends ExplainerAbstract<NFTokenOffer> {
             );
         }
 
+        content.push('');
+
         if (typeof this.item.Owner !== 'undefined') {
             content.push(Localize.t('events.theNftOwnerIs', { address: this.item.Owner }));
         }
 
+        content.push('');
+
         if (typeof this.item.Destination !== 'undefined') {
             content.push(Localize.t('events.thisNftOfferMayOnlyBeAcceptedBy', { address: this.item.Destination }));
         }
+
+        content.push('');
 
         if (typeof this.item.Expiration !== 'undefined') {
             content.push(

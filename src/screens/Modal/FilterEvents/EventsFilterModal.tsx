@@ -158,7 +158,7 @@ class EventsFilterModal extends Component<Props, State> {
         const { account } = this.state;
 
         return (
-            <SafeAreaView testID="events-filter-view" style={[AppStyles.container]}>
+            <SafeAreaView testID="events-filter-view" style={[AppStyles.container, AppStyles.androidSystemBarTop]}>
                 {/* Header */}
                 <View style={[AppStyles.row, AppStyles.paddingVerticalSml, styles.headerContainer]}>
                     <View

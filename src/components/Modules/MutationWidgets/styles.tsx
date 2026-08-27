@@ -11,6 +11,25 @@ const styles = StyleService.create({
         padding: 15,
         gap: AppSizes.paddingExtraSml,
     },
+    marginBottom: {
+        marginBottom: AppSizes.padding / 3.5,  
+    },
+    parentBatchContainer: {
+        paddingHorizontal: 10,
+        paddingTop: 5,
+    },
+    credentialTypeLineHeight: {
+        paddingTop: 5,
+        paddingBottom: 4,
+    },
+    noOffsetBottom: {
+        paddingBottom: 0,
+        marginBottom: 0,
+    },
+    credentialRadius: {
+        borderBottomLeftRadius: 7,
+        borderBottomRightRadius: 7,
+    },
     advisoryContainer: {
         alignSelf: 'stretch',
         alignItems: 'center',
@@ -33,6 +52,10 @@ const styles = StyleService.create({
         paddingBottom: AppSizes.padding,
         paddingHorizontal: 25,
     },
+    detailContainerPS: {
+        paddingBottom: 0,
+        paddingHorizontal: 0,
+    },
     warningsContainer: {
         paddingHorizontal: 25,
         paddingBottom: 25,
@@ -43,6 +66,13 @@ const styles = StyleService.create({
         // borderTopColor: '$tint',
         // borderTopWidth: 1,
     },
+    credentialContainer: {
+        // padding: 25,
+        // paddingTop: 5,
+        borderColor: '$tint',
+        borderWidth: 1,
+        borderRadius: 7,
+    },
     noBold: {
         fontFamily: AppFonts.base.family,
     },
@@ -51,6 +81,29 @@ const styles = StyleService.create({
         fontSize: AppFonts.base.size,
         marginBottom: 8,
         color: '$textPrimary',
+    },
+    detailsLabelSubText: {
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.base.size * 0.9,
+        marginBottom: 0,
+        color: '$textPrimary',
+    },
+    amountRow: {
+        alignSelf: 'stretch',
+        width: '100%',
+        alignItems: 'center',
+    },
+    amountFactorLabel: {
+        alignSelf: 'stretch',
+        width: '100%',
+        fontFamily: AppFonts.base.familyBold,
+        fontSize: AppFonts.base.size * 0.9,
+        marginBottom: 8,
+        color: '$textPrimary',
+        textAlign: 'center',
+    },
+    amountIcon: {
+        marginRight: AppSizes.paddingSml,
     },
     detailsValueText: {
         fontFamily: AppFonts.base.family,
@@ -163,6 +216,12 @@ const styles = StyleService.create({
     participant: {
         borderWidth: 1,
         borderColor: '$tint',
+    },
+    currencyElementContainer: {
+        borderWidth: 1,
+        borderColor: '$tint',
+        borderRadius: 10,
+        padding: 10,
     },
 });
 

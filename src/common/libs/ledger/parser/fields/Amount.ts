@@ -1,6 +1,6 @@
 import AmountParser from '@common/libs/ledger/parser/common/amount';
 import { AmountType } from '@common/libs/ledger/parser/types';
-import { LedgerAmount } from '@common/libs/ledger/types/common';
+import { IssuedCurrencyAmount, IssuedMPTAmount, LedgerAmount } from '@common/libs/ledger/types/common';
 
 import NetworkService from '@services/NetworkService';
 
@@ -24,15 +24,17 @@ export const Amount = {
 
             // issue currency
             return {
-                currency: value.currency,
+                currency: (value as IssuedCurrencyAmount)?.currency,
                 value: value.value,
-                issuer: value.issuer,
+                issuer: (value as IssuedCurrencyAmount)?.issuer,
+                mpt_issuance_id: (value as IssuedMPTAmount)?.mpt_issuance_id,
             };
         };
     },
     setter: (self: any, name: string) => {
         return (value: AmountType): void => {
             // resetting the value
+            // console.log('----', name, value);
             if (typeof value === 'undefined') {
                 self[name] = undefined;
                 return;
@@ -46,6 +48,10 @@ export const Amount = {
 
             // issued currency
             if (value.currency !== NetworkService.getNativeAsset() && value.issuer) {
+                self[name] = value;
+            }
+
+            if (value.currency !== NetworkService.getNativeAsset() && value.mpt_issuance_id) {
                 self[name] = value;
             }
         };

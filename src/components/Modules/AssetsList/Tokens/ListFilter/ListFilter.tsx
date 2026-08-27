@@ -2,12 +2,19 @@ import { isEqual } from 'lodash';
 import React, { Component } from 'react';
 import { View } from 'react-native';
 
-import { TouchableDebounce, Icon, SearchBar } from '@components/General';
+import {
+    // TouchableDebounce,
+    // Icon,
+    SearchBar,
+    Button,
+} from '@components/General';
 
 import Localize from '@locale';
 
 // import { AppSizes } from '@theme';
 import styles from './styles';
+import { CoreRepository } from '@store/repositories';
+// import { AppStyles } from '@theme/index';
 
 /* Types ==================================================================== */
 export interface FiltersType {
@@ -21,6 +28,7 @@ interface Props {
     visible: boolean;
     onFilterChange: (filters: FiltersType | undefined) => void;
     onReorderPress: () => void;
+    onAddTokenPress: () => void;
 }
 
 interface State {
@@ -28,6 +36,7 @@ interface State {
     filterText?: string;
     favoritesEnabled: boolean;
     hideZeroEnabled: boolean;
+    displayButtons: boolean;
 }
 
 /* Component ==================================================================== */
@@ -36,12 +45,13 @@ class ListFilter extends Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
+        
         this.state = {
             ownUpdate: false,
-            filterText: undefined,
-            favoritesEnabled: false,
-            hideZeroEnabled: false,
+            filterText: props.filters?.text || undefined,
+            favoritesEnabled: props.filters?.favorite || false,
+            hideZeroEnabled: props.filters?.hideZero || false,
+            displayButtons: true,
         };
 
         this.searchInputRef = React.createRef();
@@ -49,9 +59,10 @@ class ListFilter extends Component<Props, State> {
 
     shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>): boolean {
         const { visible } = this.props;
-        const { filterText, favoritesEnabled, hideZeroEnabled } = this.state;
+        const { filterText, favoritesEnabled, hideZeroEnabled, displayButtons } = this.state;
 
         return (
+            !isEqual(nextState.displayButtons, displayButtons) ||
             !isEqual(nextProps.visible, visible) ||
             !isEqual(nextState.filterText, filterText) ||
             !isEqual(nextState.favoritesEnabled, favoritesEnabled) ||
@@ -106,6 +117,8 @@ class ListFilter extends Component<Props, State> {
             };
         }
 
+        CoreRepository.saveSettings({ filterHideZeroValue: hideZeroEnabled });
+
         if (typeof onFilterChange === 'function') {
             onFilterChange(filters);
         }
@@ -156,9 +169,15 @@ class ListFilter extends Component<Props, State> {
     };
 
     onSearchInputFocus = () => {
+        this.setState({
+            displayButtons: false,
+        });
     };
 
     onSearchInputBlur = () => {
+        this.setState({
+            displayButtons: true,
+        });
     };
 
     onSearchClearButtonPress = () => {
@@ -168,8 +187,8 @@ class ListFilter extends Component<Props, State> {
     };
 
     render() {
-        const { visible } = this.props;
-        const { favoritesEnabled, hideZeroEnabled } = this.state;
+        const { visible, filters, onAddTokenPress } = this.props;
+        const { favoritesEnabled, hideZeroEnabled, displayButtons } = this.state;
 
         // hide filters when reordering is enabled
         if (!visible) {
@@ -177,51 +196,82 @@ class ListFilter extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.container}>
-                <SearchBar
-                    ref={this.searchInputRef}
-                    height={styles.filterButton.height}
-                    onChangeText={this.onFilterTextChange}
-                    onFocus={this.onSearchInputFocus}
-                    onBlur={this.onSearchInputBlur}
-                    onClearButtonPress={this.onSearchClearButtonPress}
-                    placeholder={Localize.t('global.filter')}
-                    containerStyle={styles.searchBarContainer}
-                    inputStyle={styles.searchBarInput}
-                    iconStyle={styles.searchBarIcon}
-                    clearButtonVisibility="focus"
-                    iconSize={15}
-                />
-                <View
-                    style={[
-                        styles.filterButtonsContainer,
-                    ]}
-                >
-                    <TouchableDebounce onPress={this.onReorderPress} style={[styles.filterButton]}>
-                        <Icon name="IconReorder" style={[styles.filterButtonIcon]} />
-                    </TouchableDebounce>
-                    <TouchableDebounce
-                        onPress={this.onFavoritePress}
-                        style={[styles.filterButton, favoritesEnabled && styles.favoriteButtonActive]}
-                    >
-                        <Icon
-                            name="IconStarFull"
-                            size={16}
-                            style={[styles.filterButtonIcon, favoritesEnabled && styles.favoriteIconActive]}
-                        />
-                    </TouchableDebounce>
-                    <TouchableDebounce
-                        onPress={this.onHideZeroPress}
-                        style={[styles.filterButton, hideZeroEnabled && styles.hideZeroButtonActive]}
-                    >
-                        <Icon
-                            name={hideZeroEnabled ? 'IconHideZero' : 'IconShowZero'}
-                            size={16}
-                            style={[styles.filterButtonIcon, hideZeroEnabled && styles.hideZeroIconActive]}
-                        />
-                    </TouchableDebounce>
+            <>
+                <View style={styles.container}>
+                    <SearchBar
+                        ref={this.searchInputRef}
+                        defaultValue={filters && filters?.text || ''}
+                        height={styles.filterButton.height}
+                        onChangeText={this.onFilterTextChange}
+                        onFocus={this.onSearchInputFocus}
+                        onBlur={this.onSearchInputBlur}
+                        onClearButtonPress={this.onSearchClearButtonPress}
+                        placeholder={Localize.t('global.filterTokens')}
+                        containerStyle={styles.searchBarContainer}
+                        inputStyle={styles.searchBarInput}
+                        iconStyle={styles.searchBarIcon}
+                        clearButtonVisibility="nonempty"
+                        iconSize={23}
+                    />
                 </View>
-            </View>
+                <View style={[styles.buttonContainer]}>
+                    <Button
+                        numberOfLines={1}
+                        secondary
+                        icon={hideZeroEnabled ? 'IconHideZero' : 'IconShowZero'}
+                        iconStyle={[
+                            hideZeroEnabled && styles.hideZeroIconActive,
+                        ]}
+                        iconPosition='left'
+                        iconSize={18}
+                        style={[
+                            styles.filterBtn,
+                            !displayButtons && styles.notVisible,
+                        ]}
+                        onPress={this.onHideZeroPress}
+                        // textStyle={[AppStyles.subtext, AppStyles.bold]}
+                        label={Localize.t(!hideZeroEnabled ? 'global.showZeroValue' : 'global.hideZeroValue')}
+                    />
+                    <Button
+                        numberOfLines={1}
+                        secondary
+                        icon='IconStarFull'
+                        iconStyle={[
+                            favoritesEnabled && styles.favoriteIconActive,
+                        ]}
+                        iconPosition='left'
+                        iconSize={18}
+                        style={[
+                            styles.filterBtn,
+                            !displayButtons && styles.notVisible,
+                        ]}
+                        onPress={this.onFavoritePress}
+                        // textStyle={[AppStyles.subtext, AppStyles.bold]}
+                        label={Localize.t(!favoritesEnabled ? 'global.showAll' : 'global.showFavsOnly')}
+                    />
+                    <Button
+                        icon='IconReorder'
+                        contrast
+                        iconSize={23}
+                        style={[
+                            styles.filterBtn,
+                            !displayButtons && styles.notVisible,
+                        ]}
+                        onPress={this.onReorderPress}
+                        label={Localize.t('global.reorder')}
+                    />
+                    <Button
+                        icon='IconPlus'
+                        iconSize={22}
+                        style={[
+                            styles.filterBtn,
+                            !displayButtons && styles.notVisible,
+                        ]}
+                        onPress={onAddTokenPress}
+                        label={Localize.t('home.addAsset')}
+                    />
+                </View>
+            </>
         );
     }
 }

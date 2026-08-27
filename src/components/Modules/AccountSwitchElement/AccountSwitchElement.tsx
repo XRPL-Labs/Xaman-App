@@ -97,11 +97,16 @@ class AccountSwitchElement extends Component<Props, State> {
         }
 
         return (
-            <TouchableDebounce activeOpacity={0.7} onPress={this.onPress} style={[
-                styles.container,
-                containerStyle,
-                noPadding && styles.containerNoPadding,
-            ]}>
+            <TouchableDebounce
+                testID="account-switch-button"
+                activeOpacity={0.7}
+                onPress={this.onPress}
+                style={[
+                    styles.container,
+                    containerStyle,
+                    noPadding && styles.containerNoPadding,
+                ]}
+            >
                 <View style={AppStyles.flex1}>
                     <Text style={styles.accountLabelText} numberOfLines={1}>
                         {account.label}

@@ -123,7 +123,7 @@ class OfferCreateTemplate extends Component<Props, State> {
 
                 {warning && (
                     <View style={AppStyles.paddingBottomSml}>
-                        <InfoMessage type="error" label={warning} />
+                        <InfoMessage type="warning" label={warning} />
                     </View>
                 )}
 
@@ -170,6 +170,15 @@ class OfferCreateTemplate extends Component<Props, State> {
                         <Text style={styles.label}>{Localize.t('global.offerID')}</Text>
                         <View style={styles.contentBox}>
                             <Text style={styles.value}>{transaction.OfferID}</Text>
+                        </View>
+                    </>
+                )}
+
+                {!isUndefined(transaction.DomainID) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.domainID')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text style={styles.value}>{transaction.DomainID}</Text>
                         </View>
                     </>
                 )}

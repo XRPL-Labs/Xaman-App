@@ -36,6 +36,20 @@ describe('AccountSet', () => {
             expect(instance.WalletLocator).toBe('ABCDEF123456789');
             expect(instance.WalletSize).toBe(1337);
         });
+
+        it('Should keep HookStateScale (Xahau AccountSet) through parse and JsonForSigning', () => {
+            const tx = {
+                TransactionType: 'AccountSet',
+                Account: 'rDQa2KGduFnKNK6ooSrsXCYUxaopsrQ6QZ',
+                HookStateScale: 1,
+                NetworkID: 21338,
+            } as any;
+            const instance = new AccountSet(tx);
+
+            expect(instance.HookStateScale).toBe(1);
+            expect(instance.isNoOperation()).toBe(false);
+            expect(instance.JsonForSigning.HookStateScale).toBe(1);
+        });
     });
 
     describe('Info', () => {
@@ -122,6 +136,20 @@ describe('AccountSet', () => {
 
                 expect(accountSetInfo.generateDescription()).toEqual(expectedDescription);
                 expect(accountSetInfo.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
+            });
+
+            it('HookStateScale only is not a no-op', () => {
+                const instance = new MixedAccountSet({
+                    TransactionType: 'AccountSet',
+                    Account: 'rDQa2KGduFnKNK6ooSrsXCYUxaopsrQ6QZ',
+                    HookStateScale: 1,
+                    NetworkID: 21338,
+                } as any);
+                const info = new AccountSetInfo(instance, {} as any);
+
+                expect(instance.isNoOperation()).toBe(false);
+                expect(info.generateDescription()).toContain('HookStateScale to 1');
+                expect(info.getEventsLabel()).toEqual(Localize.t('events.updateAccountSettings'));
             });
         });
 

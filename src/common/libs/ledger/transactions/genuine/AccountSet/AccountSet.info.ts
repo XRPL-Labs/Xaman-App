@@ -102,6 +102,12 @@ class AccountSetInfo extends ExplainerAbstract<AccountSet, MutationsMixinType> {
             }
         }
 
+        if (typeof this.item.HookStateScale !== 'undefined') {
+            content.push(
+                Localize.t('events.itSetsAccountHookStateScaleTo', { hookStateScale: this.item.HookStateScale }),
+            );
+        }
+
         return content.join('\n');
     }
 

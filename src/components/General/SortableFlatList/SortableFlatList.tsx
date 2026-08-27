@@ -9,29 +9,64 @@ import {
     PanResponderInstance,
     PanResponderGestureState,
     LayoutChangeEvent,
+    View,
+    Text,
+    InteractionManager,
 } from 'react-native';
 
 import CellComponent from '@components/General/SortableFlatList/CellComponent';
 
 import styles from './styles';
+import { TouchableDebounce } from '../TouchableDebounce';
+import { Navigator } from '@common/helpers/navigator';
+import { AppScreens } from '@common/constants';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+
+import tokenItemStyles from '@components/Modules/AssetsList/Tokens/TokenItem/styles';
+
+import Localize from '@locale';
+import { XAppOrigin } from '@common/libs/payload';
+import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
+import { Avatar } from '../Avatar';
+import { LoadingIndicator } from '../LoadingIndicator';
+import BackendService from '@services/BackendService';
+import AppService, { AppStateStatus } from '@services/AppService';
+
+// import { AppStyles } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props {
+    topFade: boolean;
+    accWorthEnabled: boolean;
     testID?: string;
     itemHeight: number;
     separatorHeight?: number;
     dataSource: Array<any>;
     sortable?: boolean;
+    firstItemExtraHeight?: number;
     renderItem: ListRenderItem<any> | null | undefined;
     renderEmptyList?: React.ComponentType<any> | React.ReactElement | null | undefined;
     onItemPress?: (item: any, index: number) => void;
     keyExtractor?: ((item: any, index: number) => string) | undefined;
     onDataChange?: (dataSource: Array<any>) => void;
+    updateTokenPrices?: (data: any) => void;
+    lineWorthLoading?: (loading: boolean) => void;
 }
 
 interface State {
     containerHeight: number;
     isItemActive: boolean;
+    accWorthIdentifier: string;
+    accWorthTitle: string;
+    accWorthNativeAsset: string;
+    accWorthAmount: number;
+    accWorthLoading: boolean;
+    currencyRate: {
+        code: string;
+        rate: number;
+        symbol: string;
+        lastSync: number;
+    };
 }
 
 enum AutoScrollState {
@@ -49,6 +84,9 @@ export default class SortableFlatList extends Component<Props, State> {
 
     private scaleRecoveryTimeout: ReturnType<typeof setTimeout> | undefined;
     private autoScrollInterval: ReturnType<typeof setTimeout> | undefined;
+    private accountWorthInterval: ReturnType<typeof setTimeout> | undefined;
+    
+    private currentAccountWorthAccount: string = '';
 
     private panResponder: PanResponderInstance;
     private isMovePanResponder: boolean;
@@ -72,8 +110,21 @@ export default class SortableFlatList extends Component<Props, State> {
         super(props);
 
         this.state = {
-            containerHeight: (props.itemHeight + props.separatorHeight!) * props.dataSource.length,
+            containerHeight: (props.itemHeight + props.separatorHeight!) *
+                (props.dataSource.length + 1) +
+                (props.firstItemExtraHeight || 0) - 10,
             isItemActive: false,
+            accWorthIdentifier: '',
+            accWorthTitle: '',
+            accWorthNativeAsset: '',
+            accWorthAmount: 0,
+            accWorthLoading: true,
+            currencyRate: {
+                code: '',
+                rate: 0,
+                symbol: '',
+                lastSync: 0,
+            },
         };
 
         this.itemRefs = new Map();
@@ -119,16 +170,155 @@ export default class SortableFlatList extends Component<Props, State> {
         });
     }
 
+    updateSettingsHandler = (a: any) => {
+        const { lineWorthLoading } = this.props;
+
+        const settings = CoreRepository.getSettings();
+
+        // Todo: fetch new value
+        this.setState({
+            accWorthNativeAsset: settings.currency,
+            accWorthLoading: true,
+        });
+
+        if (lineWorthLoading) {
+            lineWorthLoading(true);
+        }
+
+        this.fetchAccountWorth(a, 'UPDATE_SETTINGS_HANDLER');
+    };
+
+    fetchAccountWorth = (
+        a?: any,
+        origin: 'UNKNOWN' | 'UPDATE_SETTINGS_HANDLER' | 'INTERVAL' | 'COMPONENT_MOUNT' | 'APPSTATE_CHANGE' =
+            'UNKNOWN',
+    ) => {
+        const { updateTokenPrices, lineWorthLoading, accWorthEnabled } = this.props;
+        const { accWorthLoading, accWorthAmount } = this.state;
+
+        if (!accWorthEnabled) {
+            return;
+        }
+
+        const settings = CoreRepository.getSettings();
+
+        const isValidNetwork = settings.network?.key === 'MAINNET' || settings.network?.key === 'XAHAU';
+        if ((!settings.accountWorthActive && !settings.showPerAssetWorth) || !isValidNetwork) {
+            this.setState({
+                accWorthLoading: true,
+                accWorthAmount: 0,
+            });
+
+            return;
+        }
+
+        if (settings?.account?.address !== this.currentAccountWorthAccount) {
+            // Account changed, current values are no longer relevant
+            // console.log('Account changed, current values are no longer relevant')
+            this.setState({
+                accWorthLoading: true,
+                accWorthAmount: 0,
+            });
+        }
+
+        if (a && a?.address) {
+            if (a.address !== settings?.account?.address) {
+                // console.log('returning early, not fetching worth, address mismatch')
+                return;
+            }
+        }
+
+        clearInterval(this.accountWorthInterval);
+        this.accountWorthInterval = setInterval(() => {
+            this.fetchAccountWorth(undefined, 'INTERVAL');
+        }, 30 * 1000);
+
+        if (accWorthAmount > 0 && accWorthLoading) {
+            this.setState({
+                accWorthLoading: false,
+            });
+        }
+
+        // console.log('fetchAccountWorth', settings.account.address);
+        Promise.all([
+            BackendService.getAccountWorth(settings?.account?.address, settings.network.key, settings.currency, origin),
+            BackendService.getCurrencyRate(settings.currency),
+        ]).then(([res, rate]) => {
+            this.currentAccountWorthAccount = settings?.account?.address;
+
+            this.setState({
+                accWorthAmount: res.totalValue,
+                accWorthLoading: false,
+                currencyRate: rate,
+            });
+            if (lineWorthLoading) {
+                lineWorthLoading(false);
+            }
+            if (updateTokenPrices) {
+                updateTokenPrices({
+                    ...res,
+                    rate,
+                });
+            }
+        })
+        .catch(() => {
+            //
+            this.setState({
+                accWorthLoading: false,
+            });
+        });
+    };
+
     componentDidMount() {
         clearInterval(this.autoScrollInterval);
+        clearInterval(this.accountWorthInterval);
         clearTimeout(this.scaleRecoveryTimeout);
+
+        InteractionManager.runAfterInteractions(() => { 
+            const settings = CoreRepository.getSettings();
+
+            this.setState({
+                accWorthIdentifier: settings.accountWorthInfo.split('|')[0],
+                accWorthTitle: settings.accountWorthInfo.split('|')[1],
+                accWorthNativeAsset: settings.currency,
+            });
+
+            this.fetchAccountWorth(undefined, 'COMPONENT_MOUNT');
+
+            CoreRepository.on('updateSettings', this.updateSettingsHandler);
+            AccountRepository.on('accountUpdate', this.updateSettingsHandler);
+            AppService.addListener('appStateChange', this.appStateChange);
+        });
+    }
+
+    appStateChange = (newState: AppStateStatus) => {
+        if (newState === AppStateStatus.Active) {
+            // console.log('App active, fetch')
+            return this.fetchAccountWorth(undefined, 'APPSTATE_CHANGE');
+        }
+
+        // console.log('App inactive, clear')
+        return clearInterval(this.accountWorthInterval);
+    };
+
+    componentWillUnmount() {
+        clearInterval(this.accountWorthInterval);
+        CoreRepository.off('updateSettings', this.updateSettingsHandler);
+        AccountRepository.off('accountUpdate', this.updateSettingsHandler);
+        AppService.removeListener('appStateChange', this.appStateChange);
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: State) {
         const { containerHeight } = prevState;
 
         // if dataSource size or item height or separator size changed then apply new container height
-        const newContainerHeight = (nextProps.itemHeight + nextProps.separatorHeight!) * nextProps.dataSource.length;
+        let newContainerHeight = (nextProps.itemHeight + nextProps.separatorHeight!) *
+            (nextProps.dataSource.length + 1) +
+            (nextProps.firstItemExtraHeight || 0) - 10;
+        
+        if (nextProps.sortable) {
+            newContainerHeight -= -40;
+        }
 
         if (newContainerHeight !== containerHeight) {
             return {
@@ -495,11 +685,11 @@ export default class SortableFlatList extends Component<Props, State> {
     };
 
     renderCellComponent = ({ index, children, cellKey }: { index: number; children: any; cellKey: string }) => {
-        const { itemHeight, separatorHeight } = this.props;
+        const { itemHeight, separatorHeight, firstItemExtraHeight } = this.props;
 
         return (
             <CellComponent
-                key={`cellComponent-${index}`}
+                key={`cellComponent-${index}-${firstItemExtraHeight}`}
                 // key={cellKey}
                 testID={cellKey}
                 ref={async (ref) => {
@@ -511,53 +701,158 @@ export default class SortableFlatList extends Component<Props, State> {
                 }}
                 index={index}
                 cellHeight={itemHeight}
+                firstItemExtraHeight={firstItemExtraHeight}
                 separatorHeight={separatorHeight}
                 onPress={this.onItemPress}
                 onLongPress={this.onItemLongPress}
                 onPressOut={this.onItemPressOut}
             >
-                {children}
+                <View style={[
+                    index === 0 && {
+                        paddingTop: (firstItemExtraHeight || 0) / 2,
+                        paddingBottom: (firstItemExtraHeight || 0) / 2,
+                    },
+                ]}>
+                    {index === 0 && cellKey === 'token-native' && this.renderAssetListxApp()}
+                    {children}
+                </View>
             </CellComponent>
         );
     };
 
+    renderAssetListxApp = () => {
+        const {
+            accWorthIdentifier,
+            accWorthTitle,
+            accWorthNativeAsset,
+            accWorthAmount,
+            accWorthLoading,
+            currencyRate,
+        } = this.state;
+        const { accWorthEnabled } = this.props;
+
+        if (!accWorthEnabled) {
+            return null;
+        }
+
+        const asset = currencyRate.symbol && currencyRate.symbol !== ''
+            ? currencyRate.symbol
+            : currencyRate.code && currencyRate.code !== ''
+                ? currencyRate.code
+                : accWorthNativeAsset.toUpperCase();
+
+        return (
+            <TouchableDebounce key='xapp-asset' onPress={() => {
+                Navigator.showModal(
+                    AppScreens.Modal.XAppBrowser,
+                    {
+                        identifier: accWorthIdentifier,
+                        origin: XAppOrigin.XUMM,
+                    },
+                    {
+                        modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                        modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                    },
+                );
+            }} activeOpacity={0.7}>
+                <View
+                    testID='accountworthxapp'
+                    style={[
+                        tokenItemStyles.currencyItem,
+                        // eslint-disable-next-line react-native/no-inline-styles
+                        { marginTop: -32 },
+                        // eslint-disable-next-line react-native/no-inline-styles
+                        { marginBottom: 20 },
+                    ]}
+                >
+                    <View style={[tokenItemStyles.xAppTokenContainer]}>
+                        <View style={tokenItemStyles.tokenAvatarContainer}>
+                            <Avatar
+                                source={{ uri: `https://xaman.app/icon/xapp/${accWorthIdentifier}` }}
+                                size={35}
+                            />
+                        </View>
+                        <View>
+                            <Text numberOfLines={1} style={[
+                                tokenItemStyles.currencyLabel,
+                                tokenItemStyles.xAppLabel,
+                            ]} ellipsizeMode="middle">
+                                {accWorthTitle}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={[tokenItemStyles.balanceContainer]}>
+                        {accWorthLoading && accWorthAmount === 0 && <LoadingIndicator size='small' />}
+                        {(!accWorthLoading || accWorthAmount > 0) && (
+                            <>
+                                <Text style={tokenItemStyles.xAppBalanceContainerCurrency}>{
+                                    asset
+                                }</Text>
+                                <Text style={tokenItemStyles.xAppBalanceContainer}>{
+                                    Localize.formatNumber(accWorthAmount, accWorthAmount > 1000 ? 0 : 2, true)
+                                }</Text>
+                            </>
+                        )}
+                    </View>
+                </View>
+            </TouchableDebounce>
+        );
+    };
+
     render() {
-        const { testID, dataSource, keyExtractor, renderItem, renderEmptyList, itemHeight, separatorHeight } =
+        const {
+            testID,
+            dataSource,
+            keyExtractor,
+            renderItem,
+            renderEmptyList,
+            itemHeight,
+            separatorHeight,
+            topFade,
+            accWorthEnabled,
+        } =
             this.props;
         const { isItemActive, containerHeight } = this.state;
 
         return (
-            <FlatList
-                testID={testID}
-                ref={this.listRef}
-                style={styles.container}
-                contentContainerStyle={[
-                    styles.contentContainerStyle,
-                    { height: containerHeight !== 0 ? containerHeight : undefined },
-                ]}
-                data={dataSource}
-                renderItem={renderItem}
-                ListEmptyComponent={renderEmptyList}
-                CellRendererComponent={this.renderCellComponent}
-                keyExtractor={keyExtractor}
-                onScroll={this.onScroll}
-                onLayout={this.onLayout}
-                getItemLayout={(data, index) => ({
-                    length: itemHeight + separatorHeight,
-                    offset: (itemHeight + separatorHeight) * index,
-                    index,
-                })}
-                scrollEnabled={!isItemActive}
-                scrollEventThrottle={1}
-                horizontal={false}
-                removeClippedSubviews={false}
-                alwaysBounceVertical={false}
-                bounces={false}
-                maxToRenderPerBatch={60}
-                initialNumToRender={30}
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-                {...this.panResponder.panHandlers}
-            />
+            <View style={[ topFade && styles.topShadowContainer ]}>
+                <View style={[ topFade && styles.topShadow ]} />
+                <FlatList
+                    testID={testID}
+                    ref={this.listRef}
+                    key={`tokenlistflat-w-${accWorthEnabled ? 1 : 0}`}
+                    style={[
+                        styles.container,
+                        // AppStyles.borderRed,
+                    ]}
+                    contentContainerStyle={[
+                        styles.contentContainerStyle,
+                        { height: containerHeight !== 0 ? containerHeight : undefined },
+                    ]}
+                    data={dataSource}
+                    renderItem={renderItem}
+                    ListEmptyComponent={renderEmptyList}
+                    CellRendererComponent={this.renderCellComponent}
+                    keyExtractor={keyExtractor}
+                    onScroll={this.onScroll}
+                    onLayout={this.onLayout}
+                    getItemLayout={(data, index) => ({
+                        length: itemHeight + separatorHeight,
+                        offset: (itemHeight + separatorHeight) * index,
+                        index,
+                    })}
+                    scrollEnabled={!isItemActive}
+                    scrollEventThrottle={1}
+                    horizontal={false}
+                    removeClippedSubviews={false}
+                    alwaysBounceVertical={false}
+                    bounces={false}
+                    maxToRenderPerBatch={60}
+                    initialNumToRender={30}
+                    /* eslint-disable-next-line react/jsx-props-no-spreading */
+                    {...this.panResponder.panHandlers}
+                />
+            </View>
         );
     }
 }

@@ -56,7 +56,7 @@ class Application {
         this.initialized = false;
     }
 
-    run() {     
+    run() {
         // Listen for app launched event
         Navigation.events().registerAppLaunchedListener(() => {
             // start the app
@@ -105,7 +105,9 @@ class Application {
             if (
                 message.indexOf('Realm file decryption failed') > -1 ||
                 message.indexOf('Could not decrypt data') > -1 ||
-                message.indexOf('Could not decrypt bytes') > -1
+                message.indexOf('Could not decrypt bytes') > -1 ||
+                message.indexOf('KEYSTORE_UNRECOVERABLE') > -1 ||
+                message.indexOf('Keystore alias missing') > -1
             ) {
                 Alert.alert('Error', ErrorMessages.storageDecryptionFailed, [
                     {
@@ -145,8 +147,22 @@ class Application {
                 {
                     text: 'Yes',
                     style: 'destructive',
-                    onPress: () => {
-                        DataStorage.wipe();
+                    onPress: async () => {
+                        try {
+                            await Vault.wipeLocalDatastore();
+                        } catch (error) {
+                            this.logger.error('wipeStorage', error);
+                            try {
+                                await Vault.clearStorage();
+                            } catch (clearError) {
+                                this.logger.error('wipeStorage clearStorage', clearError);
+                            }
+                        }
+                        try {
+                            DataStorage.wipe();
+                        } catch (error) {
+                            this.logger.error('wipeStorage realm', error);
+                        }
                         ExitApp();
                     },
                 },
@@ -220,7 +236,9 @@ class Application {
 
     // initialize the storage
     initializeStorage = () => {
-        return this.storage.initialize();
+        return this.storage.initialize().then(() => {
+            return Vault.inspectHealth().then(() => undefined);
+        });
     };
 
     // initialize all the services
@@ -285,7 +303,10 @@ class Application {
                 Object.keys(screens).map((key) => {
                     // @ts-ignore
                     const Screen = screens[key];
-                    Navigation.registerComponent(Screen.screenName, () => Screen);
+                    // Screen.load defers require() until RNN first shows the screen
+                    // (used by Scan so vision-camera is not evaluated at startup).
+                    const provider = typeof Screen.load === 'function' ? Screen.load : () => Screen;
+                    Navigation.registerComponent(Screen.screenName, provider);
                     return true;
                 });
                 resolve();
@@ -304,8 +325,8 @@ class Application {
                 if (Platform.OS === 'android') {
                     const isRooted = await IsDeviceRooted();
                     if (isRooted) {
-                        reject(new Error(ErrorMessages.runningOnRootedDevice));
-                        return;
+                        // reject(new Error(ErrorMessages.runningOnRootedDevice));
+                        // return;
                     }
                 } else if (Platform.OS === 'ios') {
                     if (process?.env?.NODE_ENV === 'development') {
@@ -314,7 +335,8 @@ class Application {
                         const isJailBroken = await IsDeviceJailBroken();
 
                         if (isJailBroken) {
-                            reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
+                            // console.log('isJailBroken', isJailBroken);
+                            // reject(new Error(ErrorMessages.runningOnJailBrokenDevice));
                             return;
                         }
                     }
@@ -381,9 +403,11 @@ class Application {
 
                 /* ======================== FlagSecure & LayoutAnimationExperimental =============================== */
                 if (Platform.OS === 'android') {
-                    // Enable Flag Secure if developer mode is not active
-                    if (!coreSettings?.developerMode) {
+                    // Release: FLAG_SECURE unless developer mode. Debug APK never blocks screenshots.
+                    if (!IsDebugBuild() && !coreSettings?.developerMode) {
                         SetFlagSecure(true);
+                    } else {
+                        SetFlagSecure(false);
                     }
 
                     // enable layout animation

@@ -1,4 +1,4 @@
-import { Memo, Signer } from '../common';
+import { BatchSigner, Memo, Signer } from '../common';
 import { PseudoTransactionTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 /**
@@ -75,6 +75,14 @@ export interface TransactionJson {
      * The network id of the transaction.
      */
     NetworkID?: number;
+    /**
+     * Raw transactions (batch)
+     */
+    RawTransactions?: Array<TransactionJson>;
+    /**
+     * Raw transactions (batch)
+     */
+    BatchSigners?: Array<BatchSigner>;
 
     /**
      * Rest of fields

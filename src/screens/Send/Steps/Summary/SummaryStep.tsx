@@ -28,6 +28,7 @@ import {
     TextInput,
     SwipeButton,
     KeyboardAwareScrollView,
+    ServiceFeeSpendable,
 } from '@components/General';
 import { TokenAvatar } from '@components/Modules/TokenElement';
 
@@ -51,6 +52,7 @@ export interface State {
     destinationTagInputVisible: boolean;
     currencyRate?: RatesType;
     canScroll: boolean;
+    canSendFee: boolean;
 }
 
 /* Component ==================================================================== */
@@ -67,6 +69,7 @@ class SummaryStep extends Component<Props, State> {
             confirmedDestinationTag: undefined,
             destinationTagInputVisible: false,
             currencyRate: undefined,
+            canSendFee: true,
             canScroll: true,
         };
     }
@@ -86,13 +89,13 @@ class SummaryStep extends Component<Props, State> {
                 });
             })
             .catch(() => {
-                Alert.alert(
-                    Localize.t('global.warning'),
-                    Localize.t('global.unableToFetchCurrencyRate'),
-                    [
-                        { text: Localize.t('global.ok') },
-                    ],
-                );
+                // Alert.alert(
+                //     Localize.t('global.warning'),
+                //     Localize.t('global.unableToFetchCurrencyRate'),
+                //     [
+                //         { text: Localize.t('global.ok') },
+                //     ],
+                // );
             });
     };
 
@@ -321,6 +324,28 @@ class SummaryStep extends Component<Props, State> {
         return null;
     };
 
+    // Can it actually send tx + fee?
+    canSendFee = (canSend: boolean) => {
+        const { canSendFee } = this.state;
+
+        // console.log('--- [parent] canSendFee', canSend);
+        if (canSend !== canSendFee) {
+            requestAnimationFrame(() => {
+                this.setState({
+                    canSendFee: canSend,
+                });
+            });
+        }
+    };
+
+    // Drops it can send
+    updateAmount = (amount: number) => {
+        const { setAmount } = this.context;
+
+        // console.log('--- updateAmount', amount);
+        setAmount(String(Math.floor(amount) / 1_000_000));
+    };
+
     render() {
         const {
             source,
@@ -333,8 +358,13 @@ class SummaryStep extends Component<Props, State> {
             setFee,
             getPaymentJsonForFee,
             credentials,
+            serviceFeeAmount,
         } = this.context;
-        const { destinationTagInputVisible, canScroll } = this.state;
+        const {
+            destinationTagInputVisible,
+            canScroll,
+            canSendFee,
+        } = this.state;
 
         return (
             <View testID="send-summary-view" style={styles.container}>
@@ -456,7 +486,7 @@ class SummaryStep extends Component<Props, State> {
                     </View>
 
                     {/* Credentials */}
-                    {credentials && (
+                    {credentials && credentials.length > 0 && (
                         <View style={styles.rowItem}>
                             <View style={[
                                 styles.rowTitle,
@@ -488,21 +518,6 @@ class SummaryStep extends Component<Props, State> {
                         </View>
                     )}
 
-                    <View style={[styles.rowItem, AppStyles.centerContent]}>
-                        <View style={styles.rowTitle}>
-                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
-                                {Localize.t('events.txServiceFees')}
-                            </Text>
-                        </View>
-                        <FeePicker
-                            txJson={getPaymentJsonForFee()}
-                            source={source}
-                            containerStyle={styles.feePickerContainer}
-                            textStyle={styles.feeText}
-                            onSelect={setFee}
-                        />
-                    </View>
-    
                     {/* Memo */}
                     <View style={styles.rowItem}>
                         <View style={styles.rowTitle}>
@@ -524,18 +539,67 @@ class SummaryStep extends Component<Props, State> {
                         />
                     </View>
 
-                    <Footer style={[styles.swipeFooterSize]} safeArea>
-                        <SwipeButton
-                            color={this.getSwipeButtonColor()}
-                            label={Localize.t('global.slideToSend')}
-                            accessibilityLabel={Localize.t('global.send')}
-                            onSwipeSuccess={this.goNext}
-                            isLoading={isLoading}
-                            isDisabled={!selectedFee}
-                            shouldResetAfterSuccess
-                            onPanResponderGrant={this.toggleCannotScroll}
-                            onPanResponderRelease={this.toggleCanScroll}
+                    <View style={[styles.rowItem, AppStyles.centerContent]}>
+                        <View style={styles.rowTitle}>
+                            <Text style={[AppStyles.subtext, AppStyles.strong, { color: AppColors.grey }]}>
+                                {Localize.t('events.txServiceFees')}
+                            </Text>
+                        </View>
+                        <FeePicker
+                            txJson={{
+                                ...getPaymentJsonForFee(),
+                                ...(
+                                    NetworkService.getNativeAsset() === 'XRP'
+                                        ? { Memos: undefined } // If XRP: ignore memo to prevent bouncing
+                                        : {} // on Xahau: needs Memo as it adds to fee
+                                ),
+                            }}
+                            source={source}
+                            containerStyle={styles.feePickerContainer}
+                            textStyle={styles.feeText}
+                            onSelect={setFee}
                         />
+                    </View>
+
+                    <Footer style={[
+                        styles.swipeFooterSize,
+                    ]} safeArea>
+                        <View style={[
+                            AppStyles.alignSelfStretch,
+                        ]}>
+                            <ServiceFeeSpendable
+                                spendableBalanceDrops={
+                                    Math.floor(Number(CalculateAvailableBalance(source!)) * 1_000_000)
+                                }
+                                style={[
+                                    styles.rowItem,
+                                ]}
+                                serviceFeeDrops={Number(serviceFeeAmount?.value || 0)}
+                                txFeeDrops={Number(selectedFee?.value || 0)}
+                                sendAmountDrops={
+                                    typeof token === 'string' && token === NetworkService.getNativeAsset()
+                                        ? Math.ceil(Number(amount) * 1_000_000)
+                                        : 0
+                                }
+                                onTxMaySend={this.canSendFee}
+                                updateSendingAmountDrops={this.updateAmount}
+                                autoUpdateOnTxFeeChange
+                            />
+                        </View>
+
+                        {canSendFee && (
+                            <SwipeButton
+                                color={this.getSwipeButtonColor()}
+                                label={Localize.t('global.slideToSend')}
+                                accessibilityLabel={Localize.t('global.send')}
+                                onSwipeSuccess={this.goNext}
+                                isLoading={isLoading}
+                                isDisabled={!selectedFee}
+                                shouldResetAfterSuccess
+                                onPanResponderGrant={this.toggleCannotScroll}
+                                onPanResponderRelease={this.toggleCanScroll}
+                            />
+                        )}
                     </Footer>
                 </KeyboardAwareScrollView>
                 {/* Bottom Bar */}

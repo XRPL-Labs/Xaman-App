@@ -117,6 +117,20 @@ const DecodeNFTokenID = (nfTokenID: string) => {
 };
 
 /**
+ * MPToken to Issuer
+ * @param MPTokenIssuanceID string
+ * @returns AccountID of issuer
+ */
+const DecodeMPTokenIssuanceToIssuer = (MPTokenIssuanceID: string): string => {
+    const mptiid = String(MPTokenIssuanceID);
+    if (mptiid.length !== 48) {
+        throw new Error('Invalid MPTokenIssuanceID, should be 48 char hex');
+    }
+
+    return libraries.rippleAddressCodec.encodeAccountID(Buffer.from(mptiid.substring(8, 48), 'hex'));
+};
+
+/**
  * Encode CTID
  * @param ledgerSeq number
  * @param txnIndex number
@@ -215,4 +229,5 @@ export {
     DecodeNFTokenID,
     DecodeAccountId,
     EncodeCTID,
+    DecodeMPTokenIssuanceToIssuer,
 };

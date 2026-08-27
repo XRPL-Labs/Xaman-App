@@ -22,7 +22,8 @@ export default StyleService.create({
     nonMultilineContainer: {
         height: AppSizes.heightPercentageToDP(7),
     },
-    nonMultilineSecureInput: { // family seed entry
+    nonMultilineSecureInput: {
+        // family seed entry
         height: AppSizes.heightPercentageToDP(7),
         // lineHeight: AppSizes.heightPercentageToDP(7) / 2,
         marginVertical: Platform.OS === 'ios' ? 2 : 0,
@@ -35,7 +36,7 @@ export default StyleService.create({
     input: {
         flex: 1,
         fontSize: AppFonts.base.size,
-        color: '$blue',
+        color: StyleService.select({ light: '$dark', dark: '$white' }),
         fontFamily: AppFonts.base.family,
     },
     scanIcon: {

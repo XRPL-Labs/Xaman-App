@@ -18,6 +18,14 @@ export const Amounts = {
                 };
             }
 
+            if (!('currency' in Amount)) {
+                return {
+                    currency: '',
+                    value: Amount.value,
+                    issuer: '',
+                };
+            }
+
             return {
                 currency: Amount.currency,
                 value: Amount.value,

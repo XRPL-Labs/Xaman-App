@@ -8,9 +8,10 @@ export default StyleService.create({
         alignItems: 'center',
         marginHorizontal: AppSizes.paddingSml,
         paddingVertical: 10,
+        borderWidth: 0,
     },
     searchBarInput: {
-        fontFamily: AppFonts.base.familyMono,
+        fontFamily: AppFonts.base.family,
         fontSize: AppFonts.subtext.size,
         color: '$grey',
         paddingLeft: 30,

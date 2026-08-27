@@ -35,12 +35,16 @@ const styles = StyleService.create({
         paddingLeft: 10,
         marginVertical: 4,
         borderRadius: 10,
+        borderWidth: 1,
+        borderColor: 'transparent',
     },
     selectedRow: {
         backgroundColor: '$tint',
+        borderWidth: 1,
+        borderColor: '$contrast',
     },
     selectedText: {
-        color: '$blue',
+        // color: '$white',
         fontFamily: AppFonts.base.familyBold,
     },
     text: {

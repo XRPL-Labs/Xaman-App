@@ -11,8 +11,7 @@ export default StyleService.create({
         marginLeft: 29,
         top: 4,
     },
-    loaderContainer: {
-    },
+    loaderContainer: {},
     loader: {
         position: 'absolute',
         top: 2,
@@ -23,6 +22,7 @@ export default StyleService.create({
     editButton: {
         backgroundColor: '$tint',
         borderRadius: 8,
+        paddingRight: 10,
         height: 25,
         width: 40,
         justifyContent: 'center',

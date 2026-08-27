@@ -244,7 +244,7 @@ class AccountListView extends Component<Props, State> {
         let accessLevelIcon = 'IconCornerLeftUp' as Extract<keyof typeof Images, string>;
 
         // const signable = find(signableAccount, { address: item.address });
-        const signable = accountDetails && accountDetails[item.address].isSignable;
+        const signable = accountDetails && accountDetails?.[item?.address]?.isSignable;
 
         if (!signable) {
             // if master key is disabled then show it in the label
@@ -262,14 +262,14 @@ class AccountListView extends Component<Props, State> {
             accessLevelIcon = 'IconKey';
         }
 
-        const regularKeyFor = accountDetails && accountDetails[item.address].isRegularKeyFor;
+        const regularKeyFor = accountDetails && accountDetails?.[item?.address]?.isRegularKeyFor;
 
         if (regularKeyFor) {
             accessLevelLabel = `${Localize.t('account.regularKeyFor')} ${regularKeyFor}`;
             accessLevelIcon = 'IconKey';
         }
 
-        const hasPro = signable && nativeAccountInfo && nativeAccountInfo?.[item.address]?.hasPro;
+        const hasPro = signable && nativeAccountInfo && nativeAccountInfo?.[item?.address]?.hasPro;
 
         return (
             <View style={[
@@ -312,6 +312,7 @@ class AccountListView extends Component<Props, State> {
                                 iconSize={15}
                                 textStyle={styles.buttonEditText}
                                 label={Localize.t('global.edit')}
+                                testID={`account-${item.address}`}
                                 onPress={() => {
                                     this.onItemPress(item);
                                 }}

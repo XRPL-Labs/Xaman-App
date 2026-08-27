@@ -71,6 +71,7 @@ const screens = {
         SwitchNetwork: 'overlay.SwitchNetwork',
         XAppInfo: 'overlay.XAppInfo',
         NetworkRailsSync: 'overlay.NetworkRailsSync',
+        AssetListFilter: 'overlay.AssetListFilter',
     },
     Transaction: {
         Payment: 'app.Transaction.Payment',

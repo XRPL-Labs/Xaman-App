@@ -73,6 +73,14 @@ public class PrefsStorage {
                 .apply();
     }
 
+    /**
+     * Drop every keychain blob. commit() so a following process kill still
+     * sees an empty store (apply() can lose the write).
+     */
+    public void clearAll() {
+        prefs.edit().clear().commit();
+    }
+
     public void storeEncryptedEntry(@NonNull final String service, @NonNull final EncryptionResult encryptionResult) {
         final String keyForUsername = getKeyForUsername(service);
         final String keyForPassword = getKeyForPassword(service);

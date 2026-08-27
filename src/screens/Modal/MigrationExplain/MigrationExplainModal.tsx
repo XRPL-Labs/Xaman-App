@@ -57,7 +57,7 @@ class MigrationExplainModal extends Component<Props, State> {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, AppStyles.androidSystemBarTop]}>
                 <View style={[AppStyles.row, AppStyles.paddingTop]}>
                     <View style={[AppStyles.flex1, AppStyles.paddingLeft, AppStyles.centerContent]}>
                         <Text style={AppStyles.h5}>{Localize.t('account.updateEncryption')}</Text>

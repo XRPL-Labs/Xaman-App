@@ -19,6 +19,7 @@ import { SHA256 } from '@common/libs/crypto';
 import Vault from '@common/libs/vault';
 
 import { GetCardId, GetWalletDerivedPublicKey } from '@common/utils/tangem';
+
 import { AppScreens } from '@common/constants';
 
 import BackendService from '@services/BackendService';
@@ -381,8 +382,11 @@ class AccountImportView extends Component<Props, State> {
             if (account.accessLevel === AccessLevels.Full) {
                 const persistPrivateAccountInfo = () => {
                     setTimeout(() => {
-                        BackendService.privateAccountInfo(account?.address, account?.label, true);
-                        // Push by default
+                        try {
+                            BackendService.privateAccountInfo(account?.address, account?.label, true);
+                        } catch (e) {
+                            //
+                        }
                     }, 2000);                
                 };
                 
@@ -409,13 +413,30 @@ class AccountImportView extends Component<Props, State> {
                         });
                 } else {
                     // include device UUID is signed transaction
-                    const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
+                    const { deviceUUID, uuid } = ProfileRepository.requireProfile();
+                    const imported = importedAccount!;
+                    if (!imported.address || !imported.keypair?.publicKey || !imported.keypair?.privateKey) {
+                        throw new Error('Imported account is missing address or keypair');
+                    }
+                    // Rebuild with this module's Account class so sign() instanceof checks pass
+                    // for ed25519 mnemonic accounts from xrpl-accountlib 9.3.0.
+                    const signableAccount = new AccountLib.XRPL_Account({
+                        address: imported.address,
+                        algorithm:
+                            imported.keypair.publicKey.startsWith('ED') || imported.keypair.algorithm === 'ed25519'
+                                ? 'ed25519'
+                                : 'secp256k1',
+                        keypair: {
+                            publicKey: imported.keypair.publicKey,
+                            privateKey: imported.keypair.privateKey,
+                        },
+                    });
                     const { signedTransaction } = AccountLib.sign(
                         {
                             Account: account.address,
                             InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`),
                         },
-                        importedAccount,
+                        signableAccount,
                     );
                     BackendService.addAccount(account.address!, signedTransaction)
                         .then(() => {
@@ -445,7 +466,11 @@ class AccountImportView extends Component<Props, State> {
 
                 // import account as full access
                 createdAccount = await AccountRepository.add(
-                    account,
+                    {
+                        ...account,
+                        publicKey: importedAccount!.keypair.publicKey || account.publicKey,
+                        address: importedAccount!.address || account.address,
+                    },
                     importedAccount!.keypair.privateKey!,
                     encryptionKey,
                 );
@@ -489,7 +514,8 @@ class AccountImportView extends Component<Props, State> {
 
         } catch (error) {
             // this should never happen but in case just show error that something went wrong
-            Toast(Localize.t('global.unexpectedErrorOccurred'));
+            Toast(`${Localize.t('global.unexpectedErrorOccurred')} - ${(error as Error)?.message || 'Unknown error'}`);
+            throw error;
         }
     };
 

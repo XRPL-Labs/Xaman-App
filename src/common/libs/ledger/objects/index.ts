@@ -9,3 +9,12 @@ export * from './Ticket';
 export * from './URIToken';
 export * from './Delegate';
 export * from './Credential';
+export * from './MPToken';
+export * from './MPTokenIssuance';
+export * from './PermissionedDomain';
+export * from './DepositPreauth';
+export * from './Cron';
+export * from './Vault';
+export * from './LoanBroker';
+export * from './Loan';
+

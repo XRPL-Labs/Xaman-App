@@ -1,4 +1,5 @@
 import StyleService from '@services/StyleService';
+import { AppSizes } from '@theme/index';
 
 /* Styles ==================================================================== */
 export default StyleService.create({
@@ -19,14 +20,23 @@ export default StyleService.create({
         backgroundColor: '$light',
         borderRadius: 50,
     },
+    virtualAssetSecondaryAvatar: {
+        position: 'absolute',
+        borderRadius: 50,
+    },
     avatar1: {
         position: 'absolute',
-        top: -1,
-        left: -2,
+        // top: -1,
+        // left: -2,
     },
     avatar2: {
         position: 'absolute',
-        left: 14,
-        top: 12,
+        left: AppSizes.scale(18),
+        top: AppSizes.scale(18),
+    },
+    avatar2Lp: {
+        position: 'absolute',
+        left: AppSizes.scale(14),
+        top: AppSizes.scale(14),
     },
 });

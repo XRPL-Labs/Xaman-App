@@ -12,7 +12,7 @@ import { CoreModel } from '@store/models';
 
 import Vault from '@common/libs/vault';
 import { Navigator } from '@common/helpers/navigator';
-import { Prompt } from '@common/helpers/interface';
+import { Prompt, Toast } from '@common/helpers/interface';
 
 import { AuthenticationService } from '@services';
 
@@ -121,8 +121,7 @@ class ChangePasscodeView extends Component<Props, State> {
         // everything went well
         await Navigator.pop();
 
-        // show success alert
-        Alert.alert(Localize.t('global.success'), Localize.t('settings.passcodeChangedSuccess'));
+        Toast(Localize.t('settings.passcodeChangedSuccess'));
     };
 
     onChangePasscodeError = () => {

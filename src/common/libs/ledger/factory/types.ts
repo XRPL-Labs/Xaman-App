@@ -35,6 +35,7 @@ export enum MonetaryStatus {
 export enum AssetTypes {
     NFToken = 'NFToken',
     URIToken = 'URIToken',
+    MPToken = 'MPToken',
 }
 
 /**
@@ -47,6 +48,7 @@ export enum AssetTypes {
 export type MonetaryFactorType = AmountType & {
     effect: MonetaryStatus;
     action?: OperationActions;
+    label?: string;
 };
 
 /**
@@ -77,6 +79,11 @@ export type AssetDetails =
     | {
           type: AssetTypes.URIToken;
           uriTokenId: string;
+          owner: string;
+      }
+    | {
+          type: AssetTypes.MPToken;
+          mpTokenId: string;
           owner: string;
       };
 

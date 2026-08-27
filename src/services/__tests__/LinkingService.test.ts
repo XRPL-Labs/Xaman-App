@@ -1,5 +1,9 @@
 import { Alert, Linking } from 'react-native';
 
+import DataStorage from '@store/storage';
+import { AccountRepository, CoreRepository } from '@store/repositories';
+import { AccessLevels, EncryptionLevels } from '@store/types';
+
 import { AppScreens } from '@common/constants';
 import { Navigator } from '@common/helpers/navigator';
 import { Payload, PayloadOrigin, XAppOrigin } from '@common/libs/payload';
@@ -10,10 +14,40 @@ import Localize from '@locale';
 import LinkingService from '../LinkingService';
 import NavigationService, { ComponentTypes, RootType } from '../NavigationService';
 
+jest.mock('@services/NetworkService');
+jest.mock('@services/LedgerService');
+
 jest.useFakeTimers();
 
 describe('LinkinService', () => {
     const service = LinkingService;
+
+    const testAccountAddress = 'rXUMMaPpZeZ5amdNwfFCVXhdcTANpigNLL';
+
+    let storage: DataStorage;
+
+    beforeAll(async () => {
+        // handleXrplDestination and friends reach the repositories, back them with a real test store
+        if (DataStorage.isDataStoreFileExist()) {
+            DataStorage.wipe();
+        }
+        storage = new DataStorage();
+        await storage.initialize();
+
+        // handleXrplDestination builds the payment from the default account
+        const account = await AccountRepository.add({
+            address: testAccountAddress,
+            label: 'test account',
+            accessLevel: AccessLevels.Readonly,
+            encryptionLevel: EncryptionLevels.None,
+        });
+        CoreRepository.saveSettings({ account });
+    });
+
+    afterAll(() => {
+        DataStorage.wipe();
+        storage.close();
+    });
 
     describe('Service initialize', () => {
         it('should initialize and set root listener', async () => {
@@ -141,36 +175,42 @@ describe('LinkinService', () => {
                 );
             });
 
-            it('should route user to Payment screen with destination info and valid amount', async () => {
-                const navigatorSpy = jest.spyOn(Navigator, 'push');
+            it('should build a payment payload for destination with valid amount and show review screen', async () => {
+                const navigatorSpy = jest.spyOn(Navigator, 'showModal');
                 const mockURL =
                     'https://xaman.app/detect/request:rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ?dt=123&amount=1.337';
 
                 const destination = {
                     to: 'rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ',
                     tag: 123,
-                    amount: '1.337',
                 };
 
-                jest.spyOn(CodecUtils, 'NormalizeDestination').mockReturnValue({
-                    to: destination.to,
-                    tag: destination.tag,
+                jest.spyOn(CodecUtils, 'NormalizeDestination').mockReturnValue(destination);
+
+                const handleXrplDestinationSpy = jest.spyOn(service, 'handleXrplDestination');
+
+                service.handle(mockURL);
+
+                // handle() kicks off the async handler without awaiting it
+                await handleXrplDestinationSpy.mock.results[0].value;
+
+                expect(navigatorSpy).toHaveBeenCalledWith(
+                    AppScreens.Modal.ReviewTransaction,
+                    { componentType: ComponentTypes.Modal, payload: expect.any(Payload) },
+                    { modalPresentationStyle: 'fullScreen' },
+                );
+
+                const { payload } = navigatorSpy.mock.calls[0][1] as { payload: Payload };
+                expect(payload.payload.request_json).toMatchObject({
+                    TransactionType: 'Payment',
+                    Account: testAccountAddress,
+                    Destination: destination.to,
+                    DestinationTag: destination.tag,
+                    Amount: '1337000',
                 });
 
-                await service.handle(mockURL);
-                jest.runAllTimers();
-                expect(navigatorSpy).toHaveBeenCalledWith(
-                    AppScreens.Transaction.Payment,
-                    {
-                        componentType: ComponentTypes.Screen,
-                        scanResult: {
-                            to: destination.to,
-                            tag: destination.tag,
-                        },
-                        amount: destination.amount,
-                    },
-                    {},
-                );
+                handleXrplDestinationSpy.mockRestore();
+                navigatorSpy.mockRestore();
             });
         });
         describe('XApp', () => {

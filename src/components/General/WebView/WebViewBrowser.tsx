@@ -7,16 +7,16 @@ import { LoadingIndicator } from '../LoadingIndicator';
 import { Spacer } from '../Spacer';
 import { Button } from '../Button';
 
-import WebView, { WebViewProps } from './WebView';
+import WebView, { WebViewHandle, WebViewProps } from './WebView';
 
 import styles from './styles';
 
-interface WebViewBrowserProps {
+type WebViewBrowserProps = WebViewProps & {
     errorMessage?: string;
-    containerStyle: ViewStyle | ViewStyle[];
-}
+    containerStyle?: ViewStyle | ViewStyle[];
+};
 
-const WebViewBrowser = forwardRef<WebViewBrowserProps, WebViewProps>(
+const WebViewBrowser = forwardRef<WebViewHandle, WebViewBrowserProps>(
     ({ onLoadStart, onLoadEnd, errorMessage, containerStyle, ...otherProps }, ref) => {
         const [isLoading, setIsLoading] = useState<boolean>(false);
         const [error, setError] = useState<string | undefined>(undefined);
@@ -34,7 +34,7 @@ const WebViewBrowser = forwardRef<WebViewBrowserProps, WebViewProps>(
             fadeAnimation.setValue(1);
 
             if (typeof onLoadStart === 'function') {
-                onLoadStart();
+                onLoadStart({ nativeEvent: {} } as any);
             }
         };
 
@@ -47,7 +47,7 @@ const WebViewBrowser = forwardRef<WebViewBrowserProps, WebViewProps>(
                 setIsLoading(false);
 
                 if (typeof onLoadEnd === 'function') {
-                    onLoadEnd();
+                    onLoadEnd({ nativeEvent: {} } as any);
                 }
             });
         };

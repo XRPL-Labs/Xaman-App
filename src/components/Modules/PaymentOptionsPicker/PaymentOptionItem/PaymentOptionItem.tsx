@@ -141,6 +141,10 @@ class PaymentOptionItem extends Component<Props> {
             return null;
         }
 
+        if (!('currency' in source_amount)) {
+            return null;
+        }
+
         let currency;
         let issuer;
 

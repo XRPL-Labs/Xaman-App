@@ -54,7 +54,7 @@ import {
     StateAccountingFinal,
 } from './serverInfo';
 import { ServerStateRequest, ServerStateResponse } from './serverState';
-import { SubmitRequest, SubmitResponse } from './submit';
+import { SimulateRequest, SubmitRequest, SubmitResponse } from './submit';
 import { SubmitMultisignedRequest, SubmitMultisignedResponse } from './submitMultisigned';
 import {
     BooksSnapshot,
@@ -97,6 +97,7 @@ type Request =
     | LedgerEntryRequest
     // transaction methods
     | SubmitRequest
+    | SimulateRequest
     | SubmitMultisignedRequest
     | TransactionEntryRequest
     | TxRequest
@@ -229,6 +230,7 @@ export type {
     LedgerEntryRequest,
     LedgerEntryResponse,
     // transaction methods with types
+    SimulateRequest,
     SubmitRequest,
     SubmitResponse,
     SubmitMultisignedRequest,

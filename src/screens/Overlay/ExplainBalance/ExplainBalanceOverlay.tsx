@@ -116,7 +116,8 @@ class ExplainBalanceOverlay extends Component<Props, State> {
                         // eslint-disable-next-line max-len
                         ('Subject' in o && o.Subject === account && o.LedgerEntryType === LedgerEntryTypes.Credential && o.Flags > 0) ||
                         ('Owner' in o && o.Owner === account) ||
-                        [LedgerEntryTypes.SignerList, LedgerEntryTypes.PayChannel].includes(o.LedgerEntryType))
+                        [LedgerEntryTypes.SignerList, LedgerEntryTypes.PayChannel].includes(o.LedgerEntryType) ||
+                        [LedgerEntryTypes.MPTokenIssuance, LedgerEntryTypes.MPToken].includes(o.LedgerEntryType))
                 );
             });
             if (_marker && _marker !== marker) {

@@ -47,7 +47,9 @@ class FinishStep extends Component<Props, State> {
         this.setState({ isLoading: true }, () => {
             // triggering goNext in the latest phase will store the account and dismiss the screen
             requestAnimationFrame(() => {
-                goNext();
+                Promise.resolve(goNext()).catch(() => {
+                    this.setState({ isLoading: false });
+                });
             });
         });
     };

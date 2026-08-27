@@ -46,7 +46,7 @@ exports[`[TextInput] renders correctly 1`] = `
       style={
         [
           {
-            "color": "#0030CF",
+            "color": undefined,
             "flex": 1,
             "fontFamily": "ProximaNova-Regular",
             "fontSize": 32.14285714285714,

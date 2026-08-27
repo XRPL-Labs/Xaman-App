@@ -21,8 +21,23 @@ const styles = StyleService.create({
     },
     amount: {
         fontFamily: AppFonts.base.familyMonoBold,
-        fontSize: AppFonts.base.size,
-        color: '$textPrimary',
+        fontSize: AppFonts.h5.size,
+        color: '$red',
+    },
+    sellingAmount: {
+        borderColor: '$red',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        paddingBottom: 20,
+        textAlign: 'center',
+        alignItems: 'center',
+        backgroundColor: '$lightRed',
+    },
+    nftSellPrefixContainer: {
+        marginTop: 10,
+        paddingHorizontal: 20,
+        paddingVertical: 5,
     },
     value: {
         fontFamily: AppFonts.base.familyMonoBold,

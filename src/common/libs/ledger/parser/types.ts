@@ -21,6 +21,7 @@ export interface AmountType {
     value: string;
     currency: string;
     issuer?: string;
+    mpt_issuance_id?: string;
 }
 
 export interface IssueType {

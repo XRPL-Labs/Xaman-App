@@ -7,7 +7,7 @@ class DetoxCucumberAdapter {
     }
 
     async beforeEach(context) {
-        if (this.testFailed) {
+        if (this.testFailed && String(process.env.DETOX_CONTINUE_ON_FAIL || '').toLowerCase() !== 'yes') {
             throw new Error('Force stop');
         }
 

@@ -13,4 +13,5 @@ export interface State {
     hasXAppIdentifier: boolean;
     latestLineBalance: number;
     canRemove: boolean;
+    issuerTransferFee?: number;
 }

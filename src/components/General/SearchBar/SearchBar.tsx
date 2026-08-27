@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { PureComponent } from 'react';
-import { TextInput, View, TextStyle, ViewStyle, Animated, TouchableOpacity } from 'react-native';
+import { TextInput, View, TextStyle, ViewStyle, Animated, TouchableOpacity, InteractionManager } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
@@ -23,8 +23,9 @@ interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     iconStyle?: ViewStyle | ViewStyle[];
     border?: boolean;
+    defaultValue?: string;
     iconSize?: number;
-    clearButtonVisibility?: 'always' | 'typing' | 'focus' | 'never';
+    clearButtonVisibility?: 'always' | 'typing' | 'focus' | 'never' | 'nonempty';
 }
 
 interface State {
@@ -51,7 +52,7 @@ class SearchBar extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            value: '',
+            value: props.defaultValue || '',
             isClearButtonVisible: props.clearButtonVisibility === 'always',
         };
 
@@ -63,6 +64,15 @@ class SearchBar extends PureComponent<Props, State> {
             this.animatedAlpha = new Animated.Value(0);
         }
     }
+
+    componentDidMount() {
+        const { value } = this.state;
+        InteractionManager.runAfterInteractions(() => { 
+            if (value && value !== '') {
+                this.showClearButton();
+            }
+        });
+    };
 
     public clearText = () => {
         this.onChangeText('');
@@ -130,7 +140,7 @@ class SearchBar extends PureComponent<Props, State> {
             onChangeText(value);
         }
 
-        if (clearButtonVisibility !== 'typing') {
+        if (clearButtonVisibility !== 'typing' && clearButtonVisibility !== 'nonempty') {
             return;
         }
 
@@ -203,7 +213,10 @@ class SearchBar extends PureComponent<Props, State> {
                         onFocus={this.onFocus}
                         onBlur={this.onBlur}
                         value={value}
+                        autoComplete="off"
+                        spellCheck={false}
                         placeholder={placeholder}
+                        keyboardType="visible-password"
                         placeholderTextColor={StyleService.value('$textSecondary')}
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"

@@ -9,6 +9,8 @@ import Localize from '@locale';
 
 import styles from './styles';
 
+import { formatHookReturnLine, parseHookReturnMessages } from '@common/libs/ledger/utils/hookReturnMessages';
+
 import { Props } from './types';
 import { AppStyles } from '@theme/index';
 /* Types ==================================================================== */
@@ -22,29 +24,14 @@ class Warnings extends PureComponent<Props, State> {
         const warnings = [] as Array<string>;
         const detailWarnings = [] as Array<string>;
 
-        const c = ((item as any)?.MetaData?.HookExecutions || [])
-            ?.filter((h: any) =>
-                typeof h === 'object' && h &&
-                typeof h?.HookExecution?.HookReturnCode === 'string' &&
-                typeof h?.HookExecution?.HookReturnString === 'string',
-            )
-            ?.map((h: any) => [
-                ((val) => val >> 63n ? -(val & ~(1n << 63n)) : val)(BigInt(`0x${String(h.HookExecution.HookReturnCode)}`)),
-                Buffer.from(
-                    String(h.HookExecution?.HookReturnString || '').replace(/00$/, ''),
-                    'hex',
-                ).toString('utf-8').trim(),
-            ])
-            ?.filter((h: any) =>
-                h?.[0] !== 0 &&
-                String(h?.[1] || '').trim().match(/[a-zA-Z0-9_\-+*^.()[\]:,;!?\s ]+$/msi),
-            );  
-        
-        const tesSUCCESS = (item as any)?.TransactionResult?.code === 'tesSUCCESS'; 
+        const hookMessages = parseHookReturnMessages((item as any)?.MetaData?.HookExecutions);
 
-        if (c.length > 0) {
-            // warnings.push(Localize.t('errors.tecHOOK_REJECTED_Short').trim());
-            detailWarnings.push(c.map((h: string[]) => `${h[1]} (#${h[0]})`).join(', '));
+        const tesSUCCESS = (item as any)?.TransactionResult?.code === 'tesSUCCESS';
+
+        if (hookMessages.length > 0) {
+            hookMessages.forEach((message) => {
+                detailWarnings.push(formatHookReturnLine(message));
+            });
         }
 
         if (item.Type === LedgerEntryTypes.NFTokenOffer) {

@@ -1,0 +1,12 @@
+diff --git a/node_modules/@veriff/react-native-sdk/android/src/main/java/com/veriff/sdk/reactnative/ReactNativeImageProvider.kt b/node_modules/@veriff/react-native-sdk/android/src/main/java/com/veriff/sdk/reactnative/ReactNativeImageProvider.kt
+--- a/node_modules/@veriff/react-native-sdk/android/src/main/java/com/veriff/sdk/reactnative/ReactNativeImageProvider.kt
++++ b/node_modules/@veriff/react-native-sdk/android/src/main/java/com/veriff/sdk/reactnative/ReactNativeImageProvider.kt
+@@ -41,7 +41,7 @@
+         if (bitmap == null) {
+           atomicResult.set(Result(IOException("Loaded bitmap was null")))
+         } else {
+-          atomicResult.set(Result(bitmap.copy(bitmap.config, false)))
++          atomicResult.set(Result(bitmap.copy(bitmap.config ?: Bitmap.Config.ARGB_8888, false)))
+         }
+         imageLoadLatch.countDown()
+       }

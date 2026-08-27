@@ -64,6 +64,7 @@ describe('CheckCreate', () => {
                 currency: 'USD',
                 issuer: 'rrrrrrrrrrrrrrrrrrrrBZbvji',
                 value: '1',
+                mpt_issuance_id: undefined,
             });
         });
     });

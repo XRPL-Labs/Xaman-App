@@ -15,6 +15,7 @@ import CheckCreate from './CheckCreate';
 import CheckCash from './CheckCash';
 import CheckCancel from './CheckCancel';
 import DelegateSet from './DelegateSet';
+import CronSet from './CronSet';
 import TicketCreate from './TicketCreate';
 import PaymentChannelCreate from './PaymentChannelCreate';
 import PaymentChannelClaim from './PaymentChannelClaim';
@@ -54,6 +55,25 @@ import CredentialCreate from './CredentialCreate';
 import CredentialAccept from './CredentialAccept';
 import CredentialDelete from './CredentialDelete';
 import SetRemarks from './SetRemarks';
+import PermissionedDomainSet from './PermissionedDomainSet';
+import PermissionedDomainDelete from './PermissionedDomainDelete';
+import VaultCreate from './VaultCreate';
+import VaultSet from './VaultSet';
+import VaultDelete from './VaultDelete';
+import VaultDeposit from './VaultDeposit';
+import VaultWithdraw from './VaultWithdraw';
+import VaultClawback from './VaultClawback';
+import LoanBrokerSet from './LoanBrokerSet';
+import LoanBrokerDelete from './LoanBrokerDelete';
+import LoanBrokerCoverDeposit from './LoanBrokerCoverDeposit';
+import LoanBrokerCoverWithdraw from './LoanBrokerCoverWithdraw';
+import LoanBrokerCoverClawback from './LoanBrokerCoverClawback';
+import LoanSet from './LoanSet';
+import LoanDelete from './LoanDelete';
+import LoanManage from './LoanManage';
+import LoanPay from './LoanPay';
+// eslint-disable-next-line import/no-cycle
+import Batch from './Batch';
 
 export {
     Global,
@@ -112,4 +132,23 @@ export {
     CredentialAccept,
     CredentialDelete,
     SetRemarks,
+    PermissionedDomainSet,
+    PermissionedDomainDelete,
+    VaultCreate,
+    VaultSet,
+    VaultDelete,
+    VaultDeposit,
+    VaultWithdraw,
+    VaultClawback,
+    LoanBrokerSet,
+    LoanBrokerDelete,
+    LoanBrokerCoverDeposit,
+    LoanBrokerCoverWithdraw,
+    LoanBrokerCoverClawback,
+    LoanSet,
+    LoanDelete,
+    LoanManage,
+    LoanPay,
+    Batch,
+    CronSet,
 };

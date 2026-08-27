@@ -75,6 +75,14 @@ class LabelBlock extends PureComponent<IProps, State> {
             }
         }
 
+        // Vault transactions and objects - show asset currency
+        if (item.Type === LedgerEntryTypes.Vault || String(item.Type).startsWith('Vault')) {
+            const asset = (item as any)?.Asset;
+            if (asset?.currency) {
+                return NormalizeCurrencyCode(asset.currency);
+            }
+        }
+
         if (participant?.name) return participant.name;
         if (participant?.address) return Truncate(participant.address, 16);
 

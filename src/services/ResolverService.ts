@@ -20,6 +20,7 @@ import Advisory from '@common/helpers/advisory';
 
 import LRUCache from '@common/utils/cache';
 import { PromiseQueue } from '@common/utils/queue';
+import { AccountRoot } from '@common/libs/ledger/types/ledger';
 
 /* Types  ==================================================================== */
 export interface PayIDInfo {
@@ -109,7 +110,7 @@ class ResolverService {
 
     private onCurrencyUpsert = async (currency: CurrencyModel) => {
         // 24 hours considered outdated
-        const isCurrencyOutdated = moment(currency.updatedAt).isBefore(moment().subtract(24, 'hours'));
+        const isCurrencyOutdated = moment(currency.updatedAt).isBefore(moment().subtract(6, 'hours'));
 
         // if currency is outdated then start syncing
         if (isCurrencyOutdated) {
@@ -222,6 +223,7 @@ class ResolverService {
         const key = `${address}${tag ?? ''}`;
 
         const cachedValue = this.accountNameCache.get(key);
+
         if (cachedValue) {
             return cachedValue;
         }
@@ -253,6 +255,7 @@ class ResolverService {
                 return {
                     exist: false,
                     danger: accountAdvisory.danger,
+                    blackHole: Advisory.checkBlackHoleAccount({ Account: address } as AccountRoot),
                 };
             }
             throw new Error('Error fetching account info.');

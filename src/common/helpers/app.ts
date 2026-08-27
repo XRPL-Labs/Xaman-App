@@ -35,7 +35,7 @@ const IsDebugBuild = (): boolean => {
  * @returns Promise<boolean>
  */
 const IsFlagSecure = (): Promise<boolean> => {
-    if (Platform.OS !== 'android') {
+    if (Platform.OS !== 'android' || IsDebugBuild()) {
         return Promise.resolve(false);
     }
     return AppUtilsModule.isFlagSecure();
@@ -48,7 +48,8 @@ const SetFlagSecure = (enable: boolean): void => {
     if (Platform.OS !== 'android') {
         return;
     }
-    AppUtilsModule.setFlagSecure(enable);
+    // Debug APK never blocks screenshots. Release still uses FLAG_SECURE.
+    AppUtilsModule.setFlagSecure(IsDebugBuild() ? false : enable);
 };
 
 /**

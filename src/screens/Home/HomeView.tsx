@@ -22,7 +22,7 @@ import {
     OptionsModalPresentationStyle,
     OptionsModalTransitionStyle,
 } from 'react-native-navigation';
-import { AccountService, NetworkService, StyleService } from '@services';
+import { AccountService, BackendService, NetworkService, StyleService } from '@services';
 
 import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel, NetworkModel } from '@store/models';
@@ -77,6 +77,8 @@ export interface State {
     experimentalUI?: boolean;
     NFCSupported: boolean;
     NFCEnabled: boolean;
+    hapticFeedback: boolean;
+    hideTopElements: boolean;
 }
 
 /* Component ==================================================================== */
@@ -105,6 +107,8 @@ class HomeView extends Component<Props, State> {
             developerMode: coreSettings.developerMode,
             discreetMode: coreSettings.discreetMode,
             experimentalUI: undefined,
+            hapticFeedback: coreSettings.hapticFeedback,
+            hideTopElements: false,
         };
     }
 
@@ -286,15 +290,18 @@ class HomeView extends Component<Props, State> {
         const { account } = this.state;
 
         if (account) {
+            setTimeout(() => BackendService.action('receivebtn'), 1000);
             Navigator.showOverlay<ShareAccountOverlayProps>(AppScreens.Overlay.ShareAccount, { account });
         }
     };
 
     pushSendScreen = () => {
         Navigator.push<SendViewProps>(AppScreens.Transaction.Payment, {});
+        setTimeout(() => BackendService.action('sendbtn'), 1000);
     };
 
     pushSwapScreen = () => {
+        setTimeout(() => BackendService.action('swapbtn'), 1000);
         Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
@@ -329,6 +336,7 @@ class HomeView extends Component<Props, State> {
     };
 
     pushTokenScreen = () => {
+        setTimeout(() => BackendService.action('addtokenbtn'), 1000);
         Navigator.showModal<XAppBrowserModalProps>(
             AppScreens.Modal.XAppBrowser,
             {
@@ -396,7 +404,14 @@ class HomeView extends Component<Props, State> {
 
     renderAssets = () => {
         const { timestamp } = this.props;
-        const { account, discreetMode, isSpendable, experimentalUI, selectedNetwork } = this.state;
+        const {
+            account,
+            discreetMode,
+            isSpendable,
+            experimentalUI,
+            selectedNetwork,
+            hapticFeedback,
+        } = this.state;
 
         if ((account?.details || []).length === 0 || account.getStateVersion() === 0) {
             // No account information loaded/cached yet, so not saying "not activated"
@@ -414,8 +429,10 @@ class HomeView extends Component<Props, State> {
 
         return (
             <AssetsList
+                hapticFeedback={hapticFeedback}
                 experimentalUI={experimentalUI}
                 account={account}
+                hideTopElements={this.hideTopElements}
                 network={selectedNetwork}
                 discreetMode={discreetMode}
                 spendable={isSpendable}
@@ -424,6 +441,12 @@ class HomeView extends Component<Props, State> {
                 style={styles.tokenListContainer}
             />
         );
+    };
+
+    hideTopElements = (toggle: boolean) => {
+        this.setState({
+            hideTopElements: toggle,
+        });
     };
 
     renderButtons = () => {
@@ -669,7 +692,7 @@ class HomeView extends Component<Props, State> {
     };
 
     render() {
-        const { account } = this.state;
+        const { account, hideTopElements } = this.state;
 
         if (!account?.isValid()) {
             return this.renderEmpty();
@@ -681,8 +704,11 @@ class HomeView extends Component<Props, State> {
 
         const containerProps = account.balance === 0
             ? {
-                resizeMode: 'cover',
                 source: StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes'),
+                resizeMode: 'cover',
+                imageStyle: ['dark', 'light'].indexOf(StyleService.getCurrentTheme()) < 0
+                    ? styles.backgroundShapeOpacity // Needs 0.4 to make sense visually
+                    : {},
             }
             : {
                 // Nada for `View`
@@ -701,10 +727,14 @@ class HomeView extends Component<Props, State> {
                 {/* Content */}
                 {/* eslint-disable-next-line react/jsx-props-no-spreading */}
                 <Container style={AppStyles.contentContainer} {...containerProps}>
-                    {this.renderNetworkDetails()}
-                    {this.renderDegenWarning()}
-                    {this.renderAccountAddress()}
-                    {this.renderButtons()}
+                    {!hideTopElements && (
+                        <>
+                            {this.renderNetworkDetails()}
+                            {this.renderDegenWarning()}
+                            {this.renderAccountAddress()}
+                            {this.renderButtons()}
+                        </>
+                    )}
                     {this.renderAssets()}
                 </Container>
             </View>

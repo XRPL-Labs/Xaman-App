@@ -2,9 +2,17 @@
  * Action Panel component
  */
 import React, { Component } from 'react';
-import { Animated, View, TouchableWithoutFeedback, InteractionManager, ViewStyle } from 'react-native';
-
-import Interactable from 'react-native-interactable';
+import {
+    Animated,
+    View,
+    TouchableWithoutFeedback,
+    InteractionManager,
+    PanResponder,
+    ViewStyle,
+    GestureResponderEvent,
+    PanResponderGestureState,
+    PanResponderInstance,
+} from 'react-native';
 
 // style
 import { AppStyles, AppSizes } from '@theme';
@@ -20,43 +28,82 @@ interface Props extends React.PropsWithChildren {
     onSlideDown?: () => void;
 }
 
+interface SnapPoint {
+    y: number;
+}
+
 interface State {
-    snapPoints: any;
-    boundaries: any;
-    alertAreas: any;
+    snapPoints: SnapPoint[];
+    boundaries: { top: number };
     panelHeight?: number;
 }
 
 /* Constants ==================================================================== */
 const BOUNDARY_HEIGHT = 20;
+const HEADER_CAPTURE_HEIGHT = 56;
+const MOVE_CAPTURE_THRESHOLD = 10;
+const FLICK_VELOCITY = 0.8;
 
 /* Component ==================================================================== */
 class ActionPanel extends Component<Props, State> {
-    private panelRef: React.RefObject<any>;
-    private deltaY: Animated.Value;
-    private deltaX: Animated.Value;
+    private translateY: Animated.Value;
+    private panResponder: PanResponderInstance;
+    private currentY: number;
+    private dragStartY: number;
+    private currentIndex: number;
     private isOpening: boolean;
+    private isDragging: boolean;
+    private dismissed: boolean;
+    private startedOnHeader: boolean;
+    private slideTimeout?: ReturnType<typeof setTimeout>;
 
     constructor(props: Props) {
         super(props);
 
+        const screenHeight = AppSizes.screen.height;
+
         this.state = {
-            snapPoints: undefined,
-            boundaries: undefined,
-            alertAreas: undefined,
+            snapPoints: [],
+            boundaries: { top: 0 },
             panelHeight: undefined,
         };
 
-        this.panelRef = React.createRef();
-
-        this.deltaY = new Animated.Value(AppSizes.screen.height);
-        this.deltaX = new Animated.Value(0);
-
+        this.translateY = new Animated.Value(screenHeight);
+        this.currentY = screenHeight;
+        this.dragStartY = screenHeight;
+        this.currentIndex = 0;
         this.isOpening = true;
+        this.isDragging = false;
+        this.dismissed = false;
+        this.startedOnHeader = false;
+
+        this.translateY.addListener(({ value }) => {
+            this.currentY = value;
+        });
+
+        this.panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: this.onStartShouldSetPanResponder,
+            onMoveShouldSetPanResponder: this.onMoveShouldSetPanResponder,
+            onPanResponderGrant: this.onPanResponderGrant,
+            onPanResponderMove: this.onPanResponderMove,
+            onPanResponderRelease: this.onPanResponderRelease,
+            onPanResponderTerminate: this.onPanResponderRelease,
+            onPanResponderTerminationRequest: this.onPanResponderTerminationRequest,
+            onShouldBlockNativeResponder: () => false,
+        });
     }
 
     componentDidMount() {
         InteractionManager.runAfterInteractions(this.slideUp);
+    }
+
+    componentWillUnmount() {
+        if (this.slideTimeout) {
+            clearTimeout(this.slideTimeout);
+        }
+
+        this.translateY.removeAllListeners();
+        this.translateY.stopAnimation();
     }
 
     static getDerivedStateFromProps(props: Props) {
@@ -72,14 +119,6 @@ class ActionPanel extends Component<Props, State> {
 
         const snapPoints = [{ y: screenHeight }, { y: screenHeight - panelHeight }];
 
-        const alertAreas = [
-            { id: 'bottom', influenceArea: { bottom: screenHeight } },
-            {
-                id: 'top',
-                influenceArea: { top: screenHeight - panelHeight },
-            },
-        ];
-
         let topBoundary = AppSizes.screen.height - (panelHeight + BOUNDARY_HEIGHT);
 
         if (typeof offset === 'number') {
@@ -89,57 +128,160 @@ class ActionPanel extends Component<Props, State> {
             });
         }
 
-        const boundaries = {
-            top: topBoundary,
-        };
-
         return {
             panelHeight: panelHeight + BOUNDARY_HEIGHT,
             snapPoints,
-            boundaries,
-            alertAreas,
+            boundaries: {
+                top: topBoundary,
+            },
         };
     }
 
     public slideUp = () => {
-        setTimeout(() => {
-            this.panelRef?.current?.snapTo({ index: 1 });
-        }, 50);
+        this.snapTo(1);
     };
 
     public slideDown = () => {
-        setTimeout(() => {
-            this.panelRef?.current?.snapTo({ index: 0 });
-        }, 50);
+        this.snapTo(0);
     };
 
     public snapTo = (index: number) => {
-        setTimeout(() => {
-            this.panelRef?.current?.snapTo({ index });
+        if (this.slideTimeout) {
+            clearTimeout(this.slideTimeout);
+        }
+
+        this.slideTimeout = setTimeout(() => {
+            this.animateToIndex(index);
         }, 50);
     };
 
-    onAlert = (event: any) => {
-        const { onSlideDown } = this.props;
+    private onStartShouldSetPanResponder = (event: GestureResponderEvent) => {
+        this.startedOnHeader = event.nativeEvent.locationY <= HEADER_CAPTURE_HEIGHT;
+        return this.startedOnHeader;
+    };
 
-        const { top, bottom } = event.nativeEvent;
-
-        if (top && bottom) return;
-
-        if (top === 'enter' && this.isOpening) {
-            this.isOpening = false;
+    private onMoveShouldSetPanResponder = (_event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        // Do not steal vertical pans from nested ScrollViews.
+        if (!this.startedOnHeader) {
+            return false;
         }
 
-        if (bottom === 'leave' && !this.isOpening) {
-            if (typeof onSlideDown === 'function') {
-                onSlideDown();
+        const { dy, dx } = gestureState;
+
+        return Math.abs(dy) > MOVE_CAPTURE_THRESHOLD && Math.abs(dy) > Math.abs(dx);
+    };
+
+    private onPanResponderTerminationRequest = () => !this.startedOnHeader;
+
+    private onPanResponderGrant = () => {
+        this.translateY.stopAnimation();
+        this.dragStartY = this.currentY;
+        this.isDragging = true;
+    };
+
+    private onPanResponderMove = (_event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        const { boundaries } = this.state;
+        const maxY = AppSizes.screen.height;
+
+        let nextY = this.dragStartY + gestureState.dy;
+
+        if (nextY < boundaries.top) {
+            nextY = boundaries.top;
+        }
+
+        if (nextY > maxY) {
+            nextY = maxY;
+        }
+
+        this.translateY.setValue(nextY);
+    };
+
+    private onPanResponderRelease = (_event: GestureResponderEvent, gestureState: PanResponderGestureState) => {
+        this.isDragging = false;
+        this.startedOnHeader = false;
+        this.animateToIndex(this.getTargetIndex(this.currentY, gestureState.vy));
+    };
+
+    private getTargetIndex = (y: number, vy: number) => {
+        const { snapPoints } = this.state;
+
+        if (!snapPoints.length) {
+            return 0;
+        }
+
+        const lastIndex = snapPoints.length - 1;
+
+        if (vy > FLICK_VELOCITY) {
+            return Math.max(0, this.currentIndex - 1);
+        }
+
+        if (vy < -FLICK_VELOCITY) {
+            return Math.min(lastIndex, this.currentIndex + 1);
+        }
+
+        let nearest = 0;
+        let bestDistance = Number.POSITIVE_INFINITY;
+
+        snapPoints.forEach((point, index) => {
+            const distance = Math.abs(point.y - y);
+
+            if (distance < bestDistance) {
+                bestDistance = distance;
+                nearest = index;
             }
+        });
+
+        return nearest;
+    };
+
+    private animateToIndex = (index: number) => {
+        const { snapPoints } = this.state;
+        const point = snapPoints[index];
+
+        if (!point) {
+            return;
+        }
+
+        this.currentIndex = index;
+
+        Animated.spring(this.translateY, {
+            toValue: point.y,
+            useNativeDriver: true,
+            friction: 9,
+            tension: 70,
+            overshootClamping: true,
+        }).start(({ finished }) => {
+            if (!finished || this.isDragging) {
+                return;
+            }
+
+            if (this.isOpening && index > 0) {
+                this.isOpening = false;
+            }
+
+            if (index === 0 && !this.isOpening) {
+                this.notifyDismissed();
+            }
+        });
+    };
+
+    private notifyDismissed = () => {
+        const { onSlideDown } = this.props;
+
+        if (this.dismissed) {
+            return;
+        }
+
+        this.dismissed = true;
+
+        if (typeof onSlideDown === 'function') {
+            onSlideDown();
         }
     };
 
     render() {
         const { children, testID, contentStyle } = this.props;
-        const { alertAreas, snapPoints, boundaries, panelHeight } = this.state;
+        const { panelHeight } = this.state;
 
         if (!panelHeight) return null;
 
@@ -150,7 +292,7 @@ class ActionPanel extends Component<Props, State> {
                         style={[
                             styles.shadowContent,
                             {
-                                opacity: this.deltaY.interpolate({
+                                opacity: this.translateY.interpolate({
                                     inputRange: [0, AppSizes.screen.height],
                                     outputRange: [0.8, 0],
                                     extrapolateRight: 'clamp',
@@ -160,25 +302,21 @@ class ActionPanel extends Component<Props, State> {
                     />
                 </TouchableWithoutFeedback>
 
-                <Interactable.View
-                    ref={this.panelRef}
-                    animatedNativeDriver
-                    onAlert={this.onAlert}
-                    verticalOnly
-                    snapPoints={snapPoints}
-                    boundaries={boundaries}
-                    alertAreas={alertAreas}
-                    initialPosition={{ y: AppSizes.screen.height }}
-                    animatedValueY={this.deltaY}
-                    animatedValueX={this.deltaX}
+                <Animated.View
+                    style={[
+                        styles.panel,
+                        {
+                            transform: [{ translateY: this.translateY }],
+                        },
+                    ]}
                 >
                     <View style={[styles.container, { height: panelHeight + BOUNDARY_HEIGHT }, contentStyle]}>
-                        <View style={styles.panelHeader}>
+                        <View style={styles.panelHeader} {...this.panResponder.panHandlers}>
                             <View style={styles.panelHandle} />
                         </View>
                         {children}
                     </View>
-                </Interactable.View>
+                </Animated.View>
             </View>
         );
     }

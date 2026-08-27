@@ -48,8 +48,57 @@ describe('URITokenMint tx', () => {
         });
 
         describe('getEventsLabel()', () => {
-            it('should return the expected label', () => {
+            const minter = tx.Account;
+            const destination = tx.Destination;
+
+            const remitInstance = (extraMeta: Record<string, unknown> = {}) => {
+                const remitTx = { ...tx };
+                delete remitTx.Amount;
+                return new Mixed(remitTx, { ...meta, ParentRemitID: tx.hash, ...extraMeta });
+            };
+
+            it('returns mint when the viewer is unknown', () => {
                 expect(info.getEventsLabel()).toEqual(Localize.t('events.mintURIToken'));
+            });
+
+            it('returns mint when the minter created a sell offer', () => {
+                expect(new URITokenMintInfo(instance, { address: minter } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.mintURIToken'),
+                );
+            });
+
+            it('returns offered to you when Destination can buy the mint offer', () => {
+                expect(new URITokenMintInfo(instance, { address: destination } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.uriTokenOfferedToYou'),
+                );
+            });
+
+            it('returns sent when the minter delivered without Amount (Remit)', () => {
+                expect(new URITokenMintInfo(remitInstance(), { address: minter } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.uriTokenSent'),
+                );
+            });
+
+            it('returns sent to you when Destination received a Remit delivery', () => {
+                expect(new URITokenMintInfo(remitInstance(), { address: destination } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.uriTokenSentToYou'),
+                );
+            });
+
+            it('returns sent not to you when the minter remits to self', () => {
+                const selfTx = { ...tx, Destination: minter };
+                delete selfTx.Amount;
+                const selfMint = new Mixed(selfTx, { ...meta, ParentRemitID: tx.hash });
+                expect(new URITokenMintInfo(selfMint, { address: minter } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.uriTokenSent'),
+                );
+            });
+
+            it('returns sent to you for a Remit output even if Amount is present', () => {
+                const remit = new Mixed(tx, { ...meta, ParentRemitID: tx.hash });
+                expect(new URITokenMintInfo(remit, { address: destination } as any).getEventsLabel()).toEqual(
+                    Localize.t('events.uriTokenSentToYou'),
+                );
             });
         });
 

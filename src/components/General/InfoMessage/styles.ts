@@ -23,6 +23,9 @@ export default StyleService.create({
         paddingRight: 10,
         alignItems: 'center',
     },
+    textBlue: {
+        color: StyleService.select({ light: '$blue', dark: '$white' }),
+    },
     footerContainer: {
         flex: 1,
         paddingRight: 10,

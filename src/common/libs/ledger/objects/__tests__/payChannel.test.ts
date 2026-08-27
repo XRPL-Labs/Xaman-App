@@ -25,6 +25,7 @@ describe('PayChannel object', () => {
             expect(instance.PublicKey).toBe('32D2471DB72B27E3310F355BB33E339BF26F8392D5A93D3BC0FC3B566612DA0F0A');
             expect(instance.Amount).toEqual({ currency: 'XRP', value: '4.3258' });
             expect(instance.Balance).toEqual({ currency: 'XRP', value: '2.323423' });
+            expect(instance.Remaining).toEqual({ currency: 'XRP', value: '2.002377' });
             expect(instance.CancelAfter).toBe('2017-01-05T00:28:33.000Z');
         });
     });
@@ -36,7 +37,7 @@ describe('PayChannel object', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = `The account rrrrrrrrrrrrrrrrrrrrrholvtp created a payment channel to rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}The channel ID is 96F76F27D8A327FC48753167EC04A46AA0E382E6F57F32FD12274144D00F1797${'\n'}The channel amount is 4.3258 XRP${'\n'}Source Tag: 0${'\n'}Destination Tag: 1002341${'\n'}The channel expires at 2016-12-26T00:28:33.000Z.${'\n'}The channel has a settlement delay of 3600 seconds${'\n'}It can be cancelled after Thursday, January 5, 2017 1:28 AM`;
+                const expectedDescription = `The account rrrrrrrrrrrrrrrrrrrrrholvtp created a payment channel to rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}The channel ID is 96F76F27D8A327FC48753167EC04A46AA0E382E6F57F32FD12274144D00F1797${'\n'}Source Tag: 0${'\n'}Destination Tag: 1002341${'\n'}The channel expires at 2016-12-26T00:28:33.000Z.${'\n'}The channel has a settlement delay of 3600 seconds${'\n'}It can be cancelled after Thursday, January 5, 2017 1:28 AM`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });
@@ -64,7 +65,20 @@ describe('PayChannel object', () => {
                             action: 'DEC',
                             currency: 'XRP',
                             effect: 'IMMEDIATE_EFFECT',
+                            value: '2.002377',
+                        },
+                        {
+                            currency: 'XRP',
+                            effect: 'NO_EFFECT',
+                            label: Localize.t('events.payChannelOriginalAmount'),
                             value: '4.3258',
+                        },
+                        {
+                            action: 'DEC',
+                            currency: 'XRP',
+                            effect: 'IMMEDIATE_EFFECT',
+                            label: Localize.t('events.payChannelClaimedSoFar'),
+                            value: '2.323423',
                         },
                     ],
                     mutate: {

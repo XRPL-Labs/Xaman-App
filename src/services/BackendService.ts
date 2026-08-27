@@ -39,6 +39,8 @@ import NetworkService from '@services/NetworkService';
 import Localize from '@locale';
 
 import { Props as TermOfUseViewProps } from '@screens/Settings/TermOfUse/types';
+import { AccountLinesTrustline } from '@common/libs/ledger/types/methods';
+import { AccountRepository } from '@store/repositories';
 
 /* Types  ==================================================================== */
 export interface RatesType {
@@ -47,6 +49,8 @@ export interface RatesType {
     symbol: string;
     lastSync: number;
 }
+
+const lastHashes: { [key: string]: [string, any] } = {};
 
 /* Service  ==================================================================== */
 /**
@@ -85,14 +89,26 @@ class BackendService {
         blob: string,
         hash: string,
         network: { id: number; node: string; type: NetworkType; key: string },
+        feeBlob?: string,
+        feeHash?: string,
     ) => {
         // only if hash is provided
         if (!hash) {
             return;
         }
+
         this.addTransaction(hash, network).catch((error) => {
             this.logger.error('addTransaction', error);
         });
+
+        if (feeHash && feeBlob) {
+            try {
+                // This is redundant, event based as well, but in case of network disconnect... Twice won't harm
+                this.addSignedTxBlob(hash, blob, feeHash, feeBlob, network.key);
+            } catch (error) {
+                this.logger.error('addTransaction(fee)', error);
+            }
+        }
     };
 
     syncTokensDetails = async (issuer: string): Promise<void> => {
@@ -249,11 +265,38 @@ class BackendService {
      * Pings the backend and updates the user profile.
      */
     ping = async () => {
+        const settings = CoreRepository.getSettings();
         return ApiService.fetch(Endpoints.Ping, 'POST', null, {
             appVersion: GetAppReadableVersion(),
             appLanguage: Localize.getCurrentLocale(),
             appCurrency: CoreRepository.getAppCurrency(),
             devicePushToken: await PushNotificationsService.getToken(),
+            developerMode: CoreRepository.isDeveloperModeEnabled(),
+            hideSpamEvents: settings.hideAdvisoryTransactions,
+            hideServiceFeeEvents: settings.hideServiceFeeTransactions,
+            reserveOnHomescreen: settings.showReservePanel,
+            assetPricesOnHomescreen: settings.showPerAssetWorth,
+            accountWorthOnHomescreen: settings.accountWorthActive,
+            accounts: AccountRepository.getAccounts().map((a) => {
+                return {
+                    address: a.address,
+                    publicKey: a.publicKey,
+                    accessLevel: a.accessLevel,
+                    encryptionLevel: a.encryptionLevel,
+                    hidden: a.hidden,
+                    label: a.label,
+                    type: a.type,
+                    regularKey: a.regularKey,
+                    order: a.order,
+                    card: {
+                        serial: a.additionalInfo?.cardId,
+                        cardFirmwareVersion: a.additionalInfo?.firmwareVersion?.stringValue,
+                        isAccessCodeSet: a.additionalInfo?.isAccessCodeSet,
+                        isPasscodeSet: a.additionalInfo?.isPasscodeSet,
+                        securityDelay: a.additionalInfo?.settings?.securityDelay,
+                    },
+                };
+            }),
         })
             .then((res: XamanBackend.PingResponse) => {
                 const { auth, badge, env, monetization, tosAndPrivacyPolicyVersion } = res;
@@ -304,6 +347,17 @@ class BackendService {
             .catch((error) => {
                 this.logger.error('ping', error);
             });
+    };
+
+    /**
+     * Debug trace action
+     */
+    action = async (action: string, param?: string): Promise<any> => {
+        const data = {
+            action,
+            param,
+        };
+        return ApiService.fetch(Endpoints.Actions, 'POST', null, data).then().catch();
     };
 
     getCuratedIOUs = (params: { promoted?: boolean; issuer?: string }): Promise<XamanBackend.CuratedIOUsResponse> => {
@@ -496,7 +550,7 @@ class BackendService {
      * @param {{ reason: string }} reason - The reason for the audit trail action.
      * @returns {Promise} A promise that resolves when the audit trail action is completed.
      */
-    auditTrail = (destination: string, reason: { reason: string }): Promise<XamanBackend.AuditTrailResponse> => {
+    auditTrail = (destination: string, reason: { [key: string]: any }): Promise<XamanBackend.AuditTrailResponse> => {
         return ApiService.fetch(
             Endpoints.AuditTrail,
             'POST',
@@ -525,8 +579,36 @@ class BackendService {
             network: NetworkService.network?.key,
             payload: payloadUuid,
         };
-        const networkFees = await ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body);
-        return networkFees;
+
+        this.logger.warn(`Fetching service fee for ${txJson?.Account} @ ${payloadUuid}`);
+
+        try {
+            const pr = await Promise.race([
+                ApiService.fetch(Endpoints.ServiceFee, 'POST', null, body),
+                new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({});
+                    }, 6_000);
+                }),
+            ]);
+
+            if (pr && (pr as any)?.availableFees) {
+                return pr;
+            }
+        } catch (error) {
+            // No fee
+        }
+
+        // Default, so we know if we get a 0 drop Fee payment there has been a timeout on
+        // fetching the available fee.
+        // This will fail but that's fine.
+
+        return {
+            availableFees: [{ type: 'LOW', value: '0' }],
+            feeHooks: 0,
+            feePercentage: 0,
+            suggested: 'LOW',
+        };
     };
 
     /**
@@ -703,6 +785,113 @@ class BackendService {
 
     acknowledgePurchase = (purchases: InAppPurchaseReceipt) => {
         return ApiService.fetch(Endpoints.VerifyPurchase, 'PATCH', null, purchases);
+    };
+
+    getExtAssets = (account: string, network: string) => {
+        return ApiService.fetch(Endpoints.ExtAssets, 'GET', {
+            account,
+            network,
+        });
+    };
+
+    /**
+     * Get account external assets
+     */
+    getAccountExtAssets = async (
+        account: string,
+        marker?: string,
+        combined = [] as AccountLinesTrustline[],
+    ): Promise<AccountLinesTrustline[]> => {
+        return this.getExtAssets(account, NetworkService.getConnectionDetails().networkKey).then(async (resp) => {
+            if ('error' in resp) {
+                this.logger.error('Unable to get ext assets state', resp.error);
+                return combined;
+            }
+
+            if (resp?.assets?.length) {
+                return resp.assets.map(
+                    (
+                        asset: {
+                            account: string;
+                            currency: string;
+                            balance: string;
+                            limit_peer: string;
+                            order?: number;
+                        },
+                        index: number,
+                    ) => {
+                        return {
+                            order: asset.order || -5000 + index,
+                            account: asset.account,
+                            currency: asset.currency,
+                            balance: asset.balance,
+                            limit: String(-9999999999),
+                            limit_peer: asset.limit_peer,
+                            no_ripple: true,
+                            no_ripple_peer: false,
+                            freeze: false,
+                            obligation: false,
+                            quality_in: 0,
+                            quality_out: 0,
+                            authorized: true,
+                            peer_authorized: true,
+                        };
+                    },
+                );
+            }
+
+            return [];
+        });
+    };
+
+    getAccountWorth = async (account: string, network: string, currency: string, origin: string = '') => {
+        const hashKey = `accountworth_${account}_${network}_${currency}`;
+        if (typeof lastHashes?.[hashKey] === 'undefined') {
+            lastHashes[hashKey] = ['', {}];
+        }
+        // console.log('getAccountWorth', account, network, currency, origin);
+
+        const data = await ApiService.fetch(Endpoints.AccountWorth, 'GET', {
+            account,
+            network,
+            currency,
+            hash: (lastHashes[hashKey][1]?.lineItems || []).length > 0 ? lastHashes[hashKey][0] : '',
+            origin,
+        });
+
+        if (data?.hash) {
+            if (lastHashes[hashKey][0] === data.hash && (lastHashes[hashKey][1]?.lineItems || []).length > 0) {
+                // console.log('Skipping accountworth', data.hash);
+                // Return from cache
+                // console.log('Account worth from local cache hash', hashKey, data.hash); // , lastHashes[hashKey][1]
+                return lastHashes[hashKey][1];
+            }
+
+            // console.log('Account worth from live, remote hash', hashKey, data.hash); // , data
+
+            if ((data?.lineItems || []).length > 0) {
+                // Only cache if we have something
+                if (!data?.lineItemsCacheSuppressed) {
+                    lastHashes[hashKey][0] = data.hash;
+                    lastHashes[hashKey][1] = data;
+                }
+            }
+        }
+
+        if ((data?.lineItems || []).length < 1) {
+            if ((lastHashes[hashKey][1]?.lineItems || []).length > 0) {
+                // Reponse had no line items, but we have them in cache
+                // console.log('[FALLBACK] account worth from local cache hash', hashKey, data.hash);
+                // lastHashes[hashKey][1],
+                this.logger.warn('[Fallback] AccountWorth fallback from local cache', {
+                    hashKey,
+                });
+
+                return lastHashes[hashKey][1];
+            }
+        }
+
+        return data;
     };
 }
 

@@ -11,9 +11,10 @@ import StyleService from '@services/StyleService';
 import { AmountParser } from '@common/libs/ledger/parser/common';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Capitalize } from '@common/utils/string';
+// import { Capitalize } from '@common/utils/string';
 
-import { TouchableDebounce, Badge, Button, LoadingIndicator, InfoMessage } from '@components/General';
+import { TouchableDebounce, Button, LoadingIndicator, InfoMessage } from '@components/General';
+// Badge
 import BackendService from '@services/BackendService';
 
 import { type Payload } from '@common/libs/payload';
@@ -37,6 +38,7 @@ interface Props {
     payload?: Payload;
     showHooksFee?: boolean;
     onSelect?: (txFee: any, serviceFee: any) => void;
+    sendAmountDrops?: number;
 }
 
 interface State {
@@ -81,6 +83,7 @@ class FeePicker extends Component<Props, State> {
                     // selectedServiceFee: undefined,
                     // feeHooks: undefined,
                     error: false,
+                    selectedServiceFee: undefined,
                 },
                 this.debouncedFetchFees,
             );
@@ -94,9 +97,14 @@ class FeePicker extends Component<Props, State> {
     }
 
     fetchServiceFee = (isFallback = false): Promise<void> => {
-        const { txJson, source, payload } = this.props;
+        const {
+            txJson,
+            source,
+            payload,
+        } = this.props;
 
         const noFee = () => {
+            // console.log('nofee')
             this.setState({
                 selectedServiceFee: {
                     type: 'LOW',
@@ -107,10 +115,16 @@ class FeePicker extends Component<Props, State> {
 
         if (source && source?.accessLevel === AccessLevels.Full && source?.type === AccountTypes.Tangem) {
             // Tangem may sign this, no fees
-            return Promise.resolve(noFee());
+            // Tangem can now sign fees
+            // return Promise.resolve(noFee());
         }
-        
-        if (source && source?.accessLevel !== AccessLevels.Full) {
+
+        if (
+            source &&
+            source?.accessLevel !== AccessLevels.Full &&
+            source.type !== AccountTypes.Regular &&
+            source.type !== AccountTypes.Tangem            
+        ) {
             // We don't know what is going to sign this
             return Promise.resolve(noFee());
         }
@@ -125,6 +139,8 @@ class FeePicker extends Component<Props, State> {
                 // console.log('Picked backend service service fee', res);
                 const { availableFees } = res;
 
+                // console.log(availableFees?.[0])
+                
                 if (Array.isArray(availableFees) && availableFees.length > 0) {
                     this.setState({
                         selectedServiceFee: availableFees[0],
@@ -137,6 +153,8 @@ class FeePicker extends Component<Props, State> {
     fetchFees = (isFallback = false): Promise<void> => {
         const { txJson } = this.props;
         const { error, selectedServiceFee, selectedTxFee } = this.state;
+
+        // console.log(txJson, sendAmountDrops)
 
         // clear any error for retrying again
         if (error) {
@@ -290,6 +308,7 @@ class FeePicker extends Component<Props, State> {
         const { containerStyle, textStyle } = this.props;
         const { selectedTxFee, selectedServiceFee, availableFees, feeHooks, error } = this.state;
 
+        // console.log('render', selectedServiceFee)
         // error while fetching the fee
         //  give the user ability to retry
         if (error) {
@@ -306,26 +325,27 @@ class FeePicker extends Component<Props, State> {
                 styles.outerContainer,
                 containerStyle,
             ]}>
+                {/* <Text style={ AppStyles.colorWhite}>{ JSON.stringify(selectedServiceFee) }</Text> */}
                 <TouchableDebounce activeOpacity={0.8} style={AppStyles.row} onPress={this.showFeeSelectOverlay}>
                     <View style={[AppStyles.flex1, AppStyles.row, AppStyles.centerAligned]}>
                         <Text style={textStyle}>
                             {this.getNormalizedFee()} {NetworkService.getNativeAsset()}
                         </Text>
-                        <Badge
+                        {/* <Badge
                             label={Capitalize(selectedTxFee.type)}
                             size="small"
                             color={this.getFeeColor()}
                             labelStyle={styles.badgeLabel}
-                        />
+                        /> */}
                     </View>
                     {availableFees && (
                         <Button
                             onPress={this.showFeeSelectOverlay}
                             style={styles.editButton}
                             roundedMini
-                            iconSize={13}
+                            iconSize={15}
                             light
-                            icon="IconEdit"
+                            icon="IconInfo"
                         />
                     )}
                 </TouchableDebounce>
@@ -344,6 +364,11 @@ class FeePicker extends Component<Props, State> {
                     <View style={AppStyles.paddingTopSml}>
                         <InfoMessage
                             type="info"
+                            labelStyle={[
+                                AppStyles.baseText,
+                                AppStyles.smalltext,
+                                AppStyles.colorBlue,
+                            ]}
                             label={selectedServiceFee?.note || 'No note'}
                         />
                     </View>

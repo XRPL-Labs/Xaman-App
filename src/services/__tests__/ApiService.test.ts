@@ -88,7 +88,7 @@ describe('API', () => {
         it(`handle with http error code`, async () => {
             // await ApiService['ping'][method]({ action: '400' }).catch((e) => console.warn(e.message));
             await expect(ApiService.fetch(Endpoints.Ping, 'GET', { action: '400' })).rejects.toMatchObject(
-                new ApiError('Api error 400 {"foo":"bar"}'),
+                new ApiError('API error (non 200) 400 {"foo":"bar"}'),
             );
         });
     });

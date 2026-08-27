@@ -305,5 +305,11 @@ describe('NetworkService', () => {
             const endpoint = 'wss://s2.ripple.com';
             expect(networkService.normalizeEndpoint(endpoint)).toBe(endpoint);
         });
+
+        test('Should return the endpoint if it is a direct RPC URL', () => {
+            for (const endpoint of NetworkConfig.directRpcEndpoints) {
+                expect(networkService.normalizeEndpoint(endpoint)).toBe(endpoint);
+            }
+        });
     });
 });

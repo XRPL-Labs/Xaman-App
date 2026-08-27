@@ -158,7 +158,8 @@ public class InAppPurchaseModule extends ReactContextBaseJavaModule implements P
                 .setProductList(productList)
                 .build();
 
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, list) -> {
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams, (billingResult, productDetailsResult) -> {
+            List<ProductDetails> list = productDetailsResult.getProductDetailsList();
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && !list.isEmpty()) {
                 ProductDetails productDetails = list.get(0);
 

@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         fontSize: AppStyles.p.fontSize,
         fontFamily: AppStyles.pbold.fontFamily,
         textAlign: 'center',
-        color: AppColors.blue,
+        // color: AppColors.blue,
     },
     inputContainer: {
         borderWidth: 1,

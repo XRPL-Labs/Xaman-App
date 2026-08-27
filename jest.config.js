@@ -33,5 +33,6 @@ module.exports = {
         // Jest does not support package.json exports.
         uuid: require.resolve('uuid'),
         '@realm/fetch': require.resolve('@realm/fetch'),
+        'react-native-webview': '<rootDir>/src/__mocks__/react-native-webview.ts',
     },
 };

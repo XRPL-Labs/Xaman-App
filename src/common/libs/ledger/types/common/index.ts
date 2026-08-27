@@ -10,17 +10,34 @@ export interface IssuedCurrency {
     issuer: string;
 }
 
-export type Currency = IssuedCurrency | NativeCurrency;
+export interface MPTokenCurrency {
+    mpt_issuance_id: string;
+}
+
+export type Currency = IssuedCurrency | NativeCurrency | MPTokenCurrency;
+
+export interface BatchSigner {
+    BatchSigner: {
+        Account: string;
+        SigningPubKey: string;
+        Signature: string;
+    };
+}
 
 export interface IssuedCurrencyAmount extends IssuedCurrency {
     value: string;
 }
 
-export type LedgerAmount = IssuedCurrencyAmount | string;
+export interface IssuedMPTAmount extends MPTokenCurrency {
+    value: string;
+}
+
+export type LedgerAmount = IssuedMPTAmount | IssuedCurrencyAmount | string;
 
 export interface Balance {
     currency: string;
     issuer?: string;
+    mpt_issuance_id?: string;
     value: string;
 }
 
@@ -81,6 +98,16 @@ export interface SignerEntry {
      * organization.
      */
     WalletLocator?: string;
+}
+export interface AcceptedCredentialEntry {
+    /**
+     * Credential issuer
+     */
+    Issuer: string;
+    /**
+     * Credential type hash256
+     */
+    CredentialType: string;
 }
 
 /**

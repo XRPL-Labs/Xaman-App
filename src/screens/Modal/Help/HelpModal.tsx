@@ -60,7 +60,7 @@ class HelpModal extends Component<Props, State> {
         return (
             <ImageBackground
                 imageStyle={styles.backgroundImageStyle}
-                style={styles.container}
+                style={[styles.container, AppStyles.androidSystemBarTop]}
                 source={Images.IconHelpCircle}
             >
                 <View style={[AppStyles.row, AppStyles.paddingTop]}>

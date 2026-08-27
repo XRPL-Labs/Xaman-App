@@ -2,7 +2,7 @@ import { find, isEmpty, isUndefined } from 'lodash';
 import React, { Component } from 'react';
 import { InteractionManager, Text, View } from 'react-native';
 
-import { Transactions } from '@common/libs/ledger/transactions/types';
+import { MutatedTransaction, SignableTransaction, Transactions } from '@common/libs/ledger/transactions/types';
 
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { AmountParser } from '@common/libs/ledger/parser/common';
@@ -11,8 +11,10 @@ import NetworkService from '@services/NetworkService';
 
 import { AccountRepository } from '@store/repositories';
 
-import { InfoMessage } from '@components/General'; // ReadMore
+import { InfoMessage, ServiceFeeSpendable } from '@components/General'; // ReadMore
 import { FeePicker, ServiceFee, AccountElement, HooksExplainer } from '@components/Modules';
+
+import { CalculateAvailableBalance } from '@common/utils/balance';
 
 import Localize from '@locale';
 
@@ -23,15 +25,20 @@ import { Clipboard } from '@common/helpers/clipboard';
 import { TemplateProps } from '../types';
 import { HookExplainerOrigin } from '@components/Modules/HooksExplainer/HooksExplainer';
 import { Toast } from '@common/helpers/interface';
+import { AppStyles } from '@theme/index';
 
 /* types ==================================================================== */
 export interface Props extends Omit<TemplateProps, 'transaction'> {
-    transaction: Transactions;
+    transaction: SignableTransaction & MutatedTransaction;
+    serviceFee?: number;
     setServiceFee: (serviceFee: number) => void;
+    canSendFee: (canSend: boolean) => void;
+    setTransaction: (tx: SignableTransaction & MutatedTransaction, forced?: boolean) => void;
 }
 export interface State {
     warnings?: Array<string>;
     showFeePicker: boolean;
+    canSendFee: boolean;
 }
 
 /* Component ==================================================================== */
@@ -43,6 +50,7 @@ class GlobalTemplate extends Component<Props, State> {
 
         this.state = {
             warnings: undefined,
+            canSendFee: true,
             showFeePicker: typeof props.transaction.Fee === 'undefined' && !props.payload.isMultiSign(),
         };
     }
@@ -82,7 +90,30 @@ class GlobalTemplate extends Component<Props, State> {
     };
 
     setServiceFeeAmount = (fee: any) => {
-        const { setServiceFee } = this.props;
+        const { setServiceFee, transaction, source } = this.props;
+
+        if (transaction && source) {
+            let isXrpPayment = false;
+            try {
+                isXrpPayment = transaction &&
+                    transaction.TransactionType === 'Payment' &&
+                    (transaction as any)?.Amount?.currency === NetworkService.getNativeAsset();
+            } catch (e) {
+                // console.log(e)
+            }
+
+            if (!isXrpPayment) {
+                const sfee = Number(fee?.value || 0) / 1_000_000;
+                const avail = CalculateAvailableBalance(source!);
+                const spendable = (Math.floor(Number(avail) * 1_000_000) - 100) / 1_000_000; 
+                if (spendable < sfee) {
+                    setServiceFee(Math.floor(Number(avail) * 1_000_000) - 100);
+                    // console.log(`${sfee} higher: ${spendable}, set ${Math.floor(Number(avail) * 1_000_000) - 100}`);
+                    return;
+                }
+            }
+        }
+
         setServiceFee(Number(fee?.value || 0));
     };
 
@@ -257,24 +288,29 @@ class GlobalTemplate extends Component<Props, State> {
                 <Text style={styles.label}>{Localize.t('global.memo')}</Text>
                 <View style={styles.contentBox}>
                     {
-                        transaction.Memos.map((m) => {
+                        transaction.Memos.map((m, i) => {
                             return (
                                 <View
                                     style={styles.memoContainer}
+                                    key={`memo-${i}`}
                                 >
-                                    <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
+                                    {m.MemoType && (
+                                        <Text style={[styles.value, styles.memoType]}>{m.MemoType}</Text>
+                                    )}
                                     {m.MemoFormat && (
                                         <Text style={[styles.value, styles.memoFormat]}>{m.MemoFormat}</Text>
                                     )}
-                                    <Text
-                                        style={[styles.value, styles.memoData]}
-                                        onPress={() => {
-                                            if (String(m.MemoData) !== '') {
-                                                Clipboard.setString(String(m.MemoData));
-                                                Toast(Localize.t('payload.dataCopiedToClipboard'));
-                                            }
-                                        }}
-                                    >{m.MemoData}</Text>
+                                    {m.MemoData && (
+                                        <Text
+                                            style={[styles.value, styles.memoData]}
+                                            onPress={() => {
+                                                if (String(m.MemoData) !== '') {
+                                                    Clipboard.setString(String(m.MemoData));
+                                                    Toast(Localize.t('payload.dataCopiedToClipboard'));
+                                                }
+                                            }}
+                                        >{m.MemoData}</Text>
+                                    )}
                                 </View>
                             );
                         })
@@ -307,7 +343,7 @@ class GlobalTemplate extends Component<Props, State> {
                     {/* <Text style={styles.label}>{Localize.t('global.hooks')}</Text> */}
                     <View style={styles.contentBox}>
                         <HooksExplainer
-                            transaction={transaction}
+                            transaction={transaction as Transactions}
                             account={source}
                             origin={HookExplainerOrigin.ReviewPayload}
                         />
@@ -319,16 +355,41 @@ class GlobalTemplate extends Component<Props, State> {
         return null;
     };
 
+    // Can it actually send tx + fee?
+    canSendFee = (canSend: boolean) => {
+        const { canSendFee } = this.state;
+        const {
+            canSendFee: parentCanSendFee,
+        } = this.props;
+
+        if (canSend !== canSendFee) {
+            if (typeof parentCanSendFee === 'function') {
+                parentCanSendFee(canSend);
+            }
+            this.setState({
+                canSendFee: canSend,
+            });
+        }
+    };
+
     renderFee = () => {
-        const { transaction, source, payload } = this.props;
-        const { showFeePicker } = this.state;
+        const {
+            transaction,
+            source,
+            payload,
+            serviceFee,
+            setTransaction,
+        } = this.props;
+
+        const {
+            showFeePicker,
+            canSendFee,
+        } = this.state;
 
         // we should not override the fee
         // either transaction fee has already been set in payload
         // or transaction is a multi sign tx
-        if (!showFeePicker) {
-            // TODO: SET SERVICE FEE
-
+        if (!showFeePicker) { //  && !(process?.env?.NODE_ENV === 'development') // TODO: REMOVE(d)
             if (typeof transaction.Fee !== 'undefined') {
                 return (
                     <>
@@ -357,11 +418,34 @@ class GlobalTemplate extends Component<Props, State> {
 
             return null;
         }
+        
+        const sendDrops = Math.ceil(Number(
+            typeof transaction?.JsonForSigning?.Amount === 'string'
+                ? (transaction as any)?.Amount?.value
+                    ? Number(String((transaction as any)?.Amount?.value || '0')) * 1_000_000
+                    : transaction?.JsonForSigning?.Amount
+                : 0,
+        ));
+
+        const amountField = 'Amount';
+        // if (transaction.TransactionType === 'OfferCreate') {
+        //     amountField = 'TakerGets';
+        // }
+        let isXrpPayment = false;
+        try {
+            isXrpPayment = transaction &&
+                transaction.TransactionType === 'Payment' &&
+                (transaction as any)?.Amount?.currency === NetworkService.getNativeAsset();
+        } catch (e) {
+            // console.log(e)
+        }
 
         return (
             <>
                 <Text style={styles.label}>{Localize.t('events.txServiceFees')}</Text>
                 <FeePicker
+                    // ref={`feepicker-${sendDrops}`}
+                    sendAmountDrops={sendDrops}
                     txJson={transaction.JsonForSigning}
                     onSelect={this.setFees}
                     source={source}
@@ -369,11 +453,45 @@ class GlobalTemplate extends Component<Props, State> {
                     containerStyle={styles.contentBox}
                     textStyle={styles.feeText}
                 />
+                {/* <Text style={AppStyles.colorWhite}>{ String((transaction as any)?.Amount?.value || '') }</Text> */}
+                <View style={[
+                    !canSendFee && AppStyles.marginTopSml,
+                ]}>
+                    <ServiceFeeSpendable
+                        txType={transaction?.TransactionType || transaction?.JsonForSigning?.TransactionType}
+                        spendableBalanceDrops={Math.floor(Number(CalculateAvailableBalance(source!)) * 1_000_000)}
+                        serviceFeeDrops={Number(serviceFee || 0)}
+                        txFeeDrops={Number(transaction?.JsonForSigning?.Fee || 0)}
+                        sendAmountDrops={Math.ceil(Number(
+                            typeof (transaction?.JsonForSigning?.[amountField]) === 'string'
+                                ? (transaction as any)?.[amountField]?.value
+                                    ? Number(String((transaction as any)?.[amountField]?.value || '0')) * 1_000_000
+                                    : transaction?.JsonForSigning?.[amountField]
+                                : 0,
+                        ))}
+                        onTxMaySend={this.canSendFee}
+                        updateSendingAmountDrops={
+                            isXrpPayment
+                                ? (drops) => { 
+                                    if (isXrpPayment) {
+                                        (transaction as any).Amount = {
+                                            ...(transaction as any).Amount,
+                                            value: String(drops / 1_000_000),
+                                        };
+                                        setTransaction(transaction, true);
+                                    }
+                                }
+                                : undefined
+                        }
+                    />
+                </View>
             </>
         );
     };
 
     render() {
+        const { innerBatch } = this.props;
+
         return (
             <>
                 {this.renderHookParameters()}
@@ -381,12 +499,12 @@ class GlobalTemplate extends Component<Props, State> {
                 {this.renderOperationLimit()}
                 {this.renderTicketSequence()}
                 {this.renderSequence()}
-                {this.renderSigners()}
+                {!innerBatch && this.renderSigners()}
                 {this.renderMemos()}
                 {this.renderFlags()}
-                {this.renderFee()}
+                {!innerBatch && this.renderFee()}
                 {this.renderWarnings()}
-                {this.renderHookExplainer()}
+                {!innerBatch && this.renderHookExplainer()}
             </>
         );
     }

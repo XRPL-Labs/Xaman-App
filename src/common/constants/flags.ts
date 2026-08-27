@@ -41,6 +41,25 @@ const LedgerEntryFlags = {
     [LedgerEntryTypes.URIToken]: {
         lsfBurnable: 0x00000001,
     },
+    [LedgerEntryTypes.Credential]: {
+        lsfAccepted: 0x00010000,
+    },
+    [LedgerEntryTypes.Remark]: {
+        tfImmutable: 0x00000001,
+    },
+    [LedgerEntryTypes.MPTokenIssuance]: {
+        lsfMPTLocked: 0x0001,
+        lsfMPTCanLock: 0x0002,
+        lsfMPTRequireAuth: 0x0004,
+        lsfMPTCanEscrow: 0x0008,
+        lsfMPTCanTrade: 0x0010,
+        lsfMPTCanTransfer: 0x0020,
+        lsfMPTCanClawback: 0x0040,
+    },
+    [LedgerEntryTypes.MPToken]: {
+        lsfMPTLocked: 0x0001,
+        lsfMPTAuthorized: 0x0002,
+    },
 };
 
 export { LedgerEntryFlags };

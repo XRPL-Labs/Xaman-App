@@ -6,7 +6,7 @@
 import EventEmitter from 'events';
 import { get, last, take, debounce } from 'lodash';
 
-import { BackHandler } from 'react-native';
+import { BackHandler, InteractionManager, Platform } from 'react-native';
 
 import analytics from '@react-native-firebase/analytics';
 
@@ -21,6 +21,7 @@ import {
 
 import { Toast, VibrateHapticFeedback } from '@common/helpers/interface';
 import { ExitApp } from '@common/helpers/app';
+import { HideLaunchSplash } from '@common/helpers/device';
 
 import { AppScreens } from '@common/constants';
 
@@ -60,6 +61,7 @@ class NavigationService extends EventEmitter {
     private overlays: Array<AppScreenKeys>;
     private backHandlerClickCount: number;
     private backHandlerClickCountTimeout?: ReturnType<typeof setTimeout>;
+    private launchSplashHidden: boolean;
 
     constructor() {
         super();
@@ -70,6 +72,7 @@ class NavigationService extends EventEmitter {
         this.overlays = [];
         this.backHandlerClickCount = 0;
         this.backHandlerClickCountTimeout = undefined;
+        this.launchSplashHidden = false;
     }
 
     initialize = () => {
@@ -105,6 +108,7 @@ class NavigationService extends EventEmitter {
         this.modals = [];
         this.overlays = [];
         this.backHandlerClickCount = 0;
+        this.launchSplashHidden = false;
 
         if (this.backHandlerClickCountTimeout) {
             clearTimeout(this.backHandlerClickCountTimeout);
@@ -209,7 +213,21 @@ class NavigationService extends EventEmitter {
         }
     };
 
+    hideLaunchSplashOnce = () => {
+        if (this.launchSplashHidden) {
+            return;
+        }
+        this.launchSplashHidden = true;
+        if (Platform.OS !== 'android') {
+            return;
+        }
+        InteractionManager.runAfterInteractions(() => {
+            HideLaunchSplash();
+        });
+    };
+
     componentDidAppear = ({ componentName, passProps }: ComponentDidAppearEvent) => {
+        this.hideLaunchSplashOnce();
         switch (this.getComponentType(componentName)) {
             case ComponentTypes.Modal:
                 this.setCurrentModal(componentName as AppScreenKeys);

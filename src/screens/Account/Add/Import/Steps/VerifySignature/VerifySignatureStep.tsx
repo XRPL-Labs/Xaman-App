@@ -7,7 +7,7 @@ import { SafeAreaView, View, Text, Alert, Image } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
 
-import RNTangemSdk, { Card } from 'tangem-sdk-react-native';
+import RNTangemSdk, { Card, OptionsSign } from 'tangem-sdk-react-native';
 
 import { SHA256 } from '@common/libs/crypto';
 import { Images } from '@common/helpers/images';
@@ -80,7 +80,7 @@ class VerifySignatureStep extends Component<Props, State> {
         const publicKey = GetWalletDerivedPublicKey(tangemCard);
 
         // include device UUID and user uuid is signed transaction
-        const { uuid, deviceUUID } = ProfileRepository.getProfile()!;
+        const { uuid, deviceUUID } = ProfileRepository.requireProfile();
 
         // prepare the transaction for signing
         const preparedTx = AccountLib.rawSigning.prepare(
@@ -89,7 +89,7 @@ class VerifySignatureStep extends Component<Props, State> {
         );
 
         // get sign options base on HD wallet support
-        const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
+        const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign) as OptionsSign;
 
         // sign with tangem card
         const { signatures } = await RNTangemSdk.sign(tangemSignOptions).catch((e) => {

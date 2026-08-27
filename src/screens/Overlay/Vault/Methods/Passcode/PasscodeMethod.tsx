@@ -80,7 +80,9 @@ class PasscodeMethod extends Component<Props, State> {
         }).start();
 
         InteractionManager.runAfterInteractions(() => {
-            this.setBiometricStatus().then(this.startAuthentication);
+            this.setBiometricStatus().then(() => { 
+                this.startAuthentication(true);
+            });
         });
     }
 
@@ -130,11 +132,17 @@ class PasscodeMethod extends Component<Props, State> {
         });
     };
 
-    startAuthentication = () => {
+    startAuthentication = (delay = false) => {
         const { isBiometricAvailable } = this.state;
 
         if (isBiometricAvailable) {
-            this.requestBiometricAuthenticate(true);
+            if (delay) {
+                setTimeout(() => {
+                    this.requestBiometricAuthenticate(true);
+                }, 100);
+            } else {
+                this.requestBiometricAuthenticate(true);
+            }
         } else if (this.securePinInputRef.current) {
             // focus the input
             this.securePinInputRef.current.focus();

@@ -1,0 +1,337 @@
+diff --git a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
+index 07f73fd..1e341c7 100644
+--- a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
++++ b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
+@@ -3,6 +3,8 @@ package com.reactnativecommunity.webview;
+ import android.Manifest;
+ import android.annotation.TargetApi;
+ import android.app.Activity;
++import android.app.AlertDialog;
++import android.content.DialogInterface;
+ import android.content.pm.PackageManager;
+ import android.net.Uri;
+ import android.os.Build;
+@@ -12,6 +14,8 @@ import android.view.View;
+ import android.view.ViewGroup;
+ import android.webkit.ConsoleMessage;
+ import android.webkit.GeolocationPermissions;
++import android.webkit.JsPromptResult;
++import android.webkit.JsResult;
+ import android.webkit.PermissionRequest;
+ import android.webkit.ValueCallback;
+ import android.webkit.WebChromeClient;
+@@ -148,6 +152,7 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+         grantedPermissions = new ArrayList<>();
+ 
+         ArrayList<String> requestedAndroidPermissions = new ArrayList<>();
++        ArrayList<String> alreadyGrantedResources = new ArrayList<>();
+         for (String requestedResource : request.getResources()) {
+             String androidPermission = null;
+ 
+@@ -155,38 +160,79 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+                 androidPermission = Manifest.permission.RECORD_AUDIO;
+             } else if (requestedResource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                 androidPermission = Manifest.permission.CAMERA;
+-            } else if(requestedResource.equals(PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID)) {
+-                if (mAllowsProtectedMedia) {
+-                  grantedPermissions.add(requestedResource);
+-                } else {
+-                  /**
+-                   * Legacy handling (Kept in case it was working under some conditions (given Android version or something))
+-                   *
+-                   * Try to ask user to grant permission using Activity.requestPermissions
+-                   *
+-                   * Find more details here: https://github.com/react-native-webview/react-native-webview/pull/2732
+-                   */
+-                  androidPermission = PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID;
+-                }            }
+-            // TODO: RESOURCE_MIDI_SYSEX, RESOURCE_PROTECTED_MEDIA_ID.
+-            if (androidPermission != null) {
+-                if (ContextCompat.checkSelfPermission(this.mWebView.getThemedReactContext(), androidPermission) == PackageManager.PERMISSION_GRANTED) {
+-                    grantedPermissions.add(requestedResource);
+-                } else {
+-                    requestedAndroidPermissions.add(androidPermission);
+-                }
++            } else if (requestedResource.equals(PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID) && mAllowsProtectedMedia) {
++                alreadyGrantedResources.add(requestedResource);
++                continue;
++            } else {
++                // Deny the whole request if the page asks for anything besides camera/mic
++                // (DRM, MIDI, etc.). Matches the previous in-app WebView fork.
++                request.deny();
++                grantedPermissions = null;
++                return;
++            }
++
++            if (ContextCompat.checkSelfPermission(this.mWebView.getThemedReactContext(), androidPermission) == PackageManager.PERMISSION_GRANTED) {
++                alreadyGrantedResources.add(requestedResource);
++            } else {
++                requestedAndroidPermissions.add(androidPermission);
+             }
+         }
+ 
+-        // If all the permissions are already granted, send the response to the WebView synchronously
++        // Even when the OS permission is already granted, prompt again so the
++        // inner third-party page cannot silently capture camera / microphone.
+         if (requestedAndroidPermissions.isEmpty()) {
+-            request.grant(grantedPermissions.toArray(new String[0]));
++            ArrayList<String> finalGrantedPermissions = new ArrayList<>();
++            ArrayList<String> processedPermissions = new ArrayList<>();
++            for (String permission : alreadyGrantedResources) {
++                String permissionName = permission;
++                if (permission.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
++                    permissionName = "Microphone";
++                } else if (permission.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
++                    permissionName = "Camera";
++                } else {
++                    processedPermissions.add(permission);
++                    if (processedPermissions.size() == alreadyGrantedResources.size()) {
++                        if (finalGrantedPermissions.isEmpty()) {
++                            request.deny();
++                        } else {
++                            request.grant(finalGrantedPermissions.toArray(new String[0]));
++                        }
++                    }
++                    continue;
++                }
++                AlertDialog.Builder builder = new AlertDialog.Builder(this.mWebView.getThemedReactContext());
++                builder.setMessage(String.format("Allow Browser to use your %s?", permissionName))
++                        .setCancelable(false)
++                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
++                            public void onClick(DialogInterface dialog, int id) {
++                                processedPermissions.add(permission);
++                                finalGrantedPermissions.add(permission);
++                                if (processedPermissions.size() == alreadyGrantedResources.size()) {
++                                    request.grant(finalGrantedPermissions.toArray(new String[0]));
++                                }
++                                dialog.dismiss();
++                            }
++                        })
++                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
++                            public void onClick(DialogInterface dialog, int id) {
++                                processedPermissions.add(permission);
++                                if (processedPermissions.size() == alreadyGrantedResources.size()) {
++                                    if (finalGrantedPermissions.isEmpty()) {
++                                        request.deny();
++                                    } else {
++                                        request.grant(finalGrantedPermissions.toArray(new String[0]));
++                                    }
++                                }
++                                dialog.cancel();
++                            }
++                        });
++                AlertDialog alert = builder.create();
++                alert.show();
++            }
+             grantedPermissions = null;
+             return;
+         }
+ 
+-        // Otherwise, ask to Android System for native permissions asynchronously
+-
+         this.permissionRequest = request;
+ 
+         requestPermissions(requestedAndroidPermissions);
+@@ -195,21 +241,34 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+ 
+     @Override
+     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
++        callback.invoke(origin, false, false);
++    }
+ 
+-        if (ContextCompat.checkSelfPermission(this.mWebView.getThemedReactContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+-                != PackageManager.PERMISSION_GRANTED) {
+-
+-            /*
+-             * Keep the trace of callback and origin for the async permission request
+-             */
+-            geolocationPermissionCallback = callback;
+-            geolocationPermissionOrigin = origin;
++    @Override
++    public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
++        if (view.getProgress() < 100) {
++            result.cancel();
++            return true;
++        }
++        return super.onJsAlert(view, url, message, result);
++    }
+ 
+-            requestPermissions(Collections.singletonList(Manifest.permission.ACCESS_FINE_LOCATION));
++    @Override
++    public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
++        if (view.getProgress() < 100) {
++            result.cancel();
++            return true;
++        }
++        return super.onJsConfirm(view, url, message, result);
++    }
+ 
+-        } else {
+-            callback.invoke(origin, true, false);
++    @Override
++    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
++        if (view.getProgress() < 100) {
++            result.cancel();
++            return true;
+         }
++        return super.onJsPrompt(view, url, message, defaultValue, result);
+     }
+ 
+     private PermissionAwareActivity getPermissionAwareActivity() {
+diff --git a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
+index 80c6803..f8f5c58 100644
+--- a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
++++ b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
+@@ -9,6 +9,7 @@ import android.view.Menu;
+ import android.view.MenuItem;
+ import android.view.MotionEvent;
+ import android.view.View;
++import android.webkit.CookieManager;
+ import android.webkit.JavascriptInterface;
+ import android.webkit.ValueCallback;
+ import android.webkit.WebChromeClient;
+@@ -410,6 +411,10 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
+     }
+ 
+     protected void cleanupCallbacksAndDestroy() {
++        clearCache(true);
++        clearHistory();
++        clearFormData();
++        CookieManager.getInstance().removeAllCookies(null);
+         setWebViewClient(null);
+         destroy();
+     }
+diff --git a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
+index f83033b..630c519 100644
+--- a/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
++++ b/node_modules/react-native-webview/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
+@@ -1,18 +1,14 @@
+ package com.reactnativecommunity.webview
+ 
+-import android.app.DownloadManager
+ import android.content.pm.ActivityInfo
+ import android.graphics.Bitmap
+ import android.graphics.Color
+-import android.net.Uri
+ import android.os.Build
+-import android.os.Environment
+ import android.util.Log
+ import android.view.View
+ import android.view.ViewGroup
+ import android.view.WindowManager
+ import android.webkit.CookieManager
+-import android.webkit.DownloadListener
+ import android.webkit.WebSettings
+ import android.webkit.WebView
+ import androidx.webkit.WebSettingsCompat
+@@ -20,17 +16,12 @@ import androidx.webkit.WebViewFeature
+ import com.facebook.react.bridge.ReadableArray
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.common.MapBuilder
+-import com.facebook.react.common.build.ReactBuildConfig
+ import com.facebook.react.uimanager.ThemedReactContext
+ import org.json.JSONException
+ import org.json.JSONObject
+ import java.io.UnsupportedEncodingException
+-import java.net.MalformedURLException
+-import java.net.URL
+ import java.util.Locale
+ 
+-val invalidCharRegex = "[\\\\/%\"]".toRegex()
+-
+ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+     companion object {
+         const val NAME = "RNCWebView"
+@@ -88,53 +79,8 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+             ViewGroup.LayoutParams.MATCH_PARENT,
+             ViewGroup.LayoutParams.MATCH_PARENT
+         )
+-        if (ReactBuildConfig.DEBUG) {
+-            WebView.setWebContentsDebuggingEnabled(true)
+-        }
+-        webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
+-            val module = webView.reactApplicationContext.getNativeModule(RNCWebViewModule::class.java) ?: return@DownloadListener
+-            val request: DownloadManager.Request = try {
+-                DownloadManager.Request(Uri.parse(url))
+-            } catch (e: IllegalArgumentException) {
+-                Log.w(TAG, "Unsupported URI, aborting download", e)
+-                return@DownloadListener
+-            }
+-            var fileName = URLUtil.guessFileName(url, contentDisposition, mimetype)
+-
+-            // Sanitize filename by replacing invalid characters with "_"
+-            fileName = fileName.replace(invalidCharRegex, "_")
+-
+-            val downloadMessage = "Downloading $fileName"
+-
+-            //Attempt to add cookie, if it exists
+-            var urlObj: URL? = null
+-            try {
+-                urlObj = URL(url)
+-                val baseUrl = urlObj.protocol + "://" + urlObj.host
+-                val cookie = CookieManager.getInstance().getCookie(baseUrl)
+-                request.addRequestHeader("Cookie", cookie)
+-            } catch (e: MalformedURLException) {
+-                Log.w(TAG, "Error getting cookie for DownloadManager", e)
+-            }
+-
+-            //Finish setting up request
+-            request.addRequestHeader("User-Agent", userAgent)
+-            request.setTitle(fileName)
+-            request.setDescription(downloadMessage)
+-            request.allowScanningByMediaScanner()
+-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+-            module.setDownloadRequest(request)
+-            if (module.grantFileDownloaderPermissions(
+-                    getDownloadingMessageOrDefault(),
+-                    getLackPermissionToDownloadMessageOrDefault()
+-                )
+-            ) {
+-                module.downloadFile(
+-                    getDownloadingMessageOrDefault()
+-                )
+-            }
+-        })
++        // Xaman: do not auto-enable remote debugging, and do not allow third-party
++        // content to trigger DownloadManager (the previous in-app fork rejected downloads).
+         return RNCWebViewWrapper(context, webView)
+     }
+ 
+diff --git a/node_modules/react-native-webview/apple/RNCWebViewImpl.m b/node_modules/react-native-webview/apple/RNCWebViewImpl.m
+index 3890426..62f0530 100644
+--- a/node_modules/react-native-webview/apple/RNCWebViewImpl.m
++++ b/node_modules/react-native-webview/apple/RNCWebViewImpl.m
+@@ -1216,6 +1216,10 @@ RCTAutoInsetsProtocol>
+ - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
+ {
+ #if !TARGET_OS_OSX
++  if (webView.isLoading) {
++    completionHandler();
++    return;
++  }
+   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
+   [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+     completionHandler();
+@@ -1235,6 +1239,10 @@ RCTAutoInsetsProtocol>
+  */
+ - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler{
+ #if !TARGET_OS_OSX
++  if (webView.isLoading) {
++    completionHandler(NO);
++    return;
++  }
+   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
+   [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+     completionHandler(YES);
+@@ -1260,6 +1268,10 @@ RCTAutoInsetsProtocol>
+  */
+ - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString *))completionHandler{
+ #if !TARGET_OS_OSX
++  if (webView.isLoading) {
++    completionHandler(nil);
++    return;
++  }
+   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:prompt preferredStyle:UIAlertControllerStyleAlert];
+   [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+     textField.text = defaultText;

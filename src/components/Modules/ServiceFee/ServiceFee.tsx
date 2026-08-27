@@ -236,6 +236,11 @@ class ServiceFee extends Component<Props, State> {
                     <View style={AppStyles.paddingTopSml}>
                         <InfoMessage
                             type="info"
+                            labelStyle={[
+                                AppStyles.baseText,
+                                AppStyles.smalltext,
+                                AppStyles.colorBlue,
+                            ]}
                             label={selected?.note || 'No note'}
                         />
                     </View>

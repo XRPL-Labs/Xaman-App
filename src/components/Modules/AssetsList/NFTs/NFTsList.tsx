@@ -33,6 +33,7 @@ import { Props as XAppBrowserModalProps } from '@screens/Modal/XAppBrowser/types
 
 import { AppSizes } from '@theme';
 import styles from './styles';
+import { ASSETS_CATEGORY } from '@screens/Overlay/SwitchAssetCategory/types';
 
 /* Types ==================================================================== */
 interface Props {
@@ -41,7 +42,7 @@ interface Props {
     discreetMode: boolean;
     spendable: boolean;
     network?: NetworkModel;
-    onChangeCategoryPress: () => void;
+    onChangeCategoryPress: (selectedCategory?: ASSETS_CATEGORY) => void;
 }
 
 interface State {
@@ -184,11 +185,11 @@ class NFTsList extends Component<Props, State> {
         this.fetchAccountNFTs(true);
     };
 
-    onCategoryChangePress = () => {
+    onCategoryChangePress = (selectedCategory?: ASSETS_CATEGORY) => {
         const { onChangeCategoryPress } = this.props;
 
         if (typeof onChangeCategoryPress === 'function') {
-            onChangeCategoryPress();
+            onChangeCategoryPress(selectedCategory);
         }
     };
 

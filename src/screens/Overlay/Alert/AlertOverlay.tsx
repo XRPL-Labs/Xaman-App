@@ -214,6 +214,9 @@ class AlertOverlay extends Component<Props, State> {
             outputRange: ['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)'],
         });
 
+        // check if text is a react element
+        const textIsReactElement = !!(typeof text === 'object' && (text as any)?.type);
+
         return (
             <Animated.View
                 testID={testID}
@@ -224,9 +227,12 @@ class AlertOverlay extends Component<Props, State> {
                     {this.renderIcon()}
                     {this.renderTitle()}
                     <Spacer size={20} />
-                    <Text style={styles.subTitle}>{text}</Text>
+                    {textIsReactElement ? (
+                        text
+                    ) : (
+                        <Text style={styles.subTitle}>{text}</Text>
+                    )}
                     <View style={[
-                        // AppStyles.borderRed,
                         styles.fullWidth,
                     ]}>
                         {this.renderButtons()}

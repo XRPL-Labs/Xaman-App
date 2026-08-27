@@ -46,7 +46,11 @@ class NFTokenCancelOfferTemplate extends Component<Props, State> {
                         containerStyle={styles.objectTemplateContainer}
                         contentContainerStyle={styles.objectTemplateChildContainer}
                     >
-                        <NFTokenOfferTemplate source={source} nfTokenOffer={tokenOffer} />
+                        <NFTokenOfferTemplate
+                            source={source}
+                            nfTokenOffer={tokenOffer}
+                            transaction={transaction}
+                        />
                     </ExpandableView>
                 ))}
             </>

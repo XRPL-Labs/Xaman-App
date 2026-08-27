@@ -156,7 +156,7 @@ class AccountGenerateView extends Component<Props, State> {
 
         try {
             // include user & device UUID is signed transaction
-            const { deviceUUID, uuid } = ProfileRepository.getProfile()!;
+            const { deviceUUID, uuid } = ProfileRepository.requireProfile();
             const { signedTransaction } = AccountLib.sign(
                 { Account: account.address, InvoiceID: await SHA256(`${uuid}.${deviceUUID}.${account.address}`) },
                 generatedAccount,

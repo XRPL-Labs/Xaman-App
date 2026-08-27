@@ -60,7 +60,7 @@ class IndicatorIconBlock extends PureComponent<IProps> {
                 }
             } else {
                 ownerCountChanges = {
-                    address: item.Account,
+                    address: (item as any)?.Account || (item as any)?.Owner,
                     value: NetworkService.getNetworkReserve().OwnerReserve,
                     action: OperationActions.INC,
                 };

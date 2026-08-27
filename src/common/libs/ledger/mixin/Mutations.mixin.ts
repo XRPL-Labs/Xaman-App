@@ -257,16 +257,31 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
          *
          * @returns {string} The CTID for the transaction.
          */
-        get CTID(): string {
+        get CTID(): string | undefined {
             // check if CTID is already in the transaction response
             const ctid = this._tx?.ctid as string | undefined;
 
-            if (typeof ctid === 'undefined') {
-                // calculate the ctid
-                return EncodeCTID(this.LedgerIndex, this.TransactionIndex, NetworkService.getNetworkId());
+            if (typeof ctid === 'string' && ctid.length > 0) {
+                return ctid;
             }
 
-            return ctid;
+            const ledgerSeq = this._tx?.ledger_index ?? this._tx?.inLedger;
+            const txnIndex = this._meta?.TransactionIndex;
+            const networkId = NetworkService.getNetworkId();
+
+            // Synthetic / incomplete txs (e.g. Remit outputs) may omit these.
+            if (
+                typeof ledgerSeq !== 'number' ||
+                !Number.isFinite(ledgerSeq) ||
+                typeof txnIndex !== 'number' ||
+                !Number.isFinite(txnIndex) ||
+                typeof networkId !== 'number' ||
+                !Number.isFinite(networkId)
+            ) {
+                return undefined;
+            }
+
+            return EncodeCTID(ledgerSeq, txnIndex, networkId);
         }
 
         /**
@@ -275,7 +290,7 @@ export function MutationsMixin<TBase extends Constructor>(Base: TBase) {
          * @return {number} The ledger index.
          */
         get LedgerIndex(): number {
-            return this._tx.ledger_index as number;
+            return (this._tx.ledger_index ?? this._tx.inLedger) as number;
         }
 
         /**

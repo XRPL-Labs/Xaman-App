@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+// import { StyleSheet } from 'react-native';
 
 import StyleService from '@services/StyleService';
 
@@ -10,10 +10,19 @@ const styles = StyleService.create({
         position: 'relative',
         flex: 1,
         flexDirection: 'column',
+        backgroundColor: '$background',
     },
     rowIcon: {
         tintColor: '$blue',
         marginRight: -10,
+    },
+    header: {
+        paddingVertical: AppSizes.paddingSml / 1.5,
+        borderBottomWidth: 0,
+        borderTopWidth: 0,
+        backgroundColor: '$tint',
+        marginTop: AppSizes.paddingSml / 2,
+        marginBottom: AppSizes.paddingSml / 2,
     },
     row: {
         width: '100%',
@@ -21,10 +30,11 @@ const styles = StyleService.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingHorizontal: AppSizes.paddingSml,
-        paddingVertical: AppSizes.paddingSml,
+        paddingVertical: AppSizes.paddingSml / 1.5,
         borderBottomWidth: 0,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderColor: '$tint',
+        backgroundColor: '$background',
+        // borderTopWidth: StyleSheet.hairlineWidth,
+        // borderColor: '$tint',
     },
     rowNoBorder: {
         width: '100%',

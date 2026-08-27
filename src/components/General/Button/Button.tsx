@@ -191,31 +191,9 @@ export default class Button extends Component<Props> {
             hitSlop,
         } = this.props;
 
-        if (isDisabled) {
-            return (
-                <View
-                    testID={testID}
-                    style={[
-                        styles.button,
-                        transparent && styles.buttonTransparent,
-                        secondary && styles.buttonSecondary,
-                        light && styles.buttonLight,
-                        contrast && styles.buttonContrast,
-                        nonBlock && styles.buttonNonBlock,
-                        rounded && styles.buttonRounded,
-                        roundedSmall && styles.buttonRoundedSmall,
-                        roundedSmallBlock && styles.buttonRoundedSmallBlock,
-                        roundedMini && styles.buttonRoundedMini,
-                        disabledStyle || styles.buttonDisabled,
-                        style,
-                    ]}
-                >
-                    {this.renderInnerContent()}
-                </View>
-            );
-        }
-
-        // Extract Touchable props
+        // Keep a native disabled host. A plain View reports enabled=true, so
+        // e2e wait-for-enabled passed while Confirm still ignored presses
+        // (ToS version not posted yet).
         const touchableProps = {
             testID,
             accessibilityLabel,

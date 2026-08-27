@@ -1,6 +1,6 @@
 import BaseGenuineTransaction from '@common/libs/ledger/transactions/genuine/base';
 
-import { Amount } from '@common/libs/ledger/parser/fields';
+import { AccountID, Amount } from '@common/libs/ledger/parser/fields';
 
 /* Types ==================================================================== */
 import { TransactionJson, TransactionMetadata } from '@common/libs/ledger/types/transaction';
@@ -14,9 +14,11 @@ class Clawback extends BaseGenuineTransaction {
 
     public static Fields: { [key: string]: FieldConfig } = {
         Amount: { type: Amount },
+        Holder: { type: AccountID },
     };
 
     declare Amount: FieldReturnType<typeof Amount>;
+    declare Holder: FieldReturnType<typeof AccountID>;
 
     constructor(tx?: TransactionJson, meta?: TransactionMetadata) {
         super(tx, meta);

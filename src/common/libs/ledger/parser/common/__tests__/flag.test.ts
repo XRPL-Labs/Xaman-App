@@ -40,6 +40,7 @@ describe('FlagParser', () => {
 
             expect(parser.get()).toEqual({
                 tfFillOrKill: true,
+                tfHybrid: false,
                 tfImmediateOrCancel: true,
                 tfPassive: false,
                 tfSell: false,

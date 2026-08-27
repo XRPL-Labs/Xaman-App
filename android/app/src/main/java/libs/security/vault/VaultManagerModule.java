@@ -13,13 +13,17 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import libs.security.crypto.Crypto;
+import libs.security.providers.UniqueIdProvider;
 import libs.security.vault.cipher.Cipher;
+import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.storage.Keychain;
 
 @ReactModule(name = libs.security.vault.VaultManagerModule.NAME)
@@ -52,13 +56,33 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     private static void rejectWithError(Promise promise, Exception exception) {
+        String code = "-1";
+        if (exception instanceof CryptoFailedException) {
+            code = ((CryptoFailedException) exception).getCode();
+        }
         StringBuilder error = new StringBuilder();
         error.append(exception.getMessage());
         if (exception.getCause() != null) {
             error.append(": ");
             error.append(exception.getCause().toString());
         }
-        promise.reject("-1", error.toString());
+        // Extra Security cipher only. Realm/Keystore wrap is not bound to ANDROID_ID.
+        if (shouldMarkDeviceIdChanged(code)) {
+            error.append("; last stored device id does not match current device id");
+            error.append(" (possible data migration to another device); underlying=");
+            error.append(code);
+            code = VaultErrorCodes.DEVICE_ID_CHANGED;
+        }
+        promise.reject(code, error.toString());
+    }
+
+    /**
+     * DEVICE_ID_CHANGED is a support overlay for Extra Security decrypt (WRONG_PASSPHRASE)
+     * when last-known ANDROID_ID differs from live. Do not overlay Keystore wrap failures.
+     */
+    static boolean shouldMarkDeviceIdChanged(@NonNull final String code) {
+        return VaultErrorCodes.WRONG_PASSPHRASE.equals(code)
+                && UniqueIdProvider.sharedInstance().isLastKnownDeviceIdChanged();
     }
 
     private static String getRecoveryVaultName(@NonNull final String vaultName) {
@@ -69,10 +93,10 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     //region VaultManager
 
     /*
-   Create a new encrypted vault with given name/data and encrypt with provided key
-   NOTE: existing vault cannot be overwritten
-  */
-    public boolean createVault(final String vaultName, final String data, final String key)
+        Create a new encrypted vault with given name/data and encrypt with provided key
+        NOTE: existing vault cannot be overwritten
+    */
+    public synchronized boolean createVault(final String vaultName, final String data, final String key)
             throws Exception {
 
         // check if the vault already exist, we don't want to overwrite the existing vault
@@ -80,8 +104,9 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
         boolean exist = keychain.itemExist(vaultName);
 
         // vault already exist, just reject
+        // ^^ update: just overwrite?...
         if (exist) {
-            throw new Exception("VAULT_ALREADY_EXIST");
+            // throw new Exception("VAULT_ALREADY_EXIST");
         }
 
         // try to encrypt the data with provided key
@@ -161,6 +186,7 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
                 purgeVault(recoveryVaultName);
             } catch (Exception e) {
                 // ignore in case of any exception
+                throw new Exception("Failed to restore vault from recovery: " + e.getMessage());
             }
         }
 
@@ -273,8 +299,42 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
      Purge ALL vaults in the keychain
      NOTE: this action cannot be undo and is permanent, used with caution
     */
-    public void clearStorage() throws Exception {
+    public void clearStorage() {
         keychain.clear();
+    }
+
+    /**
+     * User wipe after Keystore loss. Remove keychain blobs (commit), last-known
+     * ANDROID_ID, and Realm files. JS Realm.deleteFile is not enough: the
+     * unreadable xumm-realm-key wrap keeps the next launch in the wipe dialog.
+     */
+    public void wipeLocalDatastore() {
+        clearStorage();
+        UniqueIdProvider.sharedInstance().init(getReactApplicationContext());
+        UniqueIdProvider.sharedInstance().clearLastKnownAndroidId();
+        File dir = getReactApplicationContext().getFilesDir();
+        if (dir != null) {
+            deleteQuietly(new File(dir, "xumm.realm"));
+            deleteQuietly(new File(dir, "xumm.realm.lock"));
+            deleteQuietly(new File(dir, "xumm.realm.note"));
+            deleteQuietly(new File(dir, "xumm.realm.management"));
+        }
+    }
+
+    private static void deleteQuietly(@NonNull final File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    deleteQuietly(child);
+                }
+            }
+        }
+        //noinspection ResultOfMethodCallIgnored
+        file.delete();
     }
 
     /*
@@ -358,7 +418,13 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     public void openVault(String vaultName, String key, Promise promise) {
         try {
             String clearText = openVault(vaultName, key, true);
-            promise.resolve(clearText);
+            UniqueIdProvider.DeviceIdUnlockReport report =
+                    UniqueIdProvider.sharedInstance().consumeLastUnlockReport();
+            WritableMap result = Arguments.createMap();
+            result.putString("clearText", clearText);
+            result.putBoolean("fallbackUsed", report != null && report.fallbackUsed);
+            result.putBoolean("storedDifferedFromLive", report != null && report.storedDifferedFromLive);
+            promise.resolve(result);
         } catch (Exception e) {
             rejectWithError(promise, e);
         }
@@ -416,6 +482,16 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void wipeLocalDatastore(Promise promise) {
+        try {
+            wipeLocalDatastore();
+            promise.resolve(true);
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    @ReactMethod
     public void isMigrationRequired(String vaultName, Promise promise) {
         try {
             final WritableMap results = isMigrationRequired(vaultName);
@@ -442,6 +518,56 @@ public class VaultManagerModule extends ReactContextBaseJavaModule {
             promise.resolve(encryptionKey);
         } catch (Exception e) {
             rejectWithError(promise, e);
+        }
+    }
+
+    /**
+     * Probe Realm wrap and device-id cache. Does not unwrap account vaults.
+     * Does not need the passphrase. Does not return device id values.
+     */
+    public WritableMap buildVaultHealthReport() {
+        UniqueIdProvider uniqueIdProvider = UniqueIdProvider.sharedInstance();
+        UniqueIdProvider.BindingHealth binding = uniqueIdProvider.inspectBinding();
+        WritableMap map = Arguments.createMap();
+        map.putBoolean("lastKnownPresent", binding.lastKnownPresent);
+        map.putBoolean("livePresent", binding.livePresent);
+        map.putBoolean("lastKnownMatchesLive", binding.lastKnownMatchesLive);
+        map.putBoolean("uniqueIdKeychainReadable", binding.uniqueIdKeychainReadable);
+        map.putBoolean("realmKeyReadable", canUnwrapAlias(STORAGE_ENCRYPTION_KEY));
+
+        int vaultsPresent = 0;
+        Set<String> aliases = keychain.getAllAliases();
+        for (String alias : aliases) {
+            if (STORAGE_ENCRYPTION_KEY.equals(alias)
+                    || UniqueIdProvider.UNIQUE_DEVICE_ID_KEY.equals(alias)
+                    || alias.endsWith(RECOVERY_SUFFIX)) {
+                continue;
+            }
+            if (keychain.itemExist(alias)) {
+                vaultsPresent++;
+            }
+        }
+        map.putInt("vaultsPresent", vaultsPresent);
+        return map;
+    }
+
+    @ReactMethod
+    public void inspectVaultHealth(Promise promise) {
+        try {
+            promise.resolve(buildVaultHealthReport());
+        } catch (Exception e) {
+            rejectWithError(promise, e);
+        }
+    }
+
+    private boolean canUnwrapAlias(@NonNull final String alias) {
+        try {
+            if (!keychain.itemExist(alias)) {
+                return false;
+            }
+            return keychain.getItem(alias) != null;
+        } catch (Exception e) {
+            return false;
         }
     }
 

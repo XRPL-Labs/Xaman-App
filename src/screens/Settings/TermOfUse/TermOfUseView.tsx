@@ -109,7 +109,7 @@ class TermOfUseView extends Component<Props, State> {
     };
 
     getURI = () => {
-        return `${WebLinks.TermOfUseURL}/${Localize.getCurrentLocale()}`;
+        return `${WebLinks.TermOfUseURL}/${Localize.getCurrentLocale()}?xAppStyle=${StyleService.getCurrentTheme()}`;
     };
 
     onTOSLoaded = () => {

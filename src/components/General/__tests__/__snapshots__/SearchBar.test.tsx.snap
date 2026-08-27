@@ -80,12 +80,15 @@ exports[`[SearchBar] renders correctly 1`] = `
   >
     <TextInput
       autoCapitalize="none"
+      autoComplete="off"
       autoCorrect={false}
+      keyboardType="visible-password"
       onBlur={[Function]}
       onChangeText={[Function]}
       onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
+      spellCheck={false}
       style={
         [
           {
@@ -190,12 +193,15 @@ exports[`[SearchBar] should clear text 1`] = `
   >
     <TextInput
       autoCapitalize="none"
+      autoComplete="off"
       autoCorrect={false}
+      keyboardType="visible-password"
       onBlur={[Function]}
       onChangeText={[Function]}
       onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
+      spellCheck={false}
       style={
         [
           {
@@ -300,12 +306,15 @@ exports[`[SearchBar] should show clear button on text enter 1`] = `
   >
     <TextInput
       autoCapitalize="none"
+      autoComplete="off"
       autoCorrect={false}
+      keyboardType="visible-password"
       onBlur={[Function]}
       onChangeText={[Function]}
       onFocus={[Function]}
       placeholder="Please type ..."
       placeholderTextColor="#606885"
+      spellCheck={false}
       style={
         [
           {

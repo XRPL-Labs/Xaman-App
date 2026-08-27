@@ -189,7 +189,12 @@ class Input extends Component<Props, State> {
             <View style={[AppStyles.row]}>
                 {input}
                 {showScanner && (
-                    <TouchableDebounce activeOpacity={0.8} style={styles.scanButton} onPress={this.showScanner}>
+                    <TouchableDebounce
+                        testID="input-scan-button"
+                        activeOpacity={0.8}
+                        style={styles.scanButton}
+                        onPress={this.showScanner}
+                    >
                         <Icon size={25} name="IconScan" style={styles.scanIcon} />
                     </TouchableDebounce>
                 )}

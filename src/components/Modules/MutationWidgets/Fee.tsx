@@ -16,11 +16,15 @@ class Fee extends PureComponent<Props, State> {
     render() {
         const { item } = this.props;
 
-        // ledger objects doesn't contain fee
+        // ledger objects / synthetic outputs (e.g. Remit) don't contain a fee
         if (
             InstanceTypes.GenuineTransaction !== item.InstanceType &&
             InstanceTypes.FallbackTransaction !== item.InstanceType
         ) {
+            return null;
+        }
+
+        if (!item.Fee) {
             return null;
         }
 

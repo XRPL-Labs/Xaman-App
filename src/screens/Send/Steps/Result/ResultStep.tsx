@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimation } from 'react-native';
+import { SafeAreaView, View, Text, Image, TouchableWithoutFeedback, LayoutAnimation, ScrollView } from 'react-native';
 
 import NetworkService from '@services/NetworkService';
 
@@ -19,6 +19,8 @@ import { Button, Footer, AmountText, Spacer } from '@components/General';
 
 import Localize from '@locale';
 import { AddContactViewProps } from '@screens/Settings/AddressBook/Add';
+
+import { formatHookReturnMessages } from '@common/libs/ledger/utils/hookReturnMessages';
 
 import { AppStyles, AppColors } from '@theme';
 import styles from './styles';
@@ -195,25 +197,10 @@ class ResultStep extends Component<Props, State> {
         const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
 
 
-        const c = _tx?.MetaData?.HookExecutions
-            ?.filter(h =>
-                typeof h?.HookExecution?.HookReturnCode === 'string' &&
-                typeof h?.HookExecution?.HookReturnString === 'string',
-            )
-            ?.map(h => [
-                ((val) => val >> 63n ? -(val & ~(1n << 63n)) : val)(BigInt(`0x${String(h.HookExecution.HookReturnCode)}`)),
-                Buffer.from(
-                    String(h.HookExecution?.HookReturnString || '').replace(/00$/, ''),
-                    'hex',
-                ).toString('utf-8').trim(),
-            ])
-            ?.filter((h: any) =>
-                h?.[0] !== 0 &&
-                String(h?.[1] || '').trim().match(/[a-zA-Z0-9_\-+*^.()[\]:,;!?\s ]+$/msi),
-            );  
-        
-        const errorMsg = c && c.length > 0
-            ? c.map(h => `${h[1]} (#${h[0]})`).join(', ')
+        const hookMessages = formatHookReturnMessages(_tx?.MetaData?.HookExecutions);
+
+        const errorMsg = hookMessages
+            ? hookMessages
             : _tx?.FinalResult?.message ||
             _tx?.SubmitResult?.message ||
             _tx.SubmitResult?.message ||
@@ -230,12 +217,11 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={AppStyles.flex2}>
-                    <View style={styles.detailsCard}>
+                <View style={[AppStyles.flex2, { minHeight: 0 }]}>
+                    <View style={[styles.detailsCard, AppStyles.flex1, { minHeight: 0 }]}>
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                         <Spacer />
                         <Text style={[AppStyles.p, AppStyles.monoBold]}>
-                            {/* {_tx.SubmitResult?.engineResult || 'Error'} */}
                             {
                                 _tx?.MetaData?.TransactionResult ||
                                 _tx?.FinalResult?.code ||
@@ -249,10 +235,11 @@ class ResultStep extends Component<Props, State> {
                         <Spacer />
                         <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                         <Spacer />
-                        <Text style={AppStyles.subtext}>{errorMsg}</Text>
-                        {/* <Text style={AppStyles.subtext}>{JSON.stringify(_tx.SubmitResult, null, 2)}</Text> */}
+                        <ScrollView style={AppStyles.flex1} nestedScrollEnabled>
+                            <Text style={AppStyles.subtext}>{errorMsg}</Text>
+                        </ScrollView>
 
-                        <Spacer size={50} />
+                        <Spacer />
 
                         <Button
                             secondary
@@ -261,7 +248,7 @@ class ResultStep extends Component<Props, State> {
                             style={AppStyles.stretchSelf}
                             onPress={() => {
                                 Clipboard.setString(
-                                    _tx.FinalResult?.message || _tx.FinalResult?.code || 'Unexpected Error',
+                                    errorMsg || _tx.FinalResult?.message || _tx.FinalResult?.code || 'Unexpected Error',
                                 );
                                 Toast(Localize.t('send.resultCopiedToClipboard'));
                             }}

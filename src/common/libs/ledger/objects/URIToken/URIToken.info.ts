@@ -20,7 +20,7 @@ class URITokenInfo extends ExplainerAbstract<URIToken> {
         // Issuer => The issuer of the URI Token.
         // Destination => The intended recipient of the URI Token.
         if (this.item.Destination) {
-            // incoming offer
+            // incoming targeted sell offer
             if (this.item.Destination === this.account.address) {
                 return Localize.t('events.uriTokenOfferedToYou');
             }

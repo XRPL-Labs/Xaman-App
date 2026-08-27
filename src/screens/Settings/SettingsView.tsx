@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Linking } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 
 import { XAppOrigin } from '@common/libs/payload';
@@ -38,7 +38,10 @@ class SettingsView extends Component<Props, State> {
         };
     }
 
-    onRowPress = (route: AppScreenKeys | 'xumm.support') => {
+    onRowPress = (route: AppScreenKeys | 'xumm.support' | 'https://help.xaman.app') => {
+        if (route === 'https://help.xaman.app') {
+            Linking.openURL(route);
+        } else
         if (route === 'xumm.support') {
             Navigator.showModal<XAppBrowserModalProps>(
                 AppScreens.Modal.XAppBrowser,
@@ -56,7 +59,7 @@ class SettingsView extends Component<Props, State> {
         }
     };
 
-    renderRow = (icon: any, label: string, screen: AppScreenKeys | 'xumm.support', testID: string) => {
+    renderRow = (icon: any, label: string, screen: AppScreenKeys | 'xumm.support' | 'https://help.xaman.app', testID: string) => {
         return (
             <TouchableDebounce
                 testID={testID}
@@ -101,6 +104,12 @@ class SettingsView extends Component<Props, State> {
                         contentContainerStyle={[AppStyles.paddingRightSml, AppStyles.paddingLeft]}
                     >
                         {this.renderRow(
+                            'IconSlider',
+                            Localize.t('global.general'),
+                            AppScreens.Settings.General,
+                            'general-button',
+                        )}
+                        {this.renderRow(
                             'IconAccount',
                             Localize.t('global.accounts'),
                             AppScreens.Account.List,
@@ -114,18 +123,11 @@ class SettingsView extends Component<Props, State> {
                         )}
                         <View style={styles.hr} />
                         {this.renderRow(
-                            'IconSlider',
-                            Localize.t('global.general'),
-                            AppScreens.Settings.General,
-                            'general-button',
-                        )}
-                        {this.renderRow(
                             'IconActivity',
                             Localize.t('global.advanced'),
                             AppScreens.Settings.Advanced,
                             'advanced-button',
                         )}
-                        <View style={styles.hr} />
                         {this.renderRow(
                             'IconShield',
                             Localize.t('global.security'),
@@ -139,6 +141,12 @@ class SettingsView extends Component<Props, State> {
                             'third_party-apps-button',
                         )}
                         <View style={styles.hr} />
+                        {this.renderRow(
+                            'IconBook',
+                            Localize.t('global.helpCenter'),
+                            'https://help.xaman.app',
+                            'helpcenter-button',
+                        )}
                         {this.renderRow(
                             'IconHelpCircle',
                             Localize.t('setupTermOfService.questionsAndSupport'),

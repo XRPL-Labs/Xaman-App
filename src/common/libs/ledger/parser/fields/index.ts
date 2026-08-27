@@ -10,6 +10,7 @@ import { UInt8 } from './UInt8';
 import { UInt16 } from './UInt16';
 import { UInt32 } from './UInt32';
 import { UInt64 } from './UInt64';
+import { UInt192 } from './UInt192';
 import { Hash128 } from './Hash128';
 import { Hash192 } from './Hash192';
 import { Hash256 } from './Hash256';
@@ -29,6 +30,7 @@ export {
     UInt16,
     UInt32,
     UInt64,
+    UInt192,
     Hash128,
     Hash192,
     Hash256,

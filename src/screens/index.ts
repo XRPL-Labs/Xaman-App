@@ -48,6 +48,7 @@ import FlaggedDestination from './Overlay/FlaggedDestination';
 import RequestDecline from './Overlay/RequestDecline';
 import EnterDestinationTag from './Overlay/EnterDestinationTag';
 import ExplainBalance from './Overlay/ExplainBalance';
+import AssetListFilter from './Overlay/AssetListFilter';
 import ChangeLog from './Overlay/ChangeLog';
 import ConnectionIssue from './Overlay/ConnectionIssue';
 import ParticipantMenu from './Overlay/ParticipantMenu';
@@ -173,4 +174,5 @@ export {
     DeveloperSettings,
     Picker,
     Placeholder,
+    AssetListFilter,
 };

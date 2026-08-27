@@ -61,6 +61,7 @@ import {
     WebView,
     Header,
 } from '@components/General';
+import type { WebViewHandle } from '@components/General/WebView';
 import { XAppBrowserHeader } from '@components/Modules';
 
 import Localize from '@locale';
@@ -87,7 +88,7 @@ class XAppBrowserModal extends Component<Props, State> {
 
     private backHandler?: NativeEventSubscription;
     private softLoadingTimeout?: ReturnType<typeof setTimeout>;
-    private readonly webView: React.RefObject<WebView>;
+    private readonly webView: React.RefObject<WebViewHandle>;
     private lastMessageReceived: number;
 
     static options() {
@@ -159,6 +160,8 @@ class XAppBrowserModal extends Component<Props, State> {
     };
 
     onClose = (data?: { refreshEvents?: boolean }) => {
+        const { onClose } = this.props;
+
         // if refresh events flag set, publish a sign request update event
         // this will refresh the event list
         if (get(data, 'refreshEvents', false)) {
@@ -169,6 +172,11 @@ class XAppBrowserModal extends Component<Props, State> {
 
         // close the xApp modal
         Navigator.dismissModal();
+        if (typeof onClose === 'function') {
+            setTimeout(() => {
+                onClose();
+            }, 100);
+        }
 
         return true;
     };
@@ -431,8 +439,15 @@ class XAppBrowserModal extends Component<Props, State> {
         });
     };
 
-    openTxDetails = async (data: { tx: string; account: string }) => {
-        const { network } = this.state;
+    openTxDetails = async (data: {
+        tx: string;
+        account: string;
+        network?: string;
+    }) => {
+        const { network: stateNetwork } = this.state;
+
+        const paramNetwork = NetworkRepository.findOne({ key: String(data?.network).toUpperCase() });
+        const txNetwork = paramNetwork || stateNetwork;
 
         const hash = get(data, 'tx', undefined);
         const address = get(data, 'account', undefined);
@@ -461,7 +476,7 @@ class XAppBrowserModal extends Component<Props, State> {
             Navigator.showModal<TransactionLoaderModalProps>(AppScreens.Modal.TransactionLoader, {
                 hash,
                 account,
-                network,
+                network: txNetwork,
             });
         }, delay);
     };
@@ -810,10 +825,14 @@ class XAppBrowserModal extends Component<Props, State> {
             return { uri: '#' };
         }
 
+        const uri = `https://${HOSTNAME}/detect/xapp:${app?.appid || app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
+            this.getAppStyle(),
+        )}`;
+
+        // console.log('getSource', uri);
+
         return {
-            uri: `https://${HOSTNAME}/detect/xapp:${app?.appid || app.identifier}?xAppToken=${ott}&xAppStyle=${toUpper(
-                this.getAppStyle(),
-            )}`,
+            uri,
             headers: {
                 'X-OTT': ott,
             },
@@ -1154,6 +1173,7 @@ class XAppBrowserModal extends Component<Props, State> {
     renderApp = () => {
         return (
             <WebView
+                testID="xapp-webview"
                 ref={this.webView}
                 containerStyle={styles.webViewContainer}
                 style={styles.webView}
@@ -1204,13 +1224,15 @@ class XAppBrowserModal extends Component<Props, State> {
 
     renderHeader = () => {
         const { app, network, account } = this.state;
-        const { noSwitching, altHeader } = this.props;
+        const { noSwitching, altHeader, containerStyle } = this.props;
 
         if (altHeader) {
             return (
                 <Header
+                    containerStyle={containerStyle}
                     leftComponent={{
                         icon: altHeader?.left?.icon,
+                        element: altHeader?.left?.element,
                         iconSize: altHeader?.left?.iconSize,
                         onPress: () => {
                             const fn = this?.[(altHeader?.left?.onPress || '_') as keyof this];
@@ -1219,19 +1241,26 @@ class XAppBrowserModal extends Component<Props, State> {
                     }}
                     centerComponent={{
                         text: altHeader?.center?.text,
-                        extraComponent: altHeader?.center?.showNetworkLabel && <NetworkLabel type="both" />,
+                        extraComponent: altHeader?.center?.showNetworkLabel
+                            ? <NetworkLabel type="both" />
+                            : altHeader?.center?.subtitle && (
+                                <Text style={AppStyles.smalltext}>{String(altHeader?.center?.subtitle)}</Text>
+                            ),
                     }}
                     rightComponent={
-                        Object.values(AppConfig.xappIdentifiers).indexOf(String(app?.identifier || '')) > -1
-                            ? { 
-                                icon: altHeader?.right?.icon,
-                                iconSize: altHeader?.right?.iconSize,
-                                onPress: () => {
-                                    const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
-                                    if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
-                                },
-                            }
-                            : undefined
+                        Object.values(AppConfig.xappIdentifiers).indexOf(String(app?.identifier || '')) > -1 ||
+                            altHeader?.right?.element ||
+                            (altHeader?.center?.subtitle && altHeader?.right?.icon)
+                                ? { 
+                                    icon: altHeader?.right?.icon,
+                                    element: altHeader?.right?.element,
+                                    iconSize: altHeader?.right?.iconSize,
+                                    onPress: () => {
+                                        const fn = this?.[(altHeader?.right?.onPress || '_') as keyof this];
+                                        if (typeof fn === 'function') fn(altHeader?.right?.onPressOptions);
+                                    },
+                                }
+                                : undefined
                     }
                 />
             );

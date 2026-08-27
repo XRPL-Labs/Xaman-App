@@ -31,6 +31,7 @@ describe('AMMCreate tx', () => {
                 currency: 'USD',
                 issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
                 value: '10000',
+                mpt_issuance_id: undefined,
             });
             expect(instance.TradingFee).toBe(0.001);
         });

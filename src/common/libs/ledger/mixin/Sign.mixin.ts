@@ -19,6 +19,7 @@ import { TransactionResult } from '@common/libs/ledger/parser/types';
 import { SignableTransaction } from '@common/libs/ledger/transactions/types';
 
 import { Constructor, SignMethodType, SignMixinType } from './types';
+import { Batch } from '../transactions';
 
 /* Mixin ==================================================================== */
 export function SignMixin<TBase extends Constructor>(Base: TBase) {
@@ -138,6 +139,11 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                 return;
             }
 
+            // Not on Batch because we do not want to change a potential batch multi sign scenario
+            if (this.TransactionType === TransactionTypes.Batch) {
+                return;
+            }
+
             // NOTE: as tangem signing can take a lot of time we increase gap to 150 ledger
             const LastLedgerOffset = lastLedgerOffset || this.DefaultLastLedgerOffset;
 
@@ -248,7 +254,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
 
                             if (signedServiceFeeObject) {
                                 this.setServiceFeeTx(signedServiceFeeObject);
-                            };
+                            }
 
                             // verify the sign result
                             if (!signedTransaction || !signerPubKey || !signMethod) {
@@ -295,6 +301,61 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
             });
         };
 
+        innerBatchSigners(splice: boolean = false): string[] {
+            if (this.TransactionType === TransactionTypes.Batch) {
+                const innerAccounts = ((this as unknown as Batch)?.RawTransactions || [])
+                    .map((innerTx) => {
+                        return innerTx?.Account;
+                    })
+                    .filter((account) => account !== undefined);
+
+                if (splice) {
+                    if (this?.Account && innerAccounts.indexOf(this.Account) > -1) {
+                        innerAccounts.splice(innerAccounts.indexOf(this.Account), 1);
+                    }
+                }
+
+                return [...new Set(innerAccounts)];
+            }
+
+            return [];
+        }
+
+        /**
+         * Check if it's a Batch transaction still requiring multiple signers
+         * @returns {boolean} True if it's a Batch transaction still requiring multiple signers, false otherwise
+         */
+        isBatchInNeedOfMultipleSigners(): boolean {
+            if (this.TransactionType === TransactionTypes.Batch) {
+                const innerAccounts = this.innerBatchSigners(true /** splice */);
+
+                if (innerAccounts.length > 0) {
+                    // Check if we already have signatures
+                    const existingSigners = ((this as unknown as Batch)?.BatchSigners || [])
+                        .map((signer) => {
+                            return (signer as any)?.Account || signer?.BatchSigner?.Account;
+                        })
+                        .filter((account) => account !== undefined);
+
+                    if (existingSigners.length > 0) {
+                        // We already have signatures
+                        existingSigners.forEach((signer) => {
+                            if (innerAccounts.indexOf(signer) > -1) {
+                                innerAccounts.splice(innerAccounts.indexOf(signer), 1);
+                            }
+                        });
+                    }
+                }
+
+                // Inner signatures needed
+                if (innerAccounts.length > 0) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         /*
         Set Service Fee
         */
@@ -338,11 +399,7 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                 if (this.ServiceFeeTx && this.ServiceFeeTx.signedTransaction) {
                     // Submit the Fee transaction
                     // console.log('Submit fee tx')
-                    LedgerService.submitTransaction(
-                        this.ServiceFeeTx.signedTransaction,
-                        this.ServiceFeeTx.id,
-                        false,
-                    );
+                    LedgerService.submitTransaction(this.ServiceFeeTx.signedTransaction, this.ServiceFeeTx.id, false);
                 }
             }
 
@@ -378,7 +435,13 @@ export function SignMixin<TBase extends Constructor>(Base: TBase) {
                 const shouldFailHard = this.TransactionType === TransactionTypes.AccountDelete;
 
                 // Submit signed transaction to the Ledger
-                const submitResult = await LedgerService.submitTransaction(this.SignedBlob, this.hash!, shouldFailHard);
+                const submitResult = await LedgerService.submitTransaction(
+                    this.SignedBlob,
+                    this.hash!,
+                    shouldFailHard,
+                    this?.ServiceFeeTx?.signedTransaction,
+                    this?.ServiceFeeTx?.id,
+                );
 
                 // set submit result
                 this.SubmitResult = submitResult;

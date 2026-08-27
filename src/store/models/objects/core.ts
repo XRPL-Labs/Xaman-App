@@ -59,6 +59,14 @@ class Core extends Realm.Object<Core> {
     public declare theme: Themes;
     /** Auto switching. */
     public declare themeAutoSwitch: boolean;
+    /** hide zero value assets */
+    public declare filterHideZeroValue: boolean;
+    /** Account worth xApp info */
+    public declare accountWorthInfo: string;
+    /** Show account worth on home screen */
+    public declare accountWorthActive: boolean;
+    /** show per asset value on home screen */
+    public declare showPerAssetWorth: boolean;
 }
 
 export default Core;

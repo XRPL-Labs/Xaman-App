@@ -9,7 +9,7 @@ import { Image, ImageBackground, InteractionManager, Text, View } from 'react-na
 
 import { Navigation, EventSubscription } from 'react-native-navigation';
 
-import { CoreRepository } from '@store/repositories';
+import { AccountRepository, CoreRepository } from '@store/repositories';
 import { AccountModel, CoreModel } from '@store/models';
 
 // Constants/Helpers
@@ -22,7 +22,7 @@ import { Navigator } from '@common/helpers/navigator';
 import type { AccountTxTransaction } from '@common/libs/ledger/types/methods/accountTx';
 import { LedgerObjectFactory, TransactionFactory } from '@common/libs/ledger/factory';
 import { TransactionTypes, LedgerEntryTypes } from '@common/libs/ledger/types/enums';
-import { NFTokenOffer } from '@common/libs/ledger/objects';
+import { MPToken, NFTokenOffer } from '@common/libs/ledger/objects';
 import { Payload } from '@common/libs/payload';
 
 import { LedgerObjects } from '@common/libs/ledger/objects/types';
@@ -57,6 +57,7 @@ import { DataSourceItem, RowItemType } from '@components/Modules/EventsList/Even
 
 import { AppStyles } from '@theme';
 import styles from './styles';
+import { isRegularKeyForDestination, shouldLookupAdvisorySender } from './shouldHideAdvisoryEvent';
 
 /* types ==================================================================== */
 export interface Props {
@@ -95,6 +96,11 @@ enum DataSourceType {
     PENDING_REQUESTS = 'PENDING_REQUESTS',
     OWNED_OBJECTS = 'OWNED_OBJECTS',
 }
+
+/* Cache ==================================================================== */
+
+// console.log('eventscache')
+const EventCache: Record<string, any> = {};
 
 /* Component ==================================================================== */
 class EventsView extends Component<Props, State> {
@@ -316,6 +322,75 @@ class EventsView extends Component<Props, State> {
         return 'N/A';
     };
 
+    enrichIncompleteObjects = async (r: LedgerEntry[] = []) => {
+        if (r?.[0]) {
+            await Promise.all(r.map(async (___na, ri) => {
+                if (r[ri]?.LedgerEntryType === 'Credential') {
+                    if (r[ri]?.PreviousTxnLgrSeq) {
+                        try {
+                            const o = EventCache?.[r[ri].PreviousTxnLgrSeq] ?? await LedgerService.getLedgerEntry({
+                                command: 'ledger',
+                                ledger_index: r[ri].PreviousTxnLgrSeq,
+                            });
+                            const { close_time_iso } = (o as any)?.ledger || {};
+                            Object.assign(EventCache, { [r[ri].PreviousTxnLgrSeq]: o });
+                            Object.assign(r[ri], {
+                                Date: close_time_iso,
+                            });
+                        } catch (e) {
+                            // console.log('Error fetching Credential data', e);
+                        }
+                    }
+                }
+
+                if (r[ri]?.LedgerEntryType === 'MPToken') {
+                    try {
+                        const [issuance, ledger] = await Promise.all([
+                            EventCache?.[(r[ri] as unknown as MPToken)?.MPTokenIssuanceID] ??
+                            LedgerService.getLedgerEntry({
+                                command: 'ledger_entry',
+                                ledger_index: 'validated',
+                                mpt_issuance: (r[ri] as unknown as MPToken)?.MPTokenIssuanceID,
+                            }),
+                            EventCache?.[r[ri].PreviousTxnLgrSeq] ??
+                            LedgerService.getLedgerEntry({
+                                command: 'ledger',
+                                ledger_index: r[ri].PreviousTxnLgrSeq,
+                            }),
+                        ]);
+
+                        Object.assign(EventCache, { [(r[ri] as unknown as MPToken)?.MPTokenIssuanceID]: issuance });
+                        Object.assign(EventCache, { [r[ri].PreviousTxnLgrSeq]: ledger });
+
+                        const { close_time_iso } = (ledger as any)?.ledger || {};
+                        if (close_time_iso) {
+                            // console.log('__ledger', ledger)
+                            Object.assign(r[ri], {
+                                Date: close_time_iso,
+                            });
+                        }
+
+                        if (issuance && (issuance as any)?.node) {
+                            // console.log('__issuance', issuance)
+                            const _MPTokenIssuanceID = (issuance as any)?.node || {};
+                            if (_MPTokenIssuanceID) {
+                                Object.assign(r[ri], {
+                                    _MPTokenIssuanceID,
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        // console.log('__Error fetching MPToken data', e);
+                    }
+                }
+
+                return r[ri];
+            }));
+        }
+
+        return r;
+    };
+
     fetchPlannedObjects = async (
         account: string,
         type: string,
@@ -335,24 +410,7 @@ class EventsView extends Component<Props, State> {
             }
 
             return account_objects.concat(combined);
-        }).then(async r => {
-            if (r?.[0]) {
-                if (r[0]?.LedgerEntryType === 'Credential') {
-                    if (r[0]?.PreviousTxnLgrSeq) {
-                        const o = await LedgerService.getLedgerEntry({
-                            command: 'ledger',
-                            ledger_index: r[0].PreviousTxnLgrSeq,
-                        });
-                        const { close_time_iso } = (o as any)?.ledger || {};
-                        Object.assign(r[0], {
-                            Date: close_time_iso,
-                        });
-                    }
-                }
-            }
-
-            return r;
-        });
+        }).then(this.enrichIncompleteObjects);
     };
 
     loadPlannedTransactions = () => {
@@ -406,7 +464,15 @@ class EventsView extends Component<Props, State> {
                 'ticket',
                 'payment_channel',
                 'delegate',
+                'mptoken',
+                'permissioned_domain',
+                'deposit_preauth',
+                'mpt_issuance',
                 'credential',
+                'cron',
+                'vault',
+                'loan_broker',
+                'loan',
             ];
 
             // Create an array of promises, one for each object type
@@ -425,7 +491,7 @@ class EventsView extends Component<Props, State> {
                         .map(LedgerObjectFactory.fromLedger)
                         .flat()
                         .filter((item): item is LedgerObjects => item !== undefined);
-            
+                                
                     this.setState({ plannedTransactions: parsedList }, () => {
                         resolve(parsedList);
                     });
@@ -493,36 +559,36 @@ class EventsView extends Component<Props, State> {
                         canLoadMore = false;
                     }
 
+                    // Accounts we already imported that list this address as RegularKey.
+                    const regularKeyForAddresses = AccountRepository.getRegularKeys(account.address).map(
+                        (linked) => linked.address,
+                    );
+
                     // only success transactions
                     const tesSuccessTransactions: AccountTxTransaction[] = (await Promise.all(
                         txResp.map(async transaction => {
                             let blocked = false;
 
                             if (hideAdvisoryTransactions) {
-                                const finalFields = transaction.meta?.AffectedNodes
-                                    ?.filter(m => m?.ModifiedNode)
-                                    ?.map(m => m?.ModifiedNode)?.[0]
-                                    ?.FinalFields;
-                                
+                                const dest = transaction?.tx?.Destination;
                                 const isMyAccountThroughRegularKey =
-                                    transaction?.tx?.Destination &&
-                                    finalFields?.RegularKey &&
-                                    finalFields?.Account &&
-                                    finalFields.RegularKey === account.address &&
-                                    finalFields.Account === transaction.tx.Destination;
+                                    (typeof dest === 'string' && regularKeyForAddresses.includes(dest)) ||
+                                    isRegularKeyForDestination(
+                                        transaction?.tx,
+                                        account.address,
+                                        transaction.meta?.AffectedNodes,
+                                    );
 
+                                // Hide incoming Payment / CheckCreate / EscrowCreate from a
+                                // blocked sender, and Check/Escrow cancel or finish they submit.
+                                // Dimmed rows (opacity 0.3) stay when this setting is off.
                                 if (
-                                    transaction?.tx?.TransactionType === 'Payment' &&
-                                    transaction?.tx?.Account !== account.address && // I'm not the sender
-                                    (
-                                        transaction?.tx?.Destination === account.address || // But I am the receipient
-                                        isMyAccountThroughRegularKey // Or the Regular Key is me so I'm the receipient
+                                    shouldLookupAdvisorySender(
+                                        transaction?.tx,
+                                        account.address,
+                                        isMyAccountThroughRegularKey,
                                     )
-                                    // &&
-                                    // typeof transaction?.meta?.delivered_amount === 'string' &&
-                                    // Number(transaction?.meta.delivered_amount) < AppConfig.belowDropsTxIsSpam
                                 ) {
-                                    // Only Acount (sender) counts, only hide if <SENT> to me
                                     const resolveAccount = String(transaction?.tx?.Account || '');
                                     const accountResolver = await ResolverService.getAccountName(resolveAccount);
 
@@ -539,6 +605,37 @@ class EventsView extends Component<Props, State> {
                                 }
                             }
 
+                            const mptTokenAuth =
+                                transaction?.tx?.TransactionType === 'MPTokenAuthorize' &&
+                                    transaction.tx?.MPTokenIssuanceID
+                                    ? transaction.tx?.MPTokenIssuanceID
+                                    : null;
+
+                            const mptTokenPayment =
+                                (
+                                    transaction?.tx?.TransactionType === 'Payment' ||
+                                    transaction?.tx?.TransactionType === 'Clawback'
+                                ) &&
+                                transaction.tx?.Amount &&
+                                typeof transaction.tx?.Amount !== 'string' &&
+                                (transaction.tx?.Amount as any)?.mpt_issuance_id
+                                    ? (transaction.tx?.Amount as any)?.mpt_issuance_id
+                                    : null;
+
+                            if (mptTokenAuth || mptTokenPayment) {                                
+                                const o = EventCache?.[mptTokenAuth || mptTokenPayment] ??
+                                    await LedgerService.getLedgerEntry({
+                                        command: 'ledger_entry',
+                                        ledger_index: 'validated',
+                                        mpt_issuance: mptTokenAuth || mptTokenPayment,
+                                    });
+                                Object.assign(EventCache, { [mptTokenAuth || mptTokenPayment]: o });
+                                if (!transaction.meta?._attachments) {
+                                    Object.assign(transaction.meta, { _attachments: {} });
+                                }
+                                Object.assign(transaction.meta._attachments, { MPTokenIssuance: o?.node });
+                            }
+
                             return typeof transaction.meta === 'object' &&
                                 (
                                     transaction?.meta.TransactionResult === 'tesSUCCESS' ||
@@ -552,9 +649,9 @@ class EventsView extends Component<Props, State> {
                     //     }) as AccountTxTransaction[],
                     // );
 
-                    let parsedList = flatMap(tesSuccessTransactions, (item) =>
-                        TransactionFactory.fromLedger(item, [MixingTypes.Mutation]),
-                    );
+                    let parsedList = flatMap(tesSuccessTransactions, (item) => {
+                        return TransactionFactory.fromLedger(item, [MixingTypes.Mutation]);
+                    });
 
                     // console.log('x1')
 
@@ -657,8 +754,9 @@ class EventsView extends Component<Props, State> {
                         LedgerEntryTypes.Ticket,
                         LedgerEntryTypes.PayChannel,
                         LedgerEntryTypes.Delegate,
-                        // TODO: if not accepted yet
                         LedgerEntryTypes.Credential,
+                        LedgerEntryTypes.Cron,
+                        // LedgerEntryTypes.Vault, // Vault is in OWNED, not PLANNED
                         // LedgerEntryTypes.SignerList,
                         // LedgerEntryTypes.DepositPreauth,
                         // LedgerEntryTypes.DID,
@@ -786,6 +884,14 @@ class EventsView extends Component<Props, State> {
                 filter(plannedTransactions, (p) => {
                     const isValidType = [
                         LedgerEntryTypes.Credential,
+                        LedgerEntryTypes.MPTokenIssuance,
+                        LedgerEntryTypes.MPToken,
+                        LedgerEntryTypes.PermissionedDomain,
+                        LedgerEntryTypes.DepositPreauth,
+                        LedgerEntryTypes.Vault,
+                        LedgerEntryTypes.LoanBroker,
+                        LedgerEntryTypes.Loan,
+                        // LedgerEntryTypes.Cron, // Already @ Planned
                         // ...TODO?
                         // LedgerEntryTypes.SignerList,
                         // LedgerEntryTypes.DepositPreauth,
@@ -1063,6 +1169,14 @@ class EventsView extends Component<Props, State> {
                         TransactionTypes.NFTokenMint,
                         TransactionTypes.NFTokenModify,
                         LedgerEntryTypes.Ticket,
+                        LedgerEntryTypes.PermissionedDomain,
+                        LedgerEntryTypes.Cron,
+                        LedgerEntryTypes.Vault,
+                        LedgerEntryTypes.Credential,
+                        LedgerEntryTypes.MPTokenIssuance,
+                        LedgerEntryTypes.MPToken,
+                        LedgerEntryTypes.LoanBroker,
+                        LedgerEntryTypes.Loan,
                     ];
                     break;
                 default:

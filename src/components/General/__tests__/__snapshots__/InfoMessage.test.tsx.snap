@@ -110,6 +110,9 @@ exports[`[InfoMessage] renders correctly Info 1`] = `
               "color": "#0030CF",
             },
             {
+              "color": "#0030CF",
+            },
+            {
               "textAlign": "center",
             },
           ]
@@ -348,6 +351,9 @@ exports[`[InfoMessage] should render with icon Info 1`] = `
               "fontFamily": "ProximaNova-Bold",
               "fontSize": 30,
               "textAlign": "center",
+            },
+            {
+              "color": "#0030CF",
             },
             {
               "color": "#0030CF",

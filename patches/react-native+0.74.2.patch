@@ -27,7 +27,7 @@ index 3fd7238..2268e5e 100644
  #import "CoreModulesPlugins.h"
  
 +// Define the allowed endpoints
-+static NSSet *allowedEndpoints = [NSSet setWithObjects:@"xrplcluster.com", @"xahau.network", @"xahau-test.net", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", nil];
++static NSSet *allowedEndpoints = [NSSet setWithObjects:@"xrplcluster.com", @"xahau.network", @"xahau-test.net", @"xrpl.link", @"s2.ripple.com", @"testnet.xrpl-labs.com", @"s.altnet.rippletest.net", @"s.devnet.rippletest.net", @"custom-node.xrpl-labs.com", @"rpc.xrpl-labs.com", @"rpc.xahau.network", @"rpc.xahau-test.net", @"mainnet.xrpl-rpc.com", @"testnet.xrpl-rpc.com", nil];
 +
  @implementation SRWebSocket (React)
  
@@ -52,3 +52,25 @@ index 3fd7238..2268e5e 100644
    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
  
    // We load cookies from sharedHTTPCookieStorage (shared with XHR and
+diff --git a/node_modules/react-native/ReactCommon/react/renderer/runtimescheduler/RuntimeScheduler.h b/node_modules/react-native/ReactCommon/react/renderer/runtimescheduler/RuntimeScheduler.h
+index 1111111..2222222 100644
+--- a/node_modules/react-native/ReactCommon/react/renderer/runtimescheduler/RuntimeScheduler.h
++++ b/node_modules/react-native/ReactCommon/react/renderer/runtimescheduler/RuntimeScheduler.h
+@@ -5,7 +5,10 @@
+  * LICENSE file in the root directory of this source tree.
+  */
+ 
+-#pragma once
++// Include guards (not #pragma once): Xcode 16+ sees this header via two paths
++// (source dir and Pods/Headers), and path-based #pragma once includes it twice.
++#ifndef facebook_react_RuntimeScheduler_h
++#define facebook_react_RuntimeScheduler_h
+ 
+ #include <ReactCommon/RuntimeExecutor.h>
+ #include <react/renderer/runtimescheduler/RuntimeSchedulerClock.h>
+@@ -142,4 +145,6 @@ class RuntimeScheduler final : RuntimeSchedulerBase {
+ };
+ 
+ } // namespace facebook::react
++
++#endif // facebook_react_RuntimeScheduler_h

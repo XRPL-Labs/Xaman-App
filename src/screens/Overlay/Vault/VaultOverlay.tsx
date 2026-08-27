@@ -7,10 +7,10 @@ import React, { Component } from 'react';
 import { Alert, BackHandler, InteractionManager, Linking, NativeEventSubscription } from 'react-native';
 
 import * as AccountLib from 'xrpl-accountlib';
-import RNTangemSdk from 'tangem-sdk-react-native';
+import RNTangemSdk, { OptionsSign } from 'tangem-sdk-react-native';
 
 import NetworkService from '@services/NetworkService';
-import LoggerService from '@services/LoggerService';
+import LoggerService, { LogEvents } from '@services/LoggerService';
 
 import { AccountModel } from '@store/models';
 import { AccountRepository, CoreRepository } from '@store/repositories';
@@ -45,6 +45,7 @@ import { SelectSigner } from './SelectSinger';
 
 /* types ==================================================================== */
 import { AuthMethods, Props, SignOptions, State, Steps } from './types';
+import { computeBinaryTransactionHash, createBatchInnerTxnBlob, hashBatchInnerTxn } from 'xrpl-accountlib/dist/utils';
 
 /* Component ==================================================================== */
 class VaultOverlay extends Component<Props, State> {
@@ -142,10 +143,24 @@ class VaultOverlay extends Component<Props, State> {
                     );
                 }
             }
+            
+            let suppressSignerSelection = false;
 
+            if (signer?.flags?.disableMasterKey === true) {
+                // Main signer has master disabled
+                if (preferredSigner !== signer) {
+                    // Main signer is not the preferred signer
+                    // We should not allow the user to select the main signer
+                    // as it's already the regular key
+                    suppressSignerSelection = true;
+                }
+            }
+            // console.log('signerDelegate', JSON.stringify(signerDelegate.details, null, 2));
             // decide which step we are taking after setting signers
             // if signers more than one then let the users choose which account they want to sign the transaction with
-            const step = signer && signerDelegate ? Steps.SelectSigner : Steps.Authentication;
+            const step = signer && signerDelegate && !suppressSignerSelection                
+                ? Steps.SelectSigner
+                : Steps.Authentication;
 
             // set the state
             this.setState({
@@ -331,11 +346,60 @@ class VaultOverlay extends Component<Props, State> {
                 transaction.populateFields();
             }
 
+            LoggerService.logEvent(LogEvents.SigningRoutingInformation, {
+                transactionType: transaction.Type,
+                preferredSigner: preferredSigner.address,
+                flow: 'INTERNAL',
+                inNeedOfMultipleSigners: transaction.isBatchInNeedOfMultipleSigners() &&
+                    transaction.innerBatchSigners().length > 1 ? 'true' : 'false',
+            });
+
+            // If batch, check if at the final stage and signign with the same account as
+            // an inner batch signer is already present: in that case: suppress, no duplicate
+            // signing
+            if (transaction.JsonForSigning.TransactionType === 'Batch') {
+                if (!transaction.isBatchInNeedOfMultipleSigners()) {
+                    // ^^ inner signers already fulfilled or not required
+                    if (transaction?.JsonForSigning?.BatchSigners && transaction.innerBatchSigners().length > 0) {
+                        const overlappingInnerSigner = transaction.JsonForSigning.BatchSigners
+                            ?.find(b => b.BatchSigner.Account === transaction.Account);
+                        
+                        if (overlappingInnerSigner) {
+                            // console.log('Batch signer already present, no need to sign again')
+                            transaction.JsonForSigning.BatchSigners.splice(
+                                transaction.JsonForSigning.BatchSigners.indexOf(overlappingInnerSigner),
+                                1,
+                            );
+                        }
+                    }
+                }
+            }
+
             let signedObject = AccountLib.sign(
-                transaction.JsonForSigning,
+                {
+                    ...transaction.JsonForSigning,
+                    ...(transaction.isBatchInNeedOfMultipleSigners() && transaction.innerBatchSigners().length > 1 ? {
+                        BatchSigners: [
+                            AccountLib.signInnerBatch(transaction.JsonForSigning, signerInstance, definitions),
+                        ],
+                    } : {}),
+                },
                 signerInstance,
                 definitions,
             ) as SignedObjectType;
+
+            if (transaction.isBatchInNeedOfMultipleSigners() && transaction.innerBatchSigners().length > 1) {
+                if (signedObject?.txJson && (signedObject?.txJson as any)?.BatchSigners) {
+                    delete (signedObject?.txJson as any).SigningPubKey;
+                    delete (signedObject?.txJson as any).TxnSignature;
+                    const decoded = AccountLib.binary.decode(signedObject.signedTransaction, definitions);
+                    delete decoded.SigningPubKey;
+                    delete decoded.TxnSignature;
+                    signedObject.signedTransaction = AccountLib.binary.encode(decoded, definitions);
+                    signedObject.id = computeBinaryTransactionHash(signedObject.signedTransaction);
+                }
+            }
+
             signedObject = {
                 ...signedObject,
                 signerPubKey: signerInstance.keypair.publicKey ?? undefined,
@@ -393,13 +457,78 @@ class VaultOverlay extends Component<Props, State> {
             // get current network definitions
             const definitions = NetworkService.getNetworkDefinitions();
 
+            LoggerService.logEvent(LogEvents.SigningRoutingInformation, {
+                transactionType: transaction.Type,
+                card: tangemCard.cardId,
+                flow: 'TANGEM',
+                inNeedOfMultipleSigners: transaction.isBatchInNeedOfMultipleSigners() &&
+                    transaction.innerBatchSigners().length > 1 ? 'true' : 'false',
+            });
+
+            // If batch, check if at the final stage and signign with the same account as
+            // an inner batch signer is already present: in that case: suppress, no duplicate
+            // signing
+            if (transaction.JsonForSigning.TransactionType === 'Batch') {
+                if (!transaction.isBatchInNeedOfMultipleSigners()) {
+                    // ^^ inner signers already fulfilled or not required
+                    if (transaction?.JsonForSigning?.BatchSigners && transaction.innerBatchSigners().length > 0) {
+                        const overlappingInnerSigner = transaction.JsonForSigning.BatchSigners
+                            ?.find(b => b.BatchSigner.Account === transaction.Account);
+                        
+                        if (overlappingInnerSigner) {
+                            // console.log('Batch signer already present, no need to sign again')
+                            transaction.JsonForSigning.BatchSigners.splice(
+                                transaction.JsonForSigning.BatchSigners.indexOf(overlappingInnerSigner),
+                                1,
+                            );
+                        }
+                    }
+                }
+            }
+
+            let batchSigners = {};
+            if (transaction.isBatchInNeedOfMultipleSigners() && transaction.innerBatchSigners().length > 1) {
+                batchSigners = {
+                    BatchSigners: [{
+                        BatchSigner: {
+                            Account: String(AccountLib.utils.deriveAddress(publicKey)),
+                            SigningPubKey: publicKey,
+                            TxnSignature: '',
+                        },
+                    } ],
+                };
+            }
+
             // prepare the transaction for signing
             const preparedTx = AccountLib.rawSigning.prepare(
-                transaction.JsonForSigning,
+                {
+                    ...transaction.JsonForSigning,
+                    ...(batchSigners),
+                },
                 publicKey,
                 multiSign,
                 definitions,
             );
+
+            let preparedFeeTx: ReturnType<typeof AccountLib.rawSigning.prepare>;
+
+            if (transaction.isBatchInNeedOfMultipleSigners() && transaction.innerBatchSigners().length > 1) {
+                const BatchInnerHashes = (transaction.JsonForSigning as any)?.RawTransactions.map(
+                    (t: Object) => hashBatchInnerTxn((t as any)?.RawTransaction, definitions),
+                );
+
+                const batchSignerPayload = createBatchInnerTxnBlob(
+                    Number((transaction.JsonForSigning as any)?.Flags),
+                    BatchInnerHashes,
+                );
+
+                const hashToSign =
+                    AccountLib.utils.getAlgorithmFromKey(publicKey) === 'ed25519'
+                    ? batchSignerPayload
+                        : AccountLib.utils.bytesToHex(AccountLib.utils.hash(batchSignerPayload));
+
+                preparedTx.hashToSign = hashToSign;
+            }
 
             // get sign options base on HD wallet support
             const tangemSignOptions = GetSignOptions(tangemCard, preparedTx.hashToSign);
@@ -409,13 +538,45 @@ class VaultOverlay extends Component<Props, State> {
                 LoggerService.recordError('Unexpected error in startSession TangemSDK', e);
             });
 
-            await RNTangemSdk.sign(tangemSignOptions)
+            // console.log('tangem key', publicKey, AccountLib.utils.getAlgorithmFromKey(publicKey));
+            // console.log('tangem options', tangemSignOptions);
+
+            const serviceFee = await getServiceFeeTx(
+                transaction, // The original TX, for Account, Fee, Sequence, NetworkID
+                { signedTransaction: '' }, // The signed TX, for the TX ID
+                undefined, // The instance so we can immediately sign again
+                definitions, // The definitions so we can deal with the network
+                AuthMethods.TANGEM, // The signing method, so we can replicate that on the output
+            );
+
+            if (serviceFee && !multiSign) {
+                preparedFeeTx = AccountLib.rawSigning.prepare(
+                    {
+                        ...serviceFee.txJson,
+                    },
+                    publicKey,
+                    multiSign,
+                    definitions,
+                );
+
+                // console.log('tangem servicefee?', preparedFeeTx);
+                if (preparedFeeTx.hashToSign) {
+                    if (tangemSignOptions.hashes.length === 1) {
+                        tangemSignOptions.hashes.push(preparedFeeTx.hashToSign);
+                    }
+                }
+            }
+
+            await RNTangemSdk.sign(tangemSignOptions as unknown as OptionsSign)
                 .then((resp) => {
                     const { signatures } = resp;
+
+                    // console.log('tangem response', resp);
 
                     const sig = Array.isArray(signatures) ? signatures[0] : signatures;
 
                     let signedObject: SignedObjectType;
+                    let signedFeeObject: SignedObjectType;
 
                     if (multiSign) {
                         signedObject = AccountLib.rawSigning.completeMultiSigned(
@@ -430,14 +591,50 @@ class VaultOverlay extends Component<Props, State> {
                         );
                     } else {
                         signedObject = AccountLib.rawSigning.complete(preparedTx, sig, definitions);
+                        // console.log('a')
+ 
+                        if (preparedFeeTx) {
+                            if (Array.isArray(signatures) && signatures.length > 1) {
+                                // console.log('b')
+                                signedFeeObject = {
+                                    ...AccountLib.rawSigning.complete(
+                                        preparedFeeTx,
+                                        signatures[1],
+                                        definitions,
+                                    ),
+                                    signerPubKey: publicKey,
+                                    signMethod: AuthMethods.TANGEM,
+                                };
+                                // console.log('c')
+                                // console.log(signedFeeObject)
+                            }
+                        }
                     }
+
+                    // console.log('d')
 
                     // include sign method
                     signedObject = { ...signedObject, signerPubKey: publicKey, signMethod: AuthMethods.TANGEM };
+                    
+                    if (transaction.isBatchInNeedOfMultipleSigners() && transaction.innerBatchSigners().length > 1) {
+                        if ((signedObject?.txJson as any)?.BatchSigners?.[0]?.BatchSigner?.TxnSignature === '') {
+                                ; (signedObject?.txJson as any).BatchSigners[0].BatchSigner.TxnSignature =
+                                    (signedObject as any).txnSignature;
 
-                    // resolve signed object
+                            delete (signedObject?.txJson as any).SigningPubKey;
+
+                            signedObject.signedTransaction = AccountLib.binary.encode(
+                                signedObject.txJson as any,
+                                definitions,
+                            );
+
+                            signedObject.id = computeBinaryTransactionHash(signedObject.signedTransaction);
+                        }
+                    }
+
+                    // Resolve signed object
                     setTimeout(() => {
-                        this.onSign(signedObject);
+                        this.onSign(signedObject, signedFeeObject);
                     }, 2000);
                 })
                 .catch((error) => {

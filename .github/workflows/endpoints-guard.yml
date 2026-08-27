@@ -1,0 +1,22 @@
+name: endpoints-guard
+env:
+  CI: true
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main, 'update/**' ]
+
+jobs:
+  check-production-endpoints:
+    name: check-production-endpoints
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Verify production endpoint values
+        run: ./scripts/check-endpoints.sh

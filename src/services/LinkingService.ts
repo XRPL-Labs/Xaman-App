@@ -18,7 +18,7 @@ import { NormalizeDestination } from '@common/utils/codec';
 import { StringTypeCheck } from '@common/utils/string';
 
 import Localize from '@locale';
-import { Payment, PaymentValidation, TrustSet } from '@common/libs/ledger/transactions';
+import { AccountSet, Invoke, Payment, PaymentValidation, TrustSet } from '@common/libs/ledger/transactions';
 import NetworkService from './NetworkService';
 import { CoreRepository, NetworkRepository } from '@store/repositories';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
@@ -188,7 +188,7 @@ class LinkingService {
                 Account: CoreRepository.getDefaultAccount().address,
                 Destination: to,
                 Amount: !destination?.amount
-                    ? '1'
+                    ? new AmountParser(1, false).nativeToDrops().toString()
                     : destination?.currency && destination?.issuer
                       ? {
                             currency: destination?.currency,
@@ -283,7 +283,8 @@ class LinkingService {
             const payload = Payload.build(
                 {
                     ...payment.JsonForSigning,
-                    ...(!destination?.amount ? { Amount: undefined } : {}),
+                    ...(!destination?.amount ? { Amount: '0' } : {}),
+                    // ^^ If no amount specified we allow user to enter
                 },
                 undefined, // Custom instruction
                 true, // Submit
@@ -426,18 +427,31 @@ class LinkingService {
     };
 
     handleTransactionTemplate = (parsed: any) => {
-        let errorMsg = Localize.t('global.theQRIsNotWhatWeExpect');
+        let errorMsg = Localize.t('scan.theQRIsNotWhatWeExpect');
 
         try {
             const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');
             const json = JSON.parse(str);
 
-            if (
-                json?.NetworkID !== NetworkService.getNetwork().networkId ||
-                (NetworkService.getNetwork().networkId > 1024 && !json?.NetworkID)
-            ) {
-                errorMsg = Localize.t('payload.payloadForceNetworkError');
-                throw new Error('Invalid network');
+            // resolve the network this template is intended for, without NetworkID the template
+            // targets XRPL networks (id <= 1024) as these cannot include NetworkID in txn
+            let templateNetwork;
+
+            if (typeof json?.NetworkID === 'undefined') {
+                if (NetworkService.getNetwork().networkId > 1024) {
+                    errorMsg = Localize.t('payload.payloadForceNetworkError');
+                    throw new Error('Invalid network');
+                }
+            } else {
+                templateNetwork = NetworkRepository.findOne({ networkId: json.NetworkID });
+
+                if (!templateNetwork) {
+                    errorMsg = Localize.t('payload.payloadForceNetworkError');
+                    throw new Error('Invalid network');
+                }
+
+                // NetworkID is populated at signing time based on the connected network
+                delete json.NetworkID;
             }
 
             if (json?.TransactionType === 'TrustSet') {
@@ -450,6 +464,41 @@ class LinkingService {
                         nativeAsset: NetworkService.getNativeAsset(),
                     }),
                 );
+
+                if (templateNetwork) {
+                    // review flow will offer switching if not connected to the declared network
+                    payload.meta.force_network = templateNetwork.key;
+                }
+
+                setTimeout(() => {
+                    Navigator.showModal(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                return;
+            }
+
+            // AccountSet / Invoke templates: Debug/dev-client only AND developer
+            // mode. Never ship this path in Release — a tricked user could enable
+            // developer mode and scan a hostile QR.
+            if (
+                (json?.TransactionType === 'AccountSet' || json?.TransactionType === 'Invoke') &&
+                __DEV__ &&
+                CoreRepository.isDeveloperModeEnabled()
+            ) {
+                const transaction =
+                    json.TransactionType === 'Invoke' ? new Invoke(json) : new AccountSet(json);
+
+                const payload = Payload.build(transaction.JsonForSigning);
+
+                if (templateNetwork) {
+                    payload.meta.force_network = templateNetwork.key;
+                }
 
                 setTimeout(() => {
                     Navigator.showModal(

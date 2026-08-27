@@ -7,6 +7,11 @@ import org.json.JSONException;
 
 import java.util.Map;
 
+import javax.crypto.AEADBadTagException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+
+import libs.security.vault.VaultErrorCodes;
 import libs.security.vault.exceptions.CryptoFailedException;
 
 public class Cipher {
@@ -100,5 +105,22 @@ public class Cipher {
 
         // return decrypted clearText
         return clearText;
+    }
+
+    /**
+     * Auth/tag failures are a wrong key. Malformed hex, padding, and IO are corrupt data.
+     */
+    @NonNull
+    public static String classifyDecryptFailure(@NonNull final Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            if (current instanceof AEADBadTagException
+                    || current instanceof BadPaddingException
+                    || current instanceof IllegalBlockSizeException) {
+                return VaultErrorCodes.WRONG_PASSPHRASE;
+            }
+            current = current.getCause();
+        }
+        return VaultErrorCodes.VAULT_CORRUPT;
     }
 }

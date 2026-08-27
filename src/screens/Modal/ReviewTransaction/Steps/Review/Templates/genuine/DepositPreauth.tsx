@@ -44,7 +44,7 @@ class DepositPreauthTemplate extends Component<Props, State> {
             return (
                 <View style={[
                     styles.credentialContainer,
-                ]} key={credential.Issuer}>
+                ]} key={`${credential.Issuer}-${credential.CredentialType}`}>
                     <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
                     <View style={styles.authorizeCredentialsContainer}>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>
@@ -74,7 +74,7 @@ class DepositPreauthTemplate extends Component<Props, State> {
             return (
                 <View style={[
                     styles.credentialContainer,
-                ]} key={credential.Issuer}>
+                ]} key={`${credential.Issuer}-${credential.CredentialType}`}>
                     <AccountElement address={credential.Issuer} containerStyle={styles.attachedAccountElement} />
                     <View style={styles.authorizeCredentialsContainer}>
                         <Text style={[AppStyles.monoSubText, AppStyles.colorGrey]}>

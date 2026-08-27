@@ -82,12 +82,14 @@ public class AppUtilsModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setFlagSecure(Boolean enable, Promise promise) {
         final Activity activity = getCurrentActivity();
+        // Debug APK never sets FLAG_SECURE so screencap and e2e can capture the UI.
+        final boolean applySecure = Boolean.TRUE.equals(enable) && !Boolean.TRUE.equals(isDebug());
 
         if (activity != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (enable) {
+                    if (applySecure) {
                         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
                     } else {
                         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -103,6 +105,11 @@ public class AppUtilsModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void isFlagSecure(Promise promise) {
+        if (Boolean.TRUE.equals(isDebug())) {
+            promise.resolve(false);
+            return;
+        }
+
         final Activity activity = getCurrentActivity();
 
         if (activity != null) {

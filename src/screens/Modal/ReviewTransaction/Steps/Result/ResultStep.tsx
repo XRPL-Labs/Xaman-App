@@ -1,7 +1,6 @@
 /**
  * Payload Result Screen
  */
-import { get } from 'lodash';
 import React, { Component, Fragment } from 'react';
 import { Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
 
@@ -9,7 +8,7 @@ import { Images } from '@common/helpers/images';
 import { Toast } from '@common/helpers/interface';
 import { Clipboard } from '@common/helpers/clipboard';
 
-import { InstanceTypes } from '@common/libs/ledger/types/enums';
+import { InstanceTypes, TransactionTypes } from '@common/libs/ledger/types/enums';
 
 // components
 import { Avatar, Button, Footer, Spacer } from '@components/General';
@@ -20,8 +19,8 @@ import { AppColors, AppStyles } from '@theme';
 import styles from './styles';
 
 import { StepsContext } from '../../Context';
-import { HexEncoding } from '@common/utils/string';
 import { ExplainerFactory } from '@common/libs/ledger/factory';
+import { formatHookReturnMessages } from '@common/libs/ledger/utils/hookReturnMessages';
 
 /* types ==================================================================== */
 export interface Props {}
@@ -57,9 +56,11 @@ class ResultStep extends Component<Props, State> {
             case 'tecPATH_DRY':
                 return Localize.t('errors.tecPATH_DRY');
             case 'tecHOOK_REJECTED': {
-                const returnStringHex = get(transaction!.HookExecution(), '[0].HookReturnString', '');
+                const hookMessages = formatHookReturnMessages(
+                    transaction!.HookExecution() || transaction!.MetaData?.HookExecutions,
+                );
                 return Localize.t('errors.tecHOOK_REJECTED', {
-                    hookReturnString: returnStringHex ? HexEncoding.toString(returnStringHex) : '',
+                    hookReturnString: hookMessages,
                 });
             }
             default:
@@ -160,7 +161,7 @@ class ResultStep extends Component<Props, State> {
                     </Text>
                 </View>
 
-                <View style={[AppStyles.flex2, styles.detailsCard, AppStyles.marginBottom]}>
+                <View style={[AppStyles.flex2, styles.detailsCard, AppStyles.marginBottom, { minHeight: 0 }]}>
                     <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.code')}:</Text>
                     <Spacer />
                     <Text style={[AppStyles.p, AppStyles.monoBold]}>{transaction!.FinalResult?.code}</Text>
@@ -171,11 +172,11 @@ class ResultStep extends Component<Props, State> {
                     <Text style={[AppStyles.subtext, AppStyles.bold]}>{Localize.t('global.description')}:</Text>
                     <Spacer />
 
-                    <ScrollView>
+                    <ScrollView style={AppStyles.flex1} nestedScrollEnabled>
                         <Text style={AppStyles.subtext}>{this.getNormalizedErrorMessage()}</Text>
                     </ScrollView>
 
-                    <Spacer size={50} />
+                    <Spacer />
 
                     <Button
                         light
@@ -183,7 +184,11 @@ class ResultStep extends Component<Props, State> {
                         label={Localize.t('global.copy')}
                         style={AppStyles.stretchSelf}
                         onPress={() => {
-                            Clipboard.setString(transaction!.FinalResult?.message || transaction!.FinalResult?.code);
+                            Clipboard.setString(
+                                this.getNormalizedErrorMessage() ||
+                                    transaction!.FinalResult?.message ||
+                                    transaction!.FinalResult?.code,
+                            );
                             Toast(Localize.t('send.resultCopiedToClipboard'));
                         }}
                     />
@@ -222,7 +227,14 @@ class ResultStep extends Component<Props, State> {
 
                 <View style={AppStyles.flex3}>
                     <View style={styles.detailsCard}>
-                        {transaction?.InstanceType === InstanceTypes.PseudoTransaction ? (
+                        {(
+                            transaction?.InstanceType === InstanceTypes.PseudoTransaction ||
+                            (
+                                transaction?.Type === TransactionTypes.Batch &&
+                                !transaction.SubmitResult &&
+                                !transaction.TxnSignature
+                            )
+                        ) ? (
                             <View key="applicationDetails" style={[AppStyles.centerAligned, AppStyles.paddingVertical]}>
                                 <Avatar size={70} border source={{ uri: payload.getApplicationIcon() }} />
                                 {/* eslint-disable-next-line react-native/no-inline-styles */}

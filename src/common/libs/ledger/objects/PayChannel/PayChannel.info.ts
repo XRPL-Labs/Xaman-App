@@ -9,6 +9,7 @@ import PayChannel from '@common/libs/ledger/objects/PayChannel/PayChannel.class'
 /* Types ==================================================================== */
 import { ExplainerAbstract, MonetaryStatus } from '@common/libs/ledger/factory/types';
 import { OperationActions } from '@common/libs/ledger/parser/types';
+import { remainingPayChannelAmount } from '@common/libs/ledger/utils/payChannelAmounts';
 
 /* Descriptor ==================================================================== */
 class PayChannelInfo extends ExplainerAbstract<PayChannel> {
@@ -21,7 +22,7 @@ class PayChannelInfo extends ExplainerAbstract<PayChannel> {
     }
 
     generateDescription(): string {
-        const { Expiration, Account, Destination, Index, Amount, SourceTag, DestinationTag, SettleDelay, CancelAfter } =
+        const { Expiration, Account, Destination, Index, SourceTag, DestinationTag, SettleDelay, CancelAfter } =
             this.item;
 
         const content: string[] = [];
@@ -39,12 +40,6 @@ class PayChannelInfo extends ExplainerAbstract<PayChannel> {
             }),
         );
 
-        content.push(
-            Localize.t('events.theChannelAmountIs', {
-                amount: Amount!.value,
-                currency: Amount!.currency,
-            }),
-        );
         if (SourceTag !== undefined) {
             content.push(Localize.t('events.theASourceTagIs', { tag: SourceTag }));
         }
@@ -80,19 +75,41 @@ class PayChannelInfo extends ExplainerAbstract<PayChannel> {
     }
 
     getMonetaryDetails() {
+        const remaining = remainingPayChannelAmount(this.item.Amount, this.item.Balance);
+        const action = OperationActions[this.item.Destination === this.account.address ? 'INC' : 'DEC'];
+        const factor = [];
+
+        if (remaining) {
+            factor.push({
+                ...remaining,
+                effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                action,
+            });
+        }
+
+        if (this.item.Amount) {
+            factor.push({
+                ...this.item.Amount,
+                effect: MonetaryStatus.NO_EFFECT,
+                label: Localize.t('events.payChannelOriginalAmount'),
+            });
+        }
+
+        if (this.item.Balance) {
+            factor.push({
+                ...this.item.Balance,
+                effect: MonetaryStatus.IMMEDIATE_EFFECT,
+                action: OperationActions.DEC,
+                label: Localize.t('events.payChannelClaimedSoFar'),
+            });
+        }
+
         return {
             mutate: {
                 [OperationActions.INC]: [],
                 [OperationActions.DEC]: [],
             },
-            factor: [
-                {
-                    currency: this.item.Amount!.currency,
-                    value: this.item.Amount!.value,
-                    effect: MonetaryStatus.IMMEDIATE_EFFECT,
-                    action: OperationActions[this.item.Destination === this.account.address ? 'INC' : 'DEC'],
-                },
-            ],
+            factor,
         };
     }
 }

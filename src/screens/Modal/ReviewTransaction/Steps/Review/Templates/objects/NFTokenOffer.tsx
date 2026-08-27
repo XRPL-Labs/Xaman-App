@@ -3,7 +3,7 @@ import { View, Text, InteractionManager } from 'react-native';
 
 import LedgerService from '@services/LedgerService';
 
-import { NFTokenMint } from '@common/libs/ledger/transactions';
+import { NFTokenAcceptOffer, NFTokenCancelOffer, NFTokenMint } from '@common/libs/ledger/transactions';
 import { NFTokenOffer } from '@common/libs/ledger/objects';
 import { NFTokenOffer as LedgerNFTokenOffer } from '@common/libs/ledger/types/ledger';
 import FlagParser from '@common/libs/ledger/parser/common/flag';
@@ -19,17 +19,24 @@ import { DecodeNFTokenID } from '@common/utils/codec';
 import Localize from '@locale';
 
 import styles from './styles';
+import { AppStyles } from '@theme/index';
+import BackendService from '@services/BackendService';
+import { CoreRepository } from '@store/repositories';
+import NetworkService from '@services/NetworkService';
 
 /* types ==================================================================== */
 export interface Props {
     source: AccountModel;
     nfTokenOffer: string;
+    transaction?: NFTokenAcceptOffer | NFTokenCancelOffer;
 }
 
 export interface State {
     object?: NFTokenOffer;
     isTokenBurnable: any;
     isLoading: boolean;
+    wantsPercentage?: number;
+    wantsValue?: string;
 }
 
 /* Component ==================================================================== */
@@ -50,10 +57,62 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
     fetchDetails = async () => {
         // fetch the object first
-        await this.fetchObject();
+        const { transaction } = this.props;
+
+        const settings = await CoreRepository.getSettings();
+
+        const [, accountWorth, currencyRate] = await Promise.all([
+            this.fetchObject(),
+            BackendService.getAccountWorth(
+                transaction!.Account,
+                settings.network.key,
+                settings.currency,
+                'NFTOKENOFFER_ACCEPT',
+            ),
+            BackendService.getCurrencyRate(settings.currency),
+        ]);
 
         // check if token is burnable
         this.checkTokenBurnable();
+
+        const { object } = this.state;
+
+        if (object && object!?.Amount) {
+            const amount = object!.Amount;
+            const nativeAsset = NetworkService.getNativeAsset();
+
+            const lineItems: {
+                issuer: string;
+                asset: string;
+                amount: number;
+                value?: number;
+            }[] = accountWorth?.lineItems || [];
+
+            if (typeof amount !== 'string') {
+                let matchingAWItem;
+                if (amount?.currency === nativeAsset) {
+                    matchingAWItem = lineItems
+                        .filter(l => l.issuer === 'rrrrrrrrrrrrrrrrrrrrrrrhoLvTp')
+                        .filter(l => l.asset === nativeAsset);
+                } else {
+                    matchingAWItem = lineItems
+                        .filter(l => l.issuer === amount.issuer)
+                        .filter(l => l.asset === amount.currency);
+                }
+                if (Array.isArray(matchingAWItem) && matchingAWItem.length > 0) {
+                    const matchingAWItemAmount = matchingAWItem[0].amount;
+                    const wantsPercentage = Math.round(Number(amount.value) / Number(matchingAWItemAmount) * 100);
+                    const ff = Localize.formatNumber(
+                        Number(matchingAWItem[0]?.value), Number(matchingAWItem[0]?.value) > 1000 ? 0 : 2, true,
+                    );
+                    this.setState({
+                        wantsPercentage,
+                        wantsValue: `${currencyRate.code || settings.currency} ${currencyRate.symbol} ${ff}`,
+                    });
+                }
+            }
+            // console.log('accountWorth', );
+        }
     };
 
     fetchObject = () => {
@@ -115,8 +174,8 @@ class NFTokenOfferTemplate extends Component<Props, State> {
     };
 
     render() {
-        const { source } = this.props;
-        const { object, isTokenBurnable, isLoading } = this.state;
+        const { source, transaction } = this.props;
+        const { object, isTokenBurnable, isLoading, wantsPercentage, wantsValue } = this.state;
 
         if (isLoading) {
             return <LoadingIndicator />;
@@ -134,6 +193,11 @@ class NFTokenOfferTemplate extends Component<Props, State> {
                 />
             );
         }
+
+        const isAboutToPay = String(transaction?.TransactionType).match(/accept/i) &&
+            object?.Flags?.lsfSellNFToken &&
+            ((transaction || {}) as any)?.NFTokenSellOffer &&
+            Number(object?.Amount?.value || 0) > 0;
 
         return (
             <>
@@ -159,21 +223,61 @@ class NFTokenOfferTemplate extends Component<Props, State> {
 
                 {object!.Amount && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.amount')}</Text>
-                        <View style={styles.contentBox}>
+                        <Text style={styles.label}>{
+                            isAboutToPay
+                                ? Localize.t('global.amountToPay')
+                                : Localize.t('global.amount')
+                        }</Text>
+                        <View style={[
+                            styles.contentBox,
+                            isAboutToPay && styles.sellingAmount,
+                        ]}>
+                            {isAboutToPay && (
+                                <View style={[
+                                    AppStyles.row,
+                                    styles.nftSellPrefixContainer,
+                                ]}>
+                                    <Text style={[
+                                        AppStyles.pbold,
+                                        AppStyles.baseText,
+                                        AppStyles.colorRed,
+                                    ]}>
+                                        {Localize.t('global.youWillPay')}
+                                    </Text>
+                                </View>
+                            )}
                             <AmountText
                                 value={object!.Amount.value}
                                 currency={object!.Amount.currency}
-                                style={styles.amount}
+                                style={[
+                                    isAboutToPay
+                                        ? styles.amount // Red
+                                        : AppStyles.colorPrimary, // white/dark mode invert
+                                ]}
                                 immutable
                             />
                         </View>
+                        {isAboutToPay && (Number(wantsPercentage || 0) || 0) > 50 && (
+                            <View style={AppStyles.marginBottom}>
+                                <InfoMessage
+                                    icon="IconInfo"
+                                    type="warning"
+                                    label={Localize.t('payloadRiskWarning.thisOfferConsumesPercentage', {
+                                        wantsPercentage: `${wantsValue} / ${wantsPercentage}`,
+                                    })}
+                                />
+                            </View>
+                        )}
                     </>
                 )}
 
                 {object!.NFTokenID && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.nft')}</Text>
+                        <Text style={styles.label}>{
+                            isAboutToPay
+                                ? Localize.t('global.nftToBuy')
+                                : Localize.t('global.nft')
+                        }</Text>
                         <View style={styles.contentBox}>
                             <NFTokenElement
                                 account={source.address}

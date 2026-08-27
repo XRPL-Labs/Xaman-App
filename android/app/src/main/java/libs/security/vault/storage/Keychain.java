@@ -104,16 +104,22 @@ public class Keychain {
     }
 
     public void deleteItem(@NonNull final String alias) throws KeyStoreAccessException {
-        // First we clean up the cipher storage (using the cipher storage that was used to store the entry)
+        KeyStoreAccessException keystoreError = null;
         final ResultSet resultSet = prefsStorage.getEncryptedEntry(alias);
 
         if (resultSet != null) {
-            final CipherStorage cipherStorage = getCipherStorageByName(resultSet.cipherStorageName);
-            cipherStorage.removeKey(alias);
+            try {
+                final CipherStorage cipherStorage = getCipherStorageByName(resultSet.cipherStorageName);
+                cipherStorage.removeKey(alias);
+            } catch (KeyStoreAccessException e) {
+                keystoreError = e;
+            }
         }
 
-        // And then we remove the entry in the shared preferences
         prefsStorage.removeEntry(alias);
+        if (keystoreError != null) {
+            throw keystoreError;
+        }
     }
 
     public boolean itemExist(@NonNull final String alias) {
@@ -121,15 +127,26 @@ public class Keychain {
         return resultSet != null;
     }
 
+    @NonNull
+    public Set<String> getAllAliases() {
+        return prefsStorage.getAllEntries();
+    }
+
     /*
-      Note: this will clear the entire keychain storage, including the generated keys
+      Note: this will clear the entire keychain storage, including the generated keys.
+      Prefs are always emptied even when a Keystore alias is already gone.
      */
-    public void clear() throws KeyStoreAccessException {
+    public void clear() {
         final Set<String> entries = prefsStorage.getAllEntries();
 
         for (String entry : entries) {
-            deleteItem(entry);
+            try {
+                deleteItem(entry);
+            } catch (Exception ignored) {
+                prefsStorage.removeEntry(entry);
+            }
         }
+        prefsStorage.clearAll();
     }
 
     private void addCipherStorageToMap(@NonNull final CipherStorage cipherStorage) {

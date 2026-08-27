@@ -5,11 +5,15 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '13.4'
+platform :ios, '15.0'
 prepare_react_native_project!
 
 # no-ad-tracking Analytics subspec as we do not use it at all
 $RNFirebaseAnalyticsWithoutAdIdSupport = true
+
+# QR scan only — no GPS overlay and no worklets frame processors
+$VCEnableLocation = false
+$VCEnableFrameProcessors = false
 
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -47,8 +51,94 @@ target 'Xaman' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-    installer.pods_project.build_configurations.each do |config|
-        config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    # Apple Silicon + Xcode 16/26: do not force x86_64 simulator slices.
+    # TangemSdk exposes an internal C module (TangemSdk_secp256k1) that Xcode's
+    # explicit Swift modules cannot resolve when RNTangemSdk imports TangemSdk.
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings.delete('EXCLUDED_ARCHS[sdk=iphonesimulator*]')
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 15.0
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+        end
+        if ['RNTangemSdk', 'TangemSdk'].include?(target.name)
+          config.build_settings['SWIFT_ENABLE_EXPLICIT_MODULES'] = 'NO'
+        end
+      end
+    end
+
+    # Xcode 26: CocoaPods copies pod headers into Headers/{Public,Private}
+    # with new inodes. Clang then loads the same header as a module and as a
+    # textual include (FIRApp, RuntimeScheduler, …). Hardlink each copy to
+    # that pod's own source file so #import / #pragma once see one inode.
+    require 'fileutils'
+    sandbox = installer.sandbox
+
+    # RN 0.74.2 Hermes dSYMs from Maven (UUID-matched to the prebuilt iphoneos slice).
+    # Xcode copies xcframework dSYMs into the archive so App Store / Crashlytics can symbolicate.
+    hermes_dsym = File.join(__dir__, 'vendor-dSYMs', 'hermes-extract', 'iphoneos', 'hermes.framework.dSYM')
+    hermes_slice = File.join(sandbox.root, 'hermes-engine', 'destroot', 'Library', 'Frameworks', 'universal', 'hermes.xcframework', 'ios-arm64')
+    if File.directory?(hermes_dsym) && File.directory?(hermes_slice)
+      dest = File.join(hermes_slice, 'dSYMs')
+      FileUtils.mkdir_p(dest)
+      FileUtils.rm_rf(File.join(dest, 'hermes.framework.dSYM'))
+      FileUtils.cp_r(hermes_dsym, dest)
+      Pod::UI.puts 'Copied Hermes iphoneos dSYM into hermes.xcframework'.green
+    end
+
+    # TangemSdk 3.4.0: UIColor and Color inits both default `color: .white`. With
+    # IPHONEOS_DEPLOYMENT_TARGET >= 14 both are visible, so ActivityIndicatorView()
+    # is ambiguous. Drop the Color default; empty init still uses UIColor.white.
+    activity_indicator = File.join(sandbox.root, 'TangemSdk', 'TangemSdk', 'TangemSdk', 'UI', 'Views', 'Common', 'ActivityIndicatorView.swift')
+    if File.exist?(activity_indicator)
+      contents = File.read(activity_indicator)
+      old = 'init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: Color = .white)'
+      new = 'init(isAnimating: Bool = true, style: UIActivityIndicatorView.Style = .medium, color: Color)'
+      if contents.include?(old)
+        FileUtils.chmod('u+w', activity_indicator)
+        File.write(activity_indicator, contents.sub(old, new))
+        Pod::UI.puts 'Patched TangemSdk ActivityIndicatorView Color init (iOS 15 overload)'.green
+      end
+    end
+
+    veriff_dsym = File.join(__dir__, 'vendor-dSYMs', 'veriff', 'Veriff.framework.dSYM')
+    veriff_slice = File.join(sandbox.root, 'VeriffSDK', 'Veriff.xcframework', 'ios-arm64')
+    if File.directory?(veriff_dsym) && File.directory?(veriff_slice)
+      dest = File.join(veriff_slice, 'dSYMs')
+      FileUtils.mkdir_p(dest)
+      FileUtils.rm_rf(File.join(dest, 'Veriff.framework.dSYM'))
+      FileUtils.cp_r(veriff_dsym, dest)
+      Pod::UI.puts 'Copied Veriff iphoneos dSYM into Veriff.xcframework'.green
+    end
+    %w[Public Private].each do |kind|
+      Dir.children(File.join(sandbox.root, 'Headers', kind)).each do |pod_name|
+        src_root = begin
+          sandbox.pod_dir(pod_name)
+        rescue StandardError
+          next
+        end
+        next unless src_root && File.directory?(src_root.to_s)
+
+        by_name = {}
+        dups = {}
+        Dir.glob(File.join(src_root.to_s, '**', '*.h')).each do |src|
+          base = File.basename(src)
+          if by_name.key?(base)
+            dups[base] = true
+          else
+            by_name[base] = src
+          end
+        end
+        dups.each_key { |b| by_name.delete(b) }
+
+        Dir.glob(File.join(sandbox.root, 'Headers', kind, pod_name, '**', '*.h')).each do |copied|
+          src = by_name[File.basename(copied)]
+          next unless src
+          next if File.stat(copied).ino == File.stat(src).ino
+          FileUtils.chmod('u+w', copied)
+          FileUtils.rm(copied)
+          File.link(src, copied)
+        end
+      end
     end
   end
 end

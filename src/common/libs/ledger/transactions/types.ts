@@ -46,6 +46,25 @@ import {
     DIDDelete,
     GenesisMint,
     EnableAmendment,
+    PermissionedDomainDelete,
+    PermissionedDomainSet,
+    Batch,
+    CronSet,
+    VaultCreate,
+    VaultSet,
+    VaultDelete,
+    VaultDeposit,
+    VaultWithdraw,
+    VaultClawback,
+    LoanBrokerSet,
+    LoanBrokerDelete,
+    LoanBrokerCoverDeposit,
+    LoanBrokerCoverWithdraw,
+    LoanBrokerCoverClawback,
+    LoanSet,
+    LoanDelete,
+    LoanManage,
+    LoanPay,
 } from '.';
 
 // Pseudo transactions
@@ -107,6 +126,25 @@ export type Transactions =
     | DIDSet
     | DIDDelete
     | GenesisMint
+    | Batch
+    | PermissionedDomainDelete
+    | PermissionedDomainSet
+    | CronSet
+    | VaultCreate
+    | VaultSet
+    | VaultDelete
+    | VaultDeposit
+    | VaultWithdraw
+    | VaultClawback
+    | LoanBrokerSet
+    | LoanBrokerDelete
+    | LoanBrokerCoverDeposit
+    | LoanBrokerCoverWithdraw
+    | LoanBrokerCoverClawback
+    | LoanSet
+    | LoanDelete
+    | LoanManage
+    | LoanPay
     | EnableAmendment;
 
 /**

@@ -22,6 +22,8 @@ import { GetTransactionLink } from '@common/utils/explorer';
 import { Header } from '@components/General';
 
 import * as MutationWidgets from '@components/Modules/MutationWidgets';
+// eslint-disable-next-line import/no-cycle
+import { Transaction } from '@components/Modules/EventsList/EventListItems';
 
 import Localize from '@locale';
 
@@ -54,9 +56,12 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     }
 
     componentDidMount() {
+        const {embeddedInsteadOfModal} = this.props;
         this.mounted = true;
 
-        this.navigationListener = Navigation.events().bindComponent(this);
+        if (!embeddedInsteadOfModal) {
+            this.navigationListener = Navigation.events().bindComponent(this);
+        }
 
         InteractionManager.runAfterInteractions(this.checkAdvisory);
     }
@@ -87,7 +92,15 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
     checkAdvisory = async () => {
         const { item, account } = this.props;
 
-        const acc = (item?.Type === 'Credential' ? item.Issuer : item.Account);
+        const acc = (
+            item?.Type === 'Credential'
+                ? item.Issuer
+                : item?.Type === 'Cron' || item?.Type === 'Vault' || item?.Type === 'LoanBroker'
+                    ? item.Owner
+                    : item?.Type === 'Loan'
+                        ? (item as any).Borrower
+                        : item.Account
+        );
     
         // no need to check as the account is the initiator of the transaction
         if (acc === account.address) {
@@ -113,15 +126,17 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         // only validated transactions have CTID
         // Regular transactions
         if (
-            item.InstanceType === InstanceTypes.GenuineTransaction ||
-            item.InstanceType === InstanceTypes.FallbackTransaction
+            (
+                item.InstanceType === InstanceTypes.GenuineTransaction ||
+                item.InstanceType === InstanceTypes.FallbackTransaction
+            ) && item?.CTID
         ) {
             return GetTransactionLink(item.CTID);
         }
         
         // E.g. offers, NFT offers, etc.
-        if (item?.PreviousTxnID) {
-            return GetTransactionLink(item.PreviousTxnID);
+        if ((item as any)?.PreviousTxnID) {
+            return GetTransactionLink((item as any)?.PreviousTxnID);
         }
 
         return undefined;
@@ -178,6 +193,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
         const widgetsList: WidgetKey[] = [
             'LabelWidget',
             'AssetsMutationsWidget',
+            'VaultAssetWidget',
             'MemoWidget',
             'ReserveChangeWidget',
             'ParticipantsWidget',
@@ -185,6 +201,10 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
             'WarningsWidget',
             'IdentifierWidget',
             'ExplainWidget',
+            'BatchTransactions',
+            'RemitOutputs',
+            'MPTWidget',
+            'ActorArrayWidget',
             'FlagsWidget',
             'InvoiceIdWidget',
             'HookDetailsWidget',
@@ -197,7 +217,11 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
             <View key={`txdetailsview-${timestamp}`} style={AppStyles.container}>
                 <Header
                     leftComponent={{ icon: 'IconChevronLeft', onPress: this.close }}
-                    centerComponent={{ text: Localize.t('events.transactionDetails') }}
+                    centerComponent={{
+                        text: typeof (item as any)?._object === 'object'
+                            ? Localize.t('events.objectDetails')
+                            : Localize.t('events.transactionDetails'),
+                    }}
                     rightComponent={
                         this.getItemLink()
                             ? { icon: 'IconMoreHorizontal', onPress: this.showMenu }
@@ -225,6 +249,7 @@ class TransactionDetailsView extends Component<Props & { componentType: Componen
                             advisory,
                             componentType,
                             cachedTokenDetails,
+                            TransactionComponent: Transaction,
                         });
                     })}
                 </ScrollView>

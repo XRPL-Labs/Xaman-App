@@ -31,7 +31,7 @@ interface Props {
     containerStyle?: ViewStyle | ViewStyle[];
     labelStyle?: TextStyle | TextStyle[];
     testID?: string;
-    label?: string;
+    label?: string | JSX.Element;
     color?: string;
     type?: BadgeType;
     size?: 'small' | 'medium' | 'large';
@@ -80,6 +80,10 @@ export default class Badge extends PureComponent<Props> {
         const { label, labelStyle, type, size } = this.props;
 
         const style = [styles.label, { fontSize: SIZES[size] }, labelStyle];
+
+        if (typeof label === 'object') {
+            return label;
+        }
 
         if (label) {
             return (

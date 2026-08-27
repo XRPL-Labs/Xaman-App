@@ -186,7 +186,7 @@ class EnterDestinationTagOverlay extends Component<Props, State> {
         return (
             <ActionPanel
                 ref={this.actionPanelRef}
-                height={AppSizes.moderateScale(420)}
+                height={AppSizes.moderateScale(460)}
                 offset={offsetBottom}
                 onSlideDown={this.onClose}
                 extraBottomInset

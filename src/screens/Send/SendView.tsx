@@ -19,6 +19,8 @@ import { Navigator } from '@common/helpers/navigator';
 
 import Memo from '@common/libs/ledger/parser/common/memo';
 
+import { CalculateAvailableBalance } from '@common/utils/balance';
+
 import { AmountParser } from '@common/libs/ledger/parser/common';
 import {
     CheckCreate,
@@ -28,7 +30,7 @@ import {
     Remit,
     RemitValidation,
 } from '@common/libs/ledger/transactions';
-import { Destination } from '@common/libs/ledger/parser/types';
+import { AmountType, Destination } from '@common/libs/ledger/parser/types';
 import { SignMixin } from '@common/libs/ledger/mixin';
 
 // components
@@ -47,12 +49,16 @@ import { StepsContext } from './Context';
 // style
 import styles from './styles';
 
+import LoggerService, { LoggerInstance } from '@services/LoggerService';
+
 /* types ==================================================================== */
 import { Steps, Props, State, FeeItem } from './types';
 
 /* Component ==================================================================== */
 class SendView extends Component<Props, State> {
     static screenName = AppScreens.Transaction.Payment;
+
+    private logger: LoggerInstance;
 
     private closeTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -73,6 +79,8 @@ class SendView extends Component<Props, State> {
         const RemitWithSigMixin = SignMixin(Remit);
 
         // console.log('SendView constructor')
+
+        this.logger = LoggerService.createLogger('SendView');
 
         this.state = {
             currentStep: Steps.Details,
@@ -136,14 +144,38 @@ class SendView extends Component<Props, State> {
         this.setState({ amount });
     };
 
-    setFee = (selectedFee: FeeItem, serviceFee: FeeItem) => {
+    setServiceFee = (serviceFee: FeeItem) => {
         const { payment } = this.state;
+
+        // ^^ also called from summary step
+
+        payment.setServiceFee(Number(serviceFee.value));
+        this.setState({ serviceFeeAmount: serviceFee });
+    };
+
+    setFee = (selectedFee: FeeItem, serviceFee: FeeItem) => {
+        const { token, source } = this.state;
         this.setState({ selectedFee });
 
         // console.log('SendView Service Fee Amount Set', serviceFeeAmount.value);
         if (serviceFee) {
-            payment.setServiceFee(Number(serviceFee.value));
-            this.setState({ serviceFeeAmount: serviceFee });
+            // payment.setServiceFee(Number(serviceFee.value));
+            // this.setState({ serviceFeeAmount: serviceFee });
+            this.setServiceFee(serviceFee);
+
+            const isNativeAsset = (typeof token === 'string' && token === NetworkService.getNativeAsset());
+            if (!isNativeAsset) {
+                const fee = Number(serviceFee?.value || 0) / 1_000_000;
+                const avail = CalculateAvailableBalance(source!);
+                const spendable = (Math.floor(Number(avail) * 1_000_000) - 100) / 1_000_000;
+                if (spendable < fee) {
+                    this.logger.debug(`Service fee: ${fee} is higher than spendable: ${spendable}`);
+                    this.setServiceFee({
+                        type: 'LOW',
+                        value: String(Math.floor(Number(avail) * 1_000_000) - 100),
+                    });
+                }
+            }
         };
     };
 
@@ -197,7 +229,7 @@ class SendView extends Component<Props, State> {
             Sequence: 0,
         };
 
-        if (destination?.tag) {
+        if (destination && destination?.tag) {
             Object.assign(txJson, {
                 DestinationTag: Number(destination.tag),
             });
@@ -210,11 +242,16 @@ class SendView extends Component<Props, State> {
             });
         } else {
             Object.assign(txJson, {
-                Amount: {
-                    currency: token.currency.currencyCode,
-                    issuer: token.currency.issuer,
-                    value: amount,
-                },
+                Amount: token?.isMPToken()
+                    ? {
+                        mpt_issuance_id: token.currency.currencyCode,
+                        value: amount,
+                    }
+                    : {
+                        currency: token.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                        value: amount,
+                    },
             });
         }
 
@@ -254,6 +291,8 @@ class SendView extends Component<Props, State> {
                 }
             }
         }
+
+        // console.log('txjson', txJson)
 
         return txJson;
     };
@@ -330,6 +369,8 @@ class SendView extends Component<Props, State> {
             credentials,
         } = this.state;
 
+        this.logger.debug('Sending...');
+
         this.setState({
             isLoading: true,
         });
@@ -339,6 +380,8 @@ class SendView extends Component<Props, State> {
                 .toLocaleLowerCase();
             const _tx = txType === 'remit' ? remit : txType === 'check' ? check : payment;
 
+            this.logger.debug(`Sending TXType: ${txType}`);
+
             // set values to the payment transaction
 
             // set source account
@@ -346,8 +389,10 @@ class SendView extends Component<Props, State> {
 
             // set the destination
             _tx.Destination = destination!.address;
+            this.logger.debug(`Setting destination account: ${destination?.address}`);
 
-            if (typeof destination?.tag !== 'undefined') {
+            if (destination && typeof destination?.tag !== 'undefined') {
+                this.logger.debug(`Setting destination tag: ${destination.tag}`);
                 _tx.DestinationTag = Number(destination.tag);
             }
 
@@ -358,16 +403,20 @@ class SendView extends Component<Props, State> {
                     currency: NetworkService.getNativeAsset(),
                     value: amount,
                 };
-                if (_tx instanceof Payment) {
-                    _tx.Amount = am;
-                }
+                this.logger.debug(`Setting token: ${am.currency}`);
+
                 if (_tx instanceof CheckCreate) {
                     _tx.SendMax = am;
-                }
-                if (_tx instanceof Remit) {
+                    this.logger.debug('Check');
+                } else if (_tx instanceof Remit) {
                     _tx.Amounts = [ am ];
+                    this.logger.debug('Remit');
+                } else {
+                    _tx.Amount = am;
+                    this.logger.debug('Payment');
                 }
             } else {
+                this.logger.debug('IOU');
                 // IOU
                 // if issuer has transfer fee and sender/destination is not issuer, add partial payment flag
                 if (
@@ -375,34 +424,61 @@ class SendView extends Component<Props, State> {
                     source!.address !== token.currency.issuer &&
                     destination!.address !== token.currency.issuer
                 ) {
-                    _tx.Flags = {
-                        tfPartialPayment: true,
+                    // But not if sending as non payment (check/remit)
+                    if (txType === 'check' || txType === 'remit') {
+                        // Nope, don't add partial payment flag
+                    } else {
+                        _tx.Flags = {
+                            tfPartialPayment: true,
+                        };
+                    }
+                }
+
+                // set the amount, fix AssetScale for MPT
+                let mpTokenAmount = 0;
+                if (token?.isMPToken()) {
+                    try {
+                        const mptIssuanceDetails = JSON.parse(
+                            String(token?.limit_peer || '|{}').split('|')?.[1] || '{}',
+                        );
+                        if (mptIssuanceDetails && typeof mptIssuanceDetails === 'object') {
+                            if (mptIssuanceDetails?.AssetScale && Number(mptIssuanceDetails?.AssetScale || 0) > 1) {
+                                mpTokenAmount = Number(amount);
+                                mpTokenAmount *= 10 ** (mptIssuanceDetails?.AssetScale || 1);
+                            }
+                        }
+                    } catch {
+                        //
+                    }
+                }
+                const am = token?.isMPToken()
+                    ? {
+                        mpt_issuance_id: token.currency.currencyCode,
+                        value: String(mpTokenAmount || amount),
+                    }
+                    : {
+                        currency: token.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                        value: amount,
                     };
-                }
 
-                // set the amount
-                const am = {
-                    currency: token.currency.currencyCode,
-                    issuer: token.currency.issuer,
-                    value: amount,
-                };
-
-                if (_tx instanceof Payment) {
-                    _tx.Amount = am;
-                }
                 if (_tx instanceof CheckCreate) {
-                    _tx.SendMax = am;
-                }
-                if (_tx instanceof Remit) {
-                    _tx.Amounts = [ am ];
+                    _tx.SendMax = am as AmountType;
+                } else if (_tx instanceof Remit) {
+                    _tx.Amounts = [ am as AmountType ];
+                } else {
+                    _tx.Amount = am as AmountType;
                 }
             }
 
+            this.logger.debug('Calc fee');
             // set the calculated and selected fee
             _tx.Fee = {
                 currency: NetworkService.getNativeAsset(),
                 value: new AmountParser(selectedFee!.value).dropsToNative().toFixed(),
             };
+
+            this.logger.debug(`Fee ${_tx.Fee.value}`);
 
             // set memo if any
             if (memo) {
@@ -420,19 +496,49 @@ class SendView extends Component<Props, State> {
             // validate payment for all possible mistakes
             // console.log(txType, payment, check, remit)
 
-            if (txType === 'payment') {
-                await PaymentValidation(payment);
-            }
+            this.logger.debug('Pre validation');
+            let didTimeout = false;
+            const validationTimeout = setTimeout(() => {
+                this.logger.error(`Timeout: (${txType.toUpperCase()}) validation @ SendView`);
+                didTimeout = true;
+                Navigator.showAlertModal({
+                    type: 'error',
+                    text: Localize.t('global.txvalidationerr'),
+                    buttons: [
+                        {
+                            text: Localize.t('global.ok'),
+                            onPress: () => {},
+                            light: false,
+                        },
+                    ],
+                });
+            }, 15_000);
+
             if (txType === 'check') {
+                this.logger.debug('Validation Check');
                 await CheckCreateValidation(check);
-            }
-            if (txType === 'remit') {
+                clearTimeout(validationTimeout);
+            } else if (txType === 'remit') {
+                this.logger.debug('Validation Remit');
                 await RemitValidation(remit);
+                clearTimeout(validationTimeout);
+            } else {
+                this.logger.debug('Validation Payment');
+                await PaymentValidation(payment);
+                clearTimeout(validationTimeout);
+            }
+
+            this.logger.debug('Validation Done');
+
+            if (didTimeout) {
+                return;
             }
 
             // sign the transaction and then submit
             await _tx.sign(source!).then(this.submit);
         } catch (error: any) {
+            this.logger.debug('SendView payment error', error);
+
             if (error) {
                 Navigator.showAlertModal({
                     type: 'error',
@@ -530,6 +636,7 @@ class SendView extends Component<Props, State> {
                     setAmount: this.setAmount,
                     setToken: this.setToken,
                     setFee: this.setFee,
+                    setServiceFee: this.setServiceFee,
                     setMemo: this.setMemo,
                     setCredentials: this.setCredentials,
                     submitAsAltTxTypeTo: this.submitAsAltTxTypeTo,

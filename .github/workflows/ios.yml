@@ -4,9 +4,9 @@ env:
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ develop, master ]
+    branches: [ main, 'update/**' ]
 
 jobs:
   build-test:

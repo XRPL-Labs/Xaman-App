@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Platform, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
+import { View, ImageBackground, Text, Linking, BackHandler, NativeEventSubscription } from 'react-native';
 
 import {
     Navigation,
@@ -11,7 +11,6 @@ import {
     OptionsModalPresentationStyle,
     OptionsModalTransitionStyle,
 } from 'react-native-navigation';
-import { RNCamera, GoogleVisionBarcodesDetectedEvent, BarCodeReadEvent } from 'react-native-camera';
 import { StringTypeDetector, StringDecoder, StringType, XrplDestination, PayId } from 'xumm-string-decode';
 
 import { StyleService, BackendService, NetworkService, LinkingService } from '@services';
@@ -40,7 +39,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
-import { TrustSet } from '@common/libs/ledger/transactions';
+import CameraScanner from './CameraScanner';
+import { AccountSet, Invoke, TrustSet } from '@common/libs/ledger/transactions';
 import { ReviewTransactionModalProps } from '../ReviewTransaction';
 
 /* Component ==================================================================== */
@@ -235,22 +235,36 @@ class ScanModal extends Component<Props, State> {
     };
 
     handleTransactionTemplate = (parsed: any) => {
-        let errorMsg = Localize.t('global.theQRIsNotWhatWeExpect');
+        let errorMsg = Localize.t('scan.theQRIsNotWhatWeExpect');
 
         try {
-            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');   
+            const str = Buffer.from(String(parsed?.jsonhex || ''), 'hex').toString('utf-8');
             const json = JSON.parse(str);
-           
-            if (
-                json?.NetworkID !== NetworkService.getNetwork().networkId ||
-                NetworkService.getNetwork().networkId > 1024 && !json?.NetworkID
-            ) {
-                errorMsg = Localize.t('payload.payloadForceNetworkError');
-                throw new Error('Invalid network');
+
+            // resolve the network this template is intended for, without NetworkID the template
+            // targets XRPL networks (id <= 1024) as these cannot include NetworkID in txn
+            let templateNetwork;
+
+            if (typeof json?.NetworkID === 'undefined') {
+                if (NetworkService.getNetwork().networkId > 1024) {
+                    errorMsg = Localize.t('payload.payloadForceNetworkError');
+                    throw new Error('Invalid network');
+                }
+            } else {
+                templateNetwork = NetworkRepository.findOne({ networkId: json.NetworkID });
+
+                if (!templateNetwork) {
+                    errorMsg = Localize.t('payload.payloadForceNetworkError');
+                    throw new Error('Invalid network');
+                }
+
+                // NetworkID is populated at signing time based on the connected network
+                delete json.NetworkID;
             }
+
             if (json?.TransactionType === 'TrustSet') {
                 const trustSet = new TrustSet(json);
-        
+
                 const payload = Payload.build(
                     trustSet.JsonForSigning,
                     Localize.t('asset.addingAssetReserveDescription', {
@@ -258,11 +272,50 @@ class ScanModal extends Component<Props, State> {
                         nativeAsset: NetworkService.getNativeAsset(),
                     }),
                 );
-        
+
+                if (templateNetwork) {
+                    // review flow will offer switching if not connected to the declared network
+                    payload.meta.force_network = templateNetwork.key;
+                }
+
                 this.setShouldRead(false);
 
                 setTimeout(() => {
                     Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
+                        AppScreens.Modal.ReviewTransaction,
+                        {
+                            payload,
+                        },
+                        { modalPresentationStyle: OptionsModalPresentationStyle.fullScreen },
+                    );
+                }, 800);
+
+                this.onClose();
+
+                return;
+            }
+
+            // AccountSet / Invoke templates: Debug/dev-client only AND developer
+            // mode. Never ship this path in Release — a tricked user could enable
+            // developer mode and scan a hostile QR.
+            if (
+                (json?.TransactionType === 'AccountSet' || json?.TransactionType === 'Invoke') &&
+                __DEV__ &&
+                CoreRepository.isDeveloperModeEnabled()
+            ) {
+                const transaction =
+                    json.TransactionType === 'Invoke' ? new Invoke(json) : new AccountSet(json);
+
+                const payload = Payload.build(transaction.JsonForSigning);
+
+                if (templateNetwork) {
+                    payload.meta.force_network = templateNetwork.key;
+                }
+
+                this.setShouldRead(false);
+
+                setTimeout(() => {
+                    Navigator.showModal<ReviewTransactionModalProps<AccountSet | Invoke>>(
                         AppScreens.Modal.ReviewTransaction,
                         {
                             payload,
@@ -662,26 +715,6 @@ class ScanModal extends Component<Props, State> {
         }
     };
 
-    onGoogleVisionBarcodesDetected = ({ barcodes }: GoogleVisionBarcodesDetectedEvent) => {
-        // should ba array and not empty
-        if (!Array.isArray(barcodes) || barcodes.length === 0) {
-            return;
-        }
-        // get first barcode that exist
-        const barcode = barcodes[0];
-
-        // type check
-        if (typeof barcode === 'object' && barcode?.data) {
-            this.onReadCode(barcode?.data);
-        }
-    };
-
-    onBarCodeRead = ({ data }: BarCodeReadEvent) => {
-        if (data) {
-            this.onReadCode(data);
-        }
-    };
-
     onReadCode = (data: string) => {
         const { coreSettings } = this.state;
 
@@ -759,6 +792,7 @@ class ScanModal extends Component<Props, State> {
                     <Spacer size={50} />
                     <Button
                         secondary
+                        testID="scan-permission-close-button"
                         label={Localize.t('global.close')}
                         onPress={this.onClose}
                         style={{ backgroundColor: AppColors.silver }}
@@ -766,6 +800,7 @@ class ScanModal extends Component<Props, State> {
                     />
                     <Spacer size={15} />
                     <Button
+                        testID="scan-permission-approve-button"
                         style={{ backgroundColor: AppColors.green }}
                         label={Localize.t('global.approvePermissions')}
                         // nonBlock
@@ -797,6 +832,7 @@ class ScanModal extends Component<Props, State> {
         if (isLoading) {
             return (
                 <ImageBackground
+                    testID="scan-loading-view"
                     resizeMode="cover"
                     source={
                         StyleService.getImageIfLightModeIfDarkMode('BackgroundShapesLight', 'BackgroundShapes')
@@ -815,25 +851,8 @@ class ScanModal extends Component<Props, State> {
         }
 
         return (
-            <View style={styles.container}>
-                <RNCamera
-                    style={AppStyles.flex1}
-                    type={RNCamera.Constants.Type.back}
-                    flashMode={RNCamera.Constants.FlashMode.on}
-                    androidCameraPermissionOptions={{
-                        title: Localize.t('global.permissionToUseCamera'),
-                        message: Localize.t('global.weNeedYourPermissionToUseYourCamera'),
-                        buttonPositive: Localize.t('global.ok'),
-                        buttonNegative: Localize.t('global.cancel'),
-                    }}
-                    notAuthorizedView={this.renderNotAuthorizedView()}
-                    captureAudio={false}
-                    onGoogleVisionBarcodesDetected={
-                        Platform.OS === 'android' ? this.onGoogleVisionBarcodesDetected : undefined
-                    }
-                    onBarCodeRead={Platform.OS === 'ios' ? this.onBarCodeRead : undefined}
-                    barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-                >
+            <View testID="scan-modal" style={styles.container}>
+                <CameraScanner onRead={this.onReadCode} notAuthorizedView={this.renderNotAuthorizedView()}>
                     <View style={styles.rectangleContainer}>
                         <View style={styles.topLeft} />
                         <View style={styles.topRight} />
@@ -853,6 +872,7 @@ class ScanModal extends Component<Props, State> {
                     <View style={AppStyles.centerSelf}>
                         <Button
                             numberOfLines={1}
+                            testID="scan-clipboard-button"
                             onPress={this.checkClipboardContent}
                             label={Localize.t('scan.importFromClipboard')}
                             // icon="IconClipboard"
@@ -865,6 +885,7 @@ class ScanModal extends Component<Props, State> {
                         <Spacer size={15} />
                         <Button
                             numberOfLines={1}
+                            testID="scan-close-button"
                             activeOpacity={0.9}
                             label={Localize.t('global.close')}
                             onPress={this.onClose}
@@ -875,7 +896,7 @@ class ScanModal extends Component<Props, State> {
                             ]}
                         />
                     </View>
-                </RNCamera>
+                </CameraScanner>
             </View>
         );
     }

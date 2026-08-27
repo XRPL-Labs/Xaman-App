@@ -15,12 +15,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Key;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.GCMParameterSpec;
 
+import libs.security.vault.VaultErrorCodes;
 import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.storage.Keychain;
 
@@ -93,10 +93,8 @@ public class CipherStorageKeystoreAesGcm extends CipherStorageBase {
                                     @NonNull final String password)
             throws CryptoFailedException {
 
-        final AtomicInteger retries = new AtomicInteger(1);
-
         try {
-            final Key key = extractGeneratedKey(alias, retries);
+            final Key key = extractGeneratedKey(alias);
 
             return new EncryptionResult(
                     encryptString(key, username),
@@ -116,17 +114,24 @@ public class CipherStorageKeystoreAesGcm extends CipherStorageBase {
                                     @NonNull final byte[] username,
                                     @NonNull final byte[] password)
             throws CryptoFailedException {
-        final AtomicInteger retries = new AtomicInteger(1);
-
         try {
-            final Key key = extractGeneratedKey(alias, retries);
+            final Key key = extractExistingKey(alias);
 
             return new DecryptionResult(decryptBytes(key, username), decryptBytes(key, password));
+        } catch (CryptoFailedException e) {
+            throw e;
         } catch (GeneralSecurityException e) {
-            throw new CryptoFailedException("Could not decrypt data with alias: " + alias, e);
+            throw new CryptoFailedException(
+                    VaultErrorCodes.KEYSTORE_DECRYPT,
+                    "Could not decrypt data with alias: " + alias,
+                    e
+            );
         } catch (Throwable fail) {
-            throw new CryptoFailedException("Unknown error with alias: " + alias +
-                    ", error: " + fail.getMessage(), fail);
+            throw new CryptoFailedException(
+                    classifyDecryptFailure(fail),
+                    "Unknown error with alias: " + alias + ", error: " + fail.getMessage(),
+                    fail
+            );
         }
     }
     //endregion

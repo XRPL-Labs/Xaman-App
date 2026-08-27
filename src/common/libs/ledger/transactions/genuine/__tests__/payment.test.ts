@@ -85,6 +85,7 @@ describe('Payment tx', () => {
                 currency: 'USD',
                 issuer: 'rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn',
                 value: '1',
+                mpt_issuance_id: undefined,
             });
 
             instance.Destination = 'rXUMMProAS9qHvxooeJMYz5smAsJZvArh';
@@ -102,6 +103,7 @@ describe('Payment tx', () => {
                 currency: 'USD',
                 issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
+                mpt_issuance_id: undefined,
             });
 
             instance.SendMax = {
@@ -122,6 +124,7 @@ describe('Payment tx', () => {
                 currency: 'USD',
                 issuer: 'rrrrrrrrrrrrrrrrrrrrrholvtp',
                 value: '1',
+                mpt_issuance_id: undefined,
             });
             instance.DeliverMin = {
                 currency: 'XRP',

@@ -8,6 +8,7 @@ import { Alert, View, Keyboard } from 'react-native';
 import { AppScreens } from '@common/constants';
 
 import { Navigator } from '@common/helpers/navigator';
+import { Toast } from '@common/helpers/interface';
 import Vault from '@common/libs/vault';
 
 import { AccountModel } from '@store/models';
@@ -72,8 +73,7 @@ class ChangePassphraseView extends Component<Props, State> {
         // close the screen
         await Navigator.pop();
 
-        // show success message
-        Alert.alert(Localize.t('global.success'), Localize.t('account.yourAccountPasswordChangedSuccessfully'));
+        Toast(Localize.t('account.yourAccountPasswordChangedSuccessfully'));
     };
 
     onChangePassphraseError = () => {

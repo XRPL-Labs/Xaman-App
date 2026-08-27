@@ -20,4 +20,9 @@ describe('Mutations Mixin', () => {
         const instance = new Mixed({ ledger_index: 57913674 } as any, { TransactionIndex: 4 } as any);
         expect(instance.CTID).toBe('C373B14A00040000');
     });
+
+    it('Should not throw when ledger_index is missing', () => {
+        const instance = new Mixed({} as any, {} as any);
+        expect(instance.CTID).toBeUndefined();
+    });
 });

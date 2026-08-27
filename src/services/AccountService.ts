@@ -29,6 +29,7 @@ import {
     UnsubscribeResponse,
 } from '@common/libs/ledger/types/methods';
 import { AccountTypes } from '@store/types';
+import BackendService from './BackendService';
 
 /* Events  ==================================================================== */
 export type AccountServiceEvent = {
@@ -65,7 +66,10 @@ class AccountService extends EventEmitter {
                 AccountRepository.on('accountRemove', this.onAccountsChange);
 
                 // Account switched, selectively update account details & TrustLines
-                CoreRepository.on('switchAccount', (accountAddress) => this.updateAccountsDetails([accountAddress]));
+                CoreRepository.on('switchAccount', (accountAddress) => {
+                    this.updateAccountsDetails([accountAddress]);
+                    BackendService.action('switchaccount', accountAddress);
+                });
 
                 // on network service connect
                 NetworkService.on('connect', this.onNetworkConnect);
@@ -217,7 +221,6 @@ class AccountService extends EventEmitter {
             this.logger.warn(`updateAccountInfo [${account}]:`, accountInfo?.error);
             return;
         }
-
         const { account_data, account_flags } = accountInfo;
         // Now fetch the Account Lines (TrustLines), but only for the currently selected accounts
         const updateAccountLinesIf = CoreRepository?.getDefaultAccount()?.address === account;
@@ -252,14 +255,19 @@ class AccountService extends EventEmitter {
      * Get normalized account lines
      */
     getNormalizedAccountLines = async (account: string): Promise<Partial<TrustLineModel>[]> => {
-        const [accountLines, accountObligations] = await Promise.all([
+        const [accountLines, accountObligations, mptokens, extAssets] = await Promise.all([
             LedgerService.getFilteredAccountLines(account),
             LedgerService.getAccountObligations(account),
+            // No MPT on non-XRPL
+            ...(NetworkService.getNetwork().name.toLowerCase().match(/xahau/)
+                ? [Promise.resolve([])]
+                : [LedgerService.getAccountMPTFullDetails(account)]),
+            BackendService.getAccountExtAssets(account),
         ]);
 
         this.logger.debug('Getting Normalised Account Lines for ', account);
 
-        const combinedLines = [...accountLines, ...accountObligations];
+        const combinedLines = [...accountLines, ...accountObligations, ...mptokens, ...extAssets];
 
         return Promise.all(
             combinedLines.map(async (line) => {
@@ -275,8 +283,11 @@ class AccountService extends EventEmitter {
                     balance = new BigNumber(balance).minus(new BigNumber(line.locked_balance)).toString();
                 }
 
+                const order = (line as unknown as any)?.order;
+
                 return {
                     id: `${account}.${currency.id}}`,
+                    ...(order && typeof order === 'number' ? { order } : {}),
                     currency,
                     balance,
                     no_ripple: line.no_ripple ?? false,
@@ -325,7 +336,7 @@ class AccountService extends EventEmitter {
                         // native currency
                         if (typeof pair === 'string') {
                             pairs.push(NetworkService.getNativeAsset());
-                        } else if (typeof pair === 'object') {
+                        } else if (typeof pair === 'object' && 'currency' in pair) {
                             // IOU
                             pairs.push(
                                 await CurrencyRepository.upsert({

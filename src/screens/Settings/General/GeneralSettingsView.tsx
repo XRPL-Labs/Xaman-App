@@ -137,6 +137,18 @@ class GeneralSettingsView extends Component<Props, State> {
         });
     };
 
+    onAccountWorthActiveChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            accountWorthActive: value,
+        });
+    };
+
+    onShowPerAssetWorthChange = (value: boolean) => {
+        CoreRepository.saveSettings({
+            showPerAssetWorth: value,
+        });
+    };
+
     themeAutoSwitch = (value: boolean) => {
         const { coreSettings } = this.state;
         if (value) {
@@ -287,6 +299,8 @@ class GeneralSettingsView extends Component<Props, State> {
     render() {
         const { coreSettings } = this.state;
 
+        const accountWorthInfo = coreSettings.accountWorthInfo.split('|');
+
         const themeItems = {
             light: {
                 title: Localize.t('global.default'),
@@ -316,39 +330,17 @@ class GeneralSettingsView extends Component<Props, State> {
                     centerComponent={{ text: Localize.t('settings.generalSettings') }}
                 />
                 <ScrollView>
-                    <View style={styles.row}>
+
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                        AppStyles.marginTopNone,
+                    ]}>
                         <View style={AppStyles.flex1}>
-                            <Text style={AppStyles.pbold}>{Localize.t('global.theme')}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.row}>
-                        <View style={AppStyles.flex3}>
-                            <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.themeAutoSwitch')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch
-                                checked={coreSettings.themeAutoSwitch}
-                                onChange={this.themeAutoSwitch}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.rowNoBorder}>
-                        <View style={AppStyles.flex1}>
-                            {
-                                Object.keys(themeItems)
-                                    // @ts-ignore
-                                    .filter((key: Themes) => {
-                                        if (coreSettings.themeAutoSwitch) {
-                                            if (key === 'light') return false;
-                                        }
-                                        
-                                        return true;
-                                    })
-                                    // @ts-ignore
-                                    .map((key: Themes) => this.renderThemeButton(key, themeItems[key]))
-                            }
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.languageAndCurrency')}</Text>
                         </View>
                     </View>
 
@@ -379,6 +371,132 @@ class GeneralSettingsView extends Component<Props, State> {
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.useSystemSeparators')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch
+                                checked={coreSettings.useSystemSeparators}
+                                onChange={this.onSystemSeparatorChange}
+                            />
+                        </View>
+                    </View>
+
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.homeScreen')}</Text>
+                        </View>
+                    </View>
+
+                    {accountWorthInfo.length > 1 && (
+                        <>
+                            <View style={styles.row}>
+                                <View style={AppStyles.flex3}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('settings.accountWorthActive', { name: accountWorthInfo[1] })}
+                                    </Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                    <Switch
+                                        checked={coreSettings.accountWorthActive}
+                                        onChange={this.onAccountWorthActiveChange}
+                                    />
+                                </View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={AppStyles.flex3}>
+                                    <Text numberOfLines={1} style={styles.label}>
+                                        {Localize.t('settings.showPerAssetWorth')}
+                                    </Text>
+                                </View>
+                                <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                                    <Switch
+                                        checked={coreSettings.showPerAssetWorth}
+                                        onChange={this.onShowPerAssetWorthChange}
+                                    />
+                                </View>
+                            </View>
+                        </>
+                    )}
+
+                    <View style={styles.row}>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.showReserveValue')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch checked={coreSettings.showReservePanel} onChange={this.onShowReservePanelChange} />
+                        </View>
+                    </View>
+
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.theme')}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.row}>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={styles.label}>
+                                {Localize.t('settings.themeAutoSwitch')}
+                            </Text>
+                        </View>
+                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
+                            <Switch
+                                checked={coreSettings.themeAutoSwitch}
+                                onChange={this.themeAutoSwitch}
+                            />
+                        </View>
+                    </View>
+                    <View style={[
+                        styles.rowNoBorder,
+                        AppStyles.marginBottomSml,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            {
+                                Object.keys(themeItems)
+                                    // @ts-ignore
+                                    .filter((key: Themes) => {
+                                        if (coreSettings.themeAutoSwitch) {
+                                            if (key === 'light') return false;
+                                        }
+                                        
+                                        return true;
+                                    })
+                                    // @ts-ignore
+                                    .map((key: Themes) => this.renderThemeButton(key, themeItems[key]))
+                            }
+                        </View>
+                    </View>
+
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.transactionsAndEvents')}</Text>
+                        </View>
+                    </View>
+                    
+                    <View style={styles.row}>
+                        <View style={AppStyles.flex3}>
+                            <Text numberOfLines={1} style={styles.label}>
                                 {Localize.t('settings.hideAdvisoryTransactions')}
                             </Text>
                         </View>
@@ -404,6 +522,18 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                     </View>
 
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.miscellaneous')}</Text>
+                        </View>
+                    </View>
+
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -415,30 +545,6 @@ class GeneralSettingsView extends Component<Props, State> {
                         </View>
                     </View>
 
-                    <View style={styles.row}>
-                        <View style={AppStyles.flex3}>
-                            <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.useSystemSeparators')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch
-                                checked={coreSettings.useSystemSeparators}
-                                onChange={this.onSystemSeparatorChange}
-                            />
-                        </View>
-                    </View>
-
-                    <View style={styles.row}>
-                        <View style={AppStyles.flex3}>
-                            <Text numberOfLines={1} style={styles.label}>
-                                {Localize.t('settings.showReserveValue')}
-                            </Text>
-                        </View>
-                        <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
-                            <Switch checked={coreSettings.showReservePanel} onChange={this.onShowReservePanelChange} />
-                        </View>
-                    </View>
                 </ScrollView>
             </View>
         );

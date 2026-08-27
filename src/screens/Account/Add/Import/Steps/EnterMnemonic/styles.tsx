@@ -43,6 +43,18 @@ const styles = StyleService.create({
         borderColor: '$transparent',
         marginVertical: 5,
     },
+    optionSection: {
+        flexGrow: 0,
+        flexShrink: 0,
+    },
+    mnemonicScrollContent: {
+        paddingBottom: 120,
+    },
+    optionRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: AppSizes.paddingExtraSml,
+    },
     optionsButton: {
         flex: 1,
         borderRadius: 20,
@@ -60,6 +72,9 @@ const styles = StyleService.create({
     optionsButtonSelectedText: {
         fontFamily: AppFonts.base.familyBold,
         color: '$white',
+    },
+    optionsButtonSelectedIcon: {
+        tintColor: '$white',
     },
 });
 

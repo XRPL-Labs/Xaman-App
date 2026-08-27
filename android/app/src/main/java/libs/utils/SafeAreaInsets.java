@@ -23,6 +23,7 @@ public class SafeAreaInsets {
     public static int getStatusBarHeight() { return statusBarHeight; }
     public static int getNavigationBarHeight() { return navigationBarHeight; }
     public static boolean hasVirtualNavigation() { return hasVirtualNavigation; }
-    public static int getSafeAreaTop() { return Math.max(statusBarHeight, displayCutoutTop); }
+    // Icon-bar height, not the punch-hole-expanded statusBars.top.
+    public static int getSafeAreaTop() { return statusBarHeight; }
     public static int getSafeAreaBottom() { return navigationBarHeight; }
 }

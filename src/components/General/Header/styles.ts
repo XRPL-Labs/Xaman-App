@@ -1,12 +1,10 @@
-import { Platform } from 'react-native';
-
 import StyleService from '@services/StyleService';
 import { AppStyles, AppSizes } from '@theme';
 
 const styles = StyleService.create({
     container: {
         paddingHorizontal: 20,
-        marginTop: Platform.select({ ios: AppSizes.statusBarHeight, default: 0 }),
+        marginTop: AppSizes.statusBarHeight,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',

@@ -29,6 +29,7 @@ describe('AMMWithdraw tx', () => {
                 currency: 'USD',
                 issuer: 'rhpHaFggC92ELty3n3yDEtuFgWxXWkUFET',
                 value: '4000',
+                mpt_issuance_id: undefined,
             });
             expect(instance.Amount2).toStrictEqual({
                 currency: 'XRP',
@@ -38,6 +39,7 @@ describe('AMMWithdraw tx', () => {
                 currency: 'B3813FCAB4EE68B3D0D735D6849465A9113EE048',
                 issuer: 'rH438jEAzTs5PYtV6CHZqpDpwCKQmPW9Cg',
                 value: '1000',
+                mpt_issuance_id: undefined,
             });
             expect(instance.EPrice).toStrictEqual({ currency: 'XRP', value: '0.000025' });
         });

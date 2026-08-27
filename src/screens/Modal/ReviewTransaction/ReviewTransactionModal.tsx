@@ -33,6 +33,7 @@ import { StepsContext } from './Context';
 import { Props, State, Steps } from './types';
 import LedgerService from '@services/LedgerService';
 import BackendService from '@services/BackendService';
+import { VerifyResultType } from '@common/libs/ledger/types';
 
 /* Component ==================================================================== */
 class ReviewTransactionModal extends Component<Props, State> {
@@ -306,7 +307,12 @@ class ReviewTransactionModal extends Component<Props, State> {
                 // if any validation set to the transaction run and check
                 // ignore if multiSign
                 const validation = ValidationFactory.fromTransaction(transaction!);
-                if (typeof validation === 'function' && !payload.isMultiSign() && payload.shouldSubmit()) {
+                if (
+                    typeof validation === 'function' &&
+                    !payload.isMultiSign() &&
+                    payload.shouldSubmit() &&
+                    !transaction.isBatchInNeedOfMultipleSigners()
+                ) {
                     await validation(transaction, source);
                 }
             } catch (validationError: any) {
@@ -570,12 +576,14 @@ class ReviewTransactionModal extends Component<Props, State> {
         });
     };
 
-    setTransaction = (tx: SignableTransaction & MutatedTransaction) => {
+    setTransaction = (tx: SignableTransaction & MutatedTransaction, forced = false) => {
         const { transaction } = this.state;
 
         // we shouldn't override already set transaction
-        if (transaction) {
+        if (transaction && !forced) {
             throw new Error('Transaction is already set and cannot be overwritten!');
+            // console.log('old', transaction);
+            // console.log('new', tx);
         }
 
         this.setState({
@@ -609,8 +617,29 @@ class ReviewTransactionModal extends Component<Props, State> {
         // NOTE: in some specific case the Import transaction can only be signed with regularKey account
         // As the Master account is imported as readonly and transaction can only be signed by regular key
         // we should not override the Account field, we should show the actual account
-        if (!payload.isMultiSign() && transaction.Type !== TransactionTypes.Import) {
+
+        // console.log('isinneedofsigners', transaction.isBatchInNeedOfMultipleSigners())
+
+        if (
+            !payload.isMultiSign() &&
+            transaction.Type !== TransactionTypes.Import &&
+            !transaction.isBatchInNeedOfMultipleSigners()
+            // ^^ Only if the batch is already fully inner satisfied it's OK to update the
+            // outer parent account, as we don't care anymore who signs and submits it then.
+        ) {
             transaction.Account = account.address;
+        }
+
+        if (transaction.Type === TransactionTypes.Batch) {
+            const innerSigners = transaction.innerBatchSigners();
+            if (innerSigners.length === 1) {
+                // Just one signer, that's the top level one then
+                // no need for individual signatures
+                if (payload.shouldSubmit()) {
+                    // eslint-disable-next-line prefer-destructuring
+                    transaction.Account = account.address;
+                }
+            }
         }
 
         // change state
@@ -676,7 +705,10 @@ class ReviewTransactionModal extends Component<Props, State> {
             payload.patch(payloadPatch);
 
             // check if we need to submit the payload to the Ledger
-            if (payload.shouldSubmit()) {
+            if (payload.shouldSubmit() && (
+                !transaction.isBatchInNeedOfMultipleSigners() ||
+                transaction.innerBatchSigners().length === 1
+            )) {
                 this.setState({
                     currentStep: Steps.Submitting,
                 });
@@ -689,7 +721,11 @@ class ReviewTransactionModal extends Component<Props, State> {
                     this.setState({ currentStep: Steps.Verifying });
 
                     // verify transaction
-                    const verifyResult = await transaction.verify();
+                    const pastSeq = submitResult?.engineResult === 'tefPAST_SEQ';
+
+                    const verifyResult = pastSeq
+                        ? Promise.resolve({ success: false }) as unknown as VerifyResultType
+                        : await transaction.verify();
 
                     // update submit result base on verify result
                     if (verifyResult.success) {

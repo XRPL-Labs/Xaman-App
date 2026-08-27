@@ -2,7 +2,7 @@ import { has, get, first, keys, isPlainObject } from 'lodash';
 
 import { utils } from 'xrpl-accountlib';
 
-import { Card, EllipticCurve, OptionsSign } from 'tangem-sdk-react-native';
+import { Card, EllipticCurve, OptionsCommon } from 'tangem-sdk-react-native';
 
 export enum TangemSecurity {
     LongTap = 'LongTap',
@@ -171,15 +171,38 @@ const GetHDWalletStatus = (card: Card): boolean => {
     return get(settings, 'isHDWalletAllowed', false);
 };
 
+export interface MultipleHashesOptionsSign extends OptionsCommon {
+    /**
+     * Array of transaction hashes. It can be from one or up to ten hashes of the same length.
+     */
+    hashes: string[];
+    /**
+     * cardId: CID, Unique Tangem card ID number.
+     */
+    cardId: string;
+    /**
+     * A custom description that shows at the beginning of the NFC session. If nil, default message will be used
+     */
+    walletPublicKey: string;
+    /**
+     * Derivation path of the wallet. Optional. COS v. 4.28 and higher,
+     */
+    derivationPath?: string;
+    /**
+     * @deprecated 'hdPath' has been deprecated, please use 'derivationPath' instead!
+     */
+    hdPath?: string;
+}
+
 /**
  * get sign options base on wallet HD wallet support
  */
-const GetSignOptions = (card: Card, hashToSign: string): OptionsSign => {
+const GetSignOptions = (card: Card, hashToSign: string): MultipleHashesOptionsSign => {
     const options = {
         cardId: GetCardId(card),
         walletPublicKey: GetWalletPublicKey(card),
         hashes: [hashToSign],
-    } as OptionsSign;
+    } as MultipleHashesOptionsSign;
 
     // multi currency card
     if (GetHDWalletStatus(card)) {

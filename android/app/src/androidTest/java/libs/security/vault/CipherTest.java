@@ -15,8 +15,10 @@ import org.junit.runner.RunWith;
 import java.util.Map;
 
 import libs.security.providers.UniqueIdProvider;
+import libs.security.vault.VaultErrorCodes;
 import libs.security.vault.cipher.Cipher;
 import libs.security.vault.exceptions.CryptoFailedException;
+import libs.security.vault.storage.Keychain;
 
 import extentions.PerformanceLogger;
 
@@ -100,6 +102,142 @@ public class CipherTest {
         String decryptResultLongKey = Cipher.decrypt((String) cipherResultLong.get("cipher"), clearKeyLong, ((Cipher.DerivedKeys) cipherResultLong.get("derived_keys")).toJSONString());
         performanceLogger.end("CIPHER_DECRYPT_V2_LONG_KEY");
         Assert.assertEquals(clearText, decryptResultLongKey);
+
+        try {
+            Cipher.decrypt(cipher, "Wrong Key", derivedKeys.toJSONString());
+            Assert.fail("wrong key should not decrypt");
+        } catch (CryptoFailedException e) {
+            Assert.assertEquals(VaultErrorCodes.WRONG_PASSPHRASE, e.getCode());
+        }
+
+        try {
+            Cipher.decrypt(cipher.substring(1), clearKey, derivedKeys.toJSONString());
+            Assert.fail("malformed cipher should not decrypt");
+        } catch (CryptoFailedException e) {
+            Assert.assertEquals(VaultErrorCodes.VAULT_CORRUPT, e.getCode());
+        }
+    }
+
+    @Test
+    public void decryptProofFillsLastKnownThenEncryptSucceeds() throws Exception {
+        UniqueIdProvider provider = UniqueIdProvider.sharedInstance();
+        String liveId = provider.getLiveAndroidId();
+        Assert.assertNotNull(liveId);
+        ReactApplicationContext context = new ReactApplicationContext(
+                InstrumentationRegistry.getInstrumentation().getTargetContext()
+        );
+        Keychain keychain = new Keychain(context);
+        android.content.SharedPreferences prefs = context.getSharedPreferences(
+                "xaman_device_id",
+                android.content.Context.MODE_PRIVATE
+        );
+        String previousLast = prefs.getString("last_known_android_id", null);
+        java.util.Map<String, String> previousUnique = keychain.itemExist("device-unique-id")
+                ? keychain.getItem("device-unique-id")
+                : null;
+        final String dummyVault = "ff00112233445566778899aabbccddeeff00112233445566778899aabbccddee";
+        final String clearText = "decrypt-proof-vault";
+        final String clearKey = "Secret Key";
+        try {
+            keychain.setItem("device-unique-id", "", liveId);
+            prefs.edit().putString("last_known_android_id", liveId).commit();
+            Map<String, Object> cipherResult = Cipher.encrypt(clearText, clearKey);
+            String cipher = (String) cipherResult.get("cipher");
+            Cipher.DerivedKeys derivedKeys = (Cipher.DerivedKeys) cipherResult.get("derived_keys");
+
+            keychain.setItem("device-unique-id", "", "not-hex");
+            prefs.edit().clear().commit();
+            keychain.setItem(dummyVault, "", "placeholder");
+            Assert.assertNull(provider.getDeviceUniqueId());
+
+            Assert.assertEquals(clearText, Cipher.decrypt(cipher, clearKey, derivedKeys.toJSONString()));
+            Assert.assertArrayEquals(
+                    UniqueIdProvider.toDeviceIdBytes(liveId),
+                    UniqueIdProvider.toDeviceIdBytes(prefs.getString("last_known_android_id", null))
+            );
+            Assert.assertNotNull(provider.getDeviceUniqueId());
+
+            Map<String, Object> again = Cipher.encrypt(clearText, clearKey);
+            Assert.assertNotNull(again.get("cipher"));
+        } finally {
+            if (keychain.itemExist(dummyVault)) {
+                keychain.deleteItem(dummyVault);
+            }
+            if (previousLast != null) {
+                prefs.edit().putString("last_known_android_id", previousLast).commit();
+            } else {
+                prefs.edit().remove("last_known_android_id").commit();
+            }
+            if (previousUnique != null && previousUnique.get("password") != null) {
+                keychain.setItem("device-unique-id", "", previousUnique.get("password"));
+            } else if (keychain.itemExist("device-unique-id")) {
+                keychain.deleteItem("device-unique-id");
+            }
+        }
+    }
+
+    @Test
+    public void encryptDecryptUsesStoredUniqueIdNotLive() throws Exception {
+        UniqueIdProvider provider = UniqueIdProvider.sharedInstance();
+        String liveId = provider.getLiveAndroidId();
+        Assert.assertNotNull(liveId);
+        ReactApplicationContext context = new ReactApplicationContext(
+                InstrumentationRegistry.getInstrumentation().getTargetContext()
+        );
+        Keychain keychain = new Keychain(context);
+        android.content.SharedPreferences prefs = context.getSharedPreferences(
+                "xaman_device_id",
+                android.content.Context.MODE_PRIVATE
+        );
+        String previousLast = prefs.getString("last_known_android_id", null);
+        java.util.Map<String, String> previousUnique = keychain.itemExist("device-unique-id")
+                ? keychain.getItem("device-unique-id")
+                : null;
+        final String storedId = "aaaaaaaaaaaaaaaa";
+        final String clearText = "stored-id-vault";
+        final String clearKey = "Secret Key";
+        try {
+            keychain.setItem("device-unique-id", "", storedId);
+            prefs.edit().putString("last_known_android_id", storedId).commit();
+
+            Map<String, Object> cipherResult = Cipher.encrypt(clearText, clearKey);
+            String cipher = (String) cipherResult.get("cipher");
+            Cipher.DerivedKeys derivedKeys = (Cipher.DerivedKeys) cipherResult.get("derived_keys");
+
+            Assert.assertEquals(
+                    clearText,
+                    Cipher.decrypt(cipher, clearKey, derivedKeys.toJSONString())
+            );
+
+            if (keychain.itemExist("device-unique-id")) {
+                keychain.deleteItem("device-unique-id");
+            }
+            prefs.edit().clear().commit();
+            try {
+                Cipher.decrypt(cipher, clearKey, derivedKeys.toJSONString());
+                Assert.fail("live ANDROID_ID must not decrypt a vault bound to the stored unique-id");
+            } catch (CryptoFailedException e) {
+                Assert.assertEquals(VaultErrorCodes.WRONG_PASSPHRASE, e.getCode());
+            }
+
+            keychain.setItem("device-unique-id", "", storedId);
+            prefs.edit().putString("last_known_android_id", storedId).commit();
+            Assert.assertEquals(
+                    clearText,
+                    Cipher.decrypt(cipher, clearKey, derivedKeys.toJSONString())
+            );
+        } finally {
+            if (previousLast != null) {
+                prefs.edit().putString("last_known_android_id", previousLast).commit();
+            } else {
+                prefs.edit().remove("last_known_android_id").commit();
+            }
+            if (previousUnique != null && previousUnique.get("password") != null) {
+                keychain.setItem("device-unique-id", "", previousUnique.get("password"));
+            } else if (keychain.itemExist("device-unique-id")) {
+                keychain.deleteItem("device-unique-id");
+            }
+        }
     }
 
     @Test
@@ -113,6 +251,20 @@ public class CipherTest {
         String decryptResult = Cipher.decrypt(V1_Cipher, clearKey, V1_IV);
         performanceLogger.end("CIPHER_DECRYPT_V1");
         Assert.assertEquals(clearText, decryptResult);
+
+        try {
+            Cipher.decrypt(V1_Cipher, "Wrong Key", V1_IV);
+            Assert.fail("wrong key should not decrypt v1");
+        } catch (CryptoFailedException e) {
+            Assert.assertEquals(VaultErrorCodes.WRONG_PASSPHRASE, e.getCode());
+        }
+
+        try {
+            Cipher.decrypt(V1_Cipher, clearKey, "zzz");
+            Assert.fail("malformed iv should not decrypt v1");
+        } catch (CryptoFailedException e) {
+            Assert.assertEquals(VaultErrorCodes.VAULT_CORRUPT, e.getCode());
+        }
     }
 
     @AfterClass

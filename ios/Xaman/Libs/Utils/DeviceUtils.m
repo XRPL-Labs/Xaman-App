@@ -28,6 +28,7 @@ RCT_EXPORT_MODULE();
     @"brand": @"Apple",
     @"model": [self getModel],
     @"layoutInsets": [self getLayoutInsets],
+    @"tabBarMetrics": [self getTabBarMetrics],
   };
 }
 
@@ -50,9 +51,83 @@ RCT_EXPORT_MODULE();
 
 - (NSDictionary *) getLayoutInsets
 {
+  UIWindow *window = [self keyWindow];
+
+  UIEdgeInsets insets = window.safeAreaInsets;
+  // Non-notch phones still have a 20pt status bar. keyWindow is often nil
+  // at constantsToExport time on iOS 13+, which would report top=0.
+  if (insets.top < 1.0 && !UIApplication.sharedApplication.isStatusBarHidden) {
+    insets.top = 20.0;
+  }
+
   return @{
-    @"top": @(UIApplication.sharedApplication.keyWindow.safeAreaInsets.top),
-    @"bottom": @(UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom)
+    @"top": @(insets.top),
+    @"bottom": @(insets.bottom)
+  };
+}
+
+- (UIWindow *)keyWindow
+{
+  UIWindow *window = nil;
+  if (@available(iOS 13.0, *)) {
+    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+      if (scene.activationState != UISceneActivationStateForegroundActive) {
+        continue;
+      }
+      if (![scene isKindOfClass:[UIWindowScene class]]) {
+        continue;
+      }
+      UIWindowScene *windowScene = (UIWindowScene *)scene;
+      for (UIWindow *candidate in windowScene.windows) {
+        if (candidate.isKeyWindow) {
+          window = candidate;
+          break;
+        }
+      }
+      if (!window) {
+        window = windowScene.windows.firstObject;
+      }
+      if (window) {
+        break;
+      }
+    }
+  }
+  if (!window) {
+    window = UIApplication.sharedApplication.keyWindow;
+  }
+  return window;
+}
+
+- (NSDictionary *)getTabBarMetrics
+{
+  // Compact UITabBar item row is 49pt. Home indicator is extra chrome below it.
+  CGFloat itemHeight = 49.0;
+  UIWindow *window = [self keyWindow];
+  if (!window) {
+    return @{
+      @"itemHeight": @(itemHeight),
+      @"height": @(itemHeight),
+    };
+  }
+  CGFloat bottom = window.safeAreaInsets.bottom;
+  UIViewController *root = window.rootViewController;
+  while (root.presentedViewController) {
+    root = root.presentedViewController;
+  }
+  UITabBar *tabBar = nil;
+  if ([root isKindOfClass:[UITabBarController class]]) {
+    tabBar = [(UITabBarController *)root tabBar];
+  } else if (root.tabBarController) {
+    tabBar = root.tabBarController.tabBar;
+  }
+  CGFloat height = itemHeight + bottom;
+  if (tabBar && tabBar.bounds.size.height > 1.0) {
+    height = tabBar.bounds.size.height;
+    itemHeight = MAX(49.0, height - bottom);
+  }
+  return @{
+    @"itemHeight": @(itemHeight),
+    @"height": @(height),
   };
 }
 
@@ -152,12 +227,18 @@ RCT_EXPORT_MODULE();
 
 RCT_REMAP_METHOD(isJailBroken, jailbreak_resolver:(RCTPromiseResolveBlock)resolve  rejecter:(RCTPromiseRejectBlock)reject)
 {
+#if TARGET_IPHONE_SIMULATOR
+  // the simulator sees the host filesystem (/bin/bash, /usr/sbin/sshd, ...) so the
+  // path checks always flag it as jailbroken, hanging Release builds on the splash screen
+  resolve(@NO);
+#else
   if([self checkPaths] || [self checkSchemes] || [self canViolateSandbox]) {
     resolve(@YES);
   }
   else {
     resolve(@NO);
   }
+#endif
 }
 
 RCT_EXPORT_METHOD(getElapsedRealtime: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)

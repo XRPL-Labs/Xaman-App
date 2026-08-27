@@ -32,6 +32,18 @@ class SignerLabel extends Component<Props, State> {
             return null;
         }
 
+        if (transaction.Account && transaction.TransactionType === 'Batch') {
+            if (transaction?.isBatchInNeedOfMultipleSigners()) {
+                // If the Batch has multiple inner signers and the BatchSigners object doesn't satisfy yet
+                // then we to not render the "Sign For"
+                return null;
+            }
+        }
+
+        if (!transaction.Account) {
+            return null;
+        }
+
         return (
             <View style={styles.container}>
                 <Text style={styles.label}>{Localize.t('global.signFor')}</Text>

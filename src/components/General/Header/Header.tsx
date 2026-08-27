@@ -20,6 +20,7 @@ export interface ChildrenProps {
     icon?: Extract<keyof typeof Images, string>;
     iconSize?: number;
     iconStyle?: ImageStyle;
+    element?: JSX.Element;
     render?: () => JSX.Element | null;
     onPress?: () => void;
     extraComponent?: React.ReactNode;
@@ -80,6 +81,10 @@ const Children = ({
         }
     };
 
+    const ChildElement = () => {
+        return children?.element;
+    };
+
     return (
         <TouchableDebounce
             testID={children.testID}
@@ -121,6 +126,10 @@ const Children = ({
                     name={children.icon}
                     style={[styles.iconStyle, children.iconStyle]}
                 />
+            )}
+
+            {children.element && (
+                <ChildElement />
             )}
 
             {children.extraComponent && children.extraComponent}

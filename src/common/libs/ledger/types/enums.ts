@@ -63,7 +63,28 @@ export enum TransactionTypes {
     CredentialCreate = 'CredentialCreate',
     CredentialAccept = 'CredentialAccept',
     CredentialDelete = 'CredentialDelete',
+    PermissionedDomainDelete = 'PermissionedDomainDelete',
+    PermissionedDomainSet = 'PermissionedDomainSet',
     SetRemarks = 'SetRemarks',
+    Batch = 'Batch',
+    CronSet = 'CronSet',
+    VaultCreate = 'VaultCreate',
+    VaultSet = 'VaultSet',
+    VaultDelete = 'VaultDelete',
+    VaultDeposit = 'VaultDeposit',
+    VaultWithdraw = 'VaultWithdraw',
+    VaultClawback = 'VaultClawback',
+    // Loan Broker Transactions (XLS-66)
+    LoanBrokerSet = 'LoanBrokerSet',
+    LoanBrokerDelete = 'LoanBrokerDelete',
+    LoanBrokerCoverDeposit = 'LoanBrokerCoverDeposit',
+    LoanBrokerCoverWithdraw = 'LoanBrokerCoverWithdraw',
+    LoanBrokerCoverClawback = 'LoanBrokerCoverClawback',
+    // Loan Transactions (XLS-66)
+    LoanSet = 'LoanSet',
+    LoanDelete = 'LoanDelete',
+    LoanManage = 'LoanManage',
+    LoanPay = 'LoanPay',
 }
 
 /**
@@ -111,6 +132,14 @@ export enum LedgerEntryTypes {
     Delegate = 'Delegate',
     Credential = 'Credential',
     DID = 'DID',
+    MPTokenIssuance = 'MPTokenIssuance',
+    MPToken = 'MPToken',
+    Remark = 'Remark',
+    PermissionedDomain = 'PermissionedDomain',
+    Cron = 'Cron',
+    Vault = 'Vault',
+    LoanBroker = 'LoanBroker',
+    Loan = 'Loan',
 }
 
 /**

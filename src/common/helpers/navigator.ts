@@ -1,9 +1,10 @@
 import { get, merge } from 'lodash';
 import { Platform, InteractionManager } from 'react-native';
 
+import LoggerService, { LogEvents } from '@services/LoggerService';
 import { Navigation, Options, LayoutTabsChildren } from 'react-native-navigation';
 
-import { GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
+import { GetBottomTabIconDp, GetBottomTabScale, HasBottomNotch } from '@common/helpers/device';
 
 import { AppScreens } from '@common/constants';
 
@@ -24,6 +25,9 @@ type EnforcedProps<P extends { [K in keyof P]: any }> = P;
 
 const allScreens = new Set();
 
+let iteration = 1;
+let setRoot = false;
+
 /* Constants ==================================================================== */
 const getDefaultOptions = (): Options => {
     return {
@@ -37,16 +41,13 @@ const getDefaultOptions = (): Options => {
             visible: false,
         },
         navigationBar: {
-            backgroundColor: StyleService.value('$tint'),
+            backgroundColor: StyleService.value('$background'),
         },
         statusBar: {
             // @ts-ignore
-            style: Platform.select({
-                android: undefined,
-                // @ts-ignore
-                ios: StyleService.value(StyleService.select({ light: 'dark', dark: 'light' })),
-            }),
+            style: StyleService.value(StyleService.select({ light: 'dark', dark: 'light' })),
             drawBehind: true,
+            backgroundColor: Platform.select({ android: 'transparent', default: undefined }),
         },
         bottomTabs: {
             backgroundColor: StyleService.value('$background'),
@@ -83,40 +84,81 @@ const getDefaultOptions = (): Options => {
     };
 };
 
+const tabIcon = (
+    icon: { uri: string },
+    iconSelected: { uri: string },
+    factor: number,
+): {
+    icon: { uri: string };
+    iconSelected: { uri: string };
+    scale: number;
+    iconWidth: number;
+    iconHeight: number;
+} => {
+    const dp = GetBottomTabIconDp(factor);
+    return {
+        icon,
+        iconSelected,
+        scale: GetBottomTabScale(factor),
+        iconWidth: dp,
+        iconHeight: dp,
+    };
+};
+
 const getTabBarIcons = (): {
     [k in string]: {
         icon: { uri: string };
         iconSelected: { uri: string };
         scale: number;
+        iconWidth: number;
+        iconHeight: number;
     };
 } => {
     return {
-        [AppScreens.TabBar.Home]: {
-            icon: StyleService.getImage('IconTabBarHome'),
-            iconSelected: StyleService.getImage('IconTabBarHomeSelected'),
-            scale: GetBottomTabScale(0.9),
-        },
-        [AppScreens.TabBar.Events]: {
-            icon: StyleService.getImage('IconTabBarEvents'),
-            iconSelected: StyleService.getImage('IconTabBarEventsSelected'),
-            scale: GetBottomTabScale(0.9),
-        },
-        [AppScreens.TabBar.Actions]: {
-            icon: StyleService.getImage('IconTabBarActions'),
-            iconSelected: StyleService.getImage('IconTabBarActions'),
-            scale: GetBottomTabScale(0.65),
-        },
-        [AppScreens.TabBar.XApps]: {
-            icon: StyleService.getImage('IconTabBarXapp'),
-            iconSelected: StyleService.getImage('IconTabBarXappSelected'),
-            scale: GetBottomTabScale(0.9),
-        },
-        [AppScreens.TabBar.Settings]: {
-            icon: StyleService.getImage('IconTabBarSettings'),
-            iconSelected: StyleService.getImage('IconTabBarSettingsSelected'),
-            scale: GetBottomTabScale(0.9),
-        },
+        [AppScreens.TabBar.Home]: tabIcon(
+            StyleService.getImage('IconTabBarHome'),
+            StyleService.getImage('IconTabBarHomeSelected'),
+            0.9,
+        ),
+        [AppScreens.TabBar.Events]: tabIcon(
+            StyleService.getImage('IconTabBarEvents'),
+            StyleService.getImage('IconTabBarEventsSelected'),
+            0.9,
+        ),
+        [AppScreens.TabBar.Actions]: tabIcon(
+            StyleService.getImage('IconTabBarActions'),
+            StyleService.getImage('IconTabBarActions'),
+            0.65,
+        ),
+        [AppScreens.TabBar.XApps]: tabIcon(
+            StyleService.getImage('IconTabBarXapp'),
+            StyleService.getImage('IconTabBarXappSelected'),
+            0.9,
+        ),
+        [AppScreens.TabBar.Settings]: tabIcon(
+            StyleService.getImage('IconTabBarSettings'),
+            StyleService.getImage('IconTabBarSettingsSelected'),
+            0.9,
+        ),
     };
+};
+
+const getBottomTabStyles = () => {
+    return StyleService.applyTheme({
+        textColor: '$grey',
+        selectedTextColor: '$textPrimary',
+        fontFamily: AppFonts.base.familyExtraBold,
+        iconInsets: {
+            top: HasBottomNotch() ? 4 : 2,
+        },
+    });
+};
+
+const androidIconSize = (icons: ReturnType<typeof getTabBarIcons>, tabKey: string) => {
+    if (Platform.OS !== 'android') {
+        return {};
+    }
+    return { iconWidth: icons[tabKey].iconWidth, iconHeight: icons[tabKey].iconHeight };
 };
 
 const bottomTabsChildren: LayoutTabsChildren[] = [];
@@ -131,21 +173,29 @@ const Navigator = {
      * @return {void}
      */
     startDefault(): void {
+        if (iteration) {
+            iteration++;
+        }
+
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
-        const bottomTabStyles = StyleService.applyTheme({
-            textColor: '$grey',
-            selectedTextColor: '$textPrimary',
-            fontFamily: AppFonts.base.familyExtraBold,
-            iconInsets: {
-                top: HasBottomNotch() ? 4 : 1,
-            },
-        });
+        const bottomTabStyles = getBottomTabStyles();
 
         const TabBarIcons = getTabBarIcons();
 
+        LoggerService.logEvent(LogEvents.LaunchingNavigator, {
+            tabsLength: Object.keys(AppScreens.TabBar).length,
+            tabKeys: Object.keys(AppScreens.TabBar).join(','),
+            startDefaultIteration: typeof iteration === 'undefined' ? 0 : iteration,
+            setRoot: setRoot ? 'true' : 'false',
+        });
+
         Object.keys(AppScreens.TabBar).forEach((tab) => {
+            if (bottomTabsChildren.length > Object.keys(AppScreens.TabBar).length) {
+                // Fixes Android timing error "Too many tabs"
+                return;
+            }
             bottomTabsChildren.push({
                 stack: {
                     id: `bottomTab-${tab}`,
@@ -174,21 +224,25 @@ const Navigator = {
                             },
                             testID: `tab-${tab}`,
                             ...bottomTabStyles,
+                            ...androidIconSize(TabBarIcons, get(AppScreens.TabBar, tab)),
                         },
                     },
                 },
             });
         });
 
-        InteractionManager.runAfterInteractions(() => {
-            Navigation.setRoot({
-                root: {
-                    bottomTabs: {
-                        id: RootType.DefaultRoot,
-                        children: bottomTabsChildren,
+        InteractionManager.runAfterInteractions(async () => {
+            if (!setRoot) {
+                setRoot = true;
+                await Navigation.setRoot({
+                    root: {
+                        bottomTabs: {
+                            id: RootType.DefaultRoot,
+                            children: bottomTabsChildren,
+                        },
                     },
-                },
-            });
+                });
+            }
         });
     },
 
@@ -341,9 +395,10 @@ const Navigator = {
                                 backgroundColor: 'transparent',
                                 drawBehind: true, // This is key
                             },
-                            navigationBar: {
-                                backgroundColor: 'transparent',
-                            },
+                            // THIS BELOW FUCKS UP ANDROID 9 AND LOWER - NO MODALS DISPLAYED
+                            // navigationBar: {
+                            //     backgroundColor: 'transparent',
+                            // },
                         },
                         options || {},
                     ),
@@ -544,14 +599,7 @@ const Navigator = {
         const defaultOptions = getDefaultOptions();
         Navigation.setDefaultOptions(defaultOptions);
 
-        const bottomTabStyles = StyleService.applyTheme({
-            textColor: '$grey',
-            selectedTextColor: '$textPrimary',
-            fontFamily: AppFonts.base.familyExtraBold,
-            iconInsets: {
-                top: HasBottomNotch() ? 4 : 1,
-            },
-        });
+        const bottomTabStyles = getBottomTabStyles();
 
         // Update ALL active screens/stacks
         (allScreens as unknown as string[]).forEach((allScreenIterator) => {
@@ -590,6 +638,7 @@ const Navigator = {
                             ...TabBarIcons[getTab].iconSelected,
                         },
                         ...bottomTabStyles,
+                        ...androidIconSize(TabBarIcons, getTab),
                     },
                     // ...defaultOptions,
                 });

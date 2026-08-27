@@ -36,15 +36,21 @@ class Explain extends PureComponent<Props, State> {
 
     render() {
         const { description } = this.state;
+        const { item } = this.props;
 
         if (typeof description === 'undefined') {
             return null;
         }
 
+        const parentBatch = (item as any || {})?.MetaData?.ParentBatchID;
+        const parentRemit = (item as any || {})?.MetaData?.ParentRemitID;
+
         return (
             <View style={styles.detailContainer}>
                 <Text style={styles.detailsLabelText}>{Localize.t('global.description')}</Text>
                 <Text selectable style={styles.detailsValueText}>
+                    {parentBatch && Localize.t('txBatch.thisTxIsPartOfBatchTransaction')}
+                    {parentRemit && Localize.t('events.thisTxIsPartOfRemitTransaction')}
                     {description}
                 </Text>
             </View>

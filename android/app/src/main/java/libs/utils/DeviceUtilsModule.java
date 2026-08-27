@@ -1,9 +1,6 @@
 package libs.utils;
 
-import android.app.Activity;
 import android.os.Build;
-import android.view.View;
-import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
@@ -26,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.xrpllabs.xumm.LaunchActivity;
 import com.xrpllabs.xumm.SafeAreaInsets;
 
 @ReactModule(name = DeviceUtilsModule.NAME)
@@ -57,6 +55,11 @@ public class DeviceUtilsModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    @ReactMethod
+    public void hideLaunchSplash() {
+        LaunchActivity.hideLaunchSplashIfPresent();
     }
 
     @ReactMethod
@@ -108,27 +111,20 @@ public class DeviceUtilsModule extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         final Map<String, Object> layoutInsets = new HashMap<>();
-        final Activity activity = getCurrentActivity();
 
-        layoutInsets.put("top", 0);
-        layoutInsets.put("bottom", 0);
+        layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaTop())));
+        layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaBottom())));
 
-        if (activity != null) {
-            // final View decorView = activity.getWindow().getDecorView();
-            // if view is not isAttachedToWindow getSystemWindowInsetTop can return null
-            // if (decorView != null &&  decorView.isAttachedToWindow()) {
-            //     final WindowInsets insets = decorView.getRootWindowInsets();
-            //     layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetTop())));
-            //     layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(insets.getSystemWindowInsetBottom())));
-            // }
-            layoutInsets.put("top", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaTop())));
-            layoutInsets.put("bottom", Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaBottom())));
-        }
+        final Map<String, Object> tabBarMetrics = new HashMap<>();
+        // AHBottomNavigation default bar is 56dp; home-control inset is separate.
+        tabBarMetrics.put("itemHeight", 56);
+        tabBarMetrics.put("height", 56 + Math.round(PixelUtil.toDIPFromPixel(SafeAreaInsets.getSafeAreaBottom())));
 
         constants.put("osVersion", Build.VERSION.RELEASE);
         constants.put("brand", Build.BRAND);
         constants.put("model", Build.MODEL);
         constants.put("layoutInsets", layoutInsets);
+        constants.put("tabBarMetrics", tabBarMetrics);
 
         return constants;
     }

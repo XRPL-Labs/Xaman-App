@@ -182,22 +182,17 @@ class NetworkService extends EventEmitter {
      * reinstate service
      */
     reinstate = () => {
-        // destroy the connection
         this.destroyConnection();
-        // remove listeners
         this.removeAppStateListeners();
     };
 
     setAppStateListeners = () => {
-        // on net state changed
         AppService.addListener('netStateChange', this.onNetStateChange);
-        // on app state changed
         AppService.addListener('appStateChange', this.onAppStateChange);
     };
 
     removeAppStateListeners = () => {
         AppService.removeListener('netStateChange', this.onNetStateChange);
-
         AppService.removeListener('appStateChange', this.onAppStateChange);
     };
 
@@ -206,7 +201,10 @@ class NetworkService extends EventEmitter {
      */
     onNetStateChange = (newState: NetStateStatus) => {
         // if new network state is connected, reconnect the socket
+        this.logger.debug('onNetStateChange', newState);
+
         if (newState === NetStateStatus.Connected) {
+            this.logger.debug('onNetStateChange - Reconnect');
             this.reconnect();
         } else {
             // no network connection, close the connection
@@ -222,8 +220,11 @@ class NetworkService extends EventEmitter {
      * on AppState change
      */
     onAppStateChange = (newState: AppStateStatus, prevState: AppStateStatus) => {
+        this.logger.debug('onAppStateChange', newState);
+
         // reconnect when app comes from idle state to active
         if (newState === AppStateStatus.Active && prevState === AppStateStatus.Inactive) {
+            this.logger.debug('onAppStateChange - Reconnect');
             this.reconnect();
         }
 
@@ -272,9 +273,18 @@ class NetworkService extends EventEmitter {
      * @returns {string}
      */
     getNativeAssetIcons = (): { currency: string; asset: string } => {
+        let asset = this.getNetwork().nativeAsset.iconSquare;
+        // ^^ Regular for all networks
+        if (this.getNetwork().key === 'MAINNET') {
+            // Overrule network icon for Mainnet
+            const mainnetIcon = NetworkConfig.networks.find((n) => n.key === 'MAINNET')?.nativeAsset?.iconSquare;
+            if (mainnetIcon) {
+                asset = mainnetIcon;
+            }
+        }
         return {
             currency: this.getNetwork().nativeAsset.icon,
-            asset: this.getNetwork().nativeAsset.iconSquare,
+            asset,
         };
     };
 
@@ -309,6 +319,14 @@ class NetworkService extends EventEmitter {
             return this.getNetwork().definitions;
         }
 
+        if (
+            typeof binary.DEFAULT_DEFINITIONS?.TRANSACTION_TYPES === 'object' &&
+            binary.DEFAULT_DEFINITIONS.TRANSACTION_TYPES
+        ) {
+            Object.assign(binary.DEFAULT_DEFINITIONS.TRANSACTION_TYPES, {
+                SignIn: 999,
+            });
+        }
         return binary.DEFAULT_DEFINITIONS;
     };
 
@@ -317,7 +335,20 @@ class NetworkService extends EventEmitter {
      */
     getNetworkDefinitions = (): XrplDefinitions => {
         if (this.network && this.getNetwork().definitions) {
-            return new XrplDefinitions(<DefinitionsData>this.getNetwork().definitions);
+            const defs = <DefinitionsData>this.getNetwork().definitions;
+            if (typeof defs?.TRANSACTION_TYPES === 'object' && defs.TRANSACTION_TYPES) {
+                defs.TRANSACTION_TYPES.SignIn = 999;
+            }
+            return new XrplDefinitions(defs);
+        }
+
+        if (
+            typeof binary.DEFAULT_DEFINITIONS?.TRANSACTION_TYPES === 'object' &&
+            binary.DEFAULT_DEFINITIONS.TRANSACTION_TYPES
+        ) {
+            Object.assign(binary.DEFAULT_DEFINITIONS.TRANSACTION_TYPES, {
+                SignIn: 999,
+            });
         }
 
         return new XrplDefinitions(binary.DEFAULT_DEFINITIONS);
@@ -347,7 +378,23 @@ class NetworkService extends EventEmitter {
         suggested: string;
     }> => {
         // eslint-disable-next-line no-async-promise-executor
-        return new Promise(async (resolve, reject) => {
+        return new Promise(async (resolve) => {
+            const defaultFee = () => {
+                this.logger.debug('Default fee fallback');
+
+                this.closeConnection();
+                this.reconnect();
+
+                resolve(
+                    NormalizeFeeDataSet({
+                        drops: {
+                            base_fee: '20',
+                        },
+                        fee_hooks_feeunits: '20',
+                    }),
+                );
+            };
+
             try {
                 const request = {
                     command: 'fee',
@@ -358,18 +405,29 @@ class NetworkService extends EventEmitter {
                         tx_blob: PrepareTxForHookFee(txJson, this.getNetworkDefinitions(), this.getNetworkId()),
                     });
                 }
+
+                const t = setTimeout(defaultFee, 8_000);
+                // await new Promise((r) => {
+                //     setTimeout(r, 11_000);
+                // });
                 const resp = await this.send<FeeRequest, FeeResponse>(request);
 
                 if ('error' in resp) {
+                    this.logger.error('getAvailableNetworkFee (pre)', resp.error);
+                    clearTimeout(t);
+                    defaultFee();
                     throw new Error(
                         `Could not reliably detect fees (${resp.error || 'unknown error type'}), message: ${resp.error_exception || 'unknown error message'}`,
                     );
                 }
 
+                clearTimeout(t);
+
                 resolve(NormalizeFeeDataSet(resp));
             } catch (error) {
                 this.logger.error('getAvailableNetworkFee', error);
-                reject(error);
+                defaultFee();
+                // reject(error);
             }
         });
     };
@@ -463,6 +521,7 @@ class NetworkService extends EventEmitter {
         try {
             if (this.connection) {
                 this.connection.close();
+                this.logger.debug('Closed connection to node');
             }
         } catch (error) {
             this.logger.error('Unable to close the connection', error);
@@ -476,6 +535,7 @@ class NetworkService extends EventEmitter {
         try {
             if (this.connection) {
                 this.connection.reinstate();
+                this.logger.debug('Reinstated connection to node');
             }
         } catch (error) {
             this.logger.error('Unable to reinstate the connection', error);
@@ -513,6 +573,20 @@ class NetworkService extends EventEmitter {
         // check if connection is initiated
         if (!this.connection) {
             throw new Error('connection instance is not initiated in NetworkService class.');
+        }
+
+        // TODO: reconnect stale connection
+        if (!this.connection) {
+            this.logger.debug('Sending to node - but no connection!?');
+        } else {
+            const latencyMax = Math.max(
+                this.connection?.getState()?.secLastContact || 0,
+                this.connection?.getState()?.latencyMs?.secAgo || 0,
+                this.connection?.getState()?.fee?.secAgo || 0,
+            );
+            if (latencyMax > 5) {
+                this.logger.debug('Sending to node, [high] latency max', latencyMax);
+            }
         }
 
         const payloadWithNetworkId = {
@@ -705,7 +779,9 @@ class NetworkService extends EventEmitter {
         }
 
         // if endpoint is not in the default white listed network list then use custom proxy for it
-        if (!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint))) {
+        const isDefaultNode = !!find(NetworkConfig.networks, (network) => network.nodes.includes(endpoint));
+        const isDirectRpc = NetworkConfig.directRpcEndpoints.includes(endpoint);
+        if (!isDefaultNode && !isDirectRpc) {
             // remove 'ws://' and 'wss://' from custom endpoint and add user id
             return `${NetworkConfig.customNodeProxy}/${endpoint.replace(/^wss?:\/\//, '')}${this.userId ? `?user_id=${this.userId}` : ''}`;
         }
@@ -798,6 +874,11 @@ class NetworkService extends EventEmitter {
             assumeOfflineAfterSeconds: 9,
             connectAttemptTimeoutSeconds: 3,
         });
+
+        this.logger.debug('Connection created');
+        // setInterval(() => {
+        //     this.logger.debug('Connection status', this.connection?.getState().server.publicKey);
+        // }, 2000);
 
         this.connection.on('online', this.onConnect);
         this.connection.on('offline', this.onClose);

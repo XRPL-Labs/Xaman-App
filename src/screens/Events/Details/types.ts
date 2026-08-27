@@ -5,7 +5,7 @@ import { MutationsMixinType } from '@common/libs/ledger/mixin/types';
 import { ExplainerAbstract } from '@common/libs/ledger/factory/types';
 import { AccountModel } from '@store/models';
 
-import * as MutationWidgets from '@components/Modules/MutationWidgets';
+import type * as MutationWidgets from '@components/Modules/MutationWidgets';
 import { Props as MutationWidgetProps } from '@components/Modules/MutationWidgets/types';
 import { type cachedTokenDetailsState } from '@components/Modules/EventsList/EventListItems/Transaction';
 
@@ -14,6 +14,7 @@ export interface Props {
     account: AccountModel;
     cachedTokenDetails?: cachedTokenDetailsState;
     timestamp?: number;
+    embeddedInsteadOfModal?: boolean;
 }
 
 export interface State {

@@ -12,6 +12,13 @@ const styles = StyleService.create({
         height: AppSizes.moderateScale(60),
         paddingRight: AppSizes.paddingSml,
         paddingLeft: AppSizes.paddingSml,
+        marginTop: -7,
+        marginBottom: -7,
+    },
+    backgroundShapeOpacity: {
+        opacity: 0.4,
+    },
+    hideTopElements: {
     },
     degenWarning: {
         paddingVertical: 7,
@@ -19,7 +26,6 @@ const styles = StyleService.create({
         paddingLeft: 13,
         marginBottom: 6,
         borderRadius: 11,
-        marginTop: -8,
         backgroundColor: '$lightRed',
         borderColor: '$red',
         // borderWidth: 2,
@@ -44,6 +50,9 @@ const styles = StyleService.create({
     },
     tokenListContainer: {
         flex: 6,
+        marginTop: -4,
+        // borderWidth: 1,
+        // borderColor: '$red',
     },
     iconRotateX: {
         transform: [{ rotateX: '180deg' }],

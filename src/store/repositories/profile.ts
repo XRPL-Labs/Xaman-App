@@ -64,6 +64,14 @@ class ProfileRepository extends BaseRepository<ProfileModel> {
 
         return undefined;
     };
+
+    requireProfile = (): ProfileModel => {
+        const profile = this.getProfile();
+        if (!profile) {
+            throw new Error('Profile is missing');
+        }
+        return profile;
+    };
 }
 
 export default new ProfileRepository();

@@ -136,7 +136,9 @@ class FlagParser {
      */
     set(flags: ParsedFlags): number {
         if (typeof this._flags === 'undefined') {
-            throw new Error(`type ${this.type} doesn't not support setting flags!`);
+            // console.log(this);
+            // console.log(flags);
+            throw new Error(`Type ${this.type} doesn't support setting flags!`);
         }
 
         // reset the flags

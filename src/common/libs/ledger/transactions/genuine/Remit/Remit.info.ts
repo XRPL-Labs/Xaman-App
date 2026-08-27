@@ -25,6 +25,7 @@ class RemitInfo extends ExplainerAbstract<Remit, MutationsMixinType> {
     getParticipants() {
         return {
             start: { address: this.item.Account, tag: this.item.SourceTag },
+            end: { address: this.item.Destination, tag: this.item.DestinationTag },
         };
     }
 

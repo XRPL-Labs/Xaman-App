@@ -15,6 +15,9 @@ if (logs) {
 jest.mock('react-native/Libraries/EventEmitter/NativeEventEmitter.js');
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
+/* Official WebView talks to a native TurboModule; keep unit tests in JS. */
+jest.mock('react-native-webview');
+
 /* Realm */
 process.env.REALM_DISABLE_ANALYTICS = true;
 

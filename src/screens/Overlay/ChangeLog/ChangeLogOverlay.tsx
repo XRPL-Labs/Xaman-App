@@ -77,7 +77,8 @@ class ChangeLogOverlay extends Component<Props, State> {
     getURI = () => {
         const { version } = this.props;
 
-        return `${WebLinks.ChangeLogURL}/${Localize.getCurrentLocale()}/?update=${version}`;
+        const url = `${WebLinks.ChangeLogURL}/${Localize.getCurrentLocale()}/?update=${version}&moment=${Date.now()}`;
+        return url;
     };
 
     render() {

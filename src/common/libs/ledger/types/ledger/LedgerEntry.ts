@@ -17,6 +17,13 @@ import NFTokenOffer from './NFTokenOffer';
 import URIToken from './URIToken';
 import Delegate from './Delegate';
 import Credential from './Credential';
+import MPToken from './MPToken';
+import MPTokenIssuance from './MPTokenIssuance';
+import PermissionedDomain from './PermissionedDomain';
+import Cron from './Cron';
+import Vault from './Vault';
+import LoanBroker from './LoanBroker';
+import Loan from './Loan';
 
 type LedgerEntry =
     | AccountRoot
@@ -37,7 +44,14 @@ type LedgerEntry =
     | NFTokenOffer
     | URIToken
     | Delegate
-    | Credential;
+    | Credential
+    | MPTokenIssuance
+    | PermissionedDomain
+    | Cron
+    | Vault
+    | LoanBroker
+    | Loan
+    | MPToken;
 
 type LedgerEntryFilter =
     | 'account'
@@ -59,6 +73,13 @@ type LedgerEntryFilter =
     | 'ticket'
     | 'uri_token'
     | 'delegate'
+    | 'mptoken'
+    | 'mptoken_issuance'
+    | 'permissioned_domain'
+    | 'cron'
+    | 'vault'
+    | 'loan_broker'
+    | 'loan'
     | 'credential';
 
 export type { LedgerEntry, LedgerEntryFilter };

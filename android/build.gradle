@@ -3,14 +3,14 @@ import groovy.json.JsonSlurper
 
 buildscript {
     ext {
-        buildToolsVersion = "34.0.0"
+        buildToolsVersion = "36.0.0"
         minSdkVersion = 26
-        compileSdkVersion = 34
-        targetSdkVersion = 35
+        compileSdkVersion = 36
+        targetSdkVersion = 36
         kotlinVersion = "1.9.24"
         RNNKotlinVersion = ext.kotlinVersion
         detoxKotlinVersion = ext.kotlinVersion
-        ndkVersion = "26.1.10909125"
+        ndkVersion = "28.0.13004108"
     }
     repositories {
         google()
@@ -18,7 +18,8 @@ buildscript {
     }
     dependencies {
         // classpath("com.android.tools.build:gradle:7.3.1")
-        classpath("com.android.tools.build:gradle:7.4.0")
+        // CameraX 1.5.2 AARs require AGP 8.6.0+
+        classpath("com.android.tools.build:gradle:8.6.1")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
@@ -41,6 +42,16 @@ allprojects {
             
             // Also force the BOM to match
             force 'org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.5.2'
+
+            // vision-camera 4.6.4 pins CameraX 1.5.0-alpha03, which crashes on Android 17
+            // when enumerating cameras (unknown dynamic-range profile). 1.5.2 is the
+            // cherry-pick of that fix on the 1.5 line; 1.6.0 switches to CameraPipe.
+            force 'androidx.camera:camera-core:1.5.2'
+            force 'androidx.camera:camera-camera2:1.5.2'
+            force 'androidx.camera:camera-lifecycle:1.5.2'
+            force 'androidx.camera:camera-video:1.5.2'
+            force 'androidx.camera:camera-view:1.5.2'
+            force 'androidx.camera:camera-extensions:1.5.2'
         }
     }
     gradle.projectsEvaluated {

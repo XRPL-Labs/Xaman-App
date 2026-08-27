@@ -37,7 +37,7 @@ export interface Props {}
 
 export interface State {
     coreSettings: CoreModel;
-    profile: ProfileModel;
+    profile?: ProfileModel;
 }
 
 /* Component ==================================================================== */
@@ -55,7 +55,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
         this.state = {
             coreSettings: CoreRepository.getSettings(),
-            profile: ProfileRepository.getProfile()!,
+            profile: ProfileRepository.getProfile(),
         };
     }
 
@@ -143,8 +143,8 @@ class AdvancedSettingsView extends Component<Props, State> {
             onSuccess: () => {
                 // persist the settings
                 CoreRepository.saveSettings({ developerMode: true });
+                BackendService.action('developermode', 'on');
 
-                // enable blocking screenshots on android
                 if (Platform.OS === 'android') {
                     SetFlagSecure(false);
                 }
@@ -165,8 +165,8 @@ class AdvancedSettingsView extends Component<Props, State> {
         
         // persist the settings
         CoreRepository.saveSettings({ developerMode: false });
+        BackendService.action('developermode', 'off');
 
-        // enable blocking screenshots on android
         if (Platform.OS === 'android') {
             SetFlagSecure(true);
         }
@@ -277,9 +277,19 @@ class AdvancedSettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('global.networks')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                        AppStyles.marginTopNone,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.networks')}</Text>
+                        </View>
+                    </View>
+
                     <TouchableDebounce
                         testID="network-settings-button"
                         style={styles.row}
@@ -296,9 +306,18 @@ class AdvancedSettingsView extends Component<Props, State> {
                     </TouchableDebounce>
 
                     {/* push notification section */}
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('settings.pushNotifications')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('settings.pushNotifications')}</Text>
+                        </View>
+                    </View>
+
                     <TouchableDebounce style={styles.row} onPress={this.reRegisterPushToken}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -308,9 +327,17 @@ class AdvancedSettingsView extends Component<Props, State> {
                     </TouchableDebounce>
 
                     {/* release information section */}
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('settings.releaseInformation')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('settings.releaseInformation')}</Text>
+                        </View>
+                    </View>
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -337,9 +364,17 @@ class AdvancedSettingsView extends Component<Props, State> {
                     </TouchableDebounce>
 
                     {/* debug section */}
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('global.debug')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.debug')}</Text>
+                        </View>
+                    </View>
 
                     <View style={styles.row}>
                         <View style={AppStyles.flex1}>
@@ -350,7 +385,7 @@ class AdvancedSettingsView extends Component<Props, State> {
 
                         <View style={AppStyles.flex2}>
                             <Text selectable numberOfLines={1} adjustsFontSizeToFit style={styles.value}>
-                                {profile.deviceUUID.toUpperCase()}
+                                {profile?.deviceUUID ? profile.deviceUUID.toUpperCase() : '—'}
                             </Text>
                         </View>
                     </View>

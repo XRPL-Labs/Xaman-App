@@ -7,6 +7,8 @@ Feature: Generate Account
         Then I tap 'add-account-button'
         Given I should see 'account-add-screen'
         Then I tap 'account-generate-button'
+        Given I should see 'account-import-secret-type-view'
+        Then I tap 'next-button'
         Given I should see 'account-generate-explanation-private-view'
         Then I tap 'next-button'
         Given I should see 'account-generate-show-private-view'
@@ -39,7 +41,7 @@ Feature: Generate Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Then I should wait 20 sec to see 'tokens-list-empty-view'
+        Then I should wait 30 sec to see 'account-native-balance'
         Given I should see '99' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset
@@ -98,7 +100,7 @@ Feature: Generate Account
     Scenario: Activate Account
         Given I should see 'not-activated-account-container'
         Then I activate the account
-        Then I should wait 20 sec to see 'tokens-list-empty-view'
+        Then I should wait 30 sec to see 'account-native-balance'
         Given I should see '99' in 'account-native-balance'
 
     Scenario: Test signing by adding a asset

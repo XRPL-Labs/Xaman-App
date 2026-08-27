@@ -7,6 +7,7 @@ export interface PayloadType {
     application: ApplicationType;
     payload: PayloadReferenceType;
     response?: ResponseType;
+    risk?: { __warn_user: boolean } & { [key: string]: number | boolean };
 }
 
 export interface ApplicationType {
@@ -112,8 +113,12 @@ export enum PayloadOrigin {
 
 export enum XAppOrigin {
     XAPP_STORE = 'XAPP_STORE',
+    TOKEN_REMOVE = 'TOKEN_REMOVE',
     XAPP_STORE_MESSAGE = 'XAPP_STORE_MESSAGE',
     XAPP_SHORT_LIST = 'XAPP_SHORT_LIST',
+
+    MANUAL_SEND = 'MANUAL_SEND',
+    EVENT_SEND = 'EVENT_SEND',
 
     QR = 'QR',
     DEEP_LINK = 'DEEP_LINK',

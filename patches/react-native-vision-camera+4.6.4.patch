@@ -1,0 +1,63 @@
+diff --git a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraDevicesManager.kt b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraDevicesManager.kt
+--- a/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraDevicesManager.kt
++++ b/node_modules/react-native-vision-camera/android/src/main/java/com/mrousavy/camera/react/CameraDevicesManager.kt
+@@ -86,27 +86,47 @@
+     val cameraProvider = cameraProvider ?: return devices
+     val extensionsManager = extensionsManager ?: return devices
+ 
+-    cameraProvider.availableCameraInfos.forEach { cameraInfo ->
+-      val device = CameraDeviceDetails(cameraInfo, extensionsManager)
+-      devices.pushMap(device.toMap())
++    try {
++      cameraProvider.availableCameraInfos.forEach { cameraInfo ->
++        try {
++          val device = CameraDeviceDetails(cameraInfo, extensionsManager)
++          devices.pushMap(device.toMap())
++        } catch (error: Throwable) {
++          Log.e(TAG, "Skipping camera device, failed to read details", error)
++        }
++      }
++    } catch (error: Throwable) {
++      Log.e(TAG, "Failed to enumerate camera devices", error)
+     }
+     return devices
+   }
+ 
+   fun sendAvailableDevicesChangedEvent() {
+-    val eventEmitter = reactContext.getJSModule(RCTDeviceEventEmitter::class.java)
+-    val devices = getDevicesJson()
+-    eventEmitter.emit("CameraDevicesChanged", devices)
++    try {
++      val eventEmitter = reactContext.getJSModule(RCTDeviceEventEmitter::class.java)
++      val devices = getDevicesJson()
++      eventEmitter.emit("CameraDevicesChanged", devices)
++    } catch (error: Throwable) {
++      Log.e(TAG, "Failed to emit CameraDevicesChanged", error)
++    }
+   }
+ 
+   override fun getConstants(): MutableMap<String, Any?> {
+-    val devices = getDevicesJson()
+-    val preferredDevice = if (devices.size() > 0) devices.getMap(0) else null
++    return try {
++      val devices = getDevicesJson()
++      val preferredDevice = if (devices.size() > 0) devices.getMap(0) else null
+ 
+-    return mutableMapOf(
+-      "availableCameraDevices" to devices,
+-      "userPreferredCameraDevice" to preferredDevice?.toHashMap()
+-    )
++      mutableMapOf(
++        "availableCameraDevices" to devices,
++        "userPreferredCameraDevice" to preferredDevice?.toHashMap()
++      )
++    } catch (error: Throwable) {
++      Log.e(TAG, "Failed to get camera constants", error)
++      mutableMapOf(
++        "availableCameraDevices" to Arguments.createArray(),
++        "userPreferredCameraDevice" to null
++      )
++    }
+   }
+ 
+   // Required for NativeEventEmitter, this is just a dummy implementation:

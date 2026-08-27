@@ -25,6 +25,7 @@ describe('Clawback tx', () => {
                 currency: '594F494E4B000000000000000000000000000000',
                 issuer: 'r3CAQrWrJCFFnNf6mbUtCBUPtuqAb4odbC',
                 value: '1',
+                mpt_issuance_id: undefined,
             });
         });
     });

@@ -152,6 +152,7 @@ class HomeActionsOverlay extends Component<Props, State> {
         return (
             <ActionPanel
                 ref={this.actionPanel}
+                testID="home-actions-overlay"
                 height={AppSizes.moderateScale(430)}
                 onSlideDown={Navigator.dismissOverlay}
                 extraBottomInset
@@ -174,6 +175,7 @@ class HomeActionsOverlay extends Component<Props, State> {
                     <Button
                         contrast
                         numberOfLines={1}
+                        testID="scan-qr-button"
                         label={Localize.t('global.scanAQRCode')}
                         onPress={this.onScanButtonPress}
                         icon="IconScan"

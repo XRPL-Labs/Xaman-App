@@ -27,7 +27,9 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
             <>
                 {transaction.NFTokenSellOffer && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.sellOffer')}</Text>
+                        <Text style={styles.label}>
+                            {Localize.t('global.accept')}: {Localize.t('global.sellOffer')}
+                        </Text>
                         <ExpandableView
                             expanded
                             title={transaction.NFTokenSellOffer}
@@ -35,14 +37,20 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                             containerStyle={styles.objectTemplateContainer}
                             contentContainerStyle={styles.objectTemplateChildContainer}
                         >
-                            <NFTokenOfferTemplate source={source} nfTokenOffer={transaction.NFTokenSellOffer} />
+                            <NFTokenOfferTemplate
+                                transaction={transaction}
+                                source={source}
+                                nfTokenOffer={transaction.NFTokenSellOffer}
+                            />
                         </ExpandableView>
                     </>
                 )}
 
                 {transaction.NFTokenBuyOffer && (
                     <>
-                        <Text style={styles.label}>{Localize.t('global.buyOffer')}</Text>
+                        <Text style={styles.label}>
+                            {Localize.t('global.accept')}: {Localize.t('global.buyOffer')}
+                        </Text>
                         <ExpandableView
                             expanded
                             title={transaction.NFTokenBuyOffer}
@@ -50,7 +58,11 @@ class NFTokenAcceptOfferTemplate extends Component<Props, State> {
                             containerStyle={styles.objectTemplateContainer}
                             contentContainerStyle={styles.objectTemplateChildContainer}
                         >
-                            <NFTokenOfferTemplate source={source} nfTokenOffer={transaction.NFTokenBuyOffer} />
+                            <NFTokenOfferTemplate
+                                transaction={transaction}
+                                source={source}
+                                nfTokenOffer={transaction.NFTokenBuyOffer}
+                            />
                         </ExpandableView>
                     </>
                 )}

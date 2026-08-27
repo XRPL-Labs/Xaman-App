@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, SafeAreaView } from 'react-native';
 
 import { AccountModel, NetworkModel } from '@store/models';
 
@@ -119,10 +119,13 @@ class XAppBrowserHeader extends Component<Props, State> {
 
         return (
             <>
-                <View style={[
-                    styles.headerContainer,
-                    { borderBottomWidth: +!isPanelExpanding && +!panelExpanded },
-                ]}>
+                <SafeAreaView
+                    style={[
+                        styles.headerSafeArea,
+                        { borderBottomWidth: +!isPanelExpanding && +!panelExpanded },
+                    ]}
+                >
+                <View style={styles.headerContainer}>
                     <View style={styles.headerLeftContainer}>
                         <Avatar isLoading={!icon} source={{ uri: icon }} size={30} />
                         <TextPlaceholder isLoading={!title} style={styles.titleText} length={24}>
@@ -157,6 +160,7 @@ class XAppBrowserHeader extends Component<Props, State> {
                         />
                     </View>
                 </View>
+                </SafeAreaView>
 
                 <Animated.View
                     style={[

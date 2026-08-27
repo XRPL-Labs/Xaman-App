@@ -87,4 +87,6 @@ export default interface AccountRoot extends BaseLedgerEntry, HasPreviousTxnID {
     RewardTime?: number;
     ImportSequence?: number;
     AccountIndex?: string;
+    /** Scale factor for Hook state entries. Valid values 1–16. Xahau ExtendedHookState. */
+    HookStateScale?: number;
 }

@@ -14,6 +14,7 @@ import { Avatar, AvatarProps } from '@components/General/Avatar';
 import { View, Text } from 'react-native';
 // import { AppStyles } from '@theme/index';
 import styles from './styles';
+import { AppSizes } from '@theme/index';
 
 /* Types ==================================================================== */
 interface Props extends Omit<AvatarProps, 'source'> {
@@ -28,7 +29,7 @@ interface State {
 }
 
 /* Component ==================================================================== */
-class TokenAvatar extends PureComponent<Props, State> {
+class TokenAvatar extends PureComponent<Props, State> { 
     constructor(props: Props) {
         super(props);
     }
@@ -41,8 +42,8 @@ class TokenAvatar extends PureComponent<Props, State> {
         }
 
         // issuer avatar
-        if (typeof token === 'object' && token && token?.currency?.issuerAvatarUrl) {
-            return token.currency.issuerAvatarUrl;
+        if (typeof token === 'object' && token && token?.currency?.avatarUrl) {
+            return token.currency.avatarUrl;
         }
 
         if (typeof token === 'object' && token && token?.isLiquidityPoolToken()) {
@@ -82,11 +83,52 @@ class TokenAvatar extends PureComponent<Props, State> {
 
         const nativeAsset = (networkService || NetworkService).getNativeAsset();
 
+        if (
+            token &&
+            typeof token !== 'string' &&
+            token &&
+            typeof (token as any)?.isExternalAsset === 'function' &&
+            (token as any)?.isExternalAsset()
+        ) {
+            if (typeof token.limit_peer === 'string') {
+                try {
+                    const tokenSettings = JSON.parse(token.limit_peer?.split('|').slice(1).join('|'));
+                    if (tokenSettings?.icon && tokenSettings?.issuerIcon) {
+                        return (
+                            <View
+                                style={[
+                                    styles.lpContainer,
+                                    { width: AppSizes.scale(Number(size)), height: AppSizes.scale(Number(size)) },
+                                    containerStyle,
+                                    { backgroundColor },
+                                ]}
+                            >
+                                <Avatar
+                                    containerStyle={[
+                                        styles.miniAvatar,
+                                        styles.avatar1,
+                                    ]}
+                                    size={AppSizes.scale(25)} source={{ uri: tokenSettings.icon }} />
+                                <Avatar
+                                    containerStyle={[
+                                        styles.miniAvatar,
+                                        styles.avatar2,
+                                    ]}
+                                    size={AppSizes.scale(15)} source={{ uri: tokenSettings.issuerIcon }} />
+                            </View>
+                        );
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+        }
+
         const TokenPair = token
             ? typeof token !== 'string' && token.getLpAssetPair() || undefined
             : tokenPair && typeof tokenPair === 'object' && tokenPair.length === 2 ? tokenPair.map(_token => {
-                return typeof _token === 'object' && _token?.currency?.issuerAvatarUrl
-                    ? _token.currency.issuerAvatarUrl
+                return typeof _token === 'object' && _token?.currency?.avatarUrl
+                    ? _token.currency.avatarUrl
                     : typeof _token === 'string' && _token === nativeAsset
                     ? _token
                     : StyleService.getImage('ImageUnknownTrustLine').uri;
@@ -109,7 +151,7 @@ class TokenAvatar extends PureComponent<Props, State> {
                 <View
                     style={[
                         styles.lpContainer,
-                        { width: size, height: size },
+                        { width: AppSizes.scale(Number(size)), height: AppSizes.scale(Number(size)) },
                         containerStyle,
                         { backgroundColor },
                     ]}
@@ -119,13 +161,14 @@ class TokenAvatar extends PureComponent<Props, State> {
                             styles.miniAvatar,
                             styles.avatar1,
                         ]}
-                        size={21} source={{ uri: img1 }} />
+                        size={AppSizes.scale(20)} source={{ uri: img1 }} />
                     <Avatar
                         containerStyle={[
                             styles.miniAvatar,
                             styles.avatar2,
+                            styles.avatar2Lp,
                         ]}
-                        size={21} source={{ uri: img2 }} />
+                        size={AppSizes.scale(18)} source={{ uri: img2 }} />
                 </View>
             );
         }
@@ -133,7 +176,7 @@ class TokenAvatar extends PureComponent<Props, State> {
         if (!avatarUrl || avatarUrl === '') {
             return <Text>?</Text>;
         }
-
+        
         return (
             <Avatar
                 {...

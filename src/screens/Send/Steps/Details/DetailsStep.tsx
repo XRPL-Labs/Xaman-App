@@ -84,13 +84,13 @@ class DetailsStep extends Component<Props, State> {
                 );
             })
             .catch(() => {
-                Alert.alert(
-                    Localize.t('global.warning'),
-                    Localize.t('global.unableToFetchCurrencyRate'),
-                    [
-                        { text: Localize.t('global.ok') },
-                    ],
-                );
+                // Alert.alert(
+                //     Localize.t('global.warning'),
+                //     Localize.t('global.unableToFetchCurrencyRate'),
+                //     [
+                //         { text: Localize.t('global.ok') },
+                //     ],
+                // );
             });
     };
 
@@ -146,6 +146,36 @@ class DetailsStep extends Component<Props, State> {
             return;
         }
 
+        if (typeof token !== 'string' && token?.isMPToken()) {
+            let mpTokenAmount = 0;
+            try {
+                const mptIssuanceDetails = JSON.parse(
+                    String(token?.limit_peer || '|{}').split('|')?.[1] || '{}',
+                );
+                if (mptIssuanceDetails && typeof mptIssuanceDetails === 'object') {
+                    if (mptIssuanceDetails?.AssetScale && Number(mptIssuanceDetails?.AssetScale || 0) > 1) {
+                        mpTokenAmount = Number(amount);
+                        mpTokenAmount *= 10 ** (mptIssuanceDetails?.AssetScale || 1);
+                        if (String(mpTokenAmount).split('.').length > 1) {
+                            Prompt(
+                                Localize.t('global.error'),
+                                Localize.t('send.theMaxDecimalsYouCanSendIs', {
+                                    decimals: mptIssuanceDetails?.AssetScale || 1,
+                                }),
+                                [
+                                    { text: Localize.t('global.cancel') },
+                                ],
+                                { type: 'default' },
+                            );
+                            return;
+                        }
+                    }
+                }
+            } catch {
+                //
+            }
+        }
+
         this.setState({
             isCheckingBalance: true,
         });
@@ -195,6 +225,10 @@ class DetailsStep extends Component<Props, State> {
         // native currency
         if (typeof token === 'string') {
             return NetworkService.getNativeAsset();
+        }
+
+        if (token?.isMPToken()) {
+            return '';
         }
 
         return NormalizeCurrencyCode(token.currency.currencyCode);
@@ -344,7 +378,8 @@ class DetailsStep extends Component<Props, State> {
                                           NetworkService.getNativeAsset(),
                                           ...filter(
                                               source.lines?.sorted([['order', false]]),
-                                              (line) => Number(line.balance) > 0 || line.obligation === true,
+                                              (line) => (Number(line.balance) > 0 || line.obligation === true) &&
+                                                  !line.isExternalAsset(),
                                           ),
                                       ]
                                     : []

@@ -111,7 +111,6 @@ Feature: Upgrade Account
         Given I should have 'currency-settings-overlay'
         Given I should wait 10 sec to see 'line-remove-button'
         Then I tap 'line-remove-button'
-        Then I tap alert button with label "Yes, I'm sure"
         Given I should have 'review-transaction-modal'
         Then I scroll up 'review-content-container'
         Given I should see 'accept-button'

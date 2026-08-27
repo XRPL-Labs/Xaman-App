@@ -45,9 +45,12 @@ import {
     AMMInfoRequest,
     AMMInfoResponse,
 } from '@common/libs/ledger/types/methods';
-import { LedgerEntry, RippleState, URIToken } from '@common/libs/ledger/types/ledger';
+import { LedgerEntry, MPToken, MPTokenIssuance, RippleState, URIToken } from '@common/libs/ledger/types/ledger';
 import { IssuedCurrency } from '@common/libs/ledger/types/common';
 import { LedgerEntryTypes } from '@common/libs/ledger/types/enums';
+import { SimulateRequest } from '@common/libs/ledger/types/methods/submit';
+import { TransactionJson } from '@common/libs/ledger/types/transaction';
+import { DecodeMPTokenIssuanceToIssuer } from '@common/utils/codec';
 
 /* Types  ==================================================================== */
 export type LedgerServiceEvent = {
@@ -55,6 +58,8 @@ export type LedgerServiceEvent = {
         blob: string,
         hash: string,
         network: { id: number; node: string; type: NetworkType; key: string },
+        feeBlob?: string,
+        feeHash?: string,
     ) => void;
 };
 
@@ -135,6 +140,13 @@ class LedgerService extends EventEmitter {
             account,
             ledger_index: 'validated',
             signer_lists: false,
+        });
+    };
+
+    simulateTransaction = (tx: TransactionJson) => {
+        return NetworkService.send<SimulateRequest, SubmitResponse>({
+            command: 'simulate',
+            tx_json: tx,
         });
     };
 
@@ -260,6 +272,65 @@ class LedgerService extends EventEmitter {
     };
 
     /**
+     * Check if an MPT issuance ID is a vault share and return vault info if so.
+     * Returns the vault's Asset info if the MPT is a vault share, otherwise undefined.
+     */
+    getVaultForMPTIssuance = async (mptIssuanceId: string): Promise<{ asset: any; owner: string } | undefined> => {
+        try {
+            // Get the issuer from the MPT issuance ID
+            const issuer = DecodeMPTokenIssuanceToIssuer(mptIssuanceId);
+            if (!issuer) {
+                this.logger.debug('getVaultForMPTIssuance: could not decode issuer from', mptIssuanceId);
+                return undefined;
+            }
+
+            this.logger.debug('getVaultForMPTIssuance: looking up vaults for issuer', issuer);
+
+            // Fetch account objects owned by the issuer (don't filter by type as 'vault' may not be supported)
+            const resp = await this.getAccountObjects(issuer);
+            if ('error' in resp) {
+                this.logger.debug('getVaultForMPTIssuance: error fetching account objects', resp);
+                return undefined;
+            }
+
+            const { account_objects } = resp as { account_objects: any[] };
+            if (!account_objects || account_objects.length === 0) {
+                this.logger.debug('getVaultForMPTIssuance: no account objects found');
+                return undefined;
+            }
+
+            // Log all vault objects found for debugging
+            const vaults = account_objects.filter((obj) => obj.LedgerEntryType === 'Vault');
+            this.logger.debug('getVaultForMPTIssuance: found vaults', {
+                count: vaults.length,
+                ids: vaults.map((v) => v.ShareMPTID),
+            });
+
+            // Normalize the MPT ID for comparison (uppercase)
+            const normalizedMptId = mptIssuanceId.toUpperCase();
+
+            // Find a vault whose ShareMPTID matches the MPT issuance ID
+            const vault = vaults.find(
+                (obj) => obj.ShareMPTID && obj.ShareMPTID.toUpperCase() === normalizedMptId,
+            );
+
+            if (vault) {
+                this.logger.debug('getVaultForMPTIssuance: found matching vault', vault.ShareMPTID);
+                return {
+                    asset: vault.Asset,
+                    owner: vault.Owner || vault.Account,
+                };
+            }
+
+            this.logger.debug('getVaultForMPTIssuance: no matching vault found for', normalizedMptId);
+            return undefined;
+        } catch (error) {
+            this.logger.debug('getVaultForMPTIssuance error', error);
+            return undefined;
+        }
+    };
+
+    /**
      * Get ledger data
      */
     getLedgerData = (marker: string, limit?: number) => {
@@ -323,6 +394,72 @@ class LedgerService extends EventEmitter {
                     this.logger.error('getAccountObligations', error);
                     return resolve([]);
                 });
+        });
+    };
+
+    /**
+     * Get account obligation lines
+     */
+    getAccountMPTFullDetails = async (
+        account: string,
+        marker?: string,
+        combined = [] as AccountLinesTrustline[],
+    ): Promise<AccountLinesTrustline[]> => {
+        return NetworkService.send({
+            command: 'account_objects',
+            account,
+            type: 'mptoken',
+        }).then(async (resp) => {
+            if ('error' in resp) {
+                this.logger.error('Unable to get mpt details state', resp.error);
+                return combined;
+            }
+
+            const { account_objects, marker: _marker } = resp as {
+                account_objects: MPToken[];
+                marker: string;
+            };
+
+            const accountLinesFormatted: AccountLinesTrustline[] = await Promise.all(
+                account_objects.map(async (mpt) => {
+                    const mpTokenIssuance: MPTokenIssuance = (
+                        (await NetworkService.send({
+                            command: 'ledger_entry',
+                            mpt_issuance: mpt.MPTokenIssuanceID,
+                        })) as any
+                    )?.node;
+
+                    let amount = Number(mpt?.MPTAmount || 0);
+                    let maxAmount = Number(mpTokenIssuance?.MaximumAmount || 0);
+
+                    if (mpTokenIssuance?.AssetScale && Number(mpTokenIssuance?.AssetScale) > 1) {
+                        amount /= 10 ** (mpTokenIssuance?.AssetScale || 1);
+                        maxAmount /= 10 ** (mpTokenIssuance?.AssetScale || 1);
+                    }
+
+                    return {
+                        account: DecodeMPTokenIssuanceToIssuer(mpt.MPTokenIssuanceID),
+                        currency: mpt.MPTokenIssuanceID,
+                        balance: String(amount),
+                        limit: String(maxAmount),
+                        limit_peer: `${maxAmount}|${JSON.stringify(mpTokenIssuance)}`,
+                        no_ripple: true,
+                        no_ripple_peer: false,
+                        freeze: false,
+                        obligation: false,
+                        quality_in: 0,
+                        quality_out: 0,
+                        authorized: true,
+                        peer_authorized: true,
+                    };
+                }),
+            );
+
+            if (_marker && _marker !== marker) {
+                return this.getAccountMPTFullDetails(account, _marker, accountLinesFormatted.concat(combined));
+            }
+
+            return accountLinesFormatted.concat(combined);
         });
     };
 
@@ -457,12 +594,17 @@ class LedgerService extends EventEmitter {
         account: string,
         peer: IssuedCurrency,
     ): Promise<AccountLinesTrustline | undefined> => {
+        if (!peer?.currency || (peer?.currency || '').length === 48) {
+            // MPT
+            return undefined;
+        }
+
         return this.getLedgerEntry<RippleState>({
             ripple_state: { accounts: [account, peer.issuer], currency: peer.currency },
         })
             .then((resp) => {
                 if ('error' in resp) {
-                    this.logger.error('Unable to get account ripple_state entry', resp.error);
+                    this.logger.debug('Unable to get account ripple_state entry', resp.error);
                     return undefined;
                 }
 
@@ -532,24 +674,37 @@ class LedgerService extends EventEmitter {
     /**
      * Submit signed transaction to the Ledger
      */
-    submitTransaction = async (txBlob: string, txHash?: string, failHard = false): Promise<SubmitResultType> => {
+    submitTransaction = async (
+        txBlob: string,
+        txHash?: string,
+        failHard?: boolean,
+        feeBlob?: string,
+        feeHash?: string,
+    ): Promise<SubmitResultType> => {
         try {
             // get connection details from network service
             const { node, type: networkType, networkId, networkKey } = NetworkService.getConnectionDetails();
 
             // send event about we are about to submit the transaction
-            this.emit('submitTransaction', txBlob, txHash ?? '', {
-                id: networkId,
-                node,
-                type: networkType,
-                key: networkKey,
-            });
+            this.emit(
+                'submitTransaction',
+                txBlob,
+                txHash ?? '',
+                {
+                    id: networkId,
+                    node,
+                    type: networkType,
+                    key: networkKey,
+                },
+                feeBlob,
+                feeHash,
+            );
 
             // submit the tx blob to the ledger
             const submitResponse = await NetworkService.send<SubmitRequest, SubmitResponse>({
                 command: 'submit',
                 tx_blob: txBlob,
-                fail_hard: failHard,
+                fail_hard: !!failHard,
             });
 
             // this.logger.debug('--- submitTransaction ---', submitResponse);

@@ -4,6 +4,8 @@ import BaseLedgerObject from '@common/libs/ledger/objects/base';
 
 import { AccountID, Blob, Amount, Hash256, UInt32, UInt64 } from '@common/libs/ledger/parser/fields';
 import { RippleTime } from '@common/libs/ledger/parser/fields/codec';
+import { remainingPayChannelAmount } from '@common/libs/ledger/utils/payChannelAmounts';
+import { AmountType } from '@common/libs/ledger/parser/types';
 
 /* Types ==================================================================== */
 import { PayChannel as PayChannelLedgerEntry } from '@common/libs/ledger/types/ledger';
@@ -56,6 +58,10 @@ class PayChannel extends BaseLedgerObject<PayChannelLedgerEntry> {
 
     get Date(): string | undefined {
         return this.Expiration;
+    }
+
+    get Remaining(): AmountType | undefined {
+        return remainingPayChannelAmount(this.Amount, this.Balance);
     }
 
     get isExpired(): boolean {

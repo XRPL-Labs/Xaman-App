@@ -12,7 +12,7 @@ import { TrustLineRepository } from '@store/repositories';
 
 import { Payload, XAppOrigin } from '@common/libs/payload';
 
-import { Payment, TrustSet } from '@common/libs/ledger/transactions';
+import { MPTokenAuthorize, Payment, TrustSet } from '@common/libs/ledger/transactions';
 import { TransactionTypes } from '@common/libs/ledger/types/enums';
 import { MutationsMixinType, SignMixinType } from '@common/libs/ledger/mixin/types';
 
@@ -31,7 +31,10 @@ import NetworkService from '@services/NetworkService';
 
 // components
 import { AmountText, Button, Icon, InfoMessage, RaisedButton, Spacer, TouchableDebounce } from '@components/General';
-import { TokenAvatar, TokenIcon } from '@components/Modules/TokenElement';
+import {
+    TokenAvatar,
+    // TokenIcon,
+} from '@components/Modules/TokenElement';
 
 import Localize from '@locale';
 
@@ -45,6 +48,8 @@ import styles from './styles';
 
 /* types ==================================================================== */
 import { Props, State } from './types';
+import BackendService from '@services/BackendService';
+import { DepositAuthorizedRequest, DepositAuthorizedResponse } from '@common/libs/ledger/types/methods';
 
 /* Component ==================================================================== */
 class TokenSettingsOverlay extends Component<Props, State> {
@@ -72,6 +77,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
             isReviewScreenVisible: false,
             latestLineBalance: 0,
             canRemove: false,
+            issuerTransferFee: undefined,
         };
 
         this.animatedColor = new Animated.Value(0);
@@ -81,18 +87,29 @@ class TokenSettingsOverlay extends Component<Props, State> {
     }
 
     componentDidMount() {
+        const { token } = this.props;
         this.mounted = true;
+
+        LedgerService.getAccountTransferRate(token.currency.issuer)
+            .then((resp) => {
+                this.setState({
+                    issuerTransferFee: resp,
+                });
+            })
+            .catch(() => {
+                //
+            });
 
         Animated.parallel([
             Animated.timing(this.animatedColor, {
                 toValue: 150,
                 duration: 350,
-                useNativeDriver: false,
+                useNativeDriver: true,
             }),
             Animated.timing(this.animatedOpacity, {
                 toValue: 1,
                 duration: 200,
-                useNativeDriver: false,
+                useNativeDriver: true,
             }),
         ]).start();
 
@@ -109,12 +126,12 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 Animated.timing(this.animatedColor, {
                     toValue: 0,
                     duration: 350,
-                    useNativeDriver: false,
+                    useNativeDriver: true,
                 }),
                 Animated.timing(this.animatedOpacity, {
                     toValue: 0,
                     duration: 200,
-                    useNativeDriver: false,
+                    useNativeDriver: true,
                 }),
             ]).start(async () => {
                 await Navigator.dismissOverlay();
@@ -159,6 +176,14 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         // ignore obligation lines
         if (token.obligation) return Promise.resolve();
+
+        if (token?.isMPToken()) {
+            return new Promise(resolve => {
+                const balance = Number(token.balance);
+                this.setState({ latestLineBalance: balance, canRemove: balance === 0 });
+                resolve();
+            });
+        }
 
         return new Promise((resolve) => {
             LedgerService.getFilteredAccountLine(account.address, {
@@ -230,12 +255,12 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         Animated.timing(this.animatedColor, {
                             toValue: 0,
                             duration: 350,
-                            useNativeDriver: false,
+                            useNativeDriver: true,
                         }),
                         Animated.timing(this.animatedOpacity, {
                             toValue: 0,
                             duration: 200,
-                            useNativeDriver: false,
+                            useNativeDriver: true,
                         }),
                     ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<Payment>>(
@@ -283,26 +308,93 @@ class TokenSettingsOverlay extends Component<Props, State> {
         );
     };
 
+    onOpenXAppPress = () => {      
+        const { token } = this.props;
+
+        this.dismiss().then(() => {
+            Navigator.showModal<XAppBrowserModalProps>(
+                AppScreens.Modal.XAppBrowser,
+                {
+                    identifier: AppConfig.xappIdentifiers.tokentrasher,
+                    origin: XAppOrigin.TOKEN_REMOVE,
+                    originData: {
+                        token: token.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                    },
+                },
+                {
+                    modalTransitionStyle: OptionsModalTransitionStyle.coverVertical,
+                    modalPresentationStyle: OptionsModalPresentationStyle.overFullScreen,
+                },
+            );
+        });
+    };    
+
     removeTrustLine = async () => {
         const { token, account } = this.props;
         const { latestLineBalance } = this.state;
 
         try {
             // there is dust balance in the account
-            if (latestLineBalance !== 0) {
+            if (latestLineBalance !== 0 && !token?.isMPToken()) {
+
+                // Check if deposit auth is blocking this
+                const isAuthorized = await NetworkService.send<DepositAuthorizedRequest, DepositAuthorizedResponse>({
+                    command: 'deposit_authorized',
+                    source_account: account.address,
+                    destination_account: token.currency.issuer,
+                });
+
+                const hasNoAuth = ((isAuthorized as any) || {})?.deposit_authorized === false;
+                const isMainnet = await NetworkService?.getNetwork()?.key === 'MAINNET';
+                
+                const localizeArgs = {
+                    balance: new BigNumber(latestLineBalance).toFixed(),
+                    currency: NormalizeCurrencyCode(token.currency.currencyCode),
+                };
+
+                const title = [
+                    Localize.t(hasNoAuth
+                        ? 'asset.trustlineDustNoDepositAuth'
+                        : 'asset.trustLineDustRemoveWarning'
+                    , localizeArgs),
+                ];
+
+                if (hasNoAuth && isMainnet) {
+                    title.push(Localize.t('asset.trustlineDustNoDepositAuthTrasherXapp', localizeArgs));
+                }
+
+                let secondaryButton: {
+                    text: string;
+                    onPress: () => void;
+                    style: 'destructive' | 'primary';
+                } | undefined = {
+                    text: Localize.t('global.continue'),
+                    onPress: this.clearDustAmounts,
+                    style: 'destructive',
+                };
+
+                if (hasNoAuth) {
+                    if (isMainnet) {
+                        secondaryButton = {
+                            text: Localize.t('global.openXApp'),
+                            onPress: async () => { 
+                                this.onOpenXAppPress();
+                            },
+                            style: 'destructive',
+                        };
+                    } else {
+                        // Not mainnet, has deposit auth, we can't do anything
+                        secondaryButton = undefined;
+                    }
+                }
+
                 Prompt(
                     Localize.t('global.warning'),
-                    Localize.t('asset.trustLineDustRemoveWarning', {
-                        balance: new BigNumber(latestLineBalance).toFixed(),
-                        currency: NormalizeCurrencyCode(token.currency.currencyCode),
-                    }),
+                    title.join('\n\n'),
                     [
                         { text: Localize.t('global.cancel') },
-                        {
-                            text: Localize.t('global.continue'),
-                            onPress: this.clearDustAmounts,
-                            style: 'destructive',
-                        },
+                        secondaryButton,
                     ],
                     { type: 'default' },
                 );
@@ -324,16 +416,23 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 transactionFlags |= 131072; // tfClearNoRipple
             }
 
-            const trustSet = new TrustSet({
-                TransactionType: TransactionTypes.TrustSet,
-                Account: account.address,
-                LimitAmount: {
-                    currency: token.currency.currencyCode,
-                    issuer: token.currency.issuer,
-                    value: 0,
-                },
-                Flags: transactionFlags,
-            });
+            const trustSet = token?.isMPToken()
+                ? new MPTokenAuthorize({
+                    TransactionType: TransactionTypes.MPTokenAuthorize,
+                    Account: account.address,
+                    Flags: 1,
+                    MPTokenIssuanceID: token.currency.currencyCode,
+                })
+                : new TrustSet({
+                    TransactionType: TransactionTypes.TrustSet,
+                    Account: account.address,
+                    LimitAmount: {
+                        currency: token.currency.currencyCode,
+                        issuer: token.currency.issuer,
+                        value: 0,
+                    },
+                    Flags: transactionFlags,
+                });
 
             const payload = Payload.build(trustSet.JsonForSigning);
 
@@ -346,12 +445,12 @@ class TokenSettingsOverlay extends Component<Props, State> {
                         Animated.timing(this.animatedColor, {
                             toValue: 0,
                             duration: 350,
-                            useNativeDriver: false,
+                            useNativeDriver: true,
                         }),
                         Animated.timing(this.animatedOpacity, {
                             toValue: 0,
                             duration: 200,
-                            useNativeDriver: false,
+                            useNativeDriver: true,
                         }),
                     ]).start(() => {
                         Navigator.showModal<ReviewTransactionModalProps<TrustSet>>(
@@ -386,12 +485,12 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     Animated.timing(this.animatedColor, {
                         toValue: 150,
                         duration: 350,
-                        useNativeDriver: false,
+                        useNativeDriver: true,
                     }),
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: false,
+                        useNativeDriver: true,
                     }),
                 ]).start();
             },
@@ -408,12 +507,12 @@ class TokenSettingsOverlay extends Component<Props, State> {
                     Animated.timing(this.animatedColor, {
                         toValue: 150,
                         duration: 350,
-                        useNativeDriver: false,
+                        useNativeDriver: true,
                     }),
                     Animated.timing(this.animatedOpacity, {
                         toValue: 1,
                         duration: 200,
-                        useNativeDriver: false,
+                        useNativeDriver: true,
                     }),
                 ]).start();
             },
@@ -427,7 +526,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
         }
 
         InteractionManager.runAfterInteractions(() => {
-            Alert.alert(Localize.t('global.success'), Localize.t('asset.successRemoved'));
+            Toast(Localize.t('asset.successRemoved'));
         });
 
         this.setState({
@@ -435,22 +534,6 @@ class TokenSettingsOverlay extends Component<Props, State> {
         }, () => {
             this.dismiss();
         });
-    };
-
-    onRemovePress = async () => {
-        Prompt(
-            Localize.t('global.warning'),
-            Localize.t('account.removeTrustLineWarning'),
-            [
-                { text: Localize.t('global.cancel') },
-                {
-                    text: Localize.t('global.doIt'),
-                    onPress: this.removeTrustLine,
-                    style: 'destructive',
-                },
-            ],
-            { type: 'default' },
-        );
     };
 
     onSendPress = async () => {
@@ -466,6 +549,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         this.dismiss().then(() => {
             if (NetworkService.hasSwap()) {
+                setTimeout(() => BackendService.action('assetswap', `${token.currency.currencyCode}.${token.currency.issuer}`), 1000);
                 Navigator.showModal<XAppBrowserModalProps>(
                     AppScreens.Modal.XAppBrowser,
                     {
@@ -512,6 +596,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
         const { account, token } = this.props;
 
         this.dismiss().then(() => {
+            setTimeout(() => BackendService.action('assetexchange', `${token.currency.currencyCode}.${token.currency.issuer}`), 1000);
             Navigator.push<ExchangeViewProps>(AppScreens.Transaction.Exchange, { account, token });
         });
     };
@@ -659,10 +744,11 @@ class TokenSettingsOverlay extends Component<Props, State> {
         let fixMethod;
 
         if (token.no_ripple === false) {
-            explanation = Localize.t('asset.ripplingMisconfigurationWarning', {
+            explanation = Localize.t('asset.ripplingMisconfigurationWarning2', {
                 token: NormalizeCurrencyCode(token.currency.currencyCode),
             });
-            fixMethod = this.disableRippling;
+            // fixMethod = this.disableRippling;
+            fixMethod = this.updateLineLimit; // This both sets the limit and disables rippling
         } else if (Number(token.limit) === 0) {
             explanation = Localize.t('asset.lineLimitMisconfigurationWarning');
             fixMethod = this.updateLineLimit;
@@ -694,7 +780,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
     canExchange = () => {
         const { token } = this.props;
-        return !token.obligation && !token.isLiquidityPoolToken();
+        return !token.obligation && !token.isLiquidityPoolToken() && !token?.isMPToken();
     };
 
     startTouch = (event: GestureResponderEvent) => {
@@ -712,7 +798,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                 targetInstance.pendingProps?.testID === 'currency-settings-overlay' &&
                 targetInstance.pendingProps?.style &&
                 typeof targetInstance.pendingProps?.style === 'object' &&
-                targetInstance.pendingProps?.style?.opacity === 0
+                Number(targetInstance.pendingProps?.style?.opacity || 0) < 0.5
             ) {
                 event?.preventDefault();
                 event?.stopPropagation();
@@ -723,7 +809,15 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
     render() {
         const { token } = this.props;
-        const { isFavorite, isReviewScreenVisible, isRemoving, isLoading, canRemove, hasXAppIdentifier } = this.state;
+        const {
+            isFavorite,
+            isReviewScreenVisible,
+            isRemoving,
+            isLoading,
+            canRemove,
+            hasXAppIdentifier,
+            issuerTransferFee,
+        } = this.state;
 
         if (Platform.OS === 'ios' && isReviewScreenVisible) {
             // IOS will be at the back
@@ -754,7 +848,10 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
         const needsTlFix = (!token.no_ripple || Number(token.limit) === 0) &&
             !token.obligation &&
+            !token?.isMPToken() &&
             !token.isLiquidityPoolToken();
+
+        const showTransferFee = issuerTransferFee && issuerTransferFee > 0;
 
         return (
             <View
@@ -824,7 +921,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                                 AppStyles.textCenterAligned,
                                                 AppStyles.monoBold,
                                             ]}
-                                            prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
+                                            // prefix={<TokenIcon token={token} style={styles.tokenIconContainer} />}
                                         />
                                     </View>
                                     <View style={[
@@ -834,17 +931,36 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         AppStyles.centerAligned,
                                     ]}>
                                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                                            <View style={styles.brandAvatarContainer}>
+                                            <View style={[
+                                                styles.brandAvatarContainer,
+                                                showTransferFee
+                                                    ? styles.brandAvatarContainerWithTransferFee
+                                                    : {},
+                                            ]}>
                                                 <TokenAvatar token={token} size={35} />
                                             </View>
                                             <View style={[AppStyles.column, AppStyles.centerContent]}>
                                                 <Text
                                                     numberOfLines={1}
-                                                    style={styles.currencyItemLabelSmall}
+                                                    style={[
+                                                        styles.currencyItemLabelSmall,
+                                                        showTransferFee
+                                                            ? styles.currencyItemLabelSmallWithTransferFee
+                                                            : {},
+                                                    ]}
                                                     ellipsizeMode="middle"
                                                 >
                                                     {token.getFormattedCurrency()}
                                                 </Text>
+                                                { showTransferFee && (
+                                                    <Text style={[
+                                                        styles.tokenTransferFee,
+                                                        Number(token.balance) > 0 && AppStyles.colorRed,
+                                                    ]}>
+                                                        {Localize.t('global.transferFee')}:{' '}
+                                                        {JSON.stringify(issuerTransferFee, null, 2)}%
+                                                    </Text>
+                                                )}
                                                 <TouchableDebounce
                                                     onPress={this.onCopyIssuerAddressPress}
                                                     style={AppStyles.row}
@@ -892,7 +1008,8 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                         labelStyle={styles.infoText}
                                         label={
                                             !token.no_ripple
-                                                ? Localize.t('asset.dangerousConfigurationDetected')
+                                                ? Localize.t('asset.suboptimalConfigurationDetected')
+                                                // ^^ dangerousConfigurationDetected
                                                 : Localize.t('asset.restrictingConfigurationDetected')
                                         }
                                         actionButtonLabel={Localize.t('asset.moreInfoAndFix')}
@@ -905,27 +1022,29 @@ class TokenSettingsOverlay extends Component<Props, State> {
 
                             <Spacer size={15} />
 
-                            <View style={[
-                                styles.buttonRow,
-                                styles.secondButtonRow,
-                            ]}>
-                                <RaisedButton
-                                    small
-                                    isDisabled={!this.canExchange()}
-                                    containerStyle={[
-                                        styles.exchangeButton,
-                                    ]}
-                                    icon="IconSwitchAccount"
-                                    iconSize={17}
-                                    iconPosition="left"
-                                    iconStyle={styles.exchangeButtonIcon}
-                                    label={Localize.t('global.exchange')}
-                                    textStyle={styles.exchangeButtonText}
-                                    onPress={this.onExchangePress}
-                                />
-                            </View>
+                            { !token?.isMPToken() && (
+                                <View style={[
+                                    styles.buttonRow,
+                                    styles.secondButtonRow,
+                                ]}>
+                                    <RaisedButton
+                                        small
+                                        isDisabled={!this.canExchange()}
+                                        containerStyle={[
+                                            styles.exchangeButton,
+                                        ]}
+                                        icon="IconSwitchAccount"
+                                        iconSize={17}
+                                        iconPosition="left"
+                                        iconStyle={styles.exchangeButtonIcon}
+                                        label={Localize.t('global.exchange')}
+                                        textStyle={styles.exchangeButtonText}
+                                        onPress={this.onExchangePress}
+                                    />
+                                </View>
+                            )}
                             {
-                                NetworkService.hasSwap() && (
+                                NetworkService.hasSwap() && !token?.isMPToken() && (
                                     <View style={[
                                         styles.buttonRow,
                                         styles.secondButtonRow,
@@ -994,7 +1113,7 @@ class TokenSettingsOverlay extends Component<Props, State> {
                                     iconStyle={styles.removeButtonIcon}
                                     label={Localize.t('asset.removeAsset')}
                                     textStyle={styles.removeButtonText}
-                                    onPress={this.onRemovePress}
+                                    onPress={this.removeTrustLine}
                                 />
                             </View>
                         </View>

@@ -18,6 +18,12 @@ export interface SubmitRequest extends BaseRequest {
     fail_hard?: boolean;
 }
 
+export interface SimulateRequest extends BaseRequest {
+    command: 'simulate';
+    /** The complete transaction in JSON format. */
+    tx_json: any & { hash?: string };
+}
+
 /**
  * Response expected from a {@link SubmitRequest}.
  *

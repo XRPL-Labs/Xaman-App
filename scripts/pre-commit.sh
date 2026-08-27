@@ -31,3 +31,6 @@ if [[ -n "$translationsError" ]]; then
     echo "$translationsError"
     exit 1
 fi
+
+# guard production endpoint values
+scripts/check-endpoints.sh || exit 1

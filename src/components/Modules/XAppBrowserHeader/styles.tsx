@@ -6,17 +6,22 @@ import { AppFonts, AppSizes } from '@theme';
 
 /* Styles ==================================================================== */
 const styles = StyleService.create({
+    headerSafeArea: {
+        backgroundColor: '$background',
+        zIndex: 2,
+        borderBottomColor: '$tint',
+        borderBottomWidth: 1,
+        // iOS SafeAreaView already insets. Android SafeAreaView is a no-op.
+        paddingTop: Platform.OS === 'android' ? AppSizes.statusBarHeight : 0,
+    },
     headerContainer: {
         flexDirection: 'row',
         backgroundColor: '$background',
         height:
             AppSizes.heightPercentageToDP(6) +
-            Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
-        paddingTop: Platform.select({ ios: AppSizes.statusBarHeight, default: AppSizes.paddingExtraSml }),
+            Platform.select({ ios: 0, default: AppSizes.paddingExtraSml }),
+        paddingTop: Platform.select({ ios: 0, default: AppSizes.paddingExtraSml }),
         paddingBottom: 5,
-        zIndex: 2,
-        borderBottomColor: '$tint',
-        borderBottomWidth: 1,
     },
     headerLeftContainer: {
         flex: 1,

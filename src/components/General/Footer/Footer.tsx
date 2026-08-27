@@ -6,7 +6,7 @@
  */
 import React, { PureComponent, ReactNode } from 'react';
 
-import { View, ViewStyle } from 'react-native';
+import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { HasBottomNotch } from '@common/helpers/device';
 
@@ -55,17 +55,19 @@ class Footer extends PureComponent<Props, State> {
             return null;
         }
 
-        return (
-            <View
-                style={[
-                    styles.container,
-                    { paddingBottom: safeArea ? (HasBottomNotch() ? 34 : 10) + AppSizes.paddingExtraSml : undefined },
-                    style,
-                ]}
-            >
-                {children}
-            </View>
-        );
+        const flattened = StyleSheet.flatten([
+            styles.container,
+            { paddingBottom: safeArea ? (HasBottomNotch() ? 34 : 10) + AppSizes.paddingExtraSml : undefined },
+            style,
+        ]) as ViewStyle;
+
+        // Home-button / iPhone SE: SafeAreaView bottom inset is 0, so keep a 20pt gap.
+        const minBottom = Platform.OS === 'ios' && !HasBottomNotch() ? AppSizes.paddingSml : 0;
+        if (minBottom && (Number(flattened.paddingBottom) || 0) < minBottom) {
+            flattened.paddingBottom = minBottom;
+        }
+
+        return <View style={flattened}>{children}</View>;
     }
 }
 

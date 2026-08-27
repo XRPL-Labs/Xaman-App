@@ -24,7 +24,7 @@ import android.util.Log;
 public class HTTPClientFactory implements OkHttpClientFactory {
     private static final String TAG = "HTTPClientFactory";
     // TODO: remove "xumm-cdn.imgix.net", "cdn.xumm.pro". "xumm.app" after migration period
-    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "xrplcluster.com", "xahau.network", "custom-node.xrpl-labs.com", "cdn.xumm.pro", "xumm.app", "cdn.xaman.app", "xaman.app", "image-proxy.xrpl-labs.com");
+    private static final List<String> trustedHosts = Arrays.asList("xumm-cdn.imgix.net", "xrplcluster.com", "xahau.network", "custom-node.xrpl-labs.com", "cdn.xumm.pro", "xumm.app", "cdn.xaman.app", "xaman.app", "image-proxy.xrpl-labs.com", "rpc.xrpl-labs.com", "rpc.xahau.network", "rpc.xahau-test.net", "mainnet.xrpl-rpc.com", "testnet.xrpl-rpc.com");
     private static final String defaultHost = "xaman.app";
 
     @Override

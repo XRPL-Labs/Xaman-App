@@ -53,7 +53,9 @@ class PaymentInfo extends ExplainerAbstract<Payment, MutationsMixinType> {
         content.push(
             Localize.t('events.itWasInstructedToDeliver', {
                 amount: this.item.Amount!.value,
-                currency: NormalizeCurrencyCode(this.item.Amount!.currency),
+                currency: this.item.Amount?.mpt_issuance_id
+                    ? 'tokens'
+                    : NormalizeCurrencyCode(this.item.Amount!.currency),
             }),
         );
 

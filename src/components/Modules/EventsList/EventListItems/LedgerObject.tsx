@@ -22,6 +22,7 @@ import { PseudoTransactions, Transactions } from '@common/libs/ledger/transactio
 
 import * as Blocks from './Blocks';
 
+// eslint-disable-next-line import/no-cycle
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
 import { AppSizes, AppStyles } from '@theme';
@@ -144,10 +145,14 @@ class LedgerObjectItem extends Component<Props, State> {
     onPress = () => {
         const { item, account } = this.props;
 
-        Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
-            item,
-            account,
-        });
+        Navigator.pop();
+        setTimeout(() => {
+            Navigator.pop();
+            Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
+                item,
+                account,
+            });
+        }, 100);
     };
 
     render() {

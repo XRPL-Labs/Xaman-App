@@ -14,7 +14,7 @@ import { BiometryType } from '@store/types';
 import { Biometric, BiometricErrors } from '@common/libs/biometric';
 
 import { Navigator } from '@common/helpers/navigator';
-import { IsFlagSecure, SetFlagSecure } from '@common/helpers/app';
+import { IsDebugBuild, IsFlagSecure, SetFlagSecure } from '@common/helpers/app';
 
 import { TouchableDebounce, Header, Switch, Icon, InfoMessage } from '@components/General';
 
@@ -57,7 +57,7 @@ class SecuritySettingsView extends Component<Props, State> {
             coreSettings,
             biometricEnabled: coreSettings.biometricMethod !== BiometryType.None,
             biometricAvailable: false,
-            isFlagSecure: true,
+            isFlagSecure: !IsDebugBuild(),
             timeItems: [
                 { value: 0, title: `0 ${Localize.t('global.seconds')}` },
                 { value: 1, title: `1 ${Localize.t('global.minutes')}` },
@@ -228,7 +228,19 @@ class SecuritySettingsView extends Component<Props, State> {
                 />
 
                 <ScrollView>
-                    <Text style={styles.descriptionText}>{Localize.t('global.authentication')}</Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                        AppStyles.marginTopNone,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.authentication')}</Text>
+                        </View>
+                    </View>
+
                     <TouchableDebounce
                         testID="change-passcode-button"
                         style={styles.row}
@@ -282,9 +294,17 @@ class SecuritySettingsView extends Component<Props, State> {
                         />
                     )}
 
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('settings.additionalSecurity')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('settings.additionalSecurity')}</Text>
+                        </View>
+                    </View>
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -297,9 +317,17 @@ class SecuritySettingsView extends Component<Props, State> {
                     </View>
                     <InfoMessage flat label={Localize.t('settings.eraseDataDescription')} type="error" />
 
-                    <Text numberOfLines={1} style={styles.descriptionText}>
-                        {Localize.t('global.other')}
-                    </Text>
+                    <View style={[
+                        styles.row,
+                        styles.header,
+                    ]}>
+                        <View style={AppStyles.flex1}>
+                            <Text style={[
+                                AppStyles.pbold,
+                                AppStyles.colorPrimary,
+                            ]}>{Localize.t('global.other')}</Text>
+                        </View>
+                    </View>
                     <View style={styles.row}>
                         <View style={AppStyles.flex3}>
                             <Text numberOfLines={1} style={styles.label}>
@@ -321,7 +349,7 @@ class SecuritySettingsView extends Component<Props, State> {
                                 </View>
                                 <View style={[AppStyles.rightAligned, AppStyles.flex1]}>
                                     <Switch
-                                        isDisabled={coreSettings.developerMode}
+                                        isDisabled={coreSettings.developerMode || IsDebugBuild()}
                                         checked={isFlagSecure}
                                         onChange={this.onFlagSecureToggle}
                                     />

@@ -22,7 +22,8 @@ describe('OfferCreate tx', () => {
             const instance = new OfferCreate(tx, meta);
 
             expect(instance.GetOfferStatus(tx.Account)).toBe('FILLED');
-            expect(instance.OfferSequence).toBe(94);
+            // fixture only carries Sequence; OfferSequence no longer falls back to it
+            expect(instance.OfferSequence).toBe(undefined);
             expect(instance.Rate).toBe(0.000024271999999999997);
             expect(instance.Expiration).toBe(undefined);
             expect(instance.OfferID).toBe(tx.OfferID);
@@ -31,6 +32,7 @@ describe('OfferCreate tx', () => {
                 currency: 'BTC',
                 issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
                 value: '0.012136',
+                mpt_issuance_id: undefined,
             });
             expect(instance.TakerGets).toStrictEqual({
                 currency: 'XRP',
@@ -43,7 +45,7 @@ describe('OfferCreate tx', () => {
             const instance = new OfferCreate(tx, meta);
 
             expect(instance.GetOfferStatus(tx.Account)).toBe('FILLED');
-            expect(instance.OfferSequence).toBe(112);
+            expect(instance.OfferSequence).toBe(undefined);
             expect(instance.Rate).toBe(0.000025941414017897298);
             expect(instance.Expiration).toBe('2021-09-20T09:38:28.000Z');
 
@@ -55,6 +57,7 @@ describe('OfferCreate tx', () => {
                 currency: 'BTC',
                 issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
                 value: '0.01257',
+                mpt_issuance_id: undefined,
             });
         });
 
@@ -74,6 +77,7 @@ describe('OfferCreate tx', () => {
                 currency: 'BTC',
                 issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
                 value: '0.012136',
+                mpt_issuance_id: undefined,
             });
 
             expect(offer.Expiration).toBe('2011-10-05T14:48:00.000Z');
@@ -94,6 +98,7 @@ describe('OfferCreate tx', () => {
                 currency: 'BTC',
                 issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
                 value: '0.012136',
+                mpt_issuance_id: undefined,
             });
         });
 
@@ -102,7 +107,7 @@ describe('OfferCreate tx', () => {
             const instance = new OfferCreate(tx, meta);
 
             expect(instance.GetOfferStatus('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ')).toBe('PARTIALLY_FILLED');
-            expect(instance.OfferSequence).toBe(56270334);
+            expect(instance.OfferSequence).toBe(undefined);
             expect(instance.Rate).toBe(0.38076);
             expect(instance.Expiration).toBe(undefined);
 
@@ -114,6 +119,7 @@ describe('OfferCreate tx', () => {
                 currency: '534F4C4F00000000000000000000000000000000',
                 issuer: 'rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz',
                 value: '38.076',
+                mpt_issuance_id: undefined,
             });
         });
 
@@ -121,7 +127,7 @@ describe('OfferCreate tx', () => {
             const { tx, meta }: any = offerCreateTemplates.XRPIOUCANCELED;
             const instance = new OfferCreate(tx, meta);
 
-            expect(instance.OfferSequence).toBe(61160755);
+            expect(instance.OfferSequence).toBe(undefined);
             expect(instance.TakerGets).toStrictEqual({
                 currency: 'XRP',
                 value: '50',
@@ -130,6 +136,7 @@ describe('OfferCreate tx', () => {
                 currency: 'CSC',
                 issuer: 'rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr',
                 value: '11616.66671104',
+                mpt_issuance_id: undefined,
             });
         });
     });
@@ -142,7 +149,7 @@ describe('OfferCreate tx', () => {
             const info = new OfferCreateInfo(instance, { address: tx.Account } as any);
 
             it('should return the expected description', () => {
-                const expectedDescription = `rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ offered to pay 0.01257 BTC in order to receive 484.553386 XRP${'\n'}The exchange rate for this offer is 0.000025941414017897298 BTC/XRP${'\n'}The transaction will also cancel rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ 's existing offer #112${'\n'}The transaction offer ID is: EF963D9313AA45E85610598797D1A65E${'\n'}The offer expires at Monday, September 20, 2021 11:38 AM unless canceled or consumed before then.`;
+                const expectedDescription = `rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ offered to pay 0.01257 BTC in order to receive 484.553386 XRP${'\n'}The exchange rate for this offer is 0.000025941414017897298 BTC/XRP${'\n'}The transaction offer ID is: EF963D9313AA45E85610598797D1A65E${'\n'}The offer expires at Monday, September 20, 2021 11:38 AM unless canceled or consumed before then.`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
@@ -170,6 +177,7 @@ describe('OfferCreate tx', () => {
                             currency: 'BTC',
                             effect: 'POTENTIAL_EFFECT',
                             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                            mpt_issuance_id: undefined,
                             value: '0.01257',
                         },
                     ],
@@ -202,7 +210,6 @@ describe('OfferCreate tx', () => {
             it('should return the expected description', () => {
                 const expectedDescription = `rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ offered to pay 500 XRP in order to receive 0.012136 BTC
 The exchange rate for this offer is 0.000024271999999999997 BTC/XRP
-The transaction will also cancel rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ 's existing offer #94
 The transaction offer ID is: EF963D9313AA45E85610598797D1A65E`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
@@ -225,6 +232,7 @@ The transaction offer ID is: EF963D9313AA45E85610598797D1A65E`;
                             currency: 'BTC',
                             effect: 'POTENTIAL_EFFECT',
                             issuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+                            mpt_issuance_id: undefined,
                             value: '0.012136',
                         },
                         {
@@ -262,8 +270,7 @@ The transaction offer ID is: EF963D9313AA45E85610598797D1A65E`;
 
             it('should return the expected description', () => {
                 const expectedDescription = `rsTQsbTfRkqgUxxs8BToD3VdnENaha9UcY offered to pay 100 XRP in order to receive 38.076 SOLO
-The exchange rate for this offer is 0.38076 SOLO/XRP
-The transaction will also cancel rsTQsbTfRkqgUxxs8BToD3VdnENaha9UcY 's existing offer #56270334`;
+The exchange rate for this offer is 0.38076 SOLO/XRP`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
@@ -285,6 +292,7 @@ The transaction will also cancel rsTQsbTfRkqgUxxs8BToD3VdnENaha9UcY 's existing 
                             effect: 'POTENTIAL_EFFECT',
                             currency: '534F4C4F00000000000000000000000000000000',
                             issuer: 'rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz',
+                            mpt_issuance_id: undefined,
                             value: '38.076',
                         },
                         {
@@ -322,8 +330,7 @@ The transaction will also cancel rsTQsbTfRkqgUxxs8BToD3VdnENaha9UcY 's existing 
 
             it('should return the expected description', () => {
                 const expectedDescription = `rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs offered to pay 50 XRP in order to receive 11616.66671104 CSC
-The exchange rate for this offer is 232.3333342208 CSC/XRP
-The transaction will also cancel rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs 's existing offer #61160755`;
+The exchange rate for this offer is 232.3333342208 CSC/XRP`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
@@ -345,6 +352,7 @@ The transaction will also cancel rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs 's existing 
                             effect: 'POTENTIAL_EFFECT',
                             currency: 'CSC',
                             issuer: 'rCSCManTZ8ME9EoLrSHHYKW8PPwWMgkwr',
+                            mpt_issuance_id: undefined,
                             value: '11616.66671104',
                         },
                         {
@@ -369,8 +377,7 @@ The transaction will also cancel rQamE9ddZiRZLKRAAzwGKboQ8rQHgesjEs 's existing 
 
             it('should return the expected description', () => {
                 const expectedDescription = `rBeSemGtLaHLZXcK1WxutWR339L9ZUz4gh offered to pay 0.6742741104345 SOLO in order to receive 0.000001 XRP
-The exchange rate for this offer is 674274.1104345 SOLO/XRP
-The transaction will also cancel rBeSemGtLaHLZXcK1WxutWR339L9ZUz4gh 's existing offer #91995334`;
+The exchange rate for this offer is 674274.1104345 SOLO/XRP`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
 
@@ -398,6 +405,7 @@ The transaction will also cancel rBeSemGtLaHLZXcK1WxutWR339L9ZUz4gh 's existing 
                             effect: 'POTENTIAL_EFFECT',
                             currency: '534F4C4F00000000000000000000000000000000',
                             issuer: 'rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz',
+                            mpt_issuance_id: undefined,
                             value: '0.6742741104345',
                         },
                     ],

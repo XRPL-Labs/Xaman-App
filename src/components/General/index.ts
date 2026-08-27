@@ -8,6 +8,7 @@ export * from './TextPlaceholder';
 export * from './SearchBar';
 export * from './Switch';
 export * from './InfoMessage';
+export * from './PillButton';
 export * from './Swiper';
 export * from './AccordionPicker';
 export * from './Footer';
@@ -47,3 +48,5 @@ export * from './HeartBeatAnimation';
 export * from './AnimatedDialog';
 export * from './JsonTree';
 export * from './CountDown';
+
+export * from './ServiceFeeSpendable';

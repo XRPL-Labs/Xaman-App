@@ -74,6 +74,21 @@ class Localize {
             if (resolvedLocale !== '' && resolvedLocale !== 'en') {
                 const generateLocals = require('./translations').default;
                 this.instance.translations[resolvedLocale] = generateLocals[resolvedLocale];
+                try {
+                    if (typeof this.instance.translations[resolvedLocale]?.moment?.weekdays?.isFormat === 'string') {
+                        this.instance.translations[resolvedLocale].moment.weekdays.isFormat = new RegExp(
+                            this.instance.translations[resolvedLocale]?.moment?.weekdays?.isFormat,
+                        );
+                    }
+                    if (typeof this.instance.translations[resolvedLocale]?.moment?.months?.isFormat === 'string') {
+                        this.instance.translations[resolvedLocale].moment.months.isFormat = new RegExp(
+                            this.instance.translations[resolvedLocale]?.moment?.months?.isFormat,
+                        );
+                    }
+                } catch {
+                    // ignore
+                }
+
                 this.instance.locale = resolvedLocale;
                 if (generateLocals[resolvedLocale]?.moment) {
                     this.moment.locale(resolvedLocale, generateLocals[resolvedLocale].moment);

@@ -22,11 +22,13 @@ import { AccountModel } from '@store/models';
 import { TokenAvatar } from '@components/Modules/TokenElement';
 
 import ResolverService, { AccountNameResolveType } from '@services/ResolverService';
+import LedgerService from '@services/LedgerService';
 
 import { Navigator } from '@common/helpers/navigator';
 
 import { TouchableDebounce, Badge, BadgeType, Icon } from '@components/General';
 
+// eslint-disable-next-line import/no-cycle
 import { TransactionDetailsViewProps } from '@screens/Events/Details';
 
 import * as Blocks from './Blocks';
@@ -50,6 +52,10 @@ export interface Props {
     account: AccountModel;
     item: Transactions & MutationsMixinType;
     timestamp?: number;
+    showDespiteThirdParty?: boolean;
+    onPress?: () => void;
+    notFound?: boolean;
+    isReplayed?: boolean;
     rates?: {
         fiatCurrency: string;
         fiatRate: RatesType | undefined;
@@ -64,6 +70,7 @@ export interface State {
     isFeeTransaction?: boolean;
     feeText?: string;
     cachedTokenDetails: cachedTokenDetailsState;
+    vaultInfo?: { asset: any; owner: string };
 }
 
 /* Component ==================================================================== */
@@ -92,12 +99,13 @@ class TransactionItem extends Component<Props, State> {
     shouldComponentUpdate(nextProps: Props, nextState: State) {
         // const { item, timestamp } = this.props;
         // const { isLoading, participant, explainer } = this.state;
-        const { isLoading, cachedTokenDetails } = this.state;
+        const { isLoading, cachedTokenDetails, vaultInfo } = this.state;
 
         return (
             // !isEqual(nextProps.item?.hash, item?.hash) ||
             !isEqual(nextState.isLoading, isLoading) ||
-            !isEqual(nextState.cachedTokenDetails.account, cachedTokenDetails.account)
+            !isEqual(nextState.cachedTokenDetails.account, cachedTokenDetails.account) ||
+            !isEqual(nextState.vaultInfo, vaultInfo)
             // !isEqual(nextState.participant, participant) ||
             // !isEqual(nextState.explainer, explainer) // ||
             // !isEqual(nextProps.timestamp, timestamp)
@@ -163,6 +171,7 @@ class TransactionItem extends Component<Props, State> {
 
             const isFeeTransaction = resp?.address && AppConfig?.feeAccount &&
                 String(resp?.address || '') === String(AppConfig?.feeAccount || '') &&
+                String((item as any)?.Destination || '') === String(AppConfig?.feeAccount || '') &&
                 typeof item.MetaData.delivered_amount === 'string' &&
                 (item as any)?._tx?.InvoiceID;
 
@@ -206,17 +215,47 @@ class TransactionItem extends Component<Props, State> {
         }
 
         this.getTokenDetails();
+        this.checkVaultShare();
+    };
+
+    checkVaultShare = async () => {
+        const { item } = this.props;
+
+        // Only check for Payment transactions with MPT amount
+        if (item.TransactionType !== 'Payment') return;
+
+        const mptIssuanceId = (item as any)?.Amount?.mpt_issuance_id;
+        if (!mptIssuanceId) return;
+
+        try {
+            const vaultInfo = await LedgerService.getVaultForMPTIssuance(mptIssuanceId);
+            if (vaultInfo && this.mounted) {
+                this.setState({ vaultInfo });
+            }
+        } catch {
+            // Ignore errors - just won't show vault info
+        }
     };
 
     onPress = () => {
         const { item, account } = this.props;
         const { cachedTokenDetails } = this.state;
 
-        Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
-            item,
-            account,
-            cachedTokenDetails,
-        });
+        Navigator.pop();
+        setTimeout(() => {
+            Navigator.pop();
+            Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
+                item,
+                account,
+                cachedTokenDetails,
+            });
+        }, 100);
+
+        // Navigator.push<TransactionDetailsViewProps>(AppScreens.Transaction.Details, {
+        //     item,
+        //     account,
+        //     cachedTokenDetails,
+        // });
     };
 
     getTokenDetails() {
@@ -237,7 +276,7 @@ class TransactionItem extends Component<Props, State> {
                 .flat().filter(f => typeof f === 'object')
                 .map(f => Object.values(f))
                 .flat().filter(f => typeof f === 'object')
-                .map(f => Object.values(f) as any)
+                .map(f => Object.values(f || {}) as any)
                 .flat().filter(f => typeof f.AMMID === 'string' && typeof f.Account === 'string')
                 .map(f => f.Account)
                 .map(issuer => trustLine.findBy('currency.issuer', issuer)?.[0])
@@ -351,8 +390,15 @@ class TransactionItem extends Component<Props, State> {
     }
 
     render() {
-        const { item, account } = this.props; // , rates
-        const { participant, explainer, isFeeTransaction, feeText, cachedTokenDetails } = this.state;
+        const {
+            item,
+            account,
+            showDespiteThirdParty,
+            onPress,
+            notFound,
+            isReplayed,
+        } = this.props; // , rates
+        const { participant, explainer, isFeeTransaction, feeText, cachedTokenDetails, vaultInfo } = this.state;
 
         // if participant is block the show an overlay to reduce the visibility
         const showHalfTransparent = participant?.blocked && !isFeeTransaction;
@@ -363,18 +409,42 @@ class TransactionItem extends Component<Props, State> {
         let hasBalanceChanges = true;
         const mutations = item.BalanceChange(account.address);
         if (!mutations?.[OperationActions.INC]?.[0] && !mutations?.[OperationActions.DEC]?.[0]) {
-            if (item?.Account !== account.address && (item as any)?.Issuer !== account.address) {
-                                                            // ^^ Credential
+            // if (item.Account !== account.address) {
+            //     if (!showDespiteThirdParty) {
+            //         hasBalanceChanges = false;
+            //     }
+            // }
+            if (
+                !showDespiteThirdParty &&
+                item?.Account !== account.address &&
+                (item as any)?.Issuer !== account.address && // credential
+                (item as any)?.Holder !== account.address // clawback
+            ) {
                 hasBalanceChanges = false;
             }
         }
 
+        const batchInfo = {
+            txCount: 0,
+            signerCount: 0,
+        };
+
+        if (item.Type === 'Batch') {
+            batchInfo.txCount = item.RawTransactions?.length || 0;
+            batchInfo.signerCount = item.BatchSigners?.length || 0;
+        }
+
+        const press = typeof onPress === 'undefined' ? this.onPress : onPress;
+
         return (
             <TouchableDebounce
-                onPress={this.onPress}
+                onPress={press}
                 activeOpacity={Math.min(0.6, 0.6 * opacity.opacity)}
                 style={[
                     styles.container,
+                    batchInfo.txCount > 0 && styles.batchContainer,
+                    notFound && styles.notFound,
+                    isReplayed && styles.isReplayed,
                     {
                         height: isFeeTransaction
                             ? TransactionItem.FeeHeight
@@ -391,9 +461,23 @@ class TransactionItem extends Component<Props, State> {
                     { !isFeeTransaction && (
                         cachedTokenDetails?.icon
                     )}
+                    {!isFeeTransaction && (item?.MetaData as any)?.ParentBatchID && (
+                        <View style={[
+                            styles.batchIconContainer,
+                        ]}>
+                            <Text style={[
+                                styles.batchIconText,
+                            ]}>Batch Tx</Text>
+                        </View>
+                    )}
                 </View>
                 <View style={[AppStyles.flex3, AppStyles.centerContent, opacity]}>
-                    { !isFeeTransaction && hasBalanceChanges && (
+                    { !isFeeTransaction && hasBalanceChanges && vaultInfo && (
+                        <Text style={styles.boldTitle}>
+                            {NormalizeCurrencyCode(vaultInfo.asset?.currency || '')}
+                        </Text>
+                    )}
+                    { !isFeeTransaction && hasBalanceChanges && !vaultInfo && (
                         cachedTokenDetails?.title
                     )}
                     { !isFeeTransaction && !hasBalanceChanges && (
@@ -408,7 +492,10 @@ class TransactionItem extends Component<Props, State> {
                     )}
                     { !isFeeTransaction && !participant?.blocked && (
                         <View style={[AppStyles.row, AppStyles.centerAligned]}>
-                            {hasBalanceChanges && (
+                            {hasBalanceChanges && vaultInfo && (
+                                <Text style={styles.actionText}>{Localize.t('vault.title')}</Text>
+                            )}
+                            {hasBalanceChanges && !vaultInfo && (
                                 <Blocks.ActionBlock item={item} explainer={explainer} participant={participant} />
                             )}
                             {!hasBalanceChanges && (
@@ -429,11 +516,47 @@ class TransactionItem extends Component<Props, State> {
                             { feeText }
                         </Text>
                     )}
-                    { !isFeeTransaction && !isRejected && hasBalanceChanges && (
-                        <Blocks.MonetaryBlock explainer={explainer} />
+                    {!isFeeTransaction && !isRejected && hasBalanceChanges && batchInfo.txCount === 0 && (
+                        notFound || isReplayed ? (
+                            <>
+                                <Text style={[
+                                    AppStyles.pbold,
+                                    isReplayed
+                                        ? AppStyles.colorOrange
+                                        : AppStyles.colorRed,
+                                ]}>{
+                                    isReplayed
+                                        ? Localize.t('global.failed')
+                                        : Localize.t('global.failed')
+                                    }</Text>
+                                {!isReplayed && (
+                                    <Text style={[
+                                        AppStyles.smalltext,
+                                        AppStyles.colorRed,
+                                    ]}>{Localize.t('global.notFound')}</Text>
+                                )}
+                                {isReplayed && (
+                                    <Text style={[
+                                        AppStyles.smalltext,
+                                        AppStyles.colorOrange,
+                                    ]}>{Localize.t('global.foreign')}</Text>
+                                )}
+                            </>
+                        ) : (
+                            <Blocks.MonetaryBlock explainer={explainer} />
+                        )
                     )}
-                    { !isFeeTransaction && isRejected && (
+                    { !isFeeTransaction && isRejected && batchInfo.txCount === 0 && (
                         <Icon name="IconAlertTriangle" size={20} style={styles.iconHookRejcted} />
+                    )}
+                    {!isFeeTransaction && !isRejected && batchInfo.txCount > 0 && (
+                        <View style={[
+                            styles.batchCountCircle,
+                        ]}>
+                            <Text style={[
+                                styles.batchCountText,
+                            ]}>{batchInfo.txCount}</Text>
+                        </View>
                     )}
                 </View>
             </TouchableDebounce>

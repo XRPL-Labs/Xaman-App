@@ -128,6 +128,7 @@ class InfoMessage extends PureComponent<Props> {
             switch (type) {
                 case 'info':
                     style.push(AppStyles.colorBlue);
+                    style.push(styles.textBlue);
                     break;
                 case 'warning':
                     style.push(AppStyles.colorOrange);

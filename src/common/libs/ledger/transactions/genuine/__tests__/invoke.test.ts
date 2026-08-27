@@ -24,6 +24,29 @@ describe('Invoke', () => {
             expect(instance.Destination).toEqual('rrrrrrrrrrrrrrrrrrrrbzbvji');
             expect(instance.InvoiceID).toBe('92FA6A9FC8EA6018D5D16532D7795C91BFB0831355BDFDA177E86C8BF997985F');
         });
+
+        it('keeps Destination and HookParameters through JsonForSigning', () => {
+            const tx = {
+                TransactionType: 'Invoke',
+                Account: 'rhGZ6DPhoAe5oXTkaFahdHy3Pwg9k43jCB',
+                Destination: 'rHRPS4bWYjJZFVk8DYhqzVqwp6gtrAbMFD',
+                HookParameters: [
+                    {
+                        HookParameter: {
+                            HookParameterName: '415454455354',
+                            HookParameterValue:
+                                '351890E103DBA97516B30903DF67E895B603B6939A744B8369EAA84D5025045C',
+                        },
+                    },
+                ],
+                NetworkID: 21338,
+            } as any;
+            const instance = new Invoke(tx);
+
+            expect(instance.Destination).toBe('rHRPS4bWYjJZFVk8DYhqzVqwp6gtrAbMFD');
+            expect(instance.JsonForSigning.Destination).toBe('rHRPS4bWYjJZFVk8DYhqzVqwp6gtrAbMFD');
+            expect(instance.JsonForSigning.HookParameters).toEqual(tx.HookParameters);
+        });
     });
 
     describe('Info', () => {

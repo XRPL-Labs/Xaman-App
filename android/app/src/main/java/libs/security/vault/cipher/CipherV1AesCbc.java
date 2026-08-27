@@ -46,7 +46,11 @@ public class CipherV1AesCbc {
 
             return new String(decryptedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            throw new CryptoFailedException("CipherV2AesGcm encryption error", e);
+            throw new CryptoFailedException(
+                    Cipher.classifyDecryptFailure(e),
+                    "CipherV1AesCbc decryption error",
+                    e
+            );
         }
     }
 }

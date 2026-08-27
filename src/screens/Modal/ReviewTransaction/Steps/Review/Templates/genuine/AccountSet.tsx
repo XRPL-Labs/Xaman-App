@@ -126,6 +126,16 @@ class AccountSetTemplate extends Component<Props, State> {
                         </View>
                     </>
                 )}
+                {!isUndefined(transaction.HookStateScale) && (
+                    <>
+                        <Text style={styles.label}>{Localize.t('global.hookStateScale')}</Text>
+                        <View style={styles.contentBox}>
+                            <Text selectable style={styles.valueSubtext}>
+                                {transaction.HookStateScale}
+                            </Text>
+                        </View>
+                    </>
+                )}
 
                 {!isUndefined(transaction.SetFlag) && (
                     <>

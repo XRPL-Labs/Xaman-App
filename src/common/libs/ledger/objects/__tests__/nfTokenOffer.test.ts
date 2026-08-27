@@ -34,7 +34,7 @@ describe('NFTokenOffer object', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description for sell offer', () => {
-                const expectedDescription = `rrrrrrrrrrrrrrrrrrrrrholvtp offered to sell NFT token with ID 00081B5825A08C22787716FA031B432EBBC1B101BB54875F0002D2A400000000 in order to receive 1 XRP${'\n'}The NFT owner is rrrrrrrrrrrrrrrrrrrrrholvtp${'\n'}This offer may only be accepted by rrrrrrrrrrrrrrrrrrrrbzbvji${'\n'}The offer expires at Wednesday, January 24, 2018 1:52 PM unless it is canceled or accepted before then.`;
+                const expectedDescription = `rrrrrrrrrrrrrrrrrrrrrholvtp offered to sell NFT token with ID 00081B5825A08C22787716FA031B432EBBC1B101BB54875F0002D2A400000000 in order to receive 1 XRP${'\n\n'}The NFT owner is rrrrrrrrrrrrrrrrrrrrrholvtp${'\n\n'}This offer may only be accepted by rrrrrrrrrrrrrrrrrrrrbzbvji${'\n\n'}The offer expires at Wednesday, January 24, 2018 1:52 PM unless it is canceled or accepted before then.`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });

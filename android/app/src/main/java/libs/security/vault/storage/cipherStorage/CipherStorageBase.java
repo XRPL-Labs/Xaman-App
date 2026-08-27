@@ -10,8 +10,9 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
+import libs.security.vault.VaultErrorCodes;
+import libs.security.vault.exceptions.CryptoFailedException;
 import libs.security.vault.exceptions.KeyStoreAccessException;
 
 import java.nio.charset.Charset;
@@ -26,9 +27,9 @@ import java.security.UnrecoverableKeyException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -129,51 +130,91 @@ abstract public class CipherStorageBase implements CipherStorage {
     return generator.generateKey();
   }
 
-  /** Extract existing key or generate a new one. In case of problems raise exception. */
+  /** Extract existing key or generate a new one. Encrypt path only. Never delete on failure. */
   @NonNull
-  protected Key extractGeneratedKey(@NonNull final String safeAlias, @NonNull final AtomicInteger retries)
+  protected Key extractGeneratedKey(@NonNull final String safeAlias)
     throws GeneralSecurityException {
-    Key key;
+    final KeyStore keyStore = getKeyStoreAndLoad();
 
-    do {
-      final KeyStore keyStore = getKeyStoreAndLoad();
-
-      // if key is not available yet, try to generate the strongest possible
-      if (!keyStore.containsAlias(safeAlias)) {
-        generateKeyAndStoreUnderAlias(safeAlias);
-      }
-
-      // throw exception if cannot extract key in several retries
-      key = extractKey(keyStore, safeAlias, retries);
-    } while (null == key);
-
-    return key;
-  }
-
-  /** Try to extract key by alias from keystore, in case of 'known android bug' reduce retry counter. */
-  @Nullable
-  protected Key extractKey(@NonNull final KeyStore keyStore,
-                           @NonNull final String safeAlias,
-                           @NonNull final AtomicInteger retry)
-    throws GeneralSecurityException {
-    final Key key;
-
-    // Fix for android.security.KeyStoreException: Invalid key blob
-    // more info: https://stackoverflow.com/questions/36488219/android-security-keystoreexception-invalid-key-blob/36846085#36846085
-    try {
-      key = keyStore.getKey(safeAlias, null);
-    } catch (final UnrecoverableKeyException ex) {
-      // try one more time
-      if (retry.getAndDecrement() > 0) {
-        keyStore.deleteEntry(safeAlias);
-
-        return null;
-      }
-
-      throw ex;
+    if (!keyStore.containsAlias(safeAlias)) {
+      generateKeyAndStoreUnderAlias(safeAlias);
     }
 
-    // null if the given alias does not exist or does not identify a key-related entry.
+    return extractKey(keyStore, safeAlias);
+  }
+
+  /**
+   * Load an existing Keystore key for decrypt. Never delete the alias. Never mint a new key.
+   * Samsung/One UI firmware can make StrongBox keys unrecoverable; deleting the alias bricks the vault.
+   */
+  @NonNull
+  protected Key extractExistingKey(@NonNull final String safeAlias) throws GeneralSecurityException {
+    final KeyStore keyStore = getKeyStoreAndLoad();
+
+    try {
+      if (!keyStore.containsAlias(safeAlias)) {
+        throw new CryptoFailedException(
+                VaultErrorCodes.KEYSTORE_UNRECOVERABLE,
+                "Keystore alias missing: " + safeAlias,
+                null
+        );
+      }
+    } catch (CryptoFailedException e) {
+      throw e;
+    } catch (KeyStoreException e) {
+      throw new CryptoFailedException(
+              VaultErrorCodes.KEYSTORE_UNRECOVERABLE,
+              "Keystore alias check failed: " + safeAlias,
+              e
+      );
+    }
+
+    try {
+      final Key key = keyStore.getKey(safeAlias, null);
+      if (key == null) {
+        throw new CryptoFailedException(
+                VaultErrorCodes.KEYSTORE_UNRECOVERABLE,
+                "Empty key extracted for alias: " + safeAlias,
+                null
+        );
+      }
+      return key;
+    } catch (CryptoFailedException e) {
+      throw e;
+    } catch (UnrecoverableKeyException | KeyStoreException | ProviderException e) {
+      throw new CryptoFailedException(
+              VaultErrorCodes.KEYSTORE_UNRECOVERABLE,
+              "Keystore key unrecoverable for alias: " + safeAlias,
+              e
+      );
+    }
+  }
+
+  @NonNull
+  protected static String classifyDecryptFailure(@NonNull final Throwable fail) {
+    Throwable current = fail;
+    while (current != null) {
+      if (current instanceof UnrecoverableKeyException
+              || current instanceof KeyStoreException
+              || current instanceof ProviderException) {
+        return VaultErrorCodes.KEYSTORE_UNRECOVERABLE;
+      }
+      final String message = current.getMessage();
+      if (message != null && message.toLowerCase(Locale.ROOT).contains("invalid key blob")) {
+        return VaultErrorCodes.KEYSTORE_UNRECOVERABLE;
+      }
+      current = current.getCause();
+    }
+    return VaultErrorCodes.KEYSTORE_DECRYPT;
+  }
+
+  /** Load a Keystore key. Do not delete the alias if the key is unrecoverable. */
+  @NonNull
+  protected Key extractKey(@NonNull final KeyStore keyStore,
+                           @NonNull final String safeAlias)
+    throws GeneralSecurityException {
+    final Key key = keyStore.getKey(safeAlias, null);
+
     if (null == key) {
       throw new KeyStoreAccessException("Empty key extracted!");
     }

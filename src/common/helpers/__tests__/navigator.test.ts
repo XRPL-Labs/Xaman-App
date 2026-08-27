@@ -68,6 +68,12 @@ describe('Navigator helper', () => {
                         backgroundColor: 'transparent',
                         componentBackgroundColor: 'transparent',
                     },
+                    statusBar: {
+                        visible: true,
+                        style: 'light',
+                        backgroundColor: 'transparent',
+                        drawBehind: true,
+                    },
                 },
             },
         });

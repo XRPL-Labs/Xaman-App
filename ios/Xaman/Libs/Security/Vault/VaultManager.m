@@ -298,6 +298,11 @@ NSString *getRecoveryVaultName(NSString *vaultName)
   [Keychain clear];
 }
 
++ (void) wipeLocalDatastore
+{
+  [VaultManagerModule clearStorage];
+}
+
 
 /*
  Check a vault is encrypted with the latest Cipher or it needs a migrations
@@ -483,6 +488,18 @@ RCT_EXPORT_METHOD(clearStorage:(RCTPromiseResolveBlock)resolve
 {
   @try {
     [VaultManagerModule clearStorage];
+    resolve(@(YES));
+  }
+  @catch (NSError *error) {
+    rejectWithError(reject, error);
+  }
+}
+
+RCT_EXPORT_METHOD(wipeLocalDatastore:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+  @try {
+    [VaultManagerModule wipeLocalDatastore];
     resolve(@(YES));
   }
   @catch (NSError *error) {

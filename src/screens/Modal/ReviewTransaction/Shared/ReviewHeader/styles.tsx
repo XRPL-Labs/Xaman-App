@@ -11,7 +11,10 @@ const styles = StyleService.create({
     container: {
         backgroundColor: '$background',
         alignItems: 'center',
-        paddingTop: HasTopNotch() ? 50 : Platform.OS === 'android' ? 10 : 30,
+        // iOS SafeArea / HasTopNotch already insets. Android SafeAreaView is a no-op.
+        paddingTop:
+            (Platform.OS === 'android' ? AppSizes.statusBarHeight : 0) +
+            (HasTopNotch() ? 50 : Platform.OS === 'android' ? 10 : 30),
         paddingHorizontal: AppSizes.paddingSml,
         paddingBottom: 10,
     },

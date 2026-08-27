@@ -12,6 +12,7 @@ import {
     InteractionManager,
     EventSubscription,
     SafeAreaView,
+    Linking,
 } from 'react-native';
 
 import RNTangemSdk, { Card, EventCallback } from 'tangem-sdk-react-native';
@@ -24,14 +25,14 @@ import LoggerService from '@services/LoggerService';
 import { AccountRepository } from '@store/repositories';
 
 import { Navigator } from '@common/helpers/navigator';
-import { Prompt } from '@common/helpers/interface';
+// import { Prompt } from '@common/helpers/interface';
 
 import { GetPreferCurve, GetWalletDerivedPublicKey, DefaultDerivationPaths } from '@common/utils/tangem';
 
 import { AppScreens } from '@common/constants';
 
 // components
-import { Button, Header, Spacer, LoadingIndicator } from '@components/General';
+import { Button, Header, Spacer, LoadingIndicator, InfoMessage } from '@components/General';
 
 import Localize from '@locale';
 
@@ -209,25 +210,108 @@ class AccountAddView extends Component<Props, State> {
 
             // card already contains existing wallet
             if (!isEmpty(wallets)) {
-                this.validateAndImportCard(card);
+                Navigator.showAlertModal({
+                    type: 'warning',
+                    title: Localize.t('tangemImportMsgs.existingTitle'),
+                    text: (
+                        <View style={[ AppStyles.centerContent ]}>
+                            <View>
+                                <Text style={[ AppStyles.baseText, AppStyles.textCenterAligned ]}>
+                                    {Localize.t('tangemImportMsgs.existingDescription')}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={[ AppStyles.pbold, AppStyles.textCenterAligned ]}>
+                                    {Localize.t('tangemImportMsgs.existingDescriptionUsedBefore')}
+                                </Text>
+                            </View>
+                            <View style={[ AppStyles.column, AppStyles.marginTopSml ]}>
+                                <Text style={[ AppStyles.baseText, AppStyles.textCenterAligned ]}>
+                                    {Localize.t('tangemImportMsgs.existingDescriptionBoldAfter')}
+                                </Text>
+                            </View>
+                            <View style={AppStyles.marginTopSml}>
+                                <Text style={[ AppStyles.baseText, AppStyles.textCenterAligned ]}>
+                                    {Localize.t('tangemImportMsgs.existingDescriptionAfter')}
+                                </Text>
+                            </View>
+                        </View>
+                    ),
+                    buttons: [
+                        {
+                            text: Localize.t('global.cancel'),
+                            onPress: () => {},
+                            type: 'dismiss',
+                            light: true,
+                        },
+                        {
+                            text: Localize.t('tangemImportMsgs.existingButtonSupport'),
+                            onPress: () => {
+                                Linking.openURL(`mailto:support@xaman.app?subject=Tangem%20card%20imported%20before%20(${card.cardId})`);
+                            },
+                            light: true,
+                        },
+                        {
+                            text: Localize.t('tangemImportMsgs.existingButtonContinue'),
+                            onPress: () => {
+                                this.validateAndImportCard(card);
+                            },
+                            type: 'continue',
+                            light: false,
+                        },
+                    ],
+                });
+
                 return;
             }
 
             // no wallet exist in the card
-            Prompt(
-                Localize.t('global.notice'),
-                Localize.t('account.tangemCardEmptyGenerateWalletAlert'),
-                [
-                    { text: Localize.t('global.cancel') },
+            Navigator.showAlertModal({
+                type: 'success',
+                title: Localize.t('tangemImportMsgs.newTitle'),
+                text: (
+                    <View style={[ AppStyles.centerContent ]}>
+                        <View>
+                            <Text style={[ AppStyles.baseText, AppStyles.textCenterAligned ]}>
+                                {Localize.t('tangemImportMsgs.newDescription')}
+                            </Text>
+                        </View>
+                        <View style={[ AppStyles.column, AppStyles.marginTopSml ]}>
+                            <InfoMessage
+                                type="success"
+                                labelStyle={[ AppStyles.paddingVerticalSml, AppStyles.paddingHorizontalSml ]}
+                                icon="IconShield"
+                                iconSize={25}
+                            >
+                                <Text style={[ AppStyles.pbold, AppStyles.colorGreen, AppStyles.textCenterAligned]}>
+                                    {Localize.t('tangemImportMsgs.newDescriptionBoldAfter')}
+                                </Text>
+                            </InfoMessage>
+                        </View>
+                        <View style={AppStyles.marginTopSml}>
+                            <Text style={[ AppStyles.baseText, AppStyles.textCenterAligned ]}>
+                                {Localize.t('tangemImportMsgs.newDescriptionAfter')}
+                            </Text>
+                        </View>
+                    </View>
+                ),
+                buttons: [
                     {
-                        text: Localize.t('account.generateAccount'),
+                        text: Localize.t('global.cancel'),
+                        onPress: () => {},
+                        type: 'dismiss',
+                        light: true,
+                    },
+                    {
+                        text: Localize.t('global.continue'),
                         onPress: () => {
                             this.createTangemWallet(card);
                         },
+                        type: 'continue',
+                        light: false,
                     },
                 ],
-                { type: 'default' },
-            );
+            });
         } catch (error: any) {
             if (error?.message && error?.message === 'The user cancelled the operation') {
                 return;
@@ -283,6 +367,7 @@ class AccountAddView extends Component<Props, State> {
                 <Header
                     leftComponent={{
                         icon: 'IconChevronLeft',
+                        testID: 'back-button',
                         onPress: Navigator.pop,
                     }}
                     centerComponent={{ text: Localize.t('account.addAccount') }}

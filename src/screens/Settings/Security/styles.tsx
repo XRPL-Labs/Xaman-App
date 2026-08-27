@@ -1,5 +1,3 @@
-import { StyleSheet } from 'react-native';
-
 import StyleService from '@services/StyleService';
 import { AppSizes, AppFonts } from '@theme';
 
@@ -16,6 +14,14 @@ const styles = StyleService.create({
         tintColor: '$grey',
         resizeMode: 'contain',
     },
+    header: {
+        paddingVertical: AppSizes.paddingSml / 1.5,
+        borderBottomWidth: 0,
+        borderTopWidth: 0,
+        backgroundColor: '$tint',
+        marginTop: AppSizes.paddingSml / 2,
+        marginBottom: AppSizes.paddingSml / 2,
+    },
     rowIcon: {
         width: AppSizes.screen.width * 0.07,
         height: AppSizes.screen.width * 0.07,
@@ -30,9 +36,9 @@ const styles = StyleService.create({
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '$background',
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderTopWidth: StyleSheet.hairlineWidth,
-        borderColor: '$tint',
+        // borderBottomWidth: StyleSheet.hairlineWidth,
+        // borderTopWidth: StyleSheet.hairlineWidth,
+        // borderColor: '$tint',
     },
 
     label: {

@@ -36,7 +36,7 @@ describe('CredentialCreate tx', () => {
 
         describe('generateDescription()', () => {
             it('should return the expected description', () => {
-                const expectedDescription = 'This is an CredentialCreate transaction';
+                const expectedDescription = `This is a CredentialCreate transaction. It involves rsYxnKtb8JBzfG4hp6sVF3WiVNw2broUFo issuing a credential to rH6PVvtAawMNGyxpLvEAkUjpqZNZ1gNT3Z.${'\n\n'}The credential type is KYC. The credential URI is isabel.com/credentials/kyc/alice.`;
                 expect(info.generateDescription()).toEqual(expectedDescription);
             });
         });

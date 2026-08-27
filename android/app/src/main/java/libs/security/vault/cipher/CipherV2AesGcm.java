@@ -5,10 +5,12 @@ import androidx.annotation.NonNull;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import libs.security.crypto.Crypto;
 import libs.security.providers.UniqueIdProvider;
+import libs.security.vault.VaultErrorCodes;
 import libs.security.vault.exceptions.CryptoFailedException;
 
 public class CipherV2AesGcm {
@@ -21,17 +23,23 @@ public class CipherV2AesGcm {
     @NonNull
     public static Map<String, Object> encrypt(@NonNull final String input, @NonNull final String key) throws CryptoFailedException {
         try {
+            // Stored unique-id (then last-known). Never live ANDROID_ID while a stored id exists.
+            // Existing Extra Security vaults are bound to that stored id.
+            final String deviceId = UniqueIdProvider.sharedInstance().getDeviceUniqueId();
+            final byte[] uniqueDeviceId = UniqueIdProvider.toDeviceIdBytes(deviceId);
+
+            if (uniqueDeviceId == null) {
+                throw new CryptoFailedException(
+                        VaultErrorCodes.UNIQUE_ID_MISSING,
+                        "uniqueDeviceId is null!",
+                        null
+                );
+            }
+
             final byte[] passcodeSalt = Crypto.RandomBytes(32);
 
             // NOTE: using "91337" as iteration count is a conscious choice to save performance.
             final byte[] passcodeHash = Crypto.PBKDF2(key.toCharArray(), passcodeSalt, 91337);
-
-            // get device unique id for using in preKey and AAD
-            final byte[] uniqueDeviceId = UniqueIdProvider.sharedInstance().getDeviceUniqueIdBytes();
-
-            if (uniqueDeviceId == null) {
-                throw new CryptoFailedException("uniqueDeviceId is null!", null);
-            }
 
             // generate preKeySalt random 32 bytes
             final byte[] preKeySalt = Crypto.RandomBytes(32);
@@ -77,7 +85,11 @@ public class CipherV2AesGcm {
             result.put("cipher", Crypto.BytesToHex(encryptedBytes));
             result.put("derived_keys", derivedKeys);
 
+            UniqueIdProvider.sharedInstance().persistConfirmedDeviceUniqueId(deviceId, false);
+
             return result;
+        } catch (CryptoFailedException e) {
+            throw e;
         } catch (Exception e) {
             throw new CryptoFailedException("CipherV2AesGcm encryption error", e);
         }
@@ -85,7 +97,63 @@ public class CipherV2AesGcm {
 
     @NonNull
     public static String decrypt(@NonNull final String cipher, @NonNull final String key, @NonNull final Cipher.DerivedKeys derivedKeys) throws CryptoFailedException {
+        final List<String> candidates = UniqueIdProvider.sharedInstance().getDecryptCandidateIds();
+
+        if (candidates.isEmpty()) {
+            throw new CryptoFailedException(
+                    VaultErrorCodes.UNIQUE_ID_MISSING,
+                    "uniqueDeviceId is null!",
+                    null
+            );
+        }
+
+        UniqueIdProvider uniqueIdProvider = UniqueIdProvider.sharedInstance();
+        uniqueIdProvider.clearLastUnlockReport();
+        boolean authFailed = false;
+        CryptoFailedException lastFailure = null;
+
+        for (String deviceId : candidates) {
+            try {
+                String clearText = decryptWithDeviceId(cipher, key, derivedKeys, deviceId);
+                uniqueIdProvider.recordDecryptSuccess(deviceId);
+                uniqueIdProvider.persistConfirmedDeviceUniqueId(deviceId, true);
+                return clearText;
+            } catch (CryptoFailedException e) {
+                lastFailure = e;
+                if (VaultErrorCodes.WRONG_PASSPHRASE.equals(e.getCode())) {
+                    authFailed = true;
+                }
+            }
+        }
+
+        String code = VaultErrorCodes.WRONG_PASSPHRASE;
+        if (!authFailed && lastFailure != null) {
+            code = lastFailure.getCode();
+        }
+        throw new CryptoFailedException(
+                code,
+                "CipherV2AesGcm decryption failed after " + candidates.size() + " device id(s)",
+                lastFailure
+        );
+    }
+
+    @NonNull
+    private static String decryptWithDeviceId(
+            @NonNull final String cipher,
+            @NonNull final String key,
+            @NonNull final Cipher.DerivedKeys derivedKeys,
+            @NonNull final String deviceId
+    ) throws CryptoFailedException {
         try {
+            final byte[] uniqueDeviceId = UniqueIdProvider.toDeviceIdBytes(deviceId);
+
+            if (uniqueDeviceId == null) {
+                throw new CryptoFailedException(
+                        VaultErrorCodes.UNIQUE_ID_MISSING,
+                        "uniqueDeviceId is null!",
+                        null
+                );
+            }
 
             // NOTE: using "91337" as iteration count is a conscious choice to save performance.
             final byte[] passcodeHash = Crypto.PBKDF2(
@@ -93,13 +161,6 @@ public class CipherV2AesGcm {
                     Crypto.HexToBytes(derivedKeys.passcode_salt),
                     91337
             );
-
-            // get device unique id for using in preKey and AAD
-            final byte[] uniqueDeviceId = UniqueIdProvider.sharedInstance().getDeviceUniqueIdBytes();
-
-            if (uniqueDeviceId == null) {
-                throw new CryptoFailedException("uniqueDeviceId is null!", null);
-            }
 
             // preKey = preKeySalt + passcodeHash + uniqueDeviceId
             ByteArrayOutputStream preKeyStream = new ByteArrayOutputStream();
@@ -128,8 +189,14 @@ public class CipherV2AesGcm {
             );
 
             return new String(decryptedBytes, StandardCharsets.UTF_8);
+        } catch (CryptoFailedException e) {
+            throw e;
         } catch (Exception e) {
-            throw new CryptoFailedException("CipherV2AesGcm decryption error", e);
+            throw new CryptoFailedException(
+                    Cipher.classifyDecryptFailure(e),
+                    "CipherV2AesGcm decryption error",
+                    e
+            );
         }
     }
 }

@@ -254,6 +254,7 @@ class ApiService {
         const obj = JSON.parse(text);
 
         if (!obj || typeof obj !== 'object') {
+            this.logger.error(obj);
             throw ErrorMessages.invalidJson;
         }
 
@@ -409,11 +410,19 @@ class ApiService {
                     }
 
                     if (rawRes?.status !== 200 || jsonRes?.error) {
-                        throw new ApiError(
-                            `Api error ${rawRes.status} ${(jsonRes && JSON.stringify(jsonRes)) || rawRes}`,
-                            jsonRes?.error?.code,
-                            jsonRes?.error?.reference,
-                        );
+                        if (rawRes?.status === 200 && typeof jsonRes.error === 'string') {
+                            throw new ApiError(
+                                `API 200 with 'error': ${jsonRes.error}}`,
+                                jsonRes?.error?.code,
+                                jsonRes?.error?.reference,
+                            );
+                        } else {
+                            throw new ApiError(
+                                `API error (non 200) ${rawRes.status} ${((jsonRes && JSON.stringify(jsonRes)) || rawRes).slice(0, 100)}`,
+                                jsonRes?.error?.code,
+                                jsonRes?.error?.reference,
+                            );
+                        }
                     }
 
                     // Only continue if the header is successful and no error in the jsonRes

@@ -6,7 +6,7 @@
 import { get, isEqual } from 'lodash';
 import EventEmitter from 'events';
 
-import { Alert, NativeModules, Platform } from 'react-native';
+import { Alert, Linking, NativeModules, Platform } from 'react-native';
 import { OptionsModalPresentationStyle, OptionsModalTransitionStyle } from 'react-native-navigation';
 import { utils as AccountLibUtils } from 'xrpl-accountlib';
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
@@ -34,6 +34,7 @@ export enum NotificationType {
     SignRequest = 'SignRequest',
     OpenXApp = 'OpenXApp',
     OpenTx = 'OpenTx',
+    Deeplink = 'Deeplink',
 }
 
 export type PushNotificationsServiceEvent = {
@@ -79,7 +80,7 @@ class PushNotificationsService extends EventEmitter {
                             // if so move forward
                             this.onPermissionGranted();
                         } else {
-                            this.logger.warn('Push: missing permission or unable to get FCM token');  
+                            this.logger.warn('Push: missing permission or unable to get FCM token');
                         }
                         resolve();
                     })
@@ -195,6 +196,13 @@ class PushNotificationsService extends EventEmitter {
      */
     getNotificationType = (notification: FirebaseMessagingTypes.RemoteMessage): NotificationType | undefined => {
         const category = get(notification, ['data', 'category']) as 'SIGNTX' | 'OPENXAPP' | 'TXPUSH';
+
+        if (category === 'OPENXAPP') {
+            const isDeeplink = get(notification, ['data', 'deeplink']) as string;
+            if (isDeeplink && typeof isDeeplink === 'string' && isDeeplink.trim() !== '') {
+                return NotificationType.Deeplink;
+            }
+        }
 
         switch (category) {
             case 'SIGNTX':
@@ -439,7 +447,18 @@ class PushNotificationsService extends EventEmitter {
         // assign last message id
         this.lastOpenedMessageId = notification.messageId;
 
+        const url = get(notification, ['data', 'deeplink']) as string;
+
         switch (this.getNotificationType(notification)) {
+            case NotificationType.Deeplink:
+                if (!StringTypeCheck.isValidURL(url)) {
+                    break;
+                }
+
+                Linking.openURL(url).catch(() => {
+                    // Do nothing
+                });
+                break;
             case NotificationType.SignRequest:
                 this.handleSingRequest(notification);
                 break;
