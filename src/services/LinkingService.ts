@@ -221,8 +221,8 @@ class LinkingService {
             // console.log(p.getTransaction().JsonForSigning);
             // console.log(p.getTransaction().JsonRaw);
 
-            if (typeof tag !== 'undefined' && tag !== 0) {
-                payment.DestinationTag = Number(destination.tag);
+            if (typeof tag !== 'undefined') {
+                payment.DestinationTag = Number(tag);
             }
 
             // payment.Flags = {

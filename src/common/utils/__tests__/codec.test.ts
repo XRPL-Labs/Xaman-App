@@ -1,4 +1,5 @@
-import { EncodeNFTokenID, DecodeNFTokenID } from '../codec';
+import { libraries } from 'xrpl-accountlib';
+import { EncodeNFTokenID, DecodeNFTokenID, NormalizeDestination } from '../codec';
 
 describe('Utils.codec', () => {
     describe('DecodeNFTokenID', () => {
@@ -34,5 +35,13 @@ describe('Utils.codec', () => {
             const expectedEncoded = '000813883EBCBE82C32E1CA28616DBDD2E40873D446B0EC505C73BA9047ED3FE';
             expect(encoded).toBe(expectedEncoded);
         });
+    });
+});
+
+describe('NormalizeDestination X-address tags', () => {
+    it.each([false, 0, 123, 4294967295])('preserves embedded tag %p', (tag) => {
+        const address = 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY';
+        const to = libraries.rippleAddressCodec.classicAddressToXAddress(address, tag, false);
+        expect(NormalizeDestination({ to }).tag).toBe(tag === false ? undefined : tag);
     });
 });
