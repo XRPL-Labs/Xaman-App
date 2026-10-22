@@ -195,7 +195,7 @@ const NormalizeDestination = (destination: XrplDestination): XrplDestination & {
             try {
                 const decoded = libraries.rippleAddressCodec.xAddressToClassicAddress(destination.to);
                 to = decoded.classicAddress;
-                tag = Number(decoded.tag);
+                tag = decoded.tag === false ? undefined : Number(decoded.tag);
 
                 xAddress = destination.to;
             } catch {

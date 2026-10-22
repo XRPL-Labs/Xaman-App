@@ -1,4 +1,5 @@
 import { Alert, Linking } from 'react-native';
+import { libraries } from 'xrpl-accountlib';
 
 import DataStorage from '@store/storage';
 import { AccountRepository, CoreRepository } from '@store/repositories';
@@ -210,6 +211,33 @@ describe('LinkinService', () => {
                 });
 
                 handleXrplDestinationSpy.mockRestore();
+                navigatorSpy.mockRestore();
+            });
+        });
+        describe('Destination tag preservation', () => {
+            const destinationAddress = 'rPEPPER7kfTD9w2To4CQk6UCfuHM9c6GDY';
+            it.each([0, 123, 4294967295, false])('preserves normalized X-address tag %p', async (tag) => {
+                jest.spyOn(CodecUtils, 'NormalizeDestination').mockRestore();
+                const navigatorSpy = jest.spyOn(Navigator, 'showModal');
+                navigatorSpy.mockClear();
+                const to = libraries.rippleAddressCodec.classicAddressToXAddress(destinationAddress, tag, false);
+
+                await service.handleXrplDestination({ to, amount: 1 } as any);
+
+                expect(navigatorSpy).toHaveBeenCalled();
+                const { payload } = navigatorSpy.mock.calls[0][1] as { payload: Payload };
+                expect(payload.payload.request_json.DestinationTag).toBe(tag === false ? undefined : tag);
+                expect(payload.payload.request_json.Destination).toBe(destinationAddress);
+                navigatorSpy.mockRestore();
+            });
+
+            it('preserves an explicit zero destination tag on a classic address', async () => {
+                const navigatorSpy = jest.spyOn(Navigator, 'showModal');
+                navigatorSpy.mockClear();
+                await service.handleXrplDestination({ to: destinationAddress, tag: 0, amount: 1 } as any);
+                expect(navigatorSpy).toHaveBeenCalled();
+                const { payload } = navigatorSpy.mock.calls[0][1] as { payload: Payload };
+                expect(payload.payload.request_json.DestinationTag).toBe(0);
                 navigatorSpy.mockRestore();
             });
         });
